@@ -3,13 +3,13 @@
   resulting in elements being placed outside of the table (i.e. position: fixed)
   -->
 
-<div class="col-md-12 scroll-if-height  no-padding"> 
+<div class="col-md-12 scroll-if-height  no-padding">
   <script type="text/ng-template" id="checkboxheader.html">
     <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
-  </script> 
+  </script>
   <script type="text/ng-template" id="filterHeader.html">
     <input type="text" ng-model="filter">
-  </script> 
+  </script>
   <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
     <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value=""/> None
 
@@ -17,7 +17,7 @@
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
 
   </script>
-  <div class="row m-l-10 m-t-15 "> 
+  <div class="row m-l-10 m-t-15 ">
     <!-- Title section -->
     <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review && !feedbackContainer.review.errorMsg">
       <div class="m-10">Loading review...</div>
@@ -65,10 +65,10 @@
         </a> </li>
     </ul>
     <!--Tab panes -->
-    <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review"> 
+    <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review">
       <!--Concepts To Review -->
-      <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1"> 
-        <!-- only appears if author row --> 
+      <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1">
+        <!-- only appears if author row -->
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsToReview.length === 0"> No concepts to
@@ -78,7 +78,7 @@
                template-pagination="utilities/review-table-pager.html"
                class="table feedback-table" drop-channel="feedbackConcept">
           <div class="col-md-1 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'"
-               ng-hide="feedbackContainer.review.conceptsToReview.length === 0"> 
+               ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <!-- Only appears if reviewer role -->
             <div class=" p-5">
               <button
@@ -105,9 +105,9 @@
                    ng-model-options="{debounce: 500}" ui-on-drop="null">
           </div>
           <div class="col-md-4 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'"
-               ng-hide="feedbackContainer.review.conceptsToReview.length === 0"> 
+               ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <!-- Only appears if reviewer role -->
-            <div class="pull-right p-5"> 
+            <div class="pull-right p-5">
               <!--   <button class="btn btn-round btn-default pink lighten-2 tooltips-bottom normal-case"
   ng-click="selectConceptsForFeedback()"><div class="md md-forum "></div><span>Add feedback to selected concepts</span></button>-->
               <button
@@ -214,15 +214,15 @@
             <!--      <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default pull-left">&laquo; Previous</button>-->
             <li>
               <button ng-if="role === 'AUTHOR'" type="button" ng-click="toggleViewOnlyConceptsWithFeedback()"
-                      class="btn btn-default"> <span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span> <span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span> </button>
+                      class="btn-review-feedback"> <span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span> <span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span> </button>
               <button ng-if="role === 'REVIEWER' && task.status === 'In Review'" type="button"
-                      ng-click="toggleOnlyConceptsWithFeedback()" class="btn btn-default"> <span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span> <span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span> </button>
+                      ng-click="toggleOnlyConceptsWithFeedback()" class="btn-review-feedback"> <span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span> <span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span> </button>
             </li>
           </ul>
         </div>
       </div>
       <!--Concepts Reviewed-->
-      <div role="tabpanel" ng-if="actionTab === 2"> 
+      <div role="tabpanel" ng-if="actionTab === 2">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0"> No Approved
@@ -279,7 +279,7 @@
         </table>
       </div>
       <!--Classification affected concepts-->
-      <div role="tabpanel" ng-if="actionTab === 3"> 
+      <div role="tabpanel" ng-if="actionTab === 3">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No
