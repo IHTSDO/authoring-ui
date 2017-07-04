@@ -126,7 +126,7 @@
                class="table table-full-small">
           <tr ng-repeat="item in $data">
             <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
-            <td data-title="'FSN'" sortable="'sourceFsn'"> {{item.source.fsn.term}} </td>
+            <td data-title="'FSN'" sortable="'sourceFsn'"> {{item.sourceFsn}} </td>
           </tr>
         </table>
       </div>
