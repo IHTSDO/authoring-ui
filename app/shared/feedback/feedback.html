@@ -1,32 +1,32 @@
-<section class="tables-data feedback"> 
-  
-  <!-- for ng-table checkboxes --> 
+<section class="tables-data feedback">
+
+  <!-- for ng-table checkboxes -->
   <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
-  --> 
+  -->
   <script type="text/ng-template" id="checkboxheader.html">
     <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
-  </script> 
+  </script>
   <script type="text/ng-template" id="filterHeader.html">
     <input type="text" ng-model="filter">
 
-  </script> 
+  </script>
   <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
     <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value=""/> None
     <br/>
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
-  </script> 
+  </script>
 
   <!-- sidebar -->
   <div
     ng-include src="'shared/sidebar-edit/feedbackEdit.html'"></div>
-  
+
   <!-- Report, feedback editor, and concept feedback -->
   <div class="col-md-9 no-padding pull-right white no-gutter">
-    <div class="col-md-12 feedback-header-main"> 
-      
+    <div class="col-md-12 feedback-header-main">
+
       <!-- Title section -->
-      
+
       <div class="p-l-20 col-md-8">
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
@@ -46,9 +46,9 @@
         <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
           review </div>
       </div>
-      <div class="col-md-4"> 
-        <!-- Cancel/Unclaim Review button --> 
-        
+      <div class="col-md-4">
+        <!-- Cancel/Unclaim Review button -->
+
         <!-- Review In Progress / Review Complete toggle -->
         <div ng-if="role === 'REVIEWER'"
              class="switch pull-right white-text">
@@ -60,7 +60,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Taxonomy, models, and concepts -->
   <div class="col-md-9 no-padding pull-right">
     <div ng-if="viewedConcepts.length > 0">
@@ -73,15 +73,15 @@
                autosave="role !== 'AUTHOR'"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
-          <div class="col-md-6 no-padding no-gutter"> 
-            <!-- Loading placeholder --> 
-            
+          <div class="col-md-6 no-padding no-gutter">
+            <!-- Loading placeholder -->
+
             <!-- Main report and feedback content (once loaded) -->
-            <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review"> 
-              
-              <!-- Review report (concept list) --> 
-              
-              <!-- Feedback messages --> 
+            <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review">
+
+              <!-- Review report (concept list) -->
+
+              <!-- Feedback messages -->
             </div>
           </div>
           <div class="col-md-6 no-gutter no-padding darken-3 grey"></div>
@@ -118,7 +118,7 @@
                         ta-text-editor-class="form-control myform2-height"
                         ta-html-editor-class="form-control myform2-height"
                         ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
-          <div class="col-md-12 no-padding">
+          <div class="col-md-12 p-t-5">
             <div class="col-md-6 no-padding concept-filter ">
               <input type="text" class="feedback-search m-b-5  " placeholder="Search concepts..."
                      ui-on-drop=""
@@ -145,7 +145,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Extra padding just in case -->
   <div class="m-b-50">&nbsp;</div>
 </section>
