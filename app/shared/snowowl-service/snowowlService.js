@@ -872,9 +872,9 @@ angular.module('singleConceptAuthoringApp')
 
         // ensure & not present in search string, to prevent bad requests
         // TODO Decide how we want to handle validation of user search requests
-        if (searchStr.indexOf('&') !== -1) {
-          deferred.reject('Character "&" cannot appear in search terms; please remove and try again.');
-        }
+//        if (searchStr.indexOf('&') !== -1) {
+//          deferred.reject('Character "&" cannot appear in search terms; please remove and try again.');
+//        }
 
 
 
