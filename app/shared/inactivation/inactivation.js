@@ -800,7 +800,7 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0).then(function (response) {
               scope.affectedRelationshipIds = [];
 
-              angular.forEach(response.inboundRelationships, function (item) {
+              angular.forEach(response.items, function (item) {
 
                 // only want active, stated relationships
                 if (item.active && item.characteristicType === 'STATED_RELATIONSHIP') {
