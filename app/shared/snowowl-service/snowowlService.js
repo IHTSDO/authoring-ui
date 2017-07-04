@@ -246,8 +246,8 @@ angular.module('singleConceptAuthoringApp')
         if (limit > 200) {
           limit = 200;
         }
-        $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function (response) {
-          deferred.resolve(response.data);
+        $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '?expand=descendants(form:"inferred",direct:false,offset:0,limit:200,expand(fsn()))').then(function (response) {
+          deferred.resolve(response.data.descendants);
         }).then(function (error) {
           deferred.reject(error);
         });
@@ -647,7 +647,7 @@ angular.module('singleConceptAuthoringApp')
           limit = 10000;
         }
 
-        $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn,type.fsn' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit)).then(function (response) {
+        $http.get(apiEndpoint + branch + '/relationships?destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=0&limit=200').then(function (response) {
 
           // if zero-count, return empty array (no blank array returned)
           if (response.data.total === 0) {
