@@ -1,5 +1,5 @@
 <section class="tables-data">
- 
+
   <div class="row no-padding no-gutter ">
     <div class="col-md-12 m-t-10 ">
       <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
@@ -73,7 +73,7 @@
               </button>
             </div>
           </li>
-       
+
         </ul>
 
       </div>
@@ -191,7 +191,7 @@
       </div>
       <div ng-show="actionTab==3" class="table-responsive white">
         <div ng-show="affectedConceptAssocs.length > 0">
-        
+
           <table
             ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
             class="table table-full table-full-small">
@@ -203,13 +203,13 @@
               </td>
               <td data-title="'Reason'" sortable="''">
 
-                <select ng-model="rel.inactivationIndicator" class=""
+                <select ng-model="rel.inactivationIndicator" class="select"
                         ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
 
               </td>
               <td data-title="'Association'" sortable="'refsetName'">
 
-                <select ng-model="rel.refsetName" class=""
+                <select ng-model="rel.refsetName" class="select"
                         ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
                         ng-change="updateRefTarget(rel)"></select>
               </td>
@@ -277,7 +277,7 @@
               </td>
               <td data-title="'Association'" sortable="'refsetName'">
 
-                <select ng-model="rel.refsetName" class=""
+                <select ng-model="rel.refsetName" class="select"
                         ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
                         ng-change="updateRefTarget(rel)"></select>
               </td>
