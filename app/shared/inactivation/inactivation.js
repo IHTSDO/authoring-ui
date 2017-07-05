@@ -90,9 +90,13 @@ angular.module('singleConceptAuthoringApp')
             for (var i = list.length - 1; i >= 0; i--) {
 
               console.debug('parsing component', list[i].referencedComponent);
-                
-              if(list[i].active === false){}
-
+              
+              if(list[i].active === false){
+                count++;
+                parsedComponents.other.push(list[i].referencedComponent);
+                if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === count) {
+                deferred.resolve(parsedComponents);
+              }}
               // check if referenced concept
               else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
                 count++;
@@ -266,6 +270,7 @@ angular.module('singleConceptAuthoringApp')
               }
 
             }
+            
             return deferred.promise;
           }
 
