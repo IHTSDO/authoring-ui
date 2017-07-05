@@ -586,7 +586,7 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve descriptions of a concept
       // GET /{path}/concepts/{conceptId}/descriptions
       function getConceptDescriptions(conceptId, branch) {
-        return $http.get(apiEndpoint + branch + '/descriptions?concept=' + conceptId + '&limit=10000').then(function (response) {
+        return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descriptions').then(function (response) {
 
           // if zero-count, return empty array (no blank array returned)
           if (response.data.total === 0) {
@@ -594,7 +594,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // otherwise, return the passed array
-          return response.data.items;
+          return response.data.conceptDescriptions;
         }, function (error) {
           // TODO Handle error
         });
