@@ -158,7 +158,7 @@
                   ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span>
           </button>
           <div ng-repeat="field in concept.additionalFields">
-                    <textarea class="msd-elastic resizable-text no-border-bottom-button" ng-model-options="{updateOn: 'blur'}"
+                    <textarea class="msd-elastic resizable-text no-border-bottom" ng-model-options="{updateOn: 'blur'}"
                               ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
                     </textarea>
           </div>
@@ -313,7 +313,7 @@
                         ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                         maxlength="255"
                         ng-model="description.term"
-                        class="form-control msd-elastic no-border-bottom-button"
+                        class="form-control msd-elastic no-border-bottom"
                         ng-class="[{'template-editable' : description.template}]"
                         type="text"
                         placeholder="Description">
@@ -325,7 +325,7 @@
                       maxlength="255"
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
-                      class="form-control  msd-elastic no-border-bottom-button" type="text"
+                      class="form-control  msd-elastic no-border-bottom" type="text"
                       placeholder="Description">
                         </textarea>
             <textarea ng-if="description.type === 'TEXT_DEFINITION'"
@@ -335,7 +335,7 @@
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
-                      class="form-control msd-elastic no-border-bottom-button" autofocus>
+                      class="form-control msd-elastic no-border-bottom" autofocus>
                         </textarea>
           </div>
 
@@ -382,7 +382,7 @@
           </div>
 
           <div ng-if="description.additionalFields" ng-repeat="field in description.additionalFields">
-                        <textarea class="resizable-text msd-elastic no-border-bottom-button" ng-model-options="{updateOn: 'blur'}"
+                        <textarea class="resizable-text msd-elastic no-border-bottom" ng-model-options="{updateOn: 'blur'}"
                                   ng-model="field.value" type="text" placeholder="{{field}}">
                         </textarea>
           </div>
@@ -491,7 +491,7 @@
                   <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
                             ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                             ng-change="updateRelationship(relationship, true)"
-                            class="form-control rg no-border-bottom-button"
+                            class="form-control rg no-border-bottom"
                             type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
                   <span>Role Group</span>
@@ -507,7 +507,7 @@
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
                                               ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
-                                              class="resizable-text form-control msd-elastic no-border-bottom-button"
+                                              class="resizable-text form-control msd-elastic no-border-bottom"
 
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
@@ -540,7 +540,7 @@
 
                   <textarea type="text" ng-model="relationship.target.fsn"
                             ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
-                            class="resizable-text relationship msd-elastic no-border-bottom-button"
+                            class="resizable-text relationship msd-elastic no-border-bottom"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
@@ -587,7 +587,7 @@
 
               </div>
               <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
-                                <textarea class="resizable-text msd-elastic no-border-bottom-button" ng-model-options="{updateOn: 'blur'}"
+                                <textarea class="resizable-text msd-elastic no-border-bottom" ng-model-options="{updateOn: 'blur'}"
                                           ng-model="field.value" type="text" placeholder="{{field}}">
                                 </textarea>
               </div>

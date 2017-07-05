@@ -385,7 +385,7 @@ b,
 strong {
   font-weight: 500;
 }
-/* margins and paddding conventions */ 
+/* margins and paddding conventions */
 .p-5 {
   padding: 5px;
 }
@@ -1220,6 +1220,13 @@ strong {
   font-size:3em;
 }
 
-.no-border-bottom-button{
+.no-border-bottom{
   box-shadow: none !important;
+}
+
+.template-editable {
+  box-shadow: inset 0 -2px 0 #00a6e5 !important;
+  textarea {
+    box-shadow: inset 0 -2px 0 #00a6e5 !important;
+  }
 }
