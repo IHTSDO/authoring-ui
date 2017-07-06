@@ -167,7 +167,7 @@ angular.module('singleConceptAuthoringApp')
 
 
           // if neither type nor concept specified
-          if (!association.type && !association.concept) {
+          if (!association.concept || !$scope.deletion && !association.type) {
           }
 
           // if either field is blank, alert and return
@@ -180,7 +180,7 @@ angular.module('singleConceptAuthoringApp')
           else {
               
             if(!association.type || association.type === null){
-                association.type = {}
+                association.type = {id: ' '}
             }
 
             // if this type already specified, add to array

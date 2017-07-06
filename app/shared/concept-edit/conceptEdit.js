@@ -915,6 +915,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             if (deletion) {
               selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
+                  console.log(results);
+                inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget);
                 if (results.deletion && !results.associationTarget) {
                   notificationService.sendMessage('Deleting Concept...');
                   snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
