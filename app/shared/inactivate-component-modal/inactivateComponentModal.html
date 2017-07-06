@@ -42,7 +42,7 @@
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 1}"> 
         <!-- reasons select -->
-        <div ng-show="!deletion" >
+        <div ng-if="!deletion" >
           <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
             <div class="col-md-12 ">
               <label> Select Inactivation Reason </label>
@@ -95,7 +95,9 @@
             </div>
           </div>
         </div>
-        <div ng-show="deletion">
+        
+       </div>
+        <div ng-if="deletion">
           <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading"> Checking inbound relationships... </div>
           <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsTotal === 0"> No inbound relationships found - Concept may be deleted. </div>
           <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0"> Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items. </div>
@@ -118,7 +120,6 @@
           </div>
           </div>
       </div>
-       </div>
         </div>
       <!-- children -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 2}">
@@ -182,19 +183,19 @@
     <div class="row col-md-12 no-padding top-modal">
       <div class=" col-md-6 left-button ">
         <button type="button"
-                  class="btn btn-default  p-10 cancel-action-btn m-t-20"
+                  class="btn btn-default col-md-12  cancel-action-btn  no-padding"
                   ng-click="cancel()"> Cancel Deletion </button>
       </div>
       <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
         <button type="button"
 
-                  class="btn btn-default  p-10 complete-action-btn m-t-20"
+                  class="btn btn-default col-md-12 p-10 complete-action-btn no-padding"
                   ng-click="delete()"> Confirm Deletion </button>
       </div>
       <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
         <button type="button"
 
-                  class="btn btn-default green p-10 complete-action-btn m-t-20"
+                  class="btn btn-default col-md-12 p-10 complete-action-btn no-padding"
                   ng-click="selectReason(inactivationReason)"> Continue with Deletion </button>
       </div>
     </div>
