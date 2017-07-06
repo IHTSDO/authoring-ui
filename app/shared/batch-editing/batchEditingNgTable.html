@@ -2,7 +2,7 @@
 <div>
   <div class="row no-padding no-gutter p-t-5">
     <div class="col-md-10 pull-right m-t-10">
-    
+
       <div ng-show="batchHasData">
           <button class="col-md-2 btn btn-default complete-action-btn pull-right m-r-15"
                   ng-click="saveAll()">Save All
@@ -14,13 +14,13 @@
           </button>
         </div>
 
-      
+
       </div>
     </div>
-      
-    
-  <div class="card m-10">
-  <div class="m-t-10 sca-batch-table" ng-show="batchHasData">
+
+
+  <div class="card m-10" ng-show="batchHasData">
+  <div class="m-t-10 sca-batch-table">
 
     <table ng-table="batchTableParams"
            template-pagination="utilities/data-table-pager.html"
