@@ -19,7 +19,8 @@ angular.module('singleConceptAuthoringApp')
       };
     };
 
-    $scope.updateAssociations = function () {
+    $scope.updateAssociations = function (inactivationReason) {
+        $scope.inactivationReason = inactivationReason;
       $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
     };
 

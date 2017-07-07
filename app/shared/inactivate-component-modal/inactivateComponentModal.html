@@ -47,10 +47,10 @@
             <div class="col-md-12 ">
               <label> Select Inactivation Reason </label>
             </div>
-            <div class="col-md-12 no-padding">
+            <div class="col-md-12 no-padding m-l-5">
               <select id="taskProject" name="select-reason" class="form-control"
                     ng-options="reason as reason.text for reason in reasons"
-                    ng-model="inactivationReason" ng-change="updateAssociations()">
+                    ng-model="inactivationReason" ng-change="updateAssociations(inactivationReason)">
               <option value="disabled">- Select a reason (required) -</option>
             </select>
           </div>
