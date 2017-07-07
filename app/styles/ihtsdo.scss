@@ -2641,10 +2641,7 @@ aside.sidebar ul ul a {
     transform: scale(1.05);
     border-radius: 10px;
 }
-.table-full-small tbody > tr > td:first-child,
-.table-full-small thead tr > th:first-child {
-    padding-left: 20px;
-}
+
 .table-title {
     padding: 0px;
     font-size: 18px;
@@ -3669,7 +3666,7 @@ textarea.noresize {
     padding: 0px 30px;
     background-color: #d1484a;
     /* indianred */
-    
+
     border: 1px solid yellow;
     /* for feature branch UI deployment visual identification */
 }
@@ -3678,7 +3675,7 @@ textarea.noresize {
     padding: 0px 30px;
     background-color: #0365c0;
     /* darkcyan */
-    
+
     border: 1px solid yellow;
     /* for feature branch UI deployment visual identification */
 }
