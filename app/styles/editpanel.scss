@@ -861,8 +861,8 @@ button.fsn-title-button {
 }
 .popover {
     margin-top: 1px;
-    min-width: 650px;
     z-index: 1070;
+    max-width: inherit !important;
 }
 #wrap .popover {
     margin-top: 1px;
@@ -903,7 +903,7 @@ button.fsn-title-button {
     height: 10px;
 }
 .popover-content {
-    padding: 0px 3px;
+    padding: 0px 3px !important;
 }
 button.fsn-title-button {
     width: 100%;
