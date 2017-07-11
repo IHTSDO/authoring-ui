@@ -110,11 +110,11 @@ button.widget-toolbar {
 .classification-btn .btn-default[disabled] {
     background-color: #d8d8d8 ;
     border-color: #d8d8d8 ;
-    color: #737373 
+    color: #737373
 }
 .classification-btn .btn-default[disabled] span {
     color: #737373 ;
-    background-color: #d8d8d8 
+    background-color: #d8d8d8
 }
 .widget-toolbar .green.darken-1 {}
 /* widget buttons*/
@@ -129,8 +129,8 @@ button.widget-toolbar {
     background-color: #424242
 }
 .edit-bar{
-    float: right; 
-    width: 10px; 
+    float: right;
+    width: 10px;
     color: red
 }
 .fixed-height {
@@ -345,7 +345,7 @@ h1 {
     }
     .title-text {
         font-size: 12px;
-        line-height: 1;
+        line-height: 1.7;
         max-width: 200px;
         text-align: left;
     }
@@ -865,8 +865,8 @@ button[disabled] .project-icon {
     padding-top: 5px;
 }
  .highlight {
-      background-color: #ffeb3b; padding:1px 4px; 
-    
+      background-color: #ffeb3b; padding:1px 4px;
+
 	color:#474747;}
 	.m-t-3{margin-top:5px;}
 	.angular-ui-tree-node span{display:inline-block; max-width:83%; vertical-align: top;line-height:13px;}
