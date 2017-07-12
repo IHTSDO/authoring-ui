@@ -123,7 +123,10 @@ h4.timeline-title {
 }
 /*tables */
 /*tooltips*/
-
+.sca-dark .promoted-check-box .md-check-box-outline-blank:before,
+.sca-dark .promoted-check-box .md-check-box:before {
+  color: #f5f5f5;
+}
 .sca-dark .paging .btn {
     background: #1f2731;
     color: #9B9B9B;
