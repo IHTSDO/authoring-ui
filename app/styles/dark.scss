@@ -27,6 +27,9 @@ h4.timeline-title {
 .sca-dark .border-right {
     border-right: #1f2731 1px solid ;
 }
+.sca-dark .no-border-bottom-search{
+  box-shadow: inset 0 -1px 0 #1f2731 !important;
+}
 .sca-dark .sca-container::-webkit-scrollbar-thumb:active,
 .ta-scroll-window.form-control::-webkit-scrollbar-thumb:active {
     background: #525463;
