@@ -1,4 +1,4 @@
-/* color codes 
+/* color codes
 darkest #1f2731
 next darkest #262e39
 third #2d3743
@@ -140,8 +140,11 @@ h4.timeline-title {
     background-color: #2d3743;
 }
 .sca-dark .theme-secondary-text,
-a {
-    color: #5cbaff;
+ a {
+   color: #5cbaff;
+ }
+.sca-dark .ng-table tbody a {
+  color: #4fc3f7;
 }
 .sca-dark .table-full thead {
     background: #262e39;
@@ -686,7 +689,7 @@ sca-dark .pull-left.follow-up {
     background-color: #262e39 ;
 }
 .sca-dark .table tr.clickable-row td {
-    border-top: 1px solid #262e39 
+    border-top: 1px solid #262e39
 }
 .sca-dark .table-title {
     color: #eee
@@ -760,7 +763,7 @@ sca-dark .pull-left.follow-up {
 
 
 /* header alert fix */
-.sca-dark .header-alerts a, 
+.sca-dark .header-alerts a,
 .sca-dark .header-alerts div a,
 .sca-dark .navbar-fixed-top .btn,
 .sca-dark .header-alerts .blue,
@@ -778,7 +781,7 @@ sca-dark .pull-left.follow-up {
 .sca-dark .navigation-link.green.darken-1.classify .btn:hover,
 .sca-dark .navigation-link.pink1.darken-2.review .btn:hover,
 .sca-dark .create-template:hover{color :#fff}
-.sca-dark .create-template:active, 
+.sca-dark .create-template:active,
 .sca-dark .create-template:hover
 
 {background:#0082b3}
@@ -808,7 +811,7 @@ sca-dark .pull-left.follow-up {
 .sca-dark .report-header-main {
 
     background-color: #262e39;
-   
+
 }
 
 .sca-dark .classification-header {
@@ -836,8 +839,8 @@ background-color: #262e39;}
 	  background-color: #262e39;
   }
  .sca-dark  ul.classification-nav .btn:hover,
-.sca-dark .navigation-link.green.darken-1:hover, 
-.sca-dark .navigation-link.green.darken-1:focus, 
+.sca-dark .navigation-link.green.darken-1:hover,
+.sca-dark .navigation-link.green.darken-1:focus,
 .sca-dark .navigation-link.green.darken-1:active
  .sca-dark  ul.classification-nav li ul li:focus,
  .sca-dark  ul.classification-nav li ul li:active,
@@ -872,9 +875,9 @@ background-color: #262e39;}
      background-color:  #262e39;
     color: #673ab7
   }
-  
+
    /* review */
-   
+
     .sca-dark .navigation-link.pink.darken-2.review > ul > li > a > div{
 		border-top: 1px #1f2731 solid ;}
  .sca-dark  ul.review-nav li ul li,
@@ -922,10 +925,10 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
    background-color: #ff9800;
 }
 
-.sca-dark .btn-default.cancel-action-btn:disabled, 
-.sca-dark .btn-default.complete-action-btn:disabled, 
+.sca-dark .btn-default.cancel-action-btn:disabled,
+.sca-dark .btn-default.complete-action-btn:disabled,
 .sca-dark .btn-default.primary-action-btn:disabled {
-  
+
     color: #7c7c7c;
     pointer-events: none;
 
@@ -958,7 +961,7 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     box-shadow: inset 0 -1px 0 #414548;
     transition: all .2s;
 }
-.sca-dark .work-list-tabs .nav-tabs>li.active>a, 
+.sca-dark .work-list-tabs .nav-tabs>li.active>a,
 .sca-dark .work-list-tabs .nav-tabs>li>a:hover {
     box-shadow: none;
     color: #fff;
@@ -968,10 +971,10 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     font-size: 12px;
     color: #fff;
     box-shadow: none;
-  
+
 }
 
-.sca-dark .ng-table th.sortable.sort-asc, 
+.sca-dark .ng-table th.sortable.sort-asc,
 .sca-dark .ng-table th.sortable.sort-desc {
     background-color: rgba(141,192,219,.25);
     text-shadow: 0 1px 1px rgba(0,0,0,.75);
