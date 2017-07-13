@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys) {
     return {
       restrict: 'A',
       transclude: false,
@@ -94,8 +94,85 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
-      link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
+      link: function (scope, element, attrs, linkCtrl)
       {
+          
+        $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
+                var parent = $(this).closest('.editHeightSelector');
+                console.log(parent);
+                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                }
+                else{
+                    $(this).blur();
+                }
+            }
+        });
+        
+        scope.focusHandler = function(enter, external){
+            if(!scope.hasFocus && enter){
+                hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+s',
+                  description: 'Save current concept: ' + scope.concept.fsn,
+                  callback: function() {scope.saveConcept()}
+                })
+              hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+r',
+                  description: 'Add relationship to current concept: ' + scope.concept.fsn,
+                  callback: function() {scope.addRelationship()}
+                })
+              hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+d',
+                  description: 'Save description to current concept: ' + scope.concept.fsn,
+                  callback: function() {scope.addDescription()}
+                })
+              hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+z',
+                  description: 'Undo last change to current concept: ' + scope.concept.fsn,
+                  callback: function() {scope.undo()}
+                })
+              scope.hasFocus = true;
+                $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
+                if(!external){
+                    scope.$digest();
+                }
+            }
+            else if (!enter){
+                scope.hasFocus = false;
+                if(!external){
+                    scope.$digest();
+                }
+            }
+        }
+          
+        var focusListener = function () {
+            scope.focusHandler(true, false);
+          };
+          
+        var deFocusListener = function () {
+            scope.focusHandler(false, false);
+          };
+
+          element[0].addEventListener('focus', focusListener, true);
+          element[0].addEventListener('blur', deFocusListener, true);
+          
+          scope.$on('conceptFocusedFromKey', function (event, data) {
+            if(scope.concept.conceptId === data.id){
+                scope.focusHandler(true, true);
+            }
+              else{
+                  scope.focusHandler(false, true);
+              }
+            
+          });
+        //Keyboard Shortcuts.
+        
 
         scope.$watch(function () {
           return $rootScope.branchLocked;
@@ -1248,6 +1325,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // replace descriptions
           scope.concept.descriptions = newArray;
+          $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
+                var parent = $(this).closest('.editHeightSelector');
+                console.log(parent);
+                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                }
+                else{
+                    $(this).blur();
+                }
+            }
+        });
 
           //
         }
@@ -1301,6 +1391,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           attrRels  = $filter('orderBy')(attrRels, 'display')
           scope.concept.relationships = isaRels.concat(attrRels);
+          $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
+                var parent = $(this).closest('.editHeightSelector');
+                console.log(parent);
+                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                }
+                else{
+                    $(this).blur();
+                }
+            }
+        });
         }
 
 // on load, sort descriptions && relationships
@@ -1397,6 +1500,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
             autoSave();
           }
+          $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");  
+                $(this).blur();
+            }
+        });
 
         };
 
@@ -1752,6 +1861,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute the relationship groups
           scope.computeRelationshipGroups();
+            $("textarea").keyup(function(e){
+                if((e.keyCode || e.which) == 13) { 
+                    $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");  
+                    $(this).blur();
+                }
+            });
         };
 
         scope.removeRelationship = function (relationship) {
@@ -1798,6 +1913,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.type.fsn = item.concept.fsn;
 
           scope.updateRelationship(relationship, false);
+            $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
+                var parent = $(this).closest('.editHeightSelector');
+                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                }
+                else{
+                    $(this).blur();
+                }
+            }
+        });
         };
 
         /**
@@ -1816,6 +1943,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.target.fsn = item.concept.fsn;
 
           scope.updateRelationship(relationship, false);
+            $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
+                var parent = $(this).closest('.editHeightSelector');
+                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                }
+                else{
+                    $(this).blur();
+                }
+            }
+        });
         };
 
 ////////////////////////////////
@@ -2439,6 +2578,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Called by autoSave(), undo(), redo()
          */
         function saveModifiedConcept() {
+            $("textarea").keyup(function(e){
+            if((e.keyCode || e.which) == 13) { 
+                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
+                var parent = $(this).closest('.editHeightSelector');
+                console.log(parent);
+                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                }
+                else{
+                    $(this).blur();
+                }
+            }
+        });
 
           scope.isModified = true;
 

@@ -16,5 +16,19 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
       $scope.$on('viewTaxonomy', function(event, data) {
         $scope.actionTab = 1;
       });
+      $scope.$on('viewSearch', function(event, data) {
+        $scope.actionTab = 2;
+      });
+        $scope.$on('viewList', function(event, data) {
+        $scope.actionTab = 3;
+      });
+        $scope.$on('viewReview', function(event, data) {
+        $scope.actionTab = 6;
+        $scope.viewReview();
+      });
+        $scope.$on('viewInfo', function(event, data) {
+        $scope.actionTab = 4;
+      });
+      
     }
   ]);
