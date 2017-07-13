@@ -39,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
-            
+
           scope.viewBatch = function () {
               $rootScope.$broadcast('swapToBatch');
             };
@@ -1227,7 +1227,8 @@ angular.module('singleConceptAuthoringApp')
             ctx.canvas.height = 10;
 
             ctx.font = 'FontAwesome';
-            ctx.fillStyle = '#90CAF9';
+            ctx.fillStyle = '#2196F3';
+
             ctx.fillText(fsn + ' ' + String.fromCharCode(parseInt('\uf040', 16)), 0, 8);
 
             var img = new Image();
