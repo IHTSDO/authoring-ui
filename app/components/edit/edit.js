@@ -62,20 +62,101 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys) {
 
 
-
-    //
-    // Inactivation testing
-    // TODO Remove when done
-    //
-
-    /*
-     $timeout(function () {
-     inactivationService.setParameters($scope.branch, $scope.concepts[0], 'AMBIGUOUS', {POSSIBLY_EQUIVALENT_TO: ['73761001']});
-     $rootScope.$broadcast('conceptEdit.inactivateConcept');
-     }, 4000);*/
+    //Keyboard Shortcuts
+    $scope.selectedConcept = null;
+    $scope.$on('conceptFocused', function (event, data) {
+          $scope.selectedConcept = data.id;
+        });
+    
+    hotkeys.bindTo($scope)
+    .add({
+      combo: 'alt+1',
+      description: 'Go to Taxonomy',
+      callback: function() {$rootScope.$broadcast('viewTaxonomy', {})}
+    })
+    .add({
+      combo: 'alt+2',
+      description: 'Go to Search',
+      callback: function() {$rootScope.$broadcast('viewSearch', {})}
+    })
+    .add({
+      combo: 'alt+3',
+      description: 'Go to Saved List',
+      callback: function() {$rootScope.$broadcast('viewList', {})}
+    })
+    .add({
+      combo: 'alt+4',
+      description: 'Go to Review',
+      callback: function() {$rootScope.$broadcast('viewReview', {})}
+    })
+    .add({
+      combo: 'alt+5',
+      description: 'Go to Info',
+      callback: function() {$rootScope.$broadcast('viewInfo', {})}
+    })
+    .add({
+      combo: 'alt+h',
+      description: 'Go back to dashboard',
+      callback: function() {$location.url('home');}
+    })
+    .add({
+      combo: 'alt+y',
+      description: 'Start classification',
+      callback: function() {$scope.classify();}
+    })
+    .add({
+      combo: 'alt+v',
+      description: 'Start validation ',
+      callback: function() {$scope.validate();}
+    })
+    .add({
+      combo: 'alt+n',
+      description: 'Create a new concept',
+      callback: function() {$scope.createConcept(true);}
+    })
+    .add({
+      combo: 'alt+right',
+      description: 'Select next concept',
+      callback: function() {
+          var index = null;
+          var conceptId = null;
+          angular.forEach($scope.concepts, function(concept){
+              if(concept.conceptId === $scope.selectedConcept){
+                  index = $scope.concepts.indexOf(concept);
+              }
+          });
+          if(index != null){
+              if($scope.concepts[index + 1]){
+                  conceptId = $scope.concepts[index + 1].conceptId;
+              }
+              else{conceptId = $scope.concepts[0].conceptId;}
+          }
+          $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});         
+      }
+    })
+    .add({
+      combo: 'alt+left',
+      description: 'Select previous concept',
+      callback: function() {
+          var index = null;
+          var conceptId = null;
+          angular.forEach($scope.concepts, function(concept){
+              if(concept.conceptId === $scope.selectedConcept){
+                  index = $scope.concepts.indexOf(concept);
+              }
+          });
+          if(index != null){
+              if($scope.concepts[index -1]){
+                  conceptId = $scope.concepts[index - 1].conceptId;
+              }
+              else{conceptId = $scope.concepts[$scope.concepts.length -1].conceptId;}
+          }
+          $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});         
+      }
+    })
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
