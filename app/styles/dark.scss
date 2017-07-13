@@ -829,7 +829,12 @@ sca-dark .pull-left.follow-up {
     color: #4cb476;
 }
 .sca-dark .classification-report {
-    border-bottom: #262e39 solid 2px;}
+    border-bottom: #262e39 solid 2px;
+}
+.sca-dark .classification-report.empty-report{
+  border-bottom : none;
+  background-color: #525463;
+}
 .sca-dark .validation-header{background-color:#4527a0}
 
 /*tbba*/
