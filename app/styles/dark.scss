@@ -983,8 +983,13 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 
 .sca-dark .ng-table th.sortable.sort-asc,
 .sca-dark .ng-table th.sortable.sort-desc {
-    background-color: rgba(141,192,219,.25);
     text-shadow: 0 1px 1px rgba(0,0,0,.75);
+}
+.sca-dark .ng-table th.sortable .sort-indicator:after{
+    border-color: #fff transparent;
+}
+.sca-dark .ng-table th.sortable .sort-indicator:before {
+    border-top: 4px solid #fff;
 }
 
 .sca-dark .tab-content .form-control {
