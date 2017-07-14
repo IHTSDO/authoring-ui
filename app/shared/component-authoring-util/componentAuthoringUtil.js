@@ -867,7 +867,7 @@ function getFsnDescriptionForConcept(concept) {
 
         }
         if (!concept.relationships || concept.relationships.length === 0) {
-          errors.push('Concept must have at lalst one relationship');
+          errors.push('Concept must have at least one relationship');
 
         }
         if (!concept.definitionStatus) {
