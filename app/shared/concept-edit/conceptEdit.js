@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             else if (!enter){
                 scope.hasFocus = false;
-                if(external){
+                if(!external){
                     scope.$digest();
                 }
             }
@@ -186,9 +186,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.focusHandler(true, false);
           };
           
-        var deFocusListener = function () {
-            scope.focusHandler(false, false);
-          };
 
           element[0].addEventListener('mouseenter', focusListener, true);
           
@@ -206,7 +203,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.focusHandler(true, false);
             }
               else{
-                  scope.focusHandler(false, true);
+                  scope.focusHandler(false, false);
               }
             
           });
