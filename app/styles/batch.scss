@@ -5,17 +5,44 @@ select.template-name{min-width:180px;}
 .sca-batch-table .table-full tbody>tr>td:first-child, .sca-batch-table .table-full thead tr>th:first-child {
     padding-left: 10px;
 }
-
 .sca-batch-table .table-full tbody > tr > td:last-child {
     padding-right: 10px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.batch-editing .col-md-9{width:74.5%;}
-
-.sca-batch-table .table-full textarea {width:97%; margin-left:1.5%}
-
-.sca-batch-table .table-full textarea:disabled {
-    font-size: 12px;
+.sca-batch-table .table-full tbody > tr > td {
+    padding-bottom: 5px;
 }
+.sca-batch-table tbody > tr:nth-of-type(even)> td {
+    border-right: 5px solid #fff;
+}
+.sca-batch-table tbody > tr:nth-of-type(even)> td {
+    border-right: 5px solid #f9f9f9;
+}
+.sca-batch-table .editable-input {
+    vertical-align : top;
+    box-shadow: none;
+    border-bottom: 1px dotted #ddd;
+}
+.sca-batch-table .editable-input:hover {
+  cursor:text ;
+}
+.batch-editing .col-md-9{width:74.5%;}
+.sca-batch-table .table-full textarea {
+    font-size: 12px;
+    max-height: none;
+    box-shadow: none;
+    border-bottom : none;
+    line-height: 1.5;
+    width:97%;
+    margin-left:1.5%
+}
+.sca-batch-table .td-box-shadow{
+    box-shadow: inset 0 -2px 0 #00a6e5;
+    border-bottom :none;
+}
+.sca-batch-table .table-full textarea:focus {
+    box-shadow: none !important;
+}
+
