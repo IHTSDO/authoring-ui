@@ -34,7 +34,23 @@ angular.module('singleConceptAuthoringApp')
         };
       }
     };
-  });
+  })
+
+.directive('customAutofocus', function() {
+  return{
+         restrict: 'A',
+
+         link: function(scope, element, attrs){
+           scope.$watch(function(){
+             return scope.$eval(attrs.customAutofocus);
+             },function (newValue){
+               if (newValue === true){
+                   element[0].focus();
+               }
+           });
+         }
+     };
+});
 
 angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys) {
     return {
@@ -97,19 +113,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl)
       {
           
-        $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
-                var parent = $(this).closest('.editHeightSelector');
-                console.log(parent);
+        scope.enterListener = function(event){
+            event = event.event
+            if(event.keyCode === 13) { 
+                event.target.value = event.target.value.replace(/(\r\n|\n|\r)/gm,"");
+                event.target.blur();
+                var parent = $(event.target).closest('.editHeightSelector');
                 if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                    $timeout(function () {
+                        parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
+                    }, 500);
+                    
                 }
                 else{
                     $(this).blur();
                 }
             }
-        });
+        };
         
         scope.focusHandler = function(enter, external){
             if(!scope.hasFocus && enter){
@@ -145,7 +165,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             else if (!enter){
                 scope.hasFocus = false;
-                if(!external){
+                if(external){
                     scope.$digest();
                 }
             }
@@ -159,12 +179,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.focusHandler(false, false);
           };
 
-          element[0].addEventListener('focus', focusListener, true);
-          element[0].addEventListener('blur', deFocusListener, true);
+          element[0].addEventListener('mouseenter', focusListener, true);
           
           scope.$on('conceptFocusedFromKey', function (event, data) {
             if(scope.concept.conceptId === data.id){
                 scope.focusHandler(true, true);
+            }
+              else{
+                  scope.focusHandler(false, true);
+              }
+            
+          });
+          scope.$on('conceptFocused', function (event, data) {
+            if(scope.concept.conceptId === data.id){
+                scope.focusHandler(true, false);
             }
               else{
                   scope.focusHandler(false, true);
@@ -1325,21 +1353,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // replace descriptions
           scope.concept.descriptions = newArray;
-          $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
-                var parent = $(this).closest('.editHeightSelector');
-                console.log(parent);
-                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
-                }
-                else{
-                    $(this).blur();
-                }
-            }
-        });
-
-          //
         }
 
         function sortRelationships() {
@@ -1391,19 +1404,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           attrRels  = $filter('orderBy')(attrRels, 'display')
           scope.concept.relationships = isaRels.concat(attrRels);
-          $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
-                var parent = $(this).closest('.editHeightSelector');
-                console.log(parent);
-                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
-                }
-                else{
-                    $(this).blur();
-                }
-            }
-        });
         }
 
 // on load, sort descriptions && relationships
@@ -1500,12 +1500,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
             autoSave();
           }
-          $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");  
-                $(this).blur();
-            }
-        });
 
         };
 
@@ -1861,12 +1855,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute the relationship groups
           scope.computeRelationshipGroups();
-            $("textarea").keyup(function(e){
-                if((e.keyCode || e.which) == 13) { 
-                    $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");  
-                    $(this).blur();
-                }
-            });
         };
 
         scope.removeRelationship = function (relationship) {
@@ -1913,18 +1901,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.type.fsn = item.concept.fsn;
 
           scope.updateRelationship(relationship, false);
-            $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
-                var parent = $(this).closest('.editHeightSelector');
-                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
-                }
-                else{
-                    $(this).blur();
-                }
-            }
-        });
         };
 
         /**
@@ -1943,18 +1919,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.target.fsn = item.concept.fsn;
 
           scope.updateRelationship(relationship, false);
-            $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
-                var parent = $(this).closest('.editHeightSelector');
-                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
-                }
-                else{
-                    $(this).blur();
-                }
-            }
-        });
         };
 
 ////////////////////////////////
@@ -2578,19 +2542,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Called by autoSave(), undo(), redo()
          */
         function saveModifiedConcept() {
-            $("textarea").keyup(function(e){
-            if((e.keyCode || e.which) == 13) { 
-                $(this)[0].value = $(this)[0].value.replace(/(\r\n|\n|\r)/gm,"");
-                var parent = $(this).closest('.editHeightSelector');
-                console.log(parent);
-                if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                    parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
-                }
-                else{
-                    $(this).blur();
-                }
-            }
-        });
 
           scope.isModified = true;
 
