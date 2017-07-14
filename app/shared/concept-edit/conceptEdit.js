@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   })
 
-.directive('customAutofocus', function() {
+.directive('customAutofocus', function($timeout) {
   return{
          restrict: 'A',
          link: function(scope, element, attrs){
@@ -44,8 +44,19 @@ angular.module('singleConceptAuthoringApp')
              return scope.$eval(attrs.customAutofocus);
              },function (newValue){
                var parent = $(element[0]).closest('.editHeightSelector');
-               if (newValue === true && element[0].value === '' && parent.find("textarea").filter(function() { return this.value == ""; }).length === 1){
-                   element[0].focus();
+               if (newValue === true && element[0].value === ''){
+                   if($(element[0]).hasClass('desc') && parent.find("textarea").filter(function() { return this.value == ""; }).length === 1)
+                       {
+                           $timeout(function () {
+                                element[0].focus();
+                            }, 200);
+                       }
+                   else if($(element[0]).hasClass('rel') && parent.find("textarea").filter(function() { return this.value == ""; }).length === 2)
+                       {
+                           $timeout(function () {
+                                element[0].focus();
+                            }, 200);
+                       }
                }
            });
          }

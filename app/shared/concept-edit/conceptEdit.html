@@ -313,11 +313,10 @@
                         ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                         maxlength="255"
                         ng-model="description.term"
-                        class="form-control msd-elastic no-border-bottom"
+                        class="form-control msd-elastic no-border-bottom desc"
                         ng-class="[{'template-editable' : description.template}]"
                         type="text"
-                        placeholder="Description"
-                        autofocus>
+                        placeholder="Description">
               </textarea>
 
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'SYNONYM'"
@@ -326,7 +325,7 @@
                       maxlength="255"
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
-                      class="form-control  msd-elastic no-border-bottom" type="text"
+                      class="form-control  msd-elastic no-border-bottom desc" type="text"
                       placeholder="Description" custom-autofocus="true">
                         </textarea>
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
@@ -508,7 +507,7 @@
 
                                     <textarea custom-autofocus="true" ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
                                               ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
-                                              class="resizable-text form-control msd-elastic no-border-bottom"
+                                              class="resizable-text form-control msd-elastic no-border-bottom rel"
 
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
