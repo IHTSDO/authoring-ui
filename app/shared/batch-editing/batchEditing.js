@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope, element, attrs, linkCtrl) {
 
           scope.viewedConcepts = [];  // concepts opened for editing by user
-            
+
           scope.templateSlots = [];
 
           // template options
@@ -174,7 +174,7 @@ angular.module('singleConceptAuthoringApp')
             });
             return dragObj;
           };
-            
+
           scope.getTableCellValue = function (concept, slotName) {
             var fsn = '';
             angular.forEach(concept.relationships, function (relationship) {
@@ -184,7 +184,7 @@ angular.module('singleConceptAuthoringApp')
             });
             return fsn;
           };
-            
+
           scope.getTableHeaderValue = function (slot) {
             return slot.slotName;
           };
@@ -273,7 +273,7 @@ angular.module('singleConceptAuthoringApp')
               });
             });
           };
-            
+
           scope.getTitle = function(slot){
               if(slot){
                   return slot.slotName;
@@ -512,7 +512,7 @@ angular.module('singleConceptAuthoringApp')
                 var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
                 saveAllHelper(concepts);
               }, 1000);
-            
+
           };
 
           scope.saveConcept = function (originalConcept) {
@@ -644,7 +644,7 @@ angular.module('singleConceptAuthoringApp')
                           deferred.resolve(savedConcept);
                       }
 
-                      
+
 
                     }, function (error) {
                       notificationService.sendError('Error saving concept: ' + error);
@@ -674,7 +674,7 @@ angular.module('singleConceptAuthoringApp')
             })
 
           };
-            
+
           scope.removeAll = function () {
               batchEditingService.setBatchConcepts([]).then(function(){
                   batchEditingService.setCurrentTemplate(scope.templateOptions.selectedTemplate);
@@ -693,7 +693,7 @@ angular.module('singleConceptAuthoringApp')
               scope.viewedConcepts.splice(index, 1);
             }
           }
-            
+
           function removeViewedConcepts() {
               scope.viewedConcepts = [];
           }
@@ -704,6 +704,23 @@ angular.module('singleConceptAuthoringApp')
             batchEditingService.updateBatchConcept(concept).then(function() {
             })
           };
+
+          scope.addCssToParentElement = function($event) {
+            var currentElm = $event.currentTarget;
+            currentElm.parentNode.classList.add('td-box-shadow');
+          };
+
+          scope.removeCssFromParentElement= function($event) {
+            var currentElm = $event.currentTarget;
+            currentElm.parentNode.classList.remove('td-box-shadow');
+          };
+
+          scope.setFocusToChildElement = function($event) {
+            var currentElm = $event.currentTarget;
+            currentElm.children[0].focus();
+          };
+
+
 
 //
 // Scope listeners
@@ -738,7 +755,7 @@ angular.module('singleConceptAuthoringApp')
           function initialize() {
 
             // get templates for dropdown
-              
+
             if(!metadataService.isTemplatesEnabled()){
                 templateService.getTemplates().then(function (response) {
                     scope.templateOptions.availableTemplates = response;
@@ -755,7 +772,7 @@ angular.module('singleConceptAuthoringApp')
                     scope.batchTableParams.reload();
                   }, 1000);
               $timeout(function () {
-                  
+
                   (function($) {
                       var count = 0;
                       var i = 0;
@@ -776,10 +793,10 @@ angular.module('singleConceptAuthoringApp')
                             i++;
                         });
                     }(jQuery));
-                    
+
                   }, 1500);
-                
-              
+
+
 
             })
           }
@@ -793,7 +810,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$on('batchConcept.change', function () {
             scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
-            
+
             scope.batchTableParams.reload();
           });
 
@@ -802,7 +819,7 @@ angular.module('singleConceptAuthoringApp')
             batchEditingService.updateBatchConcept(data.concept, data.previousConceptId).then(function () {
               scope.batchTableParams.reload();
             });
-          })
+          });
 
 
         }
