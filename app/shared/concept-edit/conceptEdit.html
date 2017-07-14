@@ -31,10 +31,10 @@
 
   <!-- end validation error -->
   <!-- The concept itself -->
-  <div ng-class="[{'new-concept' : componentStyles.isNew},{'purple' : hasFocus}]">
+  <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
 
-    <div class="row grey concept-headers" ng-class="[getConceptStyle(), {'darken-3' : hasFocus},{'darken-4' : !hasFocus}]">
+    <div class="row grey concept-headers" ng-class="[getConceptStyle(), {'darken-2' : hasFocus},{'darken-4' : !hasFocus}]">
 
       <div class="pull-left col-md-1 no-padding">
             <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
@@ -75,7 +75,7 @@
       <div class="col-md-6 no-padding title-text">
 
 
-        <button type="button" class="btn-default grey title-text fsn-title-button pull-right" ng-class="[{'darken-3' : hasFocus},{'darken-4' : !hasFocus}]">
+        <button type="button" class="btn-default grey title-text fsn-title-button pull-right" ng-class="[{'darken-2' : hasFocus},{'darken-4' : !hasFocus}]">
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
