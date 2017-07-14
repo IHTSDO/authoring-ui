@@ -327,7 +327,7 @@
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control  msd-elastic no-border-bottom" type="text"
-                      placeholder="Description">
+                      placeholder="Description" custom-autofocus="true">
                         </textarea>
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="2048"
@@ -336,7 +336,7 @@
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
-                      class="form-control msd-elastic no-border-bottom" autofocus>
+                      class="form-control msd-elastic no-border-bottom">
                         </textarea>
           </div>
 
@@ -506,7 +506,7 @@
                      ui-on-drop="dropRelationshipType(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
-                                    <textarea ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                                    <textarea custom-autofocus="true" ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
                                               ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
                                               class="resizable-text form-control msd-elastic no-border-bottom"
 

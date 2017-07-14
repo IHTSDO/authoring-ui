@@ -39,12 +39,12 @@ angular.module('singleConceptAuthoringApp')
 .directive('customAutofocus', function() {
   return{
          restrict: 'A',
-
          link: function(scope, element, attrs){
            scope.$watch(function(){
              return scope.$eval(attrs.customAutofocus);
              },function (newValue){
-               if (newValue === true){
+               var parent = $(element[0]).closest('.editHeightSelector');
+               if (newValue === true && element[0].value === '' && parent.find("textarea").filter(function() { return this.value == ""; }).length === 1){
                    element[0].focus();
                }
            });
@@ -122,7 +122,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
                     $timeout(function () {
                         parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
-                    }, 500);
+                    }, 600);
                     
                 }
                 else{
