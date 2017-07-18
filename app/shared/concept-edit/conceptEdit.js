@@ -159,14 +159,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+d',
-                  description: 'Save description to current concept: ' + scope.concept.fsn,
+                  description: 'Add description to current concept: ' + scope.concept.fsn,
                   callback: function() {scope.addDescription()}
                 })
               hotkeys.bindTo(scope)
                 .add({
-                  combo: 'alt+z',
-                  description: 'Undo last change to current concept: ' + scope.concept.fsn,
-                  callback: function() {scope.undo()}
+                  combo: 'alt+d',
+                  description: 'Add role group to current concept: ' + scope.concept.fsn,
+                  callback: function() {addRelationshipGroup()}
                 })
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
