@@ -117,7 +117,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // whether to initially display inactive descriptions and relationships
         showInactive: '@?',
 
+        //Whether Concept can be unique or can be assigned to new instance
+        uniqueConceptIndicator: '@?',
 
+        // a function to update reference concept if any
+        updateConceptReference: '&'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -316,6 +320,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.autosave = true;
         }
 
+        if (scope.uniqueConceptIndicator === 'true' || scope.uniqueConceptIndicator === true) {
+          scope.uniqueConceptIndicator = true;
+        } else {
+          scope.uniqueConceptIndicator = false;
+        }        
+
         if (scope.merge === 'true' || scope.merge === true) {
           scope.isMerge = true;
         } else {
@@ -473,7 +483,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // initialize the last saved version of this concept
         scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
         scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-        if (scope.autosave === false) {
+        if (scope.autosave === false && scope.uniqueConceptIndicator === false) {
           scope.concept = scope.unmodifiedConcept;
         }
 
@@ -487,6 +497,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // replace the displayed content with the modified concept
               scope.concept = modifiedConcept;
+          
 
               sortDescriptions();
               sortRelationships();
@@ -1573,6 +1584,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (scope.concept.descriptions.length === 0) {
               scope.addDescription(0);
             }
+            if(scope.uniqueConceptIndicator === "true"){             
+              scope.updateConceptReference({concept: scope.concept});
+            }
           } else {
             console.error('Error removing description; description not found');
           }
@@ -1942,42 +1956,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.warnings = ['You must activate the concept before its components.'];
           }
         };
-
-
-        /**
-         * Sets relationship type concept based on typeahead selection
-         * @param relationshipField the type or target JSON object
-         * @param conceptId the concept id
-         * @param fsn the fsn
-         */
-        scope.setRelationshipTypeConcept = function (relationship, item) {
-          if (!relationship || !item) {
-            console.error('Cannot set relationship concept field, either field or item not specified');
-          }
-
-          relationship.type.conceptId = item.concept.conceptId;
-          relationship.type.fsn = item.concept.fsn;
-
-          scope.updateRelationship(relationship, false);
-        };
-
-        /**
-         * Sets relationship target concept based on typeahead selection
-         * @param relationshipField the type or target JSON object
-         * @param conceptId the concept id
-         * @param fsn the fsn
-         */
-        scope.setRelationshipTargetConcept = function (relationship, item) {
-          console.debug('set relationship target concept', item);
-          if (!relationship || !item) {
-            console.error('Cannot set relationship concept field, either field or item not specified');
-          }
-
-          relationship.target.conceptId = item.concept.conceptId;
-          relationship.target.fsn = item.concept.fsn;
-
-          scope.updateRelationship(relationship, false);
-        };
+             
 
 ////////////////////////////////
 // Shared Elements
@@ -2461,12 +2440,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (description.term && word && suggestion) {
             var re = new RegExp(word, 'gi');
             description.term = description.term.replace(re, suggestion);
-          }
+          }          
 
           // remove this suggestion
           delete description.spellcheckSuggestions[word];
           if (Object.keys(description.spellcheckSuggestions).length === 0) {
             delete description.spellcheckSuggestions;
+          }
+
+          if(scope.uniqueConceptIndicator === "true"){
+            scope.updateConceptReference({concept: scope.concept});
           }
         };
 
@@ -2475,7 +2458,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           delete description.descriptionId;
           if (!description) {
             return;
-          }
+          }         
 
           // run spellchecker
             console.log(metadataService.isSpellcheckDisabled());
@@ -2522,12 +2505,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
               description.caseSignificance = 'CASE_INSENSITIVE';
-            }
+            }            
           }
 
+          if(scope.uniqueConceptIndicator === "true"){
+            scope.updateConceptReference({concept: scope.concept});
+          }
 
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
-            autoSave();
+          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {            
+              autoSave();
           }, function (error) {
             notificationService.sendWarning('Automations failed: ' + error);
             autoSave();
@@ -2760,7 +2746,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //
 // Relationship setter functions
 //
-
+        /**
+         * Sets relationship type concept based on typeahead selection
+         * @param relationshipField the type or target JSON object
+         * @param conceptId the concept id
+         * @param fsn the fsn
+         */
         scope.setRelationshipTypeConcept = function (relationship, item) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
@@ -2772,18 +2763,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.updateRelationship(relationship, false);
         };
 
+        /**
+         * Sets relationship target concept based on typeahead selection
+         * @param relationshipField the type or target JSON object
+         * @param conceptId the concept id
+         * @param fsn the fsn
+         */
         scope.setRelationshipTargetConcept = function (relationship, item) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
-          }
+          }            
           if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
-            } else {
+            } else {              
               constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
                 relationship.target.conceptId = item.id;
                 relationship.target.fsn = item.fsn.term;
                 relationship.target.definitionStatus = item.definitionStatus;
+                if(scope.uniqueConceptIndicator === "true"){             
+                  scope.updateConceptReference({concept: scope.concept});
+                }
                 scope.updateRelationship(relationship);
               }, function () {
                 scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
@@ -2793,9 +2793,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.conceptId = item.id;
             relationship.target.fsn = item.fsn.term;
             relationship.target.definitionStatus = item.definitionStatus;
+            if(scope.uniqueConceptIndicator === "true"){             
+              scope.updateConceptReference({concept: scope.concept});
+            }
             scope.updateRelationship(relationship, false);
           }
-
         };
 
 //////////////////////////////////////////////
