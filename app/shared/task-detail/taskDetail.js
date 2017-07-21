@@ -102,6 +102,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
+      $scope.proceedPromotionAutomation = function () {
+        notificationService.sendMessage('Begin automation promotion process...');
+        promotionService.proceedPromotionAutomation($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              $rootScope.$broadcast('reloadTask');
+            }, function (error) {
+        });        
+      };
+
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
 
