@@ -62,7 +62,10 @@ angular.module('singleConceptAuthoringApp')
           page: 1,            // show first page
           count: 10,          // count per page
           sorting: {
-            changeNature: 'asc'     // initial sorting
+            changeNature: 'asc',    // initial sorting
+            group : 'asc',
+            typeName : 'asc',
+            destinationName :  'asc'
           },
           orderBy: 'changeNature'
         }, {
