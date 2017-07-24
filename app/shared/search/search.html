@@ -105,7 +105,8 @@
     <div ng-repeat="result in results">
       <div class="row">
         <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
-          <div class="p-5 white-text light-button wordbreak">{{result.term}}</div>
+          <div ng-if="isEscgMode && searchExtensionFlag" class="p-5 white-text light-button wordbreak">{{result.pt.term}}</div>
+          <div ng-if="!searchExtensionFlag || !isEscgMode" class="p-5 white-text light-button wordbreak">{{result.term}}</div>
         </div>
         <div class=" col-md-1 no-padding">
           <div class="">
@@ -125,7 +126,7 @@
         </div>
         <div class="no-padding"
              ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-          <div class="p-5 white-text  wordbreak" ui-draggable="true"
+          <div ng-if="!isEscgMode" class="p-5 white-text  wordbreak" ui-draggable="true"
                drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
                drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a
             class=" wordbreak  " title="Edit"
@@ -134,6 +135,17 @@
 
 
             {{searchExtensionFlag ? result.concept.preferredSynonym : result.concept.fsn }} </a>
+          </div>
+            
+          <div ng-if="isEscgMode" class="p-5 white-text  wordbreak" ui-draggable="true"
+               drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
+               drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a
+            class=" wordbreak  " title="Edit"
+            ng-click=" selectItem(result)"
+            ng-disabled="isEdited(result)">
+
+
+            {{searchExtensionFlag ? result.pt.term : result.concept.fsn }} </a>
           </div>
         </div>
         <div class="col-md-3 no-padding">
