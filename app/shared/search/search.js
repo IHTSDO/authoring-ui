@@ -253,7 +253,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // For now, just assume always want the extension-language synonym if available
           // set as scope variable for expected future toggle
           $scope.synonymFlag = metadataService.isExtensionSet();
-            console.log($scope.synonymFlag)
 
           snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, $scope.synonymFlag).then(function (concepts) {
 
@@ -283,7 +282,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize).then(function (results) {
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag).then(function (results) {
             // set load more parameters
             var concepts = results.items;
             $scope.searchTotal = results.total;
