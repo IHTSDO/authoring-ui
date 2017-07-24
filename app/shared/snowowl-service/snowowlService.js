@@ -879,7 +879,7 @@ angular.module('singleConceptAuthoringApp')
 
 
         // if a numeric value, search by component id
-        else if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
+        if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
             
           // if concept id
           if (searchStr.substr(-2, 1) === '0') {
