@@ -292,19 +292,38 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
             // convert to snowowl description search conceptObj
             var conceptObjs = [];
-            angular.forEach(concepts, function (c) {
-              conceptObjs.push({
-                active: c.active,
-                concept: {
-                  active: c.active,
-                  conceptId: c.id,
-                  definitionStatus: c.definitionStatus,
-                  fsn: c.fsn.term,
-                  moduleId: c.moduleId
-                },
-                term: c.fsn.term
-              })
-            });
+            if($scope.synonymFlag){
+                angular.forEach(concepts, function (c) {
+                  conceptObjs.push({
+                    active: c.active,
+                    concept: {
+                      active: c.active,
+                      conceptId: c.id,
+                      definitionStatus: c.definitionStatus,
+                      fsn: c.pt.term,
+                      moduleId: c.moduleId,
+                      preferredSynonym : c.pt.term
+                    },
+                    term: c.pt.term
+                  })
+                });
+            }
+            else{
+                angular.forEach(concepts, function (c) {
+                  conceptObjs.push({
+                    active: c.active,
+                    concept: {
+                      active: c.active,
+                      conceptId: c.id,
+                      definitionStatus: c.definitionStatus,
+                      fsn: c.fsn.term,
+                      moduleId: c.moduleId
+                    },
+                    term: c.fsn.term
+                  })
+                });
+            }
+            
 
             $scope.storedResults = appendResults ? $scope.storedResults.concat(conceptObjs) : conceptObjs;
 
