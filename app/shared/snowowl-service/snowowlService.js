@@ -1421,7 +1421,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // search concepts by branch, filter, and escgExpr
-      function searchConcepts(branch, termFilter, escgExpr, offset, limit) {
+      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn) {
         var deferred = $q.defer();
 
         // paging/filtering/sorting with defaults applied
@@ -1430,6 +1430,10 @@ angular.module('singleConceptAuthoringApp')
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
+        
+        if(syn){
+            params.expand = 'pt()'
+        }
         if (termFilter) {
           params.termFilter = termFilter;
         }
