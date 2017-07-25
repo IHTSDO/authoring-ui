@@ -166,7 +166,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 .add({
                   combo: 'alt+g',
                   description: 'Add role group to current concept: ' + scope.concept.fsn,
-                  callback: function() {addRelationshipGroup()}
+                  callback: function() {scope.addRelationshipGroup()}
+                })
+              hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+x',
+                  description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
+                  callback: function() {scope.removeConcept(scope.concept)}
                 })
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
