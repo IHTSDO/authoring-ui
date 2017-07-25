@@ -115,10 +115,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         saveFunction: '&?',
 
         // whether to initially display inactive descriptions and relationships
-        showInactive: '@?',
-
-        //Whether Concept can be unique or can be assigned to new instance
-        uniqueConceptIndicator: '@?',
+        showInactive: '@?',        
 
         // a function to update reference concept if any
         updateConceptReference: '&'
@@ -318,13 +315,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.autosave = false;
         } else {
           scope.autosave = true;
-        }
-
-        if (scope.uniqueConceptIndicator === 'true' || scope.uniqueConceptIndicator === true) {
-          scope.uniqueConceptIndicator = true;
-        } else {
-          scope.uniqueConceptIndicator = false;
-        }        
+        }                
 
         if (scope.merge === 'true' || scope.merge === true) {
           scope.isMerge = true;
@@ -483,7 +474,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // initialize the last saved version of this concept
         scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
         scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-        if (scope.autosave === false && scope.uniqueConceptIndicator === false) {
+        if (scope.autosave === false && scope.isBatch === false) {
           scope.concept = scope.unmodifiedConcept;
         }
 
@@ -1584,7 +1575,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (scope.concept.descriptions.length === 0) {
               scope.addDescription(0);
             }
-            if(scope.uniqueConceptIndicator === "true"){             
+            if(scope.isBatch === true){             
               scope.updateConceptReference({concept: scope.concept});
             }
           } else {
@@ -2448,7 +2439,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.spellcheckSuggestions;
           }
 
-          if(scope.uniqueConceptIndicator === "true"){
+          if(scope.isBatch === true){
             scope.updateConceptReference({concept: scope.concept});
           }
         };
@@ -2508,7 +2499,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }            
           }
 
-          if(scope.uniqueConceptIndicator === "true"){
+          if(scope.isBatch === true){
             scope.updateConceptReference({concept: scope.concept});
           }
 
@@ -2781,7 +2772,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.conceptId = item.id;
                 relationship.target.fsn = item.fsn.term;
                 relationship.target.definitionStatus = item.definitionStatus;
-                if(scope.uniqueConceptIndicator === "true"){             
+                if(scope.isBatch === true){             
                   scope.updateConceptReference({concept: scope.concept});
                 }
                 scope.updateRelationship(relationship);
@@ -2793,7 +2784,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.conceptId = item.id;
             relationship.target.fsn = item.fsn.term;
             relationship.target.definitionStatus = item.definitionStatus;
-            if(scope.uniqueConceptIndicator === "true"){             
+            if(scope.isBatch === true){             
               scope.updateConceptReference({concept: scope.concept});
             }
             scope.updateRelationship(relationship, false);
