@@ -639,6 +639,8 @@ angular.module('singleConceptAuthoringApp')
                           })
                       }
                       else{
+                          templateService.storeTemplateForConcept(scope.task.projectKey, savedConcept.conceptId, template);
+                          templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, originalConcept.fsn, template);
                           removeViewedConcept(originalConcept.conceptId);
                           deferred.resolve(savedConcept);
                       }
