@@ -93,7 +93,7 @@
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
                   ng-click="saveConcept()"
-                  ng-if="!isMerge && isModified && !isStatic">
+                  ng-if="!isMerge && isModified && !isStatic && !isBatch">
             <span> Save Concept </span>
           </button>
 
@@ -116,7 +116,7 @@
                   ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
 
-            <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>
+            <span ng-if="!isStatic  && !isInactivation && !isBatch">Delete Unpublished Concept</span>
           </button>
           <button type="button"
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
