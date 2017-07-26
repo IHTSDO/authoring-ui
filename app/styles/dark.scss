@@ -327,6 +327,12 @@ h4.timeline-title {
     color: #1976D2;
     background-color: transparent;
 }
+
+.sca-dark .purple.darken-2 {
+    color: #7b1fa2;
+    background-color: transparent;
+}
+
 /*widget buttons */
 
 .sca-dark .widget-toolbar:hover {
@@ -642,6 +648,14 @@ h4.timeline-title {
 .sca-dark .edits-row.color_5,
 .sca-dark .edits-row.color_7 {
     background-color: #1f2731;
+}
+
+.sca-dark .edits-row.color_1.tealhl,
+.sca-dark .edits-row.color_3.tealhl,
+.sca-dark .edits-row.color_5.tealhl,
+.sca-dark .edits-row.color_7.tealhl {
+    background-color: #25444a;
+    border-top: 1px solid #00a39b;
 }
 .sca-dark .bluehl {
     background-color: #01579b ;
