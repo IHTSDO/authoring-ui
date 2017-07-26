@@ -42,6 +42,10 @@
 .classification-header p {
 	margin: 0px;
 }
+.classification-header .complete-action-btn:disabled {
+	color: #fff !important;
+	background-color: #388E3C !important;
+}
 .classification-report .nav-tabs > li {
 	width: 25%;
 	text-align: center;
