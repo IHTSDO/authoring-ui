@@ -915,7 +915,24 @@ button.fsn-title-button {
     margin: 2px 2px;
     min-height: 11px;
     max-width: 98%;
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
+.concept-more select,
+.description-more select,
+.relationship-more select {
+    height: 15px;
+    min-height: 11px;
+    padding-bottom: 0px;    
+}
+
+.concept-more .control-label,
+.description-more .control-label,
+.relationship-more .control-label {
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
 .popover .editing-form {
     padding-bottom: 0;
 }
