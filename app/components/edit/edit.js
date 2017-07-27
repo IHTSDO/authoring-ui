@@ -216,59 +216,48 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     function setLayout(useDefault) {
 
-      var layout = {};
-
-      // set the default layout
-      switch ($scope.thisView) {
-
-        case 'edit-default':
-
-          accountService.getUserPreferences().then(function (preferences) {
-
-
-            if (preferences && preferences.layout && preferences.layout.editDefault) {
-              layout = preferences.layout.editDefault;
-            } else {
-
-
-              // check if user preferences have
-              layout = {
-
-                'name': 'editDefault',
-                'width': 12,
+      var layout = {
+            'name': 'editDefault',
+            'width': 12,
+            'children': [
+              {
+                'name': 'sidebar',
+                'width': 3,
+              },
+              {
+                'name': 'modelsAndConcepts',
+                'width': 9,
                 'children': [
                   {
-                    'name': 'sidebar',
-                    'width': 3,
+                    'name': 'models',
+                    'width': 6,
                   },
                   {
-                    'name': 'modelsAndConcepts',
-                    'width': 9,
-                    'children': [
-                      {
-                        'name': 'models',
-                        'width': 6,
-                      },
-                      {
-                        'name': 'concepts',
-                        'width': 6
-                      }
-                    ]
+                    'name': 'concepts',
+                    'width': 6
                   }
                 ]
-              };
-            }
+              }
+            ]
+          };
 
-            // set the widths for easy access
-            layoutHandler.setLayout(layout);
+      // set the default layout
+      if($scope.thisView === 'edit-default'
+        || $scope.thisView === 'batch') {
+        setDefaultLayout(layout);
+      } else {
+        layout = {};
+      }      
+    }
 
-          });
-          break;
-        default:
-          layout = {};
-          break;
-      }
-
+    function setDefaultLayout(layout){
+      accountService.getUserPreferences().then(function (preferences) {
+        if (preferences && preferences.layout && preferences.layout.editDefault) {
+          layout = preferences.layout.editDefault;
+        } 
+        // set the widths for easy access
+        layoutHandler.setLayout(layout);
+      });
     }
 
     $scope.loadEditPanelConcepts = function () {
