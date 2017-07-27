@@ -272,6 +272,10 @@ h1 {
     line-height: 16px;
     font-weight: 400;
 }
+
+textarea.form-control.inactivation-value{
+    padding-top:14px;
+}
 .purple-darken-1 .btn-default[disabled] .btn-default{
     background-color: #8e24aa;
 }

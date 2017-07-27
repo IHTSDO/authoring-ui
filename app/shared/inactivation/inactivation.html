@@ -95,7 +95,7 @@
               <div drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropAssociationTarget(rel, $data)">
-                  <textarea type="text" class="form-control" ng-model="rel.target.fsn"
+                  <textarea type="text" class="form-control inactivation-value" ng-model="rel.target.fsn"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
@@ -150,7 +150,7 @@
               <div drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropAssociationTarget(rel, $data)">
-                <textarea type="text" class="form-control" ng-model="rel.target.fsn"
+                <textarea type="text" class="form-control inactivation-value" ng-model="rel.target.fsn"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
@@ -217,7 +217,7 @@
                 <div drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropAssociationTarget(rel, $data)">
-              <textarea type="text" class="form-control" ng-model="rel.newTargetFsn"
+              <textarea type="text" class="form-control inactivation-value" ng-model="rel.newTargetFsn"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
@@ -285,7 +285,7 @@
                 <div drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropAssociationTarget(rel, $data)">
-              <textarea type="text" class="form-control" ng-model="rel.newTargetFsn"
+              <textarea type="text" class="form-control inactivation-value" ng-model="rel.newTargetFsn"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
