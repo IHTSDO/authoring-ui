@@ -2249,9 +2249,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.addRelationshipGroup = function () {
-
-          var groupIds = scope.concept.relationships.map(function (rel) {
-            return parseInt(rel.groupId);
+          var groupIds = [];
+          scope.concept.relationships.forEach(function (rel) {
+            if(rel.characteristicType === "STATED_RELATIONSHIP")
+              groupIds.push(parseInt(rel.groupId));
           });
 
           // push two new relationships
