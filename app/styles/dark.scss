@@ -1050,7 +1050,14 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-dark .ta-scroll-window.form-control::-webkit-scrollbar-track:active {
     background: #3e3e42;
 }
-  .sca-dark .feedback-header {
+.sca-dark .feedback-header {
 
     color: #fff;
+}
+
+.sca-dark .inactivation-report.classification-report ~ div select {
+  background-color: #2d3743;
+}
+.sca-dark .inactivation-report.classification-report ~ div textarea {
+  color: #fff;
 }
