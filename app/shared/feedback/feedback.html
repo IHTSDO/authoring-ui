@@ -126,7 +126,7 @@
                      typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                      typeahead-focus-first="false"
                      typeahead-wait-ms="500"
-                     typeahead-on-select="addConceptToFeedback($item)"
+                     typeahead-on-select="addConceptToFeedback($item, this)"
                      typeahead-editable="false" typeahead-min-length="3">
             </div>
             <div class="col-md-6 no-padding">

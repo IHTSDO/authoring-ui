@@ -1242,7 +1242,9 @@ angular.module('singleConceptAuthoringApp')
            * message
            * @param concept the concept object
            */
-          scope.addConceptToFeedback = function (concept) {
+          scope.addConceptToFeedback = function (concept, element) {
+            console.log(element);
+            element.conceptFilter = null;
             var temp = scope.htmlVariable;
             var img = createConceptImg(concept.concept.conceptId, concept.concept.fsn);
             temp = temp + img + '&nbsp';
@@ -1342,6 +1344,7 @@ angular.module('singleConceptAuthoringApp')
 
               // clear the htmlVariable and requestFolllowUp flag
               scope.htmlVariable = '';
+              scope.conceptFilter = '';
               scope.requestFollowup = false;
 
               // re-retrieve the review
