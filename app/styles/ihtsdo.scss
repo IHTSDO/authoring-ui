@@ -3645,6 +3645,16 @@ textarea.noresize {
     transition: opacity 0.1s linear 0s;
     opacity: 0;
 }
+
+.cfp-hotkeys {
+  overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+  display: block;
+  vertical-align: middle;
+  padding: 60px;
+}
+
 /* DEV and UAT platform identification */
 
 .development,
