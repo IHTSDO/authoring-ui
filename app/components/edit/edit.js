@@ -113,6 +113,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       callback: function() {$scope.createConcept(true);}
     })
     .add({
+      combo: 'alt+e',
+      description: 'Go to Editing',
+      callback: function() {$scope.setView('edit-default');}
+    })
+    .add({
       combo: 'alt+right',
       description: 'Select next concept',
       callback: function() {
