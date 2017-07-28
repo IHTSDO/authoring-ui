@@ -109,7 +109,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys) {
 
     console.log('Running application');
 
@@ -234,8 +234,28 @@ angular
     scaService.getProjects().then(function (response) {
       metadataService.setProjects(response);
     });
-
-
+    
+    hotkeys.bindTo($rootScope)
+        .add({
+          combo: 'alt+h',
+          description: 'Go to Home',
+          callback: function() {$location.url('home');}
+        })
+        .add({
+          combo: 'alt+b',
+          description: 'Open TS Browser',
+          callback: function() {window.open('/browser', '_blank');}
+        })
+        .add({
+          combo: 'alt+p',
+          description: 'Go to Projects',
+          callback: function() {$location.url('projects');}
+        })
+        .add({
+          combo: 'alt+w',
+          description: 'Go to Review Tasks',
+          callback: function() {$location.url('review-tasks');}
+        })
 
 
     ///////////////////////////////////////////
