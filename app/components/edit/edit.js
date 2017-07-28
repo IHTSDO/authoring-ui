@@ -98,11 +98,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       callback: function() {$rootScope.$broadcast('viewInfo', {})}
     })
     .add({
-      combo: 'alt+h',
-      description: 'Go back to dashboard',
-      callback: function() {$location.url('home');}
-    })
-    .add({
       combo: 'alt+y',
       description: 'Start classification',
       callback: function() {$scope.classify();}
