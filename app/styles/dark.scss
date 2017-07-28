@@ -1072,3 +1072,6 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-dark .inactivation-report.classification-report ~ div textarea {
   color: #fff;
 }
+.sca-dark .inactivation-report.classification-report .nav input{
+  color: #262e39;
+}
