@@ -1075,3 +1075,9 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-dark .inactivation-report.classification-report .nav input{
   color: #262e39;
 }
+.sca-dark .navigation-link.green.classify .btn {
+  color: #4caf50;
+}
+.sca-dark .navigation-link.green.classify .btn:hover {
+  color: #fff;
+}
