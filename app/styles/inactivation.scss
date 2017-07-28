@@ -37,9 +37,9 @@
 .modal-body .add-buttons{color:#666;}
 .modal-body .table > tbody > tr > td, .modal-body .table > tbody > tr > th{padding:8px;}
 a.approve-button{color:#fff}
-.inactivation-report.classification-report ~ div textarea {
+.inactivation-report.classification-report ~ .table-responsive textarea {
   font-size: 13px;
 }
-.inactivation-report.classification-report ~ div select {
+.inactivation-report.classification-report ~ .table-responsive select {
   background-color: #fff;
 }
