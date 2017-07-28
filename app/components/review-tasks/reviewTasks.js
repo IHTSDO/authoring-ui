@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -25,6 +25,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.reviewTasks = null;
       $scope.projects = [];
       $scope.browserLink = '..';
+    
+      hotkeys.bindTo($scope)
+        .add({
+          combo: 'alt+n',
+          description: 'Create a New Task',
+          callback: function() {$scope.openCreateTaskModal();}
+        })
 
       // flags for displaying promoted tasks
       $scope.showPromotedReviews = false;

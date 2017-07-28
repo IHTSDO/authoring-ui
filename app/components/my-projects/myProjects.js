@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService, notificationService) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService, notificationService, hotkeys) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -24,6 +24,13 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     $rootScope.pageTitle = "My Projects"
     $scope.projects = null;
     $scope.browserLink = '..';
+    
+    hotkeys.bindTo($scope)
+        .add({
+          combo: 'alt+n',
+          description: 'Create a New Task',
+          callback: function() {$scope.openCreateTaskModal();}
+        })
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({

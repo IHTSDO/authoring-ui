@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -28,6 +28,13 @@ angular.module('singleConceptAuthoringApp.home', [
         // flags for displaying promoted tasks
         $scope.showPromotedTasks = false;
         $scope.showPromotedReviews = false;
+    
+        hotkeys.bindTo($scope)
+            .add({
+              combo: 'alt+n',
+              description: 'Create a New Task',
+              callback: function() {$scope.openCreateTaskModal();}
+            })
 
         // declare table parameters
         $scope.tableParams = new ngTableParams({
