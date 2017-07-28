@@ -71,7 +71,7 @@
 }
 .sca-light .cyan.darken-2 {
     color: #0097a7;
-    background-color: #fff;
+    background-color: transparent;
 }
 .sca-light .classification-btn .btn-default[disabled] span {
     background-color: transparent;
@@ -793,7 +793,9 @@
     color: #474747;
     background-color: #fff;
 }
-.sca-light .green.darken-1.iconbase,
+.sca-light .green.darken-1.iconbase {
+    color: #474747;
+}
 .sca-light ul.classification-nav .btn:hover,
 .sca-light .navigation-link.green.darken-1:hover,
 .sca-light .navigation-link.green.darken-1:focus,
