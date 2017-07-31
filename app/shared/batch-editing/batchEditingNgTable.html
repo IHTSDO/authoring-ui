@@ -28,7 +28,8 @@
 
       <tr ng-repeat="concept in $data">
         <td>
-          <a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(concept)"></a>
+          <a ng-if="concept.sctid === 'undefined' || concept.sctid === ''" class="glyphicon glyphicon-trash" title="Discard" ng-click="removeConcept(concept)"></a>
+          <a ng-if="concept.sctid !== 'undefined' && concept.sctid !== ''" class="glyphicon glyphicon-remove" title="Remove from list" ng-click="removeConcept(concept)"></a>
         </td>
         <td sortable="'sctid'" title="'SCTID'" class="grey-text">
           {{concept.sctid}}
