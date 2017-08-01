@@ -278,6 +278,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             }
           });
         } else {
+            
+          $scope.synonymFlag = metadataService.isExtensionSet();
           console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions);
 
           var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
