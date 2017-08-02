@@ -20,8 +20,18 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.updateAssociations = function (inactivationReason) {
-        $scope.inactivationReason = inactivationReason;
+      $scope.inactivationReason = inactivationReason;
       $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
+      
+      //Association type will be automatically populated if there is only one option
+      for (var i = 0; i < $scope.associations.length; i++) {         
+        // extract association for convenience
+        var association = $scope.associations[i];
+        association.type = null;
+        if($scope.associationTargets.length === 1) {
+          association.type = $scope.associationTargets[0];
+        }  
+      }          
     };
 
     // required arguments
