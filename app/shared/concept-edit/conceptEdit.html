@@ -49,7 +49,7 @@
               <ul class="sub-navigation-link-list ">
                 <li>
                   <a>
-                    <div class="pointer btn tooltips-right tooltips-light normal-case" ng-disabled="isStatic" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
+                    <div class="pointer btn tooltips-right tooltips-light normal-case wandbutton" ng-disabled="isStatic" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
                     <span>Detach Template {{template.name}} v {{template.version}}</span>
                     </div>
                   </a>
@@ -66,7 +66,7 @@
                     popover-trigger="click: click"
                     popover-append-to-body="true"
                     ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic"
-                    class="pointer btn tooltips-right tooltips-light normal-case">
+                    class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton">
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
             </div>
       </div>

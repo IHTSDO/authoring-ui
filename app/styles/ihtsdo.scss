@@ -1605,8 +1605,16 @@ select {
     position: relative;
 }
 
-button.btn.btn-default.transparent{
+button.btn.btn-default.transparent,
+.btn.pointer.transparent{
     background:transparent;
+}
+.editing-form .btn.pointer.wandbutton {
+    padding : 0px;
+}
+.btn.pointer.wandbutton i {    
+    font-size: 13px;
+    padding-left: 8px;
 }
 @media (min-width: 992px) and (max-width: 1199px) {
     .visible-md {
