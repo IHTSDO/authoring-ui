@@ -1605,8 +1605,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             autoSave();
           }
 
-          // if an unpublished description, no reason required
-          else if (!description.effectiveTime) {
+          // if an unreleased description, no reason required
+          else if (!description.released) {
 
             description.active = false;
             var activeFsn = [];
