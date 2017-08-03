@@ -136,11 +136,11 @@ angular
     $rootScope.notProd = false;
     $timeout(function () {
       var env = $location.host().split(/[.]/)[0];
-      if (env === 'local' || env === 'dev-term' || env === 'dev-authoring') {
+      if (env === 'local' || env.startsWith('dev-')) {
         $rootScope.development = true;
         $rootScope.notProd = true;
       }
-      else if (env === 'uat-term' || env === 'uat-authoring') {
+      else if (env.startsWith('uat-')) {
         $rootScope.uat = true;
         $rootScope.notProd = true;
       }
@@ -234,7 +234,7 @@ angular
     scaService.getProjects().then(function (response) {
       metadataService.setProjects(response);
     });
-    
+
     hotkeys.bindTo($rootScope)
         .add({
           combo: 'alt+h',
