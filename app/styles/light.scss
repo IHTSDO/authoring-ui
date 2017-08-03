@@ -715,8 +715,8 @@
 .sca-light .create-template:hover {
     color: #fff
 }
-.sca-light .create-template:active,
-.sca-light .create-template:hover {
+.sca-light .btn.btn-default.widget-toolbar.create-template:active,
+.sca-light .btn.btn-default.widget-toolbar.create-template:hover {
     background: #0082b3
 }
 .sca-light .navigation-link.deep-purple.darken-2 .btn {
@@ -765,8 +765,18 @@
     background-color: transparent;
     color: #009cd7
 }
+.sca-light .btn.btn-default.widget-toolbar.create-template,
+.sca-light .navigation-link.classify,
+.sca-light .navigation-link.validate,
+.sca-light .navigation-link.review,
+.sca-light .btn.btn-default.widget-toolbar.white-backgrounnd
+ {
+    background: #fff;
+}
 .sca-light .create-template,
 .sca-light .navigation-link.deep-purple.darken-2,
+.sca-light .navigation-link.pink.darken-2,
+.sca-light .navigation-link.green,
 .sca-light .navigation-link.green.darken-1.classify,
 .sca-light .navigation-link.pink1.darken-2.review,
 .sca-light .create-new-concept {
@@ -832,10 +842,6 @@
     color: #673ab7
 }
 /* review */
-
-.sca-light .navigation-link.pink.darken-2.review > ul > li > a > div {
-    border-top: 1px #e6e6e6 solid;
-}
 .sca-light ul.review-nav li ul li,
 .sca-light div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
 .sca-light .pink1.darken-2 .sub-navigation-link-list .btn,
@@ -864,6 +870,12 @@
 }
 
 .sca-light .search-scroll .btn-default{color:#fff;}
+.sca-light .search-scroll .btn.btn-default.md-search {
+    color: #737373;
+}
+.sca-light .search-scroll .btn.btn-default.md-search:hover {
+    color:#fff;
+}
 
 def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .def_PRIMITIVE .form-control[disabled], .def_PRIMITIVE [type=text].form-control[disabled], .def_PRIMITIVE [type=text].form-control[readonly] {
     font-size: 11px;
