@@ -34,7 +34,7 @@
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
 
-    <div class="row grey concept-headers" ng-class="[getConceptStyle(), {'darken-2' : hasFocus},{'darken-4' : !hasFocus}]">
+    <div class="row grey concept-headers darken-4" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
 
       <div class="pull-left col-md-1 no-padding">
             <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
@@ -70,12 +70,20 @@
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
             </div>
       </div>
+    
+      <div class="pull-right col-md-1 no-padding">
+            <button type="button"
+                      class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
+                      ng-if="hasFocus">
+                <span> Shortcuts active</span>
+            </button>
+      </div>
 
       <!-- concept name -->
       <div class="col-md-6 no-padding title-text">
 
 
-        <button type="button" class="btn-default grey title-text fsn-title-button pull-right" ng-class="[{'darken-2' : hasFocus},{'darken-4' : !hasFocus}]">
+        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button pull-right" ng-class="[{'conceptFocus' : hasFocus}]">
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
@@ -88,7 +96,6 @@
 
       <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
         <div class=" p-t-3  ">
-
 
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
