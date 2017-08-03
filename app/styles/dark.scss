@@ -1010,7 +1010,10 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-dark .work-list-tabs .nav-tabs>li>a:hover {
     box-shadow: none;
     color: #fff;
-    background-color: #262e39;
+    background-color: #525463;
+}
+.sca-dark .work-list-tabs .nav-tabs>li>a {
+    background-color: transparent;
 }
 .sca-dark .tab-content {
     font-size: 12px;
