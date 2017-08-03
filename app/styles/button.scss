@@ -1018,6 +1018,11 @@ button.tooltips-right.normal-case span {
     background-color: rgba(2, 2, 2, 0.1);
 }
 
+ul.dashboard-link-list li:hover .hamberger {
+    background-color: rgba(2, 2, 2, 0.1);
+    color:#FFF;
+}
+
 .btn-review-feedback {
   font-weight: 500;
   color: #666;
