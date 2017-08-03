@@ -831,7 +831,7 @@ sca-dark .pull-left.follow-up {
 
 .sca-dark .create-template,
 .sca-dark .navigation-link.deep-purple.darken-2.validate,
-.sca-dark .navigation-link.green.darken-1.classify,
+.sca-dark .navigation-link.green.classify,
 .sca-dark .navigation-link.pink1.darken-2.review,
 .sca-dark .create-new-concept{
     border-top: 1px #1f2731 solid ;
@@ -920,8 +920,14 @@ background-color: #262e39;}
 
    /* review */
 
-    .sca-dark .navigation-link.pink.darken-2.review > ul > li > a > div{
-		border-top: 1px #1f2731 solid ;}
+.sca-dark .navigation-link.pink.darken-2.review > ul > li > a > div{
+    border-top: 1px #1f2731 solid;
+    border-right: 1px #1f2731 solid;
+}
+.sca-dark .button-nav .conflicts
+{
+    border-right: 1px #1f2731 solid;
+}
  .sca-dark  ul.review-nav li ul li,
  .sca-dark  div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
  .sca-dark .pink1.darken-2 .sub-navigation-link-list .btn,
