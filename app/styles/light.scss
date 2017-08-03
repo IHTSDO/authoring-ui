@@ -717,7 +717,7 @@
 }
 .sca-light .btn.btn-default.widget-toolbar.create-template:active,
 .sca-light .btn.btn-default.widget-toolbar.create-template:hover {
-    background: #0082b3
+    background-color: #0082b3
 }
 .sca-light .navigation-link.deep-purple.darken-2 .btn {
     color: #8b72b7
@@ -770,9 +770,13 @@
 .sca-light .navigation-link.validate,
 .sca-light .navigation-link.review,
 .sca-light .btn.btn-default.widget-toolbar.white-backgrounnd
- {
-    background: #fff;
+{
+    background-color: #fff;
 }
+.sca-light .btn.btn-default.widget-toolbar.create-template[disabled]{
+    background-color: #d1d1d1;
+}
+
 .sca-light .create-template,
 .sca-light .navigation-link.deep-purple.darken-2,
 .sca-light .navigation-link.pink.darken-2,
