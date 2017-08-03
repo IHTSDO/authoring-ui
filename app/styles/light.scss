@@ -773,8 +773,10 @@
 {
     background-color: #fff;
 }
-.sca-light .btn.btn-default.widget-toolbar.create-template[disabled]{
+.sca-light .btn.btn-default.widget-toolbar.create-template[disabled],
+.sca-light .btn.btn-default.widget-toolbar.new-concept-button[disabled]{
     background-color: #d1d1d1;
+    border-bottom : transparent;
 }
 
 .sca-light .create-template,
@@ -785,6 +787,16 @@
 .sca-light .navigation-link.pink1.darken-2.review,
 .sca-light .create-new-concept {
     border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid;
+}
+
+.sca-light .new-concept-button,
+.sca-light .navigation-link.pink.darken-2.review > ul > li > a > div,
+.sca-light .button-nav .conflicts,
+.sca-light .btn.btn-default.widget-toolbar.task-editing-btn,
+.sca-light .btn.btn-default.widget-toolbar.hide-sidebar-btn,
+.sca-light .btn.btn-default.widget-toolbar.hide-concept-model-btn
+{
     border-right: 1px #e6e6e6 solid;
 }
 .sca-light .create-new-concept {
