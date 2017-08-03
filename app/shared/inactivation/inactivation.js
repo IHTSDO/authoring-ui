@@ -97,7 +97,6 @@ angular.module('singleConceptAuthoringApp')
                 if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === count) {
                 deferred.resolve(parsedComponents);
               }}
-                
               // check if referenced concept
               else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
                 count++;
@@ -806,7 +805,7 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0).then(function (response) {
               scope.affectedRelationshipIds = [];
 
-              angular.forEach(response.inboundRelationships, function (item) {
+              angular.forEach(response.items, function (item) {
 
                 // only want active, stated relationships
                 if (item.active && item.characteristicType === 'STATED_RELATIONSHIP') {
