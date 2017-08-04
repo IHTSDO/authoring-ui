@@ -77,6 +77,7 @@ h4.timeline-title {
 .sca-dark .button-nav .btn-default[disabled] {
     color: #bdbdbd;
     border-top: 1px #1f2731 solid ;
+    background-color: #424249;
 }
 .sca-dark .create-new-concept {
     background-color: #262e39;
@@ -335,7 +336,10 @@ h4.timeline-title {
 
 /*widget buttons */
 
-.sca-dark .widget-toolbar:hover {
+.sca-dark .widget-toolbar:hover,
+.sca-dark .navigation-link.green.classify .btn:hover,
+.sca-dark .navigation-link.deep-purple.darken-2.validate .btn:hover,
+.sca-dark .widget-toolbar.blue.btn:hover {
     background-color: transparent;
     color: #eee
 }
@@ -813,27 +817,27 @@ sca-dark .pull-left.follow-up {
 .sca-dark .dark-fix{color:#00adee}
 /*left nav */
 
-.sca-dark .navigation-link.deep-purple.darken-2.validate .btn:hover,
-.sca-dark .navigation-link.green.darken-1.classify .btn:hover,
-.sca-dark .navigation-link.pink1.darken-2.review .btn:hover,
-.sca-dark .create-template:hover{color :#fff}
-.sca-dark .create-template:active,
-.sca-dark .create-template:hover
-
-{background:#0082b3}
 .sca-dark .blue.search-type{background-color:#00a6e5; color:#fff;}
 .sca-dark .blue.search-type:hover{background-color:#448AFF; color:#fff;}
 .sca-dark .navigation-link.deep-purple.darken-2.validate .btn {color :#8b72b7}
 .sca-dark .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
 .sca-dark .widget-toolbar.review.btn {color :#e94281}
 .sca-dark .widget-toolbar.blue.btn{color:#5fc1e6}
-.sca-dark .create-template{background-color:transparent; color:#009cd7}
+.sca-dark .new-concept-button{
+    background-color:transparent; 
+    color:#00adee;
+}
+.sca-dark .create-template{
+    background-color:transparent; 
+    color:#009cd7;
+}
 
+.sca-dark .new-concept-button,
 .sca-dark .create-template,
 .sca-dark .navigation-link.deep-purple.darken-2.validate,
 .sca-dark .navigation-link.green.classify,
-.sca-dark .navigation-link.pink1.darken-2.review,
-.sca-dark .create-new-concept{
+.sca-dark .navigation-link.pink1.darken-2.review
+{
     border-top: 1px #1f2731 solid ;
     border-right: 1px #1f2731 solid ;
 }
@@ -924,7 +928,8 @@ background-color: #262e39;}
     border-top: 1px #1f2731 solid;
     border-right: 1px #1f2731 solid;
 }
-.sca-dark .button-nav .conflicts
+.sca-dark .button-nav .conflicts,
+.sca-dark .button-nav .new-concept-button
 {
     border-right: 1px #1f2731 solid;
 }
@@ -1088,6 +1093,6 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-dark .navigation-link.green.classify .btn {
   color: #4caf50;
 }
-.sca-dark .navigation-link.green.classify .btn:hover {
-  color: #fff;
+.sca-dark .create-template[disabled]:hover{
+  border-right: 1px #1f2731 solid;
 }
