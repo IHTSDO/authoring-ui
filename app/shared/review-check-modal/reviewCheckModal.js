@@ -1,9 +1,11 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('reviewCheckModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, reviewChecks) {
+  .controller('reviewCheckModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, reviewChecks, hotkeys) {
 
     $scope.reviewChecks = reviewChecks;
+    
+    
 
     // template ng-table
     // declare table parameters
@@ -26,6 +28,13 @@ angular.module('singleConceptAuthoringApp')
         }
       }
     );
+    
+    hotkeys.bindTo($scope)
+        .add({
+          combo: 'return',
+          description: 'Accept',
+          callback: function() {$modalInstance.close();}
+        })
 
     $scope.addToEditPanel = function (concept) {
 

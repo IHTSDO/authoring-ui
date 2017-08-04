@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('promoteModalCtrl', function ($scope, $modalInstance, flags, isTask) {
+  .controller('promoteModalCtrl', function ($scope, $modalInstance, flags, isTask, hotkeys) {
 
     /**
      * The flags reported from promotionService, in array of objects of format
@@ -17,6 +17,12 @@ angular.module('singleConceptAuthoringApp')
         $scope.blockPromotion = true;
       }
     });
+    hotkeys.bindTo($scope)
+        .add({
+          combo: 'return',
+          description: 'Accept',
+          callback: function() {$modalInstance..close(true);}
+        })
 
     /////////////////////////////////////////
     // Modal control buttons
