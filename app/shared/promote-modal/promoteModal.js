@@ -21,7 +21,7 @@ angular.module('singleConceptAuthoringApp')
         .add({
           combo: 'return',
           description: 'Accept',
-          callback: function() {$modalInstance..close(true);}
+          callback: function() {$modalInstance.close(true);}
         })
 
     /////////////////////////////////////////
