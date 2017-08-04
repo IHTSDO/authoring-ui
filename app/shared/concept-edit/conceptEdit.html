@@ -70,20 +70,12 @@
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
             </div>
       </div>
-    
-      <div class="pull-right col-md-1 no-padding">
-            <button type="button"
-                      class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
-                      ng-if="hasFocus">
-                <span> Shortcuts active</span>
-            </button>
-      </div>
 
       <!-- concept name -->
-      <div class="col-md-6 no-padding title-text">
+      <div class="col-md-6 no-padding">
 
 
-        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button pull-right" ng-class="[{'conceptFocus' : hasFocus}]">
+        <button type="button" class="btn-default grey darken-4 fsn-title-button pull-right" ng-class="[{'conceptFocus' : hasFocus}]">
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
@@ -94,7 +86,7 @@
 
       </div>
 
-      <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
+      <div class=" no-margin edits concept-title col-md-4 pull-right no-padding">
         <div class=" p-t-3  ">
 
           <button type="button"
@@ -194,6 +186,15 @@
 
         </div>
       </div>
+        
+      <div class="no-padding edits concept-title">
+            <button type="button"
+                      class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
+                      ng-show="hasFocus">
+                <span> Shortcuts active</span>
+            </button>
+      </div>
+        
     </div>
   </div>
   <div class="row">
