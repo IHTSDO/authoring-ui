@@ -295,7 +295,7 @@
                   ng-disabled="isStatic || !description.released || isLockedModule(description.moduleId)"
                   ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
-                  class="tooltips-bottom small-size-tooltip concept-edit-button">
+                  class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent">
             <span ng-if="isStatic">Active/Inactive</span>
             <span ng-if="!isStatic && description.released">Toggle Active/Inactive</span>
             <span ng-if="!isStatic && !description.released">Cannot inactivate unreleased description</span>
@@ -484,7 +484,7 @@
 
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
-                        class="tooltips-bottom small-size-tooltip concept-edit-button"
+                        class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent"
                         ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
