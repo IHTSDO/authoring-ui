@@ -718,10 +718,6 @@
 .sca-light .create-template:hover {
     color: #fff
 }
-.sca-light .btn.btn-default.widget-toolbar.create-template:active,
-.sca-light .btn.btn-default.widget-toolbar.create-template:hover {
-    background-color: #0082b3
-}
 .sca-light .navigation-link.deep-purple.darken-2 .btn {
     color: #8b72b7
 }
@@ -764,10 +760,13 @@
 .sca-light .navigation-link.pink1.darken-2.review .btn {
     color: #e94281
 }
-.sca-light .create-template {
-    background-color: transparent;
-    color: #009cd7
+.sca-light .new-concept-button {
+     color: #00adee;
 }
+.sca-light .create-template{
+    color: #009cd7;
+}
+.sca-light .new-concept-button,
 .sca-light .btn.btn-default.widget-toolbar.create-template,
 .sca-light .navigation-link.classify,
 .sca-light .navigation-link.validate,
@@ -793,8 +792,11 @@
     border-right: 1px #e6e6e6 solid;
 }
 
+
 .sca-light .new-concept-button,
 .sca-light .navigation-link.pink.darken-2.review > ul > li > a > div,
+.sca-light .navigation-link.green.classify .btn,
+.sca-light .navigation-link.deep-purple.validate .btn,
 .sca-light .button-nav .conflicts,
 .sca-light .btn.btn-default.widget-toolbar.task-editing-btn,
 .sca-light .btn.btn-default.widget-toolbar.hide-sidebar-btn,
@@ -824,6 +826,9 @@
 }
 .sca-light .green.darken-1.iconbase {
     color: #474747;
+}
+.sca-light .md-notifications.green.iconbase {
+    color: #00b762;
 }
 .sca-light ul.classification-nav .btn:hover,
 .sca-light .navigation-link.green.darken-1:hover,
@@ -941,4 +946,7 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 }
 .sca-light .navigation-link.green.classify .btn:hover {
   color: #474747;
+}
+.sca-light .tasks-bubble {
+  color: #fff;
 }

@@ -1156,6 +1156,9 @@ button-link .bluehl .grey.darken-3 {
 .model-header-sca {
     min-height: 32px;
 }
+.model-header-sca .btn.btn-default.model-buttons-toggle{
+    font-weight: bold;
+}
 .editing-form button.red:focus,
 .editing-form button.red:active {
     background-color:transparent;
