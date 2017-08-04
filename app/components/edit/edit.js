@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       callback: function() {$scope.setView('edit-default');}
     })
     .add({
-      combo: 'alt+right',
+      combo: 'alt+down',
       description: 'Select next concept',
       callback: function() {
           var index = null;
@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     })
     .add({
-      combo: 'alt+left',
+      combo: 'alt+up',
       description: 'Select previous concept',
       callback: function() {
           var index = null;
