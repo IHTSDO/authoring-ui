@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('singleConceptAuthoringApp').service('modalService', function ($modal, $q) {
+angular.module('singleConceptAuthoringApp').service('modalService', function ($modal, $q, hotkeys) {
   return {
     confirm: function (message) {
       var deferred = $q.defer();
@@ -8,6 +8,12 @@ angular.module('singleConceptAuthoringApp').service('modalService', function ($m
         templateUrl: 'shared/modal-service/modalConfirm.html',
         controller: function ($scope, $modalInstance, message) {
           $scope.message = message;
+          hotkeys.bindTo($scope)
+            .add({
+              combo: 'return',
+              description: 'Accept',
+              callback: function() {console.log('confirm'); $modalInstance.close();}
+            })
           $scope.cancel = function () {
             $modalInstance.dismiss();
           };
