@@ -19,7 +19,7 @@
   </div>
   <div class="row no-padding" ng-show="!isEscgMode || templateOptions.selectedTemplate">
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
-      <input type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter at least three characters"
+      <input focus-on="actionTab===2" type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter at least three characters"
              ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
