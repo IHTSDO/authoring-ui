@@ -295,6 +295,7 @@ angular.module('singleConceptAuthoringApp')
               }).length === 0) {
               scope.viewedConcepts = [];
               scope.viewedConcepts.push(concept);
+              scope.batchTableParams.reload();
             } else {
               notificationService.sendWarning('Concept already added', 3000);
             }
@@ -703,23 +704,6 @@ angular.module('singleConceptAuthoringApp')
             batchEditingService.updateBatchConcept(concept).then(function() {
             })
           };
-
-          scope.updateConceptReference = function(referenceConcept) {
-            scope.viewedConcepts[0] = referenceConcept;
-            var fsnDesc = componentAuthoringUtil.getFsnDescriptionForConcept(scope.viewedConcepts[0]);
-            scope.viewedConcepts[0].fsn = fsnDesc.term;
-            batchEditingService.updateBatchConcept(scope.viewedConcepts[0]).then(function(){
-              // Reload ng-table and adjust height for all textareas
-              scope.batchTableParams.reload();
-              $timeout(function () {
-                $.each($("#batchEditingTable textarea"), function () {
-                  this.style.overflowY = 'hidden';
-                  this.style.height = 'auto';                 
-                  $(this).height(this.scrollHeight);
-                });
-              });
-            });
-          }
 
           scope.addCssToParentElement = function($event) {
             var currentElm = $event.currentTarget;
