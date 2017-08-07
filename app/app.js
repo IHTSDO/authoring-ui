@@ -238,7 +238,7 @@ angular
     hotkeys.bindTo($rootScope)
         .add({
           combo: 'alt+h',
-          description: 'Go to Home',
+          description: 'Go to Home - My Tasks',
           callback: function() {$location.url('home');}
         })
         .add({
