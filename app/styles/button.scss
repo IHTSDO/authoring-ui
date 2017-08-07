@@ -663,9 +663,15 @@ button.fsn-title-button {
     background-color: #4CAF50;
     color: #fff;
 }
+
+.nav.navbar-nav .header-nav-button.indicator_green:hover,
 .indicator_green:hover {
-    background-color: #377f3a !important;
+    background-color: #377f3a;
     color: #fff;
+}
+.nav.navbar-nav .header-nav-button.purple:hover
+{
+    background-color: #673ab7;
 }
 .indicator_red {
     background-color: #ef5350;
