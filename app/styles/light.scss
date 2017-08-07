@@ -601,7 +601,9 @@
     color: #3a3a3a;
     background-color: transparent;
 }
-.sca-light button[disabled] .project-icon {
+.sca-light button[disabled] .project-icon,
+.sca-light button[disabled] .project-icon.yellow.darken-2,
+.sca-light button[disabled] .project-icon.deep-purple.lighten-1 {
     background-color: #e7e7e7;
     color: #333
 }
