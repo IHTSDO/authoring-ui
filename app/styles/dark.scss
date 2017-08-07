@@ -125,6 +125,10 @@ h4.timeline-title {
 .sca-dark .small-buttons.btn-default[disabled]:hover {
     color: #D0D0D0
 }
+.sca-dark .new-concept .small-buttons.btn-default[disabled],
+.sca-dark .new-concept .small-buttons.btn-default[disabled]:hover {
+    color: #444;
+}
 /*tables */
 /*tooltips*/
 .sca-dark .promoted-check-box .md-check-box-outline-blank:before,
@@ -283,7 +287,7 @@ h4.timeline-title {
 }
 .sca-dark .grey {
     background-color: #262e39;
-    color: #eee !important;
+    color: #eee;
 }
 .sca-dark .New.badge {
     color: #F3CB67;
@@ -1099,4 +1103,7 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 }
 .sca-dark .create-template[disabled]:hover{
   border-right: 1px #1f2731 solid;
+}
+.sca-dark .approve-button.grey {
+    color: #eee;
 }
