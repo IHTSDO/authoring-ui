@@ -841,6 +841,13 @@
     background-color: #fff;
     color: #4db46a
 }
+.sca-light .classification-report.empty-report .classification-btn .btn-default[disabled]{
+    background-color: transparent;
+    border: none;   
+}
+.sca-light .classification-report.empty-report .classification-btn .btn-default[disabled] span {
+    color: #737373 ;
+}
 /*validation*/
 
 .sca-light .navigation-link.deep-purple.darken-2.validate {
