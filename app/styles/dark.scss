@@ -136,6 +136,9 @@ h4.timeline-title {
     color: #9B9B9B;
     box-shadow: 1px 1px 2px #000 ;
 }
+.sca-dark button[disabled] .project-icon.yellow.darken-2,
+.sca-dark button[disabled] .project-icon.deep-purple.lighten-1,
+.sca-dark button[disabled] .project-icon.blue,
 .sca-dark button[disabled] .project-icon {
     background-color: #262e39;
     color: #828396 ;
@@ -170,6 +173,7 @@ h4.timeline-title {
 .sca-light .fa-close {
     color: #fff;
 }
+
 .sca-dark .project-icon.deep-purple.lighten-1 {
     background-color: #ba68c8;
     color: #fff;
@@ -190,7 +194,8 @@ h4.timeline-title {
     background-color: #ff5555;
     color: #fff;
 }
-.sca-dark .project-icon.blue {
+.sca-dark .project-icon.blue,
+.sca-dark button .project-icon.blue {
     background-color: #00a6e5;
     color: #fff;
 }
