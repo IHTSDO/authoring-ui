@@ -153,6 +153,9 @@ angular.module('singleConceptAuthoringApp')
       }, {
         id: '900000000000012004',
         name: 'SNOMED CT model component module (core metadata concept)'
+      }, {
+        id: '715515008',
+        name: 'LOINC - SNOMED CT Cooperation Project module (core metadata concept)'
       }],
       acceptLanguageMap: 'en-us;q=0.8,en-gb;q=0.5',
       defaultLanguage: 'en',
