@@ -19,7 +19,7 @@
           <label for="taskTitle">Task title</label>
           <p ng-show="task.status === 'Promoted'">{{task.summary}}</p>
           <div ng-hide="task.status === 'Promoted'">
-            <input id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted'" ng-change="clearMessages()" type="text" class="form-control"
+            <input autofocus="true" id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted'" ng-change="clearMessages()" type="text" class="form-control"
                  placeholder="Enter task title">
             <br>
           </div>
