@@ -76,3 +76,10 @@
 }
 
 .red-text {color:#fd5252}
+.classification-report.empty-report .classification-btn .btn-default[disabled] {
+	background-color: transparent;
+}
+.classification-report.empty-report .classification-btn .btn-default[disabled] span {
+	color: #666;
+    background-color: transparent;
+}
