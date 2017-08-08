@@ -306,6 +306,12 @@ textarea.form-control.inactivation-value{
 #top > main > div > div:nth-child(2) > div > div.sca-column.col-lg-9.col-md-9.col-sm-9 > div.row.project-page > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div.pull-right {
     display: none;
 }
+.editing-form .amber.btn-default:hover {
+    background-color: transparent;
+}
+.editing-form .orange.btn-default:hover  {
+    color: #fff;
+}
 @media screen and (max-width: 1850px) {
     .editing-form button:not(.add-buttons),
     .editing-form .btn:not(.add-buttons) {
