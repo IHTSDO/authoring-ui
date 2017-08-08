@@ -114,16 +114,16 @@
           <button type="button"
                   ng-click="toggleConceptActive(concept, true)"
                   ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
-                  class="red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
+                  class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
 
             <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>
           </button>
           <button type="button"
-                  ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
+                  ng-class="[{green : concept.active}, {red: !concept.active}]"
                   ng-click="toggleConceptActive(concept)"
                   ng-if="concept.released"
                   ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
-                  class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
+                  class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case">
 
             <span ng-if="!isStatic  && !isInactivation"> Activate/ inactivate concept </span>
             <span ng-if="!isStatic && isInactivation">Inactivation in progress, cannot change active status</span>

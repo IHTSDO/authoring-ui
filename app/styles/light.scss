@@ -318,6 +318,8 @@
 }
 /*edit buttons */
 
+.sca-light .editing-form .amber.btn-default.small-buttons:hover,
+.sca-light .editing-form .orange.btn-default.small-buttons:hover,
 .sca-light .small-buttons:hover {
     color: #474747;
     background-color: transparent;
@@ -962,4 +964,13 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 }
 .sca-light .btn-transparent {
   background-color: transparent;  
+}
+.sca-light .small-buttons.amber {
+    color: #ffc107;
+    background-color: transparent;
+}
+.sca-light .small-buttons.amber[disabled],
+.sca-light .small-buttons.amber[disabled]:hover{
+    background-color: transparent;
+    color: #444;
 }
