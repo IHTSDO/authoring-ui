@@ -898,7 +898,7 @@
 	background-color:#fff;
 }
 .sca-light .new-concept .grey.darken-4 {
-    background-color: #b7dbff;
+    background-color: #b3e5fc;
 }
 .sca-light .search-scroll .btn-default{color:#fff;}
 .sca-light .search-scroll .btn.btn-default.md-search {
@@ -907,7 +907,10 @@
 .sca-light .search-scroll .btn.btn-default.md-search:hover {
     color:#fff;
 }
-
+.sca-light .row.darken-3.edits-row.tealhl {
+    background-color: #b2e3e1;
+    border-top: 1px solid #b2e3e1;
+}
 def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .def_PRIMITIVE .form-control[disabled], .def_PRIMITIVE [type=text].form-control[disabled], .def_PRIMITIVE [type=text].form-control[readonly] {
     font-size: 11px;
     height: 30px;
