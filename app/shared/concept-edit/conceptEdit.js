@@ -143,6 +143,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
         
         scope.focusHandler = function(enter, external){
+            console.log('focus');
             if(!scope.hasFocus && enter){
                 hotkeys.bindTo(scope)
                 .add({
@@ -911,6 +912,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // save concept
             saveHelper().then(function () {
+              scope.hasFocus = false;
 
               // brief timeout to alleviate timing issues, may no longer be needed
               $timeout(function () {
@@ -937,13 +939,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     });
                   } else {
                     notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+                    scope.focusHandler(true, false);
                   }
                   scope.saving = false;
                   scope.reapplyTemplate();
+                  scope.focusHandler(true, false);
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                   scope.saving = false;
                   scope.reapplyTemplate();
+                  scope.focusHandler(true, false);
                 });
               }, 500);
             }, function (error) {
@@ -960,15 +965,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.concept = originalConcept;
                 scope.isModified = true;
                 notificationService.sendError('Error saving concept: ' + error.statusText);
+                scope.focusHandler(true, false);
               }
               scope.reapplyTemplate();
               scope.saving = false;
+              scope.focusHandler(true, false);
             });
 
           }, function (error) {
             notificationService.sendError('Fatal error: Could not validate concept');
             scope.reapplyTemplate();
             scope.saving = false;
+            scope.focusHandler(true, false);
           });
         };
 
