@@ -90,10 +90,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     .add({
       combo: 'alt+4',
       description: 'Go to Review',
-      callback: function() {$rootScope.$broadcast('viewReview', {})}
+      callback: function() {$scope.setView('feedback'); $rootScope.$broadcast('viewReview', {})}
     })
     .add({
-      combo: 'alt+5',
+      combo: 'alt+i',
       description: 'Go to Info',
       callback: function() {$rootScope.$broadcast('viewInfo', {})}
     })
@@ -1724,6 +1724,15 @@ angular.module('singleConceptAuthoringApp.edit', [
               template.name = template.name;
               template.version = template.version;
             });
+            if($scope.templates !== undefined && $scope.templates !== null && $scope.templates.length > 0)
+                {
+                    hotkeys.bindTo($scope)
+                        .add({
+                          combo: 'alt+5',
+                          description: 'Go to Batch',
+                          callback: function() {$rootScope.$broadcast('viewBatch', {})}
+                        })
+                }
             $scope.templateTableParams.reload();
           });
         }

@@ -8,6 +8,9 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
         if($routeParams.mode === 'batch'){
             $scope.actionTab = 5;
         }
+        else if($routeParams.mode === 'feedback'){
+            $scope.actionTab = 6;
+        }
         else{
             $scope.actionTab = 4;
         }
@@ -24,7 +27,9 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
       });
         $scope.$on('viewReview', function(event, data) {
         $scope.actionTab = 6;
-        $scope.viewReview();
+      });
+        $scope.$on('viewBatch', function(event, data) {
+        $scope.actionTab = 5;
       });
         $scope.$on('viewInfo', function(event, data) {
         $scope.actionTab = 4;

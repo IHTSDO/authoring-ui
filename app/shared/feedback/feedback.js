@@ -35,7 +35,7 @@ angular.module('singleConceptAuthoringApp')
           // feedbackContainer elements, necessitating some rather
           // cumbersome functions, which are marked accordingly
           ////////////////////////////////////////////////////
-
+          $rootScope.$broadcast('viewReview', {});
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
