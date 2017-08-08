@@ -23,7 +23,7 @@
         <span>Saved List</span></a></li>
 
         
-           <li role="presentation" ng-hide="thisView === 'edit-default'"  ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
+           <li role="presentation" ng-hide="thisView === 'edit-default'"  ng-class="{'active' : actionTab === 6}"><a ng-click="actionTab=6" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-envelope"></div>
@@ -35,7 +35,7 @@
         <div class="fa fa-file-excel-o"></div>
         <span>Create Batch</span></a></li>
         
-              <li role="presentation" ng-class="{'active' : actionTab === 5}"><a ng-click="actionTab=6" aria-controls="home" role="tab" data-toggle="tab"
+              <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>
@@ -52,14 +52,14 @@
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
         <div ng-include="'shared/savedList/savedList.html'"></div>
       </div>
-            <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===4}">
+            <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}">
         <div ng-include="'shared/feedback/feedback-list.html'"></div>
       </div>
       <div role="tabpanel" class="tab-pane" ng-if="!hideBatch"  ng-class="{active: actionTab===5}">
         <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
       </div>
 
-      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===6}">
+      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
         <div ng-include="'shared/task-detail/taskDetail.html'"></div>
       </div>
       
