@@ -1678,7 +1678,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         
       $('body').on('mouseup', function(e) {
             if(!$(e.target).closest('.popover').length) {
-                console.log('here');
                 $('.popover').each(function(){
                     if($(this).find('.edit-template-selector').length != 0){
                         document.getElementById('templateCreateBtn').click();

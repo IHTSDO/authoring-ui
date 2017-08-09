@@ -143,7 +143,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
         
         scope.focusHandler = function(enter, external){
-            console.log('focus');
             if(!scope.hasFocus && enter){
                 hotkeys.bindTo(scope)
                 .add({
