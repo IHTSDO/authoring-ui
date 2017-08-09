@@ -513,7 +513,7 @@
                      ui-on-drop="dropRelationshipType(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
-                                    <textarea custom-autofocus="true" ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                                    <textarea custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
                                               ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
                                               class="resizable-text form-control msd-elastic no-border-bottom rel"
 

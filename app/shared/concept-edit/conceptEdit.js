@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp')
                                 element[0].focus();
                             }, 200);
                        }
-                   else if($(element[0]).hasClass('rel') && parent.find("textarea").filter(function() { return this.value == ""; }).length === 2)
+                   else if($(element[0]).hasClass('rel') && parent.find("textarea").filter(function() { return this.value == ""; }).length <= 4)
                        {
                            $timeout(function () {
                                 element[0].focus();
