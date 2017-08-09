@@ -149,25 +149,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 .add({
                   combo: 'alt+s',
                   description: 'Save current concept: ' + scope.concept.fsn,
-                  callback: function() {scope.saveConcept()}
+                  callback: function() {if(!scope.static){scope.saveConcept()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+r',
                   description: 'Add relationship to current concept: ' + scope.concept.fsn,
-                  callback: function() {scope.addRelationship()}
+                  callback: function() {if(!scope.static){scope.addRelationship()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+d',
                   description: 'Add description to current concept: ' + scope.concept.fsn,
-                  callback: function() {scope.addDescription()}
+                  callback: function() {if(!scope.static){scope.addDescription()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+g',
                   description: 'Add role group to current concept: ' + scope.concept.fsn,
-                  callback: function() {scope.addRelationshipGroup()}
+                  callback: function() {if(!scope.static){scope.addRelationshipGroup()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
