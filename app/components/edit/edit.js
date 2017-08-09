@@ -100,17 +100,17 @@ angular.module('singleConceptAuthoringApp.edit', [
     .add({
       combo: 'alt+y',
       description: 'Start classification',
-      callback: function() {$scope.classify();}
+      callback: function() {if($scope.role !== 'REVIEWER'){$scope.classify();}}
     })
     .add({
       combo: 'alt+v',
       description: 'Start validation ',
-      callback: function() {$scope.validate();}
+      callback: function() {if($scope.role !== 'REVIEWER'){$scope.validate();}}
     })
     .add({
       combo: 'alt+n',
       description: 'Create a new concept',
-      callback: function() {$scope.createConcept(true);}
+      callback: function() {if($scope.role !== 'REVIEWER'){$scope.createConcept(true);}}
     })
     .add({
       combo: 'alt+e',
