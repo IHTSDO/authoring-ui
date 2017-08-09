@@ -175,6 +175,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
                   callback: function() {scope.removeConcept(scope.concept)}
                 })
+              hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+a',
+                  description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
+                  callback: function() {scope.toggleHideInactive()}
+                })
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
                 if(!external){
