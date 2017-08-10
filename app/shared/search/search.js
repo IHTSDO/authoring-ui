@@ -140,6 +140,16 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.processResults();
       };
 
+      $scope.toggleSearchMode = function () {
+        $scope.isEscgMode = !$scope.isEscgMode;
+        $scope.escgExpr = null;
+        $scope.searchStr = null;
+        if($scope.isEscgMode) {
+          $scope.searchType = 'Active Only';
+          $scope.userOptions.searchType = 1;
+        }
+      };       
+
       /**
        * Helper function to manipulate displayed concepts
        */
