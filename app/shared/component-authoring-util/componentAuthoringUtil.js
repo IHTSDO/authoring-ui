@@ -517,7 +517,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // retrieve the matches
-          scaService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
+          scaService.getSuggestionMatches(tokenizedWords).then(function (matchingWords) {
 
             // do not run any automation for MS content
             if (metadataService.isExtensionSet()) {
@@ -529,13 +529,18 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject('Dialect automation failed: bad arguments');
             }
 
+            var dialectMatchingWords = (typeof matchingWords.map !== 'undefined') ? matchingWords.map : [];
+
+            var synonymMatchingWords = (typeof matchingWords.synonyms !== 'undefined') ? matchingWords.synonyms : [];
+
             // if no matching words, skip automation
-            if (!matchingWords || matchingWords.length === 0) {
+            if (dialectMatchingWords.length === 0 && synonymMatchingWords.length === 0) {
               deferred.resolve(concept);
             }
 
             // flag of convenience for whether dialect matches found
-            var hasMatchingWords = Object.keys(matchingWords).length > 0;
+            var hasDialectMatchingWords = Object.keys(dialectMatchingWords).length > 0;
+            var hasSynonymMatchingWords = Object.keys(synonymMatchingWords).length > 0;
 
             // temporary variables
             var termUs, termGb, newPt;
@@ -557,8 +562,22 @@ angular.module('singleConceptAuthoringApp')
 
             // replace original words with the suggested dialect spellings
             termGb = termUs;
-            for (var match in matchingWords) {
-              termGb = termGb.replace(match, matchingWords[match]);
+            if(hasDialectMatchingWords){
+              for (var match in dialectMatchingWords) {
+                termGb = termGb.replace(match, dialectMatchingWords[match]);
+              }
+            }
+
+            // replace original words with the suggested synonym spellings
+            var synonymTermGbArr = [];
+            if(hasSynonymMatchingWords) {
+              for (var match in synonymMatchingWords) {
+                  var words = synonymMatchingWords[match];
+                  for (var i = 0; i < words.length; i++) {
+                    var tempTermGb = termUs;
+                    synonymTermGbArr.push(tempTermGb.replace(match, words[i].trim()));
+                  }
+              }
             }
 
             // when existing concept
@@ -567,14 +586,22 @@ angular.module('singleConceptAuthoringApp')
               //  when new FSN
               if (description.type === 'FSN') {
                 // when spelling variant present, result is
-                if (hasMatchingWords) {
+                if (hasDialectMatchingWords || hasSynonymMatchingWords) {
                   // ensure FSN en-US preferred, do not add matching PT
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
 
                   // SYN, en-GB acceptable
                   if (!isTemplateConcept) {
-                    addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                    if (hasDialectMatchingWords) {
+                      addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                    }                    
+
+                    if (hasSynonymMatchingWords) {
+                      for (var i = 0; i < synonymTermGbArr.length; i++) {
+                        addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                      }
+                    }
                   }
                 }
                 // else, ensure FSN en-US and en-GB preferred, do not add matching PT
@@ -586,7 +613,7 @@ angular.module('singleConceptAuthoringApp')
               // when new SYN
               else if (description.type === 'SYNONYM') {
                 // when spelling variant present, result is
-                if (hasMatchingWords) {
+                if (hasDialectMatchingWords || hasSynonymMatchingWords) {
                   // SYN, ensure en-US acceptability is set and delete en-GB acceptability
                   if (!description.acceptabilityMap['900000000000509007']) {
                     description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
@@ -594,7 +621,15 @@ angular.module('singleConceptAuthoringApp')
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN en-GB matching acceptability of original description
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
+                  if (hasDialectMatchingWords) {
+                    addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
+                  }
+
+                  if (hasSynonymMatchingWords) {
+                      for (var i = 0; i < synonymTermGbArr.length; i++) {
+                        addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                      }
+                    }                  
                 }
 
                 // else, leave unchanged
@@ -609,13 +644,20 @@ angular.module('singleConceptAuthoringApp')
               // when FSN
               if (description.type === 'FSN') {
                 // when spelling variant is present, result is
-                if (hasMatchingWords) {
+                if (hasDialectMatchingWords || hasSynonymMatchingWords) {
                   if (!isTemplateConcept) {
                     // SYN en-US preferred
                     addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
 
-                    // SYN en-GB preferred
-                    addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                    if (hasDialectMatchingWords) {
+                      // SYN en-GB preferred
+                      addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                    }
+                    if (hasSynonymMatchingWords) {
+                      for (var i = 0; i < synonymTermGbArr.length; i++) {
+                        addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                      }
+                    }
                   }
                 }
                 // else, add matching PT
@@ -632,7 +674,7 @@ angular.module('singleConceptAuthoringApp')
               }
               // when SYN
               else if (description.type === 'SYNONYM') {
-                if (hasMatchingWords) {
+                if (hasDialectMatchingWords || hasSynonymMatchingWords) {
                   // SYN, ensure en-us acceptability is set and delete en-gb acceptability
                   if (!description.acceptabilityMap['900000000000509007']) {
                     description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
@@ -640,7 +682,15 @@ angular.module('singleConceptAuthoringApp')
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN en-GB matching acceptability of original description
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
+                  if (hasDialectMatchingWords) {
+                    addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
+                  }
+                 
+                  if (hasSynonymMatchingWords) {
+                      for (var i = 0; i < synonymTermGbArr.length; i++) {                     
+                        addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                      }
+                    }
                 }
 
                 // else, do nothing.
@@ -658,10 +708,8 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // apply exceptions to the dialect description
-            applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords);
+            applyDialectAutomationExceptions(concept, tokenizedWords, dialectMatchingWords);
 
-
-            //applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords);
             deferred.resolve(concept);
           }, function (error) {
             deferred.reject('Error matching dialect words: ' + error);
