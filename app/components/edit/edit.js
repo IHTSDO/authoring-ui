@@ -165,6 +165,13 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
     $rootScope.currentTask = null;
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Note : This flag is used for indicating whether concept can be opened from Taxonamy/Search 
+    // after swapping tab from Feedback to Search/Taxonamy.
+    // DO NOT USE FOR OTHER PURPOSES
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    $rootScope.viewConceptEdit = false;
 
 
     //////////////////////////////
@@ -243,7 +250,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // set the default layout
       if($scope.thisView === 'edit-default'
-        || $scope.thisView === 'batch') {
+        || $scope.thisView === 'batch'
+        || $scope.thisView === 'feedback') {
         setDefaultLayout(layout);
       } else {
         layout = {};
@@ -383,6 +391,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
+      //Always set False when view changes.
+      $rootScope.viewConceptEdit = false;
 
       switch (name) {
         case 'validation':
@@ -405,7 +415,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $routeParams.mode = 'feedback';
 
           //  view starts with no concepts
-          $scope.concepts = [];
+          //$scope.concepts = [];
           $scope.canCreateConcept = false;
           break;
         case 'classification':
@@ -837,16 +847,71 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('editConcept', function (event, data) {
 
       // do not modify if in view with own managed list
-      if ($scope.thisView === 'classification' || $scope.thisView === 'validation' || $scope.thisView === 'feedback') {
+      if ($scope.thisView === 'classification' || $scope.thisView === 'validation') {
         return;
       }
 
       // if load already in progress from editConcept or cloneConcept notification, stop
       if ($scope.conceptLoading) {
         return;
+      }      
+      
+      if($scope.thisView === 'feedback' && !$rootScope.viewConceptEdit) { 
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/modal-service/modalConfirm.html',
+          controller: function ($scope, $modalInstance, message) {
+            $scope.message = message;
+            $scope.cancel = function () {
+              $modalInstance.dismiss();
+            };
+            $scope.confirm = function () {
+              $modalInstance.close();
+            };
+          },
+          resolve: {
+            message: function () {
+              return "You cannot load concepts in review. Would you like to navigate back to edit?";
+            }
+          }
+        });
+        modalInstance.result.then(function () {
+          $rootScope.viewConceptEdit = true;
+          processUiStateUpdate(data.conceptId);
+        }, function () {
+          deferred.reject();
+        });             
       }
+      else if($scope.thisView === 'batch'){
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/modal-service/modalConfirm.html',
+          controller: function ($scope, $modalInstance, message) {
+            $scope.message = message;
+            $scope.cancel = function () {
+              $modalInstance.dismiss();
+            };
+            $scope.confirm = function () {
+              $modalInstance.close();
+            };
+          },
+          resolve: {
+            message: function () {
+              return "You cannot load concepts in batch. Would you like to navigate back to edit?";
+            }
+          }
+        });
+        modalInstance.result.then(function () {
+           $scope.setView('edit-default');
+           processUiStateUpdate(data.conceptId);
+        }, function () {
+          deferred.reject();
+        });        
+      } 
+      else {
+        processUiStateUpdate(data.conceptId);
+      }
+    });
 
-      var conceptId = data.conceptId;
+    function processUiStateUpdate(conceptId) {      
       $scope.conceptLoading = true;
 
       // verify that this SCTID does not exist in the edit list
@@ -859,11 +924,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      $scope.addConceptToListFromId(data.conceptId);
-      $scope.editList.push(data.conceptId);
+      $scope.addConceptToListFromId(conceptId);
+      $scope.editList.push(conceptId);      
       $scope.updateEditListUiState();
-
-    });
+    }
 
 // watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
@@ -1335,10 +1399,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     
     $scope.viewBatch = function () {
-      $scope.setView('edit-default');
-      $timeout(function () {
-          $scope.setView('batch');
-      }, 10);
+       $scope.setView('batch');
     };
 
     function loadProject() {

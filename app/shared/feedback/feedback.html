@@ -21,6 +21,7 @@
   <div
     ng-include src="'shared/sidebar-edit/feedbackEdit.html'"></div>
 
+  <div ng-if="!$root.viewConceptEdit">
   <!-- Report, feedback editor, and concept feedback -->
   <div class="col-md-9 no-padding pull-right white no-gutter">
     <div class="col-md-12 feedback-header-main">
@@ -148,4 +149,5 @@
 
   <!-- Extra padding just in case -->
   <div class="m-b-50">&nbsp;</div>
+  </div>
 </section>

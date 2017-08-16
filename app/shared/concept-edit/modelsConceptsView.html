@@ -1,0 +1,42 @@
+<div>
+  <!-- models & concepts-->
+  <div ng-class="getLayoutWidths('modelsAndConcepts')"
+       class="no-padding hide-scroll pull-right modelScrollBox" sca-infinite-scroll="addMoreItems()"
+       sca-infinite-scroll-disabled="conceptsRendering"
+       sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+
+
+    <!-- model & concept data-->
+    <div class="row-fluid no-gutter edit-row"
+         ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+         ng-class="isLast($last)"
+         repeat-complete callback="renderingComplete()">
+
+      <!-- model -->
+      <div class="no-gutter" ng-class="getLayoutWidths('models')">
+        <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
+      </div>
+
+      <!-- concept -->
+      <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')">
+
+        <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
+             branch="targetBranch" static="branchLocked || !isOwnTask"
+             ui-state-update-fn="updateEditListUiState()">
+        </div>
+      </div>
+
+    </div>
+    <div class="row-fluid no-gutter" ng-if="$last" ng-repeat-end>
+      <div class="no-gutter" ng-class="getLayoutWidths('models')">
+        <div class="modelScrollBox"></div>
+      </div>
+
+      <!-- concept -->
+      <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')">
+      </div>
+    </div>
+
+
+  </div>
+</div>
