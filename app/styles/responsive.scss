@@ -242,6 +242,7 @@
 @media screen and (min-height: 900px) {
   .scroll-if-height { height: 795px; }
   .search-scroll .scroll-if-height { height:655px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:568px; }
 }
 
 @media screen and (min-height: 1110px) {
