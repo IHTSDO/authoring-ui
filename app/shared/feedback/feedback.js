@@ -1153,7 +1153,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.selectConceptForFeedback = function (concept) {
-
+            $rootScope.viewConceptEdit = false;
             concept.read = true;
             //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
             scope.subjectConcepts = [concept];

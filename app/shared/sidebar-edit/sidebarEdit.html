@@ -22,17 +22,18 @@
         <div class="fa fa-list-ol"></div>
         <span>Saved List</span></a></li>
           
-         <li role="presentation"  ><a    ng-hide="task.status === 'New'"
-                                               ng-click="viewReview()"  class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
+         <li role="presentation"  ng-class="{'active' : actionTab === 6}"><a ng-click="actionTab=6; viewReview()"  ng-hide="task.status === 'New'"
+                                   class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
 
         <div class="fa fa-envelope"></div>
-        <span>Switch to Feedback View</span></a><a    ng-show="task.status === 'New'"
-                                                 class="tooltips-bottom tooltips-light normal-case">
+        <span ng-if="actionTab !== 6">Switch to Feedback View</span>
+        <span ng-if="actionTab === 6">Feedback list</span></a>
+        <a ng-show="task.status === 'New'" class="tooltips-bottom tooltips-light normal-case">
 
         <div class="fa fa-envelope"></div>
         <span>Review Not Available </span></a></li>
           
-        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch && templates.length > 0"><a ng-click="viewBatch(); actionTab=5;" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-show="!hideBatch && templates.length > 0"><a ng-click="actionTab=5;viewBatch();" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-file-excel-o"></div>
@@ -62,7 +63,7 @@
       <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}" ng-show="actionTab === 4">
         <div ng-include="'shared/task-detail/taskDetail.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===5}" ng-show="actionTab === 5">
+      <div role="tabpanel" class="tab-pane " ng-if="!hideBatch" ng-class="{active: actionTab===5}" ng-show="actionTab === 5">
         <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
       </div>
       <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}" ng-show="actionTab === 6">

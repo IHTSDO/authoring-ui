@@ -196,56 +196,17 @@
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
 
+    <!-- sidebar -->
+    <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
+          ng-if="thisView === 'edit-default'
+              || thisView === 'edit-no-model'
+              || thisView === 'inactivation'
+              || thisView === 'batch'"
+          class="editpanel sca-column"></div>
 
     <!-- Default edit view -->
     <div ng-if="thisView === 'edit-default'">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-        <!-- sidebar -->
-        <div class="editpanel sca-column"
-
-             ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
-
-        <!-- models & concepts-->
-        <div ng-class="getLayoutWidths('modelsAndConcepts')"
-             class="no-padding hide-scroll pull-right modelScrollBox" sca-infinite-scroll="addMoreItems()"
-             sca-infinite-scroll-disabled="conceptsRendering"
-             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-
-
-          <!-- model & concept data-->
-          <div class="row-fluid no-gutter edit-row"
-               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-               ng-class="isLast($last)"
-               repeat-complete callback="renderingComplete()">
-
-            <!-- model -->
-            <div class="no-gutter" ng-class="getLayoutWidths('models')">
-              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-            </div>
-
-            <!-- concept -->
-            <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')">
-
-              <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked || !isOwnTask"
-                   ui-state-update-fn="updateEditListUiState()">
-              </div>
-            </div>
-
-          </div>
-          <div class="row-fluid no-gutter" ng-if="$last" ng-repeat-end>
-            <div class="no-gutter" ng-class="getLayoutWidths('models')">
-              <div class="modelScrollBox"></div>
-            </div>
-
-            <!-- concept -->
-            <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')">
-            </div>
-          </div>
-
-
-        </div>
-      </div>
+      <div ng-include="'shared/concept-edit/modelsConceptsView.html'"></div>
     </div>
 
     <!-- Edit view with no sidebar -->
@@ -302,17 +263,11 @@
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
 
     <!-- Edit view with no model -->
     <div ng-if="thisView === 'edit-no-model'">
-
-      <!-- sidebar -->
-      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 fixed-height no-padding"
-           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- concepts-->
       <div class="col-lg-9 col-md-9 col-sm-9 pull-right no-padding hide-scroll"
@@ -320,13 +275,11 @@
            sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
-
         <!-- concept data-->
         <div class="row-fluid no-gutter edit-row"
              ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
              ng-class="isLast($last)"
              repeat-complete callback="renderingComplete()">
-
 
           <!-- concept -->
           <div class="no-gutter grey darken-3 panel-height col-md-12">
@@ -342,10 +295,7 @@
           <div class="no-gutter grey darken-3 col-md-12" fill-height>
           </div>
         </div>
-
-
       </div>
-
     </div>
 
 
@@ -360,12 +310,7 @@
     </div>
 
     <!-- Inactivation view -->
-    <div ng-if="thisView === 'inactivation'">
-
-      <!-- sidebar -->
-      <div class="editpanel sca-column no-padding "
-
-           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
+    <div ng-if="thisView === 'inactivation'">     
 
       <div class="row no-padding no-gutter">
 
@@ -402,8 +347,11 @@
 
       <!-- feedback report -->
       <div
-        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
+        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding" ng-class="{'no-min-height' : $root.viewConceptEdit === true}">
         <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
+      </div>
+      <div ng-if="$root.viewConceptEdit === true">
+        <div ng-include="'shared/concept-edit/modelsConceptsView.html'"></div>
       </div>
 
     </div>
@@ -420,10 +368,6 @@
     </div>
 
     <div ng-if="thisView === 'batch'" class="batch-editing">
-
-      <!-- sidebar -->
-      <div class="editpanel sca-column fixed-height no-padding col-md-3"
-           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- concepts-->
       <div class="col-lg-9 col-md-9 col-sm-9 pull-right no-padding hide-scroll">
