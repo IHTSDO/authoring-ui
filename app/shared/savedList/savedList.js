@@ -1,18 +1,36 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.savedList', [])
 
-  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'snowowlService', '$routeParams', function savedListCtrl($scope, $rootScope, $location, $modal, scaService, snowowlService, $routeParams) {
+  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'snowowlService', '$routeParams','savedListService', function savedListCtrl($scope, $rootScope, $location, $modal, scaService, snowowlService, $routeParams,savedListService) {
 
-    // name of the panel for the Saved List
-    var panelId = 'saved-list';
+    $scope.favorites = {items: []};
+
+    $scope.savedList = {items: []};
+
+    $scope.initialize = function() {
+      savedListService.initializeSavedList($routeParams.projectKey,$routeParams.taskKey);
+    };  
+
+    $scope.$watch(function () {
+        return savedListService.favorites;
+      },                       
+      function(newVal, oldVal) {
+        $scope.favorites = newVal;
+    }, true);
+
+    $scope.$watch(function () {
+        return savedListService.savedList;
+      },                       
+      function(newVal, oldVal) {
+        $scope.savedList = newVal;
+    }, true);
 
     // function to select an item from the saved list
     // broadcasts selected conceptId
     $scope.selectItem = function (item) {
       if (!item) {
         return;
-      }
-      console.log(item.concept.conceptId);
+      }     
       $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
     };
@@ -24,51 +42,29 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     };
 
     $scope.removeItemFromSavedList = function (item) {
-      if (item) {
-        var index = $scope.savedList.items.indexOf(item);
-        if (index !== -1) {
-          $scope.savedList.items.splice(index, 1);
-          $rootScope.$broadcast('savedListRemove', {conceptId: item.concept.conceptId});
-
-          scaService.saveUiStateForTask(
-            $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
-          );
-        }
-      }
+      savedListService.removeItemFromSavedList(item,$routeParams.projectKey, $routeParams.taskKey);     
     };
 
     $scope.removeItemFromFavorites = function (item) {
-      if (item) {
-        var index = $scope.favorites.items.indexOf(item);
-        if (index !== -1) {
-          $scope.favorites.items.splice(index, 1);
-
-
-          scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites
-          );
-        }
-      }
+      savedListService.removeItemFromFavorites(item,$routeParams.projectKey)
     };
 
     $scope.addToFavorites = function (item) {
-      $scope.favorites.items.push(item);
-      scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites
-      );
+      savedListService.addToFavorites(item,$routeParams.projectKey);
     };
 
-    $scope.isInFavorites = function (item) {
-      if (!$scope.favorites || !Array.isArray($scope.favorites.items)) {
+    $scope.isInFavorites = function (id) {
+       if (!$scope.favorites || !$scope.favorites.items) {
+          return false;
+        }
+        for (var i = 0, len = $scope.favorites.items.length; i < len; i++) {
+          if ($scope.favorites.items[i].concept.conceptId === id) {
+            return true;
+          }
+        }
         return false;
-      }
-      return $scope.favorites.items.indexOf(item) !== -1;
     };
 
-    $scope.isEdited = function (item) {
-      if (!$scope.editList || !Array.isArray($scope.editList.items)) {
-        return false;
-      }
-      return $scope.editList.indexOf(item.concept.conceptId) !== -1;
-    };
     $scope.viewConceptInTaxonomy = function (item) {
       $rootScope.$broadcast('viewTaxonomy', {
         concept: {
@@ -110,34 +106,11 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       if ($scope.savedList) {
         // sample structure for favorites
         //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
-        angular.forEach($scope.savedList.items, function (item) {
-
-          // if concept on list, update the relevant display fields
-          if (item.concept.conceptId === concept.conceptId) {
-            item.active = concept.active;
-            item.concept.definitionStatus = concept.definitionStatus;
-            item.concept.fsn = concept.fsn;
-            item.editing = true;
-            scaService.saveUiStateForTask(
-              $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
-            );
-          }
-        });
+        savedListService.updateConceptInSavedList(concept,$routeParams.projectKey, $routeParams.taskKey);        
       }
 
       if ($scope.favorites) {
-
-
-        angular.forEach($scope.favorites.items, function (item) {
-
-          // if concept on list, update the relevant display fields
-          if (item.concept.conceptId === concept.conceptId) {
-            item.active = concept.active;
-            item.concept.definitionStatus = concept.definitionStatus;
-            item.concept.fsn = concept.fsn;
-            scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
-          }
-        });
+        savedListService.updateConceptInFavorites(concept,$routeParams.projectKey);       
       }
     }
 
@@ -154,12 +127,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         console.error('Cannot handle stop editing event: concept must be supplied');
       } else {
         if ($scope.savedList) {
-
-          angular.forEach($scope.savedList.items, function (item) {
-            if (item.concept.conceptId === data.concept.conceptId) {
-              item.editing = false;
-            }
-          });
+          savedListService.stopEditingInSavedList(data);          
         }
       }
     });
@@ -171,24 +139,13 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     $scope.$on('saveCrsConcept', function (event, data) {
 
       // replace the original concept id if it exists and update
-      angular.forEach($scope.savedList, function (item) {
-        if (item.conceptId === data.crsConceptId) {
-          item.concept.conceptId = data.conceptId;
-          updateConceptDetails(data.concept);
-        }
-      });
+      savedListService.updateCrsConceptInSavedList(data,$routeParams.projectKey, $routeParams.taskKey);     
 
       // remove the crs concept from the project favorites list if it exists
       // replace the original concept id if it exists and update
-      angular.forEach($scope.favorites, function (item) {
+      savedListService.updateCrsConceptInFavorites(data,$routeParams.projectKey);  
 
-        if (item.conceptId === data.crsConceptId) {
-          item.concept.conceptId = data.concept.conceptId;
-          updateConceptDetails(data.concept);
-        }
-      });
-
-    })
+    });
 
 
   }]);
