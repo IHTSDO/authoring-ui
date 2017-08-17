@@ -1,4 +1,4 @@
-<div class="col-md-12 scroll-if-height" ng-controller="savedListCtrl">
+<div class="col-md-12 scroll-if-height" ng-controller="savedListCtrl" ng-init="initialize();">
   <div crs-concept-list task="task"></div>
   <div ng-show="savedList.items.length > 0">
     <div class="row">
@@ -33,7 +33,7 @@
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Edit"
                 ng-click="addToFavorites(item)"
-                ng-disabled="isInFavorites(item)"> <i class="md md-favorite"></i> <span>Add to Project Favorites</span> </button>
+                ng-disabled="isInFavorites(item.concept.conceptId)"> <i class="md md-favorite"></i> <span>Add to Project Favorites</span> </button>
         <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 

@@ -144,12 +144,12 @@
             <span ng-if="!result.concept.active">Inactive Concept</span>
           </button>
           <button type="button" ng-click="addItemToSavedList(result)"
-                  ng-disabled="findItemInSavedList(result.concept.conceptId)"
+                  ng-disabled="isInSavedList(result.concept.conceptId)"
                   class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1">
             <span>Add to Task List</span>
           </button>
           <button type="button" ng-click="addItemToFavorites(result)"
-                  ng-disabled="findItemInFavorites(result.concept.conceptId)"
+                  ng-disabled="isInFavorites(result.concept.conceptId)"
                   class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
             <span>Add to Project Favorites</span>
           </button>

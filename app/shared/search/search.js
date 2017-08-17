@@ -15,8 +15,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     }
 })
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService, savedListService) {
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -37,6 +37,22 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         groupByConcept: true,
         searchType: 1
       };
+
+      $scope.favorites = {items: []};   
+      $scope.$watch(function () {
+          return savedListService.favorites;
+        },                       
+        function(newVal, oldVal) {
+          $scope.favorites = newVal;
+      }, true);
+
+      $scope.savedList = {items: []};
+      $scope.$watch(function () {
+          return savedListService.savedList;
+        },                       
+        function(newVal, oldVal) {
+          $scope.savedList = newVal;
+      }, true);
 
       // on load, get templates
       if(!metadataService.isTemplatesEnabled()){
@@ -419,17 +435,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        *   {}}
        */
       $scope.addItemToSavedList = function (item) {
-
-        if (!item) {
-          return;
-        }
-
-        // if not already in saved list
-        if ($scope.findItemInSavedList(item) === false) {
-          // push component on list and update ui state
-          $scope.savedList.items.push(item);
-          scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList);
-        }
+        savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);        
       };
 
       /**
@@ -437,7 +443,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        * @param id the SCTID of the concept checked
        * @returns {boolean} true: exists, false: does not exist
        */
-      $scope.findItemInSavedList = function (id) {
+      $scope.isInSavedList = function (id) {
         if (!$scope.savedList || !$scope.savedList.items) {
           return false;
         }
@@ -451,17 +457,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.addItemToFavorites = function (item) {
-
-        if (!item) {
-          return;
-        }
-
-        // if not already in favorites list for this project, add it
-        if ($scope.findItemInFavorites(item) === false) {
-          // push component on list and update ui state
-          $scope.favorites.items.push(item);
-          scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
-        }
+        savedListService.addToFavorites(item,$routeParams.projectKey);
       };
 
       /**
@@ -469,7 +465,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        * @param id the SCTID of the concept checked
        * @returns {boolean} true: exists, false: does not exist
        */
-      $scope.findItemInFavorites = function (id) {
+      $scope.isInFavorites = function (id) {
         if (!$scope.favorites || !$scope.favorites.items) {
           return false;
         }

@@ -276,37 +276,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
 
-      $scope.getEditPanel();
-
-      // get saved list
-      scaService.getUiStateForTask(
-        $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
-        .then(function (uiState) {
-            if (!uiState) {
-              $scope.savedList = {items: []};
-            }
-            else {
-              $scope.savedList = uiState;
-            }
-
-          }
-        );
-
-      // get favorite list
-      scaService.getUiStateForUser(
-        'my-favorites-' + $routeParams.projectKey)
-        .then(function (uiState) {
-
-            if (!uiState) {
-              $scope.favorites = {items: []};
-            }
-            else {
-              $scope.favorites = uiState;
-            }
-
-          }
-        );
-
+      $scope.getEditPanel();      
     };
 
     $scope.getEditPanel = function () {
@@ -503,7 +473,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // ui states
     $scope.editList = null;
-    $scope.savedList = null;
     $scope.classificationEditList = null;
 
     // view saving
