@@ -2565,6 +2565,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             autoSave();
           }
 
+          // recompute the domain attributes from MRCM service
+          constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
+            scope.allowedAttributes = attributes;
+          }, function (error) {
+            notificationService.sendError('Error getting allowable domain attributes: ' + error);
+          });
         };
 
 /////////////////////////////
