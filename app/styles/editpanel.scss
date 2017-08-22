@@ -667,10 +667,11 @@ button.fsn-title-button {
     background-color: #e0f2f1;
 }
 .color_8 {
-    background-color: #FFEBEE;
+    background-color: #2d2d2d;
 }
-.color_9 {
-    background-color: #e8eaf6;
+.color_9,
+.color_11 {
+    background-color: #757575;
 }
 .is_a input,
 .is_a textarea,
@@ -1048,13 +1049,17 @@ button.fsn-title-button {
 .color_0.role-group-drag,
 .color_2.role-group-drag,
 .color_4.role-group-drag,
-.color_6.role-group-drag {
+.color_6.role-group-drag,
+.color_8.role-group-drag,
+.color_10.role-group-drag {
     background-color: #212121;
 }
 .color_1.role-group-drag,
 .color_3.role-group-drag,
 .color_5.role-group-drag,
-.color_7.role-group-drag {
+.color_7.role-group-drag,
+.color_9.role-group-drag,
+.color_11.role-group-drag {
     background-color: #616161;
 }
 .tealhl .color_0.role-group-drag,
