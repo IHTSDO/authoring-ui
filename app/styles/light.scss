@@ -296,6 +296,47 @@
 .sca-light .task-details .green {
     background-color: transparent;
 }
+.sca-light .task-details .editingtask.btn-default,
+.sca-light .task-details .classify.btn-default,
+.sca-light .task-details .validate.btn-default,
+.sca-light .task-details .review.btn-default,
+.sca-light .task-details .promote.btn-default,
+.sca-light .task-details .auto-promote.btn-default {
+    background-color: #fff;
+    border: 1px solid #e6e6e6;
+}
+.sca-light .task-details .editingtask.btn-default:hover,
+.sca-light .task-details .classify.btn-default:hover,
+.sca-light .task-details .validate.btn-default:hover,
+.sca-light .task-details .review.btn-default:hover,
+.sca-light .task-details .promote.btn-default:hover,
+.sca-light .task-details .auto-promote.btn-default:hover{
+    background-color: transparent;   
+}
+.sca-light .task-details .editingtask.btn-default[disabled],
+.sca-light .task-details .classify.btn-default[disabled],
+.sca-light .task-details .validate.btn-default[disabled],
+.sca-light .task-details .review.btn-default[disabled],
+.sca-light .task-details .promote.btn-default[disabled],
+.sca-light .task-details .auto-promote.btn-default[disabled],
+.sca-light .task-details .editingtask.btn-default[disabled] span,
+.sca-light .task-details .classify.btn-default[disabled] span,
+.sca-light .task-details .validate.btn-default[disabled] span,
+.sca-light .task-details .review.btn-default[disabled] span,
+.sca-light .task-details .promote.btn-default[disabled] span,
+.sca-light .task-details .auto-promote.btn-default[disabled] span {
+   background-color: #fff; 
+   color: #737373;
+}
+.sca-light .task-details .classify.btn-default:hover{
+    color: #00b762;
+}
+.sca-light .task-details .validate.btn-default:hover{
+    color: #673ab7;
+}
+.sca-light .task-details .review.btn-default:hover{
+    color: #e94281;
+}
 .sca-light .classification-btn .btn-default:hover {
     color: #474747;
     background-color: transparent;
@@ -324,7 +365,6 @@
     background-color: #fff;
     color: #474747
 }
-.sca-light .classification-btn .btn-default:hover,
 .sca-light .classification-btn .btn-default span:hover {
     color: #474747
 }

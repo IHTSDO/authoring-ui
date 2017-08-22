@@ -368,6 +368,50 @@ h4.timeline-title {
     border: 1px #1f2731 solid;
 }
 
+.sca-dark .task-details .editingtask.btn-default,
+.sca-dark .task-details .classify.btn-default,
+.sca-dark .task-details .validate.btn-default,
+.sca-dark .task-details .review.btn-default,
+.sca-dark .task-details .promote.btn-default,
+.sca-dark .task-details .auto-promote.btn-default{
+    border: 1px solid #262e39;
+}
+.sca-dark .task-details .editingtask.btn-default:hover,
+.sca-dark .task-details .classify.btn-default:hover,
+.sca-dark .task-details .validate.btn-default:hover,
+.sca-dark .task-details .review.btn-default:hover,
+.sca-dark .task-details .promote.btn-default:hover,
+.sca-dark .task-details .auto-promote.btn-default:hover{
+    color: #eee;
+    background-color: transparent;
+    border: 1px solid #1f2731;  
+}
+.sca-dark .task-details .editingtask.btn-default span:hover,
+.sca-dark .task-details .classify.btn-default span:hover,
+.sca-dark .task-details .validate.btn-default span:hover,
+.sca-dark .task-details .review.btn-default span:hover,
+.sca-dark .task-details .promote.btn-default span:hover,
+.sca-dark .task-details .auto-promote.btn-default span:hover{
+    background-color: transparent;
+    color: #fff;
+}
+.sca-dark .task-details .editingtask.btn-default[disabled],
+.sca-dark .task-details .classify.btn-default[disabled],
+.sca-dark .task-details .validate.btn-default[disabled],
+.sca-dark .task-details .review.btn-default[disabled],
+.sca-dark .task-details .promote.btn-default[disabled],
+.sca-dark .task-details .auto-promote.btn-default[disabled],
+.sca-dark .task-details .editingtask.btn-default[disabled] span,
+.sca-dark .task-details .classify.btn-default[disabled] span,
+.sca-dark .task-details .validate.btn-default[disabled] span,
+.sca-dark .task-details .review.btn-default[disabled] span,
+.sca-dark .task-details .promote.btn-default[disabled] span,
+.sca-dark .task-details .auto-promote.btn-default[disabled] span{
+    border-color: #525463;
+    color: #262e39;
+    background-color: #525463;
+}
+
 /*colors */
 
 .sca-dark .blue {
