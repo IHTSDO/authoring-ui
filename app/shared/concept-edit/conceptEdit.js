@@ -184,13 +184,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
                 if(!external){
-                    scope.$digest();
+                    $timeout(function() {
+                      scope.$digest();
+                    });
                 }
             }
             else if (!enter){
                 scope.hasFocus = false;
                 if(!external){
+                  $timeout(function() {
                     scope.$digest();
+                  });                    
                 }
             }
         }
