@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="task-details">
-    <div class="classification-btn p-l-15 p-r-15">
+    <div class="p-l-15 p-r-15">
       <button class="btn btn-default cyan darken-1 editingtask" ng-click="updateTask()"
               ng-disabled="task.status === 'Promoted'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
     </div>
@@ -58,7 +58,7 @@
     <div class="p-l-15 p-r-15" ng-if="branchLocked">
       <div class="alert alert-warning">Task branch is locked due to an ongoing rebase, promotion or classification</div>
     </div>
-    <div class="classification-btn p-l-15 p-r-15">
+    <div class="p-l-15 p-r-15">
       <button class="btn btn-default green classify" ng-click="classify()"
               ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"> <span class="md md-notifications green darken-1 iconbase"></span> <span class="button-link">Classify</span> </button>
       <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate"

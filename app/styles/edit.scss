@@ -107,7 +107,13 @@ button.widget-toolbar {
 
 /*disabled buttons*/
 
-.classification-btn .btn-default[disabled] {
+.classification-btn .btn-default[disabled],
+.task-details .editingtask.btn-default[disabled],
+.task-details .classify.btn-default[disabled],
+.task-details .validate.btn-default[disabled],
+.task-details .review.btn-default[disabled],
+.task-details .promote.btn-default[disabled],
+.task-details .auto-promote.btn-default[disabled] {
     background-color: #d8d8d8 ;
     border-color: #d8d8d8 ;
     color: #737373
@@ -686,8 +692,14 @@ sca-column .hasSVG {
     background-color: #D32F2F;
     color: #fff;
 }
+
+.task-details .classify.btn-default:hover,
 .classification-btn .btn-default:hover {
     background-color: #43A047;
+    color: #fff;
+}
+.task-details .validate.btn-default:hover {
+    background-color: #512da8;
     color: #fff;
 }
 .classification-btn .btn-default:focus {
