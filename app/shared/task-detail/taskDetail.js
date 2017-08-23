@@ -11,6 +11,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // the project and task branch objects
       $scope.projectBranch = null;
       $scope.taskBranch = null;
+      $scope.promoting = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -60,10 +61,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // if response contains no flags, simply promote
           if (!warningsFound) {
             notificationService.sendMessage('Promoting task...');
-
+            $scope.promoting = true;
             promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
+              $scope.promoting = false;
             });
           } else {
 
@@ -85,10 +87,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 notificationService.sendMessage('Promoting task...');
-
+                $scope.promoting = true;
                 promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   $rootScope.$broadcast('reloadTask');
                 }, function (error) {
+                  $scope.promoting = false;
                 });
               } else {
                 notificationService.clear();
