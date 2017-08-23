@@ -348,6 +348,9 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
           // do nothing
         });
+
+        deferred.resolve(response);
+        return;
       }, function (error) {
         deferred.reject('Error promoting task: ' + error);
       });
