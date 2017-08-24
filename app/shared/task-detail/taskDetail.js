@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 
       $scope.promote = function () {
-
+        $scope.promoting = true;
         notificationService.sendMessage('Preparing for task promotion...');
 
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
@@ -60,8 +60,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
-            notificationService.sendMessage('Promoting task...');
-            $scope.promoting = true;
+            notificationService.sendMessage('Promoting task...');           
             promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
@@ -86,8 +85,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                notificationService.sendMessage('Promoting task...');
-                $scope.promoting = true;
+                notificationService.sendMessage('Promoting task...');              
                 promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   $rootScope.$broadcast('reloadTask');
                 }, function (error) {
@@ -95,13 +93,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 });
               } else {
                 notificationService.clear();
+                $scope.promoting = false;
               }
             }, function () {
               notificationService.clear();
+              $scope.promoting = false;
             });
           }
         }, function (error) {
           notificationService.sendError('Unexpected error preparing for promotion: ' + error);
+          $scope.promoting = false;
         });
       };
 
