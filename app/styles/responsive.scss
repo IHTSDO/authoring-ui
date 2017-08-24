@@ -234,19 +234,37 @@
 .scroll-if-height { height: 535px; z-index: 10000; }
 .search-scroll .scroll-if-height { height: 395px; }
 
-@media screen and (min-height: 700px) {
+
+
+@media screen and (min-height: 768px) {
   .scroll-if-height { height: 565px; }
-  .search-scroll .scroll-if-height { height: 425px; }
+  .search-scroll .scroll-if-height { height: 484px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:379px;}
+}
+
+@media screen and (min-height: 800px) {
+  .search-scroll .scroll-if-height { height: 516px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:429px;}
 }
 
 @media screen and (min-height: 900px) {
   .scroll-if-height { height: 795px; }
-  .search-scroll .scroll-if-height { height:655px; }
-  .search-scroll.ecl-mode .scroll-if-height { height:568px; }
+  .search-scroll .scroll-if-height { height:610px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:523px;}
 }
 
-@media screen and (min-height: 1110px) {
+@media screen and (min-height: 1050px) {
   .scroll-if-height { height: 945px; }
-  .search-scroll .scroll-if-height { height:805px; }
+  .search-scroll .scroll-if-height { height:760px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:673px; }
 }
 
+@media screen and (min-height: 1080px) {  
+  .search-scroll .scroll-if-height { height:790px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:702px; }
+}
+
+@media screen and (min-height: 1440px) {  
+  .search-scroll .scroll-if-height { height:1150px; }
+  .search-scroll.ecl-mode .scroll-if-height { height:1063px; }
+}
