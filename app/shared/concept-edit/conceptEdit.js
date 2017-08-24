@@ -155,7 +155,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 .add({
                   combo: 'alt+r',
                   description: 'Add relationship to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template){scope.addRelationship()}}
+                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template){scope.addRelationship()}
+                  }
                 })
               hotkeys.bindTo(scope)
                 .add({
