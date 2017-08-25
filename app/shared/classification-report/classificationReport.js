@@ -63,6 +63,7 @@ angular.module('singleConceptAuthoringApp')
           count: 10,          // count per page
           sorting: {
             changeNature: 'asc',    // initial sorting
+            sourceName: 'asc',
             group : 'asc',
             typeName : 'asc',
             destinationName :  'asc'
