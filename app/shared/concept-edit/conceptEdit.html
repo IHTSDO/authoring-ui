@@ -270,7 +270,7 @@
       </div>
 
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
-        <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} "
+        <div class="col-md-12 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
              drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
@@ -350,7 +350,7 @@
             <select ng-disabled="description.released || isStatic || isLockedModule(description.moduleId)"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.type" ng-change="updateDescription(description)" name="select-type"
-                    id="select-type-choice" class="form-control color_{{relationship.groupId}}" ui-on-drop="">
+                    id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
 
@@ -426,11 +426,11 @@
       </div>
     </div>
 
-
+    <div class="p-b-3"> </div>
     <!-- rows: Relationships -->
     <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
       <div ng-if="showRelationshipGroup(relationshipGroup)">
-        <div class="role_group_divider_top_{{groupId}} "></div>
+        <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
              class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">
@@ -457,7 +457,7 @@
           </div>
 
 
-          <div class="row darken-3 edits-row color_{{relationship.groupId}} "
+          <div class="row darken-3 edits-row color_{{(relationship.groupId%2==0)?'even':'odd'}} "
                ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
             <div class="col-md-11 no-padding left-of-edit" drop-channel="relationshipObj"
@@ -599,7 +599,7 @@
               </div>
             </div>
 
-            <div class="col-md-1 no-padding color_{{relationship.groupId}} role-group-drag p-t-5"
+            <div class="col-md-1 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} role-group-drag p-t-5"
                  drop-channel="relationshipGroupObj" ui-on-drop="dropRelationshipGroup($data)"
                  drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover">
               <button ng-if="$index === 0"
@@ -643,7 +643,7 @@
 
 
         </div>
-        <div class="role_group_divider_bottom_{{groupId}}"></div>
+        <div class="role_group_divider_bottom_{{(groupId%2==0)?'even':'odd'}}"></div>
       </div>
     </div>
     <div class="clearfix"></div>

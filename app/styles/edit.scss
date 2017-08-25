@@ -238,12 +238,6 @@ h1 {
 .savedlist-buttons {
     width: 75px;
 }
-.color_[disabled] {
-    border-bottom: none ;
-}
-.color_0[disabled] {
-    border-bottom: none ;
-}
 .no-padding-left {
     padding-left: 0px ;
 }
@@ -499,35 +493,26 @@ textarea.form-control.inactivation-value{
     text-align: center;
     font-size: 13px;
 }
-input:focus.color_0,
-textarea:focus.color_0,
-select:focus.color_0,
-input:active.color_0,
-.color_0 textarea:active.color_0,
-select:active.color_0 {
+input:focus.color_even,
+textarea:focus.color_even,
+select:focus.color_even,
+input:active.color_even,
+textarea:active.color_even,
+select:active.color_even {
     box-shadow: inset 0 -2px 0 #E0299B ;
 }
 .row {
     border: none ;
 }
-input:focus.color_1,
-textarea:focus.color_1,
-select:focus.color_1,
-input:active.color_1,
-.color_1 textarea:active.color_1,
-select:active.color_1 {
+input:focus.color_odd,
+textarea:focus.color_odd,
+select:focus.color_odd,
+input:active.color_odd,
+textarea:active.color_odd,
+select:active.color_odd {
     box-shadow: inset 0 -2px 0 #ffd306 ;
 }
-input:focus.color_3,
-textarea:focus.color_3,
-select:focus.color_3,
-input:active.color_3,
-.color_3 textarea:active.color_3 {
-    box-shadow: inset 0 -2px 0 #ff602e ;
-}
-select:active.color_3 {
-    box-shadow: inset 0 -2px 0 #ff602e ;
-}
+
 select.primitive {
     display: block;
     width: 100%;
