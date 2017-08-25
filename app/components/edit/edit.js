@@ -1530,8 +1530,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.viewReviewFromSidebar = function () {
-      $scope.setView('feedback');
-      $rootScope.displayMainSidebar=false;
+      if($scope.thisView === 'feedback') {
+        $rootScope.$broadcast('viewReview', {});
+      } else {
+        $scope.setView('feedback');
+        $rootScope.displayMainSidebar=false;
+      }      
     };
 
     //
