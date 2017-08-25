@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 .add({
                   combo: 'alt+g',
                   description: 'Add role group to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template){scope.addRelationshipGroup()}}
+                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template){scope.addRelationshipGroup()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
