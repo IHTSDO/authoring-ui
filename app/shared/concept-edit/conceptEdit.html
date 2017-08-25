@@ -484,7 +484,7 @@
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent"
-                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template"
+                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template || isBatch"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span ng-if="isStatic">Active/Inactive</span>
@@ -494,7 +494,7 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                  <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
+                  <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template || isBatch"
                             ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                             ng-change="updateRelationship(relationship, true)"
                             class="form-control rg no-border-bottom"
@@ -512,7 +512,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                                     <textarea custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
-                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
+                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch"
                                               class="resizable-text form-control msd-elastic no-border-bottom rel"
 
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
@@ -545,7 +545,7 @@
 
 
                   <textarea ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
-                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
+                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot)"
                             class="resizable-text relationship msd-elastic no-border-bottom"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -609,7 +609,7 @@
                 <span>Drag Relationship Group</span>
               </button>
 
-              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template"
+              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template && !concept.template"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
               </button>
