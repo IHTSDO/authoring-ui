@@ -509,7 +509,6 @@
                      drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropRelationshipType(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
-
                                     <textarea id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                                               custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
                                               ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch"
