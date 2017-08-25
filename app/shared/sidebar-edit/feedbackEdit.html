@@ -1,5 +1,5 @@
 <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 fixed-height ">
-<aside class="sidebar-bg col-md-12 no-padding " ng-controller="sidebarEditCtrl">
+<aside class="sidebar-bg col-md-12 no-padding " ng-controller="feedbackEditCtrl">
 
   <!-- show if sidebar not hidden -->
   <div role="tabpanel no-padding">
@@ -7,22 +7,22 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs sidebar-tabs col-md-12 no-padding"
         role="tablist">
-      <li role="presentation" ng-class="{'active' : actionTab === 1}"><a ng-click="actionTab=1" aria-controls="home"
+      <li role="presentation" ng-class="{'active' : actionTab === 1}"><a ng-click="viewTaxonomy()" aria-controls="home"
                                  role="tab"
                                  data-toggle="tab" class="tooltips-btm tooltips-light normal-case no-padding">
         <div class="md md-my-library-books"></div>
         <span>Taxonomy</span></a></li>
-      <li role="presentation" ng-class="{'active' : actionTab === 2}"><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 2}"><a ng-click="viewSearch()" aria-controls="home" role="tab" data-toggle="tab"
                                           class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-search"></div>
         <span>Search</span>
       </a></li>
-      <li role="presentation" ng-class="{'active' : actionTab === 3}"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 3}"><a ng-click="viewSavedList()" aria-controls="home" role="tab" data-toggle="tab"
                                  class="tooltips-btm tooltips-btm normal-case">
         <div class="fa fa-list-ol"></div>
         <span>Saved List</span></a></li>
 
-           <li role="presentation" ng-hide="thisView === 'edit-default'"  ng-class="{'active' : actionTab === 6}"><a ng-click="actionTab=6;$root.viewConceptEdit=false;" aria-controls="home" role="tab" data-toggle="tab"
+           <li role="presentation" ng-hide="thisView === 'edit-default'"  ng-class="{'active' : actionTab === 6}"><a aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-envelope"></div>
@@ -34,7 +34,7 @@
         <div class="fa fa-file-excel-o"></div>
         <span>Create Batch</span></a></li>
         
-              <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
+              <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="viewTaskDetails()" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>
@@ -57,12 +57,9 @@
       <div role="tabpanel" class="tab-pane" ng-if="!hideBatch"  ng-class="{active: actionTab===5}">
         <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
       </div>
-
       <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
         <div ng-include="'shared/task-detail/taskDetail.html'"></div>
       </div>
-      
-      
     </div>
   </div>
 

@@ -40,9 +40,25 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
 
-          scope.viewBatch = function () {
-              $rootScope.$broadcast('swapToBatch');
-            };
+          scope.viewTaxonomy = function() {            
+            $rootScope.$broadcast('swapToTaxonomy');                
+          };
+
+          scope.viewSearch = function () {            
+            $rootScope.$broadcast('swapToSearch');
+          };
+
+          scope.viewSavedList = function () {           
+            $rootScope.$broadcast('swapToSavedList');
+          };
+
+          scope.viewBatch = function () {            
+            $rootScope.$broadcast('swapToBatch');
+          };
+
+          scope.viewTaskDetails = function () {           
+            $rootScope.$broadcast('swapToTaskDetails');
+          };                    
 
           // the editor scope variables
           scope.htmlVariable = '';
@@ -1152,8 +1168,7 @@ angular.module('singleConceptAuthoringApp')
             return $compile(htmlCode);
           };
 
-          scope.selectConceptForFeedback = function (concept) {
-            $rootScope.viewConceptEdit = false;
+          scope.selectConceptForFeedback = function (concept) {          
             concept.read = true;
             //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
             scope.subjectConcepts = [concept];
