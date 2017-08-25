@@ -160,7 +160,7 @@
     <!-- Edit View: Default -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="[{'lighten-2' : thisView === 'edit-default'}]"
             class="btn btn-default widget-toolbar blue tooltips-right tooltips-light normal-case white-backgrounnd task-editing-btn"
-            ng-click="setView('edit-default')">
+            ng-click="setView('edit-default');$root.$broadcast('viewInfo', {});">
       <div class="md md-dvr"></div>
       <span>Go back to task editing</span></button>
 
@@ -198,10 +198,7 @@
 
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
-          ng-if="thisView === 'edit-default'
-              || thisView === 'edit-no-model'
-              || thisView === 'inactivation'
-              || thisView === 'batch'"
+          ng-show="$root.displayMainSidebar"
           class="editpanel sca-column"></div>
 
     <!-- Default edit view -->
@@ -344,16 +341,12 @@
 
     <!-- Review/Feedback view -->
     <div ng-if="thisView === 'feedback'">
-
       <!-- feedback report -->
       <div
-        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding" ng-class="{'no-min-height' : $root.viewConceptEdit === true}">
+         ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding' : !$root.displayMainSidebar,
+                    'col-xs-9 col-sm-9 col-md-9 col-lg-9 col-xl-9 no-padding pull-right' : $root.displayMainSidebar}">
         <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
       </div>
-      <div ng-if="$root.viewConceptEdit === true">
-        <div ng-include="'shared/concept-edit/modelsConceptsView.html'"></div>
-      </div>
-
     </div>
 
     <!-- Conflict view -->

@@ -165,15 +165,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
     $rootScope.currentTask = null;
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////
-    // Note : This flag is used for indicating whether concept can be opened from Taxonamy/Search 
-    // after swapping tab from Feedback to Search/Taxonamy.
+    // Note : This flag is used for indicating where sitebar comes from "be loaded from begining"  
+    // or "be loading from Feedback view". Currently, we have 2 diffenent sitebars.
     // DO NOT USE FOR OTHER PURPOSES
     /////////////////////////////////////////////////////////////////////////////////////////////
-    $rootScope.viewConceptEdit = false;
-
-
+    $rootScope.displayMainSidebar = true;
+  
     //////////////////////////////
     // Infinite Scroll
     //////////////////////////////
@@ -200,12 +199,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       });
     };
-    $scope.gotoHome = function () {
-      $location.url('home');
-    };
-    $scope.gotoReviews = function () {
-      $location.url('review-tasks');
-    };
+    
     $scope.gotoHome = function () {
       $location.url('home');
     };
@@ -361,9 +355,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      //Always set False when view changes.
-      $rootScope.viewConceptEdit = false;
-
       switch (name) {
         case 'validation':
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -371,18 +362,21 @@ angular.module('singleConceptAuthoringApp.edit', [
           //  view starts with no concepts
           $scope.concepts = [];
           $scope.canCreateConcept = false;
+          $rootScope.displayMainSidebar = false;
           break;
         case 'inactivation':
           $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'inactivation';
           $scope.concepts = [];
           $scope.canCreateConcept = false;
+          $rootScope.displayMainSidebar = true;
           break;
         case 'feedback':
           $scope.feedbackContainer = {};
           $scope.getLatestReview();
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'feedback';
+          $rootScope.displayMainSidebar = false; // Feedback page has its own sitebar
 
           //  view starts with no concepts
           //$scope.concepts = [];
@@ -393,11 +387,13 @@ angular.module('singleConceptAuthoringApp.edit', [
           $routeParams.mode = 'classification';
           $scope.getClassificationEditPanel();
           $scope.canCreateConcept = false;
+          $rootScope.displayMainSidebar = false;
           break;
         case 'conflicts':
           $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           $routeParams.mode = 'conflicts';
           $scope.canCreateConcept = false;
+          $rootScope.displayMainSidebar = false;
 
           //  view starts with no concepts
           $scope.concepts = [];
@@ -406,6 +402,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
+          $rootScope.displayMainSidebar = true;
 
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
@@ -416,6 +413,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
+          $rootScope.displayMainSidebar = false;
+
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -425,6 +424,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
+          $rootScope.displayMainSidebar = true;
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -434,6 +434,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Batch Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'batch';
           $scope.canCreateConcept = false;
+          $rootScope.displayMainSidebar = true;
           break;
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
@@ -823,61 +824,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       // if load already in progress from editConcept or cloneConcept notification, stop
       if ($scope.conceptLoading) {
         return;
-      }      
-      
-      if($scope.thisView === 'feedback' && !$rootScope.viewConceptEdit) { 
-        var modalInstance = $modal.open({
-          templateUrl: 'shared/modal-service/modalConfirm.html',
-          controller: function ($scope, $modalInstance, message) {
-            $scope.message = message;
-            $scope.cancel = function () {
-              $modalInstance.dismiss();
-            };
-            $scope.confirm = function () {
-              $modalInstance.close();
-            };
-          },
-          resolve: {
-            message: function () {
-              return "You cannot load concepts in review. Would you like to navigate back to edit?";
-            }
-          }
-        });
-        modalInstance.result.then(function () {
-          $rootScope.viewConceptEdit = true;
-          processUiStateUpdate(data.conceptId);
-        }, function () {
-          deferred.reject();
-        });             
       }
-      else if($scope.thisView === 'batch'){
-        var modalInstance = $modal.open({
-          templateUrl: 'shared/modal-service/modalConfirm.html',
-          controller: function ($scope, $modalInstance, message) {
-            $scope.message = message;
-            $scope.cancel = function () {
-              $modalInstance.dismiss();
-            };
-            $scope.confirm = function () {
-              $modalInstance.close();
-            };
-          },
-          resolve: {
-            message: function () {
-              return "You cannot load concepts in batch. Would you like to navigate back to edit?";
-            }
-          }
-        });
-        modalInstance.result.then(function () {
-           $scope.setView('edit-default');
-           processUiStateUpdate(data.conceptId);
-        }, function () {
-          deferred.reject();
-        });        
+     
+      if($scope.thisView === 'feedback' 
+        || $scope.thisView === 'batch'
+        || $scope.thisView === 'inactivation') {
+        $scope.setView('edit-default');                 
       } 
-      else {
-        processUiStateUpdate(data.conceptId);
-      }
+      processUiStateUpdate(data.conceptId);
+      
     });
 
     function processUiStateUpdate(conceptId) {      
@@ -1363,8 +1318,13 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 
-    $scope.viewReview = function () {
-      $scope.setView('feedback');
+    $scope.viewReview = function () {     
+      if($scope.thisView === 'feedback'){         
+        $rootScope.$broadcast('viewReview', {});
+       } else {
+        $rootScope.displayMainSidebar = false;
+        $scope.setView('feedback');
+       }
     };
     
     $scope.viewBatch = function () {
@@ -1428,11 +1388,27 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('reloadTask', function (event, data) {
       loadTask();
     });
+
+    $scope.$on('swapToTaxonomy', function (event, data) {      
+      $rootScope.$broadcast('viewTaxonomy', {});
+    });
+
+    $scope.$on('swapToSearch', function (event, data) {
+      $rootScope.$broadcast('viewSearch', {});
+    });
+
+    $scope.$on('swapToSavedList', function (event, data) {           
+      $rootScope.$broadcast('viewList', {});
+    });
     
-    $scope.$on('swapToBatch', function (event, data) {
+    $scope.$on('swapToBatch', function (event, data) {      
+      $rootScope.$broadcast('viewBatch', {});  
       $scope.viewBatch();
     });
 
+    $scope.$on('swapToTaskDetails', function (event, data) {    
+      $rootScope.$broadcast('viewInfo', {});
+    });    
 
     function loadBranch(branchPath) {
 
@@ -1555,6 +1531,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.viewReviewFromSidebar = function () {
       $scope.setView('feedback');
+      $rootScope.displayMainSidebar=false;
     };
 
     //
@@ -1759,7 +1736,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                         .add({
                           combo: 'alt+5',
                           description: 'Go to Batch',
-                          callback: function() {$rootScope.$broadcast('viewBatch', {})}
+                          callback: function() {$scope.viewBatch();$rootScope.$broadcast('viewBatch', {})}
                         })
                 }
             $scope.templateTableParams.reload();
