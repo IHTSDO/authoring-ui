@@ -15,8 +15,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     }
 })
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService, savedListService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService, savedListService,$timeout) {
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -159,11 +159,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.toggleSearchMode = function () {
         $scope.isEscgMode = !$scope.isEscgMode;
         $scope.escgExpr = "";
-        $scope.searchStr = "";
+        $scope.searchStr = "";        
         if($scope.isEscgMode) {
           $scope.searchType = 'Active Only';
           $scope.userOptions.searchType = 1;
         }
+        $timeout(function() {
+          $rootScope.$broadcast('adjustElementHeight', {});
+        });
+
       };       
 
       /**
