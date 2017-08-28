@@ -121,6 +121,12 @@ h4.timeline-title {
 {
     background-color: transparent;
 }
+.sca-dark .editing-form button.concept-edit-button.green:focus, 
+.sca-dark .editing-form button.concept-edit-button.green:active,
+.sca-dark .editing-form button.concept-edit-button.red:focus, 
+.sca-dark .editing-form button.concept-edit-button.red:active {
+    background: transparent;
+}
 .sca-dark .small-buttons.btn-default[disabled],
 .sca-dark .small-buttons.btn-default[disabled]:hover {
     color: #D0D0D0
@@ -984,7 +990,8 @@ background-color: #262e39;}
 	background-color:#262e39;
 	color:#fff
 }
-def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .def_PRIMITIVE .form-control[disabled], .def_PRIMITIVE [type=text].form-control[disabled], .def_PRIMITIVE [type=text].form-control[readonly] {
+
+.def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .def_PRIMITIVE .form-control[disabled], .def_PRIMITIVE [type=text].form-control[disabled], .def_PRIMITIVE [type=text].form-control[readonly] {
     font-size: 11px;
     height: 30px;
     background-color: #b7dbff;

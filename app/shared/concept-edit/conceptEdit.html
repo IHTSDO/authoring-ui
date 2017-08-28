@@ -30,7 +30,6 @@
   </div>
 
   <!-- end validation error -->
-  <!-- The concept itself -->
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
 
@@ -269,8 +268,8 @@
 
       </div>
 
-      <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
-        <div class="col-md-12 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} def_{{concept.definitionStatus}} "
+      <div class="row darken-3 p-t-5 grey">
+        <div class="col-md-12 no-padding color_ def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
              drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
