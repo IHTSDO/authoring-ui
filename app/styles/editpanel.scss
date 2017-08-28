@@ -608,19 +608,30 @@ button.fsn-title-button {
 /* Colours */
 /* colors */
 
+.color_ input,
+.color_ textarea,
+.color_ select,
+.color_ .custom-button,
+.color_ .sourcename,
 .color_even input,
 .color_even textarea,
 .color_even select,
 .color_even .custom-button,
-.color_even .sourcename {
-    background-color: #dbdbff;
-    color: #474747;
-}
+.color_even .sourcename,
 .color_odd input,
 .color_odd textarea,
 .color_odd select,
 .color_odd .custom-button,
 .color_odd .sourcename {
+    background-color: #dbdbff;
+    color: #474747;
+}
+
+.color_.def_FULLY_DEFINED input,
+.color_.def_FULLY_DEFINED textarea,
+.color_.def_FULLY_DEFINED select,
+.color_.def_FULLY_DEFINED .custom-button,
+.color_.def_FULLY_DEFINED .sourcename {
     background-color: #dbdbff;
     color: #474747;
 }
@@ -1061,8 +1072,32 @@ button-link .bluehl .grey.darken-3 {
 .editing-form button.green:active {
     background-color: transparent;
 }
+.editing-form button.concept-edit-button.green:focus, 
+.editing-form button.concept-edit-button.green:active {
+    background-color: #4CAF50;
+}
+.editing-form button.concept-edit-button.red:focus, 
+.editing-form button.concept-edit-button.red:active {
+    background-color: #c13244;
+}
+.editing-form button.concept-edit-button.green:active {
+     color: #474747;
+}
 .color_ .custom-button:focus {
     background-color: #b7dbff;
+}
+.color_.def_FULLY_DEFINED .custom-button:focus,
+.color_.def_FULLY_DEFINED .custom-button:active {
+    background-color: #dbdbff;
+}
+.color_.def_FULLY_DEFINED .custom-button:active,
+.color_.def_PRIMITIVE .custom-button:active {
+    color: #fff;
+}
+
+.color_.def_PRIMITIVE .custom-button:focus,
+.color_.def_PRIMITIVE .custom-button:active {
+     background-color: #b7dbff;
 }
 .PRIMITIVE .color_even input,
 .PRIMITIVE .color_even textarea,
