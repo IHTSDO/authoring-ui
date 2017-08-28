@@ -344,6 +344,12 @@
     color: #474747;
     background-color: transparent;
 }
+.sca-light .editing-form button.concept-edit-button.green:focus, 
+.sca-light .editing-form button.concept-edit-button.green:active,
+.sca-light .editing-form button.concept-edit-button.red:focus, 
+.sca-light .editing-form button.concept-edit-button.red:active {
+    background: transparent;
+}
 .sca-light .morebuttons,
 .sca-light .wandbutton {
     color: #00a6e5;
