@@ -980,27 +980,23 @@ button.fsn-title-button {
 .color_odd.role-group-drag {
     background-color: #616161;
 }
-.tealhl .color_even.role-group-drag {
-    background-color: #00695c;
-}
+.tealhl .color_even.role-group-drag,
 .tealhl .color_odd.role-group-drag {
     background-color: #00695c;
 }
-.bluehl .color_even.role-group-drag {
-    background-color: #1565C0;
-}
+.bluehl .color_even.role-group-drag,
 .bluehl .color_odd.role-group-drag {
     background-color: #1565C0;
 }
-.redhl .color_even.role-group-drag {
-    background-color: #C62828;
-}
+.redhl .color_even.role-group-drag,
 .redhl .color_odd.role-group-drag {
     background-color: #C62828;
 }
 .bluehl .grey.darken-3,
-.bluehl .edits-row {
-    background-color: #0091d7
+.bluehl .row.edits-row {
+    background-color: #0091d7;
+    border-top: 2px solid #0091d7;
+    border-bottom: 2px solid #0091d7;
 }
 .conflicts .nav-tabs > li {
     width: 50%;
@@ -1018,22 +1014,40 @@ button-link .bluehl .grey.darken-3 {
 .merges-button .button-link {
     font-size: 12px;
 }
-.tealhl .grey.darken-3 {
-    background-color: #00a39b
-}
-.ng-scope.tealhl {
+.tealhl .grey.darken-3,
+.tealhl .row.edits-row {
     background-color: #00a39b;
     border-top: 2px solid #00a39b;
     border-bottom: 2px solid #00a39b;
+}
+.ng-scope.tealhl {
+    background-color: #00a39b;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
     margin-top: 3px;
 }
+.ng-scope.bluehl {
+    background-color: #0091d7;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    margin-top: 3px;
+}
+.ng-scope.redhl {
+    background-color: #ff6755;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    margin-top: 3px;
+}
+
 .row.tealhl {
     background-color: #00a39b;
     border-top: 1px solid #00a39b;
     border-bottom: 0px solid #00a39b;
     margin-top: 0px;
 }
-.tealhl .p-t-5 {
+.tealhl .p-t-5,
+.bluehl .p-t-5,
+.redhl .p-t-5{
     padding-top: 0px
 }
 .tealhl .grey.darken-2,
@@ -1041,10 +1055,11 @@ button-link .bluehl .grey.darken-3 {
     background-color: transparent;
 }
 .redhl .grey.darken-3,
-.redhl .grey.darken-3 .redhlrow {
-    background-color: #ff6755
+.redhl .row.edits-row {
+    background-color: #ff6755;
+    border-top: 2px solid #ff6755;
+    border-bottom: 2px solid #ff6755;
 }
-.tealh1 .redhlrow,
 .redlhl {
     border-top: 2px solid #ff6755;
     border-bottom: 2px solid #ff6755;

@@ -2926,6 +2926,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return 'tealhl';
           }
 
+          if (component && component.released && (typeof component.effectiveTime === 'undefined')) {
+            return 'redhl';
+          }
+
           if (component && component.templateStyle) {
             return component.templateStyle;
           }
