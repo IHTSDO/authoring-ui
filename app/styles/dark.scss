@@ -715,35 +715,49 @@ h4.timeline-title {
 }
 
 .sca-dark .bluehl {
-    background-color: #01579b ;
+    background-color: #01579b ;   
+}
+.sca-dark .bluehl .grey.darken-3,
+.sca-dark .bluehl .row.edits-row {
+    background-color: #01579b;
     border-top: 2px solid #01579b;
-    border-bottom: 5px solid #01579b;
+    border-bottom: 2px solid #01579b;
+}
+.sca-dark .bluehl .color_even.role-group-drag,
+.sca-dark .bluehl .color_odd.role-group-drag {
+    background-color: #054273;
 }
 .sca-dark .bluehl .grey.darken-3 {
     background-color: #01579b
 }
-.sca-dark .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #01579b
+.sca-dark .tealhl .grey.darken-3,
+.sca-dark .tealhl .row.edits-row {
+    background-color: #1d6f7e;
+    border-top: 2px solid #1d6f7e;
+    border-bottom: 2px solid #1d6f7e;
 }
-.sca-dark .bluehl .grey.darken-3 {
-    background-color: #01579b
-}
-.sca-dark .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #01579b
-}
-.sca-dark .tealhl .grey.darken-3 {
-    background-color: transparent;
+.sca-dark .tealhl .color_even.role-group-drag,
+.sca-dark .tealhl .color_odd.role-group-drag {
+    background-color: #1b5965;
 }
 .sca-dark .tealhl {
-    background-color: #1d6f7e ;
-    border-top: 2px solid #1d6f7e;
-    border-bottom: 5px solid #1d6f7e;
+    background-color: #1d6f7e;    
 }
-.sca-dark .redhl .grey.darken-3 {
-    background-color: #B71C1C
+.sca-dark .redhl .grey.darken-3,
+.sca-dark .redhl .row.edits-row  {
+    background-color: #B71C1C;
+    border-top: 2px solid #B71C1C;
+    border-bottom: 2px solid #B71C1C;
+}
+.sca-dark .redhl .color_even.role-group-drag,
+.sca-dark .redhl .color_odd.role-group-drag {
+    background-color: #932222;
 }
 .sca-dark .redlhl {
-    background-color: #B71C1C ;
+    background-color: #B71C1C;
+}
+.sca-dark .ng-scope.redhl {
+    background-color: #B71C1C;
     border-top: 2px solid #B71C1C;
     border-bottom: 2px solid #B71C1C;
 }

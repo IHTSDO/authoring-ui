@@ -693,31 +693,46 @@
 .sca-light .tealhl .grey.darken-4.btn-default {
     background-color: transparent;
 }
-.sca-light .bluehl {
+.sca-light .bluehl .grey.darken-3 {
+    background-color: #e1f5fe;
+}
+.sca-light .bluehl .color_even.role-group-drag,
+.sca-light .bluehl .color_odd.role-group-drag {
+    background-color: #bee7f9;
+}
+.sca-light .bluehl .grey.darken-3 {
+    border-bottom: 5px solid #e1f5fe;
+}
+.sca-light .bluehl .grey.darken-3,
+.sca-light .bluehl .row.edits-row {
     background-color: #e1f5fe;
     border-top: 2px solid #e1f5fe;
-    border-bottom: 5px solid #e1f5fe;
+    border-bottom: 2px solid #e1f5fe;
 }
-.sca-light .bluehl .grey.darken-3 {
-    background-color: #e1f5fe;
+.sca-light .tealhl .grey.darken-3,
+.sca-light .tealhl .row.edits-row  {
+    background-color: #b2e3e1;
+    border-top: 2px solid #b2e3e1;
+    border-bottom: 2px solid #b2e3e1;
 }
-.sca-light .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #e1f5fe;
-}
-.sca-light .bluehl .grey.darken-3 {
-    background-color: #e1f5fe;
-}
-.sca-light .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #e1f5fe
-}
-.sca-light .tealhl .grey.darken-3 {
-    background-color: #b2e3e1
+.sca-light .tealhl .color_even.role-group-drag,
+.sca-light .tealhl .color_odd.role-group-drag {
+    background-color: #b5d8d7;
 }
 .sca-light .ng-scope.tealhl {
     background-color: #b2e3e1;
     border-top: 2px solid #b2e3e1;
     border-bottom: 2px solid #b2e3e1;
-    margin-top: 3px;
+}
+.sca-light .ng-scope.bluehl {
+    background-color: #e1f5fe;
+    border-top: 2px solid #e1f5fe;
+    border-bottom: 2px solid #e1f5fe;
+}
+.sca-light .ng-scope.redhl {
+    background-color: #FFEBEE;
+    border-top: 2px solid #FFEBEE;
+    border-bottom: 2px solid #FFEBEE;
 }
 .sca-light .grey.darken-4.tealhl {
     background-color: #b2e3e1;
@@ -728,8 +743,15 @@
 .sca-light .tealhl .grey.darken-3:before {
     border-top: 1px solid #b2e3e1;
 }
-.sca-light .redhl .grey.darken-3 {
-    background-color: #FFEBEE
+.sca-light .redhl .grey.darken-3,
+.sca-light .redhl .row.edits-row {
+    background-color: #FFEBEE;
+    border-top: 2px solid #FFEBEE;
+    border-bottom: 2px solid #FFEBEE;
+}
+.sca-light .redhl .color_even.role-group-drag,
+.sca-light .redhl .color_odd.role-group-drag {
+    background-color: #ffcbd3;
 }
 .sca-light .redlhl {
     border-top: 2px solid #FFEBEE;
