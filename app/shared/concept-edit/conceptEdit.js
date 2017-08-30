@@ -2755,7 +2755,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param conceptId the concept id
          * @param fsn the fsn
          */
-        scope.setRelationshipTypeConcept = function (relationship, item) {
+        scope.setRelationshipTypeConcept = function (relationship, item, conceptId, relationshipGroupId, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
@@ -2764,6 +2764,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.type.fsn = item.fsn.term;
 
           scope.updateRelationship(relationship, false);
+
+          var elemID = 'relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
+          var elem = angular.element(document.querySelector('#' + elemID));         
+          $timeout(function () {
+            elem[0].blur();
+          }, 50); 
         };
 
         /**
@@ -2772,7 +2778,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param conceptId the concept id
          * @param fsn the fsn
          */
-        scope.setRelationshipTargetConcept = function (relationship, item) {
+        scope.setRelationshipTargetConcept = function (relationship, item, conceptId, relationshipGroupId, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }            
@@ -2801,6 +2807,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             scope.updateRelationship(relationship, false);
           }
+
+          // Trigger blur event after a selection occurs
+          var elemID = 'relationship-taget-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
+          var elem = angular.element(document.querySelector('#' + elemID));          
+          $timeout(function () {
+            elem[0].blur();
+          }, 50); 
         };
 
 //////////////////////////////////////////////
