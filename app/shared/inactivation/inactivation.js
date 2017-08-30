@@ -773,11 +773,12 @@ angular.module('singleConceptAuthoringApp')
 
               function next() {
                 if (cntr < list.length) {
-                if(list[cntr].newTargetId)
+                    if(list[cntr].newTargetId)
                     {
                       list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
-                      cntr++;
+                      
                     }
+                  cntr++;
                   next();
                 }
                 else {
