@@ -16,7 +16,14 @@ angular.module('singleConceptAuthoringApp')
               validationProperties = validationResponse.data;
               $http.get('/config/versions.json').then(function (confResponse) {
                   versions = confResponse.data;
-                  deferred.resolve(properties, validationProperties, versions);
+                  var rvfEndpoint = properties.rvfEndpoint;
+                  $http.get(rvfEndpoint +'api/v1/version').then(function (confResponse) {
+                    versions.versions.rvf = confResponse.data.package_version;                    
+                    deferred.resolve(properties, validationProperties, versions);
+                  }, function(error) {
+                    console.log(error);
+                    deferred.resolve(properties, validationProperties, versions);
+                  });                 
                 }, function(error) {
                   console.log(error);
                   deferred.resolve(properties, validationProperties, versions);
