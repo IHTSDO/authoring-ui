@@ -1444,8 +1444,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // declare table parameters
     $scope.templateTableParams = new ngTableParams({
         page: 1,
-        count: 200,
-        sorting: {name: 'asc'}
+        count: 200       
       },
       {
         filterDelay: 50,
