@@ -929,6 +929,37 @@ angular.module('singleConceptAuthoringApp')
       return false;
     }
 
+    function isNumeric(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+    function sortTemplatesByName(a,b) {
+      var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+
+      var nameA_Arr = nameA.split("-");
+      var nameB_Arr = nameB.split("-");
+      if(nameA_Arr.length > 0 && nameB_Arr.length > 0) {
+        for (var i = 0 ; i < nameA_Arr.length; i++) {
+          if(typeof nameA_Arr[i] !== 'undefined' && typeof nameB_Arr[i] !== 'undefined') {
+            if(isNumeric(nameA_Arr[i].trim()) && isNumeric(nameB_Arr[i].trim())) {                                
+              if(Number(nameA_Arr[i]) < Number(nameB_Arr[i])) return -1;
+              if(Number(nameA_Arr[i]) > Number(nameB_Arr[i])) return 1;  
+            } else {
+              if (nameA_Arr[i] < nameB_Arr[i]) return -1;
+              if (nameA_Arr[i] > nameB_Arr[i]) return 1;
+            }
+          }                                      
+        }
+      }
+
+      if (nameA_Arr.length < nameB_Arr.length) return -1;
+      if (nameA_Arr.length > nameB_Arr.length) return 1;
+      
+      // names must be equal
+      return 0;
+    }
+
 
 //
 // Exposed functions
@@ -940,6 +971,9 @@ angular.module('singleConceptAuthoringApp')
             {
                 $http.get(apiEndpoint + 'templates').then(function (response) {
                   templateCache = response.data;
+                  templateCache.sort(function(a, b){
+                    return sortTemplatesByName(a, b);
+                  });
                   deferred.resolve(templateCache);
                 }, function (error) {
                   deferred.reject('Failed to retrieve templates: ' + error.message);
@@ -947,7 +981,7 @@ angular.module('singleConceptAuthoringApp')
             }
         else{
             $http.get(apiEndpoint + branch + '/templates?descendantOf=' + parentIds + '&ancestorOf=' + parentIds).then(function (response) {
-              deferred.resolve(response.data);
+              deferred.resolve(response.data.sort(function(a, b){ return sortTemplatesByName(a, b)}));
             }, function (error) {
               deferred.reject('Failed to retrieve templates: ' + error.message);
             });
