@@ -12,6 +12,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.projectBranch = null;
       $scope.taskBranch = null;
       $scope.promoting = false;
+      $scope.promotingAutomate = false;
+
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -108,10 +110,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.proceedPromotionAutomation = function () {
         notificationService.sendMessage('Begin automation promotion process...');
+        $scope.promotingAutomate = true; 
         promotionService.proceedPromotionAutomation($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
-        });        
+               $scope.promotingAutomate = false; 
+            }
+        );
       };
 
       $scope.startValidation = function () {
