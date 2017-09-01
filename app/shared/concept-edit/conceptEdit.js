@@ -1652,7 +1652,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // reactivate the description before selecting a reason
               description.active = true;
 
-              selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null, null).then(function (results) {
+              selectInactivationReason('Description', inactivateDescriptionReasons, inactivateAssociationReasons, null, null, null).then(function (results) {
 
                 notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
