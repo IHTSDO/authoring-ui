@@ -123,13 +123,13 @@ angular.module('singleConceptAuthoringApp')
     var descriptionInactivationReasons = [
       //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
       //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-      {id: 'ERRONEOUS', text: 'Erroneous component'},
+      {id: 'ERRONEOUS', text: 'Erroneous component', display: []},
       //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
       //{id: 'LIMITED', text: 'Limited component'},
-      {id: 'OUTDATED', text: 'Outdated component'},
+      {id: 'OUTDATED', text: 'Outdated component', display: []},
       //{id: 'PENDING_MOVE', text: 'Pending move'},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy'},
-      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent'}
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []},
+      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]}
 
     ];
       
