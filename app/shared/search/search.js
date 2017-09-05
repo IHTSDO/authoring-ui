@@ -159,15 +159,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.toggleSearchMode = function () {
         $scope.isEscgMode = !$scope.isEscgMode;
         $scope.escgExpr = "";
-        $scope.searchStr = "";        
+        $scope.searchStr = "";
+        $scope.results = [];
+        $scope.loadPerformed = false;      
         if($scope.isEscgMode) {
           $scope.searchType = 'Active Only';
           $scope.userOptions.searchType = 1;
         }
-        $timeout(function() {
-          $rootScope.$broadcast('adjustElementHeight', {});
-        });
-
       };       
 
       /**
