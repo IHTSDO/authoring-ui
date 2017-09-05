@@ -325,7 +325,7 @@
               </textarea>
 
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'SYNONYM'"
-                      ng-change="updateDescription(description, true)" ng-model-options="{updateOn: 'blur'}"
+                      ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       maxlength="255"
                       ng-model="description.term"
@@ -335,7 +335,7 @@
                         </textarea>
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="2048"
-                      ng-change="updateDescription(description, true)"
+                      ng-change="updateDescription(description)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"

@@ -2451,11 +2451,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // function to update description and autoSave if indicated
-        scope.updateDescription = function (description, applySpellcheck) {
-          delete description.descriptionId;
-          if (!description) {
-            return;
-          }         
+        scope.updateDescription = function (description, keepSCTID) {
+          if (!keepSCTID) delete description.descriptionId;          
+          if (!description) return;        
 
           // run spellchecker
             console.log(metadataService.isSpellcheckDisabled());
@@ -2518,8 +2516,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // function to update relationship and autoSave if indicated
-        scope.updateRelationship = function (relationship, roleGroupOnly) {
-          if(!roleGroupOnly){
+        scope.updateRelationship = function (relationship, roleGroupOnly, keepSCTID) {
+          if(!roleGroupOnly && !keepSCTID){
               delete relationship.relationshipId;
           }
           if (!relationship) {

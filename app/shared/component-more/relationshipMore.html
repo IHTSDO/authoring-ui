@@ -11,7 +11,7 @@
       <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
               ng-model="relationship.moduleId"
               ng-disabled="isStatic || isLockedModule(relationship.moduleId)"
-              ng-change="updateRelationship(relationship)"
+              ng-change="updateRelationship(relationship, false, true)"
               ng-options="module.id as module.name for module in getAvailableModules(relationship.moduleId)">
       </select>
     </div>
