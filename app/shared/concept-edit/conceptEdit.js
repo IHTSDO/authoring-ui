@@ -2522,7 +2522,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship, roleGroupOnly, keepSCTID) {
-          if(!roleGroupOnly && keepSCTID){
+          if(!roleGroupOnly && !keepSCTID){
               delete relationship.relationshipId;
           }
           if (!relationship) {
