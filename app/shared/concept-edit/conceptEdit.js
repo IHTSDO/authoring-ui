@@ -1663,8 +1663,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
                   description.active = false;
                   description.inactivationIndicator = results.reason.id;
-                  console.log(description.inactivationIndicator);
-                  console.log(description);
+
+                  if(typeof results.associationTarget !== 'undefined') {
+                    description.associationTargets = results.associationTarget;
+                  }
                   scope.saveConcept();
 //                  }, function (error) {
 //                    notificationService.sendError('Error inactivating description');
@@ -1682,7 +1684,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
         scope.editDescriptionInactivationReason = function (item) {
-          selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null, null).then(function (results) {
+          selectInactivationReason('Description', inactivateDescriptionReasons, inactivateAssociationReasons, null, null, null).then(function (results) {
 
             notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
@@ -1693,6 +1695,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
             item.active = false;
             item.inactivationIndicator = results.reason.id;
+            if(typeof results.associationTarget !== 'undefined') {
+              item.associationTargets = results.associationTarget;
+            }
             scope.saveConcept();
 //            }, function (error) {
 //              notificationService.sendError('Error inactivating description');
@@ -2517,7 +2522,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship, roleGroupOnly, keepSCTID) {
-          if(!roleGroupOnly && !keepSCTID){
+          if(!roleGroupOnly && keepSCTID){
               delete relationship.relationshipId;
           }
           if (!relationship) {
