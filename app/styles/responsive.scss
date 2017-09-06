@@ -231,4 +231,21 @@
 /* breakpoints and heights optimised for standard screen heights: 800, 1024, 1200 */
 /* and acceptable layout in each range */
 
-.scroll-if-height {z-index: 10000; }
+.scroll-if-height { height: 535px; z-index: 10000; }
+.search-scroll .scroll-if-height { height: 395px; }
+
+@media screen and (min-height: 700px) {
+  .scroll-if-height { height: 565px; }
+  .search-scroll .scroll-if-height { height: 425px; }
+}
+
+@media screen and (min-height: 900px) {
+  .scroll-if-height { height: 795px; }
+  .search-scroll .scroll-if-height { height:655px; }
+}
+
+@media screen and (min-height: 1110px) {
+  .scroll-if-height { height: 945px; }
+  .search-scroll .scroll-if-height { height:805px; }
+}
+

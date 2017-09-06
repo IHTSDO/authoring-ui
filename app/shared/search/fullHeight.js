@@ -27,7 +27,7 @@
             var endElem = angular.element(document.querySelector(".sca-footer"));
             posEnd = angular.element(endElem).prop('offsetTop');
             var newEleHeight = posEnd - posStart - additionalPaddingBottom;            
-            elem.attr( 'style', 'max-height: ' + newEleHeight + 'px;');
+            elem.attr( 'style', 'max-height: ' + newEleHeight + 'px; height : auto');
             
           }                   
         }, true);
