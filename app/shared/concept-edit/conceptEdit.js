@@ -1100,6 +1100,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // Do not allow inactivation when Relationships or Descriptions have no effective time
               if(conceptCopy.released === true && hasInactiveDescriptionOrRelationship(conceptCopy)) {
                 scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
+                scope.componentStyles = (typeof scope.componentStyles !== 'undefined') ? scope.componentStyles : {};
+                scope.concept.descriptions.forEach(function (item) {
+                  if(typeof item.effectiveTime === 'undefined') {
+                    item.templateStyle = 'redhl';
+                  } else {
+                    item.templateStyle = null;;
+                  }
+                });
+
+                scope.concept.relationships.forEach(function (item) {
+                  if(typeof item.effectiveTime === 'undefined' && item.characteristicType !== 'INFERRED_RELATIONSHIP') {
+                    item.templateStyle = 'redhl';
+                  } else {
+                    item.templateStyle = null;
+                  }
+                });               
                 return;
               }
 
@@ -2948,10 +2964,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if no styless supplied, use defaults
           if (!scope.componentStyles) {
-            if (scope.concept.released && component && (typeof component.effectiveTime === 'undefined')
-                && (component.descriptionId || (component.relationshipId && component.characteristicType !== 'INFERRED_RELATIONSHIP'))) {
-              return 'redhl';
-            }
             return defaultStyle;
           }
 
