@@ -2940,11 +2940,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if dialect automation flag detected
           if (component && component.automationFlag && !scope.isBatch) {
             return 'tealhl';
-          }
-
-          if (component && component.released && component.active && (typeof component.effectiveTime === 'undefined')) {
-            return 'redhl';
-          }
+          }          
 
           if (component && component.templateStyle) {
             return component.templateStyle;
@@ -2952,6 +2948,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if no styless supplied, use defaults
           if (!scope.componentStyles) {
+            if (scope.concept.released && component && (typeof component.effectiveTime === 'undefined')
+                && (component.descriptionId || (component.relationshipId && component.characteristicType !== 'INFERRED_RELATIONSHIP'))) {
+              return 'redhl';
+            }
             return defaultStyle;
           }
 
