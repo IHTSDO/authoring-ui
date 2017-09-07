@@ -16,6 +16,9 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
         }
         $scope.hideBatch = metadataService.isTemplatesEnabled();
 
+      $scope.setActiveTab = function (tabIndex) {
+        $scope.actionTab = tabIndex;
+      }
       $scope.$on('viewTaxonomy', function(event, data) {
         $scope.actionTab = 1;
         $rootScope.displayMainSidebar = true;

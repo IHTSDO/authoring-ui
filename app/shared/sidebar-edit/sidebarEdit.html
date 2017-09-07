@@ -7,22 +7,22 @@
     <!-- Nav tabs -->
       <ul class="nav nav-tabs sidebar-tabs col-md-12 no-padding"
         role="tablist">
-      <li role="presentation" ng-class="{'active' : actionTab === 1}"><a ng-click="actionTab=1" aria-controls="home"
+      <li role="presentation" ng-class="{'active' : actionTab === 1}"><a ng-click="setActiveTab(1)" aria-controls="home"
                                  role="tab"
                                  data-toggle="tab" class="tooltips-bottom tooltips-light small-size-tooltip normal-case">
         <div class="md md-my-library-books"></div>
         <span>Taxonomy</span></a></li>
-      <li role="presentation" ng-class="{'active' : actionTab === 2}"><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 2}"><a ng-click="setActiveTab(2)" aria-controls="home" role="tab" data-toggle="tab"
                                           class="tooltips-bottom tooltips-light normal-case">
         <div class="fa fa-search"></div>
         <span>Search</span>
       </a></li>
-      <li role="presentation" ng-class="{'active' : actionTab === 3}"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 3}"><a ng-click="setActiveTab(3)" aria-controls="home" role="tab" data-toggle="tab"
                                  class="tooltips-bottom tooltips-bottom normal-case">
         <div class="fa fa-list-ol"></div>
         <span>Saved List</span></a></li>
           
-         <li role="presentation"  ng-class="{'active' : actionTab === 6}"><a ng-click="actionTab=6; viewReview()"  ng-hide="task.status === 'New'"
+         <li role="presentation"  ng-class="{'active' : actionTab === 6}"><a ng-click="setActiveTab(6); viewReview()"  ng-hide="task.status === 'New'"
                                    class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
 
         <div class="fa fa-envelope"></div>
@@ -33,13 +33,13 @@
         <div class="fa fa-envelope"></div>
         <span>Review Not Available </span></a></li>
           
-        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-show="!hideBatch && templates.length > 0"><a ng-click="actionTab=5;viewBatch();" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch && templates.length > 0"><a ng-click="setActiveTab(5);viewBatch();" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-file-excel-o"></div>
         <span>Create Batch</span></a></li>
           
-      <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="setActiveTab(4)" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-bottom tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>
