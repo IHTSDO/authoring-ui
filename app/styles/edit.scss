@@ -312,6 +312,18 @@ textarea.form-control.inactivation-value{
 .editing-form .orange.btn-default:hover  {
     color: #fff;
 }
+@media screen and (max-width:1400px) {
+    .editing-form .add-buttons {       
+        padding: 4px 2px;
+        min-height : 10px; 
+        height : 15px;       
+    }
+
+    .editing-form .add-buttons.button-width-plus,
+    .editing-form .add-buttons.button-width-minus {
+        padding: 1px 2px;
+    }
+}
 @media screen and (max-width: 1850px) {
     .editing-form button:not(.add-buttons),
     .editing-form .btn:not(.add-buttons) {
