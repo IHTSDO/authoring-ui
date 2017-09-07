@@ -41,25 +41,11 @@
         
     </ul>
     <!-- Tab panes -->
-    <div class="tab-content col-md-12 no-padding  ">
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
-        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-      </div>
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
-        <div ng-include="'shared/search/search.html'"></div>
-      </div>
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
-        <div ng-include="'shared/savedList/savedList.html'"></div>
-      </div>
-            <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}">
+    <div class="tab-content col-md-12 no-padding  ">      
+      <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}">
         <div ng-include="'shared/feedback/feedback-list.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane" ng-if="!hideBatch"  ng-class="{active: actionTab===5}">
-        <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
-      </div>
-      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
-        <div ng-include="'shared/task-detail/taskDetail.html'"></div>
-      </div>
+      
     </div>
   </div>
 
