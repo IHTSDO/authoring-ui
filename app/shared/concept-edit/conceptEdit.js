@@ -1102,7 +1102,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
                 scope.componentStyles = (typeof scope.componentStyles !== 'undefined') ? scope.componentStyles : {};
                 scope.concept.descriptions.forEach(function (item) {
-                  if(typeof item.effectiveTime === 'undefined') {
+                  if(!item.released || (item.released && typeof item.effectiveTime === 'undefined')) {
                     item.templateStyle = 'redhl';
                   } else {
                     item.templateStyle = null;;
@@ -1110,7 +1110,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
 
                 scope.concept.relationships.forEach(function (item) {
-                  if(typeof item.effectiveTime === 'undefined' && item.characteristicType !== 'INFERRED_RELATIONSHIP') {
+                  if(item.characteristicType !== 'INFERRED_RELATIONSHIP'
+                    && (!item.released || (item.released && typeof item.effectiveTime === 'undefined'))) {
                     item.templateStyle = 'redhl';
                   } else {
                     item.templateStyle = null;
@@ -1150,27 +1151,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         var hasInactiveDescriptionOrRelationship = function(concept) {
-          var hasInactiveDesc = false;
-          var hasInactiveRelationship = false;
-
           //checking description has no effective time
           for(var i = 0; i < concept.descriptions.length; i++) {
             var desc =  concept.descriptions[i];
-            if(typeof desc.effectiveTime === 'undefined') {
-              hasInactiveDesc = true;
-              break;
+            if(!desc.released || (desc.released && typeof desc.effectiveTime === 'undefined')) {
+              return true;
             }
           }
 
           // checking relationships has no effective time and not INFERRED_RELATIONSHIP characteristicType
           for(var i = 0; i < concept.relationships.length; i++) {
             var rel =  concept.relationships[i];
-            if(typeof rel.effectiveTime === 'undefined' && rel.characteristicType !== 'INFERRED_RELATIONSHIP') {
-              hasInactiveRelationship = true;
-              break;
+            if(rel.characteristicType !== 'INFERRED_RELATIONSHIP'
+              && (!rel.released || (rel.released && typeof rel.effectiveTime === 'undefined'))) {
+              return true;             
             }
           }
-          return hasInactiveDesc || hasInactiveRelationship;
+          return false;          
         }
 
         /**
