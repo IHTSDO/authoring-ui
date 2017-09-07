@@ -2781,11 +2781,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.updateRelationship(relationship, false);
 
+          // Trigger blur event after relationship type has been selected
           var elemID = 'relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
           var elem = angular.element(document.querySelector('#' + elemID));         
           $timeout(function () {
             elem[0].blur();
-          }, 50); 
+            var parent = $(elem).closest('.editHeightSelector');
+            if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+            }
+          }, 600); 
         };
 
         /**
@@ -2824,12 +2829,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.updateRelationship(relationship, false);
           }
 
-          // Trigger blur event after a selection occurs
+          // Trigger blur event after relationship target has been selected
           var elemID = 'relationship-taget-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
           var elem = angular.element(document.querySelector('#' + elemID));          
           $timeout(function () {
             elem[0].blur();
-          }, 50); 
+            var parent = $(elem).closest('.editHeightSelector');
+            if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+            }
+          }, 600); 
         };
 
 //////////////////////////////////////////////
