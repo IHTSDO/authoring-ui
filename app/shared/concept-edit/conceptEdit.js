@@ -1328,6 +1328,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
 
+            // ensure en-us ACCEPTABLE terms on top
+            var aHasUsA = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'ACCEPTABLE' : false;
+            var bHasUsA = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'ACCEPTABLE' : false;
+
+            if (aHasUsA && !bHasUsA) {
+              return -1;
+            }
+            if (!aHasUsA && bHasUsA) {
+              return 1;
+            }
 
             // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
             var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
