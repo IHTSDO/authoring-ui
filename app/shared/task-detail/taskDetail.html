@@ -58,11 +58,17 @@
     <div class="p-l-15 p-r-15" ng-if="branchLocked">
       <div class="alert alert-warning">Task branch is locked due to an ongoing rebase, promotion or classification</div>
     </div>
+    <div class="p-l-15 p-r-15" ng-if="processingAutomatePromotion">
+      <div class="alert alert-warning">Task branch is locked due to an ongoing automate promotion. {{automatePromotionStatus !== ''? 'Status: ' + automatePromotionStatus : ''}} </div>
+    </div>
+    <div class="p-l-15 p-r-15" ng-if="automatePromotionErrorMsg !== ''">
+      <div class="alert alert-danger">{{automatePromotionErrorMsg}}</div>
+    </div>
     <div class="p-l-15 p-r-15">
       <button class="btn btn-default green classify" ng-click="classify()"
-              ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"> <span class="md md-notifications green darken-1 iconbase"></span> <span class="button-link">Classify</span> </button>
+              ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || processingAutomatePromotion"> <span class="md md-notifications green darken-1 iconbase"></span> <span class="button-link">Classify</span> </button>
       <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate"
-              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked"
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked || processingAutomatePromotion"
               ng-click="startValidation()"> <span class="md md-school deep-purple darken-2 iconbase"></span> <span class="button-link">Validate</span> </button>
       <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="!reviewChecks">
         <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review" ng-click="toggleReview()"> <span class="md md-forum pink darken-2 iconbase"></span> <span class="button-link" ng-if="!unsavedConcepts">Submit For Review</span> </button>
@@ -70,11 +76,11 @@
       <button ng-show="task.status === 'In Review' && role === 'AUTHOR'" class="btn btn-default pink1 review" ng-click="toggleReview()"><span
         class="md md-forum pink darken-2 iconbase"></span> <span class="button-link">Cancel This Review</span> </button>
       <button ng-if="editable !== 'false'"
-              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || promoting"
+              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || promoting || processingAutomatePromotion"
               class="btn btn-default blue darken-1 promote" ng-click="promote()"> <span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">Promote This Task to the Project</span> </button>
       <button class="btn btn-default purple darken-1 auto-promote" 
-              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || promotingAutomate"
-              ng-click="proceedPromotionAutomation()"> <span class="md md-archive purple darken-2 iconbase"></span> <span class="button-link">Begin Promotion Automation</span> </button>
+              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || processingAutomatePromotion"
+              ng-click="proceedAutomatePromotion()"> <span class="md md-archive purple darken-2 iconbase"></span> <span class="button-link">Begin Promotion Automation</span> </button>
     </div>
   </div>
 </div>

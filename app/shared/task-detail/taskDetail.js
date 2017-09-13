@@ -12,7 +12,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.projectBranch = null;
       $scope.taskBranch = null;
       $scope.promoting = false;
-      $scope.promotingAutomate = false;
+      $scope.processingAutomatePromotion = false;
+      $scope.automatePromotionStatus = "";
+      $scope.automatePromotionErrorMsg = "";
 
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
@@ -108,14 +110,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
-      $scope.proceedPromotionAutomation = function () {
-        notificationService.sendMessage('Begin automation promotion process...');
-        $scope.promotingAutomate = true; 
-        promotionService.proceedPromotionAutomation($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-              $rootScope.$broadcast('reloadTask');
-            }, function (error) {
-               $scope.promotingAutomate = false; 
-            }
+      $scope.proceedAutomatePromotion = function () {
+        notificationService.sendMessage('Begin automate promotion process...');
+        $scope.processingAutomatePromotion = true; 
+        $scope.automatePromotionErrorMsg = '';
+        promotionService.proceedAutomatePromotion($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            $timeout(function () {
+              $scope.checkAutomatePromotionStatus(false);
+            }, 3000);
+          }, function (error) {
+             $scope.processingAutomatePromotion = false; 
+          }
         );
       };
 
@@ -287,6 +292,72 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       };
 
+      $scope.checkAutomatePromotionStatus = function (isInitialInvoke) {       
+        $scope.automatePromotionErrorMsg = '';
+        promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {         
+          if (response) {
+            switch (response.status) {
+              case 'Queued':
+                $scope.processingAutomatePromotion = true;
+                $scope.automatePromotionStatus = "Queued";
+                notificationService.clear();
+                break;
+              case 'Rebasing':
+                $scope.processingAutomatePromotion = true;
+                $scope.automatePromotionStatus = "Rebasing";
+                notificationService.clear();
+                break;
+              case 'Rebased with conflicts':
+                $scope.processingAutomatePromotion = false;                
+                $scope.automatePromotionErrorMsg = 'Task submitted for automate promotion, but it has been rebased with conflicts. Please try again if all conflicts are resolved!';
+                break;
+              case 'Classifying':
+                $scope.processingAutomatePromotion = true;
+                $scope.automatePromotionStatus = "Classifying";
+                notificationService.clear();
+                break;
+              case 'Classified with results':
+                $scope.processingAutomatePromotion = false;
+                $scope.automatePromotionErrorMsg = 'Task submitted for automate promotion, but it has been classified with results. Please try again if all results are accepted!';
+                break;
+              case 'Promoting':
+                $scope.processingAutomatePromotion = true;
+                $scope.automatePromotionStatus = "Promoting";
+                notificationService.clear();
+                break;
+              case 'Completed':
+                $scope.processingAutomatePromotion = false;
+                if (!isInitialInvoke) {  
+                  $rootScope.$broadcast('reloadTask');
+                  $timeout(function () {
+                     notificationService.sendMessage('Completed automate promotion');
+                  }, 1000); 
+                }             
+                break;
+              case 'Failed':
+                $scope.processingAutomatePromotion = false;
+                if (!isInitialInvoke) {                  
+                  $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
+                  notificationService.clear();
+                }
+                break;              
+              default:
+                $scope.processingAutomatePromotion = false;
+            }
+            if ($scope.processingAutomatePromotion) {
+              $timeout(function () {
+                $scope.checkAutomatePromotionStatus(false);
+              }, 10000);
+            }           
+          } else {
+             $scope.processingAutomatePromotion = false;
+          }
+          if(isInitialInvoke && !$scope.processingAutomatePromotion) {
+            $scope.checkForLock();
+          }  
+        });
+      }
+
       //
       // Issue Links
       //
@@ -316,8 +387,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
           $scope.classificationLockCheck = false;
-          $scope.ontologyLock = $rootScope.classificationRunning;
-          $scope.checkForLock();
+          $scope.ontologyLock = $rootScope.classificationRunning;         
+          $scope.checkAutomatePromotionStatus(true);
 
           snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });
