@@ -468,6 +468,7 @@ angular.module('singleConceptAuthoringApp')
           }
         initializeTemplate(template).then(function () {
             concept.template = template;
+            conceptCopy.template = template;
             componentAuthoringUtil.setDefaultFields(template);
             angular.forEach(conceptCopy.relationships, function (r) {
                 r.relationshipId = snowowlService.createGuid();
