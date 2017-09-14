@@ -914,6 +914,16 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (description.active === false) {
             clonedConcept.descriptions.splice(k, 1);
           }
+
+          // Remove en-gb description if Extension is enable
+          if (metadataService.isExtensionSet() && 
+            description.acceptabilityMap.hasOwnProperty("900000000000508004")) {
+            if(Object.keys(description.acceptabilityMap).length === 1) {
+              clonedConcept.descriptions.splice(k, 1);
+            } else {
+              delete description.acceptabilityMap['900000000000508004'];
+            }            
+          }
         }
 
         for (var j = clonedConcept.relationships.length - 1; j >= 0; j--) {
