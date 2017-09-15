@@ -491,24 +491,23 @@ angular.module('singleConceptAuthoringApp')
           }
 
 
-          scope.saveAll = function () {
-            scope.batchTableParams.count(50);
+          scope.saveAll = function () {           
             scope.batchTableParams.reload();
             $timeout(function () {
                 angular.forEach(scope.batchTableParams.data, function (c) {
                   c.errorMsg = null;
                   c.tableAction = 'Waiting...'
                 });
+                var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
                 var modalInstance = $modal.open({
                   templateUrl: 'shared/batch-editing/saveModal.html',
                   controller: 'saveModalCtrl',
                   resolve: {
                     concepts: function () {
-                      return scope.batchTableParams.data;
+                      return concepts;
                     }
                   }
-                });
-                var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
+                });                
                 saveAllHelper(concepts);
               }, 1000);
 
