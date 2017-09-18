@@ -136,10 +136,14 @@ angular.module('singleConceptAuthoringApp')
     var drugsModelOrdering = [
       {id: '127489000', display: 1},
       {id: '732943007', display: 2},
-      {id: '732944001', display: 3},
-      {id: '732945000', display: 4},
-      {id: '732946004', display: 5},
-      {id: '732947008', display: 6},
+      {id: '733724008', display: 3},
+      {id: '733725009', display: 4},
+      {id: '733723002', display: 5},
+      {id: '733722007', display: 6},
+      {id: '732944001', display: 7},
+      {id: '732945000', display: 8},
+      {id: '732946004', display: 9},
+      {id: '732947008', display: 10},
     ];
 
     //
