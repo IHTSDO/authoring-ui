@@ -55,14 +55,19 @@
     <div class="p-l-15 p-r-15" ng-if="task.status === 'Promoted'">
       <div class="alert alert-warning">Task has been promoted. No further changes allowed.</div>
     </div>
-    <div class="p-l-15 p-r-15" ng-if="branchLocked">
+    <div class="p-l-15 p-r-15" ng-if="branchLocked && !processingAutomatePromotion">
       <div class="alert alert-warning">Task branch is locked due to an ongoing rebase, promotion or classification</div>
     </div>
     <div class="p-l-15 p-r-15" ng-if="processingAutomatePromotion">
-      <div class="alert alert-warning">Task branch is locked due to an ongoing automate promotion. {{automatePromotionStatus !== ''? 'Status: ' + automatePromotionStatus : ''}} </div>
+      <div class="alert" ng-class="[{'green' : automatePromotionStatus === 'Classifying'}, 
+                {'amber' :  automatePromotionStatus === 'Rebasing'},
+                {'blue' : automatePromotionStatus === 'Promoting'},
+                {'alert-warning' : automatePromotionStatus !== 'Classifying' && automatePromotionStatus !== 'Rebasing' && automatePromotionStatus !== 'Promoting'}]">Automated promotion in progress. {{automatePromotionStatus !== ''? 'Status: ' + automatePromotionStatus : ''}} </div>
     </div>
     <div class="p-l-15 p-r-15" ng-if="automatePromotionErrorMsg !== ''">
-      <div class="alert alert-danger">{{automatePromotionErrorMsg}}</div>
+      <div class="alert alert-danger">{{automatePromotionErrorMsg}}
+      <div ng-if="automatePromotionStatus === 'Rebased with conflicts'">Click <a ng-click="goToConflicts()">here</a> to redirect to Merge Concepts page.</div>
+      </div>
     </div>
     <div class="p-l-15 p-r-15">
       <button class="btn btn-default green classify" ng-click="classify()"
