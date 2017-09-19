@@ -647,13 +647,14 @@ angular.module('singleConceptAuthoringApp')
                 if (hasDialectMatchingWords || hasSynonymMatchingWords) {
                   if (!isTemplateConcept) {
                     // SYN en-US preferred
-                    addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+                    var newDescription = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
 
                     if (hasDialectMatchingWords) {
                       // SYN en-GB preferred
                       addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                     }
                     if (hasSynonymMatchingWords) {
+                      newDescription.acceptabilityMap['900000000000508004'] = 'PREFERRED';
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
                         addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
                       }
