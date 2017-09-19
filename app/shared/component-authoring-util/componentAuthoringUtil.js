@@ -708,7 +708,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // apply exceptions to the dialect description
-            applyDialectAutomationExceptions(concept, tokenizedWords, dialectMatchingWords);
+            //applyDialectAutomationExceptions(concept, tokenizedWords, dialectMatchingWords);
 
             deferred.resolve(concept);
           }, function (error) {
