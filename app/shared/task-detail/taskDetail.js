@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','$interval',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService,$interval) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -111,10 +111,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.proceedAutomatePromotion = function () {
-        notificationService.sendMessage('Starting automated promotion...');
+        notificationService.sendMessage('Begin automate promotion process...');
         $scope.processingAutomatePromotion = true; 
-        $scope.automatePromotionErrorMsg = '';        
-        $scope.automatePromotionStatus = '';
+        $scope.automatePromotionErrorMsg = '';
         promotionService.proceedAutomatePromotion($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             $timeout(function () {
               $scope.checkAutomatePromotionStatus(false);
@@ -294,61 +293,49 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.checkAutomatePromotionStatus = function (isInitialInvoke) {       
-        $scope.automatePromotionErrorMsg = '';      
+        $scope.automatePromotionErrorMsg = '';
         promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {         
           if (response) {
             switch (response.status) {
               case 'Queued':
                 $scope.processingAutomatePromotion = true;
-                $rootScope.branchLocked = true;
                 $scope.automatePromotionStatus = "Queued";
                 notificationService.clear();
                 break;
               case 'Rebasing':
                 $scope.processingAutomatePromotion = true;
-                $rootScope.branchLocked = true;
                 $scope.automatePromotionStatus = "Rebasing";
                 notificationService.clear();
                 break;
               case 'Rebased with conflicts':
-                $scope.automatePromotionStatus = "Rebased with conflicts";
-                $rootScope.branchLocked = false;
                 $scope.processingAutomatePromotion = false;                
-                $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
+                $scope.automatePromotionErrorMsg = 'Task submitted for automate promotion, but it has been rebased with conflicts. Please try again if all conflicts are resolved!';
                 break;
               case 'Classifying':
                 $scope.processingAutomatePromotion = true;
-                $rootScope.branchLocked = true;
                 $scope.automatePromotionStatus = "Classifying";
-                $rootScope.classificationRunning = true;
                 notificationService.clear();
                 break;
               case 'Classified with results':
-                $rootScope.classificationRunning = false;
-                $rootScope.branchLocked = false;
                 $scope.processingAutomatePromotion = false;
-                $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';
+                $scope.automatePromotionErrorMsg = 'Task submitted for automate promotion, but it has been classified with results. Please try again if all results are accepted!';
                 break;
               case 'Promoting':
-                $rootScope.classificationRunning = false;
-                $rootScope.branchLocked = true;
                 $scope.processingAutomatePromotion = true;
                 $scope.automatePromotionStatus = "Promoting";
                 notificationService.clear();
                 break;
               case 'Completed':
-                $rootScope.classificationRunning = false;
                 $scope.processingAutomatePromotion = false;
                 if (!isInitialInvoke) {  
                   $rootScope.$broadcast('reloadTask');
                   $timeout(function () {
-                     notificationService.sendMessage('Automated promotion completed');
+                     notificationService.sendMessage('Completed automate promotion');
                   }, 1000); 
                 }             
                 break;
               case 'Failed':
                 $scope.processingAutomatePromotion = false;
-                $rootScope.branchLocked = false;
                 if (!isInitialInvoke) {                  
                   $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
                   notificationService.clear();
@@ -356,7 +343,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 break;              
               default:
                 $scope.processingAutomatePromotion = false;
-                $rootScope.branchLocked = false;
             }
             if ($scope.processingAutomatePromotion) {
               $timeout(function () {
@@ -370,18 +356,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $scope.checkForLock();
           }  
         });
-      };
-
-      $scope.goToConflicts = function () {
-        snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
-          if (!response.metadata || response.metadata && !response.metadata.lock) {
-            $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/conflicts');
-          }
-          else {
-            notificationService.sendWarning('Unable to start rebase on task ' + $routeParams.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
-          }
-        });
-      };
+      }
 
       //
       // Issue Links
