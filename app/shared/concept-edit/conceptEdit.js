@@ -1457,6 +1457,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return rel.type.conceptId !== '116680003';
           });
 
+          // remove display flag if it's set, and set relationship type to null if concept id or fsn are not set
+          angular.forEach(attrRels, function(rel){
+              if (rel.display) delete rel.display;
+              if (!rel.type.fsn || !rel.type.conceptId) rel.type.conceptId = null;
+          });               
+
+          // re-populate display flag if it exists
+          angular.forEach(attrRels, function(rel){
+              for (var i = 0; i < scope.drugsOrdering.length; i++) {
+                var item = scope.drugsOrdering[i];
+                if (rel.type.conceptId === item.id) rel.display = item.display;        
+              }
+          });
+
           // NOTE: All isaRels should be group 0, but sort by group anyway
           isaRels.sort(function (a, b) {
             if (!a.groupId && b.groupId) {
@@ -1470,22 +1484,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             } else {
               return a.groupId - b.groupId;
             }
-          });
+          });          
 
           attrRels.sort(function (a, b) {
-            if (a.groupId === b.groupId) {
-              angular.forEach(scope.drugsOrdering, function(item){
-                  if(a.type.conceptId === item.id){
-                      a.display = item.display;
-                      angular.forEach(scope.drugsOrdering, function(secondItem){
-                          if(b.type.conceptId === secondItem.id){
-                              b.display = secondItem.display;
-                              return item.display > secondItem.display;
-                          }
-                      })
-                  }
-              });
-
+            if (a.groupId === b.groupId && a.display && b.display) {
+              return a.display > b.display;
             } else {
               return a.groupId - b.groupId;
             }
