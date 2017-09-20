@@ -370,22 +370,12 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function proceedAutomatePromotion(projectKey, taskKey) {
+    function proceedPromotionAutomation(projectKey, taskKey) {
       var deferred = $q.defer();
-      scaService.proceedAutomatePromotion(projectKey, taskKey).then(function (response) {
+      scaService.proceedPromotionAutomation(projectKey, taskKey).then(function (response) {
         deferred.resolve();
       }, function (error) {
         deferred.reject('Error promoting project automation: ' + error);
-      });
-      return deferred.promise;
-    }
-
-    function getAutomatePromotionStatus (projectKey, taskKey) {
-      var deferred = $q.defer();
-      scaService.getAutomatePromotionStatus(projectKey, taskKey).then(function (response) {
-        deferred.resolve(response);
-      }, function (error) {
-        deferred.reject('Error getting Automate Promotion status: ' + error);
       });
       return deferred.promise;
     }
@@ -397,7 +387,7 @@ angular.module('singleConceptAuthoringApp')
 
       promoteTask: promoteTask,
       promoteProject: promoteProject,
-      proceedAutomatePromotion: proceedAutomatePromotion,
-      getAutomatePromotionStatus: getAutomatePromotionStatus
+      proceedPromotionAutomation: proceedPromotionAutomation
+
     };
   }]);
