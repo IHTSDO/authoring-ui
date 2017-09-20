@@ -1031,30 +1031,6 @@ angular.module('singleConceptAuthoringApp')
           });
           return deferred.promise;
         },
-// POST /projects/{projectKey}/tasks/{taskKey}/auto-promote
-// Proceed Automation Promotion the task to the Project
-        proceedPromotionAutomation: function (projectKey, taskKey) {
-          var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote', {}).then(function (response) {
-            notificationService.sendMessage('Automate Promotion run successfully', 5000);
-            deferred.resolve(response.data);
-          }, function (error) {
-            if (error.status === 504) {
-              notificationService.sendWarning('Your Automation promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
-              deferred.reject(error.message);
-            }
-            else if (error.status === 409) {
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              deferred.reject(error.message);
-            }
-            else {
-              console.error('Error promoting project ' + projectKey);
-              notificationService.sendError('Error promoting project', 10000);
-              deferred.reject(error.message);
-            }
-          });
-          return deferred.promise;
-        },
 // GET /projects/{projectKey}/tasks/{taskKey}/rebase
 // Generate the conflicts report between the Task and the Project
         getConflictReportForTask: function (projectKey, taskKey) {

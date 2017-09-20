@@ -370,24 +370,13 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function proceedPromotionAutomation(projectKey, taskKey) {
-      var deferred = $q.defer();
-      scaService.proceedPromotionAutomation(projectKey, taskKey).then(function (response) {
-        deferred.resolve();
-      }, function (error) {
-        deferred.reject('Error promoting project automation: ' + error);
-      });
-      return deferred.promise;
-    }
-
     return {
 
       checkPrerequisitesForTask: checkPrerequisitesForTask,
       checkPrerequisitesForProject: checkPrerequisitesForProject,
 
       promoteTask: promoteTask,
-      promoteProject: promoteProject,
-      proceedPromotionAutomation: proceedPromotionAutomation
+      promoteProject: promoteProject
 
     };
   }]);

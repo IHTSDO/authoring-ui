@@ -1,5 +1,5 @@
-<div class="col-md-12 scroll-if-height  no-padding" ng-controller="taskDetailCtrl">
-
+<div class="col-md-12 scroll-if-height  no-padding" ng-controller="taskDetailCtrl"> 
+  
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row no-padding clearfix">
     <div class="col col-md-12">
@@ -32,7 +32,7 @@
             </div>
           </div>
         </li>
-
+       
       </ul>
     </div>
   </div>
@@ -72,9 +72,6 @@
       <button ng-if="editable !== 'false'"
               ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || promoting"
               class="btn btn-default blue darken-1 promote" ng-click="promote()"> <span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">Promote This Task to the Project</span> </button>
-      <button class="btn btn-default purple darken-1 auto-promote" 
-              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"
-              ng-click="proceedPromotionAutomation()"> <span class="md md-archive purple darken-2 iconbase"></span> <span class="button-link">Begin Promotion Automation</span> </button>
     </div>
   </div>
 </div>
