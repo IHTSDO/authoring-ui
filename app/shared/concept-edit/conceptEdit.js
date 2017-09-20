@@ -1498,6 +1498,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         sortDescriptions();
         sortRelationships();
 
+        function setDefaultModuleId() {
+          var moduleId = metadataService.getCurrentModuleId(); 
+          if(!scope.concept.moduleId) {
+            scope.concept.moduleId = moduleId;
+          }       
+          angular.forEach(scope.concept.descriptions, function (description) {
+            if(!description.moduleId) {            
+              description.moduleId = moduleId;
+            }
+          });
+
+          angular.forEach(scope.concept.relationships, function (relationship) {
+            if(!relationship.moduleId) {             
+              relationship.moduleId = moduleId;
+            }
+            if(!relationship.target.moduleId) {              
+              relationship.target.moduleId = moduleId;
+            }
+          });           
+        }
+
+// on load, set default module id for components if not set yet
+        setDefaultModuleId();
+
         scope.setCaseSignificance = function (description, caseSignificance) {
 
           // if arguments not supplied or static element, do nothing
