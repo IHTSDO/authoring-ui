@@ -1243,8 +1243,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to retrieve branch dialect ids as array instead of map
 // NOTE: Required for orderBy in ng-repeat
+        scope.dialectLength = null;
         scope.getDialectIdsForDescription = function (description, FSN) {
-          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId, FSN)).sort(scope.dialectComparator);
+          var dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
+          scope.dialectLength = Object.keys(dialects).length;
+          return Object.keys(dialects).sort(scope.dialectComparator);
         };
 
 // define acceptability types

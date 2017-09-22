@@ -521,6 +521,12 @@ select {
     .editing-form .description {
         width: 47%;
     }
+    .editing-form .description.lang-ref-set-1 {
+        width: 54%;       
+    }    
+    .editing-form .description.lang-ref-set-3 {
+        width: 39%;       
+    }
     .editing-form .acceptability {
         width: 22%;
     }
@@ -586,6 +592,13 @@ select {
         width: 55.25%;
         padding-left: 0px;
     }
+    .editing-form .description.lang-ref-set-1 {
+        width: 62%;       
+    }    
+    .editing-form .description.lang-ref-set-3 {
+        width: 47%;       
+    }
+
     .editing-form .characteristictype {
         width: 10.5%;
         padding-left: .5%;

@@ -218,6 +218,35 @@ angular.module('singleConceptAuthoringApp')
               if (!defaultLanguage) {
                 defaultLanguage = match[1];
               }
+            } else {
+              match = key.match(/requiredLanguageRefsets/);
+              if (match) {
+                var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
+                requiredLanguageRefsets.forEach(function(lang) {
+                for (var attr in lang) {
+                  languages.push(attr);
+                  dialects[lang[attr]] = attr;
+                }
+                });
+
+                // set the default refset id if not already set
+                if (!defaultLanguageRefsetId && languages.length === 2) {                
+                for (var langRefSetId in dialects){
+                  if(languages[1] === dialects[langRefSetId]) {
+                  defaultLanguageRefsetId = langRefSetId;
+                  }
+                }
+                } else {
+                defaultLanguageRefsetId = '900000000000509007';
+                }
+
+                // set the default language if not already set
+                if (!defaultLanguage && languages.length === 2) {
+                defaultLanguage = languages[1];
+                } else {
+                defaultLanguage = languages[0];
+                }
+              }
             }
           }
         }

@@ -311,7 +311,7 @@
           </button>
 
           <!-- Term -->
-          <div class="pull-left description no-padding"
+          <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}" 
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
               <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                         ng-model-options="{updateOn: 'blur'}"
