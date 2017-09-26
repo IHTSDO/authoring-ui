@@ -1043,13 +1043,13 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject(error.message);
             }
             else if (error.status === 409) {
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+              notificationService.sendError(error.data.message);
               deferred.reject(error.message);
             }
             else {
               console.error('Error promoting project ' + projectKey);
               notificationService.sendError('Error promoting project', 10000);
-              deferred.reject(error.message);
+              deferred.reject(error.data.message);
             }
           });
           return deferred.promise;

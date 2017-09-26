@@ -299,26 +299,30 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (response) {
             switch (response.status) {
               case 'Queued':
-                $scope.processingAutomatePromotion = true;
-                $rootScope.branchLocked = true;
+                $scope.processingAutomatePromotion = false;
+                $rootScope.automatedPromotionInQueued = true;
+                $rootScope.branchLocked = false;
                 $scope.automatePromotionStatus = "Queued";
                 notificationService.clear();
                 break;
               case 'Rebasing':
                 $scope.processingAutomatePromotion = true;
                 $rootScope.branchLocked = true;
+                $rootScope.automatedPromotionInQueued = false;
                 $scope.automatePromotionStatus = "Rebasing";
                 notificationService.clear();
                 break;
               case 'Rebased with conflicts':
                 $scope.automatePromotionStatus = "Rebased with conflicts";
                 $rootScope.branchLocked = false;
+                $rootScope.automatedPromotionInQueued = false;
                 $scope.processingAutomatePromotion = false;                
                 $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
                 break;
               case 'Classifying':
                 $scope.processingAutomatePromotion = true;
                 $rootScope.branchLocked = true;
+                $rootScope.automatedPromotionInQueued = false;
                 $scope.automatePromotionStatus = "Classifying";
                 $rootScope.classificationRunning = true;
                 notificationService.clear();
@@ -326,12 +330,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               case 'Classified with results':
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
+                $rootScope.automatedPromotionInQueued = false;
                 $scope.processingAutomatePromotion = false;
                 $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';
                 break;
               case 'Promoting':
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = true;
+                $rootScope.automatedPromotionInQueued = false;
                 $scope.processingAutomatePromotion = true;
                 $scope.automatePromotionStatus = "Promoting";
                 notificationService.clear();
@@ -339,6 +345,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               case 'Completed':
                 $rootScope.classificationRunning = false;
                 $scope.processingAutomatePromotion = false;
+                $rootScope.automatedPromotionInQueued = false;
                 if (!isInitialInvoke) {  
                   $rootScope.$broadcast('reloadTask');
                   $timeout(function () {
@@ -348,6 +355,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 break;
               case 'Failed':
                 $scope.processingAutomatePromotion = false;
+                $rootScope.automatedPromotionInQueued = false;
                 $rootScope.branchLocked = false;
                 if (!isInitialInvoke) {                  
                   $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
@@ -356,9 +364,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 break;              
               default:
                 $scope.processingAutomatePromotion = false;
+                $rootScope.automatedPromotionInQueued = false;
                 $rootScope.branchLocked = false;
             }
-            if ($scope.processingAutomatePromotion) {
+            if (($scope.processingAutomatePromotion || $scope.automatePromotionStatus === 'Queued') && response.status !== 'Failed') {
               $timeout(function () {
                 $scope.checkAutomatePromotionStatus(false);
               }, 10000);
