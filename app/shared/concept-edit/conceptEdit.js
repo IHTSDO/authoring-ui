@@ -1228,7 +1228,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
 // define the available dialects
-        scope.dialects = metadataService.getAllDialects();
+        $timeout(function () {
+          scope.dialects = metadataService.getAllDialects();
+        }, 100);        
 
 // always return en-us dialect first
         scope.dialectComparator = function (a, b) {
@@ -1604,22 +1606,48 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // after
         scope.addDescription = function (afterIndex) {
 
+          // for Belgian extension only
+          if(metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '11000172109') {
+            addBelgianDescription(afterIndex);
+          } else {
+            var description = componentAuthoringUtil.getNewDescription(null);
 
-          var description = componentAuthoringUtil.getNewDescription(null);
+            // if not specified, simply push the new description
+            if (afterIndex === null || afterIndex === undefined) {
+              scope.concept.descriptions.push(description);
+              autoSave();
+            }
+            // if in range, add after the specified afterIndex
+            else {
+              scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+              autoSave();
+            }
+          }
+        };
 
+        function addBelgianDescription(afterIndex) {
+          var duDescription = componentAuthoringUtil.getNewDescription(null);
+          var frDescription = componentAuthoringUtil.getNewDescription(null);
+
+          duDescription.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term
+          duDescription.lang = 'du';
+
+          frDescription.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term
+          frDescription.lang = 'fr';
 
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
-            scope.concept.descriptions.push(description);
+            scope.concept.descriptions.push(duDescription);
+            scope.concept.descriptions.push(frDescription);
             autoSave();
           }
           // if in range, add after the specified afterIndex
           else {
-            scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+            scope.concept.descriptions.splice(afterIndex + 1, 0, duDescription);
+            scope.concept.descriptions.splice(afterIndex + 2, 0, frDescription);
             autoSave();
           }
-
-        };
+        }
 
         /**
          * Function to remove description
