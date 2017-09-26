@@ -164,6 +164,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $rootScope.automatedPromotionInQueued = false;
     $rootScope.currentTask = null;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
