@@ -178,7 +178,9 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getNewBelgianConcept(concept,moduleId) {
-        var newFSN = getNewFsn(moduleId, true);
+        var dialects = metadataService.getAllDialects();
+
+        var newFSN = getNewFsn(moduleId, true);        
         newFSN.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // FSN US Preferred Term          
         concept.descriptions.push(newFSN);
 
@@ -188,12 +190,12 @@ angular.module('singleConceptAuthoringApp')
 
         var duDesc = getNewDescription(moduleId, true);
         duDesc.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term 
-        duDesc.lang = 'du';
+        duDesc.lang = dialects['31000172101'];
         concept.descriptions.push(duDesc);
 
         var frDesc = getNewDescription(moduleId, true);
         frDesc.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term 
-        frDesc.lang = 'fr';
+        frDesc.lang = dialects['21000172104'];
         concept.descriptions.push(frDesc);
       }
 
