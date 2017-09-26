@@ -153,20 +153,48 @@ angular.module('singleConceptAuthoringApp')
           'moduleId': moduleId
         };
 
-        // add FSN description
-        concept.descriptions.push(getNewFsn(moduleId, true));
+        // for Belgian extension only
+        if(metadataService.isExtensionSet() && moduleId === '11000172109') {
+          getNewBelgianConcept(concept,moduleId);
+        } else {
 
-        // add a Preferred Term
-        concept.descriptions.push(getNewPt(moduleId, true));
+          // add FSN description
+          concept.descriptions.push(getNewFsn(moduleId, true));
 
-        // if extension is set, add a Synonym
-        if (metadataService.isExtensionSet() && Object.keys(metadataService.getDialectsForModuleId(moduleId)).length > 1) {
-          concept.descriptions.push(getNewDescription(moduleId, true));
+          // add a Preferred Term
+          concept.descriptions.push(getNewPt(moduleId, true));
+
+          // if extension is set, add a Synonym
+          if (metadataService.isExtensionSet() && Object.keys(metadataService.getDialectsForModuleId(moduleId)).length > 1) {
+            concept.descriptions.push(getNewDescription(moduleId, true));
+          }
+
+          
         }
-
         // add IsA relationship
         concept.relationships.push(getNewIsaRelationship(moduleId));
+
         return concept;
+      }
+
+      function getNewBelgianConcept(concept,moduleId) {
+        var newFSN = getNewFsn(moduleId, true);
+        newFSN.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // FSN US Preferred Term          
+        concept.descriptions.push(newFSN);
+
+        var newPT = getNewPt(moduleId, true);
+        newPT.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // SYN US Preferred Term  
+        concept.descriptions.push(newPT);
+
+        var duDesc = getNewDescription(moduleId, true);
+        duDesc.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term 
+        duDesc.lang = 'du';
+        concept.descriptions.push(duDesc);
+
+        var frDesc = getNewDescription(moduleId, true);
+        frDesc.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term 
+        frDesc.lang = 'fr';
+        concept.descriptions.push(frDesc);
       }
 
       /**

@@ -204,8 +204,7 @@ angular.module('singleConceptAuthoringApp')
         for (var key in metadata) {
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
-            if (match && match[1]) {
-                console.log(match[1]);
+            if (match && match[1]) {              
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
 
@@ -223,28 +222,26 @@ angular.module('singleConceptAuthoringApp')
               if (match) {
                 var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
                 requiredLanguageRefsets.forEach(function(lang) {
-                for (var attr in lang) {
-                  languages.push(attr);
-                  dialects[lang[attr]] = attr;
-                }
+                  languages.push(Object.keys(lang)[0]);
+                  dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
                 });
 
                 // set the default refset id if not already set
                 if (!defaultLanguageRefsetId && languages.length === 2) {                
                 for (var langRefSetId in dialects){
                   if(languages[1] === dialects[langRefSetId]) {
-                  defaultLanguageRefsetId = langRefSetId;
+                    defaultLanguageRefsetId = langRefSetId;
                   }
                 }
                 } else {
-                defaultLanguageRefsetId = '900000000000509007';
+                  defaultLanguageRefsetId = '900000000000509007';
                 }
 
                 // set the default language if not already set
                 if (!defaultLanguage && languages.length === 2) {
-                defaultLanguage = languages[1];
+                  defaultLanguage = languages[1];
                 } else {
-                defaultLanguage = languages[0];
+                  defaultLanguage = languages[0];
                 }
               }
             }
