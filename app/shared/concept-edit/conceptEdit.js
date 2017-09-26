@@ -1626,14 +1626,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         function addBelgianDescription(afterIndex) {
+          var dialects = metadataService.getAllDialects();
           var duDescription = componentAuthoringUtil.getNewDescription(null);
           var frDescription = componentAuthoringUtil.getNewDescription(null);
 
           duDescription.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term
-          duDescription.lang = 'du';
+          duDescription.lang = dialects['31000172101'];
 
           frDescription.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term
-          frDescription.lang = 'fr';
+          frDescription.lang = dialects['21000172104'];
 
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
@@ -1893,7 +1894,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // returns the name of a dialect given its refset id
         function getShortDialectName(id) {
-          if (!scope.dialects[id]) {
+          if (!scope.dialects || !scope.dialects[id]) {
             return '??';
           }
           return scope.dialects[id].replace('en-', '');
