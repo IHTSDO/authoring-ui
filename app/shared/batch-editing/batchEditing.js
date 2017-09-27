@@ -663,6 +663,32 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
+          scope.saveHandler  = function () {
+            var deferred = $q.defer();
+            var concept = scope.viewedConcepts[0];
+            scope.saveConcept(concept).then(function (response){
+              if (response.validation.hasErrors || response.validation.hasWarnings) {
+                scope.viewedConcepts = [];
+                $timeout(function () {                        
+                  scope.editConcept(response);
+                }, 500);
+                
+              } else {
+                $timeout(function () {                        
+                  scope.removeConcept(response);
+                }, 500);                
+              }
+              deferred.resolve(response);
+            }, function (error) {
+              scope.viewedConcepts = [];
+              $timeout(function () {                        
+                  scope.editConcept(concept);
+              }, 500);            
+              deferred.reject(error);
+            });
+            return deferred.promise;
+          };
+
           scope.removeConcept = function (concept) {
 
             batchEditingService.removeBatchConcept(concept.conceptId).then(function () {

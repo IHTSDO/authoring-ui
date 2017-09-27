@@ -842,6 +842,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             'errors': {}
           };
 
+          // Handle save action outside this component, applying for Batch import
+          if (scope.isBatch) {
+            scope.saving = true;
+            scope.saveFunction().then(function(response){
+              scope.saving = false;
+              if (!response.validation.hasErrors && !response.validation.hasWarnings) {
+                notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+              }
+            },function (error) {
+              scope.saving = false;
+            });
+            return;
+          }
+
           // broadcast event to any listeners (currently task detail, crs concept list,
           // conflict/feedback resolved lists)
           $rootScope.$broadcast('conceptEdit.saveConcept', {
