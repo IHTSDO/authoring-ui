@@ -663,7 +663,7 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-          scope.saveFunction  = function () {
+          scope.saveHandler  = function () {
             var deferred = $q.defer();
             var concept = scope.viewedConcepts[0];
             scope.saveConcept(concept).then(function (response){
@@ -671,19 +671,19 @@ angular.module('singleConceptAuthoringApp')
                 scope.viewedConcepts = [];
                 $timeout(function () {                        
                   scope.editConcept(response);
-                }, 200);
+                }, 500);
                 
               } else {
                 $timeout(function () {                        
-                  scope.removeConcept(concept);
-                }, 200);                
+                  scope.removeConcept(response);
+                }, 500);                
               }
               deferred.resolve(response);
             }, function (error) {
               scope.viewedConcepts = [];
               $timeout(function () {                        
                   scope.editConcept(concept);
-              }, 200);            
+              }, 500);            
               deferred.reject(error);
             });
             return deferred.promise;
