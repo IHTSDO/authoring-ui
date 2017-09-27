@@ -663,7 +663,7 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-          scope.saveHandler  = function () {
+          scope.saveFunction  = function () {
             var deferred = $q.defer();
             var concept = scope.viewedConcepts[0];
             scope.saveConcept(concept).then(function (response){
