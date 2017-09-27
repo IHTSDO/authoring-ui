@@ -471,7 +471,7 @@ angular.module('singleConceptAuthoringApp')
             conceptCopy.template = template;
             componentAuthoringUtil.setDefaultFields(template);
             angular.forEach(conceptCopy.relationships, function (r) {
-                r.relationshipId = snowowlService.createGuid();
+                r.relationshipId = snowowlService.isSctid(r.relationshipId) ? r.relationshipId : snowowlService.createGuid();
             });
             angular.forEach(template.conceptOutline.relationships, function (rt) {
 
@@ -558,10 +558,10 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             angular.forEach(conceptCopy.descriptions, function (d) {
-                d.descriptionId = snowowlService.createGuid();
+                d.descriptionId = snowowlService.isSctid(d.descriptionId) ? d.descriptionId : snowowlService.createGuid();
             });
             angular.forEach(conceptCopy.relationships, function (r) {
-                r.relationshipId = snowowlService.createGuid();
+                r.relationshipId = snowowlService.isSctid(r.relationshipId) ? r.relationshipId : snowowlService.createGuid();
             });
 
             componentAuthoringUtil.setDefaultFields(conceptCopy);
