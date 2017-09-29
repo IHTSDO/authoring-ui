@@ -9,7 +9,7 @@
 
       <button ng-if="!deletion"
               class="col-md-2 btn btn-default complete-action-btn pull-right tooltips-bottom m-r-10 large-size-tooltip offset-tooltip-left"
-              ng-disabled="!isComplete()"
+              ng-disabled="!isComplete() || hasNoConceptTarget()"
               ng-click="completeInactivation()">
         Complete Inactivation
       </button>
