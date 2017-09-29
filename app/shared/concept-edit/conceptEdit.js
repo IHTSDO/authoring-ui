@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
      };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -1084,6 +1084,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       // remove from the modified list
                       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
 
+                      // remove from batch editing if any
+                      if (!scope.isBatch) {
+                        batchEditingService.removeBatchConcept(scope.concept.conceptId);
+                      }
                       notificationService.sendMessage('Concept Deleted', 5000);
                     }
                   });

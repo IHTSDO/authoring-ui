@@ -671,19 +671,19 @@ angular.module('singleConceptAuthoringApp')
                 scope.viewedConcepts = [];
                 $timeout(function () {                        
                   scope.editConcept(response);
-                }, 500);
+                }, 200);
                 
               } else {
                 $timeout(function () {                        
-                  scope.removeConcept(response);
-                }, 500);                
+                  scope.removeConcept(concept);
+                }, 200);                
               }
               deferred.resolve(response);
             }, function (error) {
               scope.viewedConcepts = [];
               $timeout(function () {                        
                   scope.editConcept(concept);
-              }, 500);            
+              }, 200);            
               deferred.reject(error);
             });
             return deferred.promise;
@@ -773,7 +773,10 @@ angular.module('singleConceptAuthoringApp')
           scope.$on('stopEditing', function (event, data) {
             removeViewedConcept(data.concept.conceptId);
           });
-
+// watch for delete concept events
+          scope.$on('removeItem', function (event, data) {
+            scope.removeConcept(data.concept);
+          });
 
 // watch for save events from editing panel
           scope.$on('conceptEdit.conceptChange', function (event, data) {
