@@ -671,19 +671,19 @@ angular.module('singleConceptAuthoringApp')
                 scope.viewedConcepts = [];
                 $timeout(function () {                        
                   scope.editConcept(response);
-                }, 500);
+                }, 200);
                 
               } else {
                 $timeout(function () {                        
-                  scope.removeConcept(response);
-                }, 500);                
+                  scope.removeConcept(concept);
+                }, 200);                
               }
               deferred.resolve(response);
             }, function (error) {
               scope.viewedConcepts = [];
               $timeout(function () {                        
                   scope.editConcept(concept);
-              }, 500);            
+              }, 200);            
               deferred.reject(error);
             });
             return deferred.promise;
