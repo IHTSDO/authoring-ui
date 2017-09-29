@@ -491,8 +491,7 @@ angular.module('singleConceptAuthoringApp')
                         var historicalConcept = historicalConcepts[i];
                         if(item.conceptId === historicalConcept.conceptId) {
                           item.inactivationIndicator = historicalConcept.inactivationIndicator;
-                          item.newTargetFsn = scope.inactivationConcept.fsn;
-                          item.newTargetId = scope.inactivationConcept.conceptId;
+                          break;
                         }
                       }
                     });
