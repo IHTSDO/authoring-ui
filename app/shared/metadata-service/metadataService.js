@@ -162,7 +162,7 @@ angular.module('singleConceptAuthoringApp')
         name: 'LOINC - SNOMED CT Cooperation Project module (core metadata concept)'
       }],
       acceptLanguageMap: 'en-us;q=0.8,en-gb;q=0.5',
-      defaultLanguage: 'en',
+      defaultLanguages: 'en',
       languages: ['en'],
       dialects: {
         '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
@@ -197,7 +197,7 @@ angular.module('singleConceptAuthoringApp')
         // temporary variables used in parsing metadata
         var dialects = {'900000000000509007': 'en-us'};
         var languages = ['en'];
-        var defaultLanguage = null;
+        var defaultLanguages = [];
         var defaultLanguageRefsetId = null;
 
         // extract the available language refset ids, dialect ids, language codes
@@ -214,8 +214,8 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // set the default language if not already set
-              if (!defaultLanguage) {
-                defaultLanguage = match[1];
+              if (defaultLanguages.length === 0) {
+                defaultLanguages.push(match[1]);
               }
             } else {
               match = key.match(/requiredLanguageRefsets/);
@@ -224,6 +224,10 @@ angular.module('singleConceptAuthoringApp')
                 requiredLanguageRefsets.forEach(function(lang) {
                   languages.push(Object.keys(lang)[0]);
                   dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
+                    console.log(lang);
+                  if(lang.default === "true"){
+                      defaultLanguages.push(Object.keys(lang)[0]);
+                  }
                 });
 
                 // set the default refset id if not already set
@@ -237,12 +241,13 @@ angular.module('singleConceptAuthoringApp')
                   defaultLanguageRefsetId = '900000000000509007';
                 }
 
-                // set the default language if not already set
-                if (!defaultLanguage && languages.length === 2) {
-                  defaultLanguage = languages[1];
-                } else {
-                  defaultLanguage = languages[0];
-                }
+//                // set the default language if not already set
+//                if (!defaultLanguages && languages.length === 2) {
+//                    defaultLanguages =[];
+//                  defaultLanguages.push(languages[1]);
+//                } else {
+//                  defaultLanguages.push(languages[0]);
+//                }
               }
             }
           }
@@ -256,7 +261,7 @@ angular.module('singleConceptAuthoringApp')
         }
         if (languages.length === 1) {
           console.error('Error setting extension metadata: module was specified but no languages/dialects found, defaulting');
-          defaultLanguage = languages[0];
+          defaultLanguages.push(languages[0]);
         }
         if (!defaultLanguageRefsetId) {
           console.error('Could not determine language refset for extension metadata');
@@ -272,8 +277,8 @@ angular.module('singleConceptAuthoringApp')
             }
           ],
 
-          acceptLanguageMap: defaultLanguage + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
-          defaultLanguage: defaultLanguage,
+          acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
+          defaultLanguages: defaultLanguages,
           languages: languages,
           dialects: dialects
         };
@@ -454,10 +459,10 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getDefaultLanguageForModuleId(moduleId) {
-      if (isExtensionModule(moduleId) && extensionMetadata.defaultLanguage  !== null) {
-        return extensionMetadata.defaultLanguage ? extensionMetadata.defaultLanguage : extensionMetadata.languages[0];
+      if (isExtensionModule(moduleId) && extensionMetadata.defaultLanguagess  !== null) {
+        return extensionMetadata.defaultLanguages ? extensionMetadata.defaultLanguages : extensionMetadata.languages[0];
       } else {
-        return internationalMetadata.defaultLanguage ? internationalMetadata.defaultLanguage : internationalMetadata.languages[0];
+        return internationalMetadata.defaultLanguages ? internationalMetadata.defaultLanguages : internationalMetadata.languages[0];
       }
     }
 

@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
 
-      function getNewAcceptabilityMap(moduleId, defaultValue, initial) {
+      function getNewAcceptabilityMap(moduleId, defaultValue, initial, lang) {
         var acceptabilityMap = {};
         var dialects = metadataService.getDialectsForModuleId(moduleId);
         for (var key in dialects) {
@@ -20,16 +20,20 @@ angular.module('singleConceptAuthoringApp')
           // different behavior between extension and international content
           if (metadataService.isExtensionSet() && !initial) {
             // if this key is the default language, set acceptability to preferred
-            if (dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)) {
+              console.log(dialects[key]);
+            if (dialects[key].indexOf(lang) !== -1) {
               acceptabilityMap[key] = 'PREFERRED';
             }
             else if (dialects[key].indexOf(metadataService.getDefaultLanguageForModuleId(moduleId)) !== -1) {
               acceptabilityMap[key] = 'ACCEPTABLE';
             }
           }
-          else if (initial && dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)) {
-
-          } else {
+          else if (dialects[key].indexOf(lang) !== -1) {
+              acceptabilityMap[key] = 'PREFERRED';
+          }
+          else if (dialects[key].indexOf(lang) === -1) {
+          }
+            else {
             acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
           }
 
@@ -38,24 +42,37 @@ angular.module('singleConceptAuthoringApp')
         return acceptabilityMap;
       }
 
-      function getNewDescription(moduleId) {
+      function getNewDescription(moduleId, language) {
+        
         if (!moduleId) {
           moduleId = metadataService.getCurrentModuleId();
+        }
+        if(language && language !== null){
+           var lang = language;
+        }
+        else{
+            var lang = metadataService.getDefaultLanguageForModuleId(moduleId);
         }
         return {
           'active': true,
           'moduleId': moduleId,
           'type': 'SYNONYM',
           'term': null,
-          'lang': metadataService.getDefaultLanguageForModuleId(moduleId),
+          'lang': lang,
           'caseSignificance': 'CASE_INSENSITIVE',
           'conceptId': null,
-          'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE')
+          'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE', false, lang)
         };
       }
 
-      function getNewFsn(moduleId, initial) {
+      function getNewFsn(moduleId, initial, language) {
         // add FSN acceptability and type
+        if(language && language !== null){
+           var lang = language;
+        }
+        else{
+            var lang = metadataService.getDefaultLanguageForModuleId(null);
+        }
         var desc = getNewDescription(moduleId);
         desc.type = 'FSN';
 
@@ -64,14 +81,20 @@ angular.module('singleConceptAuthoringApp')
           desc.lang = metadataService.getDefaultLanguageForModuleId(null);
         }
 
-        desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
+        desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial, desc.lang);
 
 
         return desc;
       }
 
-      function getNewPt(moduleId, initial) {
+      function getNewPt(moduleId, initial, language) {
         // add PT acceptability and type
+        if(language && language !== null){
+           var lang = language;
+        }
+        else{
+            var lang = metadataService.getDefaultLanguageForModuleId(null);
+        }
         var desc = getNewDescription(moduleId);
         desc.type = 'SYNONYM';
 
@@ -80,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
           desc.lang = metadataService.getDefaultLanguageForModuleId(null);
         }
 
-        desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
+        desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial, desc.lang);
         return desc;
       }
 
@@ -153,51 +176,48 @@ angular.module('singleConceptAuthoringApp')
           'moduleId': moduleId
         };
 
-        // for Belgian extension only
-        if(metadataService.isExtensionSet() && moduleId === '11000172109') {
-          getNewBelgianConcept(concept,moduleId);
-        } else {
 
           // add FSN description
-          concept.descriptions.push(getNewFsn(moduleId, true));
+          concept.descriptions.push(getNewFsn(moduleId, true, 'en'));
 
           // add a Preferred Term
-          concept.descriptions.push(getNewPt(moduleId, true));
+          concept.descriptions.push(getNewPt(moduleId, true, 'en'));
 
           // if extension is set, add a Synonym
-          if (metadataService.isExtensionSet() && Object.keys(metadataService.getDialectsForModuleId(moduleId)).length > 1) {
-            concept.descriptions.push(getNewDescription(moduleId, true));
+          if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
+            angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
+                concept.descriptions.push(getNewDescription(moduleId, language));
+                console.log(concept.descriptions);
+            })
           }
 
-          
-        }
         // add IsA relationship
         concept.relationships.push(getNewIsaRelationship(moduleId));
 
         return concept;
       }
 
-      function getNewBelgianConcept(concept,moduleId) {
-        var dialects = metadataService.getAllDialects();
-
-        var newFSN = getNewFsn(moduleId, true);        
-        newFSN.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // FSN US Preferred Term          
-        concept.descriptions.push(newFSN);
-
-        var newPT = getNewPt(moduleId, true);
-        newPT.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // SYN US Preferred Term  
-        concept.descriptions.push(newPT);
-
-        var duDesc = getNewDescription(moduleId, true);
-        duDesc.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term 
-        duDesc.lang = dialects['31000172101'];
-        concept.descriptions.push(duDesc);
-
-        var frDesc = getNewDescription(moduleId, true);
-        frDesc.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term 
-        frDesc.lang = dialects['21000172104'];
-        concept.descriptions.push(frDesc);
-      }
+//      function getNewBelgianConcept(concept,moduleId) {
+//        var dialects = metadataService.getAllDialects();
+//
+//        var newFSN = getNewFsn(moduleId, true);        
+//        newFSN.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // FSN US Preferred Term          
+//        concept.descriptions.push(newFSN);
+//
+//        var newPT = getNewPt(moduleId, true);
+//        newPT.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // SYN US Preferred Term  
+//        concept.descriptions.push(newPT);
+//
+//        var duDesc = getNewDescription(moduleId, true);
+//        duDesc.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term 
+//        duDesc.lang = dialects['31000172101'];
+//        concept.descriptions.push(duDesc);
+//
+//        var frDesc = getNewDescription(moduleId, true);
+//        frDesc.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term 
+//        frDesc.lang = dialects['21000172104'];
+//        concept.descriptions.push(frDesc);
+//      }
 
       /**
        * Checks if concept has basic fields required and adds them if not
