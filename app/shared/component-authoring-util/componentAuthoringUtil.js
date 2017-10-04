@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           else if (dialects[key].indexOf(lang) !== -1) {
-              acceptabilityMap[key] = 'PREFERRED';
+              acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';;
           }
           else if (dialects[key].indexOf(lang) === -1) {
           }
