@@ -1624,11 +1624,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // after
         scope.addDescription = function (afterIndex) {
 
-          // for Belgian extension only
-          if(metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '11000172109') {
-            addBelgianDescription(afterIndex);
+          var description;
+          var moduleId = metadataService.getCurrentModuleId(); 
+          // for extensions with multiple default languages
+          if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
+            angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
+                description = componentAuthoringUtil.getNewDescription(moduleId, language);
+                if (afterIndex === null || afterIndex === undefined) {
+                  scope.concept.descriptions.push(description);
+                  autoSave();
+                }
+                // if in range, add after the specified afterIndex
+                else {
+                  scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+                  autoSave();
+                }
+            })
           } else {
-            var description = componentAuthoringUtil.getNewDescription(null);
+            description = componentAuthoringUtil.getNewDescription(null);
 
             // if not specified, simply push the new description
             if (afterIndex === null || afterIndex === undefined) {
@@ -1643,30 +1656,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        function addBelgianDescription(afterIndex) {
-          var dialects = metadataService.getAllDialects();
-          var duDescription = componentAuthoringUtil.getNewDescription(null);
-          var frDescription = componentAuthoringUtil.getNewDescription(null);
-
-          duDescription.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term
-          duDescription.lang = dialects['31000172101'];
-
-          frDescription.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term
-          frDescription.lang = dialects['21000172104'];
-
-          // if not specified, simply push the new description
-          if (afterIndex === null || afterIndex === undefined) {
-            scope.concept.descriptions.push(duDescription);
-            scope.concept.descriptions.push(frDescription);
-            autoSave();
-          }
-          // if in range, add after the specified afterIndex
-          else {
-            scope.concept.descriptions.splice(afterIndex + 1, 0, duDescription);
-            scope.concept.descriptions.splice(afterIndex + 2, 0, frDescription);
-            autoSave();
-          }
-        }
+//        function addBelgianDescription(afterIndex) {
+//          var dialects = metadataService.getAllDialects();
+//          var duDescription = componentAuthoringUtil.getNewDescription(null);
+//          var frDescription = componentAuthoringUtil.getNewDescription(null);
+//
+//          duDescription.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term
+//          duDescription.lang = dialects['31000172101'];
+//
+//          frDescription.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term
+//          frDescription.lang = dialects['21000172104'];
+//
+//          // if not specified, simply push the new description
+//          if (afterIndex === null || afterIndex === undefined) {
+//            scope.concept.descriptions.push(duDescription);
+//            scope.concept.descriptions.push(frDescription);
+//            autoSave();
+//          }
+//          // if in range, add after the specified afterIndex
+//          else {
+//            scope.concept.descriptions.splice(afterIndex + 1, 0, duDescription);
+//            scope.concept.descriptions.splice(afterIndex + 2, 0, frDescription);
+//            autoSave();
+//          }
+//        }
 
         /**
          * Function to remove description
