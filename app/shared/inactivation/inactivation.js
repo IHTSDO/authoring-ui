@@ -472,36 +472,7 @@ angular.module('singleConceptAuthoringApp')
                 var data = scope.affectedConceptAssocs ? scope.affectedConceptAssocs : [];
                 params.total(data.length);
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
-                
-                // Look up NONCONFORMANCE_TO_EDITORIAL_POLICY
-                var nonConformanceConcepts = data.filter(function (item) {
-                  return item.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY';
-                });
-
-                if (nonConformanceConcepts.length > 0) {
-                  var promises = [];
-                  nonConformanceConcepts.forEach(function (item) {
-                    promises.push(snowowlService.getFullConcept(item.conceptId, scope.branch));
-                  });
-                   
-                  // on resolution of all promises
-                  $q.all(promises).then(function (historicalConcepts) {
-                    nonConformanceConcepts.forEach(function(item){
-                      for (var i = 0; i < historicalConcepts.length; i++) {
-                        var historicalConcept = historicalConcepts[i];
-                        if(item.conceptId === historicalConcept.conceptId) {
-                          item.inactivationIndicator = historicalConcept.inactivationIndicator;
-                          break;
-                        }
-                      }
-                    });
-                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                  }, function (error) {
-                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));                   
-                  });
-                } else {
-                  $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }                
+                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
               }
             }
           );
@@ -1055,6 +1026,13 @@ angular.module('singleConceptAuthoringApp')
             rel.target.definitionStatus = concept.concept.definitionStatus;
           }
 
+          scope.resetRelTargetConcept = function (rel) {
+            if (rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+              rel.newTargetFsn = "";
+              rel.newTargetId = "";
+            }
+          }
+
           scope.updateRefTarget = function (rel) {
             console.log('updating');
             for (var j = 0; j < scope.associationTargets.length; j++) {
@@ -1069,7 +1047,8 @@ angular.module('singleConceptAuthoringApp')
           scope.hasNoConceptTarget = function () {           
             for (var i = 0; i < scope.affectedConceptAssocs.length; i++) {
               var concept = scope.affectedConceptAssocs[i];
-              if (!concept.newTargetId || !concept.newTargetFsn || !concept.refsetName) {
+              if ((!concept.newTargetId || !concept.newTargetFsn || !concept.refsetName) 
+                && concept.inactivationIndicator !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
                 return true;
               }
             }

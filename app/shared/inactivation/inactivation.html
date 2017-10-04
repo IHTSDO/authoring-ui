@@ -204,12 +204,14 @@
               <td data-title="'Reason'" sortable="''">
 
                 <select ng-model="rel.inactivationIndicator" class="select"
-                        ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
+                        ng-options="reason.id as reason.id for reason in inactivationReasons"
+                        ng-change="resetRelTargetConcept(rel)"></select>
 
               </td>
               <td data-title="'Association'" sortable="'refsetName'">
 
                 <select ng-model="rel.refsetName" class="select"
+                        ng-disabled="rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY'"
                         ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
                         ng-change="updateRefTarget(rel)"></select>
               </td>
@@ -218,6 +220,7 @@
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropAssociationTarget(rel, $data)">
               <textarea type="text" class="form-control inactivation-value" ng-model="rel.newTargetFsn"
+                        ng-disabled="rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY'"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
