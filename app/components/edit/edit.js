@@ -495,6 +495,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('inactivation');
     });
 
+    $scope.$on('viewClassification', function (event, data) {
+      $scope.setView('classification');
+    });    
+
     // pass inactivation service function to determine whether in active inactivation (heh)
     $scope.isInactivation = inactivationService.isInactivation;
 
