@@ -450,7 +450,7 @@ angular.module('singleConceptAuthoringApp')
                       break;
                     }
                   }
-                  if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
+                  if(!itemFound) {
                     scope.inferredNotPreviouslyStated.push(relationshipChange);
                   }
                 });
