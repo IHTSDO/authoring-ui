@@ -1361,25 +1361,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!aHasUsA && bHasUsA) {
               return 1;
             }
+            
+            if (!metadataService.isExtensionSet()) {
+              // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
+              var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
+                  if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
+                    return true;
+                  }
+                }).length > 0;
+              var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
+                  if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
+                    return true;
+                  }
+                }).length > 0;
 
-            // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
-            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
-                if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
-                  return true;
-                }
-              }).length > 0;
-            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
-                if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
-                  return true;
-                }
-              }).length > 0;
 
-
-            if (aHasOtherP && !bHasOtherP) {
-              return -1;
-            }
-            if (!aHasOtherP && bHasOtherP) {
-              return 1;
+              if (aHasOtherP && !bHasOtherP) {
+                return -1;
+              }
+              if (!aHasOtherP && bHasOtherP) {
+                return 1;
+              }
             }
 
             // comparator function for sorting by acceptabilities within a specified dialect
