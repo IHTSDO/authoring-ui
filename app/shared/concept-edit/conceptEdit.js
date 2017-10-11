@@ -2324,6 +2324,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          if (!source.active) {
+            console.error('Source is not active, cannot drop');
+            return;
+          }
+
           // check if target is static
           if (scope.isStatic) {
             console.error('Scope is static, cannot drop');
@@ -2420,25 +2425,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (constraintService.isAttributeAllowedForArray(rel.type.fsn, scope.allowedAttributes)) {
 
               constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {
-                // copy relationship object and replace target relationship
-                var copy = angular.copy(rel);
+                if (rel.active) {
+                  // copy relationship object and replace target relationship
+                  var copy = angular.copy(rel);
 
-                // clear the effective time and source information
-                delete copy.sourceId;
-                delete copy.effectiveTime;
-                delete copy.relationshipId;
-                delete copy.released;
+                  // clear the effective time and source information
+                  delete copy.sourceId;
+                  delete copy.effectiveTime;
+                  delete copy.relationshipId;
+                  delete copy.released;
 
-                // set module id based on metadata
-                copy.moduleId = metadataService.getCurrentModuleId();
+                  // set module id based on metadata
+                  copy.moduleId = metadataService.getCurrentModuleId();
 
-                // set the group based on target
-                copy.groupId = newGroup;
+                  // set the group based on target
+                  copy.groupId = newGroup;
 
-                scope.concept.relationships.push(copy);
-                if (++relsProcessed === relGroup.length) {
-                  autoSave();
-                  scope.computeRelationshipGroups();
+                  scope.concept.relationships.push(copy);
+                  if (++relsProcessed === relGroup.length) {
+                    autoSave();
+                    scope.computeRelationshipGroups();
+                  }
+                } else {
+                  if (++relsProcessed === relGroup.length) {
+                    autoSave();
+                    scope.computeRelationshipGroups();
+                  }
                 }
               }, function () {
                 scope.warnings.push('MRCM validation error: ' + rel.target.fsn + ' is not valid for attribute type ' + rel.type.fsn);
