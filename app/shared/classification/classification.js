@@ -404,14 +404,12 @@ angular.module('singleConceptAuthoringApp')
               });
 
               // copy the redundant stated relationships into their own array
-              scope.redundantStatedRelationships = [];
-              if (scope.classificationContainer.redundantStatedRelationshipsFound) {
-                angular.forEach(scope.relationshipChanges.items, function (item) {
-                  if (item.changeNature === 'REDUNDANT') {
-                    scope.redundantStatedRelationships.push(item);
-                  }
-                });
-              }
+              scope.redundantStatedRelationships = [];             
+              angular.forEach(scope.relationshipChanges.items, function (item) {
+                if (item.changeNature === 'REDUNDANT') {
+                  scope.redundantStatedRelationships.push(item);
+                }
+              });             
 
               // get Inferred not previously stated
               scope.getInferredNotPreviouslyStated(scope.relationshipChanges,sourceIds);
