@@ -1257,7 +1257,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else if (b === '900000000000509007') {
             return 1;
           } else {
-            return a < b;
+            // For Belgian module, The order should be US->FR-NL
+            if (metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '11000172109') {
+              if (a === '21000172104') {
+                return -1;
+              } else if (b === '21000172104') {
+                return 1;
+              } else {
+                return a < b;
+              }
+            } else {
+              return a < b;
+            }            
           }
         };
 
@@ -1639,6 +1650,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // if in range, add after the specified afterIndex
                 else {
                   scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+                  afterIndex++;
                   autoSave();
                 }
             })
@@ -1657,31 +1669,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         };
-
-//        function addBelgianDescription(afterIndex) {
-//          var dialects = metadataService.getAllDialects();
-//          var duDescription = componentAuthoringUtil.getNewDescription(null);
-//          var frDescription = componentAuthoringUtil.getNewDescription(null);
-//
-//          duDescription.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term
-//          duDescription.lang = dialects['31000172101'];
-//
-//          frDescription.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term
-//          frDescription.lang = dialects['21000172104'];
-//
-//          // if not specified, simply push the new description
-//          if (afterIndex === null || afterIndex === undefined) {
-//            scope.concept.descriptions.push(duDescription);
-//            scope.concept.descriptions.push(frDescription);
-//            autoSave();
-//          }
-//          // if in range, add after the specified afterIndex
-//          else {
-//            scope.concept.descriptions.splice(afterIndex + 1, 0, duDescription);
-//            scope.concept.descriptions.splice(afterIndex + 2, 0, frDescription);
-//            autoSave();
-//          }
-//        }
 
         /**
          * Function to remove description
