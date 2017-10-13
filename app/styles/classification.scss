@@ -3,9 +3,6 @@
 	width: 6%;
 	padding-left: 1%;
 }
-.classification-report .editing-form .description {
-	width: 54%;
-}
 .classification-report .editing-form .acceptability {
 	width: 22%;
 }
@@ -58,8 +55,15 @@
     width: 2.5%;}
 	.classification-report .button-width-acceptability {
     width: 5%;}
-	.classification-report .editing-form .description {
-    width: 70%;
+
+.classification-report .editing-form .description.lang-ref-set-1 {
+    width: 78%;
+}
+.classification-report .editing-form .description.lang-ref-set-2 {
+    width: 73%;
+}
+.classification-report .editing-form .description.lang-ref-set-3 {
+    width: 68%;
 }
 
 .classification-report .concept-headers .col-md-1 {
@@ -82,4 +86,15 @@
 .classification-report.empty-report .classification-btn .btn-default[disabled] span {
 	color: #666;
     background-color: transparent;
+}
+@media (max-width: 1793px) {
+  .classification-report .editing-form .description.lang-ref-set-1 {
+    width: 77%;
+  }
+  .classification-report .editing-form .description.lang-ref-set-2 {
+    width: 70%;
+  }
+ .classification-report .editing-form .description.lang-ref-set-3 {
+    width: 65%;
+  }  
 }
