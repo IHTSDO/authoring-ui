@@ -2618,7 +2618,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
-              description.caseSignificance = 'CASE_INSENSITIVE';
+              if(!description.caseSignificance) {
+                description.caseSignificance = 'CASE_INSENSITIVE';
+              }
             }            
           }
 
