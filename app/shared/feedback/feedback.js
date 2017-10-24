@@ -479,6 +479,18 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.isDeletedConcept = function(concept) {
+            for (var i = 0; i < concept.componentChanges.length; i++) {
+              var change = concept.componentChanges[i];
+              if (change.componentType === 'CONCEPT' 
+                && change.changeType === 'DELETE'
+                && !concept.term) {
+                return true;
+              }
+            }
+            return false;
+          };
+
           scope.viewedConcepts = [];
           // if not already in saved list
 
