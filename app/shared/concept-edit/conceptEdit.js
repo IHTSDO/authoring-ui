@@ -2587,7 +2587,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
+          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId) && !metadataService.isExtensionSet()) {
             angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
               description.acceptabilityMap[dialectId] = 'PREFERRED';
             });
