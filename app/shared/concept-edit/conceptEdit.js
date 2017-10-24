@@ -2618,6 +2618,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
+              if(metadataService.isExtensionSet()){
+                  delete description.acceptabilityMap['900000000000508004'];
+              }
               if(!description.caseSignificance) {
                 description.caseSignificance = 'CASE_INSENSITIVE';
               }
