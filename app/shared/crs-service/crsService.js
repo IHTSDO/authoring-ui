@@ -170,7 +170,7 @@ angular.module('singleConceptAuthoringApp')
             preferredSynonym: preparedConcept.preferredSynonym,
 
             // the request url
-            requestUrl: getRequestUrl(attachment.issueKey),
+            requestUrl: attachment.requestUrl,
 
             // the ticket ids
             crsId: attachment.issueKey,
