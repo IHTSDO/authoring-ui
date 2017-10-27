@@ -2881,11 +2881,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
-
-          scope.updateRelationship(relationship, false);
+          if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
+            constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
+                scope.updateRelationship(relationship, false);
+              }, function () {
+                relationship.target = {};
+                relationship.target.conceptId = null;
+                scope.updateRelationship(relationship, false);
+              }
+            );
+          } 
+          else {
+            scope.updateRelationship(relationship, false);
+          }          
 
           // Trigger blur event after relationship type has been selected
           var elemID = 'relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
