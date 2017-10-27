@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
      };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -842,6 +842,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             'errors': {}
           };
 
+          // Handle save action outside this component, applying for Batch import
+          if (scope.isBatch) {
+            scope.saving = true;
+            scope.saveFunction().then(function(response){
+              scope.saving = false;
+              if (!response.validation.hasErrors && !response.validation.hasWarnings) {
+                notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+              }
+            },function (error) {
+              scope.saving = false;
+            });
+            return;
+          }
+
           // broadcast event to any listeners (currently task detail, crs concept list,
           // conflict/feedback resolved lists)
           $rootScope.$broadcast('conceptEdit.saveConcept', {
@@ -1070,6 +1084,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       // remove from the modified list
                       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
 
+                      // remove from batch editing if any
+                      if (!scope.isBatch) {
+                        batchEditingService.removeBatchConcept(scope.concept.conceptId);
+                      }
                       notificationService.sendMessage('Concept Deleted', 5000);
                     }
                   });
@@ -1228,7 +1246,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
 // define the available dialects
-        scope.dialects = metadataService.getAllDialects();
+        $timeout(function () {
+          scope.dialects = metadataService.getAllDialects();
+        }, 100);        
 
 // always return en-us dialect first
         scope.dialectComparator = function (a, b) {
@@ -1237,14 +1257,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else if (b === '900000000000509007') {
             return 1;
           } else {
-            return a < b;
+            // For Belgian module, The order should be US->FR-NL
+            if (metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '11000172109') {
+              if (a === '21000172104') {
+                return -1;
+              } else if (b === '21000172104') {
+                return 1;
+              } else {
+                return a < b;
+              }
+            } else {
+              return a < b;
+            }            
           }
         };
 
 // function to retrieve branch dialect ids as array instead of map
 // NOTE: Required for orderBy in ng-repeat
+        scope.dialectLength = null;
         scope.getDialectIdsForDescription = function (description, FSN) {
-          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId, FSN)).sort(scope.dialectComparator);
+          var dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
+          scope.dialectLength = Object.keys(dialects).length;
+          return Object.keys(dialects).sort(scope.dialectComparator);
         };
 
 // define acceptability types
@@ -1338,25 +1372,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!aHasUsA && bHasUsA) {
               return 1;
             }
+            
+            if (!metadataService.isExtensionSet()) {
+              // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
+              var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
+                  if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
+                    return true;
+                  }
+                }).length > 0;
+              var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
+                  if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
+                    return true;
+                  }
+                }).length > 0;
 
-            // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
-            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
-                if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
-                  return true;
-                }
-              }).length > 0;
-            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
-                if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
-                  return true;
-                }
-              }).length > 0;
 
-
-            if (aHasOtherP && !bHasOtherP) {
-              return -1;
-            }
-            if (!aHasOtherP && bHasOtherP) {
-              return 1;
+              if (aHasOtherP && !bHasOtherP) {
+                return -1;
+              }
+              if (!aHasOtherP && bHasOtherP) {
+                return 1;
+              }
             }
 
             // comparator function for sorting by acceptabilities within a specified dialect
@@ -1601,21 +1637,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // after
         scope.addDescription = function (afterIndex) {
 
+          var description;
+          var moduleId = metadataService.getCurrentModuleId(); 
+          // for extensions with multiple default languages
+          if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
+            angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
+                description = componentAuthoringUtil.getNewDescription(moduleId, language);
+                if (afterIndex === null || afterIndex === undefined) {
+                  scope.concept.descriptions.push(description);
+                  autoSave();
+                }
+                // if in range, add after the specified afterIndex
+                else {
+                  scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+                  afterIndex++;
+                  autoSave();
+                }
+            })
+          } else {
+            description = componentAuthoringUtil.getNewDescription(null);
 
-          var description = componentAuthoringUtil.getNewDescription(null);
-
-
-          // if not specified, simply push the new description
-          if (afterIndex === null || afterIndex === undefined) {
-            scope.concept.descriptions.push(description);
-            autoSave();
+            // if not specified, simply push the new description
+            if (afterIndex === null || afterIndex === undefined) {
+              scope.concept.descriptions.push(description);
+              autoSave();
+            }
+            // if in range, add after the specified afterIndex
+            else {
+              scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+              autoSave();
+            }
           }
-          // if in range, add after the specified afterIndex
-          else {
-            scope.concept.descriptions.splice(afterIndex + 1, 0, description);
-            autoSave();
-          }
-
         };
 
         /**
@@ -1862,7 +1914,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // returns the name of a dialect given its refset id
         function getShortDialectName(id) {
-          if (!scope.dialects[id]) {
+          if (!scope.dialects || !scope.dialects[id]) {
             return '??';
           }
           return scope.dialects[id].replace('en-', '');
@@ -2259,6 +2311,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          if (!source.active) {
+            console.error('Source is not active, cannot drop');
+            return;
+          }
+
           // check if target is static
           if (scope.isStatic) {
             console.error('Scope is static, cannot drop');
@@ -2355,25 +2412,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (constraintService.isAttributeAllowedForArray(rel.type.fsn, scope.allowedAttributes)) {
 
               constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {
-                // copy relationship object and replace target relationship
-                var copy = angular.copy(rel);
+                if (rel.active) {
+                  // copy relationship object and replace target relationship
+                  var copy = angular.copy(rel);
 
-                // clear the effective time and source information
-                delete copy.sourceId;
-                delete copy.effectiveTime;
-                delete copy.relationshipId;
-                delete copy.released;
+                  // clear the effective time and source information
+                  delete copy.sourceId;
+                  delete copy.effectiveTime;
+                  delete copy.relationshipId;
+                  delete copy.released;
 
-                // set module id based on metadata
-                copy.moduleId = metadataService.getCurrentModuleId();
+                  // set module id based on metadata
+                  copy.moduleId = metadataService.getCurrentModuleId();
 
-                // set the group based on target
-                copy.groupId = newGroup;
+                  // set the group based on target
+                  copy.groupId = newGroup;
 
-                scope.concept.relationships.push(copy);
-                if (++relsProcessed === relGroup.length) {
-                  autoSave();
-                  scope.computeRelationshipGroups();
+                  scope.concept.relationships.push(copy);
+                  if (++relsProcessed === relGroup.length) {
+                    autoSave();
+                    scope.computeRelationshipGroups();
+                  }
+                } else {
+                  if (++relsProcessed === relGroup.length) {
+                    autoSave();
+                    scope.computeRelationshipGroups();
+                  }
                 }
               }, function () {
                 scope.warnings.push('MRCM validation error: ' + rel.target.fsn + ' is not valid for attribute type ' + rel.type.fsn);
@@ -2523,7 +2587,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
+          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId) && !metadataService.isExtensionSet()) {
             angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
               description.acceptabilityMap[dialectId] = 'PREFERRED';
             });
@@ -2554,7 +2618,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
-              description.caseSignificance = 'CASE_INSENSITIVE';
+              if(metadataService.isExtensionSet()){
+                  delete description.acceptabilityMap['900000000000508004'];
+              }
+              if(!description.caseSignificance) {
+                description.caseSignificance = 'CASE_INSENSITIVE';
+              }
             }            
           }
 
@@ -2812,11 +2881,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
-
-          scope.updateRelationship(relationship, false);
+          if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
+            constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
+                scope.updateRelationship(relationship, false);
+              }, function () {
+                relationship.target = {};
+                relationship.target.conceptId = null;
+                scope.updateRelationship(relationship, false);
+              }
+            );
+          } 
+          else {
+            scope.updateRelationship(relationship, false);
+          }          
 
           // Trigger blur event after relationship type has been selected
           var elemID = 'relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;

@@ -92,7 +92,7 @@
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
                   ng-click="saveConcept()"
-                  ng-if="!isMerge && isModified && !isStatic && !isBatch">
+                  ng-if="!isMerge && isModified && !isStatic">
             <span> Save Concept </span>
           </button>
 
@@ -112,7 +112,7 @@
           <!-- control buttons -->
           <button type="button"
                   ng-click="toggleConceptActive(concept, true)"
-                  ng-if="!isInactivation && !isBatch  && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  ng-if="!isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
             <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
@@ -311,7 +311,7 @@
           </button>
 
           <!-- Term -->
-          <div class="pull-left description no-padding"
+          <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}" 
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
               <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                         ng-model-options="{updateOn: 'blur'}"

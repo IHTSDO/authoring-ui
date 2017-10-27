@@ -1026,6 +1026,13 @@ angular.module('singleConceptAuthoringApp')
             rel.target.definitionStatus = concept.concept.definitionStatus;
           }
 
+          scope.resetRelTargetConcept = function (rel) {
+            if (rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+              rel.newTargetFsn = "";
+              rel.newTargetId = "";
+            }
+          }
+
           scope.updateRefTarget = function (rel) {
             console.log('updating');
             for (var j = 0; j < scope.associationTargets.length; j++) {
@@ -1036,6 +1043,18 @@ angular.module('singleConceptAuthoringApp')
             }
             console.log(rel);
           };
+
+          scope.hasNoConceptTarget = function () {           
+            for (var i = 0; i < scope.affectedConceptAssocs.length; i++) {
+              var concept = scope.affectedConceptAssocs[i];
+              if ((!concept.newTargetId || !concept.newTargetFsn || !concept.refsetName) 
+                && concept.inactivationIndicator !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+                return true;
+              }
+            }
+            return false;
+          }
+
 
 
           //

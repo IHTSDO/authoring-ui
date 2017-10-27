@@ -1031,6 +1031,39 @@ angular.module('singleConceptAuthoringApp')
           });
           return deferred.promise;
         },
+// POST /projects/{projectKey}/tasks/{taskKey}/auto-promote
+// Proceed Automation Promotion the task to the Project
+        proceedAutomatePromotion: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote', {}).then(function (response) {           
+            deferred.resolve();
+          }, function (error) {
+            if (error.status === 504) {
+              notificationService.sendWarning('Your Automation promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
+              deferred.reject(error.message);
+            }
+            else if (error.status === 409) {
+              notificationService.sendError(error.data.message);
+              deferred.reject(error.message);
+            }
+            else {
+              console.error('Error promoting project ' + projectKey);
+              notificationService.sendError('Error promoting project', 10000);
+              deferred.reject(error.data.message);
+            }
+          });
+          return deferred.promise;
+        },
+// GET /projects/{projectKey}/tasks/{taskKey}/auto-promote/status
+        getAutomatePromotionStatus: function (projectKey, taskKey) {
+          return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote/status').then(function (response) {
+            return response.data;
+          }, function (error) {
+            console.error('Error retrieving Automate Promotion stutus for project ' + projectKey + ', task ' + taskKey);
+            notificationService.sendError('Error retrieving Automate Promotion stutus', 10000);
+            return null;
+          });
+        },
 // GET /projects/{projectKey}/tasks/{taskKey}/rebase
 // Generate the conflicts report between the Task and the Project
         getConflictReportForTask: function (projectKey, taskKey) {

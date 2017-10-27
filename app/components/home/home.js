@@ -14,11 +14,12 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
         $rootScope.classificationRunning = false;
+        $rootScope.automatedPromotionInQueued = false;
 
         // TODO Placeholder, as we only have the one tab at the moment
         $rootScope.pageTitle = "My Tasks";
@@ -121,22 +122,46 @@ angular.module('singleConceptAuthoringApp.home', [
             // check for project lock before continuing
             snowowlService.getBranch(projectBranch).then(function (response) {
                 if (!response.metadata || response.metadata && !response.metadata.lock) {
-
-                    // check for branch lock before continuing
-                    snowowlService.getBranch(task.branchPath).then(function (response) {
-                        if (!response.metadata || response.metadata && !response.metadata.lock) {
-                            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
-                        }
-                        else {
-                            notificationService.sendWarning('Unable to open conflicts view on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
-                        }
-                    });
+                    scaService.getUiStateForTask(task.projectKey, task.key, 'edit-panel')
+                        .then(function (uiState) {            
+                            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+                              redirectToConflicts(task.branchPath,task.projectKey,task.key);
+                            }
+                            else {
+                              var promises = [];                    
+                              for (var i = 0; i < uiState.length; i++) {               
+                                promises.push(scaService.getModifiedConceptForTask(task.projectKey, task.key, uiState[i]));
+                              }
+                              // on resolution of all promises
+                              $q.all(promises).then(function (responses) {
+                                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
+                                if (hasUnsavedConcept) {                                 
+                                  modalService.message('There are some unsaved concepts. Please go to task editing and save them before rebasing.');
+                                } else {
+                                  redirectToConflicts(task.branchPath,task.projectKey,task.key);
+                                }
+                              });
+                            }
+                          }
+                        );                  
                 }
                 else {
                     notificationService.sendWarning('Unable to open conflicts view for ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
                 }
             });
         };
+
+        function redirectToConflicts(branchRoot, projectKey, taskKey) {
+          // check for branch lock before continuing
+          snowowlService.getBranch(branchRoot + '/' + projectKey).then(function (response) {
+            if (!response.metadata || response.metadata && !response.metadata.lock) {
+              $location.url('tasks/task/' + projectKey + '/' + taskKey + '/conflicts');
+            }
+            else {
+              notificationService.sendWarning('Unable to open conflicts view on task ' + taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
+            }
+          });
+        }
 
         $scope.$watch('rebaseComplete', function () {
             $scope.tableParams.reload();

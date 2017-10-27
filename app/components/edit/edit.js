@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys, modalService) {
 
 
     //Keyboard Shortcuts
@@ -164,6 +164,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $rootScope.automatedPromotionInQueued = false;
     $rootScope.currentTask = null;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,6 +191,37 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.conceptsRendering = false;
     };
     $scope.goToConflicts = function () {
+      scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+        .then(function (uiState) {            
+            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+              redirectToConflicts();
+            }
+            else {
+              var promises = [];                    
+              for (var i = 0; i < uiState.length; i++) {               
+                promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
+              }
+              // on resolution of all promises
+              $q.all(promises).then(function (responses) {
+                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
+                if (hasUnsavedConcept) {
+                  var msg = '';
+                  if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
+                    msg = 'There are some unsaved concepts. Please save them before rebasing.';
+                  } else {
+                    msg = 'There are some unsaved concepts. Please go back to task editing and save them before rebasing.';
+                  }
+                  modalService.message(msg);
+                } else {
+                  redirectToConflicts();
+                }
+              });
+            }
+          }
+        );      
+    };
+
+    function redirectToConflicts() {
       snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $scope.projectKey).then(function (response) {
         if (!response.metadata || response.metadata && !response.metadata.lock) {
           $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
@@ -198,7 +230,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
         }
       });
-    };
+    }
     
     $scope.gotoHome = function () {
       $location.url('home');
@@ -493,6 +525,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('inactivateConcept', function (event, data) {
       $scope.setView('inactivation');
     });
+
+    $scope.$on('viewClassification', function (event, data) {
+      $scope.setView('classification');
+    });    
 
     // pass inactivation service function to determine whether in active inactivation (heh)
     $scope.isInactivation = inactivationService.isInactivation;
