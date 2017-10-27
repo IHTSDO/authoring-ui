@@ -11,7 +11,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // the project and task branch objects
       $scope.projectBranch = null;
       $scope.taskBranch = null;
-      $scope.promoting = false;
+      $scope.promoting = false;      
+      $scope.automatePromotionStatus = "";
+      $scope.automatePromotionErrorMsg = "";
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -105,7 +107,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.promoting = false;
         });
       };
-
+      $scope.proceedAutomatePromotion = function () {
+        notificationService.sendMessage('Starting automated promotion...');       
+        $scope.automatePromotionErrorMsg = '';        
+        $scope.automatePromotionStatus = '';
+        promotionService.proceedAutomatePromotion($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            $scope.checkAutomatePromotionStatus(false);
+          }, function (error) {
+            $scope.automatePromotionStatus = '';
+          }
+        );
+      };
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
 
@@ -273,7 +285,115 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
       };
+      $scope.isAutomatePromotionRunning = function (){
+        if($scope.automatePromotionStatus === 'Rebasing' 
+          || $scope.automatePromotionStatus === 'Classifying' 
+          || $scope.automatePromotionStatus === 'Promoting') {
+          return true;
+        }
+        return false;
+      }
 
+      $scope.checkAutomatePromotionStatus = function (isInitialInvoke) {       
+        $scope.automatePromotionErrorMsg = '';        
+        promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {        
+          if (response) {
+            $scope.automatePromotionStatus = response.status;
+            switch ($scope.automatePromotionStatus) {
+              case 'Queued':                
+                $rootScope.automatedPromotionInQueued = true;
+                $rootScope.branchLocked = false;                
+                notificationService.clear();
+                break;
+              case 'Rebasing':                
+                $rootScope.branchLocked = true;
+                $rootScope.automatedPromotionInQueued = false;                
+                notificationService.clear();
+                break;
+              case 'Rebased with conflicts':                
+                $rootScope.branchLocked = false;
+                $rootScope.automatedPromotionInQueued = false;                              
+                $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
+                break;
+              case 'Classifying':                
+                $rootScope.branchLocked = true;
+                $rootScope.automatedPromotionInQueued = false;                
+                $rootScope.classificationRunning = true;
+                notificationService.clear();
+                break;
+              case 'Classified with results':                
+                $rootScope.classificationRunning = false;
+                $rootScope.branchLocked = false;
+                $rootScope.automatedPromotionInQueued = false;                
+                if(!isInitialInvoke) {
+                  $rootScope.$broadcast('reloadTask');
+                }
+                $timeout(function () {
+                  $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.'; 
+                }, 2000);
+                break;
+              case 'Promoting':
+                $rootScope.classificationRunning = false;
+                $rootScope.branchLocked = true;
+                $rootScope.automatedPromotionInQueued = false;                       
+                notificationService.clear();
+                break;
+              case 'Completed':
+                $rootScope.classificationRunning = false;               
+                $rootScope.automatedPromotionInQueued = false;
+                if (!isInitialInvoke) {  
+                  $rootScope.$broadcast('reloadTask');
+                  $timeout(function () {
+                     notificationService.sendMessage('Automated promotion completed');
+                  }, 1000); 
+                }             
+                break;
+              case 'Failed':               
+                $rootScope.automatedPromotionInQueued = false;
+                $rootScope.classificationRunning = false;
+                $rootScope.branchLocked = false;
+                if (!isInitialInvoke) {                  
+                  $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
+                  notificationService.clear();
+                }
+                break;              
+              default:                
+                $rootScope.automatedPromotionInQueued = false;
+                $rootScope.classificationRunning = false;
+                $rootScope.branchLocked = false;
+            }
+            if ($scope.automatePromotionStatus === 'Queued' 
+                || response.status === 'Rebasing'
+                || response.status === 'Classifying'
+                || response.status === 'Promoting') {
+              $timeout(function () {
+                $scope.checkAutomatePromotionStatus(false);
+              }, 10000);
+            }           
+          } else {
+            $scope.automatePromotionStatus = '';
+          }
+          if(isInitialInvoke && $scope.automatePromotionStatus === '') {
+            $scope.checkForLock();
+          }  
+        });
+      };
+
+      $scope.viewConflicts = function () {
+        snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
+          if (!response.metadata || response.metadata && !response.metadata.lock) {
+            $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/conflicts');
+          }
+          else {
+            notificationService.sendWarning('Unable to start rebase on task ' + $routeParams.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
+          }
+        });
+      };
+
+      $scope.viewClassification = function () {
+        $rootScope.$broadcast('viewClassification');
+      };
+      
       //
       // Issue Links
       //

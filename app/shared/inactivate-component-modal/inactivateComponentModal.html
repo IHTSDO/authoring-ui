@@ -56,7 +56,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept' || componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT'">
+        <div class="col-sm-12 no-padding  add-color" ng-if="(componentType === 'Concept' || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')) && associationTargets.length > 0">
           <div class="col-sm-12 no-padding add-color">
             <div class="row p-t-10">
               <div class="col-md-5">
@@ -173,6 +173,7 @@
       <div class=" col-md-6 right-button">
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
+                  ng-disabled="associationTargets.length > 0 && hasNoConceptTarget()"
                   ng-click="selectReason(inactivationReason)"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>

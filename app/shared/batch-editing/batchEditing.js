@@ -663,6 +663,32 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
+          scope.saveFunction  = function () {
+            var deferred = $q.defer();
+            var concept = scope.viewedConcepts[0];
+            scope.saveConcept(concept).then(function (response){
+              if (response.validation.hasErrors || response.validation.hasWarnings) {
+                scope.viewedConcepts = [];
+                $timeout(function () {                        
+                  scope.editConcept(response);
+                }, 200);
+                
+              } else {
+                $timeout(function () {                        
+                  scope.removeConcept(concept);
+                }, 200);                
+              }
+              deferred.resolve(response);
+            }, function (error) {
+              scope.viewedConcepts = [];
+              $timeout(function () {                        
+                  scope.editConcept(concept);
+              }, 200);            
+              deferred.reject(error);
+            });
+            return deferred.promise;
+          };
+
           scope.removeConcept = function (concept) {
 
             batchEditingService.removeBatchConcept(concept.conceptId).then(function () {
@@ -747,7 +773,10 @@ angular.module('singleConceptAuthoringApp')
           scope.$on('stopEditing', function (event, data) {
             removeViewedConcept(data.concept.conceptId);
           });
-
+// watch for delete concept events
+          scope.$on('removeItem', function (event, data) {
+            scope.removeConcept(data.concept);
+          });
 
 // watch for save events from editing panel
           scope.$on('conceptEdit.conceptChange', function (event, data) {

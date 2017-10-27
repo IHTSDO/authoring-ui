@@ -160,6 +160,17 @@ angular.module('singleConceptAuthoringApp')
     );
 
 
+     $scope.hasNoConceptTarget = function () {
+        for (var i = 0; i < $scope.associations.length; i++) {
+          var association = $scope.associations[i];
+          if(!association.concept || !association.concept.concept || !association.concept.concept.conceptId
+            || !association.type || !association.type.id) {
+            return true;
+          }         
+       }
+       return false;
+     }
+
     $scope.selectReason = function (reason) {
 
       // NOTE: associationTarget is optional

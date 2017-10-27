@@ -162,7 +162,7 @@ angular.module('singleConceptAuthoringApp')
                     blocksPromotion: false
                   });
                 }
-                else if ((new Date(latestClassificationJson.saveDate)).getTime() <= branchStatus.headTimestamp) {
+                else if ((new Date(latestClassificationJson.saveDate)).getTime() / 1000 <= branchStatus.headTimestamp / 1000) {
                   flags.push({
                     checkTitle: 'Classification Not Current',
                     checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
