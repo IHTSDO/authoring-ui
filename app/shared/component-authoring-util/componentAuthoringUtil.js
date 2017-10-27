@@ -185,10 +185,12 @@ angular.module('singleConceptAuthoringApp')
 
           // if extension is set, add a Synonym
           if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
-            angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
-                concept.descriptions.push(getNewDescription(moduleId, language));
-                console.log(concept.descriptions);
-            })
+              if(metadataService.getDefaultLanguageForModuleId(moduleId).length !== 1 || metadataService.getDefaultLanguageForModuleId(moduleId)[0] !== "en")
+                  {
+                      angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
+                            concept.descriptions.push(getNewDescription(moduleId, language));
+                        })
+                  }
           }
 
         // add IsA relationship
