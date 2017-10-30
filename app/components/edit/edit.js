@@ -164,6 +164,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $rootScope.classificationCompleteWithChanges = false;
     $rootScope.automatedPromotionInQueued = false;
     $rootScope.currentTask = null;
 
@@ -1416,7 +1417,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           // set the classification and validation flags
           $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
-
+          $rootScope.classificationCompleteWithChanges = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'COMPLETED' && ($scope.task.latestClassificationJson.equivalentConceptsFound || $scope.task.latestClassificationJson.inferredRelationshipChangesFound || $scope.task.latestClassificationJson.redundantStatedRelationshipsFound);
 
           deferred.resolve(response);
         }, function (error) {
@@ -1588,7 +1589,37 @@ angular.module('singleConceptAuthoringApp.edit', [
     //
     
     $scope.classify = function () {
+      scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+        .then(function (uiState) {            
+            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+              executingClassification();
+            }
+            else {
+              var promises = [];                    
+              for (var i = 0; i < uiState.length; i++) {               
+                promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
+              }
+              // on resolution of all promises
+              $q.all(promises).then(function (responses) {
+                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
+                if (hasUnsavedConcept) {
+                  var msg = '';
+                  if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
+                    msg = 'There are some unsaved concepts. Please save them before running classification.';
+                  } else {
+                    msg = 'There are some unsaved concepts. Please go back to task editing and save them before running classification.';
+                  }
+                  modalService.message(msg);
+                } else {
+                  executingClassification();
+                }
+              });
+            }
+          }
+        );
+    };
 
+    function executingClassification() {
       notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
       // start the classification
@@ -1609,8 +1640,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }, function () {
         // do nothing on error
       });
-    };
-
+    }
     $scope.validate = function () {
       notificationService.sendMessage('Submitting task for validation...');
 
