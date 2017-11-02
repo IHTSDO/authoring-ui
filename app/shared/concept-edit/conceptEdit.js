@@ -256,6 +256,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         }, true);
 
+        scope.inactivateError = false;
         scope.saving = false;
         scope.drugsOrdering = metadataService.getdrugsModelOrdering();
         if (!scope.concept) {
@@ -1151,35 +1152,62 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return;
               }
 
-              // validate the concept
-              snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
-                // check for errors -- NOTE: Currently unused, but errors are
-                // printed to log if detected
-                var errors = validationResults.filter(
-                  function (result) {
-                    return result.type === 'ERROR';
-                  });
-
-                if (errors.length > 0) {
-                  console.log('Detected errors in concept when inactivating', errors);
-                } else {
-                  console.log('No errors detected');
-                }
-
-                selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch).then(function (results) {
-
-                  // set the concept in the inactivation service for listener update and retrieval
-                  // NOTE: Also broadcasts a route change to edit.js from the service
-                  inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
-                  $rootScope.$broadcast('conceptEdit.inactivateConcept');
-
-
+              scope.inactivateError = false;
+              if (isAttributeConcept(conceptCopy.fsn)) {
+                snowowlService.searchConcepts(scope.branch,'', '*: ' + conceptCopy.conceptId + ' =*', 0, 50, false).then(function (results) {
+                  if (results.total > 0) {
+                    scope.inactivateError = true;
+                  } else {
+                    inactivateConcept(conceptCopy);
+                  }
                 });
-              });
+              } else {
+                inactivateConcept(conceptCopy);
+              }              
             }
           }
-
         };
+
+        function inactivateConcept (conceptCopy) {
+          // validate the concept
+          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
+            // check for errors -- NOTE: Currently unused, but errors are
+            // printed to log if detected
+            var errors = validationResults.filter(
+              function (result) {
+                return result.type === 'ERROR';
+              });
+
+            if (errors.length > 0) {
+              console.log('Detected errors in concept when inactivating', errors);
+            } else {
+              console.log('No errors detected');
+            }
+
+            selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch).then(function (results) {
+
+              // set the concept in the inactivation service for listener update and retrieval
+              // NOTE: Also broadcasts a route change to edit.js from the service
+              inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
+              $rootScope.$broadcast('conceptEdit.inactivateConcept');
+            });
+          });
+        }
+
+        scope.searchRelevantConcepts = function() {
+          $rootScope.$broadcast('viewSearch', {            
+            conceptId: scope.concept.conceptId,
+            eclMode: true
+          });
+        }
+
+        function isAttributeConcept (fsn) {
+          if (!fsn) {
+            return false;
+          }
+          var patt = new RegExp("(attribute)");
+          return patt.test(fsn);
+        }
 
         var hasInactiveDescriptionOrRelationship = function(concept) {
           //checking description has no effective time
