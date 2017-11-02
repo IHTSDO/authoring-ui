@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
       //
       function getRequestUrl(issueId) {
           var prefix = '';
-        if(metadataService.getExtensionMetadata().shortname === 'us')
+        if(metadataService.getExtensionMetadata() &&metadataService.getExtensionMetadata().shortname && metadataService.getExtensionMetadata().shortname === 'us')
             { 
                 prefix = 'us-'
             }
