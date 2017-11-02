@@ -2,13 +2,15 @@
 <div class="edits editing-form darken-3 grey">
 
   <!-- begin validation error -->
-  <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
-    <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = []"
+  <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0 || inactivateError">
+    <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = [] ; inactivateError = false"
             tabindex="0"></button>
     <h4>Error!</h4>
 
     <div ng-repeat="error in errors">
       <div ng-bind="error"></div>
+    </div>
+    <div ng-if="inactivateError">Convention Error: Inactivation is disallowed as the concept is in active use as an attribute type - Click <a ng-click="searchRelevantConcepts();">here</a> to see these concepts in the ECL search and alter the relationships in which this attribute is used.
     </div>
   </div>
   <div class="alert alert-dismissible alert-warning validation" ng-show="warnings.length > 0">
