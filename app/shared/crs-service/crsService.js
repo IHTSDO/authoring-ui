@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
       //
       function getRequestUrl(issueId) {
           var prefix = '';
-        if(metadataService.getExtensionMetadata() &&metadataService.getExtensionMetadata().shortname && metadataService.getExtensionMetadata().shortname === 'us')
+        if(metadataService.getExtensionMetadata() && metadataService.getExtensionMetadata().shortname && metadataService.getExtensionMetadata().shortname === 'us')
             { 
                 prefix = 'us-'
             }
@@ -175,7 +175,7 @@ angular.module('singleConceptAuthoringApp')
             preferredSynonym: preparedConcept.preferredSynonym,
 
             // the request url
-            requestUrl: attachment.requestUrl,
+            requestUrl: getRequestUrl(attachment.issueKey),
 
             // the ticket ids
             crsId: attachment.issueKey,
@@ -459,6 +459,7 @@ angular.module('singleConceptAuthoringApp')
         getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
         getCrsTaskComment: getCrsTaskComment,
+        getRequestUrl: getRequestUrl,
 
         crsFilter: crsFilter
 
