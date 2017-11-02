@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles all functionality surrounding CRS tickets
  */
-  .factory('crsService', function ($http, $rootScope, $q, scaService, snowowlService, $timeout, notificationService) {
+  .factory('crsService', function ($http, $rootScope, $q, scaService, metadataService, snowowlService, $timeout, notificationService) {
 
       var currentTask;
 
@@ -30,12 +30,17 @@ angular.module('singleConceptAuthoringApp')
       // TODO Move this into endpoint config
       //
       function getRequestUrl(issueId) {
+          var prefix = '';
+        if(metadataService.getExtensionMetadata().shortname === 'us')
+            { 
+                prefix = 'us-'
+            }
         if ($rootScope.development) {
-          return 'https://dev-request.ihtsdotools.org/#/requests/view/' + issueId;
+          return 'https://dev-' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
         } else if ($rootScope.uat) {
-          return 'https://uat-request.ihtsdotools.org/#/requests/view/' + issueId;
+          return 'https://uat-' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
         } else {
-          return 'https://request.ihtsdotools.org/#/requests/view/' + issueId;
+          return 'https://' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
         }
       }
 
