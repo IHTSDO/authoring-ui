@@ -459,6 +459,7 @@ angular.module('singleConceptAuthoringApp')
         getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
         getCrsTaskComment: getCrsTaskComment,
+        getRequestUrl: getRequestUrl,
 
         crsFilter: crsFilter
 
