@@ -278,7 +278,7 @@ angular.module('singleConceptAuthoringApp')
               name: metadata.defaultModuleName
             }
           ],
-          shortname: shortname,
+          shortname: metadata.shortname,
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguages: defaultLanguages,
           languages: languages,
