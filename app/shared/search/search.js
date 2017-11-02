@@ -588,7 +588,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }, function (error) {
           notificationService.sendError('Unexpected error: ' + error);
         })
-      }
+      };
+
+      $scope.$on('viewSearch', function(event, data) {
+        $scope.searchStr = '';
+        if (Object.keys(data).length > 0 && data.constructor === Object) {
+          if (data.eclMode) {            
+            $scope.isEscgMode = true;
+            $scope.escgExpr = '*: ' + data.conceptId + ' =*';
+            $scope.search();
+          }
+        }
+      });
 
     }
   ])
