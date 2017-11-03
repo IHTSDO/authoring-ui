@@ -85,7 +85,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.toggleShowPromotedTasks = function () {
             $scope.showPromotedTasks = !$scope.showPromotedTasks;
-            $scope.tableParams.reload();
+            loadTasks();
         };
 
         // TODO Workaround to capture full review functionality
@@ -96,7 +96,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
             $scope.tasks = null;
             $scope.reviewTasks = null;
-            scaService.getTasks().then(function (response) {
+            scaService.getTasks($scope.showPromotedTasks ? false : true).then(function (response) {
                 $scope.tasks = response;
                 if ($scope.tasks) {
                     notificationService.sendMessage('All tasks loaded', 5000);
