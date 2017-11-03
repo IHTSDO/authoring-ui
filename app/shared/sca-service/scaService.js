@@ -201,8 +201,8 @@ angular.module('singleConceptAuthoringApp')
         },
 
         // get tasks for current user across all projects
-        getTasks: function () {
-          return $http.get(apiEndpoint + 'projects/my-tasks').then(
+        getTasks: function (excludePromoted) {
+          return $http.get(apiEndpoint + 'projects/my-tasks?excludePromoted=' + (excludePromoted ? true : false)).then(
             function (response) {
               if ($rootScope.loggedIn === null) {
                 $rootScope.loggedIn = true;
