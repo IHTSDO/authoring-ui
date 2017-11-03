@@ -580,6 +580,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = !scope.hideInactive;
         };
 
+        scope.showInferredRels = false;
+        scope.toggleInferredRelationships = function () {
+           scope.showInferredRels = ! scope.showInferredRels;
+           scope.computeRelationshipGroups();
+        };
+
 ////////////////////////////////
 // Concept Elements
 ////////////////////////////////
@@ -1988,10 +1994,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.relationshipGroups = {};
 
           angular.forEach(scope.concept.relationships, function (rel) {
-
-            // only show stated relationships
-            if (rel.characteristicType === 'STATED_RELATIONSHIP') {
-
+            let flag = false;
+            if (scope.showInferredRels || (!scope.showInferredRels && rel.characteristicType === 'STATED_RELATIONSHIP')) {
+              flag = true;             
+            } 
+            if (flag) {
               // if map does not have this group id, add blank array
               if (!scope.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                 scope.relationshipGroups[parseInt(rel.groupId)] = [];
