@@ -134,8 +134,11 @@
                   ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
                   ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
           </button>
-
-
+          <button type="button"
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case green"
+                  ng-class="[{'md-visibility-off' : !showInferredRels}, {'md-visibility' : showInferredRels}]"
+                  ng-click="toggleInferredRelationships()"><span> Show/hide inferred relationships </span>
+          </button>          
           <button type="button"
                   class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
                   ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
@@ -461,7 +464,7 @@
           <div class="row darken-3 edits-row color_{{(relationship.groupId%2==0)?'even':'odd'}} "
                ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
-            <div class="col-md-11 no-padding left-of-edit" drop-channel="relationshipObj"
+            <div class="col-md-11 no-padding left-of-edit {{relationship.characteristicType}}" drop-channel="relationshipObj"
                  ui-on-drop="dropRelationship(relationship, $data)" drag-enter-class="sca-drag-target"
                  drag-hover-class="sca-drag-hover">
 
@@ -478,14 +481,15 @@
                 <button
                   class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
                   ui-draggable="true" drag="relationship" drag-channel="relationshipObj"
-                  drag-image="getDragImageForRelationship(relationship)">
+                  drag-image="getDragImageForRelationship(relationship)"
+                  ng-disabled="relationship.characteristicType === 'INFERRED_RELATIONSHIP'">
                   <span>Drag This Row</span>
                 </button>
 
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent"
-                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template || isBatch"
+                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span ng-if="isStatic">Active/Inactive</span>
@@ -495,7 +499,7 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                  <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template || isBatch"
+                  <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                             ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                             ng-change="updateRelationship(relationship, true)"
                             class="form-control rg no-border-bottom"
@@ -514,7 +518,7 @@
 
                                     <textarea id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                                               custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
-                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch"
+                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                                               class="resizable-text form-control msd-elastic no-border-bottom rel"
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
@@ -547,7 +551,7 @@
 
                   <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}" 
                             ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
-                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot)"
+                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                             class="resizable-text relationship msd-elastic no-border-bottom"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -577,7 +581,7 @@
                   <span>Primitive</span>
                 </div>
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
 
                   <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
