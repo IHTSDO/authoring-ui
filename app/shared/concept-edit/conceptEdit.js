@@ -1295,9 +1295,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
 // define the available dialects
-        $timeout(function () {
-          scope.dialects = metadataService.getAllDialects();
-        }, 100);        
+        scope.dialects = metadataService.getAllDialects();       
 
 // always return en-us dialect first
         scope.dialectComparator = function (a, b) {
