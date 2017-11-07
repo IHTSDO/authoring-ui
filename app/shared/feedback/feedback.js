@@ -1180,6 +1180,16 @@ angular.module('singleConceptAuthoringApp')
             return $compile(htmlCode);
           };
 
+          scope.selectConcept = function (concept) {
+            if(scope.isDeletedConcept(concept)) {
+              notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
+            } else {
+              scope.selectConceptForFeedback(concept); 
+              scope.addToEdit(concept); 
+              scope.viewConceptInTaxonomy(concept);
+            }            
+          }
+
           scope.selectConceptForFeedback = function (concept) {          
             concept.read = true;
             //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
