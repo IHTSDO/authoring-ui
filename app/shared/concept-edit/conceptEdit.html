@@ -605,18 +605,18 @@
               </div>
             </div>
 
-            <div class="col-md-1 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} role-group-drag p-t-5"
+            <div class="col-md-1 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} role-group-drag p-t-5 {{relationship.characteristicType}}"
                  drop-channel="relationshipGroupObj" ui-on-drop="dropRelationshipGroup($data)"
-                 drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover"
-                 ng-show="relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
+                 drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover">
               <button ng-if="$index === 0"
                       class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right  "
                       ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
-                      drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
+                      drag-image="getDragImageForRelationshipGroup(relationshipGroup)"
+                      ng-disabled="relationship.characteristicType === 'INFERRED_RELATIONSHIP'">
                 <span>Drag Relationship Group</span>
               </button>
 
-              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template && !concept.template"
+              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template && !concept.template && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
               </button>
