@@ -134,8 +134,11 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case green"
-                  ng-class="[{'md-visibility-off' : !showInferredRels}, {'md-visibility' : showInferredRels}]"
-                  ng-click="toggleInferredRelationships()"><span> Show/hide inferred relationships </span>
+                  ng-class="[{'fa fa-italic' : !showInferredRels}]"                  
+                  ng-click="toggleInferredRelationships()"> 
+                  <b ng-if="showInferredRels"><i>S</i></b>
+                  <span ng-if="!showInferredRels"> Show inferred relationships </span>
+                  <span ng-if="showInferredRels"> Show stated relationships </span>
           </button>          
           <button type="button"
                   class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
@@ -604,7 +607,8 @@
 
             <div class="col-md-1 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} role-group-drag p-t-5"
                  drop-channel="relationshipGroupObj" ui-on-drop="dropRelationshipGroup($data)"
-                 drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover">
+                 drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover"
+                 ng-show="relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
               <button ng-if="$index === 0"
                       class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right  "
                       ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
