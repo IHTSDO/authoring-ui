@@ -243,20 +243,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
         }, true);
-
-        scope.$watch(function () {
-          return $rootScope.classificationCompleteWithChanges;
-        }, function () {
-          if ($rootScope.classificationCompleteWithChanges) {
-            scope.isStatic = true;
-          }
-          else if (!scope.static) {
-            scope.isStatic = false;
-          }
-
-        }, true);
-
-        scope.inactivateError = false;
         scope.saving = false;
         scope.drugsOrdering = metadataService.getdrugsModelOrdering();
         if (!scope.concept) {

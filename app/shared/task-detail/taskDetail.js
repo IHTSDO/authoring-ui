@@ -1,9 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','$interval','modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService,$interval,modalService) {
-
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -21,37 +20,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.taxonomyConcept = null;
 
       $scope.classify = function () {
-        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-        .then(function (uiState) {            
-            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-              executingClassification();
-            }
-            else {
-              var promises = [];                    
-              for (var i = 0; i < uiState.length; i++) {               
-                promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
-              }
-              // on resolution of all promises
-              $q.all(promises).then(function (responses) {
-                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-                if (hasUnsavedConcept) {
-                  var msg = '';
-                  if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
-                    msg = 'There are some unsaved concepts. Please save them before running classification.';
-                  } else {
-                    msg = 'There are some unsaved concepts. Please go back to task editing and save them before running classification.';
-                  }
-                  modalService.message(msg);
-                } else {
-                  executingClassification();
-                }
-              });
-            }
-          }
-        );        
-      };
 
-      function executingClassification() {
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
         // start the classification
@@ -74,7 +43,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
           // do nothing on error
         });
-      }
+      };
+
 
       $scope.promote = function () {
         $scope.promoting = true;
