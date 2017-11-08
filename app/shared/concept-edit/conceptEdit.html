@@ -136,8 +136,11 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case green btn-toggle-rels-view"            
-                  ng-click="toggleInferredRelationships()"> 
-                  <b>{{!showInferredRels ? 'S' : 'I'}}</b>
+                  ng-click="toggleInferredRelationships()">
+                  <div class="fa-stack">
+                      <i class="fa fa-circle"></i>
+                      <strong class="fa-stack-1x">{{!showInferredRels ? 'S' : 'I'}}</strong>
+                  </div>                  
                   <span ng-if="!showInferredRels"> Switch to inferred view </span>
                   <span ng-if="showInferredRels"> Switch to stated view </span>
           </button>          
