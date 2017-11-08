@@ -1180,17 +1180,24 @@ angular.module('singleConceptAuthoringApp')
             return $compile(htmlCode);
           };
 
-          scope.selectConcept = function (concept) {
+
+          scope.selectConcept = function (concept, actions) {
             if(scope.isDeletedConcept(concept)) {
               notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
             } else {
-              scope.selectConceptForFeedback(concept); 
-              scope.addToEdit(concept); 
-              scope.viewConceptInTaxonomy(concept);
+              if (actions) {
+                if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
+                if (actions.indexOf('addToEdit') >= 0) scope.addToEdit(concept);
+                if (actions.indexOf('viewConceptInTaxonomy') >= 0) scope.viewConceptInTaxonomy(concept);
+              } else {
+                scope.selectConceptForFeedback(concept); 
+                scope.addToEdit(concept); 
+                scope.viewConceptInTaxonomy(concept);
+              }              
             }            
           }
 
-          scope.selectConceptForFeedback = function (concept) {          
+          scope.selectConceptForFeedback = function (concept, deletedConceptChecking) {            
             concept.read = true;
             //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
             scope.subjectConcepts = [concept];
