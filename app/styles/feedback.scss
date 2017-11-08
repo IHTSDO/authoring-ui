@@ -685,6 +685,9 @@ strong {
 .feedback-table thead tr th:nth-of-type(1) {
     width: 10%;
 }
+.feedback-table.concepts-classified thead tr th:nth-of-type(1) {
+    width: 25%;
+}
 .feedback-table thead tr th:nth-of-type(2) {
    width: 66%;
 }
