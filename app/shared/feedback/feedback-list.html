@@ -148,14 +148,13 @@
                   <span>Flagged for follow-up</span> </button>
                   <button ng-show="concept.messages.length > 0"
                           class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
-
-                          ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                          ng-click="selectConcept(concept)">
                   <div
                       ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
                   </button>
                   <button
                     class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)"
+                    ng-click="selectConcept(concept)"
                     ng-disabled="concept.viewed">
                   <div
                       class="md md-edit "> <span>Add to Edit Panel</span> </div>
@@ -166,7 +165,7 @@
             <td ng-if="role === 'REVIEWER'" class=" col-md-3"><div class="pull-right m-r-5">
                 <button
                   class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                  ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)"
+                  ng-click="selectConcept(concept)"
                   ng-disabled="concept.viewed">
                 <div
                     class="md md-edit "> <span>Add to Edit Panel</span> </div>
@@ -180,19 +179,19 @@
                 <button
                   ng-hide="subjectConcepts.length > 0 "
                   class=" btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                  ng-click="selectConcept(concept)">
                 <div
                     class="fa-sca fa-comment  "> <span>View/submit feedback for concept</span> </div>
                 </button>
                 <button
                   class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConceptForFeedback(concept)" ng-show="subjectConcepts.length > 0 ">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 ">
                 <div class="fa-sca fa-comment  "></div>
                 <span>View/submit feedback for concept</span> </button>
                 <button ng-show="concept.messages.length > 0"
                         class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
 
-                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                        ng-click="selectConcept(concept)">
                 <div
                     ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
                 </button>
@@ -246,11 +245,11 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <span class="pull-left p-5">{{concept.term}} </span></td>
+                ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
             <td class=" col-md-3"><div class="pull-right m-r-5">
                 <button ng-show="concept.messages.length > 0"
                         class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 normal-case"
-                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                        ng-click="selectConcept(concept)"">
                 <div
                     ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
                 </button>
@@ -263,12 +262,12 @@
                 <span>Unapprove</span> </button>
                 <button
                   class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConceptForFeedback(concept)" ng-show="subjectConcepts.length > 0 ">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 ">
                 <div class="fa-sca fa-comment  "></div>
                 <span>View/submit feedback for concept</span> </button>
                 <button
                   class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2  normal-case"
-                  ng-click="selectConceptForFeedback(concept); addToEdit(concept)"
+                  ng-click="selectConcept(concept,['selectConceptForFeedback','addToEdit'])"
                   ng-disabled="concept.viewed">
                 <div
                     class="md md-edit "></div>
@@ -287,7 +286,7 @@
         <table show-filter="false" ng-table="conceptsClassifiedTableParams"
                ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0"
                template-pagination="utilities/review-table-pager.html"
-               class="table feedback-table" drop-channel="feedbackConcept">
+               class="table feedback-table concepts-classified" drop-channel="feedbackConcept">
           <div class="m-10 ">
             <input class=" input-filter form-control ng-scope ng-valid ng-touched"
                    placeholder="Filter concepts"
@@ -302,7 +301,7 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{concept.term}} </span></td>
+                ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
             <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'"
                 class=" col-md-4 no-padding"><div class="pull-right m-r-5">
                 <button
