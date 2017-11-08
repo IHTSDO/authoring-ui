@@ -1197,8 +1197,24 @@ button-link .bluehl .grey.darken-3 {
     background-color: #ffffdb;
     box-shadow: none;
 }
-.btn-toggle-rels-view b {
+.btn-toggle-rels-view {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.btn-toggle-rels-view .fa-stack {
+    width: 15px;
+    height: 22px;
+    line-height: inherit;
+    color: #03a4e4;
+}
+.btn-toggle-rels-view strong {
+    height: 17px;
+    width: 17px;
+    top: 0px;
     font-family: initial;
+    font-weight: 600;    
+    margin-left: -1px;
+    color: white;
 }
 .INFERRED_RELATIONSHIP {
     background-color: #afa77d;
