@@ -1076,35 +1076,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // otherwise, proceed with checks and inactivation reason persistence
           else {
             if (deletion) {
-              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
-                  console.log(results);
-                inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget);
-                if (results.deletion && !results.associationTarget) {
-                  notificationService.sendMessage('Deleting Concept...');
-                  snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
-                    if (response.status === 409) {
-                      notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
-                    }
-                    else {
-                      $rootScope.$broadcast('removeItem', {concept: scope.concept});
-                      scope.removeConcept(scope.concept);
-
-                      // remove from the modified list
-                      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
-
-                      // remove from batch editing if any
-                      if (!scope.isBatch) {
-                        batchEditingService.removeBatchConcept(scope.concept.conceptId);
-                      }
-                      notificationService.sendMessage('Concept Deleted', 5000);
-                    }
-                  });
-                }
-                else {
-                  inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget, results.deletion);
-                  $rootScope.$broadcast('conceptEdit.inactivateConcept');
-                }
-              });
+              scope.deletingConeceptError = false;           
+              if (isAttributeConcept(scope.concept.fsn)) {
+                snowowlService.searchConcepts(scope.branch,'', '*: ' + scope.concept.conceptId + ' =*', 0, 50, false).then(function (results) {
+                  if (results.total > 0) {
+                    scope.deletingConeceptError = true;
+                  } else {
+                    deleteConcept();
+                  }
+                });
+              } else {
+                deleteConcept();
+              }
             }
             else {
               // mimic actual inactivation
@@ -1146,11 +1129,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return;
               }
 
-              scope.inactivateError = false;
+              scope.inactivatingConceptError = false;
               if (isAttributeConcept(conceptCopy.fsn)) {
                 snowowlService.searchConcepts(scope.branch,'', '*: ' + conceptCopy.conceptId + ' =*', 0, 50, false).then(function (results) {
                   if (results.total > 0) {
-                    scope.inactivateError = true;
+                    scope.inactivatingConceptError = true;
                   } else {
                     inactivateConcept(conceptCopy);
                   }
@@ -1161,6 +1144,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         };
+
+        function deleteConcept () {
+          selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, true).then(function (results) {                  
+            inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget);
+            if (results.deletion && !results.associationTarget) {
+              notificationService.sendMessage('Deleting Concept...');
+              snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+                if (response.status === 409) {
+                  notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
+                }
+                else {
+                  $rootScope.$broadcast('removeItem', {concept: scope.concept});
+                  scope.removeConcept(scope.concept);
+
+                  // remove from the modified list
+                  scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+
+                  // remove from batch editing if any
+                  if (!scope.isBatch) {
+                    batchEditingService.removeBatchConcept(scope.concept.conceptId);
+                  }
+                  notificationService.sendMessage('Concept Deleted', 5000);
+                }
+              });
+            }
+            else {
+              inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget, results.deletion);
+              $rootScope.$broadcast('conceptEdit.inactivateConcept');
+            }
+          });
+        }
 
         function inactivateConcept (conceptCopy) {
           // validate the concept
