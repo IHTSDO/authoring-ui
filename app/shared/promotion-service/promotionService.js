@@ -83,7 +83,7 @@ angular.module('singleConceptAuthoringApp')
 
           // get the branch details
           snowowlService.getBranch(branch).then(function (branchStatus) {
-
+            snowowlService.getTraceabilityForBranch(branch).then(function (activities) {
               if (!branchStatus) {
                 flags.push({
                   checkTitle: 'Could Not Retrieve Branch Details',
@@ -162,7 +162,7 @@ angular.module('singleConceptAuthoringApp')
                     blocksPromotion: false
                   });
                 }
-                else if ((new Date(latestClassificationJson.saveDate)).getTime() / 1000 <= branchStatus.headTimestamp / 1000) {
+                else if ((new Date(latestClassificationJson.saveDate)).getTime() <= getLatestModifiedTime(activities)) {
                   flags.push({
                     checkTitle: 'Classification Not Current',
                     checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
@@ -246,17 +246,28 @@ angular.module('singleConceptAuthoringApp')
               }
               else {
                 deferred.resolve(flags);
-              }
-
+              }           
 
             },
             function (error) {
-              deferred.reject('Could not determine branch state');
+              deferred.reject('Could not get traceability for branch');
             });
+          },
+          function (error) {
+            deferred.reject('Could not determine branch state');
+          });
         }
 
       }
       return deferred.promise;
+    }
+
+    function getLatestModifiedTime(activities) {
+      var allModifiedTime = [];
+      angular.forEach(activities.content, function(activity) {
+        allModifiedTime.push((new Date(activity.commitDate)).getTime());
+      });
+      return Math.max.apply(null, allModifiedTime);
     }
 
     function checkPrerequisitesForTask(projectKey, taskKey) {
