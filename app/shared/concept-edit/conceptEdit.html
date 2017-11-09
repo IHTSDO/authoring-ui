@@ -87,7 +87,7 @@
 
       <div class="  no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
            ng-class="{'disabled': saving}">
-        <div class=" p-t-3  ">
+        <div class=" p-t-3 p-r-5 pull-right ">
 
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
@@ -133,12 +133,8 @@
                   ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
           </button>
           <button type="button"
-                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case green btn-toggle-rels-view"            
-                  ng-click="toggleInferredRelationships()">
-                  <div class="fa-stack">
-                      <i class="fa fa-circle"></i>
-                      <strong class="fa-stack-1x">{{!showInferredRels ? 'S' : 'I'}}</strong>
-                  </div>                  
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case stated-inferred-view"            
+                  ng-click="toggleInferredRelationships()">{{!showInferredRels ? 'S' : 'I'}}               
                   <span ng-if="!showInferredRels"> Switch to inferred view </span>
                   <span ng-if="showInferredRels"> Switch to stated view </span>
           </button>          
