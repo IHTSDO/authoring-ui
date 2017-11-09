@@ -1200,25 +1200,6 @@ button-link .bluehl .grey.darken-3 {
     background-color: #ffffdb;
     box-shadow: none;
 }
-.btn-toggle-rels-view {
-    padding-left: 0px;
-    padding-right: 0px;
-}
-.btn-toggle-rels-view .fa-stack {
-    width: 15px;
-    height: 22px;
-    line-height: inherit;
-    color: #03a4e4;
-}
-.btn-toggle-rels-view strong {
-    height: 17px;
-    width: 17px;
-    top: 0px;
-    font-family: initial;
-    font-weight: 600;    
-    margin-left: -1px;
-    color: white;
-}
 .INFERRED_RELATIONSHIP {
     background-color: #afa77d;
 }
@@ -1230,6 +1211,14 @@ button-link .bluehl .grey.darken-3 {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.1);
     border-color: transparent;
+}
+.editing-form button.stated-inferred-view {
+    width: 14px;
+    height: 17px;
+    background-color: #03a4e4;
+    color: white;
+    font-family: initial;
+    padding-top: 0px;  
 }
 .sidebar-tabs.nav > li > a {
     line-height: 35px;
