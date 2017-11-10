@@ -421,8 +421,7 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {
-            scope.inferredNotPreviouslyStated = [];
+          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {            
             var requestPromise = [];
             angular.forEach(sourceIds, function (sourceId) {
               var httpPromise = snowowlService.getFullConcept(sourceId, scope.branch);
@@ -438,6 +437,7 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
                 });
+                scope.inferredNotPreviouslyStated = [];
                 angular.forEach(relationshipChanges.items, function (relationshipChange) {
                   var itemFound = false;
                   for(var i = 0; i < relationships.length; i++){
