@@ -2447,7 +2447,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // groups defined)
           var maxGroup = -1;
           angular.forEach(scope.concept.relationships, function (rel) {
-            if (parseInt(rel.groupId) > maxGroup) {
+            if (rel.characteristicType === "STATED_RELATIONSHIP" && parseInt(rel.groupId) > maxGroup) {
               maxGroup = parseInt(rel.groupId);
             }
           });
