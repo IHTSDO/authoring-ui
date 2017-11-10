@@ -916,6 +916,17 @@ angular.module('singleConceptAuthoringApp.edit', [
             notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
 
             $scope.conceptLoading = false;
+            if ($scope.thisView !== 'edit-default') {
+              $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+              $routeParams.mode = 'edit';
+              $scope.canCreateConcept = true;
+              $rootScope.displayMainSidebar = true;
+              // set this and last views
+              $scope.lastView = $scope.thisView;
+              $scope.thisView = 'edit-default';
+              // set layout based on view
+              setLayout();
+            }
 
             return;
           }
@@ -926,13 +937,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
         if (!conceptExists) {
           $scope.concepts.push(response);
-
-          $timeout(function () {
-            $scope.updateEditListUiState();
-
-          }, 1000);
-
-        }
+        }        
 
         // deep copy the object -- note: does not work in IE8, but screw
         // that!
@@ -984,7 +989,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         clonedConcept.fsn = null;
         clonedConcept.released = false;
 
-        var successMsg = 'Concept ' + clonedConcept.fsn + ' successfully cloned';
+        var successMsg = 'Concept ' + response.fsn + ' successfully cloned';
 
         // add a cloned tag to differentiate the clonedConcept
 
@@ -997,6 +1002,19 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.conceptLoading = false;
         notificationService.sendMessage(successMsg, 5000);
 
+       if ($scope.thisView !== 'edit-default') {
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $routeParams.mode = 'edit';
+          $scope.canCreateConcept = true;
+          $rootScope.displayMainSidebar = true;
+          // set this and last views
+          $scope.lastView = $scope.thisView;
+          $scope.thisView = 'edit-default';
+          // set layout based on view
+          setLayout();
+        }
+
+        $scope.updateEditListUiState();
       }, function (error) {
         $scope.conceptLoading = false;
         notificationService.sendError('Cloning failed; could not retrieve concept');
