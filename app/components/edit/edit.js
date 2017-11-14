@@ -1608,29 +1608,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.classify = function () {
 
       notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
+
       // start the classification
       scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
         if (!response || !response.data || !response.data.id) {
-          notificationService.sendWarning('Error starting classification - Retrying...');
-          $timeout(scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
-                if (!response || !response.data || !response.data.id) {
-                  notificationService.sendError('Error starting classification');
-
-                  return;
-                }
-
-                if (response.data.status) {
-                  notificationService.sendMessage('Classification is ' + response.data.status, 10000);
-                } else {
-                  notificationService.sendMessage('Task submitted for classification', 10000);
-                }
-
-                $rootScope.$broadcast('reloadTask');
-              }, function () {
-                // do nothing on error
-              }), 10000);
+          notificationService.sendError('Error starting classification');
           return;
         }
 
