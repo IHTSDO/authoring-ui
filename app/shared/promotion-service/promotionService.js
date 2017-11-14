@@ -155,14 +155,14 @@ angular.module('singleConceptAuthoringApp')
 
                 // otherwise compare the head timestamp of the branch to the
                 // saved timestamp of classification results acceptance
-                else if ((new Date(latestClassificationJson.saveDate)).getTime() > branchStatus.headTimestamp) {
+                else if (isClassificationSavedCurrent(activities)) {
                   flags.push({
                     checkTitle: 'Classification Current',
                     checkWarning: null,
                     blocksPromotion: false
                   });
                 }
-                else if ((new Date(latestClassificationJson.saveDate)).getTime() <= getLatestModifiedTime(activities)) {
+                else {
                   flags.push({
                     checkTitle: 'Classification Not Current',
                     checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
@@ -262,12 +262,14 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function getLatestModifiedTime(activities) {
-      var allModifiedTime = [];
+    function isClassificationSavedCurrent(activities) {    
+      var lastClassificationSaved = 0;
+      var lastModifiedTime = (new Date(activities.content[activities.content.length - 1].commitDate)).getTime();
       angular.forEach(activities.content, function(activity) {
-        allModifiedTime.push((new Date(activity.commitDate)).getTime());
+        if (activity.activityType === 'CLASSIFICATION_SAVE')
+          lastClassificationSaved = (new Date(activity.commitDate)).getTime();
       });
-      return Math.max.apply(null, allModifiedTime);
+      return lastClassificationSaved === lastModifiedTime;
     }
 
     function checkPrerequisitesForTask(projectKey, taskKey) {
