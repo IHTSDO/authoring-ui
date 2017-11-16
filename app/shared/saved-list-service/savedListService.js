@@ -38,16 +38,20 @@ angular.module('singleConceptAuthoringApp')
         },
 
         updateConceptInFavorites : function (concept,projectKey) {
+          var found = false;
           angular.forEach(this.favorites.items, function (item) {
 
             // if concept on list, update the relevant display fields
-            if (item.concept.conceptId === concept.conceptId) {
+            if (item.concept.conceptId === concept.conceptId) {             
               item.active = concept.active;
               item.concept.definitionStatus = concept.definitionStatus;
               item.concept.fsn = concept.fsn;
-              scaService.saveUiStateForUser('my-favorites-' + projectKey, this.favorites);
+              found = true;             
             }
           });
+          if (found) {
+            scaService.saveUiStateForUser('my-favorites-' + projectKey, this.favorites);
+          }          
         },
 
         updateCrsConceptInFavorites : function (data,projectKey) {
@@ -91,6 +95,7 @@ angular.module('singleConceptAuthoringApp')
         },
 
         updateConceptInSavedList : function (concept,projectKey,taskKey) {         
+          var found = false;
           angular.forEach(this.savedList.items, function (item) {
 
             // if concept on list, update the relevant display fields
@@ -99,9 +104,13 @@ angular.module('singleConceptAuthoringApp')
               item.concept.definitionStatus = concept.definitionStatus;
               item.concept.fsn = concept.fsn;
               item.editing = true;
-              scaService.saveUiStateForTask(projectKey, taskKey, 'saved-list', this.savedList);
+              found = true;
             }
           });
+
+          if (found) {
+            scaService.saveUiStateForTask(projectKey, taskKey, 'saved-list', this.savedList);
+          }
         },
 
         updateCrsConceptInSavedList : function (data,projectKey,taskKey) {
