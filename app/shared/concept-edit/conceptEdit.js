@@ -222,7 +222,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   });                    
                 }
             }
-            }
         }
           
         var focusListener = function () {
@@ -2485,6 +2484,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute relationship groups
           scope.computeRelationshipGroups();
+
+          // set focus on new first created relationship type of group.
+          $timeout(function () {
+            var newFirstCreatedElmId = 'relationship-type-id-' + scope.concept.conceptId + '-' + rel.groupId + '-0';
+            var newFirstCreatedElm = angular.element(document.querySelector('#' + newFirstCreatedElmId)); 
+            newFirstCreatedElm.focus();
+          }, 500);
+
         };
 
         scope.dropRelationshipGroup = function (relGroup) {
@@ -3259,7 +3266,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               textareaTags[0].focus();
               scope.hasFocus = false;
             }
-          }                  
+          }
         });
 
         scope.$on('removeConceptFromEditing', function (event, data) {

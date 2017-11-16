@@ -178,6 +178,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     })
 
+
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
@@ -927,10 +928,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           notificationService.sendWarning('Concept already added', 5000);
           $scope.conceptLoading = false;
+          $rootScope.$broadcast('enableAutoFocus', {conceptId: conceptId});
           return;
         }
       }
   
+
       $scope.addConceptToListFromId(conceptId,true);
       $scope.editList.push(conceptId);      
       $scope.updateEditListUiState();
@@ -942,7 +945,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         } else {
           setTimeout(waitForConceptRender, 500);
         }
-      }, 500);      
+      }, 500);
     }
 
 // watch for concept cloning from the edit sidebar
@@ -1098,6 +1101,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // remove the concept
         var editIndex = $scope.concepts.indexOf(data.concept);
+        
+        // Look for next concept to be focus
+        var nextConceptIdToBeFocus = null;
+        if ($scope.concepts.length > 1) {
+          if (editIndex === $scope.concepts.length - 1) {
+            nextConceptIdToBeFocus = $scope.concepts[editIndex - 1].conceptId;
+          } else {
+            nextConceptIdToBeFocus = $scope.concepts[editIndex + 1].conceptId;
+          }
+        }
+      
         $scope.concepts.splice(editIndex, 1);
 
         // only update the edit list if actually in an edit view
@@ -1107,7 +1121,6 @@ angular.module('singleConceptAuthoringApp.edit', [
             $rootScope.$broadcast('conceptFocused', {id: nextConceptIdToBeFocus});
           }          
         }
-
       }
     });
 
@@ -1132,6 +1145,37 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
+ //Remove all concepts from editing   
+    $scope.closeAllConcepts = function() {
+      if ($scope.concepts.length === 0) {
+        notificationService.sendMessage('No concept is removed from editing', 5000);
+        return;
+      }
+      notificationService.sendMessage('Removing all concepts from editing', 10000);
+      scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+        .then(function (uiState) {            
+          if (uiState && Object.getOwnPropertyNames(uiState).length > 0) {
+            var promises = [];                    
+            for (var i = 0; i < uiState.length; i++) {               
+              promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
+            }
+            // on resolution of all promises
+            $q.all(promises).then(function (responses) {
+              var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
+              if (hasUnsavedConcept) {
+                var msg = 'There are some unsaved concepts. Please save them before removing.';                 
+                modalService.message(msg);               
+              } else {
+                $rootScope.$broadcast('removeConceptFromEditing', {});
+              }
+              notificationService.clear();
+            });
+          } else {
+             notificationService.clear();
+          }
+        }
+      );
+    };
 
 // removes concept from editing list (unused currently)
     $scope.closeConcept = function (index) {
