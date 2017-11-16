@@ -182,6 +182,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
                   callback: function() {scope.toggleHideInactive()}
                 })
+                hotkeys.bindTo(scope)
+                .add({
+                  combo: 'alt+t',
+                  description: 'View Concept in taxonomy',
+                  callback: function() {
+                    $rootScope.$broadcast('viewTaxonomy', {
+                      concept: {
+                        conceptId: scope.concept.conceptId,
+                        fsn: scope.concept.fsn
+                      }
+                    });
+                  }
+                })
+
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
                 if(!external){
@@ -2427,6 +2441,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute relationship groups
           scope.computeRelationshipGroups();
+
+          // set focus on new first created relationship type of group.
+          $timeout(function () {
+            var newFirstCreatedElmId = 'relationship-type-id-' + scope.concept.conceptId + '-' + rel.groupId + '-0';
+            var newFirstCreatedElm = angular.element(document.querySelector('#' + newFirstCreatedElmId)); 
+            newFirstCreatedElm.focus();
+          }, 500);
+
         };
 
         scope.dropRelationshipGroup = function (relGroup) {
@@ -3170,6 +3192,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // on load, check task status
         scope.checkPromotedStatus();
+
+// watch for setting focus when a concept is added to editing view
+        scope.$on('enableAutoFocus', function (event, data) {
+          if(scope.concept.conceptId === data.conceptId && !scope.isStatic) {
+            var textareaTags = $('#height-' + data.conceptId).find('textarea');
+            textareaTags[0].focus();
+          }
+        });
+
+        scope.$on('removeConceptFromEditing', function (event, data) {
+          scope.removeConcept(scope.concept);
+        });
+        
 
 // watch for classification completion request to reload concepts
 // will not affect modified concept data
