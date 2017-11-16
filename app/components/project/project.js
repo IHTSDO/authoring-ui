@@ -32,6 +32,25 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
 
+      hotkeys.bindTo($scope)   
+      .add({
+        combo: 'alt+y',
+        description: 'Start classification',
+        callback: function() {$scope.classify();}
+      })
+      .add({
+        combo: 'alt+v',
+        description: 'Start validation ',
+        callback: function() {$scope.validate();}
+      })
+      .add({
+        combo: 'alt+l',
+        description: 'Go to notification link',
+        callback: function() {
+           $rootScope.$broadcast('gotoNotificationLink', {});
+        }
+      });
+
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
