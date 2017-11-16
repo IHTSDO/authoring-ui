@@ -31,6 +31,13 @@ angular.module('singleConceptAuthoringApp.projects', [
           description: 'Create a New Task',
           callback: function() {$scope.openCreateTaskModal();}
         })
+        .add({
+          combo: 'alt+l',
+          description: 'Go to notification link',
+          callback: function() {
+             $rootScope.$broadcast('gotoNotificationLink', {});
+          }
+        });
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
