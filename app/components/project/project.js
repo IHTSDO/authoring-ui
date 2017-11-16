@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 

@@ -89,6 +89,14 @@ angular
           // DOes not work, too easy but had to try :D  scope.openSearchModal();
         }
       });
+
+      taOptions.keyMappings = [
+          { commandKeyCode: 'TabKey', testForKey: function (event) { return false; }
+          },
+          { commandKeyCode: 'ShiftTabKey', testForKey: function (event) { return false; }
+          }
+      ];
+
       // add the button to the default toolbar definition
       taOptions.toolbar[1].push('taxonomy');
       var index = taOptions.toolbar[1].indexOf('undo');    // <-- Not supported in <IE9

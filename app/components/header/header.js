@@ -66,6 +66,10 @@ angular.module('singleConceptAuthoringApp')
           }
         }; 
 
+        scope.$on('gotoNotificationLink', function (event, notification) {
+          scope.gotoNotificationLink();
+        });
+        
         // Expected format from notificationService.js
         // {message: ..., url: ..., durationInMs: ...}
         scope.$on('notification', function (event, notification) {
