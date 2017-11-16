@@ -32,6 +32,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           description: 'Create a New Task',
           callback: function() {$scope.openCreateTaskModal();}
         })
+        .add({
+      combo: 'alt+l',
+        description: 'Go to notification link',
+        callback: function() {
+           $rootScope.$broadcast('gotoNotificationLink', {});
+        }
+      });
 
       // flags for displaying promoted tasks
       $scope.showPromotedReviews = false;

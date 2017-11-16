@@ -42,6 +42,13 @@ angular.module('singleConceptAuthoringApp.project', [
         combo: 'alt+v',
         description: 'Start validation ',
         callback: function() {$scope.validate();}
+      })
+      .add({
+        combo: 'alt+l',
+        description: 'Go to notification link',
+        callback: function() {
+           $rootScope.$broadcast('gotoNotificationLink', {});
+        }
       });
 
       $scope.getProject = function () {
