@@ -2208,7 +2208,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if(scope.template && relationship.target && relationship.target.conceptId) {
+          if(scope.template && relationship.target && relationship.target.conceptId && !relationship.targetSlot) {
             return;
           }
 
