@@ -1,0 +1,184 @@
+<div class="row grey darken-4 p-t-5">
+  <div class="col-md-1 no-padding pull-left">
+    <button
+        class="btn-default md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
+        ng-click="setAxiomProperties(axiom, $event)"
+        popover-template="'shared/component-more/axiomMore.html'"
+        popover-placement="{{popoverDirection}}"
+        popover-append-to-body="true">
+        <span>More details</span>
+      </button>
+  </div>
+
+  <div class="col-md-6 no-padding">
+    <div class="grey darken-4 p-t-7">
+      <span class="fsn">{{axiom.title}}</span>          
+    </div>
+  </div>
+
+  <div class="col-md-2 no-margin edits concept-title  pull-right no-padding" ng-disabled="saving" ng-class="{'disabled': saving}">
+    <div class=" p-t-3 p-r-5 pull-right ">
+      <button type="button"
+              ng-click="removeAxiom(axiom,axiom.type)"                      
+              class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus"
+              ng-disabled="isStatic || isLockedModule(concept.moduleId)">
+        <span>Delete Axiom</span>
+      </button>
+      <button ng-if="axiom.definitionStatus === 'FULLY_DEFINED'"
+              ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
+              ng-click="toggleAxiomDefinitionStatus(axiom)">
+
+        <div class="badge alert-warning ng-binding">≡&nbsp; </div>
+        <span>Fully Defined</span>
+      </button>
+      <button ng-if="axiom.definitionStatus === 'PRIMITIVE'"
+              ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+              class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
+              ng-click="toggleAxiomDefinitionStatus(axiom)">
+        <div class="badge alert-warning ng-binding">&nbsp; </div>
+        <span>Primitive</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">      
+  <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
+    <div ng-repeat="relationship in relationshipGroup"
+         ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
+         class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">           
+
+      <div class="row darken-3 edits-row color_{{(relationship.groupId%2==0)?'even':'odd'}} "
+           ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+
+        <div class="col-md-11 no-padding left-of-edit {{relationship.characteristicType}}" drop-channel="axiomRelationshipObj"
+             ui-on-drop="dropAxiomRelationship(relationship, $data, axiom)" drag-enter-class="sca-drag-target"
+             drag-hover-class="sca-drag-hover">
+
+          <div>                 
+
+            <button
+              class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button m-l-15"
+              ui-draggable="true" drag="relationship" drag-channel="axiomRelationshipObj"
+              drag-image="getDragImageForRelationship(relationship)">
+              <span>Drag This Row</span>
+            </button>                
+
+            <!-- relationship group -->
+            <div class="pull-left rolegroup tooltips-bottom small-size-tooltip m-l-35">
+              <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || isBatch"
+                        ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
+                        ng-change="updateAxiomRelationship(relationship, axiom.type)"
+                        class="form-control rg no-border-bottom"
+                        type="text" placeholder="#" ui-on-drop="dropNullOp()">
+              </textarea>
+              <span>Role Group</span>
+            </div>
+
+            <!-- attribute type' -->
+            <div class="pull-left is_a is_a_bg"
+                 drag-enter-class="sca-drag-target"
+                 drag-hover-class="sca-drag-hover"
+                 drop-channel="conceptPropertiesObj"
+                 ui-on-drop="dropAxiomRelationshipType(relationship, $data, axiom.type)"
+                 drop-validate="!relationship.effectiveTime && !isStatic">
+
+                <textarea id="axiom-relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
+                          custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                          ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) ||  isBatch"
+                          class="resizable-text form-control msd-elastic no-border-bottom rel"
+                          typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
+                          typeahead-focus-first="false"
+                          typeahead-loading="typeTypeaheadLoading"
+                          typeahead-wait-ms="700"
+                          typeahead-on-select="setAxiomRelationshipTypeConcept(relationship, $item, concept.conceptId, relationship.groupId, $index, axiom.type)"
+                          typeahead-editable="false"
+                          typeahead-min-length="0">
+                </textarea>
+
+              <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom"
+                   ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"
+                   ui-draggable="true"
+                   drag="getConceptIdNamePairFromAttributeType(relationship)"
+                   drag-channel="conceptPropertiesObj"
+                   drag-image="getDragImageForConcept(relationship.type.fsn)">
+                <span>Drag this component</span>
+              </div>
+
+            </div>
+
+            <!-- linked concept -->
+            <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
+                 drag-hover-class="sca-drag-hover"
+                 drop-channel="conceptPropertiesObj" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type)"
+                 drop-validate="!relationship.effectiveTime && !isStatic"
+                 ng-class="getTargetSlotStyle(relationship)">
+
+              <textarea id="axiom-relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}" 
+                        ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
+                        ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId)"
+                        class="resizable-text relationship msd-elastic no-border-bottom"
+                        typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
+                        typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setAxiomRelationshipTargetConcept(relationship, $item, axiom, concept.conceptId, relationship.groupId, $index)"
+                        typeahead-editable="false" typeahead-min-length="3">                      
+              </textarea>
+
+              <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
+                   ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
+                   ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+                   drag-channel="conceptPropertiesObj"
+                   drag-image="getDragImageForConcept(relationship.target.fsn)">
+                <span>Drag This Component</span>
+              </div>
+            </div>
+
+            <div ng-if="relationship.target.definitionStatus === 'FULLY_DEFINED'"
+                 class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+              <div class="badge alert-warning ng-binding pull-left">≡&nbsp; </div>
+              <span>Fully Defined</span>
+            </div>
+            <div ng-if="relationship.target.definitionStatus === 'PRIMITIVE'"
+                 class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+              <div class="badge alert-warning ng-binding pull-left">&nbsp; </div>
+              <span>Primitive</span>
+            </div>
+
+            <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)">
+
+              <button ng-if="!template" type="button" ng-click="addAxiomRelationship(groupId, relationship, axiom)"
+                      class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
+                <span>Add New Relationship</span>
+              </button>
+
+              <button type="button" ng-click="removeAxiomRelationship(relationship, axiom)"
+                      ng-if="!relationship.released"
+                      class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
+                <span>Remove Relationship</span>
+              </button>
+
+            </div>
+          </div>              
+        </div>
+
+        <div class="col-md-1 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} role-group-drag p-t-5 {{relationship.characteristicType}}"
+             drop-channel="axiomRelationshipGroupObj" ui-on-drop="dropAxiomRelationshipGroup($data, axiom)"
+             drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover">
+          <button ng-if="$index === 0"
+                  class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right  "
+                  ui-draggable="true" drag="relationshipGroup" drag-channel="axiomRelationshipGroupObj"
+                  drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
+            <span>Drag Relationship Group</span>
+          </button>
+
+          <button ng-if="!isStatic && !isLockedModule(relationship.moduleId)"
+                  class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
+                  ng-click="addAxiomRelationshipGroup(axiom)"><span>Add Relationship Group</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="role_group_divider_bottom_{{(groupId%2==0)?'even':'odd'}}"></div>      
+</div>
