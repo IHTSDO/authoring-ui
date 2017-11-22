@@ -257,6 +257,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
         }, true);
+
+        scope.inactivateError = false;
         scope.saving = false;
         scope.drugsOrdering = metadataService.getdrugsModelOrdering();
         if (!scope.concept) {
