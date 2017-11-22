@@ -511,7 +511,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         var axiomType = {
           'ADDITIONAL': 'additional',
-          'GCI ': 'gci'
+          'GCI': 'gci'
         };
 
 // on load, check if a modified, unsaved version of this concept
@@ -537,6 +537,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               scope.computeRelationshipGroups();
               scope.computeAxioms(axiomType.ADDITIONAL);
+              scope.computeAxioms(axiomType.GCI);
             }
 
             // otherwise, persist modified state for unsaved concept with id
@@ -1800,6 +1801,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var msg = '';
           if(type === axiomType.ADDITIONAL) {
             msg = 'Do you want to remove this Additional Axiom ?';
+          } else if(type === axiomType.GCI) {
+            msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
           }
           modalService.confirm(msg).then(function () {
               var index = -1;
@@ -1812,6 +1815,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
                 if (index >= 0) {
                   scope.concept.additionalAxioms.splice(index, 1);
+                  scope.computeAxioms(type);
+                  autoSave();
+                }
+              } else if (type === axiomType.GCI) {
+                for (var i = scope.concept.gciAxioms.length - 1; i >= 0; i--) {
+                  if (axiom.axiomId === scope.concept.gciAxioms[i].axiomId) {
+                    index = i;
+                    break;
+                  }
+                }
+                if (index >= 0) {
+                  scope.concept.gciAxioms.splice(index, 1);
                   scope.computeAxioms(type);
                   autoSave();
                 }
@@ -2166,6 +2181,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             }); 
           }
+
+          if(type === axiomType.GCI) {
+            angular.forEach(scope.concept.gciAxioms, function (axiom) {
+              axiom['relationshipGroups'] = [];
+              axiom.title = 'General Concept Inclusion';
+              axiom.type = axiomType.GCI;
+              angular.forEach(axiom.relationships, function (rel) {        
+                // if map does not have this group id, add blank array
+                if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
+                  axiom.relationshipGroups[parseInt(rel.groupId)] = [];
+                }
+
+                // push this relationship onto group-mapped array
+                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);              
+              });
+            }); 
+          }
                     
         };
 
@@ -2289,7 +2321,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.concept.additionalAxioms.push(axiom);
           scope.computeAxioms(axiomType.ADDITIONAL);
+          autoSave();
         };
+
+        scope.addGCIAxiom = function() {
+          var axiom = componentAuthoringUtil.getNewAxiom();
+          axiom.relationships[0].sourceId = scope.concept.conceptId;          
+
+          if(!scope.concept.hasOwnProperty('gciAxioms')){
+            scope.concept.gciAxioms = [];
+          }
+
+          scope.concept.gciAxioms.push(axiom);
+          scope.computeAxioms(axiomType.GCI);
+          autoSave();
+        };
+        
 
 ////////////////////////////////
 // Shared Elements
@@ -2722,22 +2769,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               copy.sourceId = scope.concept.conceptId;
 
               // set the group based on target
-              copy.groupId = target.groupId;
-              
-              if(axiom.type === axiomType.ADDITIONAL) {
-                // get index of target relationship
-                var targetIndex = axiom.relationships.indexOf(target);
+              copy.groupId = target.groupId;              
+             
+              // get index of target relationship
+              var targetIndex = axiom.relationships.indexOf(target);
 
-                // if existing relationship, insert source relationship afterwards
-                if (target.target.conceptId) {
-                  axiom.relationships.splice(targetIndex + 1, 0, copy);
-                }
-
-                // otherwise replace the relationship
-                else {
-                  axiom.relationships[targetIndex] = copy;
-                }
+              // if existing relationship, insert source relationship afterwards
+              if (target.target.conceptId) {
+                axiom.relationships.splice(targetIndex + 1, 0, copy);
               }
+
+              // otherwise replace the relationship
+              else {
+                axiom.relationships[targetIndex] = copy;
+              }              
               
               scope.computeAxioms(axiom.type);
               autoSave();             

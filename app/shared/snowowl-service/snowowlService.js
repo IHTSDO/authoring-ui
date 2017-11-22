@@ -217,7 +217,7 @@ angular.module('singleConceptAuthoringApp')
         var allowableProperties = [
           'fsn', 'released', 'conceptId', 'definitionStatus', 'active', 'moduleId',
           'isLeafInferred', 'effectiveTime', 'descriptions',
-          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets', 'additionalAxioms'];
+          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets', 'additionalAxioms', 'gciAxioms'];
 
         // if a locally assigned UUID, strip
         if (!isSctid(concept.conceptId) && !keepTempIds) {
@@ -243,6 +243,10 @@ angular.module('singleConceptAuthoringApp')
         });
 
         angular.forEach(concept.additionalAxioms, function (axiom) {
+          cleanAxiom(axiom);
+        });
+
+        angular.forEach(concept.gciAxioms, function (axiom) {
           cleanAxiom(axiom);
         });
       }

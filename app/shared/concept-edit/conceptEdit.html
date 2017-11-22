@@ -146,6 +146,12 @@
             <span ng-if="!isStatic">Add Additional Axiom</span>
           </button>
           <button type="button"
+                  ng-click="addGCIAxiom()"
+                  ng-if="!isExtensionDialect()"
+                  class="btn-default green small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa fa-plus-square">
+            <span ng-if="!isStatic">Add GCI Axiom</span>
+          </button>
+          <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
                   ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
                   ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
@@ -672,6 +678,11 @@
 
     <!-- rows: Additional axioms -->
     <div ng-repeat="axiom in concept.additionalAxioms">     
+      <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
+    </div>
+
+    <!-- rows: General Concept Inclusion axioms -->
+    <div ng-repeat="axiom in concept.gciAxioms">     
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
     <div class="clearfix"></div>
