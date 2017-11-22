@@ -135,6 +135,16 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      function cleanAxiom(axiom) {
+        var allowableAxiomRelationshipProperties = ['axiomId', 'definitionStatus', 'effectiveTime', 'active', 'released', 'moduleId', 'relationships'];      
+
+        for (var key in axiom) {
+          if (allowableAxiomRelationshipProperties.indexOf(key) === -1) {
+            delete axiom[key];
+          }
+        }
+      }
+
       function removeInvalidCharacters(term) {
         if (term) {
           // strip invalid characters from term
@@ -207,7 +217,7 @@ angular.module('singleConceptAuthoringApp')
         var allowableProperties = [
           'fsn', 'released', 'conceptId', 'definitionStatus', 'active', 'moduleId',
           'isLeafInferred', 'effectiveTime', 'descriptions',
-          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets'];
+          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets', 'additionalAxioms'];
 
         // if a locally assigned UUID, strip
         if (!isSctid(concept.conceptId) && !keepTempIds) {
@@ -230,6 +240,10 @@ angular.module('singleConceptAuthoringApp')
           // snowowl require source id set
           relationship.sourceId = concept.conceptId;
 
+        });
+
+        angular.forEach(concept.additionalAxioms, function (axiom) {
+          cleanAxiom(axiom);
         });
       }
 

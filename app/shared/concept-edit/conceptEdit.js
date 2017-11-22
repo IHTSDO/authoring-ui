@@ -509,6 +509,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.concept = scope.unmodifiedConcept;
         }
 
+        var axiomType = {
+          'ADDITIONAL': 'additional',
+          'GCI ': 'gci'
+        };
+
 // on load, check if a modified, unsaved version of this concept
 // exists -- only applies to task level, safety check
         if ($routeParams.taskKey && scope.autosave === true) {
@@ -531,6 +536,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.isModified = true;
 
               scope.computeRelationshipGroups();
+              scope.computeAxioms(axiomType.ADDITIONAL);
             }
 
             // otherwise, persist modified state for unsaved concept with id
@@ -1278,6 +1284,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.toggleAxiomDefinitionStatus = function (axiom) {
+          if (!scope.isStatic) {
+            if (axiom.definitionStatus === 'FULLY_DEFINED') {
+              axiom.definitionStatus = 'PRIMITIVE';
+            }
+            else {
+              axiom.definitionStatus = 'FULLY_DEFINED';
+            }
+            autoSave();
+          }
+        };
+
 // function to apply cascade changes when concept module id changes
         scope.setConceptModule = function (concept) {
           angular.forEach(scope.concept.descriptions, function (description) {
@@ -1778,6 +1796,33 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        scope.removeAxiom = function (axiom, type) {
+          var msg = '';
+          if(type === axiomType.ADDITIONAL) {
+            msg = 'Do you want to remove this Additional Axiom ?';
+          }
+          modalService.confirm(msg).then(function () {
+              var index = -1;
+              if (type === axiomType.ADDITIONAL) {
+                for (var i = scope.concept.additionalAxioms.length - 1; i >= 0; i--) {
+                  if (axiom.axiomId === scope.concept.additionalAxioms[i].axiomId) {
+                    index = i;
+                    break;
+                  }
+                }
+                if (index >= 0) {
+                  scope.concept.additionalAxioms.splice(index, 1);
+                  scope.computeAxioms(type);
+                  autoSave();
+                }
+              }
+              
+            }, function () {
+              // do nothing
+            }
+          );                    
+        };
+
         /**
          * Inactivates or reactivates a description
          * NOTE: Uses hard-save to prevent sync errors between inactivation
@@ -2099,6 +2144,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
+        
+        scope.computeAxioms = function(type) {
+          if (!type) {
+            return;
+          }
+ 
+          if (type === axiomType.ADDITIONAL) {
+            angular.forEach(scope.concept.additionalAxioms, function (axiom) {
+              axiom['relationshipGroups'] = [];
+              axiom.title = 'Additional Axiom';
+              axiom.type = axiomType.ADDITIONAL;
+              angular.forEach(axiom.relationships, function (rel) {        
+                // if map does not have this group id, add blank array
+                if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
+                  axiom.relationshipGroups[parseInt(rel.groupId)] = [];
+                }
+
+                // push this relationship onto group-mapped array
+                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);              
+              });
+            }); 
+          }
+                    
+        };
+
 // define characteristic types
         scope.characteristicTypes = [
           {id: 'STATED_RELATIONSHIP', abbr: 'Stated'},
@@ -2128,6 +2198,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
         };
 
+        scope.addAxiomRelationship = function (relGroup, relationshipBefore, axiom) {
+
+          var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
+
+           // Remove unused properties
+          delete relationship.active;
+          delete relationship.characteristicType;
+          delete relationship.effectiveTime;
+          delete relationship.modifier;
+          delete relationship.moduleId;
+
+          relationship.sourceId = scope.concept.conceptId;
+
+          // set role group if specified
+          if (relGroup) {
+            relationship.groupId = relGroup;
+
+          }
+          var index = axiom.relationships.indexOf(relationshipBefore);
+          if (index === -1) {
+            axiom.relationships.push(relationship);
+          } else {
+            axiom.relationships.splice(index + 1, 0, relationship);
+          }
+
+          scope.computeAxioms(axiom.type);
+          autoSave();
+        };
+
         scope.removeRelationship = function (relationship) {
           var index = scope.concept.relationships.indexOf(relationship);
           if (index !== -1) {
@@ -2143,6 +2242,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.removeAxiomRelationship = function (relationship, axiom) {
+          var index = axiom.relationships.indexOf(relationship);
+          if (index !== -1) {
+            axiom.relationships.splice(index, 1);            
+            if (axiom.relationships.length === 0) {
+              var isaRel = componentAuthoringUtil.getNewIsaRelationship();
+              // Remove unused properties
+              delete isaRel.active;
+              delete isaRel.characteristicType;
+              delete isaRel.effectiveTime;
+              delete isaRel.modifier;
+              delete isaRel.moduleId;
+              
+              isaRel.sourceId = scope.concept.conceptId;
+
+              axiom.relationships.push(isaRel);               
+            }
+          } else {
+            console.error('Error removing axiom relationship; relationship not found');
+          }
+          scope.computeAxioms(axiom.type);
+          autoSave(); 
+        };
+
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           if (scope.concept.active === true) {
@@ -2154,8 +2277,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             scope.warnings = ['You must activate the concept before its components.'];
           }
+        };        
+        
+        scope.addAdditionalAxiom = function() {
+          var axiom = componentAuthoringUtil.getNewAxiom();
+          axiom.relationships[0].sourceId = scope.concept.conceptId;          
+
+          if(!scope.concept.hasOwnProperty('additionalAxioms')){
+            scope.concept.additionalAxioms = [];
+          }
+
+          scope.concept.additionalAxioms.push(axiom);
+          scope.computeAxioms(axiomType.ADDITIONAL);
         };
-             
 
 ////////////////////////////////
 // Shared Elements
@@ -2301,6 +2435,59 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        scope.dropAxiomRelationshipTarget = function (relationship, data, type) {
+
+          // cancel if static
+          if (scope.isStatic) {
+            return;
+          }        
+
+          var tempFsn = relationship.target.fsn;
+
+          relationship.target.fsn = 'Validating...';
+          
+          if (metadataService.isMrcmEnabled()) {
+
+            if (relationship.type.conceptId) {
+
+              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
+                snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+                  relationship.target.conceptId = response.conceptId;
+                  relationship.target.fsn = response.fsn;
+                  relationship.target.definitionStatus = response.definitionStatus;
+                  relationship.target.effectiveTime = response.effectiveTime;
+                  relationship.target.moduleId = response.moduleId;
+                  relationship.target.active= response.active;
+                  relationship.target.released = response.released;
+                  
+                  scope.computeAxioms(type);
+                  autoSave();
+                });                              
+              }, function (error) {
+                scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+                relationship.target.fsn = tempFsn;
+              });
+            } else {
+              scope.warnings = ['MRCM validation error: Must set relationship type first'];
+            }
+          }
+
+          // otherwise simply allow drop
+          else {
+            snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+              relationship.target.conceptId = response.conceptId;
+              relationship.target.fsn = response.fsn;
+              relationship.target.definitionStatus = response.definitionStatus;
+              relationship.target.effectiveTime = response.effectiveTime;
+              relationship.target.moduleId = response.moduleId;
+              relationship.target.active= response.active;
+              relationship.target.released = response.released;
+              
+              scope.computeAxioms(type);
+              autoSave();
+            });
+          }
+        };
 
         scope.dropRelationshipType = function (relationship, data) {
 
@@ -2344,6 +2531,44 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
+          }
+        };
+
+        scope.dropAxiomRelationshipType = function (relationship, data, type) {
+
+          // cancel if static
+          if (scope.isStatic) {
+            return;
+          }                 
+
+          // check that attribute is acceptable for MRCM rules
+          if (metadataService.isMrcmEnabled()) {
+
+            // check attribute allowed against stored array
+            if (constraintService.isAttributeAllowedForArray(data.id, scope.allowedAttributes)) {
+
+              // if target already specified, validate it
+              if (relationship.target.conceptId) {
+                constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
+                  // do nothing
+                }, function (error) {
+                  scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + data.name + '.'];
+                });
+              }
+
+              relationship.type.conceptId = data.id;
+              relationship.type.fsn = data.name;
+
+              scope.computeAxioms(type);
+              autoSave();
+            } else {
+              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid attribute.'];
+            }
+          } else {
+            relationship.type.conceptId = data.id;
+            relationship.type.fsn = data.name;
+            scope.computeAxioms(type);
+            autoSave();
           }
         };
 
@@ -2469,6 +2694,61 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.dropAxiomRelationship = function (target, source, axiom) {
+
+          if (!target || !source) {
+            console.error('Cannot drop relationship, either source or target not specified');
+            return;
+          }
+
+          if (source.relationshipId === target.relationshipId && source.type.conceptId === target.type.conceptId && source.target.conceptId === target.target.conceptId) {
+            return;
+          }         
+
+          // check if target is static
+          if (scope.isStatic) {
+            console.error('Scope is static, cannot drop');
+            return;
+          }
+
+          if (constraintService.isAttributeAllowedForArray(source.type.fsn, scope.allowedAttributes)) {
+
+            constraintService.isValueAllowedForType(source.type.conceptId, source.target.conceptId, scope.branch).then(function () {
+              // copy relationship object and replace target relationship
+              var copy = angular.copy(source);
+
+             
+              // set sourceId from current concept
+              copy.sourceId = scope.concept.conceptId;
+
+              // set the group based on target
+              copy.groupId = target.groupId;
+              
+              if(axiom.type === axiomType.ADDITIONAL) {
+                // get index of target relationship
+                var targetIndex = axiom.relationships.indexOf(target);
+
+                // if existing relationship, insert source relationship afterwards
+                if (target.target.conceptId) {
+                  axiom.relationships.splice(targetIndex + 1, 0, copy);
+                }
+
+                // otherwise replace the relationship
+                else {
+                  axiom.relationships[targetIndex] = copy;
+                }
+              }
+              
+              scope.computeAxioms(axiom.type);
+              autoSave();             
+            }, function () {
+              scope.warnings = ['MRCM validation error: ' + source.target.fsn + ' is not valid for attribute type ' + source.type.fsn];
+            });
+          } else {
+            scope.warnings = ['MRCM validation error: Attribute ' + source.type.fsn + ' not allowed for concept'];
+          }
+        };
+
         scope.addRelationshipGroup = function () {
           var groupIds = [];
           scope.concept.relationships.forEach(function (rel) {
@@ -2493,6 +2773,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, 500);
 
         };
+
+        scope.addAxiomRelationshipGroup = function (axiom) {
+          var groupIds = [];
+          axiom.relationships.forEach(function (rel) {            
+            groupIds.push(parseInt(rel.groupId));
+          });
+
+          // push two new relationships
+          var rel = componentAuthoringUtil.getNewAttributeRelationship();
+
+          // Remove unused properties
+          delete rel.active;
+          delete rel.characteristicType;
+          delete rel.effectiveTime;
+          delete rel.modifier;
+          delete rel.moduleId;
+
+          rel.groupId = Math.max.apply(null, groupIds) + 1;
+          rel.sourceId = scope.concept.conceptId;
+
+          axiom.relationships.push(rel);
+          axiom.relationships.push(angular.copy(rel));
+
+          // recompute relationship groups
+          scope.computeAxioms(axiom.type);
+        };        
 
         scope.dropRelationshipGroup = function (relGroup) {
 
@@ -2569,6 +2875,65 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.dropAxiomRelationshipGroup = function (relGroup, axiom) {
+
+          if (!relGroup || relGroup.length === 0) {
+            return;
+          }
+
+          if (scope.isStatic) {
+            return;
+          }
+
+          // get the max group id and increment by one (or set to zero if no
+          // groups defined)
+          var maxGroup = -1;
+          angular.forEach(axiom.relationships, function (rel) {            
+            maxGroup = parseInt(rel.groupId);            
+          });
+          var newGroup = maxGroup + 1;
+
+          var relsProcessed = 0;
+
+          scope.warnings = [];
+
+          // strip identifying information from each relationship and push
+          // to relationships with new group id
+          angular.forEach(relGroup, function (rel) {
+            if (constraintService.isAttributeAllowedForArray(rel.type.fsn, scope.allowedAttributes)) {
+
+              constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {                
+                  // copy relationship object and replace target relationship
+                  var copy = angular.copy(rel);
+
+                  // set the group based on target
+                  copy.groupId = newGroup;
+
+                  // set sourceId from current concept
+                  copy.sourceId = scope.concept.conceptId;              
+
+                  axiom.relationships.push(copy);
+                  if (++relsProcessed === relGroup.length) {
+                    autoSave();
+                    scope.computeAxioms(axiom.type);
+                  }
+               
+              }, function () {
+                scope.warnings.push('MRCM validation error: ' + rel.target.fsn + ' is not valid for attribute type ' + rel.type.fsn);
+                if (++relsProcessed === relGroup.length) {
+                  autoSave();
+                  scope.computeAxioms(axiom.type);
+                }
+              });
+            } else {
+              if (++relsProcessed === relGroup.length) {
+                autoSave();
+                scope.computeAxioms(axiom.type);
+              }
+              scope.warnings.push('MRCM validation error: Attribute ' + rel.type.fsn + ' not allowed for concept');
+            }
+          });
+        };
 
         scope.getDragImageForConcept = function (fsn) {
           return fsn;
@@ -2643,6 +3008,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.setConceptProperties = function (concept, $event) {
           if (!concept) {
+            return;
+          }
+          scope.setPopoverDirection($event);
+        };
+
+        /**
+         * Sets needed concept properties as element attributes
+         * @param concept
+         */
+        scope.setAxiomProperties = function (axiom, $event) {
+          if (!axiom) {
             return;
           }
           scope.setPopoverDirection($event);
@@ -2830,6 +3206,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, function (error) {
             notificationService.sendError('Error getting allowable domain attributes: ' + error);
           });
+        };
+
+        scope.updateAxiomRelationship = function (relationship, type) {          
+          if (!relationship) {
+            return;
+          }
+
+          scope.computeAxioms(type);
+          autoSave();
         };
 
 /////////////////////////////
@@ -3041,6 +3426,41 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, 600); 
         };
 
+        scope.setAxiomRelationshipTypeConcept = function (relationship, item, conceptId, relationshipGroupId, itemIndex, type) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+          relationship.type.conceptId = item.id;
+          relationship.type.fsn = item.fsn.term;
+          if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
+            constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
+                scope.computeAxioms(type);
+                autoSave();
+              }, function () {
+                relationship.target = {};
+                relationship.target.conceptId = null;
+                scope.computeAxioms(type);
+                autoSave();
+              }
+            );
+          } 
+          else {
+            scope.computeAxioms(type);
+            autoSave();
+          }          
+
+          // Trigger blur event after relationship type has been selected
+          var elemID = 'axiom-relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
+          var elem = angular.element(document.querySelector('#' + elemID));         
+          $timeout(function () {
+            elem[0].blur();
+            var parent = $(elem).closest('.editHeightSelector');
+            if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+            }
+          }, 600); 
+        };
+
         /**
          * Sets relationship target concept based on typeahead selection
          * @param relationshipField the type or target JSON object
@@ -3088,6 +3508,55 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }, 600); 
         };
+
+        scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, conceptId, relationshipGroupId, itemIndex) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }            
+          if (metadataService.isMrcmEnabled()) {
+            if (!relationship.type.conceptId) {
+              scope.warnings = ['MRCM validation error: Must set attribute type first'];
+            } else {              
+              constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
+                relationship.target.conceptId = item.id;
+                relationship.target.fsn = item.fsn.term;
+                relationship.target.definitionStatus = item.definitionStatus;
+                relationship.target.effectiveTime = item.effectiveTime;
+                relationship.target.moduleId = item.moduleId;
+                relationship.target.active= item.active;
+                relationship.target.released = item.released;
+                
+                scope.computeAxioms(axiom.type);
+                autoSave();
+              }, function () {
+                scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+              });
+            }
+          } else {
+            relationship.target.conceptId = item.id;
+            relationship.target.fsn = item.fsn.term;
+            relationship.target.definitionStatus = item.definitionStatus;
+            relationship.target.effectiveTime = item.effectiveTime;
+            relationship.target.moduleId = item.moduleId;
+            relationship.target.active= item.active;
+            relationship.target.released = item.released;
+           
+            scope.computeAxioms(axiom.type);
+            autoSave();
+          }
+
+          // Trigger blur event after relationship target has been selected
+          var elemID = 'axiom-relationship-taget-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
+          var elem = angular.element(document.querySelector('#' + elemID));          
+          $timeout(function () {
+            elem[0].blur();
+            var parent = $(elem).closest('.editHeightSelector');
+            if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+            }
+          }, 600); 
+        };
+        
 
 //////////////////////////////////////////////
 // Component Removal functions
