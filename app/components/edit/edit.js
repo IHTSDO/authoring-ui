@@ -665,6 +665,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         if (response) {
           $scope.concepts.push(response);
+          $scope.conceptLoading = false;
           $scope.updateEditListUiState();
           notificationService.sendMessage('Concept loaded', 3000);
         } else {
