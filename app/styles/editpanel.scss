@@ -1216,12 +1216,33 @@ button-link .bluehl .grey.darken-3 {
     border-color: transparent;
 }
 .editing-form button.stated-inferred-view {
-    width: 16px;
-    height: 19px;
+    width: 14px;
+    height: 16px;
     background-color: #03a4e4;
     color: white;
     font-family: initial;
-    padding-top: 0px;  
+    padding-top: 0px;
+    text-align: center;
+    line-height: 16px;
+    padding-left: 3px;
+    margin-top: 0px;
+}
+.conflict-concept-column .editing-form button.stated-inferred-view {
+    width: 12px;
+    height: 13px;   
+    padding-left: 0px;
+    line-height: 14px;
+}
+@media (max-width: 1380px) {   
+    .editing-form button.stated-inferred-view {
+        height: 14px;
+        width: 14px;
+        padding-left: 1px;
+    }
+    .conflict-concept-column .editing-form button.stated-inferred-view {
+       width: 11px;
+        padding-left: 1px;
+    }    
 }
 .sidebar-tabs.nav > li > a {
     line-height: 35px;
