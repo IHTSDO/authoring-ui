@@ -149,26 +149,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 .add({
                   combo: 'alt+s',
                   description: 'Save current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static){scope.saveConcept()}}
+                  callback: function() {if(!scope.static && !scope.showInferredRels){scope.saveConcept()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+r',
                   description: 'Add relationship to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template){scope.addRelationship()}
+                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template && !scope.showInferredRels){scope.addRelationship()}
                   }
                 })
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+d',
                   description: 'Add description to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static){scope.addDescription()}}
+                  callback: function() {if(!scope.static && !scope.showInferredRels){scope.addDescription()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
                   combo: 'alt+g',
                   description: 'Add role group to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template){scope.addRelationshipGroup()}}
+                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template && !scope.showInferredRels){scope.addRelationshipGroup()}}
                 })
               hotkeys.bindTo(scope)
                 .add({
