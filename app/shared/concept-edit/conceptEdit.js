@@ -204,44 +204,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
         
         scope.focusHandler = function(enter, external){
-            if(!scope.hasFocus && enter){
-                hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+s',
-                  description: 'Save current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.showInferredRels){scope.saveConcept()}}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+r',
-                  description: 'Add relationship to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template && !scope.showInferredRels){scope.addRelationship()}
-                  }
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+d',
-                  description: 'Add description to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.showInferredRels){scope.addDescription()}}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+g',
-                  description: 'Add role group to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template && !scope.showInferredRels){scope.addRelationshipGroup()}}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+x',
-                  description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
-                  callback: function() {scope.removeConcept(scope.concept)}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+a',
-                  description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
-                  callback: function() {scope.toggleHideInactive()}
-                })
             if(!scope.hasFocus && !scope.isMerge && enter){
               bindShortcutToScope();
               scope.hasFocus = true;
