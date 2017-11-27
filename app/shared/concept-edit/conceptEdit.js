@@ -124,6 +124,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
+         
           
         scope.enterListener = function(event){
             event = event.event
@@ -142,60 +143,69 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         };
+
+        function bindShortcutToScope () {
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+s',
+              description: 'Save current concept: ' + scope.concept.fsn,
+              callback: function() {if(!scope.static && !scope.showInferredRels){scope.saveConcept()}}
+            })
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+r',
+              description: 'Add relationship to current concept: ' + scope.concept.fsn,
+              callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template && !scope.showInferredRels){scope.addRelationship()}
+              }
+            })
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+d',
+              description: 'Add description to current concept: ' + scope.concept.fsn,
+              callback: function() {if(!scope.static && !scope.showInferredRels){scope.addDescription()}}
+            })
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+g',
+              description: 'Add role group to current concept: ' + scope.concept.fsn,
+              callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template && !scope.showInferredRels){scope.addRelationshipGroup()}}
+            })
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+x',
+              description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
+              callback: function() {scope.removeConcept(scope.concept)}
+            })
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+a',
+              description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
+              callback: function() {scope.toggleHideInactive()}
+            })
+          hotkeys.bindTo(scope)
+          .add({
+            combo: 'alt+t',
+            description: 'View Concept in taxonomy',
+            callback: function() {
+              $rootScope.$broadcast('viewTaxonomy', {
+                concept: {
+                  conceptId: scope.concept.conceptId,
+                  fsn: scope.concept.fsn
+                }
+              })
+            }
+          })
+          hotkeys.bindTo(scope)
+          .add({
+            combo: 'alt+q',
+            description: 'Close all concepts',
+            callback: function() {$rootScope.$broadcast('closeAllOpenningConcepts', {});}
+          })
+        }
         
         scope.focusHandler = function(enter, external){
-            if(!scope.hasFocus && enter){
-                hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+s',
-                  description: 'Save current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.showInferredRels){scope.saveConcept()}}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+r',
-                  description: 'Add relationship to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template && !scope.showInferredRels){scope.addRelationship()}
-                  }
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+d',
-                  description: 'Add description to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.showInferredRels){scope.addDescription()}}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+g',
-                  description: 'Add role group to current concept: ' + scope.concept.fsn,
-                  callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template && !scope.showInferredRels){scope.addRelationshipGroup()}}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+x',
-                  description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
-                  callback: function() {scope.removeConcept(scope.concept)}
-                })
-              hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+a',
-                  description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
-                  callback: function() {scope.toggleHideInactive()}
-                })
-                hotkeys.bindTo(scope)
-                .add({
-                  combo: 'alt+t',
-                  description: 'View Concept in taxonomy',
-                  callback: function() {
-                    $rootScope.$broadcast('viewTaxonomy', {
-                      concept: {
-                        conceptId: scope.concept.conceptId,
-                        fsn: scope.concept.fsn
-                      }
-                    });
-                  }
-                })
-
+            if(!scope.hasFocus && enter){                
+              bindShortcutToScope();
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
                 if(!external){
@@ -215,31 +225,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
           
         var focusListener = function () {
-            scope.focusHandler(true, false);
-          };
-          
+          scope.focusHandler(true, false);
+        };          
 
-          element[0].addEventListener('mouseenter', focusListener, true);
-          element[0].addEventListener('focus', focusListener, true);
+        // Bind events : mouse enter, mouse focus, ..
+        element[0].addEventListener('mouseenter', focusListener, true);
+        element[0].addEventListener('focus', focusListener, true);
+        
+        scope.$on('conceptFocusedFromKey', function (event, data) {
+          if(scope.concept.conceptId === data.id){
+              scope.focusHandler(true, true);
+          }
+          else{
+            scope.focusHandler(false, true);
+          }          
+        });
+
+        scope.$on('conceptFocused', function (event, data) {
+          if(scope.concept.conceptId === data.id){
+            scope.focusHandler(true, false);
+          }
+          else{
+            scope.focusHandler(false, false);
+          }
           
-          scope.$on('conceptFocusedFromKey', function (event, data) {
-            if(scope.concept.conceptId === data.id){
-                scope.focusHandler(true, true);
-            }
-              else{
-                  scope.focusHandler(false, true);
-              }
-            
-          });
-          scope.$on('conceptFocused', function (event, data) {
-            if(scope.concept.conceptId === data.id){
-                scope.focusHandler(true, false);
-            }
-              else{
-                  scope.focusHandler(false, false);
-              }
-            
-          });
+        });
         //Keyboard Shortcuts.
         
 
@@ -3197,10 +3207,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // watch for setting focus when a concept is added to editing view
         scope.$on('enableAutoFocus', function (event, data) {
-          if(scope.concept.conceptId === data.conceptId && !scope.isStatic) {
-            var textareaTags = $('#height-' + data.conceptId).find('textarea');
-            textareaTags[0].focus();
-          }
+          if(scope.concept.conceptId === data.conceptId ) {            
+            if (scope.concept.released) {             
+              scope.focusHandler(true, false);
+            } else if (!scope.isStatic) {
+              var textareaTags = $('#height-' + data.conceptId).find('textarea');
+              textareaTags[0].focus();
+              scope.hasFocus = false;
+            }
+          }                  
         });
 
         scope.$on('removeConceptFromEditing', function (event, data) {

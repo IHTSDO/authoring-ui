@@ -43,6 +43,11 @@ angular.module('singleConceptAuthoringApp.home', [
                  $rootScope.$broadcast('gotoNotificationLink', {});
               }
             })
+            .add({
+              combo: 'alt+q',
+              description: 'Close all concepts',
+              callback: function() {$rootScope.$broadcast('closeAllOpenningConcepts', {});}
+            });
 
         // declare table parameters
         $scope.tableParams = new ngTableParams({
