@@ -64,6 +64,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys, modalService) {
 
+    // Close all concepts listener
+    $scope.$on('closeAllOpenningConcepts', function (event, data) {
+      $scope.closeAllConcepts();
+    });
 
     //Keyboard Shortcuts
     $scope.selectedConcept = null;
@@ -904,9 +908,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.addConceptToListFromId(conceptId);
       $scope.editList.push(conceptId);      
       $scope.updateEditListUiState();
-      $timeout(function () {
-        $rootScope.$broadcast('enableAutoFocus', {conceptId: conceptId});
-      }, 4000);
+      // set focus on the selected concept
+      setTimeout(function waitForConceptRender() {
+        var elm = document.getElementById('height-' + conceptId);
+        if (document.body.contains(elm)) {
+          $rootScope.$broadcast('enableAutoFocus', {conceptId: conceptId});
+        } else {
+          setTimeout(waitForConceptRender, 500);
+        }
+      }, 500);      
     }
 
 // watch for concept cloning from the edit sidebar
@@ -1079,7 +1089,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
           $scope.updateEditListUiState();
           if(nextConceptIdToBeFocus) {
-            $rootScope.$broadcast('enableAutoFocus', {conceptId: nextConceptIdToBeFocus});
+            $rootScope.$broadcast('conceptFocused', {id: nextConceptIdToBeFocus});
           }          
         }
       }
