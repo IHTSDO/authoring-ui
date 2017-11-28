@@ -2388,6 +2388,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           copy.descriptionId = null;
           copy.conceptId = null; // re-added by snowowl
 
+          //remove release flag if any
+          if(copy.released) {
+            delete copy.released
+          }
+
+          // reset module id
+          copy.moduleId = metadataService.getCurrentModuleId();         
+
           var targetIndex = scope.concept.descriptions.indexOf(target);
           if (targetIndex === -1) {
             console.error('Unexpected error dropping description; cannot find target');
