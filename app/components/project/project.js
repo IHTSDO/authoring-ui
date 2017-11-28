@@ -357,6 +357,16 @@ angular.module('singleConceptAuthoringApp.project', [
         initialize();
       });
 
+      // on open classification results from notification link
+      $scope.$on('toggleClassificationResults', function () {
+        $scope.classificationCollapsed = false;;
+      });
+
+      // on open validation report from notification link
+      $scope.$on('toggleValidationReport', function () {
+        $scope.validationCollapsed = true;;
+      });
+
       //
       // Initialize on load
       //
