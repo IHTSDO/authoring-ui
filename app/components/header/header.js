@@ -14,6 +14,9 @@ angular.module('singleConceptAuthoringApp')
         // timeout variable for current notification
         var timeout = null;
 
+        var classificationResultsFound = false;
+        var validationReportFound = false;
+
         // template selection
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
         scope.clearTemplate = function() {
@@ -49,7 +52,19 @@ angular.module('singleConceptAuthoringApp')
           } else {
             $location.path(scope.notification.url);
           }
-        };
+
+          if (classificationResultsFound) {
+            $timeout(function () {
+              $rootScope.$broadcast('toggleClassificationResults', {});
+            }, 1500);
+          }
+
+          if (validationReportFound) {
+            $timeout(function () {
+              $rootScope.$broadcast('toggleValidationReport', {});
+            }, 1500);
+          }
+        }; 
 
         scope.$on('gotoNotificationLink', function (event, notification) {
           scope.gotoNotificationLink();
@@ -87,6 +102,22 @@ angular.module('singleConceptAuthoringApp')
               timeout = $timeout(function () {
                 scope.notification = null;
               }, notification.durationInMs);
+            }
+
+            //Detect classification with results
+            if (notification.message.startsWith('Classification completed successfully')
+              && notification.message.endsWith('Changes found')) {
+              classificationResultsFound = true;
+            } else {
+              classificationResultsFound = false;
+            }
+
+            //Detect validation reports
+            if (notification.message.startsWith('Validation Completed for project')
+              && notification.url) {
+              validationReportFound = true;
+            } else {
+              validationReportFound = false;
             }
           }
         });
