@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp')
           if (validationReportFound) {
             $timeout(function () {
               $rootScope.$broadcast('toggleValidationReport', {});
-            }, 2000);
+            }, 1500);
           }
         }; 
 
