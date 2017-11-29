@@ -359,12 +359,24 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open classification results from notification link
       $scope.$on('toggleClassificationResults', function () {
-        $scope.classificationCollapsed = false;;
+        setTimeout(function waitForValidationContainerPresent() {         
+          if ($scope.project.latestClassificationJson) {
+             $scope.classificationCollapsed = false;
+          } else {
+            setTimeout(waitForValidationContainerPresent, 500);
+          }
+        }, 500);
       });
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
-        $scope.validationCollapsed = true;;
+        setTimeout(function waitForValidationContainerPresent() {         
+          if ($scope.validationContainer.report.rvfValidationResult) {
+            $scope.validationCollapsed = true;
+          } else {
+            setTimeout(waitForValidationContainerPresent, 500);
+          }
+        }, 500);
       });
 
       //
