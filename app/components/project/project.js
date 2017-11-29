@@ -370,16 +370,10 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
-        setTimeout(function waitForValidationContainerPresent() {         
-          if ($scope.validationContainer.report.rvfValidationResult) {
-            scaService.getValidationForProject($scope.project.key).then(function (response) {
-              $scope.validationContainer = response;
-              $scope.validationCollapsed = true;
-            });           
-          } else {
-            setTimeout(waitForValidationContainerPresent, 500);
-          }
-        }, 500);
+         scaService.getValidationForProject($scope.project.key).then(function (response) {
+            $scope.validationContainer = response;
+            $scope.validationCollapsed = true;
+          });  
       });
 
       //
