@@ -351,6 +351,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
+         $scope.validationContainer = null;
          scaService.getValidationForProject($scope.project.key).then(function (response) {
             $scope.validationContainer = response;
             $scope.validationCollapsed = true;
