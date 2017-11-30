@@ -124,12 +124,6 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
-      // on load, retrieve latest validation
-      scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
-        $scope.validationContainer = response;
-
-      });
-
       // validate the project
       $scope.validate = function () {
         notificationService.sendMessage('Starting validation for project...');
@@ -359,22 +353,29 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open classification results from notification link
       $scope.$on('toggleClassificationResults', function () {
-        setTimeout(function waitForValidationContainerPresent() {         
+        setTimeout(function waitForClassificationContainerPresent() {         
           if ($scope.project.latestClassificationJson) {
              $scope.classificationCollapsed = false;
           } else {
-            setTimeout(waitForValidationContainerPresent, 500);
+            setTimeout(waitForClassificationContainerPresent, 500);
           }
         }, 500);
       });
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
-         $scope.validationContainer = null;
-         scaService.getValidationForProject($scope.project.key).then(function (response) {
-            $scope.validationContainer = response;
-            $scope.validationCollapsed = true;
-          });  
+        setTimeout(function waitForValidationContainerPresent() {         
+          if ($scope.validationContainer.report.rvfValidationResult && $scope.branch) {            
+            scaService.getValidationForProject($scope.project.key).then(function (response) {
+              $scope.validationContainer = response;
+              $scope.validationCollapsed = true;
+            });  
+          } else {
+            $scope.validationContainer = null;
+            setTimeout(waitForValidationContainerPresent, 500);
+          }
+        }, 500);
+ 
       });
 
       //
