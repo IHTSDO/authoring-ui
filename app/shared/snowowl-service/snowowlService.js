@@ -1380,9 +1380,13 @@ angular.module('singleConceptAuthoringApp')
           }
         });
 
+        // Clone concept and remove property "display" in relationship if any
+        // This is used for preventing any update on the cloned concept while the original one could be changed concurrently
+        var copy = angular.copy(concept);
+        cleanConcept(copy, true);
 
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
+        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', copy).then(function (response) {
 
           // TODO Remove this once WRP-2912 addressed
           // remove any duplicate values
