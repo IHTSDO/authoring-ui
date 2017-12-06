@@ -1,10 +1,21 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('savedListService', ['$http', '$rootScope', '$location', '$q', '$interval', 'scaService',
-    function ($http, $rootScope, $location, $q, $interval, scaService) {
+  .service('savedListService', ['$http', '$rootScope', '$location', '$q', '$interval', 'scaService','metadataService',
+    function ($http, $rootScope, $location, $q, $interval, scaService,metadataService) {
       this.favorites = {items: []};
       this.savedList = {items: []};
+
+      function getAcceptabilityByLanguage(acceptabilityMap, lang) {
+        var acceptability = '';
+        var dialects = metadataService.getAllDialects();
+        angular.forEach(Object.keys(dialects), function (dialectId) {
+          if (dialects[dialectId] === lang) {
+           acceptability = acceptabilityMap[dialectId];
+          }
+        });
+        return acceptability;       
+      }
       
       return {
 
@@ -45,7 +56,37 @@ angular.module('singleConceptAuthoringApp')
             if (item.concept.conceptId === concept.conceptId) {             
               item.active = concept.active;
               item.concept.definitionStatus = concept.definitionStatus;
-              item.concept.fsn = concept.fsn;
+              
+              if (metadataService.isExtensionSet()) {
+                var preferredSynonym = '';
+                var availableLanguages = metadataService.getLanguagesForModuleId(concept.moduleId);
+
+                // en and extension languages
+                if (availableLanguages.length === 2) {
+                  angular.forEach(concept.descriptions, function (description) {
+                    if (description.type === 'SYNONYM' 
+                      && description.lang === availableLanguages[1]
+                      && getAcceptabilityByLanguage(description.acceptabilityMap,availableLanguages[1]) === 'PREFERRED') {
+                      preferredSynonym = description.term;
+                    }
+                  });
+                }
+                if (!preferredSynonym) {
+                  // Take US preferred term
+                  angular.forEach(concept.descriptions, function (description) {
+                    if (description.type === 'SYNONYM' 
+                      && description.lang === 'en'
+                      && description.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                      preferredSynonym = description.term;
+                    }
+                  });
+                }                
+
+                item.concept.preferredSynonym = preferredSynonym;
+              } else {
+                item.concept.fsn = concept.fsn;
+              }
+
               found = true;             
             }
           });
@@ -102,7 +143,37 @@ angular.module('singleConceptAuthoringApp')
             if (item.concept.conceptId === concept.conceptId) {
               item.active = concept.active;
               item.concept.definitionStatus = concept.definitionStatus;
-              item.concept.fsn = concept.fsn;
+
+              if (metadataService.isExtensionSet()) {
+                var preferredSynonym = '';
+                var availableLanguages = metadataService.getLanguagesForModuleId(concept.moduleId);
+
+                // en and extension languages
+                if (availableLanguages.length === 2) {
+                  angular.forEach(concept.descriptions, function (description) {
+                    if (description.type === 'SYNONYM' 
+                      && description.lang === availableLanguages[1]
+                      && getAcceptabilityByLanguage(description.acceptabilityMap,availableLanguages[1]) === 'PREFERRED') {
+                      preferredSynonym = description.term;
+                    }
+                  });
+                }
+                if (!preferredSynonym) {
+                  // Take US preferred term
+                  angular.forEach(concept.descriptions, function (description) {
+                    if (description.type === 'SYNONYM' 
+                      && description.lang === 'en'
+                      && description.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                      preferredSynonym = description.term;
+                    }
+                  });
+                }                
+
+                item.concept.preferredSynonym = preferredSynonym;
+              } else {
+                item.concept.fsn = concept.fsn;
+              }
+             
               item.editing = true;
               found = true;
             }
