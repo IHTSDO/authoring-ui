@@ -3,7 +3,6 @@
     "authoringEndpoint": "/snowowl/ihtsdo-authoring/",
     "snowOwlEndpoint": "/snowowl/snomed-ct/",
     "imsEndpoint": "https://dev-ims.ihtsdotools.org/#/",
-    "rvfEndpoint": "https://dev-rvf.ihtsdotools.org/",
     "collectorEndpoint": "https://jira.ihtsdotools.org/s/f890da76f5b668bf7eb9dc26a2170e6e-T/en_US-je3gdv/64027/28/1.4.27/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=248feca3"
   }
 }
