@@ -146,17 +146,17 @@
   <!-- Taxonomy, models, and concepts -->
   <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0"> 
     <!-- Taxonomy -->
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div>
         <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
       </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
       <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-7">
           <div concept-edit concept="concept" branch="branch" static="isProject()"
                component-styles="styles[concept.conceptId]"
                autosave="autosaveEnabled"

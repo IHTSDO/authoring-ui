@@ -198,7 +198,10 @@
 
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
-          ng-show="$root.displayMainSidebar"
+          ng-show="$root.displayMainSidebar 
+                    && thisView !== 'validation' 
+                    && thisView !== 'classification'
+                    && thisView !== 'conflicts'"
           class="editpanel sca-column"></div>
 
     <!-- Default edit view -->
