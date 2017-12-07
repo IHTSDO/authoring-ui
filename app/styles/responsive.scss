@@ -231,7 +231,7 @@
 /* breakpoints and heights optimised for standard screen heights: 800, 1024, 1200 */
 /* and acceptable layout in each range */
 
-.scroll-if-height { height: 535px; z-index: 10000; }
+.scroll-if-height { height: 535px;}
 .search-scroll .scroll-if-height { height: 395px; }
 
 @media screen and (min-height: 700px) {
