@@ -17,7 +17,8 @@ angular.module('singleConceptAuthoringApp')
         conceptAfter : '=?',
         classificationSaved: '@?',
         snfFunction : '&?',
-        displaySnf : '=?'
+        displaySnf : '=?',
+        defaultView : '=?'
       },
       templateUrl: 'shared/model-diagramming/drawModelSca.html',
 
@@ -31,6 +32,9 @@ angular.module('singleConceptAuthoringApp')
           scope.isClassificationSaved = false;
         }
 
+        if (scope.defaultView) {
+          scope.view = scope.defaultView;
+        }
 
         // broadcast taxonomy request
         scope.viewConceptInTaxonomy = function (concept) {
