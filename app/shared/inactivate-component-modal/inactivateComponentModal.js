@@ -58,7 +58,7 @@ angular.module('singleConceptAuthoringApp')
     if (!$scope.reasons) {
       $scope.error = 'List of inactivation reasons was not specified';
     }
-    $scope.getConceptsForTypeahead = function (searchStr) {
+    $scope.getConceptsForTypeahead = function (searchStr,inactivationIndication) {
       return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
         for (var i = 0; i < response.length; i++) {
           for (var j = response.length - 1; j > i; j--) {
@@ -69,7 +69,11 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         response = response.filter(function (el) {
-          return el.concept.active === true;
+          if (inactivationIndication) {
+            return el.concept.active === true && $scope.conceptId !== el.concept.conceptId;
+          } else {                    
+            return el.concept.active === true;
+          }
         });
         return response;
       });
