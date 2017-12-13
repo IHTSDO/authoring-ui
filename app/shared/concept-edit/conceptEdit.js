@@ -2693,7 +2693,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if a new description (determined by blank term), ensure sensitivity
           // do not modify acceptability map
-          else if (!description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
+          else if (!description.caseSignificance && !description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
             description.caseSignificance = 'CASE_INSENSITIVE';
           }
 
