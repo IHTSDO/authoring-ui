@@ -1729,15 +1729,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return true;
               }
               if (metadataService.isExtensionDialect(dialect)) {
+
                 return true;
               }
-
-              //For US extension only, This will prevent the case that is going to change acceptability map to NONE (delete US acceptability map) 
-              // BUT the acceptability map still remains for en-GB
-              if (Object.keys(description.acceptabilityMap).length === 1 
-                && metadataService.isGbDialect(dialect)) {
-                return true;
-              }             
             }
             return false;
           }
@@ -2000,6 +1994,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // key)
               case 'ACCEPTABLE':
                 delete description.acceptabilityMap[dialectId];
+                
+                // For US Extension only, To make sure that there is no redundant acceptability map (Previously, it contains an additional acceptability map for en-GB -> remove it)
+                if (metadataService.isExtensionSet() 
+                  && dialectId === '900000000000509007'
+                  && description.acceptabilityMap.hasOwnProperty('900000000000508004')) {
+                  delete description.acceptabilityMap['900000000000508004'];
+                }
+
                 autoSave();
                 break;
 
