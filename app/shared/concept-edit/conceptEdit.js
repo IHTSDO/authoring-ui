@@ -1957,10 +1957,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               case 'ACCEPTABLE':
                 delete description.acceptabilityMap[dialectId];
                 
-                // For US Extension only, To make sure that there is no redundant acceptability map (Previously, it contains an additional acceptability map for en-GB -> remove it)
-                if (metadataService.isExtensionSet() 
-                  && dialectId === '900000000000509007'
-                  && description.acceptabilityMap.hasOwnProperty('900000000000508004')) {
+                // To make sure that there is no redundant acceptability map for extension (In some cases, the Map could contain an additional acceptability map for en-GB -> remove it)
+                if (metadataService.isExtensionSet() && description.acceptabilityMap.hasOwnProperty('900000000000508004')) {
                   delete description.acceptabilityMap['900000000000508004'];
                 }
 
