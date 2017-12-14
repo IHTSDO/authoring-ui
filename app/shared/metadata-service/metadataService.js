@@ -33,10 +33,8 @@ angular.module('singleConceptAuthoringApp')
       {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
       {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [3]},
       {id: 'DUPLICATE', text: 'Duplicate component', display: [7]},
-      {id: 'ERRONEOUS', text: 'Erroneous component', display: [6, 9]},
-      {id: 'LIMITED', text: 'Limited component', display: [9]},
-      {id: 'OUTDATED', text: 'Outdated component', display: [6, 9]},
-      {id: 'PENDING_MOVE', text: 'Pending move', display: [3]},
+      {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},    
+      {id: 'OUTDATED', text: 'Outdated component', display: [6]},     
       {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
     ];
@@ -107,16 +105,6 @@ angular.module('singleConceptAuthoringApp')
           text: 'SIMILAR TO association reference set',
           display: 8,
           restrict: {} // NOTE: Not currently used according to TIG
-        },
-        {
-          id: 'WAS_A',
-          conceptId: '900000000000528000',
-          text: 'WAS A association reference set',
-          display: 9,
-          restrict: {
-            type: 'CONCEPT',
-            activeOnly: true
-          }
         }
       ];
     // var associationInactivationParent = '900000000000522004';
