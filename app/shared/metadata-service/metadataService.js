@@ -354,6 +354,10 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    function isUSExtension(moduleId) {
+      return isExtensionModule(moduleId) && moduleId === '731000124108';
+    }
+
     // checks if specified module is locked to editing
     function isLockedModule(moduleId) {
       if (!extensionMetadata) {
@@ -566,6 +570,7 @@ angular.module('singleConceptAuthoringApp')
       isLockedModule: isLockedModule,
       isUsDialect: isUsDialect,
       isGbDialect: isGbDialect,
+      isUSExtension: isUSExtension,
       isExtensionDialect: isExtensionDialect,
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
