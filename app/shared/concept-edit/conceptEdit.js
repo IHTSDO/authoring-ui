@@ -1714,6 +1714,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
             angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
                 description = componentAuthoringUtil.getNewDescription(moduleId, language);
+                
+                // For US extension
+                if (metadataService.isUSExtension(description.moduleId)) {
+                  var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
+                      return item.active && item.acceptabilityMap['900000000000509007'] === 'PREFERRED' && item.type === 'SYNONYM';
+                    }).length > 0;
+
+                  if(havingPreferredSynonym) {
+                    description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  }                
+                }
+
                 if (afterIndex === null || afterIndex === undefined) {
                   scope.concept.descriptions.push(description);
                   autoSave();
