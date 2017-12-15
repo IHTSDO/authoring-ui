@@ -46,3 +46,12 @@ a.approve-button{color:#fff}
 .inactivation-report.classification-report .nav input{
   padding-left: 5px;
 }
+
+#inactivateComponentModal [type=text].form-control[readonly] {
+  border-bottom: none;
+  box-shadow: inset 0 -1px 0 #ddd;
+}
+
+#inactivateComponentModal [type=text].form-control[readonly]:focus {
+  box-shadow: inset 0 -2px 0 #00a6e5;
+}

@@ -44,7 +44,7 @@
         <!-- reasons select -->
         <div ng-if="!deletion" >
           <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
-            <div class="col-md-12 ">
+            <div class="col-md-12 p-l-5">
               <label> Select Inactivation Reason </label>
             </div>
             <div class="col-md-12 no-padding m-l-5">
@@ -66,13 +66,9 @@
                 <label> Concept</label>
               </div>
             </div>
-            <div class="row" ng-repeat="association in associations">
+            <div class="row p-t-5" ng-repeat="association in associations">
               <div class="col-md-5">
-                <select class="form-control"
-                      ng-options="type as type.text for type in associationTargets"
-                      ng-model="association.type">
-                  <option value="disabled">- Select an Association Type (optional) -</option>
-                </select>
+                <textarea type="text" class="form-control" ng-model="association.type.text" readonly="true"/>
               </div>
               <div class="col-md-6">
               
