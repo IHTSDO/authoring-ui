@@ -32,11 +32,10 @@ angular.module('singleConceptAuthoringApp')
       function getRequestUrl(issueId) {
           var prefix = '';
           console.log(currentTask.branchPath);
-        if(currentTask.branchPath.indexOf('US-') !== -1)
+        if(currentTask.branchPath.indexOf('-US') !== -1)
             { 
                 prefix = 'us-'
             }
-          console.log(prefix);
         if ($rootScope.development) {
           return 'https://dev-' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
         } else if ($rootScope.uat) {
