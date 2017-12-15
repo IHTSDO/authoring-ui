@@ -23,15 +23,23 @@ angular.module('singleConceptAuthoringApp')
       $scope.inactivationReason = inactivationReason;
       $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
       
-      //Association type will be automatically populated if there is only one option
-      for (var i = 0; i < $scope.associations.length; i++) {         
-        // extract association for convenience
-        var association = $scope.associations[i];
-        association.type = null;
-        if($scope.associationTargets.length === 1) {
-          association.type = $scope.associationTargets[0];
-        }  
-      }          
+      if ($scope.associationTargets.length === 0) {
+        $scope.associations = [];
+      } else {
+        if ($scope.associations.length == 0) {
+           $scope.addAssociation(0);
+        }
+
+        //Association type will be automatically populated if there is only one option
+        for (var i = 0; i < $scope.associations.length; i++) {         
+          // extract association for convenience
+          var association = $scope.associations[i];
+          association.type = null;
+          if($scope.associationTargets.length === 1) {
+            association.type = $scope.associationTargets[0];
+          }  
+        }
+      }        
     };
 
     // required arguments
@@ -377,14 +385,19 @@ angular.module('singleConceptAuthoringApp')
       $modalInstance.dismiss();
     };
 
-    $scope.addAssociation = function () {
-      $scope.associations.push({type: null, concept: null});
+    $scope.addAssociation = function (index) {
+      if(typeof index !== 'undefined'
+        && $scope.inactivationReason) {
+        $scope.associations.push({type: $scope.associationTargets[0], concept: null});
+      } else {
+        $scope.associations.push({type: null, concept: null});
+      }      
     };
 
     $scope.removeAssociation = function (index) {
       $scope.associations.splice(index, 1);
       if ($scope.associations.length === 0) {
-        $scope.addAssociation();
+        $scope.addAssociation(0);
       }
     };
 
