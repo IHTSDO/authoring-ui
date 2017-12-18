@@ -44,11 +44,11 @@
         <!-- reasons select -->
         <div ng-if="!deletion" >
           <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
-            <div class="col-md-12 p-l-5">
+            <div class="col-md-12">
               <label> Select Inactivation Reason </label>
             </div>
             <div class="col-md-12 no-padding m-l-5">
-              <select id="taskProject" name="select-reason" class="form-control"
+              <select id="taskProject" name="select-reason" class="form-control p-l-10"
                     ng-options="reason as reason.text for reason in reasons"
                     ng-model="inactivationReason" ng-change="updateAssociations(inactivationReason)">
                     <option value="" selected hidden />           

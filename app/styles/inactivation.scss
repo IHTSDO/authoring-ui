@@ -55,3 +55,6 @@ a.approve-button{color:#fff}
 #inactivateComponentModal [type=text].form-control[readonly]:focus {
   box-shadow: inset 0 -2px 0 #00a6e5;
 }
+#inactivateComponentModal select.form-control.p-l-10 {
+  padding-left: 10px;
+}
