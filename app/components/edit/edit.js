@@ -1636,7 +1636,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
-      // start the classification
+      if ($scope.task.status === 'New') {
+        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+          doClassify();
+        });
+      } else {
+        doClassify();
+      }     
+    };
+
+    function doClassify() {
+       // start the classification
       scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
         if (!response || !response.data || !response.data.id) {
@@ -1654,11 +1664,21 @@ angular.module('singleConceptAuthoringApp.edit', [
       }, function () {
         // do nothing on error
       });
-    };
+    }
 
     $scope.validate = function () {
       notificationService.sendMessage('Submitting task for validation...');
 
+      if ($scope.task.status === 'New') {
+        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+          doValidate();
+        });
+      } else {
+        doValidate();
+      }      
+    };
+
+    function doValidate() {
       // NOTE: Validation does not lock task
 
       scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -1668,7 +1688,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         notificationService.sendMessage('Error submitting task for validation', 10000, null);
         $rootScope.$broadcast('reloadTask');
       });
-    };
+    }
 
     //
     // Sidebar Review Functionality
