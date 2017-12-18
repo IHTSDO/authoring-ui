@@ -23,6 +23,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
+        if ($scope.task.status === 'New') {
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+            doClassify();
+          });
+        } else {
+          doClassify();
+        }     
+      };
+
+      function doClassify() {
         // start the classification
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
@@ -43,8 +53,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
           // do nothing on error
         });
-      };
-
+      }
 
       $scope.promote = function () {
         $scope.promoting = true;
@@ -121,6 +130,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
 
+        if ($scope.task.status === 'New') {
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+            doValidate();
+          });
+        } else {
+          doValidate();
+        }        
+      };
+
+      function doValidate() {
         // NOTE: Validation does not lock task
 
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -130,7 +149,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           notificationService.sendError('Error submitting task for validation: ' + error);
           $rootScope.$broadcast('reloadTask');
         });
-      };
+      }
 
       // list of tracked unsaved concepts
       $scope.reviewChecks = null;
