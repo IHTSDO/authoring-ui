@@ -154,7 +154,7 @@
     <div class="col-md-9">
       <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
         <div class="col-md-5">
-          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
+          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>
         </div>
         <div class="col-md-7">
           <div concept-edit concept="concept" branch="branch" static="isProject()"
