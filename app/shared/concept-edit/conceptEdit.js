@@ -1747,22 +1747,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.addDescription = function (afterIndex) {
 
           var description;
-          var moduleId = metadataService.getCurrentModuleId(); 
+          var moduleId = metadataService.getCurrentModuleId();
           // for extensions with multiple default languages
           if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
+            var dialects = metadataService.getDialectsForModuleId(moduleId);
             angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
                 description = componentAuthoringUtil.getNewDescription(moduleId, language);
-                
-                // For US extension
-                if (metadataService.isUSExtension(description.moduleId)) {
-                  var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
-                      return item.active && item.acceptabilityMap['900000000000509007'] === 'PREFERRED' && item.type === 'SYNONYM';
-                    }).length > 0;
 
-                  if(havingPreferredSynonym) {
-                    description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
-                  }                
-                }
+                var dialect = '';
+                for (var key in dialects) {          
+                  if (dialects[key].indexOf(language) !== -1) {
+                    dialect = key;
+                  }   
+                } 
+              
+                var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
+                    return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
+                  }).length > 0;
+
+                if(havingPreferredSynonym) {
+                  description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                }            
 
                 if (afterIndex === null || afterIndex === undefined) {
                   scope.concept.descriptions.push(description);
