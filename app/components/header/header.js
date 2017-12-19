@@ -101,8 +101,8 @@ angular.module('singleConceptAuthoringApp')
             }
 
             //Detect classification with results
-            if (notification.message.startsWith('Classification completed successfully')
-              && notification.message.endsWith('Changes found')) {
+            if (notification.message.startsWith('Classification completed successfully for project') 
+              && notification.url) {
               classificationResultsFound = true;
             } else {
               classificationResultsFound = false;
