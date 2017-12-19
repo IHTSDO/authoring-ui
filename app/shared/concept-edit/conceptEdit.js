@@ -204,7 +204,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
         
         scope.focusHandler = function(enter, external){
-            if(!scope.hasFocus && enter){                
+            if(!scope.hasFocus && !scope.isMerge && enter){                
               bindShortcutToScope();
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
