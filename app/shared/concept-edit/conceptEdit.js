@@ -204,7 +204,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
         
         scope.focusHandler = function(enter, external){
-<<<<<<< HEAD
             if(!scope.hasFocus && enter){
                 hotkeys.bindTo(scope)
                 .add({
@@ -243,10 +242,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
                   callback: function() {scope.toggleHideInactive()}
                 })
-=======
-            if(!scope.hasFocus && enter){                
+            if(!scope.hasFocus && !scope.isMerge && enter){
               bindShortcutToScope();
->>>>>>> fd0d6d9... APDS-332 Shortcut improvements
               scope.hasFocus = true;
                 $rootScope.$broadcast('conceptFocused', {id : scope.concept.conceptId});
                 if(!external){
@@ -3266,8 +3263,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // on load, check task status
         scope.checkPromotedStatus();
 
-<<<<<<< HEAD
-=======
 // watch for setting focus when a concept is added to editing view
         scope.$on('enableAutoFocus', function (event, data) {
           if(scope.concept.conceptId === data.conceptId ) {            
@@ -3285,8 +3280,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.removeConcept(scope.concept);
         });
         
-
->>>>>>> fd0d6d9... APDS-332 Shortcut improvements
 // watch for classification completion request to reload concepts
 // will not affect modified concept data
         scope.$on('reloadConcepts', function () {
