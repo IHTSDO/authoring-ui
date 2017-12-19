@@ -12,7 +12,7 @@
 
   <div class="col-md-6 no-padding">
     <div class="grey darken-4 p-t-7">
-      <span class="fsn">{{axiom.title}}</span>          
+      <span class="fsn">GCI Axiom</span>          
     </div>
   </div>
 
@@ -43,9 +43,7 @@
   </div>
 </div>
 
-<div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">      
-  <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
-    <div ng-repeat="relationship in relationshipGroup"
+    <div ng-repeat="relationship in axiom.relationships"
          ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
          class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">           
 
@@ -180,5 +178,3 @@
         </div>
       </div>
     </div>
-    <div class="role_group_divider_bottom_{{(groupId%2==0)?'even':'odd'}}"></div>      
-</div>
