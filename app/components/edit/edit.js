@@ -165,7 +165,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       combo: 'alt+q',
       description: 'Close all concepts',
       callback: function() {
-        $scope.closeAllConcepts();
+        if ($scope.thisView !== 'conflicts') {
+          $scope.closeAllConcepts();
+        }
       }
     })
     .add({
