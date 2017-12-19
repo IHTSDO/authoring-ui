@@ -354,7 +354,8 @@ angular.module('singleConceptAuthoringApp.project', [
       // on open classification results from notification link
       $scope.$on('toggleClassificationResults', function () {
         setTimeout(function waitForClassificationContainerPresent() {         
-          if ($scope.project.latestClassificationJson) {
+          if ($scope.project
+            && $scope.project.latestClassificationJson) {
              $scope.classificationCollapsed = false;
           } else {
             setTimeout(waitForClassificationContainerPresent, 500);
@@ -365,7 +366,11 @@ angular.module('singleConceptAuthoringApp.project', [
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
         setTimeout(function waitForValidationContainerPresent() {         
-          if ($scope.validationContainer.report.rvfValidationResult && $scope.branch) {            
+          if ( $scope.branch
+            && $scope.validationContainer 
+            && $scope.validationContainer.report 
+            && $scope.validationContainer.report.rvfValidationResult 
+             ) {            
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               $scope.validationContainer = response;
               $scope.validationCollapsed = true;
