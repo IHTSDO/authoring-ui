@@ -161,6 +161,22 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});         
       }
     })
+    .add({
+      combo: 'alt+q',
+      description: 'Close all concepts',
+      callback: function() {
+        if ($scope.thisView !== 'conflicts') {
+          $scope.closeAllConcepts();
+        }
+      }
+    })
+    .add({
+      combo: 'alt+l',
+      description: 'Go to notification link',
+      callback: function() {
+         $rootScope.$broadcast('gotoNotificationLink', {});
+      }
+    })
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
