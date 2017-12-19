@@ -68,11 +68,11 @@
             </div>
             <div class="row p-t-5" ng-repeat="association in associations">
               <div class="col-md-5">
-                <textarea type="text" class="form-control" ng-model="association.type.text" readonly="true"></textarea>
+                <textarea type="text" class="form-control no-padding-left" ng-model="association.type.text" readonly="true"></textarea>
               </div>
               <div class="col-md-6">
               
-                <textarea type="text" class="form-control"
+                <textarea type="text" class="form-control no-padding-left"
                         ng-model="association.concept"
                         typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue, true)"
                         typeahead-focus-first="false"

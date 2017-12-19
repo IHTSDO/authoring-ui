@@ -58,3 +58,6 @@ a.approve-button{color:#fff}
 #inactivateComponentModal select.form-control.p-l-10 {
   padding-left: 10px;
 }
+#inactivateComponentModal [type=text].form-control.no-padding-left {
+  padding-left: 0px;
+}
