@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
      };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window) {
     return {
       restrict: 'A',
       transclude: false,
@@ -2615,6 +2615,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               })
             }
           }
+        };
+
+        scope.copyToClipboard = function(toCopy) {
+          var body = angular.element($window.document.body);
+          var textarea = angular.element('<textarea/>');
+          textarea.css({
+            position: 'fixed',
+            opacity: '0'
+          });
+          textarea.val(toCopy);
+          body.append(textarea);
+          textarea[0].select();
+
+          try {
+            var successful = document.execCommand('copy');
+            if (!successful) throw successful;
+          } catch (err) {
+            console.log("failed to copy", toCopy);
+          }
+          textarea.remove();
         };
 
         /**

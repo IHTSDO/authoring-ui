@@ -830,6 +830,9 @@ button.fsn-title-button {
     z-index: 1070;
     max-width: inherit !important;
 }
+#wrap {
+    display: inline-block;
+}
 #wrap .popover {
     margin-top: 1px;
     min-width: 250px;
