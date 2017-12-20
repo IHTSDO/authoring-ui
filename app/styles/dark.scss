@@ -1047,12 +1047,14 @@ background-color: #262e39;}
     color: #fff ;
     background-color: transparent ;
 }
-.sca-dark .morebuttons {
+.sca-dark .morebuttons,
+.sca-dark .copy-to-clipboard {
     color: #fff;
     background-color: transparent
 }
 
 .sca-dark .morebuttons:hover,
+.sca-dark .copy-to-clipboard .btn:hover,
 .sca-dark .wandbutton:hover {
     color:#00a6e5
 }
