@@ -347,9 +347,13 @@
     background: transparent;
 }
 .sca-light .morebuttons,
+.sca-light .copy-to-clipboard .btn,
 .sca-light .wandbutton {
     color: #00a6e5;
     background: transparent
+}
+.sca-light .copy-to-clipboard .btn:active {
+    box-shadow: none;
 }
 .sca-light .project-icon.yellow.darken-2 {
     background-color: #ffcc00;
