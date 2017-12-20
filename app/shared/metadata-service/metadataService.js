@@ -105,6 +105,16 @@ angular.module('singleConceptAuthoringApp')
           text: 'SIMILAR TO association reference set',
           display: 8,
           restrict: {} // NOTE: Not currently used according to TIG
+        },
+        {
+          id: 'WAS_A',
+          conceptId: '900000000000528000',
+          text: 'WAS A association reference set',
+          display: 9,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
         }
       ];
     // var associationInactivationParent = '900000000000522004';
