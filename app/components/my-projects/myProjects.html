@@ -33,9 +33,10 @@
                            {indicator_green : project.latestClassificationJson.status === 'COMPLETED' && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
                             {indicator_green : project.latestClassificationJson.status === 'SAVED' && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
                           {indicator_blue : project.latestClassificationJson.status === 'RUNNING'},
-                          {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE' || project.latestClassification.status === 'FAILED' && project.latestClassificationJson.status !== 'STALE'},
+                          {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE' || project.latestClassificationJson.status === 'FAILED' && project.latestClassificationJson.status !== 'STALE'},
                             {indicator_grey : project.latestClassificationJson.status === 'STALE'},
-                           {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.status !== 'STALE'},
+                           {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true && 
+                           project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
                            ]"
   class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                 <div class="md md-notifications "></div>
