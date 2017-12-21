@@ -177,7 +177,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////
     // Infinite Scroll
     //////////////////////////////
-    $scope.conceptsDisplayed = 5;
+    $scope.conceptsDisplayed = 6;
     $scope.conceptsRendering = false;
     $scope.addMoreItems = function () {
       if ($scope.conceptsDisplayed < $scope.concepts.length) {
@@ -641,7 +641,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      * @param conceptId
      * @returns {Function}
      */
-    function loadConceptFromTermServerHelper(conceptId) {
+    function loadConceptFromTermServerHelper(conceptId,external) {
       var deferred = $q.defer();
       $scope.conceptLoading = true;
 
@@ -668,7 +668,16 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
 
             if ($scope.concepts.length === $scope.editList.length) {
-              notificationService.sendMessage('All concepts loaded', 10000, null);
+              if($scope.concepts.length > $scope.conceptsDisplayed 
+                && external
+                && ($scope.thisView === 'edit-no-sidebar'
+                || $scope.thisView === 'edit-no-model'
+                || $scope.thisView === 'edit-default')) {
+                notificationService.sendMessage('The max. number of concepts has been reached', 5000, null);
+              } else {
+                notificationService.sendMessage('All concepts loaded', 10000, null);
+              }
+              
               // ensure loaded concepts match order of edit list
               $scope.concepts.sort(function (a, b) {
                 return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
@@ -701,7 +710,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      * Adds concept from this branch to the concepts array
      * @param conceptId the SCTID of the concept
      */
-    $scope.addConceptToListFromId = function (conceptId) {
+    $scope.addConceptToListFromId = function (conceptId, external) {
 
       if (!conceptId) {
         console.error('Could not add concept to edit list, id required');
@@ -733,13 +742,22 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (crsConcept && !crsConcept.saved) {
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
-          notificationService.sendMessage('All concepts loaded', 5000, null);
+          if($scope.concepts.length > $scope.conceptsDisplayed 
+            && external
+            && ($scope.thisView === 'edit-no-sidebar'
+            || $scope.thisView === 'edit-no-model'
+            || $scope.thisView === 'edit-default')) {
+            notificationService.sendMessage('The max. number of concepts has been reached', 5000, null);
+          } else {
+            notificationService.sendMessage('All concepts loaded', 5000, null);
+          }
+          
           $scope.conceptLoading = false;
         }
 
         // otherwise, load from terserver
         else {
-          loadConceptFromTermServerHelper(conceptId);
+          loadConceptFromTermServerHelper(conceptId,external);
         }
       }
 
@@ -750,14 +768,23 @@ angular.module('singleConceptAuthoringApp.edit', [
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           $scope.conceptLoading = false;
-          notificationService.sendMessage('All concepts loaded', 10000, null);
+          if($scope.concepts.length > $scope.conceptsDisplayed 
+            && external
+            && ($scope.thisView === 'edit-no-sidebar'
+            || $scope.thisView === 'edit-no-model'
+            || $scope.thisView === 'edit-default')) {
+            notificationService.sendMessage('The max. number of concepts has been reached', 5000, null);
+          } else {
+            notificationService.sendMessage('All concepts loaded', 10000, null);
+          }
+          
           $scope.updateEditListUiState();
         } else {
           // send loading notification for user display
           notificationService.sendMessage('Loading concepts...', 10000, null);
         }
       } else {
-        loadConceptFromTermServerHelper(conceptId);
+        loadConceptFromTermServerHelper(conceptId,external);
 
       }
 
@@ -883,8 +910,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           return;
         }
       }
-
-      $scope.addConceptToListFromId(conceptId);
+  
+      $scope.addConceptToListFromId(conceptId,true);
       $scope.editList.push(conceptId);      
       $scope.updateEditListUiState();
     }
