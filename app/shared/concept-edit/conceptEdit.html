@@ -73,7 +73,7 @@
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
             </div>
 
-            <div class="copy-to-clipboard" ng-show="isSctid(concept.conceptId)">           
+            <div class="copy-to-clipboard" ng-show="isSctid(concept.conceptId) && concept.fsn">           
               <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
               <ul class="dropdown-menu">
                   <li><a ng-click="copyToClipboard(concept.conceptId)">Copy ConceptId</a></li>
