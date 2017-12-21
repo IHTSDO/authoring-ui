@@ -647,7 +647,7 @@ angular.module('singleConceptAuthoringApp')
           limit = 10000;
         }
 
-        $http.get(apiEndpoint + branch + '/relationships?destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=0&limit=200').then(function (response) {
+        $http.get(apiEndpoint + branch + '/relationships?destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=' + offset +'&limit=' + limit).then(function (response) {
 
           // if zero-count, return empty array (no blank array returned)
           if (response.data.total === 0) {
