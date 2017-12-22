@@ -695,7 +695,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 && ($scope.thisView === 'edit-no-sidebar'
                 || $scope.thisView === 'edit-no-model'
                 || $scope.thisView === 'edit-default')) {
-                notificationService.sendMessage('The max. number of concepts has been reached', 5000, null);
+                notificationService.sendMessage('The max. number of concepts that can be loaded in the editing panel has been reached', 5000, null);
               } else {
                 notificationService.sendMessage('All concepts loaded', 10000, null);
               }
@@ -769,7 +769,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             && ($scope.thisView === 'edit-no-sidebar'
             || $scope.thisView === 'edit-no-model'
             || $scope.thisView === 'edit-default')) {
-            notificationService.sendMessage('The max. number of concepts has been reached', 5000, null);
+            notificationService.sendMessage('The max. number of concepts that can be loaded in the editing panel has been reached', 5000, null);
           } else {
             notificationService.sendMessage('All concepts loaded', 5000, null);
           }
@@ -795,7 +795,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             && ($scope.thisView === 'edit-no-sidebar'
             || $scope.thisView === 'edit-no-model'
             || $scope.thisView === 'edit-default')) {
-            notificationService.sendMessage('The max. number of concepts has been reached', 5000, null);
+            notificationService.sendMessage('The max. number of concepts that can be loaded in the editing panel has been reached', 5000, null);
           } else {
             notificationService.sendMessage('All concepts loaded', 10000, null);
           }
