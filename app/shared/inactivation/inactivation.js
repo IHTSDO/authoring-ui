@@ -686,7 +686,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.completeInactivation = function () {
             scope.finalizing = true;
-            notificationService.sendMessage('Saving modified components and historical associations...');
+            notificationService.sendMessage('Saving modified components and historical associations. Please remain on this page until the inactivation has finished.');
             console.log(scope.affectedConcepts);
 
             // clear association targets for affected concepts
