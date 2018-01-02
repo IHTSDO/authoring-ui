@@ -105,6 +105,10 @@ button.widget-toolbar {
     padding: 0;
 }
 
+.task-details .alert.alert-danger a {
+    color: #ffc107;
+}
+
 /*disabled buttons*/
 
 .classification-btn .btn-default[disabled],

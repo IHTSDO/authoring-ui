@@ -321,20 +321,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             switch ($scope.automatePromotionStatus) {
               case 'Queued':                
                 $rootScope.automatedPromotionInQueued = true;
-                $rootScope.branchLocked = false;                
+                $rootScope.branchLocked = false;                           
                 notificationService.clear();
                 break;
               case 'Rebasing':                
-                $rootScope.branchLocked = true;
+                $rootScope.branchLocked = true;              
                 $rootScope.automatedPromotionInQueued = false;                
                 notificationService.clear();
                 break;
-              case 'Rebased with conflicts':                
+              case 'Rebased with conflicts':
                 $rootScope.branchLocked = false;
                 $rootScope.automatedPromotionInQueued = false;                              
                 $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
                 break;
-              case 'Classifying':                
+              case 'Classifying':
                 $rootScope.branchLocked = true;
                 $rootScope.automatedPromotionInQueued = false;                
                 $rootScope.classificationRunning = true;
@@ -443,7 +443,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.task = response;
           $scope.classificationLockCheck = false;
           $scope.ontologyLock = $rootScope.classificationRunning;
-          $scope.checkForLock();
+          $scope.checkAutomatePromotionStatus(true);
 
           snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });
