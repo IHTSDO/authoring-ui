@@ -16,17 +16,10 @@ angular.module('singleConceptAuthoringApp')
               validationProperties = validationResponse.data;
               $http.get('/config/versions.json').then(function (confResponse) {
                   versions = confResponse.data;
-                  var rvfEndpoint = 'https://dev-rvf.ihtsdotools.org/';//properties.rvfEndpoint;
-                  $http.get(rvfEndpoint +'api/v1/version').then(function (confResponse) {
-                    versions.versions.rvf = confResponse.data.package_version;                    
-                    deferred.resolve(properties, validationProperties, versions);
-                  }, function(error) {
-                    console.log(error);
-                    deferred.resolve(properties, validationProperties, versions);
-                  });                 
+                  deferred.resolve(properties, validationProperties);
                 }, function(error) {
                   console.log(error);
-                  deferred.resolve(properties, validationProperties, versions);
+                  deferred.resolve(properties, validationProperties);
                 });
             }, function() {
               deferred.reject('Failed to retrieve validation configuration properties');
