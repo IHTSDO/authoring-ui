@@ -305,6 +305,7 @@ content: '';
 }
 .xxlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -130px;
+    white-space: nowrap;
 }
 
 .cI:before {
@@ -324,6 +325,17 @@ content: '';
     text-transform: lowercase;
     float: left;
 }
-
-
+.accent-2.xxlarge-size-tooltip.tooltips-bottom span {
+  white-space: nowrap;
+  width: auto;
+}
+.xxlarge-size-tooltip.tooltips-bottom:hover span.CS {
+  margin-left: -70px;
+}
+.xxlarge-size-tooltip.tooltips-bottom:hover span.ci {
+  margin-left: -75px;
+}
+.xxlarge-size-tooltip.tooltips-bottom:hover span.cI {
+  margin-left: -99px;
+}
 /* bottom */
