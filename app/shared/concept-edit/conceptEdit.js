@@ -260,6 +260,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   });                    
                 }
             }
+            }
         }
           
         var focusListener = function () {
