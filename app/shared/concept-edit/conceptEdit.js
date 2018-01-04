@@ -2719,10 +2719,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId) && !metadataService.isExtensionSet()) {
-            angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
-              description.acceptabilityMap[dialectId] = 'PREFERRED';
-            });
+          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
+            if(!metadataService.isExtensionSet()
+              || (metadataService.isExtensionSet() && description.moduleId !== '11000172109' /*Belgium module*/)) {
+              angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
+              });
+            }
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
