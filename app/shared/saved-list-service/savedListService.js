@@ -54,7 +54,7 @@ angular.module('singleConceptAuthoringApp')
 
             // if concept on list, update the relevant display fields
             if (item.concept.conceptId === concept.conceptId) {             
-              item.active = concept.active;
+              item.concept.active = concept.active;
               item.concept.definitionStatus = concept.definitionStatus;
               
               if (metadataService.isExtensionSet()) {
@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp')
 
             // if concept on list, update the relevant display fields
             if (item.concept.conceptId === concept.conceptId) {
-              item.active = concept.active;
+              item.concept.active = concept.active;
               item.concept.definitionStatus = concept.definitionStatus;
 
               if (metadataService.isExtensionSet()) {

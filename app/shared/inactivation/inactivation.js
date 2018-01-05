@@ -732,6 +732,13 @@ angular.module('singleConceptAuthoringApp')
                     console.log(conceptArray);
                     snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                       notificationService.sendMessage('Inactivation Complete');
+
+                      // broadcast event to any listeners (currently task detail, crs concept list,
+                      // conflict/feedback resolved lists)
+                      $rootScope.$broadcast('conceptEdit.conceptChange', {                    
+                        concept: scope.inactivationConcept                 
+                      });
+                      
                       $route.reload();
                     }, function (error) {
                       notificationService.sendError('Error inactivating concept: ' + error);
