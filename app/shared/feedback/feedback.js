@@ -65,8 +65,9 @@ angular.module('singleConceptAuthoringApp')
           scope.requestFollowup = false;
 
           // select all booleans for each table
-          scope.checkedToReview = false;
-          scope.checkedReviewed = false;
+          scope.booleanObj = {};
+          scope.booleanObj.checkedToReview = false;
+          scope.booleanObj.checkedReviewed = false;
 
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
@@ -767,6 +768,9 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
               scope.addToReviewed({}, true, itemList);
+              if(scope.booleanObj.checkedToReview) {
+                scope.booleanObj.checkedToReview = false;
+              }
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true) {
@@ -1056,14 +1060,14 @@ angular.module('singleConceptAuthoringApp')
                   // check if id is in reviewed list
                   if (reviewedListIds.indexOf(item.conceptId) === -1) {
                     // apply check-all status
-                    item.selected = scope.checkedToReview;
+                    item.selected = scope.booleanObj.checkedToReview;
                     conceptsToReview.push(item);
                   }
 
 
                   // otherwise, on reviewed list
                   else {
-                    item.selected = scope.checkedReviewed;
+                    item.selected = scope.booleanObj.checkedReviewed;
                     conceptsReviewed.push(item);
                   }
                 });
