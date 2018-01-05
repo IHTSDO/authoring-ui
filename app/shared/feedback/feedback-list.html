@@ -201,7 +201,7 @@
         <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
               <div class="checkbox">
                 <label class="filled">
-                  <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)"
+                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(actionTab, booleanObj.checkedToReview)"
                  ng-show="role === 'REVIEWER' && task.status === 'In Review'"
                  id="select_all_to_review"
                  name="filter-checkbox" value=""/>
