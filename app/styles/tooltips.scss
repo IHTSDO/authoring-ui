@@ -270,11 +270,17 @@ content: '';
 }
 /*custom tooptip sizes */
 
+.md-playlist-add.small-size-tooltip.tooltips-bottom span {
+    width: 100px;
+}
 .small-size-tooltip.tooltips-bottom span {
     width: 90px;
 }
 .small-size-tooltip.tooltips-bottom:hover span {
     margin-left: -45px;
+}
+.md-playlist-add.small-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -51px;
 }
 .status-concept.tooltips-bottom span {
     width: 180px;
