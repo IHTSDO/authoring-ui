@@ -68,14 +68,19 @@ angular.module('singleConceptAuthoringApp')
     }
     $scope.getConceptsForTypeahead = function (searchStr,inactivationIndication) {
       return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
-        for (var i = 0; i < response.length; i++) {
-          for (var j = response.length - 1; j > i; j--) {
+        var i = 0;
+        while (i < response.length) {
+          var j = i + 1;
+          while (j < response.length){
             if (response[j].concept.conceptId === response[i].concept.conceptId) {
-              response.splice(j, 1);
-              j--;
+              response.splice(j, 1);              
+            } else {
+              j++;
             }
           }
+          i++;
         }
+        
         response = response.filter(function (el) {
           if (inactivationIndication) {
             return el.concept.active === true && $scope.conceptId !== el.concept.conceptId;
