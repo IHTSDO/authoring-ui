@@ -2200,6 +2200,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
                     
         };
+        scope.computeAxioms(axiomType.ADDITIONAL);
+        scope.computeAxioms(axiomType.GCI);
 
 // define characteristic types
         scope.characteristicTypes = [
