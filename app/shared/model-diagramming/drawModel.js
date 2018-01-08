@@ -68,7 +68,9 @@ angular.module('singleConceptAuthoringApp')
 
         function drawConceptDiagram(concept, div, options, snfConcept) {
           var svgIsaModel = [];
+          svgIsaModel.axioms = [[]];
           var svgAttrModel = [];
+          svgAttrModel.axioms = [[]];
           var axioms = [];
           scope.numberOfGroups = 0;
           if (scope.view === 'stated') {
@@ -89,7 +91,16 @@ angular.module('singleConceptAuthoringApp')
                         } else {
                           svgAttrModel.push(field);
                         }
-                      }
+                    });
+            });
+            $.each(concept.additionalAxioms, function (i, axiom) {
+                $.each(axiom.relationships, function (i, field) {
+                    var axiom = [];
+                        if (field.type.conceptId === '116680003') {
+                          svgIsaModel.push(field);
+                        } else {
+                          svgAttrModel.push(field);
+                        }
                     });
             });
           } else if (scope.view === 'inferred'){
