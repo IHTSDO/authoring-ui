@@ -236,6 +236,25 @@ angular.module('singleConceptAuthoringApp')
               height = height + 55;
               width = width + 110;
           });
+        
+          if(scope.view === 'stated'){
+              $.each(concept.additionalAxioms, function (i, axiom) {
+                height = height + 40;
+                width = width + 80;
+                $.each(axiom.relationships, function (i, field) {
+                        height = height + 55;
+                        width = width + 110;
+                    });
+             });
+             $.each(concept.gciAxioms, function (i, axiom) {
+                height = height + 40;
+                width = width + 80;
+                $.each(axiom.relationships, function (i, field) {
+                        height = height + 55;
+                        width = width + 110;
+                    });
+            });
+          }
           scope.height = height;
           scope.width = width;
 //          if(scope.numberOfGroups)

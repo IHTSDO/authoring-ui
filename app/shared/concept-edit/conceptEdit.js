@@ -579,6 +579,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
 
                 scope.templateInitialized = true;
+                scope.computeAxioms(axiomType.ADDITIONAL);
+                scope.computeAxioms(axiomType.GCI);
               }
               ,
               function (error) {
@@ -1009,6 +1011,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.saving = false;
                   scope.reapplyTemplate();
                   scope.focusHandler(true, false);
+                  scope.computeAxioms(axiomType.ADDITIONAL);
+                  scope.computeAxioms(axiomType.GCI);
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                   scope.saving = false;
@@ -1035,6 +1039,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.reapplyTemplate();
               scope.saving = false;
               scope.focusHandler(true, false);
+              scope.computeAxioms(axiomType.ADDITIONAL);
+              scope.computeAxioms(axiomType.GCI);
             });
 
           }, function (error) {
@@ -1042,6 +1048,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.reapplyTemplate();
             scope.saving = false;
             scope.focusHandler(true, false);
+            scope.computeAxioms(axiomType.ADDITIONAL);
+            scope.computeAxioms(axiomType.GCI);
           });
         };
 
@@ -3288,6 +3296,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             conceptId: scope.concept.conceptId,
             concept: scope.concept
           });
+          scope.computeAxioms(axiomType.ADDITIONAL);
+            scope.computeAxioms(axiomType.GCI);
 
 
           // store the modified concept in ui-state if autosave on
@@ -3802,6 +3812,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
               scope.concept = concept;
+              scope.computeAxioms(axiomType.ADDITIONAL);
+            scope.computeAxioms(axiomType.GCI);
             });
           }
         });
