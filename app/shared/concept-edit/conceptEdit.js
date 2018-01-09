@@ -2854,7 +2854,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isModified = true;
 
           // broadcast event to any listeners (currently task detail)
-          $rootScope.$broadcast('conceptEdit.c  onceptModified', {
+          $rootScope.$broadcast('conceptEdit.conceptModified', {
             branch: scope.branch,
             conceptId: scope.concept.conceptId,
             concept: scope.concept
@@ -2907,13 +2907,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         /**
          * Undo:  Decrement history pointer and update display
          */
-        scope.undo = function () {
+        scope.undo = function () {          
           if (scope.conceptHistoryPtr > 0) {
-            scope.conceptHistoryPtr--;
-            scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
-            saveModifiedConcept();
+            var currentConceptHistoryPtr = scope.conceptHistoryPtr;
 
-            scope.computeRelationshipGroups();
+            // Check if concept has been modified but not saved, then wait for saving it
+            if (!angular.equals(scope.concept,scope.conceptHistory[scope.conceptHistoryPtr])) {
+              setTimeout(function waitForSavingModifiedConcept() {         
+                if ((currentConceptHistoryPtr + 1) === scope.conceptHistoryPtr) {
+                  scope.conceptHistoryPtr--;
+                  scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
+                  saveModifiedConcept();
+                  scope.computeRelationshipGroups();                   
+                } else {
+                  setTimeout(waitForSavingModifiedConcept, 300);
+                }
+              }, 300);
+            } else {
+              scope.conceptHistoryPtr--;
+              scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
+              saveModifiedConcept();
+              scope.computeRelationshipGroups();
+            }           
           }
         };
 
