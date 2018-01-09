@@ -82,23 +82,28 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             $.each(concept.gciAxioms, function (i, axiom) {
-                var axiomToPush = [];
+                var axiomToPush = {};
+                axiomToPush.relationships = [];
+                axiomToPush.type = 'gci';
                 $.each(axiom.relationships, function (i, field) {
                         if (field.type.conceptId === '116680003') {
-                          axiomToPush.push(field);
+                          axiomToPush.relationships.push(field);
                         } else {
-                          axiomToPush.push(field);
+                          axiomToPush.relationships.push(field);
                         }
                     });
                 axioms.push(axiomToPush);
             });
             $.each(concept.additionalAxioms, function (i, axiom) {
-                var axiomToPush = [];
+                var axiomToPush = {
+                    relationships : [],
+                    type : 'add'
+                };
                 $.each(axiom.relationships, function (i, field) {
                         if (field.type.conceptId === '116680003') {
-                          axiomToPush.push(field);
+                          axiomToPush.relationships.push(field);
                         } else {
-                          axiomToPush.push(field);
+                          axiomToPush.relationships.push(field);
                         }
                     });
                 axioms.push(axiomToPush);
@@ -394,7 +399,12 @@ angular.module('singleConceptAuthoringApp')
           $.each(axioms, function (i, axiom) {
               x = 100;
               var circle1;
-              circle1 = drawSubsumesNode(svg, x, y);
+              if(axiom.type === "gci"){
+                  circle1 = drawSubsumesNode(svg, x, y);
+              }
+              else{
+                  circle1 = drawSubsumedByNode(svg, x, y);
+              }
               connectElements(svg, rect1, circle1, 'bottom-50', 'left');
               x = x + 55;
               var circle2 = drawConjunctionNode(svg, x, y);
@@ -403,7 +413,7 @@ angular.module('singleConceptAuthoringApp')
               y = y - 18;
               maxX = ((maxX < x) ? x : maxX);
               var axiomRoleNumber = 0;
-              $.each(axiom, function (i, relationship) {
+              $.each(axiom.relationships, function (i, relationship) {
                console.log('here');
                   if(relationship.type.conceptId === '116680003'){
                       if (relationship.target.definitionStatus === "PRIMITIVE") {
@@ -447,7 +457,7 @@ angular.module('singleConceptAuthoringApp')
                 connectElements(svg, circle2, groupNode, 'center', 'left');
                 var conjunctionNode = drawConjunctionNode(svg, x + 55, y);
                 connectElements(svg, groupNode, conjunctionNode, 'right', 'left');
-                $.each(axiom, function (m, relationship) {
+                $.each(axiom.relationships, function (m, relationship) {
                   if (relationship.groupId === i) {
                             if (relationship.target.definitionStatus ==
      "PRIMITIVE") { sctClass = "sct-primitive-concept"; } else {
