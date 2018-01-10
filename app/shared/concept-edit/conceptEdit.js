@@ -124,6 +124,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
+          console.log($rootScope.axiomSupport)
+      scope.axiomSupport =  $rootScope.axiomSupport
          
           
         scope.enterListener = function(event){
