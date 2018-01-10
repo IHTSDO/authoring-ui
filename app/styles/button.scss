@@ -758,7 +758,7 @@ button.fsn-title-button {
 .message_validation_BUILDING::before {
     content: "Validation Report is building";
 }
-.message_classification_SAVE_FAILED {
+.message_classification_SAVE_FAILED::before {
     content: "Classification successfully completed but save has failed";
 }
 .message_classification_COMPLETED::before {
