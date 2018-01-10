@@ -168,6 +168,14 @@ angular
         console.log(response);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
+        if(!endpoints.axiomDisabled){
+            console.log("false")
+            $rootScope.axiomSupport = true;
+        }
+        else{
+            console.log("true")
+            $rootScope.axiomSupport = false;
+        }
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
