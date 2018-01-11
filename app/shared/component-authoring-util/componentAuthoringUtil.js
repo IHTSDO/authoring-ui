@@ -199,6 +199,32 @@ angular.module('singleConceptAuthoringApp')
         return concept;
       }
 
+      function getNewAxiom() {
+        var moduleId = metadataService.getCurrentModuleId();
+        var axiom = {
+          'axiomId': snowowlService.createGuid(),
+          'definitionStatus': 'PRIMITIVE',
+          'effectiveTime': null,
+          'active': true,
+          'released': true,
+          'moduleId': moduleId,
+          'relationships': []       
+        };
+        
+        var isARel = getNewIsaRelationship(moduleId);
+        // Remove unused properties
+        delete isARel.active;
+        delete isARel.characteristicType;
+        delete isARel.effectiveTime;
+        delete isARel.modifier;
+        delete isARel.moduleId;
+
+        // add IsA relationship
+        axiom.relationships.push(isARel);
+
+        return axiom;
+      }
+
 //      function getNewBelgianConcept(concept,moduleId) {
 //        var dialects = metadataService.getAllDialects();
 //
@@ -1026,6 +1052,7 @@ function getFsnDescriptionForConcept(concept) {
         getNewTextDefinition: getNewTextDefinition,
         getNewIsaRelationship: getNewIsaRelationship,
         getNewAttributeRelationship: getNewAttributeRelationship,
+        getNewAxiom: getNewAxiom,
 
         // validation and minimum fields
         applyMinimumFields: applyMinimumFields,
