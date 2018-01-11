@@ -448,7 +448,7 @@
         <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
-             class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">
+             class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}} {{isInactivation === true ? getDuplicatedRelStyle(relationship) : ''}}">
 
           <div ng-show="relationship.definitionOfChanges" class="">
 
