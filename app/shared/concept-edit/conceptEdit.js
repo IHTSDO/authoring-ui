@@ -3251,6 +3251,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return defaultStyle;
             }
           }
+        };        
+        
+        scope.getDuplicatedRelStyle = function (component) {
+          if(component) {
+            for (var i = 0; i < scope.concept.relationships.length; i++) {
+              var relationship = scope.concept.relationships[i];
+              if (relationship.characteristicType === 'STATED_RELATIONSHIP'
+                && relationship.relationshipId !== component.relationshipId
+                && relationship.type.conceptId === component.type.conceptId
+                && relationship.target.conceptId === component.target.conceptId ) {
+                return 'redhl';
+              }
+            }         
+          }
+          return '';
         };
 
 //////////////////////////////////////////////////////////////////////////
