@@ -96,7 +96,7 @@
                    ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
                    ng-model-options="{debounce: 500}" ui-on-drop="null">
           </div>
-          <div class="col-md-11 no-padding" ng-if="role === 'AUTHOR'">
+          <div class="col-md-10 no-padding" ng-if="role === 'AUTHOR'">
             <input class=" m-10 input-filter form-control ng-scope ng-valid ng-touched"
                    placeholder="Filter concepts"
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
@@ -123,9 +123,21 @@
               <span>Mark selected as reviewed</span> </button>
             </div>
           </div>
+          <div class="col-md-2 no-padding" ng-if="role === 'AUTHOR'"
+               ng-hide="feedbackContainer.review.conceptsToReview.length === 0">            
+            <div class="pull-right p-r-10 p-t-15">
+              <button
+                class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
+                ng-click="addMultipleToEdit(actionTab)">
+                <div class="md md-edit "></div>
+                <span>Show selected in edit panel</span> 
+              </button>
+              
+            </div>
+          </div>
           <tr ng-repeat="concept in conceptsToReviewViewed">
             <td class="col-checkbox col-md-1 no-padding "
-                header="'ng-table/headers/checkboxToReview.html'"><div  ng-show="role === 'REVIEWER' && task.status === 'In Review'" class="checkbox">
+                header="'ng-table/headers/checkboxToReview.html'"><div class="checkbox">
                 <label class="filled">
                   <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
                 </label>
@@ -201,8 +213,7 @@
         <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
               <div class="checkbox">
                 <label class="filled">
-                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(actionTab, booleanObj.checkedToReview)"
-                 ng-show="role === 'REVIEWER' && task.status === 'In Review'"
+                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(actionTab, booleanObj.checkedToReview)"                 
                  id="select_all_to_review"
                  name="filter-checkbox" value=""/>
                 </label>
