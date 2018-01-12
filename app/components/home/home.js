@@ -200,7 +200,9 @@ angular.module('singleConceptAuthoringApp.home', [
             });
 
             modalInstance.result.then(function (response) {
-                loadTasks();
+                if (response) {
+                    $scope.tasks.push(response);
+                }
             }, function () {
             });
         };
