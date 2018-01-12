@@ -933,6 +933,17 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
   
+      $scope.addConceptToListFromId(conceptId,true);
+      $scope.editList.push(conceptId);      
+      $scope.updateEditListUiState();
+      // set focus on the selected concept
+      setTimeout(function waitForConceptRender() {
+        var elm = document.getElementById('height-' + conceptId);
+        if (document.body.contains(elm)) {
+          $rootScope.$broadcast('enableAutoFocus', {conceptId: conceptId});
+        } else {
+          setTimeout(waitForConceptRender, 500);
+        }
       }, 500);      
     }
 
