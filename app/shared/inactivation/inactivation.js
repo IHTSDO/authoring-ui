@@ -592,22 +592,18 @@ angular.module('singleConceptAuthoringApp')
           };
 
           function getFullConceptsForIds(ids, array) {
-            var deferred = $q.defer();
-            if (!array) {
-              array = [];
-            }
+              
+              var deferred = $q.defer();
+                if (!array) {
+                  array = [];
+                }
             if (!ids || ids.length === 0) {
               deferred.resolve(array);
             } else {
-              snowowlService.getFullConcept(ids[0], scope.branch).then(function (concept) {
-                array.push(concept);
-                getFullConceptsForIds(ids.slice(1), array).then(function (concepts) {
-                  deferred.resolve(concepts);
-                }, function (error) {
-                  deferred.reject(error);
-                })
-              }, function (error) {
-                deferred.reject(error);
+              var idList = ids;
+                snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+                    array.push(response.items);
+                    deferred.resolve(array);
               });
             }
             return deferred.promise;
@@ -829,23 +825,26 @@ angular.module('singleConceptAuthoringApp')
 
           function getAffectedConcepts() {
             var deferred = $q.defer();
+            var idList = [];
 
             if (scope.affectedRelationshipIds.length === 0) {
               deferred.resolve();
             }
             else {
               var conceptsRetrieved = 0;
-
               angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
-                snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
-                  scope.affectedConcepts[conceptId] = concept;
-                  if (Object.keys(scope.affectedConcepts).length === ++conceptsRetrieved) {
-                    deferred.resolve();
-                  }
-                });
+                idList.push(conceptId);
+              });
+              snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+                  angular.forEach(response, function (concept) {
+                        scope.affectedConcepts[concept.conceptId] = concept;
+                      
+                  if (response.length === ++conceptsRetrieved) {
+                            deferred.resolve();
+                        }
+                  });
               });
             }
-
 
             return deferred.promise;
           }

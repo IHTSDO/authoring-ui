@@ -423,37 +423,36 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {            
             var requestPromise = [];
+              var idList = [];
             angular.forEach(sourceIds, function (sourceId) {
-              var httpPromise = snowowlService.getFullConcept(sourceId, scope.branch);
-              requestPromise.push(httpPromise);
+              idList.push(sourceId);
             });
-            $q.all(requestPromise).then(function(data) {
-              if(data.length && data.length > 0) {
+              
+            snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
                 var relationships = [];
-                angular.forEach(data, function (concept) {
-                  angular.forEach(concept.relationships, function (rel) {
-                    if(rel.characteristicType === "STATED_RELATIONSHIP") {
-                      relationships.push(rel);
-                    }
-                  });
+                angular.forEach(response, function (concept) {
+                      angular.forEach(concept.relationships, function (rel) {
+                        if(rel.characteristicType === "STATED_RELATIONSHIP") {
+                          relationships.push(rel);
+                        }
+                      });
                 });
                 scope.inferredNotPreviouslyStated = [];
-                angular.forEach(relationshipChanges.items, function (relationshipChange) {
-                  var itemFound = false;
-                  for(var i = 0; i < relationships.length; i++){
-                    var rel = relationships[i];
-                    if(relationshipChange.type.id === rel.type.conceptId
-                      && relationshipChange.destination.id === rel.target.conceptId) {
-                      itemFound = true;
-                      break;
-                    }
-                  }
-                  if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
-                    scope.inferredNotPreviouslyStated.push(relationshipChange);
-                  }
-                });
-              }
-            });
+                    angular.forEach(relationshipChanges.items, function (relationshipChange) {
+                      var itemFound = false;
+                      for(var i = 0; i < relationships.length; i++){
+                        var rel = relationships[i];
+                        if(relationshipChange.type.id === rel.type.conceptId
+                          && relationshipChange.destination.id === rel.target.conceptId) {
+                          itemFound = true;
+                          break;
+                        }
+                      }
+                      if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
+                        scope.inferredNotPreviouslyStated.push(relationshipChange);
+                      }
+                    });
+              });
           };
 
           scope.role = null;
