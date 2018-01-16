@@ -52,6 +52,11 @@ fieldset[disabled] .form-control {
 textarea.form-control {
 	height: auto;
 }
+textarea.expandable-search-box {
+  margin: 10px 5px 10px 5px;
+  height: 23px;
+  max-height: none;
+}
 label {
 	display: inline-block;
 	margin-bottom: 5px;
@@ -213,9 +218,9 @@ input[type=checkbox], input[type=radio] {
     -webkit-appearance: none;
     box-shadow: inset 0 -1px 0 #ddd;
     font-size: 13px;}
-	
+
 	.theme-blue .modal-body input[type=text]:focus{box-shadow: inset 0 -2px 0 #009cd7;}
-	
-	
+
+
 	.theme-blue .modal-body .has-success .form-control {
    box-shadow: inset 0 -1px 0 #009cd7;}
