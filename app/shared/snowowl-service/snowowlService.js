@@ -823,6 +823,21 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
+        
+      //Function to bulk get full concepts via POST
+      function bulkRetrieveFullConcept(conceptIdList, branch, expandPt) {
+          var body = {
+              "conceptIds":conceptIdList
+          }
+        var deferred = $q.defer();
+        var queryString = '';
+        $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk-load', body).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
 
       // function to retrieve all module id/name pairs
       function getModules() {
@@ -1511,6 +1526,7 @@ angular.module('singleConceptAuthoringApp')
         saveClassification: saveClassification,
         addModules: addModules,
         bulkGetConcept: bulkGetConcept,
+        bulkRetrieveFullConcept: bulkRetrieveFullConcept,
         getModules: getModules,
         addLanguages: addLanguages,
         getLanguages: getLanguages,
