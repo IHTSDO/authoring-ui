@@ -5,7 +5,8 @@
         ng-click="setAxiomProperties(axiom, $event)"
         popover-template="'shared/component-more/axiomMore.html'"
         popover-placement="{{popoverDirection}}"
-        popover-append-to-body="true">
+        popover-append-to-body="true"
+        id="component-{{axiom.axiomId}}">
         <span>More details</span>
       </button>
   </div>

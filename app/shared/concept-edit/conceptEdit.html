@@ -40,7 +40,7 @@
     <div class="row grey concept-headers darken-4" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
 
       <div class="pull-left col-md-1 no-padding" ng-disabled="saving" ng-class="{'disabled': saving}">
-            <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
+            <button ng-click="setConceptProperties(concept, $event)" type="button" id="component-{{concept.conceptId}}"
                     class="btn btn-default morebuttons transparent md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
                     popover-template="'shared/component-more/conceptMore.html'"
                     popover-placement="{{popoverDirection}}"
@@ -301,7 +301,7 @@
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
              drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
-          <button id="myTextArea" name="myTextArea" ng-click="setDescriptionProperties(description, $event)"
+          <button id="component-{{description.descriptionId ? description.descriptionId : getHashkey(description)}}" ng-click="setDescriptionProperties(description, $event)"
                   class="btn-default transparent md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
@@ -493,6 +493,7 @@
 
               <div class="">
                 <button
+                  id="component-{{relationship.relationshipId ? relationship.relationshipId : getHashkey(relationship)}}"
                   class="btn-default  md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
                   ng-click="setRelationshipProperties(relationship, $event)"
                   popover-template="'shared/component-more/relationshipMore.html'"

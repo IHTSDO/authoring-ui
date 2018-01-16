@@ -3668,7 +3668,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // set the initial direction based on load position
         $timeout(function () {
-          if (document.getElementById('conceptMoreButton').getBoundingClientRect().left < 500) {
+          if (document.getElementById('component-' + scope.concept.conceptId).getBoundingClientRect().left < 500) {
             scope.popoverDirection = 'right';
           } else {
             scope.popoverDirection = 'left';
@@ -3685,7 +3685,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             direction = 'left-top';
           }
 
-          if ($event.pageX < 700) {
+          if ($event.pageX  > 0 && $event.pageX < 700) {
             direction = 'right';
 
             // morebuttons are the concept edit panel 'more details' popovers (concept, description, attribute)
@@ -3762,6 +3762,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         };
+
+        scope.getHashkey = function(obj) {
+          var hashkey = obj.$$hashKey;
+          return hashkey.split(':')[1]; 
+        }
 
 //////////////////////////////////////////////////////////////////////////
 // CHeck for Promoted Task -- must be static
