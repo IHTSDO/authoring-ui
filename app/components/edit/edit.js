@@ -1881,6 +1881,14 @@ angular.module('singleConceptAuthoringApp.edit', [
                     else if($(this).find('.batch-template-selector').length != 0){
                         document.getElementById('batchTemplateSelectBtn').click();
                     }
+                    else if(($(this).find('.description-more').length != 0 || $(this).find('.concept-more').length != 0)
+                           && !$(e.target).hasClass('more-button-width')) {
+                      var elm = $(this).find("[component-id]");
+                      var componentId = $(elm[0]).attr("component-id");
+                      if(componentId) {
+                        document.getElementById('component-' + componentId).click();
+                      }
+                    }
                 });
             }
         });
