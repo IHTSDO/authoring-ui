@@ -3,8 +3,9 @@
   <div clas="row no-padding m-b-15" ng-show="isEscgMode && !templateOptions.selectedTemplate">
     <div class="col-md-10 no-padding">
 
-      <input type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter ECL expression"
-             ng-model="escgExpr" ui-on-drop=""/></div>
+      <textarea type="search" class="form-control m-5 expandable-search-box no-border-bottom-search" placeholder="Enter ECL expression"
+                      ng-model="escgExpr" ng-change="autoExpand($event)" ui-on-drop=""/></div>
+
     <div class="col-md-2">
       <button type="button" class="btn btn-default blue md md-search"
               title="Execute ECL Search"

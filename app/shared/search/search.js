@@ -38,10 +38,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         searchType: 1
       };
 
-      $scope.favorites = {items: []};   
+      $scope.favorites = {items: []};
       $scope.$watch(function () {
           return savedListService.favorites;
-        },                       
+        },
         function(newVal, oldVal) {
           $scope.favorites = newVal;
       }, true);
@@ -49,7 +49,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.savedList = {items: []};
       $scope.$watch(function () {
           return savedListService.savedList;
-        },                       
+        },
         function(newVal, oldVal) {
           $scope.savedList = newVal;
       }, true);
@@ -68,7 +68,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.templates = response;
           });
       }
-        
+
       else{$scope.templates = null}
 
       $scope.templateOptions = {
@@ -161,12 +161,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.escgExpr = "";
         $scope.searchStr = "";
         $scope.results = [];
-        $scope.loadPerformed = false;      
+        $scope.loadPerformed = false;
         if($scope.isEscgMode) {
           $scope.searchType = 'Active Only';
           $scope.userOptions.searchType = 1;
         }
-      };       
+      };
 
       /**
        * Helper function to manipulate displayed concepts
@@ -237,6 +237,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           //$("#excel_table").insertAtCaret($(this).text());
           return false
         });
+      };
+
+      $scope.autoExpand = function() {
+        let element = document.activeElement;
+        let scrollHeight = element.scrollHeight;
+        element.style.height =  scrollHeight + "px";
       };
 
       /**
@@ -320,7 +326,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             }
           });
         } else {
-            
+
           $scope.synonymFlag = metadataService.isExtensionSet();
           console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions);
 
@@ -367,7 +373,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   })
                 });
             }
-            
+
 
             $scope.storedResults = appendResults ? $scope.storedResults.concat(conceptObjs) : conceptObjs;
 
@@ -437,7 +443,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        *   {}}
        */
       $scope.addItemToSavedList = function (item) {
-        savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);        
+        savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);
       };
 
       /**
@@ -593,7 +599,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.$on('viewSearch', function(event, data) {
         $scope.searchStr = '';
         if (Object.keys(data).length > 0 && data.constructor === Object) {
-          if (data.eclMode) {            
+          if (data.eclMode) {
             $scope.isEscgMode = true;
             $scope.escgExpr = '*: ' + data.conceptId + ' =*';
             $scope.search();
