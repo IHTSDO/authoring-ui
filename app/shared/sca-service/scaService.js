@@ -1394,6 +1394,32 @@ angular.module('singleConceptAuthoringApp')
             deferred.reject('Error leaving task comment: ' + error.data.message);
           });
           return deferred.promise;
+        },
+
+        saveSelectedLanguegeForProject : function (projectKey, seletedLanguage) {
+          var deferred = $q.defer();          
+          $http.post(apiEndpoint + 'ui-state/' + $rootScope.accountDetails.login + '-' + projectKey + '-default-language', seletedLanguage).then(function (response) {
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject('Error saving default language: ' + error.data.message);
+          });
+          return deferred.promise;
+        },
+
+        getSelectedLanguegeForProject : function (projectKey) {
+          var deferred = $q.defer();
+
+          // get the list
+          $http.get(apiEndpoint + 'ui-state/' + $rootScope.accountDetails.login + '-' + projectKey + '-default-language').then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            if (error.status === 404) {
+              deferred.resolve({});
+            } else {
+              deferred.reject('Error retrieving default language for project ' + projectKey);
+            }
+          });
+          return deferred.promise;
         }
 
 
