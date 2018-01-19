@@ -11,11 +11,11 @@ angular.module('singleConceptAuthoringApp')
 
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
-      
+
     var productCode = '';
-      
+
     var templatesEnabled = false;
-      
+
     var spellcheckDisabled = false;
 
     // relationship metadata
@@ -33,9 +33,9 @@ angular.module('singleConceptAuthoringApp')
       {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
       {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [3]},
       {id: 'DUPLICATE', text: 'Duplicate component', display: [7]},
-      {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},    
-      {id: 'LIMITED', text: 'Limited component', display: [9]},    
-      {id: 'OUTDATED', text: 'Outdated component', display: [6]},     
+      {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},
+      {id: 'LIMITED', text: 'Limited component', display: [9]},
+      {id: 'OUTDATED', text: 'Outdated component', display: [6]},
       {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
     ];
@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
       {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]}
 
     ];
-      
+
     var drugsModelOrdering = [
       {id: '127489000', display: 1},
       {id: '732943007', display: 2},
@@ -145,6 +145,12 @@ angular.module('singleConceptAuthoringApp')
       {id: '732945000', display: 8},
       {id: '732946004', display: 9},
       {id: '732947008', display: 10},
+      {id: '116680003', display: 11},
+      {id: '736476002', display: 12},
+      {id: '736474004', display: 13},
+      {id: '736475003', display: 14},
+      {id: '736473005', display: 15},
+      {id: '736472000', display: 16}
     ];
 
     //
@@ -205,7 +211,7 @@ angular.module('singleConceptAuthoringApp')
         for (var key in metadata) {
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
-            if (match && match[1]) {              
+            if (match && match[1]) {
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
 
@@ -232,7 +238,7 @@ angular.module('singleConceptAuthoringApp')
                 });
 
                 // set the default refset id if not already set
-                if (!defaultLanguageRefsetId && languages.length === 2) {                
+                if (!defaultLanguageRefsetId && languages.length === 2) {
                 for (var langRefSetId in dialects){
                   if(languages[1] === dialects[langRefSetId]) {
                     defaultLanguageRefsetId = langRefSetId;
@@ -288,7 +294,7 @@ angular.module('singleConceptAuthoringApp')
         };
         if(metadata.languageEdit){
             console.log(metadata.languageEdit);
-            
+
         };
           console.log(extensionMetadata);
         }
@@ -344,9 +350,9 @@ angular.module('singleConceptAuthoringApp')
           return module.id === moduleId;
         }).length > 0;
     }
-      
+
     function hasLanguageSpecified(){
-        
+
     }
 
     function isUsDialect(dialectId) {
@@ -469,7 +475,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getAcceptLanguageValueForModuleId(moduleId) {
-        
+
       if (isExtensionModule(moduleId) && extensionMetadata.acceptLanguageMap !== null) {
         return extensionMetadata.acceptLanguageMap;
       } else {
@@ -492,7 +498,7 @@ angular.module('singleConceptAuthoringApp')
     function getConceptInactivationReasons() {
       return conceptInactivationReasons;
     }
-      
+
     function getdrugsModelOrdering() {
       return drugsModelOrdering;
     }
@@ -505,7 +511,7 @@ angular.module('singleConceptAuthoringApp')
     function getDescriptionInactivationReasons() {
       return descriptionInactivationReasons;
     }
-      
+
 //    function getDescriptionAssociationInactivationReasons() {
 //      return descriptionAssociationInactivationReasons;
 //    }
@@ -535,11 +541,11 @@ angular.module('singleConceptAuthoringApp')
       console.log('MRCM validation enforced', value);
       mrcmEnabled = value;
     }
-    
+
     function setTemplatesEnabled(value){
         templatesEnabled = value;
     }
-      
+
     function setSpellcheckDisabled(value){
         spellcheckDisabled = value;
     }
@@ -547,11 +553,11 @@ angular.module('singleConceptAuthoringApp')
     function isMrcmEnabled() {
       return mrcmEnabled;
     }
-      
+
     function isTemplatesEnabled() {
       return templatesEnabled;
     }
-    
+
     function isSpellcheckDisabled() {
       return spellcheckDisabled;
     }
@@ -581,7 +587,7 @@ angular.module('singleConceptAuthoringApp')
       isExtensionDialect: isExtensionDialect,
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
-      isSpellcheckDisabled: isSpellcheckDisabled, 
+      isSpellcheckDisabled: isSpellcheckDisabled,
 
       // extension module-dependent retrieval functions
 
