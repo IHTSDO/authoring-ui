@@ -67,13 +67,31 @@
     </div>
 
   </div>
-  <div class="col-md-12 p-t-10  text-center" ng-if="searchStatus">{{searchStatus}}</div>
+
+  <div class="row search-filter" ng-if="isExtension">
+    <div class="col-md-6"></div>
+    <div class="col-md-6 z-index-1">
+      <div class="col-md-5 filter-label">
+        <label class="pull-right">Filter by :</label>
+      </div>
+      <div class="col-md-7 filter-input" style=""> 
+        <select ng-options="id as getDisplayedLanguageFromKey(id) for (id, name) in dialects"
+                ng-change="search();" name="select-type"
+                ng-model="userOptions.selectedDialect"
+                id="select-type-choice" 
+                class="form-control no-padding">                 
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12 text-center" ng-if="searchStatus">{{searchStatus}}</div>
 
 
-  <div class="row no-padding m-t-10" ng-if="results.length > 0">
+  <div class="row no-padding" ng-if="results.length > 0">
 
 
-    <div class="col-md-6">
+    <div class="col-md-12" ng-class="{'m-t-negative' : isExtension, 'm-t-10' : !isExtension}">
       <h4 class="dark-centured-text" ng-show="!isEscgMode">{{results.length}} concepts found</h4>
       <h4 class="dark-centured-text" ng-show="isEscgMode">{{searchTotal}} concepts found</h4>
     </div>
@@ -93,7 +111,7 @@
       <div class="no-padding"
            ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
         <div class="p-5">
-          <strong>{{searchExtensionFlag ? 'Preferred Term' : 'FSN'}}</strong>
+          <strong>{{isExtension ? getExtensionDisplayTitle() : 'FSN'}}</strong>
         </div>
       </div>
       <div class="col-md-1 no-padding">
@@ -135,7 +153,7 @@
             ng-disabled="isEdited(result)">
 
 
-            {{searchExtensionFlag ? result.concept.preferredSynonym : result.concept.fsn }} </a>
+            {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }} </a>
           </div>
         </div>
         <div class="col-md-3 no-padding">
