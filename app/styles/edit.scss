@@ -903,3 +903,22 @@ button[disabled] .project-icon {
 .sca-colours ul.classification-nav:hover .btn {
 background: #43A047;
 }
+
+.m-t-negative {
+    margin-top: -22px;
+}
+.z-index-1 {
+    z-index: 1
+}
+.search-filter .filter-label {
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-top: 5px;
+}
+.search-filter .filter-input {
+    padding-right: 0px; 
+    padding-left: 10px;
+}
+.search-filter select {
+    height: 30px;
+}

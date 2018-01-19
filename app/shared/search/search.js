@@ -35,8 +35,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // user controls
       $scope.userOptions = {
         groupByConcept: true,
-        searchType: 1
-      };
+        searchType: 1,
+        selectedDialect: ''
+      };      
 
       $scope.favorites = {items: []};
       $scope.$watch(function () {
@@ -162,6 +163,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.searchStr = "";
         $scope.results = [];
         $scope.loadPerformed = false;
+        $scope.userOptions.selectedDialect = '';
         if($scope.isEscgMode) {
           $scope.searchType = 'Active Only';
           $scope.userOptions.searchType = 1;
@@ -185,26 +187,22 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // if item already added skip
           if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
 
-            // push the item
-            displayedResults.push($scope.storedResults[i]);
+            if ($scope.isExtension && $scope.userOptions.selectedDialect) {
+              if ($scope.userOptions.selectedDialect === '900000000000509007') {                
+                if ($scope.storedResults[i].term.indexOf('(') > 0  
+                    && $scope.storedResults[i].term.trim().endsWith(')')) {
+                  // push the item
+                  displayedResults.push($scope.storedResults[i]);
 
-            // add id to the temp list
-            tempIds.push($scope.storedResults[i].concept.conceptId);
-
-            // cycle over items remaining in list
-            for (var j = i + 1; j < $scope.storedResults.length; j++) {
-
-              // if second item matches, push it to new results and remove from
-              // list
-              if ($scope.storedResults[i].concept.conceptId === $scope.storedResults[j].concept.conceptId) {
-
-                // add duplicate to list if (1) groupByConcept is off, and (2)
-                // displayed results do not already contain this item
-                if (!$scope.userOptions.groupByConcept) {
-                  displayedResults.push($scope.storedResults[j]);
+                  // add id to the temp list
+                  tempIds.push($scope.storedResults[i].concept.conceptId);
                 }
+              } else {
+                populateResults(displayedResults,tempIds,i);
               }
-            }
+            } else {
+              populateResults(displayedResults,tempIds,i);
+            }         
           }
         }
 
@@ -239,6 +237,47 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         });
       };
 
+      function populateResults(displayedResults,tempIds,i) {
+        // push the item
+        displayedResults.push($scope.storedResults[i]);
+
+        // add id to the temp list
+        tempIds.push($scope.storedResults[i].concept.conceptId);
+
+        // add duplicate to list if (1) groupByConcept is off, and (2)
+        // displayed results do not already contain this item
+        if (!$scope.userOptions.groupByConcept) {
+
+          // cycle over items remaining in list
+          for (var j = i + 1; j < $scope.storedResults.length; j++) {
+
+            // if second item matches, push it to new results and remove from
+            // list
+            if ($scope.storedResults[i].concept.conceptId === $scope.storedResults[j].concept.conceptId) {                  
+              displayedResults.push($scope.storedResults[j]);
+            }
+          }
+        }
+      }
+
+      $scope.getExtensionDisplayTerm =  function (item) {
+        if ($scope.userOptions.selectedDialect
+          && $scope.userOptions.selectedDialect === '900000000000509007') {
+          return item.term;
+        }
+
+        return item.concept.preferredSynonym;             
+      }
+
+      $scope.getExtensionDisplayTitle =  function () {
+        if ($scope.userOptions.selectedDialect
+          && $scope.userOptions.selectedDialect === '900000000000509007') {
+          return 'FSN';
+        }
+
+        return 'Preferred Term';             
+      }
+
       $scope.autoExpand = function() {
         let element = document.activeElement;
         let scrollHeight = element.scrollHeight;
@@ -253,6 +292,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.search = function (appendResults) {
 
         console.debug('searching', $scope.isEscgMode, $scope.templateOptions.selectedTemplate);
+
+        if ($scope.userOptions.selectedDialect) {
+          scaService.saveSelectedLanguegeForProject($routeParams.projectKey, {'defaultLanguage' : $scope.userOptions.selectedDialect});
+        } 
 
         // if template selected, require search string
         if ($scope.templateOptions.selectedTemplate) {
@@ -288,9 +331,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // For now, just use the current module id (i.e. the extension module id if it exists, otherwise the international module id)
         // scope variable for expected future toggle
         //
-        $scope.searchExtensionFlag = metadataService.isExtensionSet();
-        var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
-          $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
+        var acceptLanguageValue = "";
+        
+        if($scope.isExtension) {
+          if ($scope.userOptions.selectedDialect && $scope.userOptions.selectedDialect !== '900000000000509007') {
+            acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+          } else {
+            acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+          }
+        } else {
+          acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+        }
 
         if (!$scope.isEscgMode && !$scope.templateOptions.selectedTemplate) {
 
@@ -603,6 +654,34 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.isEscgMode = true;
             $scope.escgExpr = '*: ' + data.conceptId + ' =*';
             $scope.search();
+          }
+        }
+      });
+
+      $scope.getDisplayedLanguageFromKey = function (dialectId) {
+        if (dialectId === '900000000000509007') {
+          return 'FSN in US';
+        }
+
+        return 'PT in ' + $scope.dialects[dialectId].toUpperCase();
+      };
+
+      // on extension metadata set
+      $scope.$on('setExtensionMetadata', function (event, data) {
+        $scope.isExtension = metadataService.isExtensionSet();
+
+        if ($scope.isExtension) {
+          $scope.dialects = metadataService.getAllDialects();
+
+          scaService.getSelectedLanguegeForProject($routeParams.projectKey).then(function (data){
+           if (data) {
+              $scope.userOptions.selectedDialect = data.defaultLanguage;
+           }
+          });    
+
+          // Remove 'en-gb' if any
+          if ($scope.dialects.hasOwnProperty('900000000000508004')) {
+            delete $scope.dialects['900000000000508004'];
           }
         }
       });
