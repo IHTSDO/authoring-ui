@@ -3779,8 +3779,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };        
         
-        scope.getDuplicatedRelStyle = function (component) {
+        scope.getDuplicatedRelOrCircularReferenceStyle = function (component) {
           if(component) {
+            if (scope.concept.conceptId === component.target.conceptId) {
+              return 'redhl';
+            }
             for (var i = 0; i < scope.concept.relationships.length; i++) {
               var relationship = scope.concept.relationships[i];
               if (relationship.characteristicType === 'STATED_RELATIONSHIP'
@@ -3789,7 +3792,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 && relationship.target.conceptId === component.target.conceptId ) {
                 return 'redhl';
               }
-            }         
+            }
+          } else {
+            for (var i = 0; i < scope.concept.relationships.length; i++) {
+              var relationship = scope.concept.relationships[i];
+              if (relationship.characteristicType === 'STATED_RELATIONSHIP'
+                && relationship.target.conceptId === scope.concept.conceptId ) {
+                return 'redhl';
+              }
+            }
           }
           return '';
         };

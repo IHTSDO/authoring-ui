@@ -1080,6 +1080,19 @@ angular.module('singleConceptAuthoringApp')
             return false;       
           };
 
+          scope.detectCircularReference = function (sourceId) {
+            var concept = scope.affectedConcepts[sourceId];    
+            for (var i = 0; i < concept.relationships.length; i++) {
+              var rel = concept.relationships[i];          
+              if (rel.characteristicType === 'STATED_RELATIONSHIP' 
+                  && rel.target.conceptId === concept.conceptId) {
+                return true;
+              }
+            }         
+             
+            return false;       
+          };
+
           //
           // Initialization
           //

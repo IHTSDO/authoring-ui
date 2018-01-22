@@ -130,7 +130,7 @@
               </button>
             </td>
             <td>  
-              <button class="m-r-5 indicator_red badge" ng-show="detectDulicatedRelationships(rel.sourceId)" disabled="disabled">Errors</button> 
+              <button class="m-r-5 indicator_red badge" ng-show="detectDulicatedRelationships(rel.sourceId) || detectCircularReference(rel.sourceId)" disabled="disabled">Errors</button> 
             </td>
           </tr>
          
