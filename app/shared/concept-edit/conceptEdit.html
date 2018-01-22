@@ -270,7 +270,7 @@
     <div ng-repeat="description in concept.descriptions"
          ng-show="isDescriptionViewable(description)"
          ng-class="getComponentStyle(description.descriptionId, null, '', description)"
-         class="">
+         class="{{isInactivation === true && description.type === 'FSN' ? getDuplicatedRelOrCircularReferenceStyle() : ''}}">
 
       <div ng-show="description.definitionOfChanges" class="">
 
@@ -460,7 +460,7 @@
         <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
-             class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}} {{isInactivation === true ? getDuplicatedRelStyle(relationship) : ''}}">
+             class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}} {{isInactivation === true ? getDuplicatedRelOrCircularReferenceStyle(relationship) : ''}}">
 
           <div ng-show="relationship.definitionOfChanges" class="">
 
