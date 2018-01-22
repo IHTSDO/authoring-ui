@@ -18,6 +18,19 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
   .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
     function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService, savedListService,$timeout) {
 
+      var usModel = {
+        moduleId: '731000124108',
+        dialectId: '900000000000509007'
+      };
+
+      var usModuleFilterModel = {
+        '900000000000509007-fsn': 'FSN in US',
+        '900000000000509007-pt': 'PT in US'
+      };
+
+      var gbDialectId = '900000000000508004';
+      var fsnSuffix = '-fsn';
+
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
       $scope.resultsPage = 1;
@@ -186,8 +199,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // if item already added skip
           if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
 
-            if ($scope.isExtension && $scope.userOptions.selectedDialect) {
-              if ($scope.userOptions.selectedDialect === '900000000000509007') {                
+            if ($scope.isExtension && $scope.userOptions.selectedDialect && !$scope.isEscgMode) {
+              if ($scope.userOptions.selectedDialect === usModel.dialectId
+                || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix)) {                
                 if ($scope.storedResults[i].term.indexOf('(') > 0  
                     && $scope.storedResults[i].term.trim().endsWith(')')) {
                   // push the item
@@ -261,7 +275,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.getExtensionDisplayTerm =  function (item) {
         if ($scope.userOptions.selectedDialect
-          && $scope.userOptions.selectedDialect === '900000000000509007') {
+          && ($scope.userOptions.selectedDialect === usModel.dialectId
+            || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
           return item.term;
         }
 
@@ -270,7 +285,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.getExtensionDisplayTitle =  function () {
         if ($scope.userOptions.selectedDialect
-          && $scope.userOptions.selectedDialect === '900000000000509007') {
+          && ($scope.userOptions.selectedDialect === usModel.dialectId
+            || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
           return 'FSN';
         }
 
@@ -333,7 +349,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         var acceptLanguageValue = "";
         
         if($scope.isExtension) {
-          if ($scope.userOptions.selectedDialect && $scope.userOptions.selectedDialect !== '900000000000509007') {
+          if ($scope.userOptions.selectedDialect 
+            && $scope.userOptions.selectedDialect !== usModel.dialectId
+            && metadataService.getCurrentModuleId() !== usModel.moduleId) {
             acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
           } else {
             acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
@@ -658,30 +676,50 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       });
 
       $scope.getDisplayedLanguageFromKey = function (dialectId) {
-        if (dialectId === '900000000000509007') {
-          return 'FSN in US';
+        if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
+          return $scope.dialects[dialectId];
         }
-
-        return 'PT in ' + $scope.dialects[dialectId].toUpperCase();
+        else if (dialectId === usModel.dialectId) {
+          return 'FSN in US';
+        } else {
+          return 'PT in ' + $scope.dialects[dialectId].toUpperCase();
+        }        
       };
 
       // on extension metadata set
       $scope.$on('setExtensionMetadata', function (event, data) {
         $scope.isExtension = metadataService.isExtensionSet();
 
-        if ($scope.isExtension) {
-          $scope.dialects = metadataService.getAllDialects();
+        if ($scope.isExtension) {          
+          if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
+            $scope.dialects = usModuleFilterModel;           
+          } else {
+            $scope.dialects = metadataService.getAllDialects();              
+
+            // Remove 'en-gb' if any
+            if ($scope.dialects.hasOwnProperty(gbDialectId)) {
+              delete $scope.dialects[gbDialectId];
+            }
+          }
 
           scaService.getSelectedLanguegeForUser().then(function (data){
-           if (data) {
-              $scope.userOptions.selectedDialect = data.defaultLanguage;
-           }
-          });    
-
-          // Remove 'en-gb' if any
-          if ($scope.dialects.hasOwnProperty('900000000000508004')) {
-            delete $scope.dialects['900000000000508004'];
-          }
+            if (data) {
+              var strArray = data.defaultLanguage.split('-');
+              if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
+                if(strArray.length === 2) {
+                  $scope.userOptions.selectedDialect = data.defaultLanguage;
+                } 
+                else if (strArray[0] === usModel.dialectId) {
+                  $scope.userOptions.selectedDialect = strArray[0] + fsnSuffix;
+                }
+                else {
+                  // do nothing
+                }
+              } else {
+                $scope.userOptions.selectedDialect = strArray[0];
+              }              
+            }
+          }); 
         }
       });
 
