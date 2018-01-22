@@ -162,8 +162,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.escgExpr = "";
         $scope.searchStr = "";
         $scope.results = [];
-        $scope.loadPerformed = false;
-        $scope.userOptions.selectedDialect = '';
+        $scope.loadPerformed = false;        
         if($scope.isEscgMode) {
           $scope.searchType = 'Active Only';
           $scope.userOptions.searchType = 1;
@@ -294,7 +293,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         console.debug('searching', $scope.isEscgMode, $scope.templateOptions.selectedTemplate);
 
         if ($scope.userOptions.selectedDialect) {
-          scaService.saveSelectedLanguegeForProject($routeParams.projectKey, {'defaultLanguage' : $scope.userOptions.selectedDialect});
+          scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
         } 
 
         // if template selected, require search string
@@ -673,7 +672,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if ($scope.isExtension) {
           $scope.dialects = metadataService.getAllDialects();
 
-          scaService.getSelectedLanguegeForProject($routeParams.projectKey).then(function (data){
+          scaService.getSelectedLanguegeForUser().then(function (data){
            if (data) {
               $scope.userOptions.selectedDialect = data.defaultLanguage;
            }
