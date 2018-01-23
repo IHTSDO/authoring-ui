@@ -673,6 +673,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.conceptLoading = false;
           $scope.updateEditListUiState();
           notificationService.sendMessage('Concept loaded', 3000);
+          $scope.$broadcast('editingConcepts', {});
         } else {
 
           // get the concept and add it to the stack
@@ -683,6 +684,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
 
             $scope.concepts.push(response);
+            $scope.$broadcast('editingConcepts', {});
 
             if ($scope.editList.indexOf(conceptId) === -1) {
               $scope.updateEditListUiState();
@@ -785,6 +787,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // if unsaved concept, push
       else if (conceptId === 'unsaved' || !snowowlService.isSctid(conceptId)) {
         $scope.concepts.push({conceptId: conceptId});
+        $scope.$broadcast('editingConcepts', {});
 
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {

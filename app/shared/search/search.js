@@ -474,14 +474,54 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.searchStatus = null;
       };
+
+      var queue = [];
+      var processingConceptId = null;
+      var editingConcepts = [];     
+
       $scope.selectItem = function (item) {
         if (!item) {
           return;
         }
-        console.log(item.concept.conceptId);
-        $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
+    
+        queue.push(item.concept.conceptId);
+
+        setTimeout(function waitForConceptLoadCompletely() {
+          if (queue.length > 0) {
+            
+            if(!processingConceptId) {
+              processingConceptId = queue.shift();             
+              $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+            }
+
+            var loaded = false;
+            angular.forEach(editingConcepts, function(concept) {
+              if (concept.conceptId === processingConceptId) {
+                loaded = true;
+              }
+            });
+
+            if (loaded) {
+              if (queue.length > 0) {
+                processingConceptId = queue.shift();                
+                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+              }
+              
+              if (queue.length === 0) {
+                processingConceptId = null;                
+              }
+            } else {
+              setTimeout(waitForConceptLoadCompletely, 200);
+            }
+          }          
+        });  
 
       };
+
+      $scope.$on('editingConcepts', function(data) {
+        editingConcepts = data.targetScope.concepts;
+      });
+
       $scope.isEdited = function (item) {
         return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
       };
