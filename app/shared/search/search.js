@@ -477,50 +477,63 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       var queue = [];
       var processingConceptId = null;
-      var editingConcepts = [];     
+      var editingConcepts = [];              
+      var conceptLoaded = false;     
 
       $scope.selectItem = function (item) {
         if (!item) {
           return;
         }
     
-        queue.push(item.concept.conceptId);
-
-        setTimeout(function waitForConceptLoadCompletely() {
-          if (queue.length > 0) {
-            
-            if(!processingConceptId) {
-              processingConceptId = queue.shift();             
-              $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
-            }
-
-            var loaded = false;
-            angular.forEach(editingConcepts, function(concept) {
-              if (concept.conceptId === processingConceptId) {
-                loaded = true;
-              }
-            });
-
-            if (loaded) {
-              if (queue.length > 0) {
-                processingConceptId = queue.shift();                
-                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
-              }
-              
-              if (queue.length === 0) {
-                processingConceptId = null;                
-              }
-            } else {
-              setTimeout(waitForConceptLoadCompletely, 200);
-            }
-          }          
-        });  
-
+        if(queue.indexOf(item.concept.conceptId) < 0) {
+          queue.push(item.concept.conceptId);
+        }        
       };
 
-      $scope.$on('editingConcepts', function(data) {
-        editingConcepts = data.targetScope.concepts;
+      $scope.$on('editingConcepts', function(evt,data) {
+        editingConcepts = data.concepts;
       });
+
+
+      $scope.$watch(function () {
+        return queue;
+      }, function (newValue, oldValue) {
+        if (queue.length > 0) {
+          setTimeout(function waitForConceptLoadCompletely() {    
+            if (queue.length > 0 || !conceptLoaded) {
+              if(!processingConceptId) {
+                processingConceptId = queue.shift();             
+                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+              }
+
+              conceptLoaded = false;
+              angular.forEach(editingConcepts, function(concept) {
+                if (concept.conceptId === processingConceptId) {
+                  conceptLoaded = true;
+                }
+              });
+
+              if (conceptLoaded) {             
+                if (queue.length > 0) {
+                  processingConceptId = queue.shift();                
+                  $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+                  conceptLoaded = false;
+                }
+
+                if (queue.length === 0) {
+                  if (!conceptLoaded) {
+                    setTimeout(waitForConceptLoadCompletely, 200);
+                  } else {
+                    processingConceptId = null;
+                  }                
+                }              
+              } else {             
+                setTimeout(waitForConceptLoadCompletely, 200);
+              } 
+            }               
+          });
+        } 
+      }, true);
 
       $scope.isEdited = function (item) {
         return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
