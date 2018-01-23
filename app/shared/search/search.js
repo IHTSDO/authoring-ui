@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 });
             });
         }
-    }
+    };
 })
 
   .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
@@ -50,7 +50,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         groupByConcept: true,
         searchType: 1,
         selectedDialect: ''
-      };      
+      };
 
       $scope.favorites = {items: []};
       $scope.$watch(function () {
@@ -78,12 +78,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                       {
                           response.splice(i, 1);
                       }
-              };
+              }
             $scope.templates = response;
           });
       }
 
-      else{$scope.templates = null}
+      else {
+        $scope.templates = null;
+      }
 
       $scope.templateOptions = {
 
@@ -172,10 +174,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.toggleSearchMode = function () {
         $scope.isEscgMode = !$scope.isEscgMode;
-        $scope.escgExpr = "";
-        $scope.searchStr = "";
+        $scope.escgExpr = '';
+        $scope.searchStr = '';
         $scope.results = [];
-        $scope.loadPerformed = false;        
+        $scope.loadPerformed = false;
         if($scope.isEscgMode) {
           $scope.searchType = 'Active Only';
           $scope.userOptions.searchType = 1;
@@ -200,10 +202,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
 
             if ($scope.isExtension && $scope.userOptions.selectedDialect && !$scope.isEscgMode) {
-              if ($scope.userOptions.selectedDialect === usModel.dialectId
-                || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix)) {                
-                if ($scope.storedResults[i].term.indexOf('(') > 0  
-                    && $scope.storedResults[i].term.trim().endsWith(')')) {
+              if ($scope.userOptions.selectedDialect === usModel.dialectId ||
+                $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix)) {
+                if ($scope.storedResults[i].term.indexOf('(') > 0 &&
+                  $scope.storedResults[i].term.trim().endsWith(')')) {
                   // push the item
                   displayedResults.push($scope.storedResults[i]);
 
@@ -215,7 +217,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               }
             } else {
               populateResults(displayedResults,tempIds,i);
-            }         
+            }
           }
         }
 
@@ -242,11 +244,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
 
         // apply dragging for batch view
-        $(".draggable").draggable({revert: "invalid", helper: 'clone'});
+        $('.draggable').draggable({revert: 'invalid', helper: 'clone'});
 
         $('.draggable').click(function () {
           //$("#excel_table").insertAtCaret($(this).text());
-          return false
+          return false;
         });
       };
 
@@ -266,7 +268,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
             // if second item matches, push it to new results and remove from
             // list
-            if ($scope.storedResults[i].concept.conceptId === $scope.storedResults[j].concept.conceptId) {                  
+            if ($scope.storedResults[i].concept.conceptId === $scope.storedResults[j].concept.conceptId) {
               displayedResults.push($scope.storedResults[j]);
             }
           }
@@ -274,29 +276,29 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       }
 
       $scope.getExtensionDisplayTerm =  function (item) {
-        if ($scope.userOptions.selectedDialect
-          && ($scope.userOptions.selectedDialect === usModel.dialectId
-            || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
+        if ($scope.userOptions.selectedDialect &&
+          ($scope.userOptions.selectedDialect === usModel.dialectId ||
+            $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
           return item.term;
         }
 
-        return item.concept.preferredSynonym;             
-      }
+        return item.concept.preferredSynonym;
+      };
 
       $scope.getExtensionDisplayTitle =  function () {
-        if ($scope.userOptions.selectedDialect
-          && ($scope.userOptions.selectedDialect === usModel.dialectId
-            || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
+        if ($scope.userOptions.selectedDialect &&
+          ($scope.userOptions.selectedDialect === usModel.dialectId ||
+            $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
           return 'FSN';
         }
 
-        return 'Preferred Term';             
-      }
+        return 'Preferred Term';
+      };
 
       $scope.autoExpand = function() {
         let element = document.activeElement;
         let scrollHeight = element.scrollHeight;
-        element.style.height =  scrollHeight + "px";
+        element.style.height =  scrollHeight + 'px';
       };
 
       /**
@@ -310,7 +312,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         if ($scope.userOptions.selectedDialect) {
           scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
-        } 
+        }
 
         // if template selected, require search string
         if ($scope.templateOptions.selectedTemplate) {
@@ -346,12 +348,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // For now, just use the current module id (i.e. the extension module id if it exists, otherwise the international module id)
         // scope variable for expected future toggle
         //
-        var acceptLanguageValue = "";
-        
+        var acceptLanguageValue = '';
+
         if($scope.isExtension) {
-          if ($scope.userOptions.selectedDialect 
-            && $scope.userOptions.selectedDialect !== usModel.dialectId
-            && metadataService.getCurrentModuleId() !== usModel.moduleId) {
+          if ($scope.userOptions.selectedDialect &&
+            $scope.userOptions.selectedDialect !== usModel.dialectId &&
+            metadataService.getCurrentModuleId() !== usModel.moduleId) {
             acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
           } else {
             acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
@@ -423,7 +425,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                       preferredSynonym : c.pt.term
                     },
                     term: c.pt.term
-                  })
+                  });
                 });
             }
             else{
@@ -438,7 +440,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                       moduleId: c.moduleId
                     },
                     term: c.fsn.term
-                  })
+                  });
                 });
             }
 
@@ -477,17 +479,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       var queue = [];
       var processingConceptId = null;
-      var editingConcepts = [];              
-      var conceptLoaded = false;     
+      var editingConcepts = [];
+      var conceptLoaded = false;
 
       $scope.selectItem = function (item) {
         if (!item) {
           return;
         }
-    
+
         if(queue.indexOf(item.concept.conceptId) < 0) {
           queue.push(item.concept.conceptId);
-        }        
+        }
       };
 
       $scope.$on('editingConcepts', function(evt,data) {
@@ -499,10 +501,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return queue;
       }, function (newValue, oldValue) {
         if (queue.length > 0) {
-          setTimeout(function waitForConceptLoadCompletely() {    
+          setTimeout(function waitForConceptLoadCompletely() {
             if (queue.length > 0 || !conceptLoaded) {
               if(!processingConceptId) {
-                processingConceptId = queue.shift();             
+                processingConceptId = queue.shift();
                 $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
               }
 
@@ -513,9 +515,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 }
               });
 
-              if (conceptLoaded) {             
+              if (conceptLoaded) {
                 if (queue.length > 0) {
-                  processingConceptId = queue.shift();                
+                  processingConceptId = queue.shift();
                   $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
                   conceptLoaded = false;
                 }
@@ -525,14 +527,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                     setTimeout(waitForConceptLoadCompletely, 200);
                   } else {
                     processingConceptId = null;
-                  }                
-                }              
-              } else {             
+                  }
+                }
+              } else {
                 setTimeout(waitForConceptLoadCompletely, 200);
-              } 
-            }               
+              }
+            }
           });
-        } 
+        }
       }, true);
 
       $scope.isEdited = function (item) {
@@ -714,7 +716,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $rootScope.$broadcast('batchConcept.change');
         }, function (error) {
           notificationService.sendError('Unexpected error: ' + error);
-        })
+        });
       };
 
       $scope.$on('viewSearch', function(event, data) {
@@ -736,18 +738,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           return 'FSN in US';
         } else {
           return 'PT in ' + $scope.dialects[dialectId].toUpperCase();
-        }        
+        }
       };
 
       // on extension metadata set
       $scope.$on('setExtensionMetadata', function (event, data) {
         $scope.isExtension = metadataService.isExtensionSet();
 
-        if ($scope.isExtension) {          
+        if ($scope.isExtension) {
           if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
-            $scope.dialects = usModuleFilterModel;           
+            $scope.dialects = usModuleFilterModel;
           } else {
-            $scope.dialects = metadataService.getAllDialects();              
+            $scope.dialects = metadataService.getAllDialects();
 
             // Remove 'en-gb' if any
             if ($scope.dialects.hasOwnProperty(gbDialectId)) {
@@ -761,7 +763,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
                 if(strArray.length === 2) {
                   $scope.userOptions.selectedDialect = data.defaultLanguage;
-                } 
+                }
                 else if (strArray[0] === usModel.dialectId) {
                   $scope.userOptions.selectedDialect = strArray[0] + fsnSuffix;
                 }
@@ -770,9 +772,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 }
               } else {
                 $scope.userOptions.selectedDialect = strArray[0];
-              }              
+              }
             }
-          }); 
+          });
         }
       });
 
