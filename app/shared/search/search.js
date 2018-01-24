@@ -362,8 +362,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
         }
 
-        if (!$scope.isEscgMode && !$scope.templateOptions.selectedTemplate) {
-
+        if(!$scope.isEscgMode) {
           console.debug('normal text mode');
 
           // set the return synonym flag to true for extensions
@@ -371,12 +370,60 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // For now, just assume always want the extension-language synonym if available
           // set as scope variable for expected future toggle
           $scope.synonymFlag = metadataService.isExtensionSet();
-
           $scope.searchTotal = null;
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag).then(function (results) {
-            return results;
-          }, function (error) {
+          let escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
+
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag).then(function(results) {
+            if(!results) {
+              notificationService.sendError('Unexpected error searching for concepts', 10000);
+            }
+
+            let concepts = results.items;
+            $scope.searchTotal = results.total;
+            $scope.loadPerformed = true;
+            $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
+
+
+            // convert to snowowl description search conceptObj
+            let conceptObjs = [];
+            if($scope.synonymFlag){
+              angular.forEach(concepts, function (c) {
+                conceptObjs.push({
+                  active: c.active,
+                  concept: {
+                    active: c.active,
+                    conceptId: c.id,
+                    definitionStatus: c.definitionStatus,
+                    fsn: c.pt.term,
+                    moduleId: c.moduleId,
+                    preferredSynonym : c.pt.term
+                  },
+                  term: c.pt.term
+                });
+              });
+            }
+            else{
+              angular.forEach(concepts, function (c) {
+                conceptObjs.push({
+                  active: c.active,
+                  concept: {
+                    active: c.active,
+                    conceptId: c.id,
+                    definitionStatus: c.definitionStatus,
+                    fsn: c.fsn.term,
+                    moduleId: c.moduleId
+                  },
+                  term: c.fsn.term
+                });
+              });
+            }
+
+            $scope.storedResults = appendResults ? $scope.storedResults.concat(conceptObjs) : conceptObjs;
+
+            $scope.processResults();
+
+          }, function(error) {
             $scope.searchStatus = 'Error performing search: ' + error;
             if (error.statusText) {
               $scope.searchStatus += ': ' + error.statusText;
@@ -384,37 +431,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             if (error.data && error.data.message) {
               $scope.searchStatus += ': ' + error.data.message;
             }
-          }).then(function(results) {
-            snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, $scope.synonymFlag).then(function (concepts) {
-
-              if (!concepts) {
-                notificationService.sendError('Unexpected error searching for concepts', 10000);
-              }
-
-              // set load more parameters
-              $scope.loadPerformed = true;
-              $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
-              $scope.storedResults = appendResults ? $scope.storedResults.concat(concepts) : concepts;
-              $scope.searchTotal = results.total;
-
-              $scope.processResults();
-
-            }, function (error) {
-              $scope.searchStatus = 'Error performing search: ' + error.message;
-              if (error.statusText) {
-                $scope.searchStatus += ': ' + error.statusText;
-              }
-              if (error.data && error.data.message) {
-                $scope.searchStatus += ': ' + error.data.message;
-              }
-            });
           });
         } else {
 
           $scope.synonymFlag = metadataService.isExtensionSet();
           console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions);
 
-          var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
+          let escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
 
           snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag).then(function (results) {
             // set load more parameters
