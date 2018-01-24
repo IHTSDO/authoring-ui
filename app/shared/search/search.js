@@ -301,6 +301,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         element.style.height =  scrollHeight + 'px';
       };
 
+      function addCommas(integer) {
+        return (integer + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+      }
+
       /**
        * Executes a search based on current scope variable searchStr
        * @param appendResults if true, append to existing results; if false,
@@ -377,7 +381,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
 
           let concepts = results.items;
-          $scope.searchTotal = results.total;
+          $scope.searchTotal = addCommas(results.total);
           $scope.loadPerformed = true;
           $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
 
