@@ -40,6 +40,10 @@
 	padding: 6px 12px;
 }
 
+.ta-editor {
+b, strong{font-family: inherit; font-weight: bold}
+}
+
 .ta-editor:focus {
 	user-select: text;
 }
