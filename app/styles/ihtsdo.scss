@@ -3092,6 +3092,10 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
     color: #444;
     background-color: transparent
 }
+
+.timeline-title b {
+    font-weight: bold;
+}
 .timeline-body {
     line-height: 17px;
     margin-top: 5px;
