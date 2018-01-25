@@ -93,17 +93,27 @@ angular.module('singleConceptAuthoringApp')
               // get the end time if specified
               if (scope.validationContainer.report.rvfValidationResult.endTime) {
                 var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
-                return status + ' ' + endTime;
+                return status + ' ' + covertToLocalTime(endTime);
               }
 
               if (scope.validationContainer.report.rvfValidationResult.startTime) {
                 var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
-                return status + ', started ' + startTime;
+                return status + ', started ' + covertToLocalTime(startTime);
               }
             }
 
             return status;
           };
+          
+          function covertToLocalTime(dateTime) {
+            if (!dateTime) {
+              return;
+            }
+           
+            var localTime = new Date(dateTime + ' UTC');
+            return $filter('date')(localTime, 'medium');
+          }
+
           scope.isProject = function(){
               if(scope.taskKey){
                   return false
