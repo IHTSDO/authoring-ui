@@ -366,6 +366,74 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
         }
 
+        // TODO Work in progress to replace current search
+        //
+        // $scope.synonymFlag = metadataService.isExtensionSet();
+        //
+        // var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
+        //
+        // $scope.searchTotal = null;
+        //
+        // snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag, acceptLanguageValue).then(function (results) {
+        //   console.log(results);
+        //
+        //   if (!results) {
+        //     notificationService.sendError('Unexpected error searching for concepts', 10000);
+        //   }
+        //
+        //   var concepts = results.items;
+        //   $scope.searchTotal = addCommas(results.total);
+        //   $scope.loadPerformed = true;
+        //   $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
+        //
+        //   // convert to snowowl description search conceptObj
+        //   var conceptObjs = [];
+        //   if($scope.synonymFlag){
+        //     angular.forEach(concepts, function (c) {
+        //       conceptObjs.push({
+        //         active: c.active,
+        //         concept: {
+        //           active: c.active,
+        //           conceptId: c.id,
+        //           definitionStatus: c.definitionStatus,
+        //           fsn: c.pt.term,
+        //           moduleId: c.moduleId,
+        //           preferredSynonym : c.pt.term
+        //         },
+        //         term: c.pt.term
+        //       });
+        //     });
+        //   }
+        //   else{
+        //     angular.forEach(concepts, function (c) {
+        //       conceptObjs.push({
+        //         active: c.active,
+        //         concept: {
+        //           active: c.active,
+        //           conceptId: c.id,
+        //           definitionStatus: c.definitionStatus,
+        //           fsn: c.fsn.term,
+        //           moduleId: c.moduleId
+        //         },
+        //         term: c.fsn.term
+        //       });
+        //     });
+        //   }
+        //
+        //
+        //   $scope.storedResults = appendResults ? $scope.storedResults.concat(conceptObjs) : conceptObjs;
+        //
+        //   $scope.processResults();
+        // }, function (error) {
+        //   $scope.searchStatus = 'Error performing search: ' + error;
+        //   if (error.statusText) {
+        //     $scope.searchStatus += ': ' + error.statusText;
+        //   }
+        //   if (error.data && error.data.message) {
+        //     $scope.searchStatus += ': ' + error.data.message;
+        //   }
+        // });
+
         if (!$scope.isEscgMode && !$scope.templateOptions.selectedTemplate) {
 
           console.debug('normal text mode');

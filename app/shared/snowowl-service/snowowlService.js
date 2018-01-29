@@ -136,7 +136,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function cleanAxiom(axiom) {
-        var allowableAxiomRelationshipProperties = ['axiomId', 'definitionStatus', 'effectiveTime', 'active', 'released', 'moduleId', 'relationships'];      
+        var allowableAxiomRelationshipProperties = ['axiomId', 'definitionStatus', 'effectiveTime', 'active', 'released', 'moduleId', 'relationships'];
 
         for (var key in axiom) {
           if (allowableAxiomRelationshipProperties.indexOf(key) === -1) {
@@ -410,7 +410,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
-        
+
       function getConceptFsn(conceptId, branch, count) {
         return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/fsn').then(function (response) {
           return {data : response.data, count: count};
@@ -823,7 +823,7 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
-        
+
       //Function to bulk get full concepts via POST
       function bulkRetrieveFullConcept(conceptIdList, branch, expandPt) {
           var body = {
@@ -870,6 +870,59 @@ angular.module('singleConceptAuthoringApp')
       // Browser Functions
       //////////////////////////
 
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang) {
+        var deferred = $q.defer();
+
+        var params = {
+          offset: offset ? offset : '0',
+          limit: limit ? limit : '50',
+          expand: 'fsn()'
+        };
+
+        if(syn){
+          params.expand = 'pt()';
+        }
+
+        if(termFilter) {
+          params.termFilter = termFilter;
+        }
+
+        if(escgExpr) {
+          params.eclFilter = escgExpr;
+        }
+
+        // if a numeric value, search by component id
+        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter)) {
+
+          // if concept id
+          if(termFilter.substr(-2, 1) === '0') {
+            console.log('unimplemented concept id search');
+          }
+
+          // if description id
+          else if(termFilter.substr(-2, 1) === '1') {
+            console.log('unimplemented description id search');
+          }
+
+          // if relationship id
+          else if(termFilter.substr(-2, 1) === '2') {
+            console.log('unimplemented relationship id search');
+          }
+        }
+
+        // otherwise, a text value, search by query
+        else {
+          $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+            deferred.resolve(response.data ? response.data : {items: [], total: 0});
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+        }
+
+        return deferred.promise;
+      }
+
       /**
        * Search for concepts by id or description term query
        * @param projectKey the project key
@@ -913,7 +966,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if a numeric value, search by component id
         if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
-            
+
           // if concept id
           if (searchStr.substr(-2, 1) === '0') {
 
@@ -1191,7 +1244,7 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
-        
+
       function getAttributeValuesFromEcl(branch, searchStr, ecl) {
         return $http.get(apiEndpoint + branch + '/concepts?active=true&expand=fsn()&term=' + searchStr + '&ecl=' + encodeURIComponent(ecl)).then(function (response) {
           return response.data.items ? response.data.items : [];
@@ -1467,7 +1520,7 @@ angular.module('singleConceptAuthoringApp')
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
-        
+
         if(syn){
             params.expand = 'pt()'
         }
@@ -1535,6 +1588,7 @@ angular.module('singleConceptAuthoringApp')
         downloadClassification: downloadClassification,
         findConceptsForQuery: findConceptsForQuery,
         searchConcepts: searchConcepts,
+        searchAllConcepts: searchAllConcepts,
         getReview: getReview,
         getMembersByTargetComponent: getMembersByTargetComponent,
 
