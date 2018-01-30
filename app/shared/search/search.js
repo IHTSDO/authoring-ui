@@ -357,7 +357,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if($scope.isExtension) {
           if ($scope.userOptions.selectedDialect &&
             $scope.userOptions.selectedDialect !== usModel.dialectId &&
-            metadataService.getCurrentModuleId() !== usModel.moduleId) {
+            metadataService.getCurrentModuleId() !== usModel.moduleId &&
+			$scope.dialects[$scope.userOptions.selectedDialect]) {
             acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
           } else {
             acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
