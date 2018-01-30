@@ -695,6 +695,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return false;
       };
 
+      $scope.clone = function (item) {
+        if (item) {
+          $rootScope.$broadcast('cloneConcept', {conceptId: item.concept.conceptId});          
+        }
+      };
+
       $scope.openConceptInformationModal = function (result) {
         var modalInstance = $modal.open({
           templateUrl: 'shared/concept-information/conceptInformationModal.html',
