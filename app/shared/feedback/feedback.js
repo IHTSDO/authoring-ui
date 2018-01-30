@@ -39,6 +39,7 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
+          scope.limitConceptsLoading = 10;
 
           scope.viewTaxonomy = function() {            
             $rootScope.$broadcast('swapToTaxonomy');                
@@ -734,6 +735,12 @@ angular.module('singleConceptAuthoringApp')
             }
             if (conceptsToAdd.length === 0) {
               notificationService.sendWarning('No concepts selected', 5000);
+              return
+            }
+
+            if(conceptsToAdd.length > scope.limitConceptsLoading) {
+              notificationService.sendWarning('The number of concepts that can be loaded in feedback has been exceeded ' + scope.limitConceptsLoading, 5000);
+              return;
             }
 
             if (conceptsToAdd.length === 1) {
