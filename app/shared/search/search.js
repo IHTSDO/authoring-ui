@@ -297,8 +297,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.autoExpand = function() {
         let element = document.activeElement;
-        let scrollHeight = element.scrollHeight;
-        element.style.height =  scrollHeight + 'px';
+
+        setTimeout(function(){
+          element.style.cssText = 'height:auto; padding:0';
+          element.style.cssText = 'height:' + element.scrollHeight + 'px';
+        },0);
       };
 
       function addCommas(integer) {
@@ -559,6 +562,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        */
       $scope.clearSearch = function () {
         $scope.searchStr = '';
+        $scope.escgExpr = '';
         $scope.resultsPage = 1;
         $scope.results = [];
         $scope.searchStatus = null;
@@ -697,7 +701,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.clone = function (item) {
         if (item) {
-          $rootScope.$broadcast('cloneConcept', {conceptId: item.concept.conceptId});          
+          $rootScope.$broadcast('cloneConcept', {conceptId: item.concept.conceptId});
         }
       };
 
