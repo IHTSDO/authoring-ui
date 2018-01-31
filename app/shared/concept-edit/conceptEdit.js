@@ -3057,6 +3057,48 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           textarea.remove();
         };
 
+        scope.getPerferredTerm = function () {
+          if (!metadataService.isExtensionSet()) {
+            for (var i = 0; i < scope.concept.descriptions.length; i++) {
+              var des = scope.concept.descriptions[i];
+              if (des.type === 'SYNONYM'
+                  && des.active
+                  && des.acceptabilityMap['900000000000508004'] === 'PREFERRED'
+                  && des.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                return des.term;
+              }
+            }
+          } 
+          else {
+            var usPreferredTerm = '';
+            var extensionPreferredTerm = '';
+            var dialects = metadataService.getAllDialects();
+
+            // Remove 'en-gb' and 'en-us' if any
+            if (dialects.hasOwnProperty('900000000000508004')) {
+              delete dialects['900000000000508004'];
+            }
+            if (dialects.hasOwnProperty('900000000000509007')) {
+              delete dialects['900000000000509007'];
+            }
+
+            for (var i = 0; i < scope.concept.descriptions.length; i++) {
+              var des = scope.concept.descriptions[i];
+              if (des.type === 'SYNONYM' && des.active) {
+                if (des.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                  usPreferredTerm = des.term;
+                }
+
+                if (Object.keys(dialects).length === 1 && des.acceptabilityMap[Object.keys(dialects)[0]] === 'PREFERRED') {
+                  return des.term;
+                }
+              }
+            }
+
+            return usPreferredTerm;
+          }
+        };
+
         /**
          * Sets needed concept properties as element attributes
          * @param concept
