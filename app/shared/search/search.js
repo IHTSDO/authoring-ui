@@ -299,8 +299,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         let element = document.activeElement;
 
         setTimeout(function(){
-          element.style.cssText = 'height:auto; padding:0';
-          element.style.cssText = 'height:' + element.scrollHeight + 'px';
+          element.style.height = 'auto';
+          element.style.height = element.scrollHeight + 'px';
         },0);
       };
 
@@ -562,10 +562,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        */
       $scope.clearSearch = function () {
         $scope.searchStr = '';
-        $scope.escgExpr = '';
         $scope.resultsPage = 1;
         $scope.results = [];
         $scope.searchStatus = null;
+
+        $scope.escgExpr = '';
+        document.getElementById('expandable-search').style.height = 'auto';
       };
 
       var queue = [];
