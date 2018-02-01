@@ -403,29 +403,15 @@ angular.module('singleConceptAuthoringApp')
           // move item from ToReview to Reviewed
           scope.addToReviewed = function (item, stopUiStateUpdate, itemList) {
             console.log(itemList);
-            var idList = [];
-            var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
             if (itemList) {
-              angular.forEach(itemList, function (item) {
-                idList.push(item.conceptId);
-              });
-              scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, idList, false).then(function (response) {
-                notificationService.sendMessage('Multiple concepts marked as approved.', 5000, null);
-              }, function () {
-                notificationService.sendError('Error submitting feedback', 5000, null);
-              });
+              notificationService.sendMessage('Multiple concepts marked as approved.', 5000, null);
               angular.forEach(itemList, function (item) {
                 scope.moveItemToReviewed(item);
               });
 
             }
             else {
-              idList.push(item.conceptId);
-              scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, idList, false).then(function (response) {
-                notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
-              }, function () {
-                notificationService.sendError('Error submitting feedback', 5000, null);
-              });
+              notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
               scope.moveItemToReviewed(item);
             }
 
