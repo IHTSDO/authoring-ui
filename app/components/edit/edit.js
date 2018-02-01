@@ -1591,7 +1591,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             notificationService.sendWarning('Task initialization complete', 3000);
             $rootScope.$broadcast('reloadTaxonomy');
-            $scope.branch = response.path;
+            $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey; 
 
             // add slight timeout to allow propagation of branch information
             // TODO Added because crsService was receiving 404 on branch initially, but succeeding on reload
