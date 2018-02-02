@@ -1,6 +1,6 @@
 <section class="tables-data"> 
   <!-- for ng-table checkboxes --> 
-  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html" ng-show="task">
     <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
            id="select_all_failures"
            name="filter-checkbox" value=""/>
@@ -45,7 +45,7 @@
   <!--
   <div class="row validation-report-header "><div class="col-md-6"><div class="p-t-15 "><strong>Validation Report: </strong> {{getStatusText()}}</div></div><div class="col-md-6 p-t-10 "><button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true"><i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
       </button></div></div>-->
-  <div class="validation-report" ng-show="!isCollapsed">
+  <div class="validation-report report-table" ng-show="!isCollapsed">
     <div role="tabpanel" class="">
       <div class="ng-table-no-results"
            ng-if="viewTop && validationContainer.report && topTableParams.total() === 0"> No validation results to display </div>
@@ -85,8 +85,9 @@
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
-            <td  header-title="'Click to select all'"
-                header="'ng-table/headers/checkboxHeader.html'"><div class="checkbox">
+            <td header-title="'Click to select all'" 
+                header="'ng-table/headers/checkboxHeader.html'"
+                ng-show="task"><div class="checkbox">
                 <label class="filled">
                   <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
                 </label>
