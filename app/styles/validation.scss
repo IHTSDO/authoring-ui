@@ -37,3 +37,16 @@
        background-color: #5e35b1;
        color: #fff;
    }
+   .validation-report.report-table thead tr > th input[type=checkbox] {
+       padding-top: 25px;
+       padding-left: 8px;
+   }
+   .validation-report.report-table thead tr > th input[type=checkbox]:focus{
+       outline: none;
+   }
+   .validation-report.report-table thead tr > th input[type=checkbox]:checked:before{
+       position: absolute;
+       top: unset;
+       left: 28px;
+       margin-top: 3px;
+   }

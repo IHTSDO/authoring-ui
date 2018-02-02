@@ -711,7 +711,10 @@ angular.module('singleConceptAuthoringApp')
           }
 
           scope.editConcept = function (failure) {
-
+            if (!scope.task) {
+              return;
+            }
+            
             notificationService.sendMessage('Loading concept...');
             editConceptHelper(failure).then(function (response) {
               notificationService.sendMessage('Concept loaded', 5000);
