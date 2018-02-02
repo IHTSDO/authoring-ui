@@ -204,7 +204,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             if ($scope.isExtension && $scope.userOptions.selectedDialect && !$scope.isEscgMode) {
               if ($scope.userOptions.selectedDialect === usModel.dialectId ||
                 $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix)) {
-                if ($scope.storedResults[i].term.indexOf('(') > 0 &&
+                if ($scope.storedResults[i].term !== $scope.storedResults[i].concept.preferredSynonym &&
+                  $scope.storedResults[i].term.indexOf('(') > 0 &&
                   $scope.storedResults[i].term.trim().endsWith(')')) {
                   // push the item
                   displayedResults.push($scope.storedResults[i]);
