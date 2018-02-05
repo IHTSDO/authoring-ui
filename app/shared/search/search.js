@@ -301,7 +301,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         setTimeout(function(){
           element.style.height = 'auto';
-          element.style.height = element.scrollHeight + 'px';
+          element.style.height = (element.scrollHeight + 10) + 'px';
         },0);
       };
 
