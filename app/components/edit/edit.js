@@ -559,7 +559,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     //
 
     $scope.getConceptsForReview = function (idList, review, feedbackList) {
-
+      var deferred = $q.defer();
       snowowlService.bulkGetConcept(idList, $scope.branch).then(function (response) {
         angular.forEach(response.items, function (concept) {
           angular.forEach(review.concepts, function (reviewConcept) {
@@ -587,8 +587,10 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
           });
         });
-        $scope.feedbackContainer.review = review ? review : {};
+        deferred.resolve();        
       });
+
+      return deferred.promise;
     };
 
     // on load, set the initial view based on classify/validate parameters
@@ -1288,10 +1290,17 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
           var i, j, temparray, chunk = 50;
+          var promises = [];
           for (i = 0, j = idList.length; i < j; i += chunk) {
             temparray = idList.slice(i, i + chunk);
-            $scope.getConceptsForReview(temparray, review, feedback);
+            promises.push($scope.getConceptsForReview(temparray, review, feedback));            ;
           }
+
+          // on resolution of all promises
+          $q.all(promises).then(function () {
+            $scope.feedbackContainer.review = review ? review : {};
+          }, function (error) {             
+          });
         });
 
       }, function (error) {

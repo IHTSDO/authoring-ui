@@ -1048,8 +1048,6 @@ angular.module('singleConceptAuthoringApp')
                     }
                   }
 
-                  checkMessageUnreadStatus();
-
                   // check if id is in reviewed list
                   if (reviewedListIds.indexOf(item.conceptId) === -1) {
                     // apply check-all status
@@ -1064,6 +1062,9 @@ angular.module('singleConceptAuthoringApp')
                     conceptsReviewed.push(item);
                   }
                 });
+
+                // Check read or unread status
+                checkMessageUnreadStatus();
 
                 // set the scope variables
                 scope.feedbackContainer.review.conceptsToReview = conceptsToReview;
@@ -1317,6 +1318,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.getConceptsForReview = function (idList, review, feedbackList) {
+            var deferred = $q.defer();
             snowowlService.bulkGetConcept(idList, scope.branch).then(function (response) {
               angular.forEach(response.items, function (concept) {
                 angular.forEach(review.concepts, function (reviewConcept) {
@@ -1344,8 +1346,10 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               });
-              scope.feedbackContainer.review = review ? review : {};
+              deferred.resolve();              
             });
+
+            return deferred.promise;
           };
 
           scope.submitFeedback = function (requestFollowup) {
@@ -1467,10 +1471,17 @@ angular.module('singleConceptAuthoringApp')
                   });
                   scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
                     var i, j, temparray, chunk = 50;
+                    var promises = [];
                     for (i = 0, j = idList.length; i < j; i += chunk) {
                       temparray = idList.slice(i, i + chunk);
-                      scope.getConceptsForReview(temparray, review, feedback);
+                      promises.push(scope.getConceptsForReview(temparray, review, feedback));
                     }
+
+                    // on resolution of all promises
+                    $q.all(promises).then(function () {
+                      scope.feedbackContainer.review = review ? review : {};
+                    }, function (error) {             
+                    });
                   });
                   notificationService.sendMessage('Feedback Submitted', 5000, null);
                 }
