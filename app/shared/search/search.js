@@ -297,11 +297,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.autoExpand = function() {
+        $scope.escgExpr = $scope.escgExpr.replace(/[\r]/g, '');
+
         let element = document.activeElement;
 
         setTimeout(function(){
           element.style.height = 'auto';
-          element.style.height = (element.scrollHeight + 10) + 'px';
+          element.style.height = element.scrollHeight + 'px';
         },0);
       };
 

@@ -54,8 +54,9 @@ textarea.form-control {
 }
 textarea.expandable-search-box {
   margin: 10px 5px 10px 5px;
-  padding: 0;
+  padding: 0 0 10px 0;
   line-height: 1.5;
+  height: auto;
   max-height: none;
   overflow: hidden;
 }
