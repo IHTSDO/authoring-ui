@@ -2459,7 +2459,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
               relationship.target.conceptId = data.id;
               relationship.target.fsn = data.name;
-              scope.updateRelationship(relationship, false);
+
+              if(!metadataService.isExtensionSet() 
+                && relationship.type.conceptId === '116680003') {// Is a (attribute)                 
+                snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                  if (relationship.moduleId !== response.moduleId) {
+                    resetModuleId(response.moduleId);
+                  }
+                  scope.updateRelationship(relationship, false);
+                });
+              } else {
+                scope.updateRelationship(relationship, false);
+              }              
             }, function (error) {
               scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
               relationship.target.fsn = tempFsn;
@@ -2474,7 +2485,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
-                scope.updateRelationship(relationship, false);
+                
+                if(!metadataService.isExtensionSet() 
+                  && relationship.type.conceptId === '116680003') {// Is a (attribute)                 
+                  snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                    if (relationship.moduleId !== response.moduleId) {
+                      resetModuleId(response.moduleId);
+                    }
+                    scope.updateRelationship(relationship, false);
+                  });
+                } else {
+                  scope.updateRelationship(relationship, false);
+                }
               }, function (error) {
                 scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
                 relationship.target.fsn = tempFsn;
@@ -2488,7 +2510,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
-            scope.updateRelationship(relationship, false);
+            
+            if(!metadataService.isExtensionSet() 
+              && relationship.type.conceptId === '116680003') {// Is a (attribute)                 
+              snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                if (relationship.moduleId !== response.moduleId) {
+                  resetModuleId(response.moduleId);
+                }
+                scope.updateRelationship(relationship, false);
+              });
+            } else {
+              scope.updateRelationship(relationship, false);
+            }
           }
         };
 
@@ -3638,17 +3671,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, 600); 
         };
 
-        function resetModuleId(relTargetModuleId) {
-          scope.concept.moduleId = relTargetModuleId;
+        function resetModuleId(moduleId) {
+          scope.concept.moduleId = moduleId;
 
           for (var k = scope.concept.descriptions.length - 1; k >= 0; k--) {
             var description = scope.concept.descriptions[k];              
-            description.moduleId = relTargetModuleId;
+            description.moduleId = moduleId;
           }              
 
           for (var k = scope.concept.relationships.length - 1; k >= 0; k--) {
             var relationship = scope.concept.relationships[k];              
-            relationship.moduleId = relTargetModuleId;
+            relationship.moduleId = moduleId;
           }          
         }
 
