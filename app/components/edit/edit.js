@@ -1006,13 +1006,21 @@ angular.module('singleConceptAuthoringApp.edit', [
         // that!
         var clonedConcept = JSON.parse(JSON.stringify(response));
 
+        var isExtension = metadataService.isExtensionSet();
+
+        var internationalMetadata = metadataService.getInternationalMetadata();
+
         // clear relevant fields to force creation of new components
         for (var k = clonedConcept.descriptions.length - 1; k >= 0; k--) {
           var description = clonedConcept.descriptions[k];
           description.effectiveTime = null;
           description.descriptionId = null;
           description.released = false;
-          description.moduleId = metadataService.getCurrentModuleId();
+
+          if (isExtension
+              || (description.moduleId !== internationalMetadata.modules[1].id  && description.moduleId !==internationalMetadata.modules[2].id)) {
+            description.moduleId = metadataService.getCurrentModuleId();
+          } 
 
           delete description.conceptId;
           if (description.active === false) {
@@ -1020,7 +1028,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           // Remove en-gb description if Extension is enable
-          if (metadataService.isExtensionSet() && 
+          if (isExtension && 
             description.acceptabilityMap.hasOwnProperty("900000000000508004")) {
             if(Object.keys(description.acceptabilityMap).length === 1) {
               clonedConcept.descriptions.splice(k, 1);
@@ -1035,7 +1043,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           relationship.sourceId = null;
           relationship.effectiveTime = null;
           relationship.released = false;
-          relationship.moduleId = metadataService.getCurrentModuleId();
+          if (isExtension
+              || (relationship.moduleId !== internationalMetadata.modules[1].id  && relationship.moduleId !==internationalMetadata.modules[2].id)) {
+            relationship.moduleId = metadataService.getCurrentModuleId();
+          }
           delete relationship.relationshipId;
           delete relationship.target.effectiveTime;
           delete relationship.target.moduleId;
@@ -1048,7 +1059,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         clonedConcept.conceptId = null;
-        clonedConcept.moduleId = metadataService.getCurrentModuleId();
+        if (isExtension
+            || (clonedConcept.moduleId !== internationalMetadata.modules[1].id  && clonedConcept.moduleId !==internationalMetadata.modules[2].id)) {
+          clonedConcept.moduleId = metadataService.getCurrentModuleId();
+        }
+        
         clonedConcept.fsn = null;
         clonedConcept.released = false;
 
