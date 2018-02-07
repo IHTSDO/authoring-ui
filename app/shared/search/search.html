@@ -3,7 +3,7 @@
   <div clas="row no-padding m-b-15" ng-show="isEscgMode && !templateOptions.selectedTemplate">
     <div class="col-md-9 no-padding">
       <textarea id="expandable-search" type="search" class="form-control m-5 expandable-search-box no-border-bottom-search" placeholder="Enter ECL expression"
-                      ng-model="escgExpr" ng-change="autoExpand($event)" ui-on-drop=""></textarea>
+                      ng-model="escgExpr" ng-change="autoExpand($event)" ui-on-drop="" ng-trim="false"></textarea>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
       <button ng-show="escgExpr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
