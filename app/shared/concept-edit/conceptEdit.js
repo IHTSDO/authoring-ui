@@ -3599,6 +3599,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if(scope.isBatch === true){             
                   scope.updateConceptReference({concept: scope.concept});
                 }
+                if(!metadataService.isExtensionSet() 
+                  && relationship.type.conceptId === '116680003' // Is a (attribute)
+                  && relationship.moduleId !== item.moduleId) {
+                  resetModuleId(item.moduleId);
+                }
+
                 scope.updateRelationship(relationship);
               }, function () {
                 scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
@@ -3611,6 +3617,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if(scope.isBatch === true){             
               scope.updateConceptReference({concept: scope.concept});
             }
+            if(!metadataService.isExtensionSet() 
+              && relationship.type.conceptId === '116680003' // Is a (attribute)
+              && relationship.moduleId !== item.moduleId) {
+              resetModuleId(item.moduleId);
+            }
+
             scope.updateRelationship(relationship, false);
           }
 
@@ -3625,6 +3637,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }, 600); 
         };
+
+        function resetModuleId(relTargetModuleId) {
+          scope.concept.moduleId = relTargetModuleId;
+
+          for (var k = scope.concept.descriptions.length - 1; k >= 0; k--) {
+            var description = scope.concept.descriptions[k];              
+            description.moduleId = relTargetModuleId;
+          }              
+
+          for (var k = scope.concept.relationships.length - 1; k >= 0; k--) {
+            var relationship = scope.concept.relationships[k];              
+            relationship.moduleId = relTargetModuleId;
+          }          
+        }
 
         scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, conceptId, relationshipGroupId, itemIndex) {
           if (!relationship || !item) {
