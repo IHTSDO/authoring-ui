@@ -115,7 +115,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         saveFunction: '&?',
 
         // whether to initially display inactive descriptions and relationships
-        showInactive: '@?',        
+        showInactive: '@?',
 
         // a function to update reference concept if any
         updateConceptReference: '&'
@@ -125,11 +125,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl)
       {
       scope.axiomSupport =  $rootScope.axiomSupport
-         
-          
+
+
         scope.enterListener = function(event){
             event = event.event
-            if(event.keyCode === 13) { 
+            if(event.keyCode === 13) {
                 event.target.value = event.target.value.replace(/(\r\n|\n|\r)/gm,"");
                 event.target.blur();
                 var parent = $(event.target).closest('.editHeightSelector');
@@ -137,7 +137,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     $timeout(function () {
                         parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
                     }, 600);
-                    
+
                 }
                 else{
                     $(this).blur();
@@ -203,7 +203,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             callback: function() {$rootScope.$broadcast('closeAllOpenningConcepts', {});}
           })
         }
-        
+
         scope.focusHandler = function(enter, external){
             if(!scope.hasFocus && !scope.isMerge && enter){
               bindShortcutToScope();
@@ -220,26 +220,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if(!external){
                   $timeout(function() {
                     scope.$digest();
-                  });                    
+                  });
                 }
             }
         }
-          
+
         var focusListener = function () {
           scope.focusHandler(true, false);
-        };          
+        };
 
         // Bind events : mouse enter, mouse focus, ..
         element[0].addEventListener('mouseenter', focusListener, true);
         element[0].addEventListener('focus', focusListener, true);
-        
+
         scope.$on('conceptFocusedFromKey', function (event, data) {
           if(scope.concept.conceptId === data.id){
               scope.focusHandler(true, true);
           }
           else{
             scope.focusHandler(false, true);
-          }          
+          }
         });
         scope.$on('conceptFocused', function (event, data) {
           if(scope.concept.conceptId === data.id){
@@ -248,10 +248,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else{
             scope.focusHandler(false, false);
           }
-          
+
         });
         //Keyboard Shortcuts.
-        
+
 
         scope.$watch(function () {
           return $rootScope.branchLocked;
@@ -346,7 +346,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.autosave = false;
         } else {
           scope.autosave = true;
-        }                
+        }
 
         if (scope.merge === 'true' || scope.merge === true) {
           scope.isMerge = true;
@@ -524,7 +524,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // replace the displayed content with the modified concept
               scope.concept = modifiedConcept;
-          
+
 
               sortDescriptions();
               sortRelationships();
@@ -1115,7 +1115,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // otherwise, proceed with checks and inactivation reason persistence
           else {
             if (deletion) {
-              scope.deletingConeceptError = false;           
+              scope.deletingConeceptError = false;
               if (isAttributeConcept(scope.concept.fsn)) {
                 snowowlService.searchConcepts(scope.branch,'', '*: ' + scope.concept.conceptId + ' =*', 0, 50, false).then(function (results) {
                   if (results.total > 0) {
@@ -1164,7 +1164,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   } else {
                     item.templateStyle = null;
                   }
-                });               
+                });
                 return;
               }
 
@@ -1179,13 +1179,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
               } else {
                 inactivateConcept(conceptCopy);
-              }              
+              }
             }
           }
         };
 
         function deleteConcept () {
-          selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, true).then(function (results) {                  
+          selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, true).then(function (results) {
             inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget);
             if (results.deletion && !results.associationTarget) {
               notificationService.sendMessage('Deleting Concept...');
@@ -1242,7 +1242,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         scope.searchRelevantConcepts = function() {
-          $rootScope.$broadcast('viewSearch', {            
+          $rootScope.$broadcast('viewSearch', {
             conceptId: scope.concept.conceptId,
             eclMode: true
           });
@@ -1270,10 +1270,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var rel =  concept.relationships[i];
             if(rel.characteristicType !== 'INFERRED_RELATIONSHIP'
               && (!rel.released || (rel.released && typeof rel.effectiveTime === 'undefined'))) {
-              return true;             
+              return true;
             }
           }
-          return false;          
+          return false;
         }
 
         /**
@@ -1346,7 +1346,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
 // define the available dialects
-        scope.dialects = metadataService.getAllDialects();       
+        scope.dialects = metadataService.getAllDialects();
 
 // always return en-us dialect first
         scope.dialectComparator = function (a, b) {
@@ -1366,7 +1366,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             } else {
               return a < b;
-            }            
+            }
           }
         };
 
@@ -1470,7 +1470,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!aHasUsA && bHasUsA) {
               return 1;
             }
-            
+
             if (!metadataService.isExtensionSet()) {
               // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
               var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
@@ -1595,13 +1595,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(attrRels, function(rel){
               if (rel.display) delete rel.display;
               if (!rel.type.fsn || !rel.type.conceptId) rel.type.conceptId = null;
-          });               
+          });
 
           // re-populate display flag if it exists
           angular.forEach(attrRels, function(rel){
               for (var i = 0; i < scope.drugsOrdering.length; i++) {
                 var item = scope.drugsOrdering[i];
-                if (rel.type.conceptId === item.id) rel.display = item.display;        
+                if (rel.type.conceptId === item.id) rel.display = item.display;
               }
           });
 
@@ -1618,7 +1618,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             } else {
               return a.groupId - b.groupId;
             }
-          });          
+          });
 
           attrRels.sort(function (a, b) {
             if (a.groupId === b.groupId && a.display && b.display) {
@@ -1636,24 +1636,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         sortRelationships();
 
         function setDefaultModuleId() {
-          var moduleId = metadataService.getCurrentModuleId(); 
+          var moduleId = metadataService.getCurrentModuleId();
           if(!scope.concept.moduleId) {
             scope.concept.moduleId = moduleId;
-          }       
+          }
           angular.forEach(scope.concept.descriptions, function (description) {
-            if(!description.moduleId) {            
+            if(!description.moduleId) {
               description.moduleId = moduleId;
             }
           });
 
           angular.forEach(scope.concept.relationships, function (relationship) {
-            if(!relationship.moduleId) {             
+            if(!relationship.moduleId) {
               relationship.moduleId = moduleId;
             }
-            if(!relationship.target.moduleId) {              
+            if(!relationship.target.moduleId) {
               relationship.target.moduleId = moduleId;
             }
-          });           
+          });
         }
 
 // on load, set default module id for components if not set yet
@@ -1744,19 +1744,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 description = componentAuthoringUtil.getNewDescription(moduleId, language);
 
                 var dialect = '';
-                for (var key in dialects) {          
+                for (var key in dialects) {
                   if (dialects[key].indexOf(language) !== -1) {
                     dialect = key;
-                  }   
-                } 
-              
+                  }
+                }
+
                 var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
                     return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
                   }).length > 0;
 
                 if(havingPreferredSynonym) {
                   description.acceptabilityMap[dialect] = 'ACCEPTABLE';
-                }            
+                }
 
                 if (afterIndex === null || afterIndex === undefined) {
                   scope.concept.descriptions.push(description);
@@ -1797,7 +1797,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (scope.concept.descriptions.length === 0) {
               scope.addDescription(0);
             }
-            if(scope.isBatch === true){             
+            if(scope.isBatch === true){
               scope.updateConceptReference({concept: scope.concept});
             }
           } else {
@@ -1839,11 +1839,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   autoSave();
                 }
               }
-              
+
             }, function () {
               // do nothing
             }
-          );                    
+          );
         };
 
         /**
@@ -1862,6 +1862,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.active) {
             description.active = true;
             description.effectiveTime = null;
+
+            // Force newly active descriptions to be ACCEPTABLE by default
+            let dialectIds = scope.getDialectIdsForDescription(description);
+            angular.forEach(dialectIds, function (diaId) {
+              description.acceptabilityMap[diaId] = 'ACCEPTABLE';
+            });
+
             if (description.type === 'FSN') {
               description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
             }
@@ -2041,7 +2048,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // key)
               case 'ACCEPTABLE':
                 delete description.acceptabilityMap[dialectId];
-                
+
                 // To make sure that there is no redundant acceptability map for extension (In some cases, the Map could contain an additional acceptability map for en-GB -> remove it)
                 if (metadataService.isExtensionSet() && description.acceptabilityMap.hasOwnProperty('900000000000508004')) {
                   delete description.acceptabilityMap['900000000000508004'];
@@ -2151,10 +2158,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           angular.forEach(scope.concept.relationships, function (rel) {
             let flag = false;
-            if ((scope.showInferredRels &&  rel.characteristicType === 'INFERRED_RELATIONSHIP') 
+            if ((scope.showInferredRels &&  rel.characteristicType === 'INFERRED_RELATIONSHIP')
               || (!scope.showInferredRels && rel.characteristicType === 'STATED_RELATIONSHIP')) {
-              flag = true;             
-            } 
+              flag = true;
+            }
             if (flag) {
               // if map does not have this group id, add blank array
               if (!scope.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
@@ -2167,27 +2174,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        
+
         scope.computeAxioms = function(type) {
           if (!type) {
             return;
           }
- 
+
           if (type === axiomType.ADDITIONAL) {
             angular.forEach(scope.concept.additionalAxioms, function (axiom) {
               axiom['relationshipGroups'] = [];
               axiom.title = 'Additional Axiom';
               axiom.type = axiomType.ADDITIONAL;
-              angular.forEach(axiom.relationships, function (rel) {        
+              angular.forEach(axiom.relationships, function (rel) {
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
                 }
 
                 // push this relationship onto group-mapped array
-                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);              
+                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
               });
-            }); 
+            });
           }
 
           if(type === axiomType.GCI) {
@@ -2195,18 +2202,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               axiom['relationshipGroups'] = [];
               axiom.title = 'General Concept Inclusion';
               axiom.type = axiomType.GCI;
-              angular.forEach(axiom.relationships, function (rel) {        
+              angular.forEach(axiom.relationships, function (rel) {
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
                 }
 
                 // push this relationship onto group-mapped array
-                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);              
+                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
               });
-            }); 
+            });
           }
-                    
+
         };
         scope.computeAxioms(axiomType.ADDITIONAL);
         scope.computeAxioms(axiomType.GCI);
@@ -2287,7 +2294,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.removeAxiomRelationship = function (relationship, axiom) {
           var index = axiom.relationships.indexOf(relationship);
           if (index !== -1) {
-            axiom.relationships.splice(index, 1);            
+            axiom.relationships.splice(index, 1);
             if (axiom.relationships.length === 0) {
               var isaRel = componentAuthoringUtil.getNewIsaRelationship();
               // Remove unused properties
@@ -2296,16 +2303,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete isaRel.effectiveTime;
               delete isaRel.modifier;
               delete isaRel.moduleId;
-              
+
               isaRel.sourceId = scope.concept.conceptId;
 
-              axiom.relationships.push(isaRel);               
+              axiom.relationships.push(isaRel);
             }
           } else {
             console.error('Error removing axiom relationship; relationship not found');
           }
           scope.computeAxioms(axiom.type);
-          autoSave(); 
+          autoSave();
         };
 
         scope.toggleRelationshipActive = function (relationship) {
@@ -2319,11 +2326,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             scope.warnings = ['You must activate the concept before its components.'];
           }
-        };        
-        
+        };
+
         scope.addAdditionalAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
-          axiom.relationships[0].sourceId = scope.concept.conceptId;          
+          axiom.relationships[0].sourceId = scope.concept.conceptId;
 
           if(!scope.concept.hasOwnProperty('additionalAxioms')){
             scope.concept.additionalAxioms = [];
@@ -2336,7 +2343,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addGCIAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
-          axiom.relationships[0].sourceId = scope.concept.conceptId;          
+          axiom.relationships[0].sourceId = scope.concept.conceptId;
 
           if(!scope.concept.hasOwnProperty('gciAxioms')){
             scope.concept.gciAxioms = [];
@@ -2346,7 +2353,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeAxioms(axiomType.GCI);
           autoSave();
         };
-        
+
 
 ////////////////////////////////
 // Shared Elements
@@ -2460,8 +2467,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.target.conceptId = data.id;
               relationship.target.fsn = data.name;
 
-              if(!metadataService.isExtensionSet() 
-                && relationship.type.conceptId === '116680003') {// Is a (attribute)                 
+              if(!metadataService.isExtensionSet()
+                && relationship.type.conceptId === '116680003') {// Is a (attribute)
                 snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
                   if (relationship.moduleId !== response.moduleId) {
                     resetModuleId(response.moduleId);
@@ -2470,7 +2477,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
               } else {
                 scope.updateRelationship(relationship, false);
-              }              
+              }
             }, function (error) {
               scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
               relationship.target.fsn = tempFsn;
@@ -2485,9 +2492,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
-                
-                if(!metadataService.isExtensionSet() 
-                  && relationship.type.conceptId === '116680003') {// Is a (attribute)                 
+
+                if(!metadataService.isExtensionSet()
+                  && relationship.type.conceptId === '116680003') {// Is a (attribute)
                   snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
                     if (relationship.moduleId !== response.moduleId) {
                       resetModuleId(response.moduleId);
@@ -2510,9 +2517,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
-            
-            if(!metadataService.isExtensionSet() 
-              && relationship.type.conceptId === '116680003') {// Is a (attribute)                 
+
+            if(!metadataService.isExtensionSet()
+              && relationship.type.conceptId === '116680003') {// Is a (attribute)
               snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
                 if (relationship.moduleId !== response.moduleId) {
                   resetModuleId(response.moduleId);
@@ -2530,12 +2537,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // cancel if static
           if (scope.isStatic) {
             return;
-          }        
+          }
 
           var tempFsn = relationship.target.fsn;
 
           relationship.target.fsn = 'Validating...';
-          
+
           if (metadataService.isMrcmEnabled()) {
 
             if (relationship.type.conceptId) {
@@ -2549,10 +2556,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   relationship.target.moduleId = response.moduleId;
                   relationship.target.active= response.active;
                   relationship.target.released = response.released;
-                  
+
                   scope.computeAxioms(type);
                   autoSave();
-                });                              
+                });
               }, function (error) {
                 scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
                 relationship.target.fsn = tempFsn;
@@ -2572,7 +2579,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.target.moduleId = response.moduleId;
               relationship.target.active= response.active;
               relationship.target.released = response.released;
-              
+
               scope.computeAxioms(type);
               autoSave();
             });
@@ -2629,7 +2636,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // cancel if static
           if (scope.isStatic) {
             return;
-          }                 
+          }
 
           // check that attribute is acceptable for MRCM rules
           if (metadataService.isMrcmEnabled()) {
@@ -2691,7 +2698,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // reset module id
-          copy.moduleId = metadataService.getCurrentModuleId();         
+          copy.moduleId = metadataService.getCurrentModuleId();
 
           var targetIndex = scope.concept.descriptions.indexOf(target);
           if (targetIndex === -1) {
@@ -2793,7 +2800,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           if (source.relationshipId === target.relationshipId && source.type.conceptId === target.type.conceptId && source.target.conceptId === target.target.conceptId) {
             return;
-          }         
+          }
 
           // check if target is static
           if (scope.isStatic) {
@@ -2807,13 +2814,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);
 
-             
+
               // set sourceId from current concept
               copy.sourceId = scope.concept.conceptId;
 
               // set the group based on target
-              copy.groupId = target.groupId;              
-             
+              copy.groupId = target.groupId;
+
               // get index of target relationship
               var targetIndex = axiom.relationships.indexOf(target);
 
@@ -2825,10 +2832,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // otherwise replace the relationship
               else {
                 axiom.relationships[targetIndex] = copy;
-              }              
-              
+              }
+
               scope.computeAxioms(axiom.type);
-              autoSave();             
+              autoSave();
             }, function () {
               scope.warnings = ['MRCM validation error: ' + source.target.fsn + ' is not valid for attribute type ' + source.type.fsn];
             });
@@ -2856,7 +2863,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // set focus on new first created relationship type of group.
           $timeout(function () {
             var newFirstCreatedElmId = 'relationship-type-id-' + scope.concept.conceptId + '-' + rel.groupId + '-0';
-            var newFirstCreatedElm = angular.element(document.querySelector('#' + newFirstCreatedElmId)); 
+            var newFirstCreatedElm = angular.element(document.querySelector('#' + newFirstCreatedElmId));
             newFirstCreatedElm.focus();
           }, 500);
 
@@ -2864,7 +2871,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addAxiomRelationshipGroup = function (axiom) {
           var groupIds = [];
-          axiom.relationships.forEach(function (rel) {            
+          axiom.relationships.forEach(function (rel) {
             groupIds.push(parseInt(rel.groupId));
           });
 
@@ -2886,7 +2893,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute relationship groups
           scope.computeAxioms(axiom.type);
-        };        
+        };
 
         scope.dropRelationshipGroup = function (relGroup) {
 
@@ -2976,8 +2983,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // get the max group id and increment by one (or set to zero if no
           // groups defined)
           var maxGroup = -1;
-          angular.forEach(axiom.relationships, function (rel) {            
-            maxGroup = parseInt(rel.groupId);            
+          angular.forEach(axiom.relationships, function (rel) {
+            maxGroup = parseInt(rel.groupId);
           });
           var newGroup = maxGroup + 1;
 
@@ -2990,7 +2997,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(relGroup, function (rel) {
             if (constraintService.isAttributeAllowedForArray(rel.type.fsn, scope.allowedAttributes)) {
 
-              constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {                
+              constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {
                   // copy relationship object and replace target relationship
                   var copy = angular.copy(rel);
 
@@ -2998,14 +3005,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   copy.groupId = newGroup;
 
                   // set sourceId from current concept
-                  copy.sourceId = scope.concept.conceptId;              
+                  copy.sourceId = scope.concept.conceptId;
 
                   axiom.relationships.push(copy);
                   if (++relsProcessed === relGroup.length) {
                     autoSave();
                     scope.computeAxioms(axiom.type);
                   }
-               
+
               }, function () {
                 scope.warnings.push('MRCM validation error: ' + rel.target.fsn + ' is not valid for attribute type ' + rel.type.fsn);
                 if (++relsProcessed === relGroup.length) {
@@ -3101,7 +3108,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return des.term;
               }
             }
-          } 
+          }
           else {
             var usPreferredTerm = '';
             var extensionPreferredTerm = '';
@@ -3194,7 +3201,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (description.term && word && suggestion) {
             var re = new RegExp(word, 'gi');
             description.term = description.term.replace(re, suggestion);
-          }          
+          }
 
           // remove this suggestion
           delete description.spellcheckSuggestions[word];
@@ -3209,8 +3216,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update description and autoSave if indicated
         scope.updateDescription = function (description, keepSCTID) {
-          if (!keepSCTID) delete description.descriptionId;          
-          if (!description) return;        
+          if (!keepSCTID) delete description.descriptionId;
+          if (!description) return;
 
           // run spellchecker
             console.log(metadataService.isSpellcheckDisabled());
@@ -3265,14 +3272,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if(!description.caseSignificance) {
                 description.caseSignificance = 'CASE_INSENSITIVE';
               }
-            }            
+            }
           }
 
           if(scope.isBatch === true){
             scope.updateConceptReference({concept: scope.concept});
           }
 
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {            
+          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
               autoSave();
           }, function (error) {
             notificationService.sendWarning('Automations failed: ' + error);
@@ -3341,7 +3348,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        scope.updateAxiomRelationship = function (relationship, type) {          
+        scope.updateAxiomRelationship = function (relationship, type) {
           if (!relationship) {
             return;
           }
@@ -3424,18 +3431,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         /**
          * Undo:  Decrement history pointer and update display
          */
-        scope.undo = function () {          
+        scope.undo = function () {
           if (scope.conceptHistoryPtr > 0) {
             var currentConceptHistoryPtr = scope.conceptHistoryPtr;
 
             // Check if concept has been modified but not saved, then wait for saving it
             if (!angular.equals(scope.concept,scope.conceptHistory[scope.conceptHistoryPtr])) {
-              setTimeout(function waitForSavingModifiedConcept() {         
+              setTimeout(function waitForSavingModifiedConcept() {
                 if ((currentConceptHistoryPtr + 1) === scope.conceptHistoryPtr) {
                   scope.conceptHistoryPtr--;
                   scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
                   saveModifiedConcept();
-                  scope.computeRelationshipGroups();                   
+                  scope.computeRelationshipGroups();
                 } else {
                   setTimeout(waitForSavingModifiedConcept, 300);
                 }
@@ -3445,7 +3452,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
               saveModifiedConcept();
               scope.computeRelationshipGroups();
-            }           
+            }
           }
         };
 
@@ -3559,21 +3566,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.updateRelationship(relationship, false);
               }
             );
-          } 
+          }
           else {
             scope.updateRelationship(relationship, false);
-          }          
+          }
 
           // Trigger blur event after relationship type has been selected
           var elemID = 'relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
-          var elem = angular.element(document.querySelector('#' + elemID));         
+          var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
             elem[0].blur();
             var parent = $(elem).closest('.editHeightSelector');
             if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
-          }, 600); 
+          }, 600);
         };
 
         scope.setAxiomRelationshipTypeConcept = function (relationship, item, conceptId, relationshipGroupId, itemIndex, type) {
@@ -3593,22 +3600,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 autoSave();
               }
             );
-          } 
+          }
           else {
             scope.computeAxioms(type);
             autoSave();
-          }          
+          }
 
           // Trigger blur event after relationship type has been selected
           var elemID = 'axiom-relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
-          var elem = angular.element(document.querySelector('#' + elemID));         
+          var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
             elem[0].blur();
             var parent = $(elem).closest('.editHeightSelector');
             if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
-          }, 600); 
+          }, 600);
         };
 
         /**
@@ -3620,19 +3627,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.setRelationshipTargetConcept = function (relationship, item, conceptId, relationshipGroupId, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
-          }            
+          }
           if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
-            } else {              
+            } else {
               constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
                 relationship.target.conceptId = item.id;
                 relationship.target.fsn = item.fsn.term;
                 relationship.target.definitionStatus = item.definitionStatus;
-                if(scope.isBatch === true){             
+                if(scope.isBatch === true){
                   scope.updateConceptReference({concept: scope.concept});
                 }
-                if(!metadataService.isExtensionSet() 
+                if(!metadataService.isExtensionSet()
                   && relationship.type.conceptId === '116680003' // Is a (attribute)
                   && relationship.moduleId !== item.moduleId) {
                   resetModuleId(item.moduleId);
@@ -3647,10 +3654,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.conceptId = item.id;
             relationship.target.fsn = item.fsn.term;
             relationship.target.definitionStatus = item.definitionStatus;
-            if(scope.isBatch === true){             
+            if(scope.isBatch === true){
               scope.updateConceptReference({concept: scope.concept});
             }
-            if(!metadataService.isExtensionSet() 
+            if(!metadataService.isExtensionSet()
               && relationship.type.conceptId === '116680003' // Is a (attribute)
               && relationship.moduleId !== item.moduleId) {
               resetModuleId(item.moduleId);
@@ -3661,38 +3668,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // Trigger blur event after relationship target has been selected
           var elemID = 'relationship-taget-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
-          var elem = angular.element(document.querySelector('#' + elemID));          
+          var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
             elem[0].blur();
             var parent = $(elem).closest('.editHeightSelector');
             if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
-          }, 600); 
+          }, 600);
         };
 
         function resetModuleId(moduleId) {
           scope.concept.moduleId = moduleId;
 
           for (var k = scope.concept.descriptions.length - 1; k >= 0; k--) {
-            var description = scope.concept.descriptions[k];              
+            var description = scope.concept.descriptions[k];
             description.moduleId = moduleId;
-          }              
+          }
 
           for (var k = scope.concept.relationships.length - 1; k >= 0; k--) {
-            var relationship = scope.concept.relationships[k];              
+            var relationship = scope.concept.relationships[k];
             relationship.moduleId = moduleId;
-          }          
+          }
         }
 
         scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, conceptId, relationshipGroupId, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
-          }            
+          }
           if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
-            } else {              
+            } else {
               constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
                 relationship.target.conceptId = item.id;
                 relationship.target.fsn = item.fsn.term;
@@ -3701,7 +3708,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.moduleId = item.moduleId;
                 relationship.target.active= item.active;
                 relationship.target.released = item.released;
-                
+
                 scope.computeAxioms(axiom.type);
                 autoSave();
               }, function () {
@@ -3716,23 +3723,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.moduleId = item.moduleId;
             relationship.target.active= item.active;
             relationship.target.released = item.released;
-           
+
             scope.computeAxioms(axiom.type);
             autoSave();
           }
 
           // Trigger blur event after relationship target has been selected
           var elemID = 'axiom-relationship-taget-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
-          var elem = angular.element(document.querySelector('#' + elemID));          
+          var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
             elem[0].blur();
             var parent = $(elem).closest('.editHeightSelector');
             if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
-                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();                
+                parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
-          }, 600); 
+          }, 600);
         };
-        
+
 
 //////////////////////////////////////////////
 // Component Removal functions
@@ -3855,7 +3862,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if dialect automation flag detected
           if (component && component.automationFlag && !scope.isBatch) {
             return 'tealhl';
-          }          
+          }
 
           if (component && component.templateStyle) {
             return component.templateStyle;
@@ -3878,8 +3885,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return defaultStyle;
             }
           }
-        };        
-        
+        };
+
         scope.getDuplicatedRelOrCircularReferenceStyle = function (component) {
           if(component) {
             if (scope.concept.conceptId === component.target.conceptId) {
@@ -3908,7 +3915,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getHashkey = function(obj) {
           var hashkey = obj.$$hashKey;
-          return hashkey.split(':')[1]; 
+          return hashkey.split(':')[1];
         }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3934,15 +3941,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // watch for setting focus when a concept is added to editing view
         scope.$on('enableAutoFocus', function (event, data) {
-          if(scope.concept.conceptId === data.conceptId ) {            
-            if (scope.concept.released) {             
+          if(scope.concept.conceptId === data.conceptId ) {
+            if (scope.concept.released) {
               scope.focusHandler(true, false);
             } else if (!scope.isStatic) {
               var textareaTags = $('#height-' + data.conceptId).find('textarea');
               textareaTags[0].focus();
               scope.hasFocus = false;
             }
-          }         
+          }
         });
 
         scope.$on('removeConceptFromEditing', function (event, data) {
