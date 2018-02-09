@@ -206,7 +206,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix)) {
                 if ($scope.storedResults[i].term !== $scope.storedResults[i].concept.preferredSynonym &&
                   $scope.storedResults[i].term.indexOf('(') > 0 &&
-                  $scope.storedResults[i].term.trim().endsWith(')')) {
+                  $scope.storedResults[i].term.trim().endsWith(')')
+                  || $scope.storedResults[i].concept.fsn) {
                   // push the item
                   displayedResults.push($scope.storedResults[i]);
 
@@ -280,6 +281,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if ($scope.userOptions.selectedDialect &&
           ($scope.userOptions.selectedDialect === usModel.dialectId ||
             $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix))) {
+          if (typeof item.concept.fsn !== 'undefined') {
+            return item.concept.fsn;
+          }
           return item.term;
         }
 
@@ -453,7 +457,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           $scope.searchTotal = null;
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag).then(function (results) {
+          var fsnSearchFlag = !metadataService.isExtensionSet() 
+                              || $scope.userOptions.selectedDialect === usModel.dialectId 
+                              || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
+
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag).then(function (results) {
             return results;
           }, function (error) {
             $scope.searchStatus = 'Error performing search: ' + error;
@@ -464,7 +472,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.searchStatus += ': ' + error.data.message;
             }
           }).then(function(results) {
-            snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, $scope.synonymFlag).then(function (concepts) {
+            snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, !fsnSearchFlag).then(function (concepts) {
 
               if (!concepts) {
                 notificationService.sendError('Unexpected error searching for concepts', 10000);
