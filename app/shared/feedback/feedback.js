@@ -707,15 +707,13 @@ angular.module('singleConceptAuthoringApp')
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
-                  conceptsToAdd.push(item);
-                  item.viewed = true;
+                  conceptsToAdd.push(item);                  
                 }
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
-                  conceptsToAdd.push(item.conceptId);
-                  item.viewed = true;
+                  conceptsToAdd.push(item.conceptId);                  
                 }
               });
             }
@@ -738,6 +736,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             for (var i = 0; i < conceptsToAdd.length; i++) {
+              conceptsToAdd[i].viewed = true;
               addToEditHelper(conceptsToAdd[i].conceptId).then(function (response) {
                 conceptsAdded++;
                 if (conceptsAdded === conceptsToAdd.length) {
