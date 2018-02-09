@@ -19,6 +19,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       // clear task-related i nformation
       $rootScope.validationRunning = false;
       $rootScope.classificationRunning = false;
+      $rootScope.rebaseRunning = false;
 
       // TODO Placeholder, as we only have the one tab at the moment
       $rootScope.pageTitle = 'Review Tasks';
