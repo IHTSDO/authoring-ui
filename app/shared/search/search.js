@@ -315,6 +315,99 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return (integer + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
       }
 
+      $scope.newSearch = function (appendResults) {
+
+        if ($scope.userOptions.selectedDialect) {
+          scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
+        }
+
+        // Previously a template based search was able to be detected via:
+        // $scope.templateOptions.selectedTemplate
+        // Not actively in use, may need to be included in the below statement in the future
+        if((!$scope.searchStr || $scope.searchStr.length < 3) && !$scope.escgExpr) {
+          return;
+        }
+
+        // update and display search in progress message
+        $scope.searchStatus = 'Searching...';
+
+        // trim and lower-case the search string
+        $scope.searchStr = $scope.searchStr.trim();
+
+        // initialize or clear the results list
+        if (!$scope.results || !appendResults) {
+          $scope.results = [];
+          $scope.searchTotal = null;
+        }
+
+        // get metadata-specific options
+        // TODO Later this will be sensitive to international/extension toggling
+        // For now, just use the current module id (i.e. the extension module id if it exists, otherwise the international module id)
+        // scope variable for expected future toggle
+        let acceptLanguageValue = '';
+
+        if($scope.isExtension) {
+          if ($scope.userOptions.selectedDialect && ($scope.userOptions.selectedDialect !== usModel.dialectId) &&
+            (metadataService.getCurrentModuleId() !== usModel.moduleId) && $scope.dialects[$scope.userOptions.selectedDialect]) {
+
+            acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+          }
+
+          else {
+            acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+          }
+        }
+
+        else {
+          acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+        }
+
+        // set the return synonym flag to true for extensions
+        // TODO Later this will be toggle-able between extension synonym and fsn
+        // For now, just assume always want the extension-language synonym if available
+        // set as scope variable for expected future toggle
+        $scope.synonymFlag = metadataService.isExtensionSet();
+
+        // Allows for a template based escgExpr value to be assigned, currently template based searching is not in use
+        // var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
+
+        let fsnSearchFlag = !metadataService.isExtensionSet() ||
+          $scope.userOptions.selectedDialect === usModel.dialectId ||
+          $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
+
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue).then(function (results) {
+
+          if (!results) {
+            notificationService.sendError('Unexpected error searching for concepts', 10000);
+          }
+
+          $scope.loadPerformed = true;
+
+          if(results.total || $scope.escgExpr) {
+            $scope.searchTotal = addCommas(results.total);
+            $scope.loadMoreEnabled = results.items.length === $scope.resultsSize;
+            $scope.storedResults = appendResults ? $scope.storedResults.concat(results.items) : results.items;
+          }
+
+          else {
+            $scope.searchTotal = addCommas(results.length);
+            $scope.loadMoreEnabled = results.length === $scope.resultsSize;
+            $scope.storedResults = appendResults ? $scope.storedResults.concat(results) : results;
+          }
+
+          $scope.processResults();
+
+        }, function (error) {
+          $scope.searchStatus = 'Error performing search: ' + error;
+          if (error.statusText) {
+            $scope.searchStatus += ': ' + error.statusText;
+          }
+          if (error.data && error.data.message) {
+            $scope.searchStatus += ': ' + error.data.message;
+          }
+        });
+      };
+
       /**
        * Executes a search based on current scope variable searchStr
        * @param appendResults if true, append to existing results; if false,
@@ -377,74 +470,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
         }
 
-        // TODO Work in progress to replace current search
-        //
-        // $scope.synonymFlag = metadataService.isExtensionSet();
-        //
-        // var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
-        //
-        // $scope.searchTotal = null;
-        //
-        // snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag, acceptLanguageValue).then(function (results) {
-        //   console.log(results);
-        //
-        //   if (!results) {
-        //     notificationService.sendError('Unexpected error searching for concepts', 10000);
-        //   }
-        //
-        //   var concepts = results.items;
-        //   $scope.searchTotal = addCommas(results.total);
-        //   $scope.loadPerformed = true;
-        //   $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
-        //
-        //   // convert to snowowl description search conceptObj
-        //   var conceptObjs = [];
-        //   if($scope.synonymFlag){
-        //     angular.forEach(concepts, function (c) {
-        //       conceptObjs.push({
-        //         active: c.active,
-        //         concept: {
-        //           active: c.active,
-        //           conceptId: c.id,
-        //           definitionStatus: c.definitionStatus,
-        //           fsn: c.pt.term,
-        //           moduleId: c.moduleId,
-        //           preferredSynonym : c.pt.term
-        //         },
-        //         term: c.pt.term
-        //       });
-        //     });
-        //   }
-        //   else{
-        //     angular.forEach(concepts, function (c) {
-        //       conceptObjs.push({
-        //         active: c.active,
-        //         concept: {
-        //           active: c.active,
-        //           conceptId: c.id,
-        //           definitionStatus: c.definitionStatus,
-        //           fsn: c.fsn.term,
-        //           moduleId: c.moduleId
-        //         },
-        //         term: c.fsn.term
-        //       });
-        //     });
-        //   }
-        //
-        //
-        //   $scope.storedResults = appendResults ? $scope.storedResults.concat(conceptObjs) : conceptObjs;
-        //
-        //   $scope.processResults();
-        // }, function (error) {
-        //   $scope.searchStatus = 'Error performing search: ' + error;
-        //   if (error.statusText) {
-        //     $scope.searchStatus += ': ' + error.statusText;
-        //   }
-        //   if (error.data && error.data.message) {
-        //     $scope.searchStatus += ': ' + error.data.message;
-        //   }
-        // });
-
         if (!$scope.isEscgMode && !$scope.templateOptions.selectedTemplate) {
 
           console.debug('normal text mode');
@@ -457,8 +482,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           $scope.searchTotal = null;
 
-          var fsnSearchFlag = !metadataService.isExtensionSet() 
-                              || $scope.userOptions.selectedDialect === usModel.dialectId 
+          var fsnSearchFlag = !metadataService.isExtensionSet()
+                              || $scope.userOptions.selectedDialect === usModel.dialectId
                               || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
           snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag).then(function (results) {

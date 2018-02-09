@@ -869,11 +869,10 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////
       // Browser Functions
       //////////////////////////
-
       function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang) {
-        var deferred = $q.defer();
+        let deferred = $q.defer();
 
-        var params = {
+        let params = {
           offset: offset ? offset : '0',
           limit: limit ? limit : '50',
           expand: 'fsn()'
@@ -883,41 +882,229 @@ angular.module('singleConceptAuthoringApp')
           params.expand = 'pt()';
         }
 
-        if(termFilter) {
-          params.termFilter = termFilter;
-        }
+        // if(lang) {
+        //   params.languageCode = lang;
+        // }
 
-        if(escgExpr) {
-          params.eclFilter = escgExpr;
-        }
-
-        // if a numeric value, search by component id
+        // if the user is searching with some form of numerical ID
         if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter)) {
 
-          // if concept id
+          // if user is searching with a conceptID
           if(termFilter.substr(-2, 1) === '0') {
-            console.log('unimplemented concept id search');
+            $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + termFilter, { params : params }).then(function(response) {
+
+              // convert to browser search form
+              let item = {
+                active: response.data.active,
+                term: response.data.preferredSynonym,
+                concept: {
+                  active: response.data.active,
+                  conceptId: response.data.conceptId,
+                  definitionStatus: response.data.definitionStatus,
+                  fsn: response.data.fsn,
+                  preferredSynonym: response.data.preferredSynonym,
+                  moduleId: response.data.moduleId
+                }
+              };
+
+              deferred.resolve(response.data ? [item] : {items: [], total: 0});
+            }, function(error) {
+              deferred.reject(error);
+            });
           }
 
-          // if description id
+          // if user is searching with a descriptionID
           else if(termFilter.substr(-2, 1) === '1') {
-            console.log('unimplemented description id search');
+            $http.get(apiEndpoint + branch + '/descriptions/' + termFilter).then(function(response) {
+
+              $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.conceptId, { params : params }).then(function(response2) {
+
+                // convert to browser search form
+                let item = {
+                  active: response2.data.active,
+                  term: response2.data.preferredSynonym,
+                  concept: {
+                    active: response2.data.active,
+                    conceptId: response2.data.conceptId,
+                    definitionStatus: response2.data.definitionStatus,
+                    fsn: response2.data.fsn,
+                    preferredSynonym: response2.data.preferredSynonym,
+                    moduleId: response2.data.moduleId
+                  }
+                };
+
+                deferred.resolve(response2.data ? [item] : {items: [], total: 0});
+              }, function(error) {
+                deferred.reject(error);
+              });
+
+            }, function(error) {
+              deferred.reject(error);
+            });
           }
 
-          // if relationship id
+          // if user is searching with a relationshipID
           else if(termFilter.substr(-2, 1) === '2') {
-            console.log('unimplemented relationship id search');
+            $http.get(apiEndpoint + branch + '/relationships/' + termFilter, { params : params }).then(function(response) {
+
+              let source = null;
+              let target = null;
+
+              $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.sourceId, { params : params }).then(function(sourceResponse) {
+
+                // convert to browser search form
+                source = {
+                  active: sourceResponse.data.active,
+                  term: sourceResponse.data.preferredSynonym,
+                  concept: {
+                    active: sourceResponse.data.active,
+                    conceptId: sourceResponse.data.conceptId,
+                    definitionStatus: sourceResponse.data.definitionStatus,
+                    fsn: sourceResponse.data.fsn,
+                    preferredSynonym: sourceResponse.data.preferredSynonym,
+                    moduleId: sourceResponse.data.moduleId
+                  }
+                };
+
+                if (source && target) {
+                  deferred.resolve([source, target]);
+                }
+
+              }, function(error) {
+                deferred.reject(error);
+              });
+
+              $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.destinationId).then(function(targetResponse) {
+
+                // convert to browser search form
+                target = {
+                  active: targetResponse.data.active,
+                  term: targetResponse.data.preferredSynonym,
+                  concept: {
+                    active: targetResponse.data.active,
+                    conceptId: targetResponse.data.conceptId,
+                    definitionStatus: targetResponse.data.definitionStatus,
+                    fsn: targetResponse.data.fsn,
+                    preferredSynonym: targetResponse.data.preferredSynonym,
+                    moduleId: targetResponse.data.moduleId
+                  }
+                };
+
+                if (source && target) {
+                  deferred.resolve([source, target]);
+                }
+              }, function(error) {
+                deferred.reject(error);
+              });
+
+            }, function(error) {
+              deferred.reject(error);
+            });
+          }
+
+          // if the id is unrecognised
+          else {
+            console.error('unrecognised ID');
           }
         }
 
-        // otherwise, a text value, search by query
-        else {
+        // if the user is doing an ecl search
+        else if(escgExpr){
+          params.termFilter = termFilter;
+          params.eclFilter = escgExpr;
+
           $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+
+            let results = [];
+
+            if(syn) {
+              angular.forEach(response.data.items, function(item) {
+                results.push({
+                  active: item.active,
+                  term: item.preferredSynonym,
+                  concept: {
+                    active: item.active,
+                    conceptId: item.pt.conceptId,
+                    definitionStatus: item.definitionStatus,
+                    fsn: item.preferredSynonym,
+                    preferredSynonym: item.preferredSynonym,
+                    moduleId: item.moduleId
+                  }
+                });
+              });
+            }
+
+            else {
+              angular.forEach(response.data.items, function(item) {
+                results.push({
+                  active: item.active,
+                  term: item.fsn.term,
+                  concept: {
+                    active: item.active,
+                    conceptId: item.fsn.conceptId,
+                    definitionStatus: item.definitionStatus,
+                    fsn: item.fsn.term,
+                    moduleId: item.moduleId
+                  }
+                });
+              });
+            }
+
+            response.data.items = results;
+
             deferred.resolve(response.data ? response.data : {items: [], total: 0});
           }, function (error) {
             deferred.reject(error);
           });
+        }
 
+        // if the user is searching for text
+        else {
+          params.termFilter = termFilter;
+
+          $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+
+            let results = [];
+
+            if(syn) {
+              angular.forEach(response.data.items, function(item) {
+                results.push({
+                  active: item.active,
+                  term: item.preferredSynonym,
+                  concept: {
+                    active: item.active,
+                    conceptId: item.conceptId,
+                    definitionStatus: item.definitionStatus,
+                    fsn: item.preferredSynonym,
+                    preferredSynonym: item.preferredSynonym,
+                    moduleId: item.moduleId
+                  }
+                });
+              });
+            }
+
+            else {
+              angular.forEach(response.data.items, function(item) {
+                results.push({
+                  active: item.fsn.active,
+                  term: item.fsn.term,
+                  concept: {
+                    active: item.active,
+                    conceptId: item.id,
+                    definitionStatus: item.definitionStatus,
+                    fsn: item.fsn.term,
+                    moduleId: item.moduleId
+                  }
+                });
+              });
+            }
+
+            response.data.items = results;
+
+            deferred.resolve(response.data ? response.data : {items: [], total: 0});
+          }, function (error) {
+            deferred.reject(error);
+          });
         }
 
         return deferred.promise;
