@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -31,6 +31,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
+      $rootScope.rebaseRunning = false;
 
       hotkeys.bindTo($scope)   
       .add({
@@ -343,6 +344,25 @@ angular.module('singleConceptAuthoringApp.project', [
             task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
           });
           $scope.taskTableParams.reload();
+        });
+
+        // Get uiState for project
+        scaService.getUiStateForUser($routeParams.projectKey + '-merge-review-id').then(function (mergeReviewId) {
+          if (mergeReviewId) {
+            var viewedMergePoll = null;
+
+            viewedMergePoll = $interval(function () {
+              snowowlService.getMergeReview(mergeReviewId).then(function (response) {
+                if (response.status === 'PENDING' || response.status === 'CURRENT') {
+                  $rootScope.rebaseRunning = true;                 
+                } else {
+                  $rootScope.rebaseRunning = false;
+                  scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review-id');
+                  viewedMergePoll = $interval.cancel(viewedMergePoll);
+                }
+              });
+            }, 2000);
+          }
         });
       }
 

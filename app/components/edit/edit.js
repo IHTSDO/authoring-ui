@@ -185,6 +185,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
     $rootScope.automatedPromotionInQueued = false;
+    $rootScope.rebaseRunning = false;
     $rootScope.currentTask = null;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -2043,6 +2044,25 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       }, function (error) {
         notificationService.sendError('Unexpected error: ' + error);
+      });
+
+      // Get uiState for task
+      scaService.getUiStateForUser($routeParams.projectKey + '-' + $routeParams.taskKey + '-merge-review-id').then(function (mergeReviewId) {
+        if (mergeReviewId) {
+          var viewedMergePoll = null;
+
+          viewedMergePoll = $interval(function () {
+            snowowlService.getMergeReview(mergeReviewId).then(function (response) {
+              if (response.status === 'PENDING' || response.status === 'CURRENT') {
+                $rootScope.rebaseRunning = true;                 
+              } else {
+                $rootScope.rebaseRunning = false;
+                scaService.deleteUiStateForUser($routeParams.projectKey + '-' + $routeParams.taskKey + '-merge-review-id');
+                viewedMergePoll = $interval.cancel(viewedMergePoll);
+              }
+            });
+          }, 2000);
+        }
       });
     }
 
