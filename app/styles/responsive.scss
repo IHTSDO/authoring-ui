@@ -111,6 +111,12 @@
         margin-right: 1px;
         color: #fff ;
     }
+    .addButton.btn-round {
+        width: 16px;
+        height:  16px;
+        padding-left:  1px;
+        padding-right:  1px;        
+    }
 }
 @media (max-width: 1450px) {
     .conflicts .drag-button-width {
@@ -160,6 +166,12 @@
         margin-right: 1px;
         color: #fff ;
     }
+    .addButton.btn-round {
+        width: 17px;
+        height:  17px;
+        padding-left:  1px;
+        padding-right:  1px;        
+    }
 }
 @media (max-width: 1300px) {
     .title-text {
@@ -200,6 +212,12 @@
     }
     .button-width-plus {
         text-align: right;
+    }
+    .addButton.btn-round {
+        width: 15px;
+        height:  15px;
+        padding-left:  1px;
+        padding-right:  1px;        
     }
 }
 @media (min-width: 1550px) {
