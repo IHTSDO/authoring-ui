@@ -3792,7 +3792,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // set the initial direction based on load position
         $timeout(function () {
-          if (document.getElementById('component-' + scope.concept.conceptId).getBoundingClientRect().left < 500) {
+          if (document.getElementById('component-' + (scope.concept.conceptId ? scope.concept.conceptId : scope.getHashkey(scope.concept))).getBoundingClientRect().left < 500) {
             scope.popoverDirection = 'right';
           } else {
             scope.popoverDirection = 'left';
@@ -3914,6 +3914,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getHashkey = function(obj) {
+          if(!obj.$$hashKey) {
+            return;
+          }
+
           var hashkey = obj.$$hashKey;
           return hashkey.split(':')[1];
         }

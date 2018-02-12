@@ -1024,6 +1024,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           } 
 
           delete description.conceptId;
+          
+          if(!description.$$hashKey) {
+            description.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
+          }
           if (description.active === false) {
             clonedConcept.descriptions.splice(k, 1);
           }
@@ -1054,6 +1058,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           delete relationship.target.active;
           delete relationship.target.definitionStatus;
 
+          if(!relationship.$$hashKey) {
+            relationship.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
+          }
+
           if (relationship.active === false || relationship.characteristicType === 'INFERRED_RELATIONSHIP') {
             clonedConcept.relationships.splice(j, 1);
           }
@@ -1075,6 +1083,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         delete clonedConcept.isLeafInferred;
         delete clonedConcept.effectiveTime;
         delete clonedConcept.preferredSynonym;
+
+        if(!clonedConcept.$$hashKey) {
+          clonedConcept.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
+        }
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
