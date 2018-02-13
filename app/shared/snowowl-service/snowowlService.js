@@ -886,7 +886,7 @@ angular.module('singleConceptAuthoringApp')
         return result;
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter) {
         let deferred = $q.defer();
 
         let params = {
@@ -897,6 +897,10 @@ angular.module('singleConceptAuthoringApp')
 
         if(syn){
           params.expand = 'pt()';
+        }
+
+        if(activeFilter !== null) {
+          params.activeFilter = activeFilter;
         }
 
         // if the user is searching with some form of numerical ID

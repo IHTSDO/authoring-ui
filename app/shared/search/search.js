@@ -169,7 +169,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.searchType = 'Active and Inactive';
           $scope.userOptions.searchType = 0;
         }
-        $scope.processResults();
+        $scope.newSearch();
+        // $scope.processResults();
       };
 
       $scope.toggleSearchMode = function () {
@@ -362,6 +363,21 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
         }
 
+        let activeFilter = null;
+
+        switch($scope.userOptions.searchType) {
+          case 1:
+            activeFilter = true;
+            break;
+
+          case 2:
+            activeFilter = false;
+            break;
+
+          default:
+            activeFilter = null;
+        }
+
         // set the return synonym flag to true for extensions
         // TODO Later this will be toggle-able between extension synonym and fsn
         // For now, just assume always want the extension-language synonym if available
@@ -375,7 +391,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue).then(function (results) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter).then(function (results) {
 
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -387,11 +403,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.searchTotal = addCommas(results.total);
             $scope.loadMoreEnabled = results.items.length === $scope.resultsSize;
             $scope.storedResults = appendResults ? $scope.storedResults.concat(results.items) : results.items;
-
-            if(results.total < 100) {
-              $scope.searchType = 'Active and Inactive';
-              $scope.userOptions.searchType = 0;
-            }
           }
 
           else {
