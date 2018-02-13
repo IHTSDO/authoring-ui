@@ -88,6 +88,13 @@ input[type=checkbox]:focus, input[type=radio]:focus, input[type=file]:focus {
 	outline: -webkit-focus-ring-color auto 5px;
 	outline-offset: -2px;
 }
+h5.total-text {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  span {
+    font-size: 14px;
+  }
+}
 .form-group {
 	margin-bottom: 15px;
 }
