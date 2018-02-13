@@ -306,7 +306,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         let element = document.activeElement;
 
         setTimeout(function(){
-          element.style.height = 'auto';
+          element.style.height = '37px';
           element.style.height = element.scrollHeight + 'px';
         },0);
       };
@@ -608,7 +608,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.searchStatus = null;
 
         $scope.escgExpr = '';
-        document.getElementById('expandable-search').style.height = 'auto';
+        document.getElementById('expandable-search').style.height = '37px';
       };
 
       var queue = [];
