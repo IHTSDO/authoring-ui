@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -116,17 +116,103 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.promoting = false;
         });
       };
-      $scope.proceedAutomatePromotion = function () {
-        notificationService.sendMessage('Starting automated promotion...');       
+      $scope.proceedAutomatePromotion = function () {        
+        notificationService.sendMessage('Preparing for task promotion automation...');       
         $scope.automatePromotionErrorMsg = '';        
         $scope.automatePromotionStatus = '';
+        
+        /* Check unsaved concepts*/
+        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+          .then(function (uiState) {            
+            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+              validateReviewStatus();
+            }
+            else {
+              var promises = [];                    
+              for (var i = 0; i < uiState.length; i++) {               
+                promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
+              }
+              // on resolution of all promises
+              $q.all(promises).then(function (responses) {
+                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
+                if (hasUnsavedConcept) {
+                  notificationService.clear();                  
+                  modalService.message('There are some unsaved concepts. Please save them before promoting task automation.');
+                } else {
+                  validateReviewStatus();
+                }
+              });
+            }
+          }
+        );   
+      };
+
+      function validateReviewStatus() {
+        var flags = [];
+        /* Check review */
+        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (branchStatus) {             
+          ////////////////////////////////////////////////////////////
+          // CHECK:  Has the Task been reviewed?
+          ////////////////////////////////////////////////////////////
+          if (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none') {
+            flags.push({
+              checkTitle: 'No review completed',
+              checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
+              blocksPromotion: false
+            });
+          }
+
+          ////////////////////////////////////////////////////////////
+          // CHECK:  Is the task still in Review?
+          ////////////////////////////////////////////////////////////
+          if (branchStatus.status === 'In Review') {
+            flags.push({
+              checkTitle: 'Task is still in review',
+              checkWarning: 'The task review has not been marked as complete.',
+              blocksPromotion: false
+            });
+          }
+
+          if (flags.length === 0) {
+            promoteTaskAutomation();
+          } else {
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/promote-modal/promoteModal.html',
+              controller: 'promoteModalCtrl',
+              resolve: {
+                flags: function () {
+                  return flags;
+                },
+                isTask: function () {
+                  return true;
+                }
+              }
+            });
+            notificationService.clear();
+            modalInstance.result.then(function (proceed) {
+              if (proceed) {
+                promoteTaskAutomation();
+              } else {
+                notificationService.clear();               
+              }
+            }, function () {
+              notificationService.clear();            
+            });
+          }
+          
+        });
+      }
+
+      function promoteTaskAutomation() {
+        notificationService.sendMessage('Starting automated promotion...');
         promotionService.proceedAutomatePromotion($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             $scope.checkAutomatePromotionStatus(false);
           }, function (error) {
             $scope.automatePromotionStatus = '';
           }
         );
-      };
+      }
+
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
 
