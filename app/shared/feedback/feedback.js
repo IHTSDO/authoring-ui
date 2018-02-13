@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -723,7 +723,14 @@ angular.module('singleConceptAuthoringApp')
             }
 
             if(conceptsToAdd.length > scope.limitConceptsLoading) {
-              notificationService.sendWarning('The number of concepts that can be loaded in feedback has been exceeded ' + scope.limitConceptsLoading, 5000);
+              var msg = '';
+              if (metadataService.isExtensionSet()) {
+                msg = 'The number of concepts that can be loaded in feedback has been exceeded ' + scope.limitConceptsLoading;
+              } else {
+                msg = 'Your selection exceeds the number of concepts that can be loaded. Please change your selection to a maximum of ' + scope.limitConceptsLoading + ' concepts';
+              }           
+              
+              notificationService.sendWarning(msg, 10000);
               return;
             }
 
