@@ -121,9 +121,9 @@ h4.timeline-title {
 {
     background-color: transparent;
 }
-.sca-dark .editing-form button.concept-edit-button.green:focus, 
+.sca-dark .editing-form button.concept-edit-button.green:focus,
 .sca-dark .editing-form button.concept-edit-button.green:active,
-.sca-dark .editing-form button.concept-edit-button.red:focus, 
+.sca-dark .editing-form button.concept-edit-button.red:focus,
 .sca-dark .editing-form button.concept-edit-button.red:active {
     background: transparent;
 }
@@ -394,7 +394,7 @@ h4.timeline-title {
 .sca-dark .task-details .auto-promote.btn-default:hover{
     color: #eee;
     background-color: transparent;
-    border: 1px solid #1f2731;  
+    border: 1px solid #1f2731;
 }
 .sca-dark .task-details .editingtask.btn-default span:hover,
 .sca-dark .task-details .classify.btn-default span:hover,
@@ -514,7 +514,7 @@ h4.timeline-title {
 }
 .sca-dark .timeline-title,
 .sca-dark .timeline-title p,
-.sca-dark .timeline-title em, 
+.sca-dark .timeline-title em,
 .sca-dark .timeline-title i,
 .sca-dark .timeline-title span {
     color: #eee;
@@ -584,6 +584,13 @@ h4.timeline-title {
 .sca-dark .blue.btn-round:hover {
     color: #fff;
     background-color: #42A5F5
+}
+.sca-dark .white.btn-round {
+  background-color: transparent;
+}
+.sca-dark .white.btn-round:hover {
+  color: black;
+  background-color: white;
 }
 .sca-dark .blue.green.btn-round
 {
@@ -714,7 +721,7 @@ h4.timeline-title {
 }
 
 .sca-dark .bluehl {
-    background-color: #01579b ;   
+    background-color: #01579b ;
 }
 .sca-dark .bluehl .grey.darken-3,
 .sca-dark .bluehl .row.edits-row {
@@ -740,7 +747,7 @@ h4.timeline-title {
     background-color: #1b5965;
 }
 .sca-dark .tealhl {
-    background-color: #1d6f7e;    
+    background-color: #1d6f7e;
 }
 .sca-dark .redhl .grey.darken-3,
 .sca-dark .redhl .row.edits-row  {
@@ -881,11 +888,11 @@ sca-dark .pull-left.follow-up {
 .sca-dark .widget-toolbar.review.btn {color :#e94281}
 .sca-dark .widget-toolbar.blue.btn{color:#5fc1e6}
 .sca-dark .new-concept-button{
-    background-color:transparent; 
+    background-color:transparent;
     color:#00adee;
 }
 .sca-dark .create-template{
-    background-color:transparent; 
+    background-color:transparent;
     color:#009cd7;
 }
 
