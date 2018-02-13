@@ -3888,6 +3888,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getDuplicatedRelOrCircularReferenceStyle = function (component) {
+          
+          // relationship is specified
           if(component) {
             if (scope.concept.conceptId === component.target.conceptId) {
               return 'redhl';
@@ -3896,6 +3898,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               var relationship = scope.concept.relationships[i];
               if (relationship.characteristicType === 'STATED_RELATIONSHIP'
                 && relationship.relationshipId !== component.relationshipId
+                && relationship.groupId === component.groupId
                 && relationship.type.conceptId === component.type.conceptId
                 && relationship.target.conceptId === component.target.conceptId ) {
                 return 'redhl';

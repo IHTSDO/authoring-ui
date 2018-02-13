@@ -1071,7 +1071,8 @@ angular.module('singleConceptAuthoringApp')
                   && relationshipJ.characteristicType === 'STATED_RELATIONSHIP'
                   && relationshipI.relationshipId !== relationshipJ.relationshipId
                   && relationshipI.type.conceptId === relationshipJ.type.conceptId
-                  && relationshipI.target.conceptId === relationshipJ.target.conceptId ) {
+                  && relationshipI.target.conceptId === relationshipJ.target.conceptId
+                  && relationshipI.groupId === relationshipJ.groupId) {
                   return true;
                 }
               }
