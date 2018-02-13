@@ -1064,16 +1064,19 @@ angular.module('singleConceptAuthoringApp')
           scope.detectDulicatedRelationships = function (sourceId) {
             var concept = scope.affectedConcepts[sourceId];    
             for (var i = 0; i < concept.relationships.length; i++) {
-              var relationshipI = concept.relationships[i];          
-              for (var j = i + 1; j < concept.relationships.length; j++) {
-                var relationshipJ = concept.relationships[j];
-                if (relationshipI.characteristicType === 'STATED_RELATIONSHIP'
-                  && relationshipJ.characteristicType === 'STATED_RELATIONSHIP'
-                  && relationshipI.relationshipId !== relationshipJ.relationshipId
-                  && relationshipI.type.conceptId === relationshipJ.type.conceptId
-                  && relationshipI.target.conceptId === relationshipJ.target.conceptId
-                  && relationshipI.groupId === relationshipJ.groupId) {
-                  return true;
+              var relationshipI = concept.relationships[i];
+              if (relationshipI.relationshipId === null
+                && relationshipI.effectiveTime === null) {
+                for (var j = 0; j < concept.relationships.length; j++) {
+                  var relationshipJ = concept.relationships[j];
+                  if (relationshipI.characteristicType === 'STATED_RELATIONSHIP'
+                    && relationshipJ.characteristicType === 'STATED_RELATIONSHIP'
+                    && relationshipI.relationshipId !== relationshipJ.relationshipId
+                    && relationshipI.type.conceptId === relationshipJ.type.conceptId
+                    && relationshipI.target.conceptId === relationshipJ.target.conceptId
+                    && relationshipI.groupId === relationshipJ.groupId) {
+                    return true;
+                  }
                 }
               }
             }         

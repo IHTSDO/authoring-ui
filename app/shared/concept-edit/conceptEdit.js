@@ -3889,9 +3889,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getDuplicatedRelOrCircularReferenceStyle = function (component) {
           
-          // relationship is specified
+          // relationship is specified and newly created one
           if(component) {
-            if (scope.concept.conceptId === component.target.conceptId) {
+            if (scope.concept.conceptId === component.target.conceptId 
+                && !component.relationshipId) {
               return 'redhl';
             }
             for (var i = 0; i < scope.concept.relationships.length; i++) {
@@ -3900,7 +3901,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 && relationship.relationshipId !== component.relationshipId
                 && relationship.groupId === component.groupId
                 && relationship.type.conceptId === component.type.conceptId
-                && relationship.target.conceptId === component.target.conceptId ) {
+                && relationship.target.conceptId === component.target.conceptId
+                && (!component.relationshipId || !relationship.relationshipId)) {
                 return 'redhl';
               }
             }
@@ -3908,7 +3910,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             for (var i = 0; i < scope.concept.relationships.length; i++) {
               var relationship = scope.concept.relationships[i];
               if (relationship.characteristicType === 'STATED_RELATIONSHIP'
-                && relationship.target.conceptId === scope.concept.conceptId ) {
+                && relationship.target.conceptId === scope.concept.conceptId 
+                && !relationship.relationshipId) {
                 return 'redhl';
               }
             }
