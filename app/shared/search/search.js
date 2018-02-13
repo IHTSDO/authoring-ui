@@ -204,10 +204,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             if ($scope.isExtension && $scope.userOptions.selectedDialect && !$scope.isEscgMode) {
               if ($scope.userOptions.selectedDialect === usModel.dialectId ||
                 $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix)) {
-                if ($scope.storedResults[i].term !== $scope.storedResults[i].concept.preferredSynonym &&
+                if ($scope.storedResults[i].concept.fsn ||
+                  $scope.storedResults[i].term !== $scope.storedResults[i].concept.preferredSynonym &&
                   $scope.storedResults[i].term.indexOf('(') > 0 &&
-                  $scope.storedResults[i].term.trim().endsWith(')')
-                  || $scope.storedResults[i].concept.fsn) {
+                  $scope.storedResults[i].term.trim().endsWith(')')) {
                   // push the item
                   displayedResults.push($scope.storedResults[i]);
 
@@ -387,6 +387,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.searchTotal = addCommas(results.total);
             $scope.loadMoreEnabled = results.items.length === $scope.resultsSize;
             $scope.storedResults = appendResults ? $scope.storedResults.concat(results.items) : results.items;
+
+            if(results.total < 100) {
+              $scope.searchType = 'Active and Inactive';
+              $scope.userOptions.searchType = 0;
+            }
           }
 
           else {
