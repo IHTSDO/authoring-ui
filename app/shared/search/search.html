@@ -11,19 +11,19 @@
     <div class="col-md-2">
       <button type="button" class="btn btn-default blue md md-search"
               title="Execute ECL Search"
-              ng-click="search()"></button>
+              ng-click="newSearch()"></button>
     </div>
     <div class="col-md-10 no-padding">
 
       <input type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter additional term filter (optional)"
-             ng-model="searchStr" ui-on-drop="" ng-change="search()"
+             ng-model="searchStr" ui-on-drop="" ng-change="newSearch()"
              ng-model-options="{ debounce: 500 }"/></div>
 
   </div>
   <div class="row no-padding" ng-show="!isEscgMode || templateOptions.selectedTemplate">
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
+    <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
       <input focus-on="actionTab===2" type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter at least three characters"
-             ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
+             ng-model="searchStr" ng-change="newSearch()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
       <button ng-show="searchStr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
@@ -32,17 +32,19 @@
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 no-padding">
           <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
       </div>-->
-    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right light-button transparent"
-              ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0">
-        <span>View Matching Terms</span>
-      </button>
-      <button
-        class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right light-button transparent"
-        ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0">
-        <span>Group by Concept</span>
-      </button>
-    </div>
+
+    <!-- Removed until APDS-570 is resolved -->
+    <!--<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">-->
+      <!--<button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right light-button transparent"-->
+              <!--ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0">-->
+        <!--<span>View Matching Terms</span>-->
+      <!--</button>-->
+      <!--<button-->
+        <!--class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right light-button transparent"-->
+        <!--ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0">-->
+        <!--<span>Group by Concept</span>-->
+      <!--</button>-->
+    <!--</div>-->
   </div>
 
 

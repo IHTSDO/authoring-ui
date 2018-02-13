@@ -869,6 +869,23 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////
       // Browser Functions
       //////////////////////////
+      function browserStructureConversion(data) {
+
+        let result = {
+          active: data.active,
+          concept: {
+            active: data.active,
+            conceptId: data.conceptId,
+            definitionStatus: data.definitionStatus,
+            fsn: data.fsn,
+            preferredSynonym: data.preferredSynonym,
+            moduleId: data.moduleId
+          }
+        };
+
+        return result;
+      }
+
       function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang) {
         let deferred = $q.defer();
 
@@ -882,10 +899,6 @@ angular.module('singleConceptAuthoringApp')
           params.expand = 'pt()';
         }
 
-        // if(lang) {
-        //   params.languageCode = lang;
-        // }
-
         // if the user is searching with some form of numerical ID
         if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter)) {
 
@@ -893,19 +906,7 @@ angular.module('singleConceptAuthoringApp')
           if(termFilter.substr(-2, 1) === '0') {
             $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + termFilter, { params : params }).then(function(response) {
 
-              // convert to browser search form
-              let item = {
-                active: response.data.active,
-                term: response.data.preferredSynonym,
-                concept: {
-                  active: response.data.active,
-                  conceptId: response.data.conceptId,
-                  definitionStatus: response.data.definitionStatus,
-                  fsn: response.data.fsn,
-                  preferredSynonym: response.data.preferredSynonym,
-                  moduleId: response.data.moduleId
-                }
-              };
+              let item = browserStructureConversion(response.data);
 
               deferred.resolve(response.data ? [item] : {items: [], total: 0});
             }, function(error) {
@@ -919,19 +920,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.conceptId, { params : params }).then(function(response2) {
 
-                // convert to browser search form
-                let item = {
-                  active: response2.data.active,
-                  term: response2.data.preferredSynonym,
-                  concept: {
-                    active: response2.data.active,
-                    conceptId: response2.data.conceptId,
-                    definitionStatus: response2.data.definitionStatus,
-                    fsn: response2.data.fsn,
-                    preferredSynonym: response2.data.preferredSynonym,
-                    moduleId: response2.data.moduleId
-                  }
-                };
+                let item = browserStructureConversion(response2.data);
 
                 deferred.resolve(response2.data ? [item] : {items: [], total: 0});
               }, function(error) {
@@ -952,19 +941,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.sourceId, { params : params }).then(function(sourceResponse) {
 
-                // convert to browser search form
-                source = {
-                  active: sourceResponse.data.active,
-                  term: sourceResponse.data.preferredSynonym,
-                  concept: {
-                    active: sourceResponse.data.active,
-                    conceptId: sourceResponse.data.conceptId,
-                    definitionStatus: sourceResponse.data.definitionStatus,
-                    fsn: sourceResponse.data.fsn,
-                    preferredSynonym: sourceResponse.data.preferredSynonym,
-                    moduleId: sourceResponse.data.moduleId
-                  }
-                };
+                source = browserStructureConversion(sourceResponse.data);
 
                 if (source && target) {
                   deferred.resolve([source, target]);
@@ -976,19 +953,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.destinationId).then(function(targetResponse) {
 
-                // convert to browser search form
-                target = {
-                  active: targetResponse.data.active,
-                  term: targetResponse.data.preferredSynonym,
-                  concept: {
-                    active: targetResponse.data.active,
-                    conceptId: targetResponse.data.conceptId,
-                    definitionStatus: targetResponse.data.definitionStatus,
-                    fsn: targetResponse.data.fsn,
-                    preferredSynonym: targetResponse.data.preferredSynonym,
-                    moduleId: targetResponse.data.moduleId
-                  }
-                };
+                target = browserStructureConversion(targetResponse.data);
 
                 if (source && target) {
                   deferred.resolve([source, target]);
@@ -1017,38 +982,21 @@ angular.module('singleConceptAuthoringApp')
 
             let results = [];
 
-            if(syn) {
-              angular.forEach(response.data.items, function(item) {
-                results.push({
-                  active: item.active,
-                  term: item.preferredSynonym,
-                  concept: {
-                    active: item.active,
-                    conceptId: item.pt.conceptId,
-                    definitionStatus: item.definitionStatus,
-                    fsn: item.preferredSynonym,
-                    preferredSynonym: item.preferredSynonym,
-                    moduleId: item.moduleId
-                  }
-                });
-              });
-            }
+            angular.forEach(response.data.items, function(item) {
+              let obj = browserStructureConversion(item);
 
-            else {
-              angular.forEach(response.data.items, function(item) {
-                results.push({
-                  active: item.active,
-                  term: item.fsn.term,
-                  concept: {
-                    active: item.active,
-                    conceptId: item.fsn.conceptId,
-                    definitionStatus: item.definitionStatus,
-                    fsn: item.fsn.term,
-                    moduleId: item.moduleId
-                  }
-                });
-              });
-            }
+              if(syn) {
+                obj.concept.conceptId = item.pt.conceptId;
+                obj.concept.preferredSynonym = item.pt.term;
+              }
+
+              else {
+                obj.concept.conceptId = item.fsn.conceptId;
+                obj.concept.fsn = item.fsn.term;
+              }
+
+              results.push(obj);
+            });
 
             response.data.items = results;
 
@@ -1062,42 +1010,26 @@ angular.module('singleConceptAuthoringApp')
         else {
           params.termFilter = termFilter;
 
-          $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+          $http.post(apiEndpoint + branch + '/concepts/search', params, lang).then(function (response) {
 
             let results = [];
 
-            if(syn) {
-              angular.forEach(response.data.items, function(item) {
-                results.push({
-                  active: item.active,
-                  term: item.preferredSynonym,
-                  concept: {
-                    active: item.active,
-                    conceptId: item.conceptId,
-                    definitionStatus: item.definitionStatus,
-                    fsn: item.preferredSynonym,
-                    preferredSynonym: item.preferredSynonym,
-                    moduleId: item.moduleId
-                  }
-                });
-              });
-            }
+            angular.forEach(response.data.items, function(item) {
+              let obj = browserStructureConversion(item);
 
-            else {
-              angular.forEach(response.data.items, function(item) {
-                results.push({
-                  active: item.fsn.active,
-                  term: item.fsn.term,
-                  concept: {
-                    active: item.active,
-                    conceptId: item.id,
-                    definitionStatus: item.definitionStatus,
-                    fsn: item.fsn.term,
-                    moduleId: item.moduleId
-                  }
-                });
-              });
-            }
+              if(syn) {
+                obj.concept.conceptId = item.pt.conceptId;
+                obj.concept.preferredSynonym = item.pt.term;
+              }
+
+              else {
+                obj.concept.conceptId = item.fsn.conceptId;
+                obj.concept.fsn = item.fsn.term;
+              }
+
+              results.push(obj);
+            });
+
 
             response.data.items = results;
 
