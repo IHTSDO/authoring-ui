@@ -1089,7 +1089,8 @@ angular.module('singleConceptAuthoringApp')
             for (var i = 0; i < concept.relationships.length; i++) {
               var rel = concept.relationships[i];          
               if (rel.characteristicType === 'STATED_RELATIONSHIP' 
-                  && rel.target.conceptId === concept.conceptId) {
+                  && rel.target.conceptId === concept.conceptId
+                  && !rel.relationshipId) {
                 return true;
               }
             }         
