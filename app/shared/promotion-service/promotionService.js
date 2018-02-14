@@ -222,7 +222,7 @@ angular.module('singleConceptAuthoringApp')
                   ////////////////////////////////////////////////////////////
                   // CHECK:  Has the Task been reviewed?
                   ////////////////////////////////////////////////////////////
-                  if (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none') {
+                  if (!branchStatus.status === 'In Review' && !branchStatus.status === 'Review Completed') {
                     flags.push({
                       checkTitle: 'No review completed',
                       checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
