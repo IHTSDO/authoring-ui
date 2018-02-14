@@ -724,11 +724,7 @@ angular.module('singleConceptAuthoringApp')
 
             if(conceptsToAdd.length > scope.limitConceptsLoading) {
               var msg = '';
-              if (metadataService.isExtensionSet()) {
-                msg = 'The number of concepts that can be loaded in feedback has been exceeded ' + scope.limitConceptsLoading;
-              } else {
-                msg = 'Your selection exceeds the number of concepts that can be loaded. Please change your selection to a maximum of ' + scope.limitConceptsLoading + ' concepts';
-              }           
+              msg = 'Your selection exceeds the number of concepts that can be loaded. Please change your selection to a maximum of ' + scope.limitConceptsLoading + ' concepts';      
               
               notificationService.sendWarning(msg, 10000);
               return;
