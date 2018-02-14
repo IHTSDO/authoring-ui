@@ -23,6 +23,10 @@
        background: transparent;
        padding-top: 10px;
    }
+   .validation-report .table-full-small tbody > tr > th,
+   .validation-report .table-full-small tbody > tr > td {
+       padding: 8px;
+   }
    .validation-report .table-full-small tbody > tr > td:first-child,
    .validation-report .table-full-small thead tr > th:first-child {
        padding-left: 10px;
