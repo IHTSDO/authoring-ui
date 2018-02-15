@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q) {
+  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService) {
 
     // the selected tab
     $scope.actionTab = 1;
@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.updateAssociations = function (inactivationReason) {
       $scope.inactivationReason = inactivationReason;
       $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
-      
+
       if ($scope.associationTargets.length === 0) {
         $scope.associations = [];
       } else {
@@ -31,15 +31,15 @@ angular.module('singleConceptAuthoringApp')
         }
 
         //Association type will be automatically populated if there is only one option
-        for (var i = 0; i < $scope.associations.length; i++) {         
+        for (var i = 0; i < $scope.associations.length; i++) {
           // extract association for convenience
           var association = $scope.associations[i];
           association.type = null;
           if($scope.associationTargets.length === 1) {
             association.type = $scope.associationTargets[0];
-          }  
+          }
         }
-      }        
+      }
     };
 
     // required arguments
@@ -73,18 +73,18 @@ angular.module('singleConceptAuthoringApp')
           var j = i + 1;
           while (j < response.length){
             if (response[j].concept.conceptId === response[i].concept.conceptId) {
-              response.splice(j, 1);              
+              response.splice(j, 1);
             } else {
               j++;
             }
           }
           i++;
         }
-        
+
         response = response.filter(function (el) {
           if (inactivationIndication) {
             return el.concept.active === true && $scope.conceptId !== el.concept.conceptId;
-          } else {                    
+          } else {
             return el.concept.active === true;
           }
         });
@@ -92,6 +92,25 @@ angular.module('singleConceptAuthoringApp')
       });
     };
 
+    function addCommas(integer) {
+      return (integer + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    }
+
+    $scope.getTypeaheadConcepts = function(searchStr) {
+      return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true).then(function (response) {
+
+        let dropdown = $('.dropdown-menu');
+
+        dropdown.children('.dropdown-menu-total').remove();
+
+        if((response.total - 50) > 1) {
+          let totalRow = $('<li>along with ' + addCommas(response.total - 50) + ' other results</li>').addClass('dropdown-menu-total');
+          dropdown.append(totalRow);
+        }
+
+        return response.items;
+      });
+    };
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
@@ -183,7 +202,7 @@ angular.module('singleConceptAuthoringApp')
           if(!association.concept || !association.concept.concept || !association.concept.concept.conceptId
             || !association.type || !association.type.id) {
             return true;
-          }         
+          }
        }
        return false;
      }
@@ -217,7 +236,7 @@ angular.module('singleConceptAuthoringApp')
 
           // add the association type/target
           else {
-              
+
             if(!association.type || association.type === null){
                 association.type = {id: ' '}
             }
@@ -396,7 +415,7 @@ angular.module('singleConceptAuthoringApp')
         $scope.associations.push({type: $scope.associationTargets[0], concept: null});
       } else {
         $scope.associations.push({type: null, concept: null});
-      }      
+      }
     };
 
     $scope.removeAssociation = function (index) {
