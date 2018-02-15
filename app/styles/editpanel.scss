@@ -525,10 +525,10 @@ select {
         width: 47%;
     }
     .editing-form .description.lang-ref-set-1 {
-        width: 54%;       
-    }    
+        width: 54%;
+    }
     .editing-form .description.lang-ref-set-3 {
-        width: 39%;       
+        width: 39%;
     }
     .editing-form .acceptability {
         width: 22%;
@@ -596,10 +596,10 @@ select {
         padding-left: 0px;
     }
     .editing-form .description.lang-ref-set-1 {
-        width: 62%;       
-    }    
+        width: 62%;
+    }
     .editing-form .description.lang-ref-set-3 {
-        width: 47%;       
+        width: 47%;
     }
 
     .editing-form .characteristictype {
@@ -782,7 +782,9 @@ button.fsn-title-button {
 }
 .dropdown-menu {
     font-size: 12px;
-    max-width: 350px;
+    max-width: 360px;
+    max-height: 250px;
+    overflow-y: auto;
 }
 .dropdown-menu > li {
     width: 100%;
@@ -794,6 +796,19 @@ button.fsn-title-button {
     color: #474747;
     word-wrap: normal;
     white-space: normal
+}
+.dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+.dropdown-menu::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.dropdown-menu-total {
+  padding: 3px 5px;
+  text-align: center;
+  font-size: 10px;
+
 }
 /* popover */
 
@@ -892,7 +907,7 @@ button.fsn-title-button {
 .relationship-more select {
     height: 15px;
     min-height: 11px;
-    padding-bottom: 0px;    
+    padding-bottom: 0px;
 }
 
 .concept-more .control-label,
@@ -1106,11 +1121,11 @@ button-link .bluehl .grey.darken-3 {
 .editing-form button.green:active {
     background-color: transparent;
 }
-.editing-form button.concept-edit-button.green:focus, 
+.editing-form button.concept-edit-button.green:focus,
 .editing-form button.concept-edit-button.green:active {
     background-color: #4CAF50;
 }
-.editing-form button.concept-edit-button.red:focus, 
+.editing-form button.concept-edit-button.red:focus,
 .editing-form button.concept-edit-button.red:active {
     background-color: #c13244;
 }
@@ -1229,11 +1244,11 @@ button-link .bluehl .grey.darken-3 {
 }
 .conflict-concept-column .editing-form button.stated-inferred-view {
     width: 12px;
-    height: 13px;   
+    height: 13px;
     padding-left: 0px;
     line-height: 14px;
 }
-@media (max-width: 1380px) {   
+@media (max-width: 1380px) {
     .editing-form button.stated-inferred-view {
         height: 14px;
         width: 14px;
@@ -1242,7 +1257,7 @@ button-link .bluehl .grey.darken-3 {
     .conflict-concept-column .editing-form button.stated-inferred-view {
        width: 11px;
         padding-left: 1px;
-    }    
+    }
 }
 .sidebar-tabs.nav > li > a {
     line-height: 35px;

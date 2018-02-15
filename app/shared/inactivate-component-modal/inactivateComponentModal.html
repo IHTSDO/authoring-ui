@@ -37,10 +37,10 @@
           'Loading'}})</a> </li>
       </ul>
     </div>
-    
+
     <!-- Tab panes -->
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 1}"> 
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 1}">
         <!-- reasons select -->
         <div ng-if="!deletion" >
           <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
@@ -51,7 +51,7 @@
               <select id="taskProject" name="select-reason" class="form-control p-l-10"
                     ng-options="reason as reason.text for reason in reasons"
                     ng-model="inactivationReason" ng-change="updateAssociations(inactivationReason)">
-                    <option value="" selected hidden />           
+                    <option value="" selected hidden />
             </select>
           </div>
         </div>
@@ -71,10 +71,10 @@
                 <textarea type="text" class="form-control no-padding-left" ng-model="association.type.text" readonly="true"></textarea>
               </div>
               <div class="col-md-6">
-              
+
                 <textarea type="text" class="form-control no-padding-left"
                         ng-model="association.concept"
-                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue, true)"
+                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getTypeaheadConcepts($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-wait-ms="500"
                         typeahead-editable="false" typeahead-min-length="3"
@@ -89,7 +89,7 @@
             </div>
           </div>
         </div>
-        
+
        </div>
         <div ng-if="deletion">
           <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading"> Checking inbound relationships... </div>
@@ -105,7 +105,7 @@
             <div class="col-md-6">
               <textarea type="text" class="form-control"
                         ng-model="association.concept"
-                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
+                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getTypeaheadConcepts($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-wait-ms="500"
                         typeahead-editable="false" typeahead-min-length="3"
@@ -125,7 +125,7 @@
           </tr>
         </table>
       </div>
-      
+
       <!-- descendants -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 3}">
         <div ng-show="descendants.total > 200" class="alert alert-info">Limiting displayed results to {{tableLimit}}
@@ -138,7 +138,7 @@
           </tr>
         </table>
       </div>
-      
+
       <!-- all inbound relationships -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 4}">
         <div ng-show="inboundRelationshipsTotal > 200" class="alert alert-info">Limiting displayed results to
@@ -153,7 +153,7 @@
         </table>
         <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
       </div>
-   
+
   </div>
   <div class="modal-footer" ng-if="!deletion">
     <div class="row col-md-12 no-padding top-modal">
