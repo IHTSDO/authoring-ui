@@ -25,6 +25,9 @@
    }
    .validation-report .table-full-small tbody > tr > th,
    .validation-report .table-full-small tbody > tr > td {
+       padding: 16px 8px 16px 8px;
+   }
+   .validation-report .table-full-small tbody > tr > td.button-block {
        padding: 8px;
    }
    .validation-report .table-full-small tbody > tr > td:first-child,
