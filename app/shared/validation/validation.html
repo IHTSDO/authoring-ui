@@ -1,17 +1,17 @@
-<section class="tables-data"> 
-  <!-- for ng-table checkboxes --> 
+<section class="tables-data">
+  <!-- for ng-table checkboxes -->
   <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html" ng-show="task">
     <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
            id="select_all_failures"
            name="filter-checkbox" value=""/>
-  </script> 
+  </script>
   <script type="text/ng-template" id="excludeheader.html">
     <button type="button" ng-click="excludeSelectedFailures()"
             class="btn btn-round btn-default red" title="Add all selected failures to exclusion list">
             <span
               class="md md-block"></span>
     </button>
-  </script> 
+  </script>
   <script type="text/ng-template" id="editheader.html">
     <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
             class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
@@ -62,7 +62,7 @@
                 <span># of cases with errors</span>
               </div>
             </td>
-            <td>
+            <td class="button-block">
               <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
                 class="btn btn-default blue case-failures">Load Cases <i
@@ -85,7 +85,7 @@
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
-            <td header-title="'Click to select all'" 
+            <td header-title="'Click to select all'"
                 header="'ng-table/headers/checkboxHeader.html'"
                 ng-show="task"><div class="checkbox">
                 <label class="filled">
@@ -107,7 +107,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Exclusions table -->
   <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
     <div class="row">
@@ -118,13 +118,13 @@
       </div>
       <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
         Create Task From Failures
-     </button></div>--> 
+     </button></div>-->
     </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
-      <tr ng-repeat="failure in $data"> 
-        
-        <!-- Removed due to space considerations --> 
+      <tr ng-repeat="failure in $data">
+
+        <!-- Removed due to space considerations -->
         <!-- <td class="col-md-3" header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
            {{failure.assertionText}}
          </td>-->
@@ -143,9 +143,9 @@
       </tr>
     </table>
   </div>
-  
+
   <!-- Taxonomy, models, and concepts -->
-  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0"> 
+  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
     <!-- Taxonomy -->
     <div class="col-md-3">
       <div>
