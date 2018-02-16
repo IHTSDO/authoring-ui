@@ -502,7 +502,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                               || $scope.userOptions.selectedDialect === usModel.dialectId
                               || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag).then(function (results) {
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue).then(function (results) {
             return results;
           }, function (error) {
             $scope.searchStatus = 'Error performing search: ' + error;
@@ -544,7 +544,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag).then(function (results) {
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag, acceptLanguageValue).then(function (results) {
             // set load more parameters
             var concepts = results.items;
             $scope.searchTotal = addCommas(results.total);

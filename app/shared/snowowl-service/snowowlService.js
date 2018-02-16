@@ -888,12 +888,22 @@ angular.module('singleConceptAuthoringApp')
 
       function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter) {
         let deferred = $q.defer();
+        var config = {};
 
         let params = {
           offset: offset ? offset : '0',
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
+        
+        if (lang) {
+          // declare headers if not specified
+          if (!config.headers) {
+            config.headers = {};
+          }
+          // set the accept language header
+          config.headers['Accept-Language'] = lang;
+        }
 
         if(syn){
           params.expand = 'pt()';
@@ -982,7 +992,7 @@ angular.module('singleConceptAuthoringApp')
           params.termFilter = termFilter;
           params.eclFilter = escgExpr;
 
-          $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+          $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
             let results = [];
 
@@ -1014,7 +1024,7 @@ angular.module('singleConceptAuthoringApp')
         else {
           params.termFilter = termFilter;
 
-          $http.post(apiEndpoint + branch + '/concepts/search', params, lang).then(function (response) {
+          $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
             let results = [];
 
@@ -1639,8 +1649,18 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // search concepts by branch, filter, and escgExpr
-      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn) {
+      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn, acceptLanguageValue) {
         var deferred = $q.defer();
+        var config = {};
+        
+        if (acceptLanguageValue) {
+          // declare headers if not specified
+          if (!config.headers) {
+            config.headers = {};
+          }
+          // set the accept language header
+          config.headers['Accept-Language'] = acceptLanguageValue;
+        }
 
         // paging/filtering/sorting with defaults applied
         var params = {
@@ -1659,7 +1679,7 @@ angular.module('singleConceptAuthoringApp')
           params.eclFilter = escgExpr;
         }
 
-        $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+        $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
           deferred.resolve(response.data ? response.data : {items: [], total: 0});
         }, function (error) {
           deferred.reject(error);
