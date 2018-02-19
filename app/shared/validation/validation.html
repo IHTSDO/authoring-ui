@@ -52,7 +52,7 @@
       <div class="table-responsive white" ng-show="viewTop && topTableParams.total() > 0">
         <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
+          class="table">
           <tr ng-repeat="assertion in $data" ng-if="assertion.filteredCount > 0">
             <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'">
               {{assertion.assertionText}}
@@ -62,7 +62,7 @@
                 <span># of cases with errors</span>
               </div>
             </td>
-            <td class="button-block">
+            <td>
               <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
                 class="btn btn-default blue case-failures">Load Cases <i
@@ -83,7 +83,7 @@
              ng-if="!viewTop && failureTableParams.total() === 0"> No validation results to display </div>
         <table ng-show="failureTableParams.total() > 0"
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
+               class="table">
           <tr ng-repeat="failure in $data">
             <td header-title="'Click to select all'"
                 header="'ng-table/headers/checkboxHeader.html'"
@@ -98,9 +98,9 @@
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
-            <td ng-if="whitelistEnabled" class="button-block"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
+            <td ng-if="whitelistEnabled"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
               Whitelist </button></td>
-            <td ng-if="editable" data-header="'editheader.html'" class="button-block"><button type="button" class="btn btn-round btn-default blue"
+            <td ng-if="editable" data-header="'editheader.html'"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
                       title="View/Edit Concept"> <span class="md md-edit"></span> </button></td>
           </tr>
@@ -122,7 +122,7 @@
      </button></div>-->
     </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
-           class="table table-full table-full-small">
+           class="table">
       <tr ng-repeat="failure in $data">
 
         <!-- Removed due to space considerations -->
