@@ -89,6 +89,7 @@
                 header="'ng-table/headers/checkboxHeader.html'"
                 ng-show="task"><div class="checkbox">
                 <label class="filled">
+
                   <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
                 </label>
               </div></td>
@@ -97,9 +98,9 @@
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
-            <td ng-if="whitelistEnabled"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
+            <td ng-if="whitelistEnabled" class="button-block"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
               Whitelist </button></td>
-            <td ng-if="editable" data-header="'editheader.html'"><button type="button" class="btn btn-round btn-default blue"
+            <td ng-if="editable" data-header="'editheader.html'" class="button-block"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
                       title="View/Edit Concept"> <span class="md md-edit"></span> </button></td>
           </tr>
