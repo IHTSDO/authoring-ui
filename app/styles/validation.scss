@@ -4,6 +4,9 @@
        border-top: 1px solid #F0F0F0;
        height: 35px;
    }
+   .table > tbody > tr > td {
+       padding-left: 8px;
+   }
    .validation-report-header {} .case-failures,
    .back-button {
        border-radius: 5px
