@@ -1,12 +1,15 @@
    .table > tbody > tr > td,
    .table > tbody > tr > th {
-       padding: 8px;
+       padding: 0;
        border-top: 1px solid #F0F0F0;
    }
    .table > tbody > tr > td.button-column {
        padding: 0;
    }
-   .table > tbody > tr > td {
+   .table > tbody > tr.validation-table-padding > td {
+       padding: 8px;
+   }
+  .table > tbody > tr > td {
        padding-left: 8px;
    }
    .validation-report-header {} .case-failures,
