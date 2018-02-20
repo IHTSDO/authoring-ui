@@ -1,8 +1,10 @@
    .table > tbody > tr > td,
    .table > tbody > tr > th {
-       padding: 0;
+       padding: 8px;
        border-top: 1px solid #F0F0F0;
-       height: 35px;
+   }
+   .table > tbody > tr > td.button-column {
+       padding: 0;
    }
    .table > tbody > tr > td {
        padding-left: 8px;
