@@ -708,7 +708,7 @@ angular.module('singleConceptAuthoringApp')
       // GET /{path}/concepts/{conceptId}/members
       function getMembersByTargetComponent(conceptId, branch) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&expand=referencedComponent(expand(fsn()))').then(function (response) {
+        $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
           if (response.data.total === 0) {
             deferred.resolve([]);
           } else {
