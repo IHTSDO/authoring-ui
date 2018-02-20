@@ -62,7 +62,7 @@
                 <span># of cases with errors</span>
               </div>
             </td>
-            <td>
+            <td class="button-column">
               <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
                 class="btn btn-default blue case-failures">Load Cases <i
@@ -98,9 +98,9 @@
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
-            <td ng-if="whitelistEnabled"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
+            <td ng-if="whitelistEnabled" class="button-column"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
               Whitelist </button></td>
-            <td ng-if="editable" data-header="'editheader.html'"><button type="button" class="btn btn-round btn-default blue"
+            <td ng-if="editable" data-header="'editheader.html'" class="button-column"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
                       title="View/Edit Concept"> <span class="md md-edit"></span> </button></td>
           </tr>
@@ -135,7 +135,7 @@
         <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'"> {{failure.failureText}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date:'medium'}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
-        <td><button
+        <td class="button-column"><button
             title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
             type="button" class="btn btn-round btn-default blue"> <i
               class="md md-close"></i>
