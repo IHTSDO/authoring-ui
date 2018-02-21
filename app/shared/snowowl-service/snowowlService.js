@@ -902,7 +902,9 @@ angular.module('singleConceptAuthoringApp')
             config.headers = {};
           }
           // set the accept language header
-          config.headers['Accept-Language'] = lang;
+          if(typeof lang === "string"){
+              config.headers['Accept-Language'] = lang;
+          }
         }
 
         if(syn){
