@@ -74,7 +74,7 @@
 
                 <textarea type="text" class="form-control no-padding-left"
                         ng-model="association.concept"
-                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getTypeaheadConcepts($viewValue)"
+                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getTypeaheadConcepts($viewValue, true)"
                         typeahead-focus-first="false"
                         typeahead-wait-ms="500"
                         typeahead-editable="false" typeahead-min-length="3"

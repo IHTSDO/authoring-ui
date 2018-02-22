@@ -96,8 +96,14 @@ angular.module('singleConceptAuthoringApp')
       return (integer + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
     }
 
-    $scope.getTypeaheadConcepts = function(searchStr) {
-      return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true).then(function (response) {
+    $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
+      return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
+          
+        response.items = response.items.filter(function (el) {
+          if (inactivationIndication) {
+            return $scope.conceptId !== el.concept.conceptId;
+          }
+        });
 
         let dropdown = $('.dropdown-menu');
 
