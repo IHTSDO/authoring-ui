@@ -92,6 +92,31 @@ angular.module('singleConceptAuthoringApp')
       });
     };
 
+    function addCommas(integer) {
+      return (integer + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    }
+
+    $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
+      return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
+          
+        response.items = response.items.filter(function (el) {
+          if (inactivationIndication) {
+            return $scope.conceptId !== el.concept.conceptId;
+          }
+        });
+
+        let dropdown = $('.dropdown-menu');
+
+        dropdown.children('.dropdown-menu-total').remove();
+
+        if((response.total - 50) > 1) {
+          let totalRow = $('<li>along with ' + addCommas(response.total - 50) + ' other results</li>').addClass('dropdown-menu-total');
+          dropdown.append(totalRow);
+        }
+
+        return response.items;
+      });
+    };
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
