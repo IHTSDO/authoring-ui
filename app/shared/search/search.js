@@ -606,7 +606,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        * Function to load another page of results
        */
       $scope.loadMore = function () {
-        $scope.search(true); // search in append mode
+        $scope.newSearch(true); // search in append mode
       };
 
       /**
