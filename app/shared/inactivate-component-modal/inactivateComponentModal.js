@@ -106,6 +106,7 @@ angular.module('singleConceptAuthoringApp')
 
         response.items = response.items.filter(function (el) {
           if (inactivationIndication) {
+            return ($scope.conceptId !== el.concept.conceptId) &&
               !(descendants.includes(el.concept.conceptId));
           }
         });
