@@ -98,24 +98,24 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
       return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
-          response.items = response.items.filter(function (el) {
-            if (inactivationIndication) {
+        let descendants = [];
 
-              if(($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId))) {
-                return ($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId));
-              } else {
-                response.total--;
-              }
-            }
-          });
+        angular.forEach($scope.descendants.items, function(descendant) {
+          descendants.push(descendant.id);
+        });
 
+        response.items = response.items.filter(function (el) {
+          if (inactivationIndication) {
+              !(descendants.includes(el.concept.conceptId));
+          }
+        });
 
         let dropdown = $('.dropdown-menu');
 
         dropdown.children('.dropdown-menu-total').remove();
 
-        if((response.total - 50) > 1) {
-          let totalRow = $('<li>along with ' + addCommas(response.total - 50) + ' other results</li>').addClass('dropdown-menu-total');
+        if((response.total - response.items.length) > 1) {
+          let totalRow = $('<li>along with ' + addCommas(response.total - response.items.length) + ' other results</li>').addClass('dropdown-menu-total');
           dropdown.append(totalRow);
         }
 
