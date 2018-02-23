@@ -344,7 +344,7 @@ angular.module('singleConceptAuthoringApp')
       function downloadClassification(classifierId, branch, limit) {
         return $http({
           'method': 'GET',
-          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=' + (limit ? limit : '1000'),
+          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=' + (limit ? limit : '1000'),
           'headers': {
             'Accept': 'text/csv'
           }
@@ -895,7 +895,7 @@ angular.module('singleConceptAuthoringApp')
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
-        
+
         if (lang) {
           // declare headers if not specified
           if (!config.headers) {
@@ -1654,7 +1654,7 @@ angular.module('singleConceptAuthoringApp')
       function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn, acceptLanguageValue) {
         var deferred = $q.defer();
         var config = {};
-        
+
         if (acceptLanguageValue) {
           // declare headers if not specified
           if (!config.headers) {
