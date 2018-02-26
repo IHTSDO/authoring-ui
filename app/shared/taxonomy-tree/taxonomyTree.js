@@ -97,8 +97,9 @@ angular.module('singleConceptAuthoringApp')
 
           snowowlService.getConceptChildren(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
 
-              if (!children) {
+              if (!children || children.length === 0) {
                 console.error('Could not retrieve children for node', node);
+                node.isLeafInferred = true;
                 return;
               }
 
