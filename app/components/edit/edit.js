@@ -1922,7 +1922,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                         document.getElementById('batchTemplateSelectBtn').click();
                     }
                     else if(($(this).find('.description-more').length != 0 || $(this).find('.concept-more').length != 0)
-                           && !$(e.target).hasClass('more-button-width')) {
+                           && !$(e.target).hasClass('more-button-width')
+                           && $(this).hasClass("in")) {
                       var elm = $(this).find("[component-id]");
                       var componentId = $(elm[0]).attr("component-id");
                       if(componentId) {
