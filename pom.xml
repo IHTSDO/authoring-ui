@@ -6,7 +6,7 @@
 
 	<groupId>org.ihtsdo.otf</groupId>
 	<artifactId>authoring-ui</artifactId>
-	<version>2.8.10</version>
+	<version>2.8.11</version>
 	<name>IHTSDO Single Concept Authoring Web Front End Angular </name>
 	<description>IHTSDO Single Concept Authoring Web Front End</description>
 	<url>https://test.ihtsdotools.org/</url>
