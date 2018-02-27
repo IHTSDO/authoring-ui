@@ -84,6 +84,16 @@ angular.module('singleConceptAuthoringApp.project', [
               $scope.validationContainer = response;
             });
           }
+
+          snowowlService.getLastPromotionTime(metadataService.getBranchRoot()).then(function(response) {
+            let date = new Date(response);
+
+            let hours = date.getHours();
+            let minutes = '0' + date.getMinutes();
+            let seconds = '0' + date.getSeconds();
+
+            $scope.project.lastPromotion = date.toUTCString();
+          });
         });
       };
 
@@ -339,7 +349,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on load, retrieve tasks for project
       function initialize() {
-
         // initialize the project
         $scope.getProject();
 
