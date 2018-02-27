@@ -1444,7 +1444,7 @@ angular.module('singleConceptAuthoringApp')
        * @param childBranch the child branch
        * @returns {*}
        */
-      function generateMergeReview(parentBranch, childBranch, projectKey, taskKey) {
+      function generateMergeReview(parentBranch, childBranch) {
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'merge-reviews', {
           source: parentBranch,
@@ -1455,11 +1455,6 @@ angular.module('singleConceptAuthoringApp')
           var locHeader = response.headers('Location');
           var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
 
-          if (taskKey) {
-            $http.post('../authoring-services/' + 'ui-state/' + projectKey + '-' + taskKey + '-merge-review-id', '"' + mergeReviewId + '"');
-          } else {
-            $http.post('../authoring-services/' + 'ui-state/' + projectKey + '-merge-review-id', '"' + mergeReviewId + '"');
-          }
           pollForReview(mergeReviewId, 1000).then(function (response) {
             response.id = mergeReviewId;
             deferred.resolve(response);

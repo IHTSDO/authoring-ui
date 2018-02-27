@@ -624,7 +624,7 @@ angular.module('singleConceptAuthoringApp')
                 // Previous review is not current, generate new review
                 // and initialize from new review
                 else {
-                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch, $routeParams.projectKey, $routeParams.taskKey).then(function (newReview) {
+                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
@@ -635,7 +635,6 @@ angular.module('singleConceptAuthoringApp')
                     }
                   }, function (error) {
                     notificationService.sendError('Error generating merge review');
-                    deleteMergeReviewId();
                   });
                 }
 
@@ -645,7 +644,7 @@ angular.module('singleConceptAuthoringApp')
             // if no review or review not current, generate new merge
             // review
             else {
-              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch, $routeParams.projectKey, $routeParams.taskKey).then(function (newReview) {
+              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                 // DIVERGED, but no merges to resolve
                 if (!newReview || newReview.length === 0) {
@@ -658,25 +657,6 @@ angular.module('singleConceptAuthoringApp')
                 }
               }, function (error) {
                 notificationService.sendError('Error generating merge review');
-                deleteMergeReviewId();
-              });
-            }
-          }
-
-          function deleteMergeReviewId() {
-            // Clean up if exists merge revew id
-            if ($routeParams.taskKey) {
-              scaService.getUiStateForUser($routeParams.projectKey + '-' + $routeParams.taskKey + '-merge-review-id').then(function (mergeReviewId) {
-                if (mergeReviewId) {
-                  scaService.deleteUiStateForUser($routeParams.projectKey + '-' + $routeParams.taskKey + '-merge-review-id');
-                }
-              });
-            } 
-            else {
-              scaService.getUiStateForUser($routeParams.projectKey + '-merge-review-id').then(function (mergeReviewId) {
-                if (mergeReviewId) {
-                  scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review-id');
-                }
               });
             }
           }
