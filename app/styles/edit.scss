@@ -317,10 +317,10 @@ textarea.form-control.inactivation-value{
     color: #fff;
 }
 @media screen and (max-width:1400px) {
-    .editing-form .add-buttons {       
+    .editing-form .add-buttons {
         padding: 4px 2px;
-        min-height : 10px; 
-        height : 15px;       
+        min-height : 10px;
+        height : 15px;
     }
 
     .editing-form .add-buttons.button-width-plus,
@@ -845,6 +845,12 @@ button[disabled] .project-icon {
 .z-depth-0 {
     box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.07), 1px 2px 5px 1px rgba(0, 0, 0, 0.06);
 }
+.project-main-buttons {
+    text-align: center;
+    .btn-group {
+        display: inline-block;
+    }
+}
 .project-main-buttons button {
     background-color: #fff ;
     border: 1px solid #eee ;
@@ -872,6 +878,9 @@ button[disabled] .project-icon {
     float: right;
     border-radius: 4px 0px 0px 4px;
     margin-right: 10px;
+}
+.promotion-box {
+    text-align: right;
 }
 .sidebar-tabs.nav-tabs > li > a .project-main-buttons .project-icon .md {
     line-height: 30px;
@@ -921,7 +930,7 @@ background: #43A047;
     font-size: 13px;
 }
 .search-filter .filter-input {
-    padding-right: 0px; 
+    padding-right: 0px;
     padding-left: 10px;
 }
 .search-filter select {

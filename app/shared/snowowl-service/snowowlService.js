@@ -1352,6 +1352,14 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+      function getLastPromotionTime(branchRoot) {
+        return $http.get(apiEndpoint + 'branches/' + branchRoot).then(function (response) {
+          return response.data.baseTimestamp;
+        }, function (error) {
+          return null;
+        });
+      }
+
       ///////////////////////////////////////////////////
       // MRCM functions
       //////////////////////////////////////////////////
@@ -1754,6 +1762,7 @@ angular.module('singleConceptAuthoringApp')
         getTraceabilityForBranch: getTraceabilityForBranch,
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
+        getLastPromotionTime: getLastPromotionTime,
 
         // merge-review functionality
         getMergeReview: getMergeReview,
