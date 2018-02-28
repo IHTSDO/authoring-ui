@@ -18,18 +18,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
   .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
     function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService, savedListService,$timeout) {
 
-      var usModel = {
+      let usModel = {
         moduleId: '731000124108',
         dialectId: '900000000000509007'
       };
 
-      var usModuleFilterModel = {
+      let usModuleFilterModel = {
         '900000000000509007-fsn': 'FSN in US',
         '900000000000509007-pt': 'PT in US'
       };
 
-      var gbDialectId = '900000000000508004';
-      var fsnSuffix = '-fsn';
+      let gbDialectId = '900000000000508004';
+      let fsnSuffix = '-fsn';
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -70,17 +70,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       // on load, get templates
       if(!metadataService.isTemplatesEnabled()){
-          templateService.getTemplates().then(function (response) {
-              for(var i = response.length -1; i <= 0; i--){
-                console.log(response[i]);
-                  console.log(response[i].additionalSlots.length);
-                  if(response[i].additionalSlots.length > 0)
-                      {
-                          response.splice(i, 1);
-                      }
-              }
-            $scope.templates = response;
-          });
+        templateService.getTemplates().then(function (response) {
+          for(let i = response.length -1; i <= 0; i--){
+            console.log(response[i]);
+              console.log(response[i].additionalSlots.length);
+              if(response[i].additionalSlots.length > 0)
+                {
+                  response.splice(i, 1);
+                }
+          }
+          $scope.templates = response;
+        });
       }
 
       else {
@@ -191,13 +191,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.processResults = function () {
 
         // group concepts by SCTID
-        var displayedResults = [];
+        let displayedResults = [];
 
         // temp array for tracking duplicate ids
-        var tempIds = [];
+        let tempIds = [];
 
         // cycle over all results
-        for (var i = 0; i < $scope.storedResults.length; i++) {
+        for (let i = 0; i < $scope.storedResults.length; i++) {
 
           // if item already added skip
           if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
@@ -247,9 +247,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
 
         // apply dragging for batch view
-        $('.draggable').draggable({revert: 'invalid', helper: 'clone'});
+        let batchDrag = $('.draggable');
 
-        $('.draggable').click(function () {
+        batchDrag.draggable({revert: 'invalid', helper: 'clone'});
+
+        batchDrag.click(function () {
           //$("#excel_table").insertAtCaret($(this).text());
           return false;
         });
@@ -267,7 +269,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if (!$scope.userOptions.groupByConcept) {
 
           // cycle over items remaining in list
-          for (var j = i + 1; j < $scope.storedResults.length; j++) {
+          for (let j = i + 1; j < $scope.storedResults.length; j++) {
 
             // if second item matches, push it to new results and remove from
             // list
@@ -373,9 +375,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           case 2:
             activeFilter = false;
             break;
-
-          default:
-            activeFilter = null;
         }
 
         // set the return synonym flag to true for extensions
@@ -437,24 +436,28 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
         }
 
-        // if template selected, require search string
-        if ($scope.templateOptions.selectedTemplate) {
-          if (!$scope.searchStr || $scope.searchStr.length < 3) {
-            return;
-          }
+        if (!$scope.searchStr || $scope.searchStr.length < 3) {
+          return;
         }
 
-        // if escg do nothing, empty search allowed
-        else if ($scope.isEscgMode) {
-
-        }
-
-        // for straight text mode, require search string
-        else {
-          if (!$scope.searchStr || $scope.searchStr.length < 3) {
-            return;
-          }
-        }
+        // // if template selected, require search string
+        // if ($scope.templateOptions.selectedTemplate) {
+        //   if (!$scope.searchStr || $scope.searchStr.length < 3) {
+        //     return;
+        //   }
+        // }
+        //
+        // // if escg do nothing, empty search allowed
+        // else if ($scope.isEscgMode) {
+        //
+        // }
+        //
+        // // for straight text mode, require search string
+        // else {
+        //   if (!$scope.searchStr || $scope.searchStr.length < 3) {
+        //     return;
+        //   }
+        // }
 
         $scope.searchStatus = 'Searching...';
 
@@ -471,7 +474,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // For now, just use the current module id (i.e. the extension module id if it exists, otherwise the international module id)
         // scope variable for expected future toggle
         //
-        var acceptLanguageValue = '';
+        let acceptLanguageValue = '';
 
         if($scope.isExtension) {
           if ($scope.userOptions.selectedDialect &&
@@ -498,9 +501,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           $scope.searchTotal = null;
 
-          var fsnSearchFlag = !metadataService.isExtensionSet()
-                              || $scope.userOptions.selectedDialect === usModel.dialectId
-                              || $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
+          let fsnSearchFlag = !metadataService.isExtensionSet() ||
+            $scope.userOptions.selectedDialect === usModel.dialectId ||
+            $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
           snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue).then(function (results) {
             return results;
@@ -542,18 +545,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.synonymFlag = metadataService.isExtensionSet();
           console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions);
 
-          var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
+          let escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
 
           snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag, acceptLanguageValue).then(function (results) {
             // set load more parameters
-            var concepts = results.items;
+            let concepts = results.items;
             $scope.searchTotal = addCommas(results.total);
             $scope.loadPerformed = true;
             $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
 
 
             // convert to snowowl description search conceptObj
-            var conceptObjs = [];
+            let conceptObjs = [];
             if($scope.synonymFlag){
               angular.forEach(concepts, function (c) {
                 conceptObjs.push({
@@ -622,10 +625,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         document.getElementById('expandable-search').style.height = '37px';
       };
 
-      var queue = [];
-      var processingConceptId = null;
-      var editingConcepts = [];
-      var conceptLoaded = false;
+      let queue = [];
+      let processingConceptId = null;
+      let editingConcepts = [];
+      let conceptLoaded = false;
 
       $scope.selectItem = function (item) {
         if (!item) {
@@ -724,7 +727,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           return false;
         }
 
-        for (var i = 0, len = $scope.savedList.items.length; i < len; i++) {
+        for (let i = 0, len = $scope.savedList.items.length; i < len; i++) {
           if ($scope.savedList.items[i].concept.conceptId === id) {
             return true;
           }
@@ -745,7 +748,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if (!$scope.favorites || !$scope.favorites.items) {
           return false;
         }
-        for (var i = 0, len = $scope.favorites.items.length; i < len; i++) {
+        for (let i = 0, len = $scope.favorites.items.length; i < len; i++) {
           if ($scope.favorites.items[i].concept.conceptId === id) {
             return true;
           }
@@ -760,7 +763,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.openConceptInformationModal = function (result) {
-        var modalInstance = $modal.open({
+        let modalInstance = $modal.open({
           templateUrl: 'shared/concept-information/conceptInformationModal.html',
           controller: 'conceptInformationModalCtrl',
           resolve: {
@@ -792,7 +795,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       function getTargetSlotMap(conceptObj) {
 
-        var targetSlotMap = {};
+        let targetSlotMap = {};
         targetSlotMap[$scope.templateOptions.selectedSlot.slotName] = {
           conceptId: conceptObj.conceptId,
           fsn: conceptObj.fsn
@@ -818,7 +821,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         batchEditingService.setCurrentTemplate(template);
 
-        var targetSlotMap = getTargetSlotMap(conceptObj);
+        let targetSlotMap = getTargetSlotMap(conceptObj);
         templateService.createTemplateConcept(template, targetSlotMap).then(function (concept) {
           batchEditingService.addBatchConcept(concept);
           console.debug('batch concepts', batchEditingService.getBatchConcepts());
@@ -850,13 +853,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         notificationService.sendMessage('Generating batch concepts from template ' + template.name + '...');
 
-        var conceptPromises = [];
+        let conceptPromises = [];
 
         batchEditingService.setCurrentTemplate(template);
 
         angular.forEach($scope.results, function (conceptObj) {
           console.debug('adding from object', conceptObj);
-          var targetSlotMap = getTargetSlotMap(conceptObj.concept);
+          let targetSlotMap = getTargetSlotMap(conceptObj.concept);
           conceptPromises.push(templateService.createTemplateConcept(template, targetSlotMap));
         });
 
@@ -910,7 +913,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           scaService.getSelectedLanguegeForUser().then(function (data){
             if (data) {
-              var strArray = data.defaultLanguage.split('-');
+              let strArray = data.defaultLanguage.split('-');
               if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
                 if(strArray.length === 2) {
                   $scope.userOptions.selectedDialect = data.defaultLanguage;
