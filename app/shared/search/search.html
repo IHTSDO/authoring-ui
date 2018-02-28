@@ -80,7 +80,7 @@
       </div>
       <div class="col-md-7 filter-input" style="">
         <select ng-options="id as getDisplayedLanguageFromKey(id) for (id, name) in dialects"
-                ng-change="search();" name="select-type"
+                ng-change="newSearch()" name="select-type"
                 ng-model="userOptions.selectedDialect"
                 id="select-type-choice"
                 class="form-control no-padding m-t-10">
