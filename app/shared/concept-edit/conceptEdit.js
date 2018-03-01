@@ -1348,6 +1348,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // define the available dialects
         scope.dialects = metadataService.getAllDialects();
 
+// on extension metadata set
+        scope.$on('setExtensionMetadata', function (event, data) { 
+          scope.dialects = metadataService.getAllDialects();
+        });
+
 // always return en-us dialect first
         scope.dialectComparator = function (a, b) {
           if (a === '900000000000509007') {
