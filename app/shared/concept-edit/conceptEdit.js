@@ -1770,7 +1770,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             })
           } else {
-            description = componentAuthoringUtil.getNewDescription(null);
+            description = componentAuthoringUtil.getNewDescription(scope.concept.moduleId);
 
             // if not specified, simply push the new description
             if (afterIndex === null || afterIndex === undefined) {
@@ -2226,7 +2226,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addRelationship = function (relGroup, relationshipBefore) {
 
-          var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
+          var relationship = componentAuthoringUtil.getNewAttributeRelationship(metadataService.isExtensionSet() ? null : scope.concept.moduleId);
 
           // set role group if specified
           if (relGroup) {
