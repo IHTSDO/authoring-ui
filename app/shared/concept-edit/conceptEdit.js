@@ -1770,7 +1770,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             })
           } else {
-            description = componentAuthoringUtil.getNewDescription(scope.concept.moduleId);
+            description = componentAuthoringUtil.getNewDescription(metadataService.isExtensionSet() ? moduleId : scope.concept.moduleId);
 
             // if not specified, simply push the new description
             if (afterIndex === null || afterIndex === undefined) {
