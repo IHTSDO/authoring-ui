@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('metadataService', ['$http', '$rootScope', function ($http, $rootScope) {
+  .service('metadataService', ['$http', '$rootScope', '$interval', function ($http, $rootScope, $interval) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -14,6 +14,8 @@ angular.module('singleConceptAuthoringApp')
     var mrcmAttributeDomainMembers = [];
 
     var selfGroupedAttributes = [];
+      
+    var myProjects = [];
 
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
@@ -557,6 +559,10 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
+    function getMyProjects() {
+      return myProjects;
+    }
+
     function getProjectForKey(key) {
       for (var i = 0; i < projects ? projects.length : -1; i++) {
         if (projects[i].key === key) {
@@ -568,6 +574,10 @@ angular.module('singleConceptAuthoringApp')
 
     function setProjects(projectsList) {
       projects = projectsList;
+    }
+
+    function setMyProjects(myProjectList) {
+      myProjects = myProjectList;
     }
 
     function setMrcmEnabled(value) {
@@ -630,6 +640,39 @@ angular.module('singleConceptAuthoringApp')
       }
       return false;
     }
+      
+    function checkViewExclusionPermission(projectKey) {
+      if (extensionMetadata !== null) {
+        if (myProjects.length > 0) {
+          if (myProjects.indexOf(projectKey) === -1) {
+            $rootScope.hasViewExclusionsPermission = false;
+          } else {
+            $rootScope.hasViewExclusionsPermission = true;
+          }
+        } else {
+          var interval = null;
+          var count = 0;
+
+          // wait until my project list is set
+          interval = $interval(function () {            
+            if (myProjects.length > 0) {
+              if (myProjects.indexOf(projectKey) === -1) {
+                $rootScope.hasViewExclusionsPermission = false;
+              } else {
+                $rootScope.hasViewExclusionsPermission = true;
+              }
+              interval = $interval.cancel(interval);
+            } else if (count > 30) {
+              interval = $interval.cancel(interval);
+            } else {
+              count++;
+            }            
+          }, 2000);
+        }        
+      } else {
+        $rootScope.hasViewExclusionsPermission = true;
+      } 
+    }
 
     return {
 
@@ -637,9 +680,11 @@ angular.module('singleConceptAuthoringApp')
       isIsaRelationship: isIsaRelationship,
       getSnomedCtRootId: getSnomedCtRootId,
 
-      // project cache getters/setters
+      // project, my project cache getters/setters
       setProjects: setProjects,
       getProjects: getProjects,
+      setMyProjects : setMyProjects,
+      getMyProjects : getMyProjects,
       getProjectForKey: getProjectForKey,
 
       // inactivation reason retrieval
@@ -657,6 +702,7 @@ angular.module('singleConceptAuthoringApp')
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
       isSpellcheckDisabled: isSpellcheckDisabled,
+      
 
       // extension module-dependent retrieval functions
 
@@ -698,6 +744,9 @@ angular.module('singleConceptAuthoringApp')
       getBranchMetadata: function () {
         return branchMetadata;
       },
+
+      // uitility to check view whitelist in validation report
+      checkViewExclusionPermission: checkViewExclusionPermission,
 
       setNamespaces: setNamespaces,
       getNamespaces: getNamespaces,
