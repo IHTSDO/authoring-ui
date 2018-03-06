@@ -95,9 +95,11 @@ angular.module('singleConceptAuthoringApp')
       return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
         let descendants = [];
 
-        angular.forEach($scope.descendants.items, function(descendant) {
-          descendants.push(descendant.id);
-        });
+        if($scope.descendants) {
+          angular.forEach($scope.descendants.items, function(descendant) {
+            descendants.push(descendant.id);
+          });
+        }
 
         if (response.length === 1) {
             response.total = 1;
