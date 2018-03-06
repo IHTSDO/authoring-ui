@@ -61,6 +61,57 @@ angular.module('singleConceptAuthoringApp')
            });
          }
      };
+})
+.directive('typeahead', function () {
+  return {
+    restrict: 'A',
+    priority: 1000, // Let's ensure AngularUI Typeahead directive gets initialized first!
+    link: function (scope, element, attrs) {
+      // Bind keyboard events: arrows up(38) / down(40)
+      element.bind('keydown', function (evt) {
+        if (evt.which === 38 || evt.which === 40) {         
+          scope.$broadcast('TypeaheadActiveChanged', {'key' : evt.which});
+        }
+      });
+    }
+  };
+}).directive('typeaheadPopup', function () {
+  return {
+    restrict: 'EA',
+    link: function (scope, element, attrs) {
+      var unregisterFn = scope.$on('TypeaheadActiveChanged', function (event, data) {
+        if(scope.activeIdx !== -1) {
+          // Retrieve active Typeahead option:
+          var option = element.find('#' + attrs.id + '-option-' + scope.activeIdx);
+          if(option.length) {
+            var key =  data.key;
+
+            // Make sure option is visible:
+            var myElement = $(option[0]);          
+            var topPos = $(myElement)[0].offsetTop;
+            var parent = $(myElement).closest("ul");
+            var parentHeight = parent[0].clientHeight;
+            var scrollPos = parent[0].scrollTop;
+         
+            if (key === 40) {
+              if (topPos > parentHeight) {
+                $(parent).scrollTop(topPos - parentHeight + 24);
+              } else {
+                $(parent).scrollTop(0);
+              }
+            } else { 
+              if (topPos < (scrollPos)) {              
+                $(parent).scrollTop(topPos);  
+              }              
+            }             
+          }
+        }
+      });
+
+      // Ensure listener is unregistered when $destroy event is fired:
+      scope.$on('$destroy', unregisterFn);
+     }
+  };
 });
 
 angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window) {

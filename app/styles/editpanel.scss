@@ -780,7 +780,16 @@ button.fsn-title-button {
     border-color: transparent
 }
 /* fix on type ahead */
-
+.relationship-target.sourcename > .dropdown-menu::-webkit-scrollbar-thumb {  
+    background: #b8dbff;
+}
+.relationship-target.sourcename > .dropdown-menu::-webkit-scrollbar-thumb:hover {  
+    background: #57a5cc;
+}
+.relationship-target.sourcename > .dropdown-menu {
+    margin-left: 0px;
+    max-height: 471px;
+}
 .sourcename .dropdown-menu {
     margin-left: -70px;
 }
