@@ -160,6 +160,10 @@
         margin-right: 1px;
         color: #fff ;
     }
+    .relationship-target.sourcename > .dropdown-menu {
+        max-height: 367px;
+        margin-left: -70px;
+    }
 }
 @media (max-width: 1300px) {
     .title-text {
