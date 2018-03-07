@@ -1169,11 +1169,20 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
         $scope.clearTemplate();
+        
+        // Binding mouse scroll event
+        $timeout(function () {
+          $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
+        }, 1500);
       } else {
         templateService.createTemplateConcept(templateService.getSelectedTemplate(), null).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
-
+          
+          // Binding mouse scroll event
+          $timeout(function () {
+            $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
+          }, 1500);
         });
       }
 

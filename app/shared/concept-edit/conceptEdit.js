@@ -2301,6 +2301,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute the relationship groups
           scope.computeRelationshipGroups();
+          
+          // Binding mouse scroll event
+          $timeout(function () {
+            registerMouseScrollEvent();
+          }, 1000);
         };
 
         scope.addAxiomRelationship = function (relGroup, relationshipBefore, axiom) {
@@ -2923,6 +2928,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             newFirstCreatedElm.focus();
           }, 500);
 
+          // Binding mouse scroll event
+          $timeout(function () {
+            registerMouseScrollEvent();
+          }, 1000);
         };
 
         scope.addAxiomRelationshipGroup = function (axiom) {
@@ -4047,8 +4056,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept = data.concept;
             scope.isModified = data.isModified;
           }
-        })
+        });
 
+        function bindingMouseScrollEvent(element) {
+          $(element).on('mousewheel DOMMouseScroll', function(e) {
+            var scrollTo = null;
+
+            if(e.type === 'mousewheel') {
+               scrollTo = (e.originalEvent.wheelDelta * -1);
+            }
+            else if(e.type === 'DOMMouseScroll') {
+               scrollTo = 40 * e.originalEvent.detail;
+            }
+
+            if(scrollTo) {
+               e.preventDefault();
+               $(this).scrollTop(scrollTo + $(this).scrollTop());
+            }
+          });
+        }
+
+        function registerMouseScrollEvent() {
+          var dropDowns = $('.dropdown-menu');
+          for (var i = 0; i < dropDowns.length; i++) {
+            bindingMouseScrollEvent(dropDowns[i]);
+          }
+        }
+
+        // set the initial binding mouse wheel event when content is fully loaded      
+        angular.element(document).ready(function () {    
+            registerMouseScrollEvent();
+        });
+
+        scope.$on('registerMouseScrollEvent', function (event, data) {
+          if (scope.concept.conceptId === data.id) {
+            registerMouseScrollEvent();
+          }          
+        });
 //
 // CRS Key Filtering and Display
 //
