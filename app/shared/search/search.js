@@ -352,8 +352,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if($scope.isExtension) {
           if ($scope.userOptions.selectedDialect && ($scope.userOptions.selectedDialect !== usModel.dialectId) &&
             (metadataService.getCurrentModuleId() !== usModel.moduleId) && $scope.dialects[$scope.userOptions.selectedDialect]) {
-
-            acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+              if($scope.dialects[$scope.userOptions.selectedDialect].indexOf('-') !== -1)
+                  {
+                      acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+                  }
+              else{
+                  acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+              }
           }
 
           else {
@@ -481,7 +486,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.userOptions.selectedDialect !== usModel.dialectId &&
             metadataService.getCurrentModuleId() !== usModel.moduleId &&
 			$scope.dialects[$scope.userOptions.selectedDialect]) {
-            acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+              if($scope.dialects[$scope.userOptions.selectedDialect].indexOf('-') !== -1)
+                  {
+                      acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+                  }
+              else{
+                  acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+              }
           } else {
             acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
           }
@@ -891,7 +902,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         else if (dialectId === usModel.dialectId) {
           return 'FSN in US';
         } else {
-          return 'PT in ' + $scope.dialects[dialectId].toUpperCase();
+          return 'PT in ' + ($scope.dialects[dialectId].substring($scope.dialects[dialectId].indexOf("-") + 1).toUpperCase())
         }
       };
 

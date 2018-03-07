@@ -2142,7 +2142,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.dialects || !scope.dialects[id]) {
             return '??';
           }
-          return scope.dialects[id].replace('en-', '');
+          return scope.dialects[id].substring(scope.dialects[id].indexOf("-") + 1);
         }
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {

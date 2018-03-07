@@ -232,8 +232,15 @@ angular.module('singleConceptAuthoringApp')
                 var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
                 requiredLanguageRefsets.forEach(function(lang) {
                   languages.push(Object.keys(lang)[0]);
-                  dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
-                    console.log(lang);
+                  if(lang.dialectName){
+                      dialects[lang[Object.keys(lang)[0]]] = lang.dialectName;
+                  }
+                  else{
+                    dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
+                  }
+                  
+                  console.log(lang);
+                    
                   if(lang.default === "true"){
                       defaultLanguages.push(Object.keys(lang)[0]);
                   }
