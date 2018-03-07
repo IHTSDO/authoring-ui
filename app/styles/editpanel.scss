@@ -788,7 +788,7 @@ button.fsn-title-button {
 .relationship-target > .dropdown-menu::-webkit-scrollbar-thumb:hover {  
     background: #57a5cc;
 }
-.relationship-target > .dropdown-menu {
+.relationship-target.sourcename > .dropdown-menu {
     margin-left: 0px;
     max-height: 471px;
 }
