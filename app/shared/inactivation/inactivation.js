@@ -602,7 +602,11 @@ angular.module('singleConceptAuthoringApp')
             } else {
               var idList = ids;
                 snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
-                    array.push(response.items);
+                    if (ids.length === 1 && response.length > 0) {
+                      array.push(response[0]);
+                    } else {
+                      array.push(response.items);
+                    }
                     deferred.resolve(array);
               });
             }
