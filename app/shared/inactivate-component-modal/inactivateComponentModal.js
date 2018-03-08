@@ -101,12 +101,22 @@ angular.module('singleConceptAuthoringApp')
           });
         }
 
-        response.items = response.items.filter(function (el) {
-          if (inactivationIndication) {
-            return ($scope.conceptId !== el.concept.conceptId) &&
-              !(descendants.includes(el.concept.conceptId));
-          }
-        });
+        if (response.length === 1) {
+            response.total = 1;
+            response.items = [];          
+          if (inactivationIndication 
+            && $scope.conceptId !== response[0].concept.conceptId 
+            && !(descendants.includes(response[0].concept.conceptId))) {
+            response.items.push(response[0]);
+          }      
+        } else {
+          response.items = response.items.filter(function (el) {
+            if (inactivationIndication) {
+              return ($scope.conceptId !== el.concept.conceptId) &&
+                !(descendants.includes(el.concept.conceptId));
+            }
+          });
+        }        
 
         let dropdown = $('.dropdown-menu');
 
