@@ -116,6 +116,9 @@ angular.module('singleConceptAuthoringApp')
                         angular.forEach(scope.histAssocTargets.concepts, function (innerConcept) {
 
                           var item = concept;
+                          if (!concept.active && concept.inactivationIndicator) {
+                            item.oldInactivationIndicator = concept.inactivationIndicator;
+                          }
                           item.refsetName = innerConcept.assocName;
                           item.inactivationIndicator = scope.reasonId;
                           item.newTargetId = innerConcept.conceptId;
@@ -1101,6 +1104,16 @@ angular.module('singleConceptAuthoringApp')
              
             return false;       
           };
+
+          scope.convertToTextFromCode = function (code) {
+            if(!code) {
+              return '';
+            }
+
+            var text = code.replace(/_/g, " ");
+            text = text.toLowerCase();
+            return text.charAt(0).toUpperCase() + text.slice(1);
+          }
 
           //
           // Initialization
