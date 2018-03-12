@@ -205,10 +205,12 @@
 
               <td data-title="'Concept FSN'" sortable="'sourceFsn'">{{rel.fsn}}
               </td>
-              <td data-title="'Reason'" sortable="''">
+              <td data-title="'Previous Reason'">{{convertToTextFromCode(rel.oldInactivationIndicator)}}
+              </td>
+              <td data-title="'New Reason'" sortable="''">
 
                 <select ng-model="rel.inactivationIndicator" class="select"
-                        ng-options="reason.id as reason.id for reason in inactivationReasons"
+                        ng-options="reason.id as convertToTextFromCode(reason.id) for reason in inactivationReasons"
                         ng-change="resetRelTargetConcept(rel)"></select>
 
               </td>
@@ -216,7 +218,7 @@
 
                 <select ng-model="rel.refsetName" class="select"
                         ng-disabled="rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY'"
-                        ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
+                        ng-options="target.id as convertToTextFromCode(target.id) for target in getAssociationsForReason(rel.inactivationIndicator)"
                         ng-change="updateRefTarget(rel)"></select>
               </td>
               <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">

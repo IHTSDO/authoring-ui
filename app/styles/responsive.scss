@@ -164,6 +164,9 @@
         max-height: 367px;
         margin-left: -70px;
     }
+    .inactivation-report.classification-report ~ .table-responsive .table-full tbody > tr > td:last-child {
+        padding-right: 0px;
+    }
 }
 @media (max-width: 1300px) {
     .title-text {
