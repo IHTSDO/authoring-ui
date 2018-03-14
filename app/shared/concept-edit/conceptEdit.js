@@ -3994,6 +3994,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return hashkey.split(':')[1];
         }
 
+        scope.isUnpublishedExtensionConcept = function () {
+          var conceptId = scope.concept.conceptId + '';
+          var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
+          return !metadataService.isExtensionSet()
+                  && snowowlService.isSctid(scope.concept.conceptId)             
+                  && scope.concept.active
+                  && !scope.concept.effectiveTime
+                  && partitionIdentifier === '10';
+        }
+
 //////////////////////////////////////////////////////////////////////////
 // CHeck for Promoted Task -- must be static
 // ////////////////////////////////////////////////////////////////////////

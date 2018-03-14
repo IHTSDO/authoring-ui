@@ -323,6 +323,12 @@ select.primitive {
 .editing-form .alert.alert-danger.validation a {
     color: #ffab40;
 }
+.editing-form .unpublished-concept {
+    color: yellow;
+    position: absolute; 
+    margin-left: 5px;
+    margin-top: 2px;
+}
 textarea,
 input,
 select {
