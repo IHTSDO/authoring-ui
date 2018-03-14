@@ -1,6 +1,8 @@
 
 <div class="edits editing-form darken-3 grey">
-
+  <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="isUnpublishedExtensionConcept()">
+     <span>Unpublished concept from extension</span>
+  </i>
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0 || inactivatingConceptError || deletingConeceptError">
     <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = [] ; inactivatingConceptError = false; deletingConeceptError = false;"
