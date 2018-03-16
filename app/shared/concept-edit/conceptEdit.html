@@ -1,7 +1,7 @@
 
 <div class="edits editing-form darken-3 grey">
-  <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="isUnpublishedExtensionConcept()">
-     <span>Unpublished concept from extension</span>
+  <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="getExtensionNamespace() !== ''">
+     <span >Unpublished concept from {{extensionNamespace}}</span>
   </i>
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0 || inactivatingConceptError || deletingConeceptError">
