@@ -3994,14 +3994,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return hashkey.split(':')[1];
         }
 
-        scope.isUnpublishedExtensionConcept = function () {
+        scope.extensionNamespace = '';
+
+        scope.getExtensionNamespace = function () {
           var conceptId = scope.concept.conceptId + '';
           var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
-          return !metadataService.isExtensionSet()
+          if (!metadataService.isExtensionSet()
                   && snowowlService.isSctid(scope.concept.conceptId)             
                   && scope.concept.active
                   && !scope.concept.effectiveTime
-                  && partitionIdentifier === '10';
+                  && partitionIdentifier === '10' /* Long format concept */) {
+            var namespaceId = conceptId.slice(conceptId.length - 10, conceptId.length - 3);
+            var namespace = metadataService.getNamespaceById(parseInt(namespaceId));        
+            scope.extensionNamespace =  namespace.organizationName;
+            return namespace.organizationName;
+          }
+
+          return '';
         }
 
 //////////////////////////////////////////////////////////////////////////

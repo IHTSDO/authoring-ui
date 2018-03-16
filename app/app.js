@@ -117,7 +117,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
 
     console.log('Running application');
 
@@ -279,6 +279,12 @@ angular
             metadataService.setMyProjects(myProjects);
           }
       });
+    });
+
+    cisService.getAllNamespaces().then(function (response) {
+      if(response.length > 0) {
+        metadataService.setNamespaces(response);
+      }
     });
 
     hotkeys.bindTo($rootScope)

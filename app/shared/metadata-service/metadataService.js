@@ -11,6 +11,8 @@ angular.module('singleConceptAuthoringApp')
 
     var myProjects = [];
 
+    var namespaces = [];
+
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
@@ -612,6 +614,24 @@ angular.module('singleConceptAuthoringApp')
       } 
     }
 
+    function setNamespaces(list) {
+      namespaces = list;
+    }
+
+    function getNamespaces() {
+      return namespaces;
+    }
+
+    function getNamespaceById(namespaceId) {
+      for (var i = 0; i < namespaces.length; i++) {
+        if(namespaceId === namespaces[i].namespace) {
+          return namespaces[i];
+        }
+      }
+
+      return null;
+    }
+
     return {
 
       // relationship functions
@@ -684,7 +704,9 @@ angular.module('singleConceptAuthoringApp')
 
       // uitility to check view whitelist in validation report
       checkViewExclusionPermission: checkViewExclusionPermission,
-
+      setNamespaces: setNamespaces,
+      getNamespaces: getNamespaces,
+      getNamespaceById: getNamespaceById
     };
 
   }])
