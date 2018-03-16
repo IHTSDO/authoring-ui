@@ -103,12 +103,12 @@ angular.module('singleConceptAuthoringApp')
 
         if (response.length === 1) {
             response.total = 1;
-            response.items = [];          
-          if (inactivationIndication 
-            && $scope.conceptId !== response[0].concept.conceptId 
+            response.items = [];
+          if (inactivationIndication
+            && $scope.conceptId !== response[0].concept.conceptId
             && !(descendants.includes(response[0].concept.conceptId))) {
             response.items.push(response[0]);
-          }      
+          }
         } else {
           response.items = response.items.filter(function (el) {
             if (inactivationIndication) {
@@ -116,7 +116,7 @@ angular.module('singleConceptAuthoringApp')
                 !(descendants.includes(el.concept.conceptId));
             }
           });
-        }        
+        }
 
         let dropdown = $('.dropdown-menu');
 
@@ -450,7 +450,7 @@ angular.module('singleConceptAuthoringApp')
     ////////////////////////////////////
 
     // selected reason
-    $scope.inactivationReason = null;
+    $scope.inactivationReason = reasons ? reasons[0] : null;
 
     // construct the associations array and add a blank row
     $scope.associations = [];
@@ -463,5 +463,7 @@ angular.module('singleConceptAuthoringApp')
     // flag for whether a stated parent-child relationship exists for this
     // concept (disable inactivation)
     $scope.statedChildFound = false;
+
+    $scope.updateAssociations($scope.inactivationReason);
   })
 ;
