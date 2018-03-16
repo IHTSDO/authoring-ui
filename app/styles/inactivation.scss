@@ -100,20 +100,20 @@ a.approve-button {
   padding-left: 0px;
 }
 
-#inactivateComponentModal input[type=radio] {
-  min-height: auto;
-  margin-bottom: -7.5px;
+#inactivateComponentModal label {
+  font-weight: normal;
+  font-size: 13px;
 }
 
-#inactivateComponentModal input[type=radio]:focus {
-  outline: 0;
+#inactivateComponentModal input[type=radio] {
+  -webkit-appearance: radio;
+  margin-right: 5px;
 }
 
 #inactivateComponentModal input[type=radio]::before {
-  margin: -1px 0 0 15px;
+  content: none;
 }
 
-#inactivateComponentModal p.radio-text {
-  display: inline-block;
-  font-size: 13px;
+#inactivateComponentModal input[type=radio]::after {
+  content: none;
 }

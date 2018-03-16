@@ -48,9 +48,8 @@
               <label> Select Inactivation Reason </label>
             </div>
             <div class="col-md-12">
-              <div ng-repeat="reason in reasons" class="col-sm-4">
-                <input type="radio" name="reasons" ng-value="reason" ng-model="inactivationReason" ng-click="updateAssociations(inactivationReason)">
-                <p class="radio-text">{{reason.text}}</p>
+              <div ng-repeat="reason in reasons">
+                <label><input type="radio" name="reason" ng-value="reason" ng-model="inactivationReason" ng-init="$index==0?(inactivationReason=reason):''" ng-click="updateAssociations(inactivationReason)">{{reason.text}}</label>
               </div>
 
               <!--<select id="taskProject" name="select-reason" class="form-control p-l-10"-->
