@@ -450,7 +450,38 @@ angular.module('singleConceptAuthoringApp')
     ////////////////////////////////////
 
     // selected reason
-    $scope.inactivationReason = reasons ? reasons[0] : null;
+    if(componentType === 'Concept') {
+      $scope.reasons.sort(function(a, b) {
+        let textA = a.text;
+        let textB = b.text;
+        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+      });
+    }
+
+    else if(componentType === 'Description') {
+      let tempArray = [null, null, null, null];
+
+      angular.forEach($scope.reasons, function(item) {
+        switch(item.id) {
+          case 'ERRONEOUS':
+            tempArray[2] = item;
+            break;
+          case 'OUTDATED':
+            tempArray[1] = item;
+            break;
+          case 'NONCONFORMANCE_TO_EDITORIAL_POLICY':
+            tempArray[3] = item;
+            break;
+          case 'NOT_SEMANTICALLY_EQUIVALENT':
+            tempArray[0] = item;
+            break;
+        }
+      });
+
+      $scope.reasons = tempArray;
+    }
+
+    $scope.inactivationReason = $scope.reasons ? $scope.reasons[0] : null;
 
     // construct the associations array and add a blank row
     $scope.associations = [];
