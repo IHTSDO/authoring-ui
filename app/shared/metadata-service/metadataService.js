@@ -128,13 +128,13 @@ angular.module('singleConceptAuthoringApp')
     var descriptionInactivationReasons = [
       //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
       //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-      {id: 'ERRONEOUS', text: 'Erroneous component', display: []},
       //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
       //{id: 'LIMITED', text: 'Limited component'},
-      {id: 'OUTDATED', text: 'Outdated component', display: []},
       //{id: 'PENDING_MOVE', text: 'Pending move'},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []},
-      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]}
+      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]},
+      {id: 'OUTDATED', text: 'Outdated component', display: []},
+      {id: 'ERRONEOUS', text: 'Erroneous component', display: []},
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
 
     ];
 
@@ -240,9 +240,9 @@ angular.module('singleConceptAuthoringApp')
                   else{
                     dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
                   }
-                  
+
                   console.log(lang);
-                    
+
                   if(lang.default === "true"){
                       defaultLanguages.push(Object.keys(lang)[0]);
                   }
@@ -594,7 +594,7 @@ angular.module('singleConceptAuthoringApp')
           var count = 0;
 
           // wait until my project list is set
-          interval = $interval(function () {            
+          interval = $interval(function () {
             if (myProjects.length > 0) {
               if (myProjects.indexOf(projectKey) === -1) {
                 $rootScope.hasViewExclusionsPermission = false;
@@ -606,12 +606,12 @@ angular.module('singleConceptAuthoringApp')
               interval = $interval.cancel(interval);
             } else {
               count++;
-            }            
+            }
           }, 2000);
-        }        
+        }
       } else {
         $rootScope.hasViewExclusionsPermission = true;
-      } 
+      }
     }
 
     function setNamespaces(list) {
@@ -660,7 +660,7 @@ angular.module('singleConceptAuthoringApp')
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
       isSpellcheckDisabled: isSpellcheckDisabled,
-      
+
 
       // extension module-dependent retrieval functions
 
