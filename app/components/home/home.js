@@ -253,7 +253,11 @@ angular.module('singleConceptAuthoringApp.home', [
         };
 
         $scope.$on('reloadTasks', function (event, data) {
-            loadTasks();
+            if (data.isCreateTask) {
+                $scope.tasks.push(data.concept);
+            } else {
+                loadTasks();  
+            }            
         });
 
 // Initialization:  get tasks and classifications
