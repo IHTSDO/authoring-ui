@@ -361,24 +361,6 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.taskTableParams.reload();
         });
 
-        // Get uiState for project
-        scaService.getUiStateForUser($routeParams.projectKey + '-merge-review-id').then(function (mergeReviewId) {
-          if (mergeReviewId) {
-            var viewedMergePoll = null;
-
-            viewedMergePoll = $interval(function () {
-              snowowlService.getMergeReview(mergeReviewId).then(function (response) {
-                if (response.status === 'PENDING' || response.status === 'CURRENT') {
-                  $rootScope.rebaseRunning = true;
-                } else {
-                  $rootScope.rebaseRunning = false;
-                  scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review-id');
-                  viewedMergePoll = $interval.cancel(viewedMergePoll);
-                }
-              });
-            }, 2000);
-          }
-        });
       }
 
       // on reload task broadcast, re-initialize
