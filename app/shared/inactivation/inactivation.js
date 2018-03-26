@@ -187,11 +187,17 @@ angular.module('singleConceptAuthoringApp')
 
                             // construct the parsed table row
                             var item = description;
-                            item.refsetName = innerConcept.assocName;
-                            item.inactivationIndicator = scope.reasonId;
-                            item.newTargetId = innerConcept.conceptId;
-                            item.newTargetFsn = innerConcept.fsn;
 
+                            if(item.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
+                              item.refsetName = 'REFERS_TO';
+                              item.newTargetId = innerConcept.conceptId;
+                              item.newTargetFsn = innerConcept.fsn;
+                            } else {
+                              item.refsetName = '';
+                              item.newTargetId = '';
+                              item.newTargetFsn = '';
+                            }                            
+                          
                             console.debug('         constructing row', item);
 
 
@@ -207,8 +213,20 @@ angular.module('singleConceptAuthoringApp')
                         else {
                           console.debug('         no new targets supplied');
                           var item = description;
-                          item.inactivationIndicator = scope.reasonId;
-                          item.refsetName = scope.associationTargets[j].id;
+                          if(scope.reasonId === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+                            item.inactivationIndicator = scope.reasonId;
+                            item.refsetName = '';                            
+                          }
+
+                          if(item.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
+                            item.refsetName = 'REFERS_TO';                           
+                          } else {
+                            item.refsetName = '';                           
+                          } 
+                          
+                          item.newTargetId = '';
+                          item.newTargetFsn = '';  
+
                           console.debug('         constructing row', item);
 
 
@@ -1057,6 +1075,17 @@ angular.module('singleConceptAuthoringApp')
             console.log(rel);
           };
 
+          scope.updateDescRefAssocTarget = function (rel) {
+            if(rel.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
+              rel.refsetName = 'REFERS_TO';
+            } else {
+              rel.refsetName = '';
+            }
+
+            rel.newTargetId = '';
+            rel.newTargetFsn = '';
+          };
+
           scope.hasNoConceptTarget = function () {           
             for (var i = 0; i < scope.affectedConceptAssocs.length; i++) {
               var concept = scope.affectedConceptAssocs[i];
@@ -1128,6 +1157,7 @@ angular.module('singleConceptAuthoringApp')
             scope.assocs = inactivationService.getAssocs();
             scope.associationTargets = metadataService.getAssociationInactivationReasons();
             scope.inactivationReasons = metadataService.getConceptInactivationReasons();
+            scope.descriptionInactivationReasons = metadataService.getDescriptionInactivationReasons();
             scope.assocName = null;
             scope.histAssocTargets = {};
             scope.histAssocTargets.concepts = [];
