@@ -689,7 +689,7 @@ angular.module('singleConceptAuthoringApp')
                       console.debug('    checking against concept description', cd.descriptionId);
                       if (cd.descriptionId === d.id) {
                         console.debug('      match found');
-                        if (d.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+                        if (d.inactivationIndicator !== 'NOT_SEMANTICALLY_EQUIVALENT') {
                           cd.inactivationIndicator = d.inactivationIndicator;
                           delete cd.associationTargets;
                         } else {
