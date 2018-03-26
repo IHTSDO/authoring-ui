@@ -689,7 +689,12 @@ angular.module('singleConceptAuthoringApp')
                       console.debug('    checking against concept description', cd.descriptionId);
                       if (cd.descriptionId === d.id) {
                         console.debug('      match found');
-                        cd.associationTargets = d.associationTargets;
+                        if (d.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+                          cd.inactivationIndicator = d.inactivationIndicator;
+                          delete cd.associationTargets;
+                        } else {
+                          cd.associationTargets = d.associationTargets;
+                        }                        
                       }
                     });
                   }
