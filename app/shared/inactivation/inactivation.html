@@ -266,7 +266,7 @@
           </table>
         </div>
         <div ng-show="affectedDescToConceptAssocs.length > 0">
-          <h4>Description Historical Associations Referencing Concepts</h4>
+          <h4>Inactive descriptions referring to this concept</h4>
 
           <table
             ng-table="assocsDescToConceptTableParams" template-pagination="utilities/data-table-pager.html"
@@ -281,14 +281,11 @@
               <td data-title="'Reason'" sortable="''">
 
                 <select ng-model="rel.inactivationIndicator" class=""
-                        ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
+                        ng-options="reason.id as convertToTextFromCode(reason.id) for reason in descriptionInactivationReasons" ng-change="updateDescRefAssocTarget(rel)"></select>
 
               </td>
               <td data-title="'Association'" sortable="'refsetName'">
-
-                <select ng-model="rel.refsetName" class="select"
-                        ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
-                        ng-change="updateRefTarget(rel)"></select>
+                {{convertToTextFromCode(rel.refsetName)}}                
               </td>
               <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
@@ -301,7 +298,8 @@
                         typeahead-wait-ms="700"
                         typeahead-on-select="setTargetConcept(rel, $item)"
                         typeahead-editable="false"
-                        typeahead-min-length="3"></textarea>
+                        typeahead-min-length="3"
+                        ng-disabled="rel.inactivationIndicator !== 'NOT_SEMANTICALLY_EQUIVALENT'"></textarea>
                 </div>
               </td>
               <td>
