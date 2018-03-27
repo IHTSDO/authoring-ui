@@ -303,6 +303,70 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return 'Preferred Term';
       };
 
+      // creates element for dialog download of classification data
+      $scope.dlcDialog = (function (data, fileName) {
+
+        // create the hidden element
+        var a = document.createElement('a');
+        document.body.appendChild(a);
+
+        return function (data, fileName) {
+          var
+            blob = new Blob([data], {type: 'text/csv'}),
+            url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        };
+      }());
+
+      $scope.downloadSearchResults = function() {
+        let acceptLanguageValue = '';
+
+        if($scope.isExtension) {
+          if ($scope.userOptions.selectedDialect && ($scope.userOptions.selectedDialect !== usModel.dialectId) &&
+            (metadataService.getCurrentModuleId() !== usModel.moduleId) && $scope.dialects[$scope.userOptions.selectedDialect]) {
+            if($scope.dialects[$scope.userOptions.selectedDialect].indexOf('-') !== -1)
+            {
+              acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+            }
+            else{
+              acceptLanguageValue = $scope.dialects[$scope.userOptions.selectedDialect] + '-' + $scope.dialects[$scope.userOptions.selectedDialect].toUpperCase() + '-x-' + $scope.userOptions.selectedDialect + ';q=0.8,en-US;q=0.5';
+            }
+          }
+
+          else {
+            acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+          }
+        }
+
+        else {
+          acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+        }
+
+        let activeFilter = null;
+
+        switch($scope.userOptions.searchType) {
+          case 1:
+            activeFilter = true;
+            break;
+
+          case 2:
+            activeFilter = false;
+            break;
+        }
+
+        let fsnSearchFlag = !metadataService.isExtensionSet() ||
+          $scope.userOptions.selectedDialect === usModel.dialectId ||
+          $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
+
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true).then(function (data) {
+          let fileName = 'searchResults_' + $routeParams.taskKey;
+          $scope.dlcDialog(data.data, fileName);
+        });
+      };
+
       $scope.autoExpand = function() {
         $scope.escgExpr = $scope.escgExpr.replace(/[\r]/g, '');
 
@@ -395,7 +459,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter).then(function (results) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false).then(function (results) {
 
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
