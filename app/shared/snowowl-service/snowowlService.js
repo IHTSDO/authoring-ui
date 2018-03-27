@@ -1145,7 +1145,6 @@ angular.module('singleConceptAuthoringApp')
                 'Accept': 'text/csv'
               }
             }).then(function(response) {
-              debugger;
               deferred.resolve(response);
             });
           }
