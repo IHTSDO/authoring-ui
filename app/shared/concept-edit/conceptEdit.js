@@ -1009,7 +1009,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if errors, notify and do not save
             else if (scope.validation && scope.validation.hasErrors) {
-              notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
+              notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
               scope.saving = false;
               scope.reapplyTemplate();
 
@@ -1047,7 +1047,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     });
                   }
                   else if (scope.validation.hasWarnings) {
-                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review');
+                    notificationService.sendWarning('Concept saved, but contradictions of conventions were detected. Please review Convention Warnings.');
                     $rootScope.$broadcast('conceptEdit.validation', {
                       branch: scope.branch,
                       conceptId: scope.concept.conceptId,
