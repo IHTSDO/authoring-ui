@@ -2825,7 +2825,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               copy.groupId = target.groupId;
 
               // set module id for new relationship
-              copy.moduleId = metadataService.getCurrentModuleId();
+              copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
               // get index of target relationship
               var targetIndex = scope.concept.relationships.indexOf(target);
@@ -3001,7 +3001,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   delete copy.released;
 
                   // set module id based on metadata
-                  copy.moduleId = metadataService.getCurrentModuleId();
+                  copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
                   // set the group based on target
                   copy.groupId = newGroup;
