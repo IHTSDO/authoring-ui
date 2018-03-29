@@ -256,6 +256,9 @@ content: '';
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after {
     left: 92%;
 }
+.offset-tooltip-right.medium-size-tooltip.tooltips-top:hover span {
+    margin-left: -52px;
+}
 .offset-tooltip-left.medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -7px;
 }
@@ -314,11 +317,11 @@ content: '';
 .tooltips-bottom .fa-search + span,
 .tooltips-bottom .fa-info-circle + span,
 .tooltips-bottom .fa-list-ol + span {
-    width: 80px;    
+    width: 80px;
 }
 .tooltips-bottom:hover .fa-search + span,
 .tooltips-bottom:hover .fa-info-circle + span,
-.tooltips-bottom:hover .fa-list-ol + span {   
+.tooltips-bottom:hover .fa-list-ol + span {
     margin-left: -40px;
 }
 .tooltips-bottom.small-size-tooltip:hover .md-my-library-books + span {
