@@ -901,7 +901,7 @@ angular.module('singleConceptAuthoringApp')
 
       function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, csv) {
         let deferred = $q.defer();
-        var config = {};
+        let config = {};
 
         let params = {
           offset: offset ? offset : '0',
