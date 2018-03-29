@@ -869,21 +869,34 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////
       // Browser Functions
       //////////////////////////
-      function browserStructureConversion(data) {
-
-        let result = {
-          active: data.active,
-          concept: {
+      function browserStructureConversion(data, syn) {
+        if(syn) {
+          return {
             active: data.active,
-            conceptId: data.conceptId,
-            definitionStatus: data.definitionStatus,
-            fsn: data.fsn,
-            preferredSynonym: data.preferredSynonym,
-            moduleId: data.moduleId
-          }
-        };
+            concept: {
+              active: data.active,
+              conceptId: data.pt.conceptId,
+              definitionStatus: data.definitionStatus,
+              fsn: data.fsn,
+              preferredSynonym: data.pt.term,
+              moduleId: data.moduleId
+            }
+          };
+        }
 
-        return result;
+        else {
+          return {
+            active: data.active,
+            concept: {
+              active: data.active,
+              conceptId: data.fsn.conceptId,
+              definitionStatus: data.definitionStatus,
+              fsn: data.fsn.term,
+              preferredSynonym: data.preferredSynonym,
+              moduleId: data.moduleId
+            }
+          };
+        }
       }
 
       function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, csv) {
@@ -937,17 +950,7 @@ angular.module('singleConceptAuthoringApp')
                 let results = [];
 
                 angular.forEach(response.data.items, function(item) {
-                  let obj = browserStructureConversion(item);
-
-                  if(syn) {
-                    obj.concept.conceptId = item.pt.conceptId;
-                    obj.concept.preferredSynonym = item.pt.term;
-                  }
-
-                  else {
-                    obj.concept.conceptId = item.fsn.conceptId;
-                    obj.concept.fsn = item.fsn.term;
-                  }
+                  let obj = browserStructureConversion(item, syn);
 
                   results.push(obj);
                 });
@@ -977,17 +980,7 @@ angular.module('singleConceptAuthoringApp')
                   let results = [];
 
                   angular.forEach(response.data.items, function(item) {
-                    let obj = browserStructureConversion(item);
-
-                    if(syn) {
-                      obj.concept.conceptId = item.pt.conceptId;
-                      obj.concept.preferredSynonym = item.pt.term;
-                    }
-
-                    else {
-                      obj.concept.conceptId = item.fsn.conceptId;
-                      obj.concept.fsn = item.fsn.term;
-                    }
+                    let obj = browserStructureConversion(item, syn);
 
                     results.push(obj);
                   });
@@ -1021,17 +1014,7 @@ angular.module('singleConceptAuthoringApp')
                   let results = [];
 
                   angular.forEach(response.data.items, function(item) {
-                    let obj = browserStructureConversion(item);
-
-                    if(syn) {
-                      obj.concept.conceptId = item.pt.conceptId;
-                      obj.concept.preferredSynonym = item.pt.term;
-                    }
-
-                    else {
-                      obj.concept.conceptId = item.fsn.conceptId;
-                      obj.concept.fsn = item.fsn.term;
-                    }
+                    let obj = browserStructureConversion(item, syn);
 
                     results.push(obj);
                   });
@@ -1070,17 +1053,7 @@ angular.module('singleConceptAuthoringApp')
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
-                let obj = browserStructureConversion(item);
-
-                if(syn) {
-                  obj.concept.conceptId = item.pt.conceptId;
-                  obj.concept.preferredSynonym = item.pt.term;
-                }
-
-                else {
-                  obj.concept.conceptId = item.fsn.conceptId;
-                  obj.concept.fsn = item.fsn.term;
-                }
+                let obj = browserStructureConversion(item, syn);
 
                 results.push(obj);
               });
@@ -1108,17 +1081,7 @@ angular.module('singleConceptAuthoringApp')
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
-                let obj = browserStructureConversion(item);
-
-                if(syn) {
-                  obj.concept.conceptId = item.pt.conceptId;
-                  obj.concept.preferredSynonym = item.pt.term;
-                }
-
-                else {
-                  obj.concept.conceptId = item.fsn.conceptId;
-                  obj.concept.fsn = item.fsn.term;
-                }
+                let obj = browserStructureConversion(item, syn);
 
                 results.push(obj);
               });
