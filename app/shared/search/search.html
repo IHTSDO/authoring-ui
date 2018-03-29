@@ -197,8 +197,8 @@
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
-    <a ng-show="loadPerformed" class="btn btn-primary col-md-2 fa fa-download tooltips-right white-icon" ng-click="downloadSearchResults()">
-      <span>Download Results</span>
+    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top medium-size-tooltip offset-tooltip-right white-icon" ng-click="downloadSearchResults()">
+      <span class="tooltip-dl">Download Results</span>
     </a>
   </div>
   <!-- Spacing to temporarily fix margin problems -->
