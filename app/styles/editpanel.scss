@@ -45,6 +45,10 @@ tab-pane.active .no-padding.col-md-9 {
 .editpanel a {
     color: #666;
 }
+.editpanel a.white-icon {
+    color: white;
+}
+.editpanel
 aside.editpanel ul a {
     padding: 12px;
     color: #737373;
@@ -325,7 +329,7 @@ select.primitive {
 }
 .editing-form .unpublished-concept {
     color: yellow;
-    position: absolute; 
+    position: absolute;
     margin-left: 5px;
     margin-top: 2px;
 }
@@ -787,11 +791,11 @@ button.fsn-title-button {
 }
 /* fix on type ahead */
 .relationship-type > .dropdown-menu::-webkit-scrollbar-thumb,
-.relationship-target > .dropdown-menu::-webkit-scrollbar-thumb {  
+.relationship-target > .dropdown-menu::-webkit-scrollbar-thumb {
     background: #b8dbff;
 }
 .relationship-type > .dropdown-menu::-webkit-scrollbar-thumb:hover,
-.relationship-target > .dropdown-menu::-webkit-scrollbar-thumb:hover {  
+.relationship-target > .dropdown-menu::-webkit-scrollbar-thumb:hover {
     background: #57a5cc;
 }
 .relationship-type > .dropdown-menu {

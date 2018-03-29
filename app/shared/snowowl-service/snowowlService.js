@@ -896,12 +896,17 @@ angular.module('singleConceptAuthoringApp')
           expand: 'fsn()'
         };
 
+        if (!config.headers) {
+          config.headers = {};
+        }
+
+        if(csv) {
+          config.headers['Accept'] = 'text/csv';
+          params.offset = 0;
+          params.limit = 1000;
+        }
+
         if (lang) {
-          // declare headers if not specified
-          if (!config.headers) {
-            config.headers = {};
-          }
-          // set the accept language header
           if(typeof lang === "string"){
               config.headers['Accept-Language'] = lang;
           }
@@ -920,73 +925,80 @@ angular.module('singleConceptAuthoringApp')
 
           // if user is searching with a conceptID
           if(termFilter.substr(-2, 1) === '0') {
+            params.conceptIds = [termFilter];
 
-            // if using searchbar
-            if(!csv) {
-              $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + termFilter, { params : params }).then(function(response) {
+            $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                let item = browserStructureConversion(response.data);
-
-                deferred.resolve(response.data ? [item] : {items: [], total: 0});
-              }, function(error) {
-                deferred.reject(error);
-              });
-            }
-
-            // if downloading results
-            else {
-              $http({
-                'method': 'GET',
-                'url': apiEndpoint + branch + '/concepts/?conceptIds=' + termFilter + '&offset=0&limit=1000',
-                'headers': {
-                  'Accept': 'text/csv'
-                }
-              }).then(function(response) {
+              if(csv) {
                 deferred.resolve(response);
-              });
-            }
+              }
 
+              else {
+                let results = [];
+
+                angular.forEach(response.data.items, function(item) {
+                  let obj = browserStructureConversion(item);
+
+                  if(syn) {
+                    obj.concept.conceptId = item.pt.conceptId;
+                    obj.concept.preferredSynonym = item.pt.term;
+                  }
+
+                  else {
+                    obj.concept.conceptId = item.fsn.conceptId;
+                    obj.concept.fsn = item.fsn.term;
+                  }
+
+                  results.push(obj);
+                });
+
+                response.data.items = results;
+                deferred.resolve(response.data ? response.data : {items: [], total: 0});
+              }
+
+            }, function(error) {
+              deferred.reject(error);
+            });
           }
 
           // if user is searching with a descriptionID
           else if(termFilter.substr(-2, 1) === '1') {
             $http.get(apiEndpoint + branch + '/descriptions/' + termFilter).then(function(response) {
 
-              // if using searchbar
-              if(!csv) {
-                // $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.conceptId, { params : params }).then(function(response2) {
-                $http.get(apiEndpoint + branch + '/concepts/' + response.data.conceptId, { params : params }).then(function(response2) {
-                  console.log(response2.data);
-                  let item = browserStructureConversion(response2.data);
+              params.conceptIds = [response.data.conceptId];
 
-                  if(syn) {
-                    item.concept.conceptId = response2.data.pt.conceptId;
-                    item.concept.preferredSynonym = response2.data.pt.term;
-                  }
+              $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                  else {
-                    item.concept.conceptId = response2.data.fsn.conceptId;
-                    item.concept.fsn = response2.data.fsn.term;
-                  }
-
-                  deferred.resolve(response2.data ? [item] : {items: [], total: 0});
-                }, function(error) {
-                  deferred.reject(error);
-                });
-              }
-
-              // if downloading results
-              else {
-                $http({
-                  'method': 'GET',
-                  'url': apiEndpoint + branch + '/concepts/?conceptIds=' + response.data.conceptId + '&offset=0&limit=1000',
-                  'headers': {
-                    'Accept': 'text/csv'
-                  }
-                }).then(function(response) {
+                if(csv) {
                   deferred.resolve(response);
-                });
-              }
+                }
+
+                else {
+                  let results = [];
+
+                  angular.forEach(response.data.items, function(item) {
+                    let obj = browserStructureConversion(item);
+
+                    if(syn) {
+                      obj.concept.conceptId = item.pt.conceptId;
+                      obj.concept.preferredSynonym = item.pt.term;
+                    }
+
+                    else {
+                      obj.concept.conceptId = item.fsn.conceptId;
+                      obj.concept.fsn = item.fsn.term;
+                    }
+
+                    results.push(obj);
+                  });
+
+                  response.data.items = results;
+                  deferred.resolve(response.data ? response.data : {items: [], total: 0});
+                }
+
+              }, function(error) {
+                deferred.reject(error);
+              });
 
             }, function(error) {
               deferred.reject(error);
@@ -997,48 +1009,40 @@ angular.module('singleConceptAuthoringApp')
           else if(termFilter.substr(-2, 1) === '2') {
             $http.get(apiEndpoint + branch + '/relationships/' + termFilter, { params : params }).then(function(response) {
 
-              // if using searchbar
-              if(!csv) {
-                let source = null;
-                let target = null;
+              params.conceptIds = [response.data.sourceId, response.data.destinationId];
 
-                $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.sourceId, { params : params }).then(function(sourceResponse) {
+              $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                  source = browserStructureConversion(sourceResponse.data);
+                if(csv) {
+                  deferred.resolve(response);
+                }
 
-                  if (source && target) {
-                    deferred.resolve([source, target]);
-                  }
+                else {
+                  let results = [];
 
-                }, function(error) {
-                  deferred.reject(error);
-                });
+                  angular.forEach(response.data.items, function(item) {
+                    let obj = browserStructureConversion(item);
 
-                $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + response.data.destinationId).then(function(targetResponse) {
+                    if(syn) {
+                      obj.concept.conceptId = item.pt.conceptId;
+                      obj.concept.preferredSynonym = item.pt.term;
+                    }
 
-                  target = browserStructureConversion(targetResponse.data);
+                    else {
+                      obj.concept.conceptId = item.fsn.conceptId;
+                      obj.concept.fsn = item.fsn.term;
+                    }
 
-                  if (source && target) {
-                    deferred.resolve([source, target]);
-                  }
-                }, function(error) {
-                  deferred.reject(error);
-                });
-              }
+                    results.push(obj);
+                  });
 
-              // if downloading results
-              else {
-                $http({
-                  'method': 'GET',
-                  'url': apiEndpoint + branch + '/concepts/?conceptIds=' + response.data.sourceId + '&conceptIds=' + response.data.destinationId + '&offset=0&limit=1000',
-                  'headers': {
-                    'Accept': 'text/csv'
-                  }
-                }).then(function(responseCSV) {
-                  deferred.resolve(responseCSV);
+                  response.data.items = results;
+                  deferred.resolve(response.data ? response.data : {items: [], total: 0});
+                }
 
-                });
-              }
+              }, function(error) {
+                deferred.reject(error);
+              });
 
             }, function(error) {
               deferred.reject(error);
@@ -1056,10 +1060,13 @@ angular.module('singleConceptAuthoringApp')
           params.termFilter = termFilter;
           params.eclFilter = escgExpr;
 
-          // if using searchbar
-          if(!csv) {
-            $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
+          $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
+            if(csv) {
+              deferred.resolve(response);
+            }
+
+            else {
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
@@ -1079,36 +1086,25 @@ angular.module('singleConceptAuthoringApp')
               });
 
               response.data.items = results;
-
               deferred.resolve(response.data ? response.data : {items: [], total: 0});
-            }, function (error) {
-              deferred.reject(error);
-            });
-          }
+            }
 
-          // if downloading results
-          else {
-            $http({
-              'method': 'GET',
-              'url': apiEndpoint + branch + '/concepts/?ecl=' + escgExpr + '&offset=0&limit=1000',
-              'headers': {
-                'Accept': 'text/csv'
-              }
-            }).then(function(response) {
-              deferred.resolve(response);
-            });
-          }
-
+          }, function (error) {
+            deferred.reject(error);
+          });
         }
 
         // if the user is searching for text
         else {
           params.termFilter = termFilter;
 
-          // if using searchbar
-          if(!csv) {
-            $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
+          $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
+            if(csv) {
+              deferred.resolve(response);
+            }
+
+            else {
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
@@ -1127,27 +1123,13 @@ angular.module('singleConceptAuthoringApp')
                 results.push(obj);
               });
 
-
               response.data.items = results;
-
               deferred.resolve(response.data ? response.data : {items: [], total: 0});
-            }, function (error) {
-              deferred.reject(error);
-            });
-          }
+            }
 
-          // if downloading results
-          else {
-            $http({
-              'method': 'GET',
-              'url': apiEndpoint + branch + '/concepts/?term=' + termFilter + '&offset=0&limit=1000',
-              'headers': {
-                'Accept': 'text/csv'
-              }
-            }).then(function(response) {
-              deferred.resolve(response);
-            });
-          }
+          }, function (error) {
+            deferred.reject(error);
+          });
         }
 
         return deferred.promise;
