@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete) {
+  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete, $location) {
 
     // scope variables
     $scope.projects = null;
@@ -34,7 +34,7 @@ angular.module('singleConceptAuthoringApp')
 
 
     // Creates a task from modal form
-    $scope.createTask = function () {
+    $scope.createTask = function (openTask) {
 
       // check that all required fields are present
       if (!$scope.task.summary) {
@@ -50,14 +50,23 @@ angular.module('singleConceptAuthoringApp')
       $scope.disabled = true;
       scaService.createTaskForProject($scope.task.projectKey, $scope.task).then(
         function (response) {
-          // close modal
-          $modalInstance.close(response);
+          if (openTask) {
+            $modalInstance.close();
+            $location.url('tasks/task/' + response.projectKey + '/' + response.key + '/edit');
+          } else {
+            // close modal
+            $modalInstance.close(response);
+          }          
         }, function (error) {
           $scope.disabled = false;
           $scope.msgSuccess = '';
           $scope.msgError = 'Error occurred when trying to create task: ' + error;
         });
 
+    };
+
+    $scope.createAndOpenTask = function () {
+      $scope.createTask(true);
     };
 
     $scope.updateTask = function () {
