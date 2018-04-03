@@ -312,7 +312,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         return function (data, fileName) {
           var
-            blob = new Blob([data], {type: 'text/csv'}),
+            blob = new Blob([data], {type: 'text/tab-separated-values'}),
             url = window.URL.createObjectURL(blob);
           a.href = url;
           a.download = fileName;
