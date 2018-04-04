@@ -122,7 +122,7 @@
                 </a>
               </td>
 
-              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" class="feedback-icon-link" header-title="'Click to sort'">
+              <td data-title="'Feedback'" sortable="'feedbackMessageDate'" class="feedback-icon-link" header-title="'Click to sort'">
 
                 <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
@@ -141,7 +141,7 @@
 
                 </a>
                 <span class="feedback-message-date" ng-show="task.feedbackMessagesStatus === 'unread'">
-                    &nbsp;{{task.feedbackMessageDate | date : 'short'}}
+                    &nbsp;{{task.feedbackMessageDate | date : 'yyyy-MM-dd HH:mm'}}
                   </span>
 
 
