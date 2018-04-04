@@ -89,17 +89,7 @@ angular.module('singleConceptAuthoringApp.project', [
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               $scope.validationContainer = response;
             });
-          }
-
-          snowowlService.getLastPromotionTime(metadataService.getBranchRoot()).then(function(response) {
-            let date = new Date(response);
-
-            let hours = date.getHours();
-            let minutes = '0' + date.getMinutes();
-            let seconds = '0' + date.getSeconds();
-
-            $scope.project.lastPromotion = date.toUTCString();
-          });
+          }         
         });
       };
 
