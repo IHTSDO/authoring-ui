@@ -32,9 +32,6 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
-      
-      // reset flag before checking in getting project detail
-      $rootScope.hasViewExclusionsPermission = false;
 
       hotkeys.bindTo($scope)   
       .add({
@@ -67,9 +64,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // set the extension metadata for use by other elements
           metadataService.setExtensionMetadata($scope.project.metadata);
-
-          // This check would be used in validation report where to show/hide whitelist for project
-          metadataService.checkViewExclusionPermission($routeParams.projectKey);
 
           if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
             snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.project.branchPath, null).then(function(response) {

@@ -28,7 +28,7 @@
       <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
               class="btn btn-default btn-round deep-purple pull-right"
               ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
-      <button ng-show="!isCollapsed" ng-if="$root.hasViewExclusionsPermission" ng-click="toggleViewExclusions()"
+      <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()"
               class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip m-l-10 ">
       <div>{{viewExclusions ?
         'Hide'
@@ -110,7 +110,7 @@
   </div>
 
   <!-- Exclusions table -->
-  <div class="row m-t-15 no-gutter" ng-show="viewExclusions" ng-if="$root.hasViewExclusionsPermission">
+  <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
     <div class="row">
       <div class="col-md-10 p-10"> <strong>Whitelisted Errors</strong>: {{exclusionsTableParams.total()}} </div>
       <div class="col-md-2 p-10">
