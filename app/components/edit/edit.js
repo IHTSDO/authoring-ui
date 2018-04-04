@@ -2012,17 +2012,13 @@ angular.module('singleConceptAuthoringApp.edit', [
 
                 // set the extension metadata for use by other elements
                 metadataService.setExtensionMetadata($scope.project.metadata);
-
-                // This check would be used in validation report where to show/hide whitelist for task
-                metadataService.checkViewExclusionPermission($routeParams.projectKey);
               }, function (error) {
                 notificationService.sendError('Fatal error: Could not load extension module concept');
               });
-            } else {
-              // Always show whitelist for all users for International
-              $rootScope.hasViewExclusionsPermission = true;
             }
 
+            // This check would be used in validation report where to show/hide whitelist for task
+            metadataService.checkViewExclusionPermission($routeParams.projectKey);
 
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
