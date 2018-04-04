@@ -38,9 +38,17 @@ tab-pane.active .no-padding.col-md-9 {
 .saved-list {
     font-size: 12px;
 }
+.saved-list .fa-sca.fa-power-off {
+    margin-right: .3em;
+    width: 18px;
+}
 .editpanel a {
     color: #666;
 }
+.editpanel a.white-icon {
+    color: white;
+}
+.editpanel
 aside.editpanel ul a {
     padding: 12px;
     color: #737373;
@@ -318,6 +326,12 @@ select.primitive {
 }
 .editing-form .alert.alert-danger.validation a {
     color: #ffab40;
+}
+.editing-form .unpublished-concept {
+    color: yellow;
+    position: absolute;
+    margin-left: 5px;
+    margin-top: 2px;
 }
 textarea,
 input,
@@ -776,7 +790,21 @@ button.fsn-title-button {
     border-color: transparent
 }
 /* fix on type ahead */
-
+.relationship-type > .dropdown-menu::-webkit-scrollbar-thumb,
+.relationship-target > .dropdown-menu::-webkit-scrollbar-thumb {
+    background: #b8dbff;
+}
+.relationship-type > .dropdown-menu::-webkit-scrollbar-thumb:hover,
+.relationship-target > .dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #57a5cc;
+}
+.relationship-type > .dropdown-menu {
+    max-height: 471px;
+}
+.relationship-target.sourcename > .dropdown-menu {
+    margin-left: 0px;
+    max-height: 471px;
+}
 .sourcename .dropdown-menu {
     margin-left: -70px;
 }

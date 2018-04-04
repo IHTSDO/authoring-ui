@@ -61,6 +61,57 @@ angular.module('singleConceptAuthoringApp')
            });
          }
      };
+})
+.directive('typeahead', function () {
+  return {
+    restrict: 'A',
+    priority: 1000, // Let's ensure AngularUI Typeahead directive gets initialized first!
+    link: function (scope, element, attrs) {
+      // Bind keyboard events: arrows up(38) / down(40)
+      element.bind('keydown', function (evt) {
+        if (evt.which === 38 || evt.which === 40) {         
+          scope.$broadcast('TypeaheadActiveChanged', {'key' : evt.which});
+        }
+      });
+    }
+  };
+}).directive('typeaheadPopup', function () {
+  return {
+    restrict: 'EA',
+    link: function (scope, element, attrs) {
+      var unregisterFn = scope.$on('TypeaheadActiveChanged', function (event, data) {
+        if(scope.activeIdx !== -1) {
+          // Retrieve active Typeahead option:
+          var option = element.find('#' + attrs.id + '-option-' + scope.activeIdx);
+          if(option.length) {
+            var key =  data.key;
+
+            // Make sure option is visible:
+            var myElement = $(option[0]);          
+            var topPos = $(myElement)[0].offsetTop;
+            var parent = $(myElement).closest("ul");
+            var parentHeight = parent[0].clientHeight;
+            var scrollPos = parent[0].scrollTop;
+         
+            if (key === 40) {
+              if (topPos > parentHeight) {
+                $(parent).scrollTop(topPos - parentHeight + 24);
+              } else {
+                $(parent).scrollTop(0);
+              }
+            } else { 
+              if (topPos < (scrollPos)) {              
+                $(parent).scrollTop(topPos);  
+              }              
+            }             
+          }
+        }
+      });
+
+      // Ensure listener is unregistered when $destroy event is fired:
+      scope.$on('$destroy', unregisterFn);
+     }
+  };
 });
 
 angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window) {
@@ -958,7 +1009,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if errors, notify and do not save
             else if (scope.validation && scope.validation.hasErrors) {
-              notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
+              notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
               scope.saving = false;
               scope.reapplyTemplate();
 
@@ -996,7 +1047,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     });
                   }
                   else if (scope.validation.hasWarnings) {
-                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review');
+                    notificationService.sendWarning('Concept saved, but contradictions of conventions were detected. Please review Convention Warnings.');
                     $rootScope.$broadcast('conceptEdit.validation', {
                       branch: scope.branch,
                       conceptId: scope.concept.conceptId,
@@ -1347,6 +1398,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // define the available dialects
         scope.dialects = metadataService.getAllDialects();
+
+// on extension metadata set
+        scope.$on('setExtensionMetadata', function (event, data) { 
+          scope.dialects = metadataService.getAllDialects();
+        });
 
 // always return en-us dialect first
         scope.dialectComparator = function (a, b) {
@@ -1770,7 +1826,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             })
           } else {
-            description = componentAuthoringUtil.getNewDescription(null);
+            description = componentAuthoringUtil.getNewDescription(metadataService.isExtensionSet() ? moduleId : scope.concept.moduleId);
 
             // if not specified, simply push the new description
             if (afterIndex === null || afterIndex === undefined) {
@@ -2226,7 +2282,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addRelationship = function (relGroup, relationshipBefore) {
 
-          var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
+          var relationship = componentAuthoringUtil.getNewAttributeRelationship(metadataService.isExtensionSet() ? null : scope.concept.moduleId);
 
           // set role group if specified
           if (relGroup) {
@@ -2245,6 +2301,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute the relationship groups
           scope.computeRelationshipGroups();
+          
+          // Binding mouse scroll event
+          $timeout(function () {
+            registerMouseScrollEvent();
+          }, 1000);
         };
 
         scope.addAxiomRelationship = function (relGroup, relationshipBefore, axiom) {
@@ -2764,7 +2825,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               copy.groupId = target.groupId;
 
               // set module id for new relationship
-              copy.moduleId = metadataService.getCurrentModuleId();
+              copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
               // get index of target relationship
               var targetIndex = scope.concept.relationships.indexOf(target);
@@ -2867,6 +2928,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             newFirstCreatedElm.focus();
           }, 500);
 
+          // Binding mouse scroll event
+          $timeout(function () {
+            registerMouseScrollEvent();
+          }, 1000);
         };
 
         scope.addAxiomRelationshipGroup = function (axiom) {
@@ -2936,7 +3001,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   delete copy.released;
 
                   // set module id based on metadata
-                  copy.moduleId = metadataService.getCurrentModuleId();
+                  copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
                   // set the group based on target
                   copy.groupId = newGroup;
@@ -3233,12 +3298,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
           if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
-            if(!metadataService.isExtensionSet()
-              || (metadataService.isExtensionSet() && description.moduleId !== '11000172109' /*Belgium module*/)) {
-              angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
+            var descDialects = scope.getDialectIdsForDescription(description);
+            angular.forEach(descDialects, function (dialectId) {
+              if (!metadataService.isExtensionSet() 
+                  || (metadataService.isExtensionSet() && (descDialects.length <= 2 || description.lang === scope.dialects[dialectId]))) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
-              });
-            }
+              }
+            });
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
@@ -3928,6 +3994,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return hashkey.split(':')[1];
         }
 
+        scope.extensionNamespace = '';
+
+        scope.getExtensionNamespace = function () {
+          var conceptId = scope.concept.conceptId + '';
+          var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
+          if (!metadataService.isExtensionSet()
+                  && snowowlService.isSctid(scope.concept.conceptId)             
+                  && scope.concept.active
+                  && !scope.concept.effectiveTime
+                  && partitionIdentifier === '10' /* Long format concept */) {
+            var namespaceId = conceptId.slice(conceptId.length - 10, conceptId.length - 3);
+            var namespace = metadataService.getNamespaceById(parseInt(namespaceId));        
+            scope.extensionNamespace =  namespace.organizationName;
+            return namespace.organizationName;
+          }
+
+          return '';
+        }
+
 //////////////////////////////////////////////////////////////////////////
 // CHeck for Promoted Task -- must be static
 // ////////////////////////////////////////////////////////////////////////
@@ -3990,8 +4075,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept = data.concept;
             scope.isModified = data.isModified;
           }
-        })
+        });
 
+        function bindingMouseScrollEvent(element) {
+          $(element).on('mousewheel DOMMouseScroll', function(e) {
+            var scrollTo = null;
+
+            if(e.type === 'mousewheel') {
+               scrollTo = (e.originalEvent.wheelDelta * -1);
+            }
+            else if(e.type === 'DOMMouseScroll') {
+               scrollTo = 40 * e.originalEvent.detail;
+            }
+
+            if(scrollTo) {
+               e.preventDefault();
+               $(this).scrollTop(scrollTo + $(this).scrollTop());
+            }
+          });
+        }
+
+        function registerMouseScrollEvent() {
+          var dropDowns = $('.dropdown-menu');
+          for (var i = 0; i < dropDowns.length; i++) {
+            bindingMouseScrollEvent(dropDowns[i]);
+          }
+        }
+
+        // set the initial binding mouse wheel event when content is fully loaded      
+        angular.element(document).ready(function () {    
+            registerMouseScrollEvent();
+        });
+
+        scope.$on('registerMouseScrollEvent', function (event, data) {
+          if (scope.concept.conceptId === data.id) {
+            registerMouseScrollEvent();
+          }          
+        });
 //
 // CRS Key Filtering and Display
 //

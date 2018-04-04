@@ -616,7 +616,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
 
-          function addToEditHelper(conceptId) {
+          function addToEditHelper(conceptId,sorting) {
 
             // used for status update of addMultipleToEdit
             var deferred = $q.defer();
@@ -633,6 +633,11 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
 
               scope.viewedConcepts.push(response);
+
+              // Sort concepts
+              if(sorting) {                
+                scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
+              }
 
               // apply styles
               addConceptStyles(response);
@@ -738,9 +743,10 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendMessage('Loading concepts (0/' + conceptsToAdd.length + ')');
             }
 
+            var sortingDirection = scope.conceptsToReviewTableParams.sorting().term;
             for (var i = 0; i < conceptsToAdd.length; i++) {
               conceptsToAdd[i].viewed = true;
-              addToEditHelper(conceptsToAdd[i].conceptId).then(function (response) {
+              addToEditHelper(conceptsToAdd[i].conceptId,sortingDirection).then(function (response) {
                 conceptsAdded++;
                 if (conceptsAdded === conceptsToAdd.length) {
                   notificationService.sendMessage('All concepts loaded', 5000);

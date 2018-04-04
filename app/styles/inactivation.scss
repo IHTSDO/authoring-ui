@@ -1,49 +1,85 @@
-
- 
-	.inactivation-report.classification-report .nav-tabs > li{    width: 21%;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(5){    width: 15%; float:right;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(3){    width: 23%;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(5) .btn-alert.green {width:100%}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(4){    width: 14%;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(4) input {width:100%;}
-.inactivation-report.classification-report .nav-tabs li a {
-    padding: 5px 15px;
+.inactivation-report.classification-report .nav-tabs > li {
+  width: 21%;
 }
-    .inactivation-header{ line-height:1.6
-		}
-    .case-failures, .back-button {
-      border-radius: 5px
-    }
 
-    .back-button {
-      background-color: transparent;
-      border: 1px solid #00a6e5;
-      color: #00a6e5
-    }
+.inactivation-report.classification-report .nav-tabs > li:nth-child(5) {
+  width: 15%;
+  float: right;
+}
 
-    .back-button:hover {
-      background-color: #00a6e5;
-      border: 1px solid #00a6e5;
-    }
+.inactivation-report.classification-report .nav-tabs > li:nth-child(3) {
+  width: 23%;
+}
 
-    .table-filter {
-      padding: 25px;
-    }
+.inactivation-report.classification-report .nav-tabs > li:nth-child(5) .btn-alert.green {
+  width: 100%
+}
 
-   
+.inactivation-report.classification-report .nav-tabs > li:nth-child(4) {
+  width: 14%;
+}
 
- .inactivation-report a.base.grey{color:#fff;    background-color: #9e9e9e;}
-#inactivateComponentModal  select.form-control {margin-bottom:10px;}
-.modal-body .add-buttons{color:#666;}
-.modal-body .table > tbody > tr > td, .modal-body .table > tbody > tr > th{padding:8px;}
-a.approve-button{color:#fff}
+.inactivation-report.classification-report .nav-tabs > li:nth-child(4) input {
+  width: 100%;
+}
+
+.inactivation-report.classification-report .nav-tabs li a {
+  padding: 5px 15px;
+}
+
+.inactivation-header {
+  line-height: 1.6
+}
+
+.case-failures, .back-button {
+  border-radius: 5px
+}
+
+.back-button {
+  background-color: transparent;
+  border: 1px solid #00a6e5;
+  color: #00a6e5
+}
+
+.back-button:hover {
+  background-color: #00a6e5;
+  border: 1px solid #00a6e5;
+}
+
+.table-filter {
+  padding: 25px;
+}
+
+.inactivation-report a.base.grey {
+  color: #fff;
+  background-color: #9e9e9e;
+}
+
+#inactivateComponentModal select.form-control {
+  margin-bottom: 10px;
+}
+
+.modal-body .add-buttons {
+  color: #666;
+}
+
+.modal-body .table > tbody > tr > td, .modal-body .table > tbody > tr > th {
+  padding: 8px;
+}
+
+a.approve-button {
+  color: #fff
+}
+
 .inactivation-report.classification-report ~ .table-responsive textarea {
   font-size: 13px;
 }
+
 .inactivation-report.classification-report ~ .table-responsive select {
   background-color: #fff;
 }
-.inactivation-report.classification-report .nav input{
+
+.inactivation-report.classification-report .nav input {
   padding-left: 5px;
 }
 
@@ -55,9 +91,29 @@ a.approve-button{color:#fff}
 #inactivateComponentModal [type=text].form-control[readonly]:focus {
   box-shadow: inset 0 -2px 0 #00a6e5;
 }
+
 #inactivateComponentModal select.form-control.p-l-10 {
   padding-left: 10px;
 }
+
 #inactivateComponentModal [type=text].form-control.no-padding-left {
   padding-left: 0px;
+}
+
+#inactivateComponentModal label {
+  font-weight: normal;
+  font-size: 13px;
+}
+
+#inactivateComponentModal input[type=radio] {
+  -webkit-appearance: radio;
+  margin-right: 5px;
+}
+
+#inactivateComponentModal input[type=radio]::before {
+  content: none;
+}
+
+#inactivateComponentModal input[type=radio]::after {
+  content: none;
 }

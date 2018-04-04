@@ -2,10 +2,12 @@
   <div class="pop-edit concept-more description-popover row">
     <div class="concept-id pull-left">
       <label class="control-label">Concept ID</label>
-      <span class="fields row " ng-show="isSctid" ng-init="isSctid = isSctid(concept.conceptId)"> {{concept.conceptId}}</span> </div>
+      <span class="fields row " ng-show="isSctid" ng-init="isSctid = isSctid(concept.conceptId)"> {{concept.conceptId}} </span>
+    </div>
     <div class="time pull-left">
       <label class="control-label">Eff. Time</label>
-      <span class="fields row">{{concept.effectiveTime }}</span> </div>
+      <span class="fields row"> {{concept.effectiveTime}} </span>
+    </div>
     <div class="module pull-left">
       <label class="control-label">Module Id</label>
       <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
@@ -17,7 +19,7 @@
   </div>
   <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
     <div class="col-md-12 no-padding pull-left">
-      <label class="control-label">Inactivation Reason 
+      <label class="control-label">Inactivation Reason
         <!--ng-if="isLockedModule(concept.moduleId)"-->
         <button
                       ng-if="!isStatic && !isLockedModule(concept.moduleId)"

@@ -124,15 +124,15 @@
             </div>
           </div>
           <div class="col-md-2 no-padding" ng-if="role === 'AUTHOR'"
-               ng-hide="feedbackContainer.review.conceptsToReview.length === 0">            
+               ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <div class="pull-right p-r-10 p-t-15">
               <button
                 class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
                 ng-click="addMultipleToEdit(actionTab)">
                 <div class="md md-edit "></div>
-                <span>Show selected in edit panel</span> 
+                <span>Show selected in edit panel</span>
               </button>
-              
+
             </div>
           </div>
           <tr ng-repeat="concept in conceptsToReviewViewed">
@@ -150,7 +150,7 @@
                     ng-click="selectConcept(concept)">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
             <!--Author Controls -->
             <td ng-if="role === 'AUTHOR'" class="  col-md-3"
-                data-title="'Read/Unread'" sortable="'read'"><div class="pull-right m-3 ">
+                data-title="'Read / Unread'" sortable="'read'"><div class="m-3 ">
                 <div class="pull-right m-r-5">
                   <button
                     class="btn btn-round btn-default green base tooltips-bottom large-size-tooltip offset-tooltip-right normal-case"
@@ -174,46 +174,48 @@
                 </div>
               </div></td>
             <!--Reviewer Controls -->
-            <td ng-if="role === 'REVIEWER'" class=" col-md-3"><div class="pull-right m-r-5">
+            <td ng-if="role === 'REVIEWER'" class="col-md-3"><div class="pull-right-margin">
+                <button ng-show="concept.messages.length > 0"
+                        class="pull-right btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
+                        ng-click="selectConcept(concept)">
+                  <div
+                    ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
+                </button>
                 <button
-                  class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
+                  class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
+                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 ">
+                  <div class="fa-sca fa-comment  "></div>
+                  <span>View/submit feedback for concept</span>
+                </button>
+                <button
+                  ng-hide="subjectConcepts.length > 0 "
+                  class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
+                  ng-click="selectConcept(concept)">
+                  <div
+                    class="fa-sca fa-comment  "> <span>View/submit feedback for concept</span> </div>
+                </button>
+                <button
+                  class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case pull-right"
+                  ng-click="addToReviewed(concept)">
+                  <div
+                    class="md md-thumb-up "></div>
+                  <span>Approve</span>
+                </button>
+                <button
+                  class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case pull-right"
                   ng-click="selectConcept(concept)"
                   ng-disabled="concept.viewed">
                 <div
                     class="md md-edit "> <span>Add to Edit Panel</span> </div>
                 </button>
-                <button
-                  class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                  ng-click="addToReviewed(concept)">
-                <div
-                    class="md md-thumb-up "></div>
-                <span>Approve</span> </button>
-                <button
-                  ng-hide="subjectConcepts.length > 0 "
-                  class=" btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConcept(concept)">
-                <div
-                    class="fa-sca fa-comment  "> <span>View/submit feedback for concept</span> </div>
-                </button>
-                <button
-                  class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 ">
-                <div class="fa-sca fa-comment  "></div>
-                <span>View/submit feedback for concept</span> </button>
-                <button ng-show="concept.messages.length > 0"
-                        class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
 
-                        ng-click="selectConcept(concept)">
-                <div
-                    ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
-                </button>
               </div></td>
           </tr>
         </table>
         <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
               <div class="checkbox">
                 <label class="filled">
-                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(actionTab, booleanObj.checkedToReview)"                 
+                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(actionTab, booleanObj.checkedToReview)"
                  id="select_all_to_review"
                  name="filter-checkbox" value=""/>
                 </label>

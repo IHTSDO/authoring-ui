@@ -25,7 +25,7 @@
               ng-disabled="isStatic || isLockedModule(concept.moduleId)">
         <span>Delete Axiom</span>
       </button>
-      <button ng-if="axiom.definitionStatus === 'FULLY_DEFINED'"
+      <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'FULLY_DEFINED'"
               ng-disabled="isStatic || isLockedModule(concept.moduleId)"
               class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
@@ -33,7 +33,7 @@
         <div class="badge alert-warning ng-binding">≡&nbsp; </div>
         <span>Fully Defined</span>
       </button>
-      <button ng-if="axiom.definitionStatus === 'PRIMITIVE'"
+      <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic || isLockedModule(concept.moduleId)"
               class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
               ng-click="toggleAxiomDefinitionStatus(axiom)">

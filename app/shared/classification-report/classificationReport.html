@@ -1,4 +1,4 @@
-<section class="tables-data"> 
+<section class="tables-data">
   <!-- No results display banner -->
   <div class="ng-table-no-results dark-centured-text" ng-if="items && items.length === 0"> No results. </div>
   <div ng-if="type !== 'equivalence' && items.length > 0" class="table-responsive white">
@@ -10,10 +10,11 @@
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
         <td header-title="'Click to sort'" data-title="'Differences'" sortable="'changeNature'"><span ng-show="result.changeNature === 'INFERRED'" class="green-text">Added</span> <span ng-show="result.changeNature === 'REDUNDANT'" class="red-text">Removed</span></td>
+        <!--<td>{{result}}</td>-->
         <td header-title="'Click to sort'" data-title="'Source'" sortable="'sourceName'"
-            ng-click="editSourceConcept(result)"> {{result.source.fsn}} </td>
-        <td header-title="'Click to sort'" data-title="'Type'" sortable="'typeName'"> {{result.type.fsn}} </td>
-        <td header-title="'Click to sort'" data-title="'Destination'" sortable="'destinationName'"> {{result.destination.fsn}} </td>
+            ng-click="editSourceConcept(result)"> {{result.sourceFsn}} </td>
+        <td header-title="'Click to sort'" data-title="'Type'" sortable="'typeName'"> {{result.typeFsn}} </td>
+        <td header-title="'Click to sort'" data-title="'Destination'" sortable="'destinationName'"> {{result.destinationFsn}} </td>
         <td header-title="'Click to sort'" data-title="'Group'" sortable="'group'"> {{result.group}} </td>
         <td><button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
