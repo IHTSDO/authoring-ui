@@ -98,17 +98,12 @@ angular.module('singleConceptAuthoringApp')
     
     $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
       return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
-        response.items = response.items.filter(function (el) {
-          if (inactivationIndication) {
-            return $scope.conceptId !== el.concept.conceptId;
-          }
-        } else {
           response.items = response.items.filter(function (el) {
             if (inactivationIndication) {
               return ($scope.conceptId !== el.concept.conceptId)
             }
           });
-        }
+        
 
         let dropdown = $('.dropdown-menu');
 
