@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('metadataService', ['$http', '$rootScope', '$interval', function ($http, $rootScope, $interval) {
+  .service('metadataService', ['$http', '$rootScope', function ($http, $rootScope) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -533,10 +533,6 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
-    function getMyProjects() {
-      return myProjects;
-    }
-
     function getProjectForKey(key) {
       for (var i = 0; i < projects ? projects.length : -1; i++) {
         if (projects[i].key === key) {
@@ -548,10 +544,6 @@ angular.module('singleConceptAuthoringApp')
 
     function setProjects(projectsList) {
       projects = projectsList;
-    }
-
-    function setMyProjects(myProjectList) {
-      myProjects = myProjectList;
     }
 
     function setMrcmEnabled(value) {
@@ -636,11 +628,9 @@ angular.module('singleConceptAuthoringApp')
       isIsaRelationship: isIsaRelationship,
       getSnomedCtRootId: getSnomedCtRootId,
 
-      // project, my project cache getters/setters
+      // project cache getters/setters
       setProjects: setProjects,
       getProjects: getProjects,
-      setMyProjects : setMyProjects,
-      getMyProjects : getMyProjects,
       getProjectForKey: getProjectForKey,
 
       // inactivation reason retrieval
@@ -658,7 +648,6 @@ angular.module('singleConceptAuthoringApp')
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
       isSpellcheckDisabled: isSpellcheckDisabled,
-
 
       // extension module-dependent retrieval functions
 
