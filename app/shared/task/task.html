@@ -65,14 +65,9 @@
         </div>
     <div class="col-md-12 no-padding" ng-hide="task.status === 'Promoted'"> 
       <!-- Display create only if no task supplied -->
-      <div ng-if="!task.key" class="col-md-4">
+      <div ng-if="!task.key" class="col-md-6">
         <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="createTask(false)">Create Task </button>
-      </div>
-      <!-- Display only if no task supplied -->
-      <div ng-if="!task.key" class="col-md-4">
-        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="createAndOpenTask()">Create and Open Task </button>
+                ng-click="createTask()">Create Task </button>
       </div>
       
       <!-- If has a task key, replace Create with Update -->
@@ -82,7 +77,7 @@
       </div>
       
       <!-- Cancel always appears -->
-      <div class="col-md-4">
+      <div class="" ng-class="[{'col-md-6' : !task.key}, {'col-md-4' : task.key}]">
         <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-warning no-margin"
                 ng-click="close()">Cancel </button>
       </div>

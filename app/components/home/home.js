@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService, $interval) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -29,8 +29,7 @@ angular.module('singleConceptAuthoringApp.home', [
         // flags for displaying promoted tasks
         $scope.showPromotedTasks = false;
         $scope.showPromotedReviews = false;
-        var loadingTask = false;
-
+    
         hotkeys.bindTo($scope)
             .add({
               combo: 'alt+n',
@@ -109,10 +108,8 @@ angular.module('singleConceptAuthoringApp.home', [
 
             $scope.tasks = null;
             $scope.reviewTasks = null;
-            loadingTask = true;
             scaService.getTasks($scope.showPromotedTasks ? false : true).then(function (response) {
                 $scope.tasks = response;
-                loadingTask = false;
                 if ($scope.tasks) {
                     notificationService.sendMessage('All tasks loaded', 5000);
                 }
@@ -203,29 +200,12 @@ angular.module('singleConceptAuthoringApp.home', [
             });
 
             modalInstance.result.then(function (response) {
-                if (response) {                    
-                    addingTaskToList(response);                  
+                if (response) {
+                    $scope.tasks.push(response);
                 }
             }, function () {
             });
         };
-
-        function addingTaskToList (newTask) {
-            if (loadingTask) {
-                var loadingTasksPoll = $interval(function () {                            
-                    if (!loadingTask) {
-                        if ($scope.tasks.filter(function (task) {
-                            return newTask.key === task.key;
-                          }).length === 0) {
-                            $scope.tasks.push(newTask);
-                        }                    
-                        $interval.cancel(loadingTasksPoll);                               
-                    }
-                }, 100);
-            } else {
-                $scope.tasks.push(newTask);  
-            }            
-        }
 
         $scope.isProjectsLoaded = function() {
             var projects = metadataService.getProjects();
@@ -234,7 +214,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.$on('reloadTasks', function (event, data) {
             if (data.isCreateTask) {
-                addingTaskToList(data.concept);               
+                $scope.tasks.push(data.concept);
             } else {
                 loadTasks();  
             }            
