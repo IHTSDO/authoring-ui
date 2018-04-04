@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         });
 
         modalInstance.result.then(function (response) {
-          $rootScope.$broadcast('reloadTasks', {isCreateTask : true, concept : response});
+          $rootScope.$broadcast('reloadTasks');
         }, function () {
         });
       };
