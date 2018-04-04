@@ -1,6 +1,8 @@
 
 <div class="edits editing-form darken-3 grey">
-
+  <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="getExtensionNamespace() !== ''">
+     <span >Unpublished concept from {{extensionNamespace}}</span>
+  </i>
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0 || inactivatingConceptError || deletingConeceptError">
     <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = [] ; inactivatingConceptError = false; deletingConeceptError = false;"
@@ -535,7 +537,7 @@
                 </div>
 
                 <!-- attribute type' -->
-                <div class="pull-left is_a is_a_bg"
+                <div class="pull-left is_a is_a_bg relationship-type"
                      drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj"
@@ -566,7 +568,7 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
+                <div class="pull-left sourcename relationship-target" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic"

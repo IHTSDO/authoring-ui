@@ -80,7 +80,7 @@
       </div>
       <div class="col-md-7 filter-input" style="">
         <select ng-options="id as getDisplayedLanguageFromKey(id) for (id, name) in dialects"
-                ng-change="search();" name="select-type"
+                ng-change="newSearch()" name="select-type"
                 ng-model="userOptions.selectedDialect"
                 id="select-type-choice"
                 class="form-control no-padding m-t-10">
@@ -192,11 +192,14 @@
   </div>
   <!-- load more button -->
   <div class="col-md-12 m-t-10">
-    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-12 load-more" ng-click="loadMore()"
+    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-10 load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
+    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top medium-size-tooltip offset-tooltip-right white-icon" ng-click="downloadSearchResults()">
+      <span class="tooltip-dl">Download Results</span>
+    </a>
   </div>
   <!-- Spacing to temporarily fix margin problems -->
   <div class="m-t-50">

@@ -117,7 +117,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
 
     console.log('Running application');
 
@@ -249,6 +249,42 @@ angular
     ///////////////////////////////////////////
     scaService.getProjects().then(function (response) {
       metadataService.setProjects(response);
+
+      var projectKeys = [];
+      var promises = [];                    
+      promises.push(scaService.getTasks());
+      promises.push(scaService.getReviewTasks());     
+        
+      // on resolution of all promises
+      $q.all(promises).then(function (responses) {                
+          for (var i = 0; i < responses.length; i++) {
+            angular.forEach(responses[i], function (task) {
+              if (projectKeys.indexOf(task.projectKey) === -1) {
+                projectKeys.push(task.projectKey);
+              }
+            });
+          }
+
+          var myProjects = [];
+          angular.forEach(projectKeys, function(projectKey) {
+            angular.forEach(response, function(project) {
+                if(project.key === projectKey)
+                {
+                    myProjects.push(projectKey);
+                }
+            });
+          });
+          
+          if (myProjects.length > 0) {            
+            metadataService.setMyProjects(myProjects);
+          }
+      });
+    });
+
+    cisService.getAllNamespaces().then(function (response) {
+      if(response.length > 0) {
+        metadataService.setNamespaces(response);
+      }
     });
 
     hotkeys.bindTo($rootScope)

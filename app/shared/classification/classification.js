@@ -169,7 +169,7 @@ angular.module('singleConceptAuthoringApp')
 
             return function (data, fileName) {
               var
-                blob = new Blob([data], {type: 'text/csv'}),
+                blob = new Blob([data], {type: 'text/tab-separated-values'}),
                 url = window.URL.createObjectURL(blob);
               a.href = url;
               a.download = fileName;
@@ -404,12 +404,12 @@ angular.module('singleConceptAuthoringApp')
               });
 
               // copy the redundant stated relationships into their own array
-              scope.redundantStatedRelationships = [];             
+              scope.redundantStatedRelationships = [];
               angular.forEach(scope.relationshipChanges.items, function (item) {
                 if (item.changeNature === 'REDUNDANT') {
                   scope.redundantStatedRelationships.push(item);
                 }
-              });             
+              });
 
               // get Inferred not previously stated
               scope.getInferredNotPreviouslyStated(scope.relationshipChanges,sourceIds);
@@ -421,37 +421,42 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {            
+          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {
             var requestPromise = [];
-              var idList = [];
+            var idList = [];
+
             angular.forEach(sourceIds, function (sourceId) {
               idList.push(sourceId);
             });
-              
+
             snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
-                var relationships = [];
-                angular.forEach(response, function (concept) {
-                      angular.forEach(concept.relationships, function (rel) {
-                        if(rel.characteristicType === "STATED_RELATIONSHIP") {
-                          relationships.push(rel);
-                        }
-                      });
+              var relationships = [];
+              angular.forEach(response, function (concept) {
+                angular.forEach(concept.relationships, function (rel) {
+                  if(rel.characteristicType === "STATED_RELATIONSHIP") {
+                    relationships.push(rel);
+                  }
                 });
-                scope.inferredNotPreviouslyStated = [];
-                    angular.forEach(relationshipChanges.items, function (relationshipChange) {
-                      var itemFound = false;
-                      for(var i = 0; i < relationships.length; i++){
-                        var rel = relationships[i];
-                        if(relationshipChange.type.id === rel.type.conceptId
-                          && relationshipChange.destination.id === rel.target.conceptId) {
-                          itemFound = true;
-                          break;
-                        }
-                      }
-                      if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
-                        scope.inferredNotPreviouslyStated.push(relationshipChange);
-                      }
-                    });
+              });
+
+              scope.inferredNotPreviouslyStated = [];
+                angular.forEach(relationshipChanges.items, function (relationshipChange) {
+                  var itemFound = false;
+                  for(var i = 0; i < relationships.length; i++){
+                    var rel = relationships[i];
+
+                    if(relationshipChange.typeId === rel.type.conceptId
+                      && relationshipChange.destinationId === rel.target.conceptId) {
+
+                      itemFound = true;
+                      break;
+                    }
+                  }
+
+                  if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
+                    scope.inferredNotPreviouslyStated.push(relationshipChange);
+                  }
+                });
               });
           };
 
@@ -462,7 +467,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.role = role;
               })
             }
-          })
+          });
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {

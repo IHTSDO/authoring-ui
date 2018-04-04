@@ -303,17 +303,21 @@ h4.timeline-title {
     color: #F3CB67;
     background-color: transparent;
 }
+.sca-dark .Promoted.badge {
+    background-color: transparent;
+    color: #0091d7;
+}
 .sca-dark .Review.Completed.badge {
     background-color: transparent;
-    color: #01A2E1
+    color: #7e57c2
 }
 .sca-dark .In.Progress.badge {
     background-color: transparent;
-    color: #f06292;
+    color: #8bc34a;
 }
 .sca-dark .In.Review.badge {
     background-color: transparent;
-    color: #32ae1a;
+    color: #e55f88;
 }
 .sca-dark .Available.badge {
     background-color: transparent;
@@ -872,12 +876,7 @@ sca-dark .pull-left.follow-up {
 .sca-dark .dark-centured-text{
     color:#fff;
 }
-.sca-dark .navbar-fixed-top .btn.amber {
-    background-color: #ffca28;
-}
-.sca-dark .navbar-fixed-top .btn.amber:hover {
-    background-color: #ff8f00;
-}
+
 .sca-dark .dark-fix{color:#00adee}
 /*left nav */
 
@@ -1157,6 +1156,9 @@ background-color: #262e39;}
 }
 .sca-dark .inactivation-report.classification-report ~ .table-responsive textarea {
   color: #fff;
+}
+.sca-dark .inactivation-report.classification-report ~ .table-responsive h4 {
+  color: #fff;  
 }
 .sca-dark .inactivation-report.classification-report .nav input{
   color: #262e39;

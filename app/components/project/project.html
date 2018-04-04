@@ -4,21 +4,23 @@
 
   <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right dash-tables ">
 
-    <div class="page-header row">
-      <div class="col-md-3 no-padding">
+    <div class="page-header row p-b-5">
+      <div class="col-md-4 no-padding">
         <h1 class="p-l-15">
           {{project.title}}
         </h1>
-        <p class="lead p-l-15">
+        <p class="lead p-l-15 m-b-5">
           {{project.projectLead.displayName}}
         </p>
+        <div class="col-md-12 no-padding" ng-if="project.lastPromotion">
+          <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotion}}</p>
+        </div>
       </div>
-      <div class="col-md-9  project-main-buttons">
-
+      <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
-                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || rebaseRunning">
+                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled">
             <div
               class="project-icon yellow darken-2 pull-left">
               <div class="md md-autorenew"></div>
@@ -54,15 +56,8 @@
             <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote This Project to the Mainline</div>
             <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
-
-
-
-
-
         </div>
-
-
-      </div>
+      </div>      
 </div>
 
 
@@ -74,7 +69,7 @@
 
             <button
               ng-click="mergeAndRebase()"
-              ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || rebaseRunning"
+              ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled"
               ng-init="conflictsCollapsed = true"
               type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">

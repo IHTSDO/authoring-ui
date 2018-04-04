@@ -47,12 +47,16 @@
             <div class="col-md-12">
               <label> Select Inactivation Reason </label>
             </div>
-            <div class="col-md-12 no-padding m-l-5">
-              <select id="taskProject" name="select-reason" class="form-control p-l-10"
-                    ng-options="reason as reason.text for reason in reasons"
-                    ng-model="inactivationReason" ng-change="updateAssociations(inactivationReason)">
-                    <option value="" selected hidden />
-            </select>
+            <div class="col-md-12">
+              <div ng-repeat="reason in reasons">
+                <label><input type="radio" name="reason" ng-value="reason" ng-model="inactivationReason" ng-init="$index==0?(inactivationReason=reason):''" ng-click="updateAssociations(inactivationReason)">{{reason.text}}</label>
+              </div>
+
+              <!--<select id="taskProject" name="select-reason" class="form-control p-l-10"-->
+                    <!--ng-options="reason as reason.text for reason in reasons"-->
+                    <!--ng-model="inactivationReason" ng-change="updateAssociations(inactivationReason)">-->
+                    <!--<option value="" selected hidden />-->
+            <!--</select>-->
           </div>
         </div>
 
@@ -170,7 +174,7 @@
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
                   ng-disabled="associationTargets.length > 0 && hasNoConceptTarget()"
-                  ng-click="selectReason(inactivationReason)"> Continue with {{componentType}} Inactivation </button>
+                  ng-click="selectReason()"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>
   </div>
@@ -191,7 +195,7 @@
         <button type="button"
 
                   class="btn btn-default col-md-12 p-10 complete-action-btn no-padding"
-                  ng-click="selectReason(inactivationReason)"> Continue with Deletion </button>
+                  ng-click="selectReason()"> Continue with Deletion </button>
       </div>
     </div>
   </div>

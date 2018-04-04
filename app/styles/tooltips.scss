@@ -256,6 +256,9 @@ content: '';
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after {
     left: 92%;
 }
+.offset-tooltip-right.medium-size-tooltip.tooltips-top:hover span {
+    margin-left: -52px;
+}
 .offset-tooltip-left.medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -7px;
 }
@@ -281,6 +284,57 @@ content: '';
 }
 .md-playlist-add.small-size-tooltip.tooltips-bottom:hover span {
     margin-left: -51px;
+}
+
+.tooltips-bottom .fa-info + span,
+.tooltips-bottom .md-my-library-books + span,
+.tooltips-btm .md-my-library-books + span {
+    width: 65px;
+}
+.md-my-library-books.tooltips-bottom span,
+.md-my-library-books.tooltips-bottom.medium-size-tooltip span {
+    width: 105px;
+}
+.tooltips-bottom:hover .md-my-library-books + span,
+.tooltips-bottom:hover .fa-info + span,
+.tooltips-btm:hover .md-my-library-books + span {
+    margin-left: -35px;
+}
+.md-my-library-books.tooltips-bottom:hover span,
+.md-my-library-books.tooltips-bottom.medium-size-tooltip:hover span {
+    margin-left: -53px;
+}
+.md-my-library-books.tooltips-bottom.medium-size-tooltip.offset-tooltip-right:hover span {
+    margin-left: -96px;
+}
+.tooltips-bottom.medium-size-tooltip .md-content-copy + span {
+    width: 107px;
+}
+.tooltips-bottom.medium-size-tooltip.offset-tooltip-right:hover .md-content-copy + span {
+    margin-left: -98px;
+}
+.tooltips-bottom.small-size-tooltip .md-my-library-books + span,
+.tooltips-bottom .fa-search + span,
+.tooltips-bottom .fa-info-circle + span,
+.tooltips-bottom .fa-list-ol + span {
+    width: 80px;
+}
+.tooltips-bottom:hover .fa-search + span,
+.tooltips-bottom:hover .fa-info-circle + span,
+.tooltips-bottom:hover .fa-list-ol + span {
+    margin-left: -40px;
+}
+.tooltips-bottom.small-size-tooltip:hover .md-my-library-books + span {
+    margin-left: -35px;
+}
+.tooltips-bottom.large-size-tooltip .fa-envelope + span {
+    width: 158px;
+}
+.tooltips-bottom.large-size-tooltip:hover .fa-envelope + span {
+    margin-left: -79px;
+}
+.tooltips-right.medium-size-tooltip.fa-exclamation-triangle span{
+    min-width: 300px;
 }
 .status-concept.tooltips-bottom span {
     width: 180px;

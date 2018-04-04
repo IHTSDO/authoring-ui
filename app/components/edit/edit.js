@@ -185,8 +185,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
     $rootScope.automatedPromotionInQueued = false;
-    $rootScope.rebaseRunning = false;
     $rootScope.currentTask = null;
+
+    // reset flag before checking in getting branch detail
+    $rootScope.hasViewExclusionsPermission = false;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Note : This flag is used for indicating where sitebar comes from "be loaded from begining"  
@@ -1167,11 +1169,20 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
         $scope.clearTemplate();
+        
+        // Binding mouse scroll event
+        $timeout(function () {
+          $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
+        }, 1500);
       } else {
         templateService.createTemplateConcept(templateService.getSelectedTemplate(), null).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
-
+          
+          // Binding mouse scroll event
+          $timeout(function () {
+            $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
+          }, 1500);
         });
       }
 
@@ -1922,7 +1933,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                         document.getElementById('batchTemplateSelectBtn').click();
                     }
                     else if(($(this).find('.description-more').length != 0 || $(this).find('.concept-more').length != 0)
-                           && !$(e.target).hasClass('more-button-width')) {
+                           && !$(e.target).hasClass('more-button-width')
+                           && $(this).hasClass("in")) {
                       var elm = $(this).find("[component-id]");
                       var componentId = $(elm[0]).attr("component-id");
                       if(componentId) {
@@ -2000,10 +2012,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 
                 // set the extension metadata for use by other elements
                 metadataService.setExtensionMetadata($scope.project.metadata);
+
+                // This check would be used in validation report where to show/hide whitelist for task
+                metadataService.checkViewExclusionPermission($routeParams.projectKey);
               }, function (error) {
                 notificationService.sendError('Fatal error: Could not load extension module concept');
               });
+            } else {
+              // Always show whitelist for all users for International
+              $rootScope.hasViewExclusionsPermission = true;
             }
+
 
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
@@ -2056,25 +2075,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       }, function (error) {
         notificationService.sendError('Unexpected error: ' + error);
-      });
-
-      // Get uiState for task
-      scaService.getUiStateForUser($routeParams.projectKey + '-' + $routeParams.taskKey + '-merge-review-id').then(function (mergeReviewId) {
-        if (mergeReviewId) {
-          var viewedMergePoll = null;
-
-          viewedMergePoll = $interval(function () {
-            snowowlService.getMergeReview(mergeReviewId).then(function (response) {
-              if (response.status === 'PENDING' || response.status === 'CURRENT') {
-                $rootScope.rebaseRunning = true;                 
-              } else {
-                $rootScope.rebaseRunning = false;
-                scaService.deleteUiStateForUser($routeParams.projectKey + '-' + $routeParams.taskKey + '-merge-review-id');
-                viewedMergePoll = $interval.cancel(viewedMergePoll);
-              }
-            });
-          }, 2000);
-        }
       });
     }
 

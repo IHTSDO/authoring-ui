@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
               else {
                 if (searchStr) {
                   mydata = scope.items.filter(function (item) {
-                    return item.source.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.type.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.destination.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    return item.sourceFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.typeFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.destinationFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                   });
                 } else {
                   mydata = scope.items;
