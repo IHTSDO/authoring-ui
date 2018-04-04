@@ -10,7 +10,12 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.filterByInactivationReason = function () {
       return function (item) {
-        return $scope.inactivationReason && $scope.inactivationReason.display.indexOf(item.display) !== -1;
+        if ($scope.inactivationReason && $scope.inactivationReason.display.indexOf(item.display) !== -1) {
+          return true;
+        }
+        else {
+          return false;
+        }
       };
     };
 
@@ -21,14 +26,14 @@ angular.module('singleConceptAuthoringApp')
       if ($scope.associationTargets.length === 0) {
         $scope.associations = [];
       } else {
-        if ($scope.associations.length === 0) {
+        if ($scope.associations.length == 0) {
            $scope.addAssociation(0);
         }
 
         //Association type will be automatically populated if there is only one option
-        for (let i = 0; i < $scope.associations.length; i++) {
+        for (var i = 0; i < $scope.associations.length; i++) {
           // extract association for convenience
-          let association = $scope.associations[i];
+          var association = $scope.associations[i];
           association.type = null;
           if($scope.associationTargets.length === 1) {
             association.type = $scope.associationTargets[0];
@@ -63,9 +68,9 @@ angular.module('singleConceptAuthoringApp')
     }
     $scope.getConceptsForTypeahead = function (searchStr,inactivationIndication) {
       return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
-        let i = 0;
+        var i = 0;
         while (i < response.length) {
-          let j = i + 1;
+          var j = i + 1;
           while (j < response.length){
             if (response[j].concept.conceptId === response[i].concept.conceptId) {
               response.splice(j, 1);
@@ -150,7 +155,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
 
             params.total($scope.children.length);
-            let childrenDisplayed = params.sorting() ? $filter('orderBy')($scope.children, params.orderBy()) : $scope.children;
+            var childrenDisplayed = params.sorting() ? $filter('orderBy')($scope.children, params.orderBy()) : $scope.children;
 
             $defer.resolve(childrenDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
@@ -169,16 +174,16 @@ angular.module('singleConceptAuthoringApp')
         orderBy: 'sortableName'
       },
       {
-        total: $scope.descendants && $scope.descendants.items ? $scope.descendants.items.length : 0, // length
+        total: $scope.descendants && $scope.descendants && $scope.descendants.items ? $scope.descendants.items.length : 0, // length
         // of
         // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || !$scope.descendants.items) {
+          if (!$scope.descendants || !$scope.descendants || !$scope.descendants.items) {
             $defer.resolve([]);
           } else {
             params.total($scope.descendants.items.length);
-            let descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
+            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
 
             $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
@@ -207,7 +212,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
 
             params.total($scope.inboundRelationships.length);
-            let inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships, params.orderBy()) : $scope.inboundRelationships;
+            var inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships, params.orderBy()) : $scope.inboundRelationships;
             $defer.resolve(inboundRelationshipsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
         }
@@ -216,36 +221,35 @@ angular.module('singleConceptAuthoringApp')
 
 
      $scope.hasNoConceptTarget = function () {
-        for (let i = 0; i < $scope.associations.length; i++) {
-          let association = $scope.associations[i];
+        for (var i = 0; i < $scope.associations.length; i++) {
+          var association = $scope.associations[i];
           if(!association.concept || !association.concept.concept || !association.concept.concept.conceptId
             || !association.type || !association.type.id) {
             return true;
           }
        }
        return false;
-     };
+     }
 
-    $scope.selectReason = function () {
+    $scope.selectReason = function (reason) {
 
       // NOTE: associationTarget is optional
       if (!$scope.inactivationReason && !$scope.deletion) {
         window.alert('You must specify a reason for inactivation');
       } else {
 
-        let associationTarget = {};
+        var associationTarget = {};
 
         // FORMAT: associationTargets: {MOVED_FROM: ["139569002"]}
         // validate and convert association targets
-        for (let i = 0; i < $scope.associations.length; i++) {
+        for (var i = 0; i < $scope.associations.length; i++) {
             console.log($scope.associations);
           // extract association for convenience
-          let association = $scope.associations[i];
+          var association = $scope.associations[i];
 
 
           // if neither type nor concept specified
           if (!association.concept || !$scope.deletion && !association.type) {
-            // Probably need to re-write this if-else statement as it is unused
           }
 
           // if either field is blank, alert and return
@@ -274,7 +278,7 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
-        let results = {};
+        var results = {};
         results.reason = $scope.inactivationReason;
         results.associationTarget = associationTarget;
           if($scope.deletion)
@@ -292,7 +296,7 @@ angular.module('singleConceptAuthoringApp')
       if (reason.concept) {
         window.alert('You must specify a replacement concept');
       } else {
-        let results = {};
+        var results = {};
         results.deletion = true;
         results.concept = reason.concept;
 
@@ -302,7 +306,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.delete = function () {
 
-        let results = {};
+        var results = {};
         results.deletion = true;
         $modalInstance.close(results);
     };
@@ -336,7 +340,7 @@ angular.module('singleConceptAuthoringApp')
      * @param maxResults
      */
     function getInboundRelationships(conceptId, branch, startIndex, maxResults) {
-      let deferred = $q.defer();
+      var deferred = $q.defer();
 
       // get the concept relationships again (all)
       snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
@@ -344,7 +348,7 @@ angular.module('singleConceptAuthoringApp')
         $scope.inboundRelationshipsLoading = true;
 
         // temporary array for preventing duplicate children
-        let childrenIds = [];
+        var childrenIds = [];
 
         // initialize the arrays
         $scope.inboundRelationships = [];
@@ -367,7 +371,7 @@ angular.module('singleConceptAuthoringApp')
             if (item.type.id === '116680003') {
               // if already added and this relationship is STATED, replace
               if (childrenIds.indexOf(item.source.id) !== -1 && item.characteristicType === 'STATED_RELATIONSHIP') {
-                for (let i = 0; i < $scope.children.length; i++) {
+                for (var i = 0; i < $scope.children.length; i++) {
                   if ($scope.children[i].source.id === item.source.id) {
                     $scope.children[i] = item;
                   }
@@ -409,7 +413,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get the limited number of inbound relationships for display
     if ($scope.componentType === 'Concept') {
-      getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function () {
+      getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren) {
 
         checkStatedChildren();
 
