@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp.project', [
       // reset flag before checking in getting project detail
       $rootScope.hasViewExclusionsPermission = false;
 
-      hotkeys.bindTo($scope)
+      hotkeys.bindTo($scope)   
       .add({
         combo: 'alt+y',
         description: 'Start classification',
@@ -87,16 +87,6 @@ angular.module('singleConceptAuthoringApp.project', [
               $scope.validationContainer = response;
             });
           }
-
-          snowowlService.getLastPromotionTime(metadataService.getBranchRoot()).then(function(response) {
-            let date = new Date(response);
-
-            let hours = date.getHours();
-            let minutes = '0' + date.getMinutes();
-            let seconds = '0' + date.getSeconds();
-
-            $scope.project.lastPromotion = date.toUTCString();
-          });
         });
       };
 
@@ -348,6 +338,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on load, retrieve tasks for project
       function initialize() {
+
         // initialize the project
         $scope.getProject();
 
@@ -361,6 +352,24 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.taskTableParams.reload();
         });
 
+        // Get uiState for project
+        scaService.getUiStateForUser($routeParams.projectKey + '-merge-review-id').then(function (mergeReviewId) {
+          if (mergeReviewId) {
+            var viewedMergePoll = null;
+
+            viewedMergePoll = $interval(function () {
+              snowowlService.getMergeReview(mergeReviewId).then(function (response) {
+                if (response.status === 'PENDING' || response.status === 'CURRENT') {
+                  $rootScope.rebaseRunning = true;                 
+                } else {
+                  $rootScope.rebaseRunning = false;
+                  scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review-id');
+                  viewedMergePoll = $interval.cancel(viewedMergePoll);
+                }
+              });
+            }, 2000);
+          }
+        });
       }
 
       // on reload task broadcast, re-initialize
@@ -370,7 +379,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open classification results from notification link
       $scope.$on('toggleClassificationResults', function () {
-        setTimeout(function waitForClassificationContainerPresent() {
+        setTimeout(function waitForClassificationContainerPresent() {         
           if ($scope.project
             && $scope.project.latestClassificationJson) {
              $scope.classificationCollapsed = false;
@@ -382,22 +391,22 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
-        setTimeout(function waitForValidationContainerPresent() {
+        setTimeout(function waitForValidationContainerPresent() {         
           if ( $scope.branch
-            && $scope.validationContainer
-            && $scope.validationContainer.report
-            && $scope.validationContainer.report.rvfValidationResult
-             ) {
+            && $scope.validationContainer 
+            && $scope.validationContainer.report 
+            && $scope.validationContainer.report.rvfValidationResult 
+             ) {            
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               $scope.validationContainer = response;
               $scope.validationCollapsed = true;
-            });
+            });  
           } else {
             $scope.validationContainer = null;
             setTimeout(waitForValidationContainerPresent, 500);
           }
         }, 500);
-
+ 
       });
 
       //

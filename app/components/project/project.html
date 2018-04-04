@@ -5,7 +5,7 @@
   <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right dash-tables ">
 
     <div class="page-header row">
-      <div class="col-md-2 no-padding">
+      <div class="col-md-3 no-padding">
         <h1 class="p-l-15">
           {{project.title}}
         </h1>
@@ -13,9 +13,9 @@
           {{project.projectLead.displayName}}
         </p>
       </div>
-      <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
+      <div class="col-md-9  project-main-buttons">
 
-        <div class="btn-group p-t-10">
+        <div class="btn-group pull-right p-t-10 p-r-10">
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
                   ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled">
@@ -54,12 +54,14 @@
             <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote This Project to the Mainline</div>
             <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
-        </div>
-      </div>
 
-      <div class="col-md-2 pull-right no-padding promotion-box">
-        <h1 class="p-r-20">Last promoted to MAIN:</h1>
-        <p class="lead p-r-20">{{project.lastPromotion}}</p>
+
+
+
+
+        </div>
+
+
       </div>
 </div>
 
