@@ -89,12 +89,40 @@ angular.module('singleConceptAuthoringApp.home', [
                         params.total(mydata.length);
                         mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
+                        if(params.sorting().feedbackMessageDate === 'asc'){                           
+                            mydata.sort(function (a, b) {
+                                return sortFeedbackFn(a,b,'asc');
+                            });                        
+                        } else if(params.sorting().feedbackMessageDate === 'desc') {
+                            mydata.sort(function (a, b) {
+                               return sortFeedbackFn(a,b,'desc');                    
+                            });                         
+                        }
+
                         $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                     }
 
                 }
             }
         );
+
+        function sortFeedbackFn (a, b, direction) {
+            if (a.feedbackMessageDate && b.feedbackMessageDate) {
+                var dateA = new Date(a.feedbackMessageDate); 
+                var dateB = new Date(b.feedbackMessageDate);
+                if (direction === 'asc') {
+                    return dateA - dateB;  
+                } else {
+                    return dateB - dateA;  
+                }                
+            } else if (a.feedbackMessageDate) {
+                return -1;
+            } else if (b.feedbackMessageDate) {                                
+                return 1;                            
+            } else {
+                return 0;
+            }
+        }
 
         $scope.toggleShowPromotedTasks = function () {
             $scope.showPromotedTasks = !$scope.showPromotedTasks;
