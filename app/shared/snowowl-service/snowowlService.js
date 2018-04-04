@@ -869,37 +869,21 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////
       // Browser Functions
       //////////////////////////
-      function browserStructureConversion(data, syn) {
-        if(syn) {
-          return {
+      function browserStructureConversion(data) {
+        return {
+          active: data.active,
+          concept: {
             active: data.active,
-            concept: {
-              active: data.active,
-              conceptId: data.pt.conceptId,
-              definitionStatus: data.definitionStatus,
-              fsn: data.fsn,
-              preferredSynonym: data.pt.term,
-              moduleId: data.moduleId
-            }
-          };
-        }
-
-        else {
-          return {
-            active: data.active,
-            concept: {
-              active: data.active,
-              conceptId: data.fsn.conceptId,
-              definitionStatus: data.definitionStatus,
-              fsn: data.fsn.term,
-              preferredSynonym: data.preferredSynonym,
-              moduleId: data.moduleId
-            }
-          };
-        }
+            conceptId: data.fsn ? data.fsn.conceptId : data.pt.conceptId,
+            definitionStatus: data.definitionStatus,
+            fsn: data.fsn ? data.fsn.term : data.fsn,
+            preferredSynonym: data.pt ? data.pt.term : data.pt,
+            moduleId: data.moduleId
+          }
+        };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, csv) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv) {
         let deferred = $q.defer();
         let config = {};
 
@@ -911,12 +895,6 @@ angular.module('singleConceptAuthoringApp')
 
         if (!config.headers) {
           config.headers = {};
-        }
-
-        if(csv) {
-          config.headers['Accept'] = 'text/csv';
-          params.offset = 0;
-          params.limit = 1000;
         }
 
         if (lang) {
@@ -933,6 +911,13 @@ angular.module('singleConceptAuthoringApp')
           params.activeFilter = activeFilter;
         }
 
+        if(tsv) {
+          config.headers['Accept'] = 'text/csv';
+          params.offset = 0;
+          params.limit = 1000;
+          params.expand = 'pt(),fsn()';
+        }
+
         // if the user is searching with some form of numerical ID
         if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter)) {
 
@@ -942,7 +927,7 @@ angular.module('singleConceptAuthoringApp')
 
             $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-              if(csv) {
+              if(tsv) {
                 deferred.resolve(response);
               }
 
@@ -950,7 +935,7 @@ angular.module('singleConceptAuthoringApp')
                 let results = [];
 
                 angular.forEach(response.data.items, function(item) {
-                  let obj = browserStructureConversion(item, syn);
+                  let obj = browserStructureConversion(item);
 
                   results.push(obj);
                 });
@@ -972,7 +957,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                if(csv) {
+                if(tsv) {
                   deferred.resolve(response);
                 }
 
@@ -980,7 +965,7 @@ angular.module('singleConceptAuthoringApp')
                   let results = [];
 
                   angular.forEach(response.data.items, function(item) {
-                    let obj = browserStructureConversion(item, syn);
+                    let obj = browserStructureConversion(item);
 
                     results.push(obj);
                   });
@@ -1006,7 +991,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                if(csv) {
+                if(tsv) {
                   deferred.resolve(response);
                 }
 
@@ -1014,7 +999,7 @@ angular.module('singleConceptAuthoringApp')
                   let results = [];
 
                   angular.forEach(response.data.items, function(item) {
-                    let obj = browserStructureConversion(item, syn);
+                    let obj = browserStructureConversion(item);
 
                     results.push(obj);
                   });
@@ -1045,7 +1030,7 @@ angular.module('singleConceptAuthoringApp')
 
           $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
-            if(csv) {
+            if(tsv) {
               deferred.resolve(response);
             }
 
@@ -1053,7 +1038,7 @@ angular.module('singleConceptAuthoringApp')
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
-                let obj = browserStructureConversion(item, syn);
+                let obj = browserStructureConversion(item);
 
                 results.push(obj);
               });
@@ -1072,8 +1057,8 @@ angular.module('singleConceptAuthoringApp')
           params.termFilter = termFilter;
 
           $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
-
-            if(csv) {
+            
+            if(tsv) {
               deferred.resolve(response);
             }
 
@@ -1081,7 +1066,7 @@ angular.module('singleConceptAuthoringApp')
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
-                let obj = browserStructureConversion(item, syn);
+                let obj = browserStructureConversion(item);
 
                 results.push(obj);
               });
