@@ -497,6 +497,7 @@ angular.module('singleConceptAuthoringApp')
                 }
             }
             var nameValueMap;
+          var componentsToBeRemoved = [];
           getTemplateValues(conceptCopy, template).then(function (map) {
             nameValueMap = map;
             angular.forEach(template.conceptOutline.descriptions, function (dt) {
@@ -528,6 +529,10 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                       else{
+                          if (d.type === 'FSN') {
+                            d.term = d.term.replace(/\(([^)]*)\)[^(]*$/, '').trim();
+                            componentsToBeRemoved.push(angular.copy(d));
+                          }
                           if(d.type !== 'DEFINITION'){
                               d.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                               d.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
@@ -549,6 +554,25 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
+        // Cycle all descriptions and remove any duplicated ones
+            if (componentsToBeRemoved.length > 0) {
+              angular.forEach(componentsToBeRemoved, function (item) {
+                var count = 0;
+                for (var i = conceptCopy.descriptions.length - 1; i >= 0; i--) {
+                  var d = conceptCopy.descriptions[i];
+                  if (!d.template 
+                    && item.term === d.term
+                    && item.lang === d.lang
+                    && d.active
+                    && d.type === 'SYNONYM') {
+                    count++;
+                    if (count > 1) {
+                      conceptCopy.descriptions.splice(i, 1);
+                    }                    
+                  }
+                }                
+              });
+            }
         // cycle over all descriptions -- no style flag means not in template
 
         // otherwise, flag as outside template
