@@ -764,16 +764,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
       };
       $scope.viewConceptInTaxonomy = function (item) {
-        $rootScope.$broadcast('viewTaxonomy', {
-          concept: {
-            conceptId: item.concept.conceptId,
-            fsn: item.concept.fsn,
-            preferredSynonym: item.concept.preferredSynonym
-          }
-        });
-      };
-
-      $scope.viewConceptInTaxonomy = function (item) {
+        if (!item.concept.active) return;
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
@@ -789,6 +780,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        *   {}}
        */
       $scope.addItemToSavedList = function (item) {
+        if($scope.isInSavedList(item.concept.conceptId)) return;
         savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);
       };
 
@@ -970,6 +962,22 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
       };
 
+      $scope.setTooltipPosition = function ($event) {
+        var top = $event.target.getBoundingClientRect().top;
+        var left = $event.target.getBoundingClientRect().left;
+        var spanTags = angular.element($event.target).find('span');
+        if(spanTags.length === 0) {
+          var parents = angular.element($event.target).parent();
+          top = parents[0].getBoundingClientRect().top;
+          left = parents[0].getBoundingClientRect().left;
+          spanTags = angular.element($event.target).parent().find('span');
+        }
+
+        angular.forEach(spanTags, function(tag) {
+          angular.element(tag).css('top', top - 73);
+          angular.element(tag).css('left', left - 40);
+        });                
+      };
       // on extension metadata set
       $scope.$on('setExtensionMetadata', function (event, data) {
         $scope.isExtension = metadataService.isExtensionSet();

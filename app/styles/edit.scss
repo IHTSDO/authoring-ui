@@ -937,3 +937,21 @@ background: #43A047;
     height: 30px;
     font-size: 14px;
 }
+.search-scroll .col-md-3.no-padding, 
+.search-scroll .col-md-3.no-padding button {
+    position: unset;
+}
+.search-scroll .col-md-3.no-padding button.disable {
+    cursor: not-allowed;
+    pointer-events: visibleFill;
+    opacity: 1;
+}
+.search-scroll button.md-playlist-add.disable {
+    color: #76747c;   
+    background-color: #424249;
+}
+.search-scroll button.fa-power-off.disable:hover,
+.search-scroll button.md-playlist-add.disable:hover {
+    background-color: #c13244;
+    color: #fff;
+}
