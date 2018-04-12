@@ -14,17 +14,23 @@
       <!-- Nav tabs --> 
     </div>
     <div class="col-md-4">
-      <ul class="nav nav-tabs sidebar-tabs col-md-8 no-padding"
+      <ul class="nav nav-tabs sidebar-tabs col-md-10 no-padding"
           role="tablist" ng-init="actionTab=1">
-        <li role="presentation" class="active" ng-click="actionTab=1" ><a aria-controls="home"
+        <li role="presentation" class="no-padding active" ng-click="actionTab=1" ><a aria-controls="home"
                                                   role="tab"
                                                   data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
           <div class=" fa fa-info"></div>
           <span>Details</span> </a></li>
-        <li role="presentation" class="" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light normal-case">
           <div class="md md-my-library-books"></div>
           <span>Taxonomy</span></a></li>
+          
+        <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab"
+                                            class="tooltips-bottom tooltips-light normal-case">
+          <div class="md md-play-download"></div>
+          <span>All Incoming ({{inboundRelationshipsTotal}})</span>
+          </a></li>
       </ul>
       <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
@@ -110,6 +116,20 @@
               <!-- don't render the directive until the concept has been loaded (handled above) -->
               <div taxonomy-tree branch="branch" concept="fullConcept"></div>
             </div>
+          </div>
+          <!-- all inbound relationships -->
+          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 3}">
+            <div ng-show="inboundRelationshipsTotal > 200" class="alert alert-info">Limiting displayed results to
+              {{tableLimit}} items </div>
+            <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
+                   class="table table-full-small">
+              <tr ng-repeat="item in $data">
+                <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
+                <td data-title="'Type'" sortable="'type.fsn.term'"> {{item.type.fsn.term}} </td>
+                <td data-title="'FSN'" sortable="'source.fsn.term'"> {{item.source.fsn.term}} </td>
+              </tr>
+            </table>
+            <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
           </div>
         </div>
       </div>
