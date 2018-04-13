@@ -341,6 +341,7 @@
 
             <span class="{{getCaseSignificanceDisplayText(description)}}"></span>
           </button>
+          <div ng-if="getComponentChange(description.descriptionId,'CASE_SIGNIFICANCE') !== ''" class="tooltips-bottom tooltips-light medium-size-tooltip highlight-icon custom-margin"><span>{{getComponentChange(description.descriptionId,'CASE_SIGNIFICANCE')}}</span></div>        
 
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}" 
@@ -384,22 +385,23 @@
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
+          <div ng-if="getComponentChange(description.descriptionId,'TYPE') !== ''" class="tooltips-bottom tooltips-light xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'TYPE')}}</span></div>
 
           <!-- Dialect / Acceptability -- never alterable for saved FSN -->
           <div>
 
             <!-- button for each dialect key -->
-            <button ng-repeat="dialectId in getDialectIdsForDescription(description)"
-                    type="button"
-                    class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels"
-                    ng-click="toggleAcceptability(description, dialectId)">
-              <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
-              </div>
-              <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>
-            </button>
-
-
+            <div ng-repeat="dialectId in getDialectIdsForDescription(description)">
+              <button type="button"
+                      class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
+                      ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels"
+                      ng-click="toggleAcceptability(description, dialectId)">
+                <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
+                </div>
+                <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>              
+              </button>
+              <div ng-if="getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId) !== ''" class="tooltips-bottom tooltips-light xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId)}}</span></div> 
+            </div>
           </div>
 
 

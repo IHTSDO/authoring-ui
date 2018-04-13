@@ -169,7 +169,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         showInactive: '@?',
 
         // a function to update reference concept if any
-        updateConceptReference: '&'
+        updateConceptReference: '&',
+
+        // Traceablity log which is passed from Feedback
+        traceability: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -642,6 +645,64 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         }
 
+//on load, check if traceability has been pashed from Feedback, then find the differences with project
+        var descriptionTypeChangeObject = {},
+            descriptionCaseSignificanceChangeObject = {},
+            descriptionAcceptabilityMapChangeObject = {};
+        if (scope.traceability && scope.traceability.componentChanges && scope.traceability.componentChanges.length > 0) {
+          snowowlService.getFullConcept(scope.concept.conceptId,'MAIN').then(function(response) {
+            angular.forEach(scope.traceability.componentChanges, function (componentChange) {
+                if (componentChange.componentType === 'DESCRIPTION'
+                    && componentChange.changeType === 'UPDATE') {
+                  var taskDescription = scope.concept.descriptions.filter( function (des) {
+                    return des.descriptionId === componentChange.componentId;
+                  })[0];
+
+                  var mainDescription = response.descriptions.filter( function (des) {
+                    return des.descriptionId === componentChange.componentId;
+                  })[0];
+
+                  if (taskDescription.type !== mainDescription.type) {
+                    descriptionTypeChangeObject[componentChange.componentId] = "Change from " + mainDescription.type + " to " + taskDescription.type;
+                  }
+                  if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
+                    descriptionCaseSignificanceChangeObject[componentChange.componentId] = "Change from " + scope.getCaseSignificanceDisplayText(mainDescription) + " to " + scope.getCaseSignificanceDisplayText(taskDescription);
+                  }
+
+                  var componentDialects = Object.keys(taskDescription.acceptabilityMap);
+                  componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+                  angular.forEach(componentDialects, function (dialectId) {
+                    if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
+                      descriptionAcceptabilityMapChangeObject[componentChange.componentId + '-' + dialectId] = "Change from Not Acceptable to " + scope.getAcceptabilityTooltipText(taskDescription,dialectId);
+                    }
+                    if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
+                      descriptionAcceptabilityMapChangeObject[componentChange.componentId + '-' + dialectId] = "Change from " + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + " to Not Acceptable";
+                    }
+                    if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
+                      && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
+                      descriptionAcceptabilityMapChangeObject[componentChange.componentId + '-' + dialectId] = "Change from " + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + " to " + scope.getAcceptabilityTooltipText(taskDescription,dialectId);
+                    }
+                  });
+                }
+              });
+          });
+        }
+
+        scope.getComponentChange = function(componentId, property, dialectId) {
+          if (!scope.traceability) {
+            return '';
+          }
+
+          if(property === 'TYPE') {
+            return descriptionTypeChangeObject[componentId] ? descriptionTypeChangeObject[componentId] : '';
+          }
+          if(property === 'CASE_SIGNIFICANCE') {
+            return descriptionCaseSignificanceChangeObject[componentId] ? descriptionCaseSignificanceChangeObject[componentId] : '';
+          }
+          if(property === 'ACCEPTABILITY' && dialectId) {
+            return descriptionAcceptabilityMapChangeObject[componentId + '-' + dialectId] ? descriptionAcceptabilityMapChangeObject[componentId + '-' + dialectId] : '';
+          }
+        };
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {

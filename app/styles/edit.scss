@@ -956,3 +956,12 @@ background: #43A047;
     background-color: #c13244;
     color: #fff;
 }
+.editing-form .highlight-icon {
+    border-top: 7px solid red; 
+    border-left: 7px solid transparent;
+    width: 0px; position: absolute;
+    margin-left: -7px;
+}
+.editing-form .highlight-icon.custom-margin {
+    margin-left: -10px;
+}
