@@ -937,8 +937,9 @@ background: #43A047;
     height: 30px;
     font-size: 14px;
 }
-.search-scroll .col-md-3.no-padding, 
-.search-scroll .col-md-3.no-padding button {
+.search-scroll .clear-position,
+.search-scroll .clear-position div,
+.search-scroll .clear-position button {
     position: unset;
 }
 .search-scroll .col-md-3.no-padding button.disable {
