@@ -1359,6 +1359,20 @@ angular.module('singleConceptAuthoringApp')
 
             return deferred.promise;
           };
+          
+          scope.getConceptTraceability  = function (concept) {           
+            for (var i = scope.feedbackContainer.review.traceability.content.length - 1; i >= 0; i--) {
+              var traceability = scope.feedbackContainer.review.traceability.content[i];
+              if (traceability.conceptChanges) {
+                for (var j = traceability.conceptChanges.length - 1; j >= 0; j--) {
+                  var conceptChange =  traceability.conceptChanges[j];
+                  if (conceptChange.conceptId === concept.conceptId) {
+                    return conceptChange;
+                  }
+                } 
+              }
+            }
+          };
 
           scope.submitFeedback = function (requestFollowup) {
 
