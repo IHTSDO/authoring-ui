@@ -385,7 +385,7 @@
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
-          <div ng-if="getComponentChange(description.descriptionId,'TYPE') !== ''" class="tooltips-bottom tooltips-light xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'TYPE')}}</span></div>
+          <div ng-if="getComponentChange(description.descriptionId,'TYPE') !== ''" class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'TYPE')}}</span></div>
 
           <!-- Dialect / Acceptability -- never alterable for saved FSN -->
           <div>
@@ -400,7 +400,7 @@
                 </div>
                 <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>              
               </button>
-              <div ng-if="getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId) !== ''" class="tooltips-bottom tooltips-light xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId)}}</span></div> 
+              <div ng-if="getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId) !== ''" class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId)}}</span></div> 
             </div>
           </div>
 
