@@ -650,7 +650,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             descriptionCaseSignificanceChangeObject = {},
             descriptionAcceptabilityMapChangeObject = {};
         if (scope.traceability && scope.traceability.componentChanges && scope.traceability.componentChanges.length > 0) {
-          snowowlService.getFullConcept(scope.concept.conceptId,'MAIN').then(function(response) {
+          snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
             angular.forEach(scope.traceability.componentChanges, function (componentChange) {
                 if (componentChange.componentType === 'DESCRIPTION'
                     && componentChange.changeType === 'UPDATE') {

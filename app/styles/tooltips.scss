@@ -253,6 +253,7 @@ content: '';
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -129px;
 }
+.offset-tooltip-right.xxlarge-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after {
     left: 92%;
 }
@@ -348,6 +349,10 @@ content: '';
 .medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -69px;
 }
+.medium-size-tooltip.tooltips-bottom.highlight-icon:hover span {
+  top: 9px;
+  margin-left: -71px;
+}
 .large-size-tooltip.tooltips-bottom span {
     width: 190px;
 }
@@ -396,5 +401,9 @@ content: '';
 }
 .xxlarge-size-tooltip.tooltips-bottom:hover span.cI {
   margin-left: -99px;
+}
+.xxlarge-size-tooltip.tooltips-bottom.highlight-icon:hover span {
+  margin-left: -237px;
+  top: 9px;
 }
 /* bottom */
