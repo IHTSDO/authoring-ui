@@ -49,7 +49,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.userOptions = {
         groupByConcept: true,
         searchType: 1,
-        selectedDialect: ''
+        selectedDialect: '',
+        defintionSelection: ''
       };
 
       $scope.favorites = {items: []};
@@ -238,6 +239,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.results = displayedResults;
         }
 
+        if ($scope.userOptions.defintionSelection && $scope.isEscgMode) {
+          $scope.results = $scope.results.filter(function (item) {
+            if ($scope.userOptions.defintionSelection === 'PRIMITIVE') {
+              return item.concept.definitionStatus === 'PRIMITIVE';
+            } else {
+              return item.concept.definitionStatus === 'FULLY_DEFINED';
+            }
+          });
+        }
 
         // user cue for status
         if ($scope.results.length === 0) {

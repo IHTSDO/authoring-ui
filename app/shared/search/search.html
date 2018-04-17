@@ -89,6 +89,22 @@
     </div>
   </div>
 
+  <div class="row search-filter" ng-if="isEscgMode">
+    <div class="col-md-6"></div>
+    <div class="col-md-6 z-index-1">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">Def. Status</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input" style="">
+        <select ng-model="userOptions.defintionSelection" ng-change="processResults()" name="select-type" class="form-control no-padding m-t-10">
+          <option value="">All</option>
+          <option value="PRIMITIVE">Primitive</option>
+          <option value="FULLY_DEFINED">Fully Defined</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-12 text-center" ng-if="searchStatus">{{searchStatus}}</div>
 
 
