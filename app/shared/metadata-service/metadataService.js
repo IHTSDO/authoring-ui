@@ -139,22 +139,28 @@ angular.module('singleConceptAuthoringApp')
     ];
 
     var drugsModelOrdering = [
-      {id: '127489000', display: 1},
-      {id: '732943007', display: 2},
-      {id: '733724008', display: 3},
-      {id: '733725009', display: 4},
-      {id: '733723002', display: 5},
-      {id: '733722007', display: 6},
+      {id: '116680003', display: 1},
+      {id: '411116001', display: 2},
+      {id: '763032000', display: 3},
+      {id: '127489000', display: 4},
+      {id: '762949000', display: 5},
+      {id: '732943007', display: 6},
       {id: '732944001', display: 7},
       {id: '732945000', display: 8},
       {id: '732946004', display: 9},
       {id: '732947008', display: 10},
-      {id: '116680003', display: 11},
-      {id: '736476002', display: 12},
-      {id: '736474004', display: 13},
-      {id: '736475003', display: 14},
-      {id: '736473005', display: 15},
-      {id: '736472000', display: 16}
+      {id: '733724008', display: 11},
+      {id: '733725009', display: 12},
+      {id: '733723002', display: 13},
+      {id: '733722007', display: 14},
+      {id: '736476002', display: 15},
+      {id: '736474004', display: 16},
+      {id: '736475003', display: 17},
+      {id: '736473005', display: 18},
+      {id: '736472000', display: 19},
+      {id: '766952006', display: 20}, 
+      {id: '766954007', display: 21}, 
+      {id: '766953001', display: 22}
     ];
 
     //
