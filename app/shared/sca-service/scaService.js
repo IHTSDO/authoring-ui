@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
-    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService) {
+  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
+    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, snowowlService) {
 
       // TODO Wire this to endpoint service, endpoint config
       var apiEndpoint = '../authoring-services/';
@@ -952,8 +952,7 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/promote
 // Promote the project to MAIN
         promoteProject: function (projectKey) {
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {
-            notificationService.sendMessage('Project Promoted Successfully', 10000);
+          return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {            
             return response.data;
           }, function (error) {
             if (error.status === 504) {
@@ -1011,8 +1010,7 @@ angular.module('singleConceptAuthoringApp')
 // Promote the task to the Project
         promoteTask: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
-            notificationService.sendMessage('Task successfully promoted', 5000);
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {            
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 504) {
@@ -1168,8 +1166,34 @@ angular.module('singleConceptAuthoringApp')
                       // TODO Handle conflict report notifications
                       break;
 
+                    /*
+                     Promotion completion object structure
+                     {
+                     project: "WRPAS",
+                     task: "WRPAS-76",
+                     entityType: "Promotion",
+                     event: "Task successfully promoted"}
+                     */
                     case 'Promotion':
-                      // TODO Handle promotion notifications
+                      msg = newNotification.event;
+                      if (newNotification.task) {
+                        if(!$routeParams.taskKey || newNotification.task !== $routeParams.taskKey) {
+                          msg += ' for ' + newNotification.task;
+                          url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                          notificationService.sendMessage(msg, 0, url); 
+                        } else {
+                          notificationService.sendMessage(msg, 10000); 
+                        }                       
+                      } else {
+                        if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
+                          msg += ' for ' + newNotification.project;
+                          url = '#/project/' + newNotification.project;
+                          notificationService.sendMessage(msg, 0, url); 
+                        } else {
+                          notificationService.sendMessage(msg, 0); 
+                        }
+                      }                      
+
                       break;
 
                     /*
