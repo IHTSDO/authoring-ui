@@ -470,7 +470,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
 
             // extract the failed assertions
-            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
+            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
 
             // filter out technical errors
             configService.getExcludedValidationRuleIds().then(function (response) {
