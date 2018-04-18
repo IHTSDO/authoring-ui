@@ -2820,7 +2820,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // reset module id
-          copy.moduleId = metadataService.getCurrentModuleId();
+          copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
           var targetIndex = scope.concept.descriptions.indexOf(target);
           if (targetIndex === -1) {
