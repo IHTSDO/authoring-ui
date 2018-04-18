@@ -447,10 +447,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;               
                 $rootScope.automatedPromotionInQueued = false;
                 if (!isInitialInvoke) {  
-                  $rootScope.$broadcast('reloadTask');
-                  $timeout(function () {
-                     notificationService.sendMessage('Automated promotion completed');
-                  }, 1000); 
+                  $rootScope.$broadcast('reloadTask');                  
                 }             
                 break;
               case 'Failed':               
