@@ -372,6 +372,7 @@ angular.module('singleConceptAuthoringApp')
 
     function proceedAutomatePromotion(projectKey, taskKey) {
       var deferred = $q.defer();
+      if (!projectKey || !taskKey) deferred.resolve(null);
       scaService.proceedAutomatePromotion(projectKey, taskKey).then(function (response) {
         deferred.resolve();
       }, function (error) {
