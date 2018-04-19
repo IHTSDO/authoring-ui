@@ -1054,6 +1054,7 @@ angular.module('singleConceptAuthoringApp')
         },
 // GET /projects/{projectKey}/tasks/{taskKey}/auto-promote/status
         getAutomatePromotionStatus: function (projectKey, taskKey) {
+          if (!projectKey || !taskKey) return null;
           return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote/status').then(function (response) {
             return response.data;
           }, function (error) {
@@ -1143,7 +1144,7 @@ angular.module('singleConceptAuthoringApp')
                 console.log('Server notification:', response.data);
 
                 // getNotifications returns an array, get the latest
-                var newNotification = response.data[0];
+                var newNotification = response.data[response.data.length - 1];
                 var msg = null;
                 var url = null;
 
