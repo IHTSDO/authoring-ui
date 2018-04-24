@@ -107,7 +107,8 @@ angular.module('singleConceptAuthoringApp.home', [
         );
 
         function sortFeedbackFn (a, b, direction) {
-            if (a.feedbackMessageDate && b.feedbackMessageDate) {
+            if (a.feedbackMessageDate && b.feedbackMessageDate &&
+                a.feedbackMessagesStatus === 'unread' && b.feedbackMessagesStatus === 'unread') {
                 var dateA = new Date(a.feedbackMessageDate); 
                 var dateB = new Date(b.feedbackMessageDate);
                 if (direction === 'asc') {
@@ -115,10 +116,14 @@ angular.module('singleConceptAuthoringApp.home', [
                 } else {
                     return dateB - dateA;  
                 }                
-            } else if (a.feedbackMessageDate) {
+            } else if (a.feedbackMessageDate && a.feedbackMessagesStatus === 'unread') {
                 return -1;
-            } else if (b.feedbackMessageDate) {                                
+            } else if (b.feedbackMessageDate && b.feedbackMessagesStatus === 'unread') {                                
                 return 1;                            
+            } else if (a.feedbackMessagesStatus === 'read') {
+                return -1;
+            } else if (b.feedbackMessagesStatus === 'read') {
+                return 1;
             } else {
                 return 0;
             }
