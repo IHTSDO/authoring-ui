@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     // initialize the arrays
     $scope.inboundRelationships = [];
 
-    $scope.tableLimit = 200;
+    $scope.tableLimit = 1000;
 
     // declare table parameters
     $scope.tableParamsInboundRelationships = new ngTableParams({
