@@ -1183,7 +1183,7 @@ angular.module('singleConceptAuthoringApp')
                           url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                           notificationService.sendMessage(msg, 0, url); 
                         } else {
-                          notificationService.sendMessage(msg, 10000); 
+                          notificationService.sendMessage(msg, 0);
                         }                       
                       } else {
                         if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
