@@ -883,7 +883,7 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus) {
         let deferred = $q.defer();
         let config = {};
 
@@ -916,6 +916,10 @@ angular.module('singleConceptAuthoringApp')
           params.offset = 0;
           params.limit = 1000;
           params.expand = 'pt(),fsn()';
+        }
+
+        if (definitionStatus && escgExpr) {
+          params.definitionStatusFilter = definitionStatus;
         }
 
         // if the user is searching with some form of numerical ID

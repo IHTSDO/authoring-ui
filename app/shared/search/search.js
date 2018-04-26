@@ -237,17 +237,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
         else {
           $scope.results = displayedResults;
-        }
-
-        if ($scope.userOptions.defintionSelection && $scope.isEscgMode) {
-          $scope.results = $scope.results.filter(function (item) {
-            if ($scope.userOptions.defintionSelection === 'PRIMITIVE') {
-              return item.concept.definitionStatus === 'PRIMITIVE';
-            } else {
-              return item.concept.definitionStatus === 'FULLY_DEFINED';
-            }
-          });
-        }
+        }       
 
         // user cue for status
         if ($scope.results.length === 0) {
@@ -469,7 +459,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false).then(function (results) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection).then(function (results) {
 
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
