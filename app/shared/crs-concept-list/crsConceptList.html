@@ -5,7 +5,7 @@
         <label class="control-label">CRS Concept List</label>
       </div>
     </div>
-    <div class="row saved-list no-padding  " ng-repeat="item in getCrsConcepts()">
+    <div class="row saved-list no-padding  " ng-repeat="item in crsConcepts">
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.conceptId && item.concept.definitionStatus === 'PRIMITIVE'"
                 ng-disabled="isStatic"
@@ -35,6 +35,11 @@
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom offset-tooltip-right ">
         <div class="md md-warning"></div>
         <span>Save Status Uncertain</span> </button>
+        <button ng-show="!item.saved"
+                class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom offset-tooltip-right small-size-tooltip"
+                ng-click="removeCrsConcept(item)">
+        <div class="md md-remove-circle-outline"></div>
+        <span>Reject</span> </button>
       </div>
     </div>
   </div>
