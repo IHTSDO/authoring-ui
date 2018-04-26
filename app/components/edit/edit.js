@@ -1574,7 +1574,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
           if (!response) {
-            deferred.reject('Task could not be retrieved');
+            $scope.gotoHome();
+            return;
+            //deferred.reject('Task could not be retrieved');
           }
 
           if (angular.isUndefined(response.linkedIssues)) {
