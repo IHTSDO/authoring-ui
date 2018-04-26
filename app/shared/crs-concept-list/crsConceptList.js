@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('crsConceptList', function ($rootScope, $q, scaService, metadataService, crsService, notificationService) {
+  .directive('crsConceptList', function ($rootScope, $q, scaService, metadataService, crsService, notificationService, modalService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -13,6 +13,7 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope) {
 
+        scope.crsConcepts = [];
         scope.getCrsConcepts = crsService.getCrsConcepts;
         scope.getCrsEmptyRequests = crsService.getCrsEmptyRequests;
 
@@ -27,6 +28,23 @@ angular.module('singleConceptAuthoringApp')
             conceptId : item.conceptId
           });
         };
+        
+        scope.removeCrsConcept = function (item) {
+          modalService.confirm('Do you really want to reject this concept?').then(function () {
+            crsService.rejectCrsConcept(item).then(function(){
+              initialize();
+            });            
+          }, function () {
+            // do nothing
+          });
+          
+        };
+
+        function initialize() {
+          scope.crsConcepts = scope.getCrsConcepts();
+        }
+
+        initialize();
       }
     };
   })

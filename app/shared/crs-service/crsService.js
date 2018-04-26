@@ -222,6 +222,24 @@ angular.module('singleConceptAuthoringApp')
         scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
       }
 
+// Reject a CRS concept by Authoring user
+      function rejectCrsConcept(concept) {        
+        var deferred = $q.defer();
+        angular.forEach(currentTaskConcepts, function(item, index){
+          if(item.crsId === concept.crsId){
+            currentTaskConcepts.splice(index, 1);
+          }
+        });
+      var apiEndpoint = '../ihtsdo-crs/';
+        $http.put(apiEndpoint + 'api/request/' + concept.crsId + '/status?status=REJECTED', {"reason":"Rejected by Authoring User"}).then(function (response) {
+          saveCrsConceptsUiState();
+          deferred.resolve(response);
+        }, function (error) {
+          deferred.reject(error.statusText);
+        });
+        return deferred.promise;             
+      }
+
 // initialize ui states for a CRS task
       function initializeCrsTask() {
         var deferred = $q.defer();
@@ -462,7 +480,8 @@ angular.module('singleConceptAuthoringApp')
         getCrsTaskComment: getCrsTaskComment,
         getRequestUrl: getRequestUrl,
 
-        crsFilter: crsFilter
+        crsFilter: crsFilter,
+        rejectCrsConcept: rejectCrsConcept
 
       };
     }
