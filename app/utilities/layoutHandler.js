@@ -159,10 +159,28 @@ angular.module('singleConceptAuthoringApp')
       return $rootScope.layout;
     }
 
+    function getLayoutWidths(name) {
+
+      if (!$rootScope.layoutWidths || !$rootScope.layoutWidths[name]) {
+        return;
+      }
+
+      var width = $rootScope.layoutWidths[name];
+      var colClasses = [
+        'col-xs-12',
+        'col-sm-' + width,
+        'col-md-' + width,
+        'col-lg-' + width,
+        'col-xl-' + width
+      ];
+      return colClasses;
+    };
+
     return {
       resizeLayoutElement: resizeLayoutElement,
       setLayout: setLayout,
-      getLayout: getLayout
+      getLayout: getLayout,
+      getLayoutWidths: getLayoutWidths
     }
 
   })

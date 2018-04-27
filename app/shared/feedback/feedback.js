@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler) {
       return {
         restrict: 'A',
         transclude: false,
@@ -183,6 +183,13 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+
+          /**
+           * May need to change depending on responsive needs
+           * @param name the unique column name
+           * @returns (*) an array of col-(size)-(width) class names
+           */
+          scope.getLayoutWidths = layoutHandler.getLayoutWidths;
 
           scope.conceptsClassifiedTableParams = new NgTableParams({
               page: 1,

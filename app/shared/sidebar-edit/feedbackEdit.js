@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebarEdit')
 
-  .controller('feedbackEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService',
-    function feedbackEditCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService) {     
+  .controller('feedbackEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService', 'layoutHandler',
+    function feedbackEditCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService, layoutHandler) {     
          // on load, switch to Task Detail tab
         if($routeParams.mode === 'batch'){
             $scope.actionTab = 5;
@@ -33,6 +33,13 @@ angular.module('singleConceptAuthoringApp.sidebarEdit')
         });
           $scope.$on('viewInfo', function(event, data) {
           $scope.actionTab = 4;
-        });   
+        });  
+
+        /**
+         * May need to change depending on responsive needs
+         * @param name the unique column name
+         * @returns (*) an array of col-(size)-(width) class names
+         */
+        $scope.getLayoutWidths = layoutHandler.getLayoutWidths;
     }
   ]);
