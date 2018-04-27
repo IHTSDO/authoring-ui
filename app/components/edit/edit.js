@@ -1489,9 +1489,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.promoteProject = function () {
       notificationService.sendMessage('Promoting project....', 0);
       scaService.promoteProject($routeParams.projectKey).then(function (response) {
-        if (response !== null) {
-          notificationService.sendMessage('Project successfully promoted', 10000);
-        } else {
+        if (response === null) {
           notificationService.sendError('Error promoting project', 10000);
         }
       });
