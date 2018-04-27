@@ -1178,16 +1178,16 @@ angular.module('singleConceptAuthoringApp')
                     case 'Promotion':
                       msg = newNotification.event;
                       if (newNotification.task) {
+                        msg += ' for ' + newNotification.task;
                         if(!$routeParams.taskKey || newNotification.task !== $routeParams.taskKey) {
-                          msg += ' for ' + newNotification.task;
                           url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                           notificationService.sendMessage(msg, 0, url); 
                         } else {
                           notificationService.sendMessage(msg, 0);
                         }                       
                       } else {
+                        msg += ' for ' + newNotification.project;
                         if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
-                          msg += ' for ' + newNotification.project;
                           url = '#/project/' + newNotification.project;
                           notificationService.sendMessage(msg, 0, url); 
                         } else {
