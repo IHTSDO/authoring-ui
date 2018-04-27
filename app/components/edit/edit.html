@@ -314,14 +314,14 @@
 
       <div class="row no-padding no-gutter">
 
-        <div class="col-md-3">
+        <div ng-class="getLayoutWidths('sidebar')">
           <!-- sidebar -->
           <!--<div class="editpanel sca-column no-padding" ng-include src="'shared/sidebar-edit/sidebarEdit.html'">
           </div>-->
         </div>
 
         <!-- inactivation screen -->
-        <div class="col-md-9">
+        <div ng-class="getLayoutWidths('modelsAndConcepts')">
           <div inactivation inactivation-concept="inactivationConcept" branch="targetBranch"></div>
         </div>
       </div>
@@ -364,7 +364,7 @@
     <div ng-if="thisView === 'batch'" class="batch-editing">
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 pull-right no-padding hide-scroll">
+      <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')">
         <div batch-editing branch="targetBranch" task="task"></div>
       </div>
     </div>
