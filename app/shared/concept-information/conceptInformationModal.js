@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     // initialize the arrays
     $scope.inboundRelationships = [];
 
-    $scope.tableLimit = 1000;
+    $scope.tableLimit = 10000;
 
     // declare table parameters
     $scope.tableParamsInboundRelationships = new ngTableParams({
@@ -65,7 +65,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
         }
       });
 
-      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response) {
+      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit, true).then(function (response) {
         // initialize the arrays
         $scope.inboundRelationships = [];
     
