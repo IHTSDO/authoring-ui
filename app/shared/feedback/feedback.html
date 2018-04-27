@@ -23,7 +23,7 @@
 
  
   <!-- Report, feedback editor, and concept feedback -->
-  <div class="col-md-9 no-padding pull-right white no-gutter" ng-class="{'col-md-9' : !$root.displayMainSidebar, 'col-md-12' : $root.displayMainSidebar}">
+  <div class="no-padding pull-right white no-gutter" ng-class="getLayoutWidths('modelsAndConcepts')">
     <div class="col-md-12 feedback-header-main">
 
       <!-- Title section -->
@@ -63,13 +63,13 @@
   </div>
 
   <!-- Taxonomy, models, and concepts -->
-  <div class="no-padding pull-right" ng-class="{'col-md-9' : !$root.displayMainSidebar, 'col-md-12' : $root.displayMainSidebar}">
+  <div class="no-padding pull-right"  ng-class="getLayoutWidths('modelsAndConcepts')">
     <div ng-if="viewedConcepts.length > 0">
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
-        <div class="col-md-6">
+        <div ng-class="getLayoutWidths('models')">
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>
         </div>
-        <div class="col-md-6">
+        <div ng-class="getLayoutWidths('concepts')">
           <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
                autosave="role !== 'AUTHOR'" traceability="getConceptTraceability(concept)"></div>
         </div>

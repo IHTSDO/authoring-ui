@@ -270,7 +270,7 @@
     <div ng-if="thisView === 'edit-no-model'">
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 pull-right no-padding hide-scroll"
+      <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')"
            sca-infinite-scroll="addMoreItems()"
            sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
@@ -345,9 +345,7 @@
     <!-- Review/Feedback view -->
     <div ng-if="thisView === 'feedback'">
       <!-- feedback report -->
-      <div
-         ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding' : !$root.displayMainSidebar,
-                    'col-xs-9 col-sm-9 col-md-9 col-lg-9 col-xl-9 no-padding pull-right' : $root.displayMainSidebar}">
+      <div>
         <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
       </div>
     </div>
