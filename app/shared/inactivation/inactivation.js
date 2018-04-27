@@ -1067,6 +1067,13 @@ angular.module('singleConceptAuthoringApp')
               rel.newTargetFsn = "";
               rel.newTargetId = "";
             }
+
+            var associations = scope.getAssociationsForReason(rel.inactivationIndicator);
+            if(associations.length == 1) {
+              rel.refsetName = associations[0].id;
+            } else {
+              rel.refsetName = '';
+            }
           }
 
           scope.updateRefTarget = function (rel) {
@@ -1077,7 +1084,6 @@ angular.module('singleConceptAuthoringApp')
                 break;
               }
             }
-            console.log(rel);
           };
 
           scope.updateDescRefAssocTarget = function (rel) {
