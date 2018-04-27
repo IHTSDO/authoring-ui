@@ -192,8 +192,7 @@ angular.module('singleConceptAuthoringApp.project', [
                 snowowlService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                   if (!response.metadata || response.metadata && !response.metadata.lock) {
                     notificationService.sendMessage('Promoting project...');
-                    scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                      notificationService.sendMessage('Project successfully promoted', 5000);
+                    scaService.promoteProject($routeParams.projectKey).then(function (response) {                      
                       $scope.getProject();
                     });
                   }
@@ -229,8 +228,7 @@ angular.module('singleConceptAuthoringApp.project', [
                     snowowlService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                       if (!response.metadata || response.metadata && !response.metadata.lock) {
                         notificationService.sendMessage('Promoting project...');
-                        scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                          notificationService.sendMessage('Project successfully promoted', 5000);
+                        scaService.promoteProject($routeParams.projectKey).then(function (response) {                          
                           $scope.getProject();
                         });
                       }
