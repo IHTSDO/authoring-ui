@@ -1860,20 +1860,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
                 description = componentAuthoringUtil.getNewDescription(moduleId, language);
 
-                var dialect = '';
+                let matchingDialects = [];
                 for (var key in dialects) {
                   if (dialects[key].indexOf(language) !== -1) {
-                    dialect = key;
+                    matchingDialects.push(key);
                   }
                 }
+                
+                angular.forEach(matchingDialects, function(dialect){
+                    var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
+                        return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
+                      }).length > 0;
 
-                var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
-                    return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
-                  }).length > 0;
-
-                if(havingPreferredSynonym) {
-                  description.acceptabilityMap[dialect] = 'ACCEPTABLE';
-                }
+                    if(havingPreferredSynonym) {
+                      description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                    }
+                });
 
                 if (afterIndex === null || afterIndex === undefined) {
                   scope.concept.descriptions.push(description);
