@@ -141,74 +141,141 @@
       </div>
     </div>
     <!-- results -->
+
+
     <div ng-repeat="result in results">
+      <!--<div class="row">-->
+        <!--<div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">-->
+          <!--<div class="p-5 white-text light-button wordbreak">{{result.term}}</div>-->
+        <!--</div>-->
+        <!--<div class=" col-md-1 no-padding clear-position">-->
+          <!--<div class="">-->
+            <!--<button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"-->
+                    <!--class=" p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left"-->
+                    <!--ng-mouseover="setTooltipPosition($event);">-->
+              <!--<object class="badge alert-warning ng-binding"-->
+                      <!--ng-click="openConceptInformationModal(result)">&nbsp; </object>-->
+              <!--<span>Primitive</span>-->
+            <!--</button>-->
+            <!--<button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"-->
+                    <!--class=" p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left"-->
+                    <!--ng-mouseover="setTooltipPosition($event);">-->
+              <!--<object class="badge alert-warning ng-binding"-->
+                      <!--ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>-->
+              <!--<span>Fully Defined</span>-->
+            <!--</button>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="no-padding"-->
+             <!--ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">-->
+          <!--<div class="p-5 white-text  wordbreak" ui-draggable="true"-->
+               <!--drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"-->
+               <!--drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a-->
+            <!--class=" wordbreak  " title="Edit"-->
+            <!--ng-click=" selectItem(result)"-->
+            <!--ng-disabled="isEdited(result)">-->
+
+
+            <!--{{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }} </a>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="col-md-3 no-padding clear-position">-->
+          <!--<button type="button" ng-click="viewConceptInTaxonomy(result)"-->
+                  <!--class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"-->
+                  <!--ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red disable' : !result.concept.active }]"-->
+                  <!--ng-mouseover="setTooltipPosition($event);">-->
+            <!--<span ng-if="result.concept.active">View in Taxonomy</span>-->
+            <!--<span ng-if="!result.concept.active">Inactive Concept</span>-->
+          <!--</button>-->
+          <!--<button type="button" ng-click="addItemToSavedList(result)"-->
+                  <!--ng-class="[{'disable' : isInSavedList(result.concept.conceptId)}]"-->
+                  <!--class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1"-->
+                  <!--ng-mouseover="setTooltipPosition($event);">-->
+            <!--<span>Add to Saved List</span>-->
+          <!--</button>-->
+
+          <!--&lt;!&ndash;<button type="button" ng-click="addItemToFavorites(result)"&ndash;&gt;-->
+                  <!--&lt;!&ndash;ng-disabled="isInFavorites(result.concept.conceptId)"&ndash;&gt;-->
+                  <!--&lt;!&ndash;class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">&ndash;&gt;-->
+            <!--&lt;!&ndash;<span>Add to Project Favorites</span>&ndash;&gt;-->
+          <!--&lt;!&ndash;</button>&ndash;&gt;-->
+          <!--<button type="button" ng-click="addBatchConceptFromResult(result.concept, templateOptions.selectedTemplate)"-->
+                  <!--ng-show="templateOptions.selectedTemplate"-->
+                  <!--class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2"-->
+                  <!--ng-mouseover="setTooltipPosition($event);">-->
+            <!--<span>Add to Batch</span>-->
+          <!--</button>-->
+          <!--<button type="button"-->
+                <!--class= "addButton btn btn-round widget-button tooltips-bottom medium-size-tooltip offset-tooltip-right white"-->
+                <!--ng-mouseover="setTooltipPosition($event);"-->
+                <!--ng-click="clone(result)"> <i class="md md-content-copy"></i> <span> Clone this concept </span>-->
+          <!--</button>-->
+
+        <!--</div>-->
+      <!--</div>-->
+
       <div class="row">
-        <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
-          <div class="p-5 white-text light-button wordbreak">{{result.term}}</div>
-        </div>
-        <div class=" col-md-1 no-padding clear-position">
-          <div class="">
-            <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
-                    class=" p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left"
-                    ng-mouseover="setTooltipPosition($event);">
-              <object class="badge alert-warning ng-binding"
-                      ng-click="openConceptInformationModal(result)">&nbsp; </object>
-              <span>Primitive</span>
-            </button>
-            <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
-                    class=" p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left"
-                    ng-mouseover="setTooltipPosition($event);">
-              <object class="badge alert-warning ng-binding"
-                      ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
-              <span>Fully Defined</span>
-            </button>
+        <div class="col-md-8 no-p-lr clear-position in-block">
+          <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
+                  class="no-p-lr white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <object class="badge alert-warning ng-binding"
+                    ng-click="openConceptInformationModal(result)">&nbsp; </object>
+            <span>Primitive</span>
+          </button>
+          <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
+                  class="no-p-lr primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <object class="badge alert-warning ng-binding"
+                    ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
+            <span>Fully Defined</span>
+          </button>
+          <div class="in-block" ui-draggable="true" drag="getConceptPropertiesObj(result.concept)"
+               drag-channel="conceptPropertiesObj" drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn">
+            <a class="m-l-5 m-r-5 " title="Edit" ng-click="selectItem(result)" ng-disabled="isEdited(result)">
+              {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }}
+            </a>
           </div>
         </div>
-        <div class="no-padding"
-             ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-          <div class="p-5 white-text  wordbreak" ui-draggable="true"
-               drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
-               drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a
-            class=" wordbreak  " title="Edit"
-            ng-click=" selectItem(result)"
-            ng-disabled="isEdited(result)">
-
-
-            {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }} </a>
+        <div class="col-md-4 no-p-lr clear-position in-block">
+          <div class="checkbox download-checkbox pull-right m-l-5">
+            <input type="checkbox" ng-mouseover="setTooltipPosition($event);" ng-checked="true"/>
+            <!--<span> Include in Download </span>-->
           </div>
-        </div>
-        <div class="col-md-3 no-padding clear-position">
+
+          <button type="button"
+                  class= "addButton btn btn-round widget-button tooltips-bottom medium-size-tooltip offset-tooltip-right white pull-right m-l-5 search-icon"
+                  ng-mouseover="setTooltipPosition($event);" ng-click="clone(result)">
+            <i class="md md-content-copy"></i> <span> Clone this concept </span>
+          </button>
+
+          <button type="button" ng-click="addBatchConceptFromResult(result.concept, templateOptions.selectedTemplate)"
+                  ng-show="templateOptions.selectedTemplate"
+                  class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2 pull-right m-l-5 search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <span>Add to Batch</span>
+          </button>
+
+          <!--<button type="button" ng-click="addItemToFavorites(result)"-->
+          <!--ng-disabled="isInFavorites(result.concept.conceptId)"-->
+          <!--class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">-->
+          <!--<span>Add to Project Favorites</span>-->
+          <!--</button>-->
+
+          <button type="button" ng-click="addItemToSavedList(result)"
+                  ng-class="[{'disable' : isInSavedList(result.concept.conceptId)}]"
+                  class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1 pull-right m-l-5 search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <span>Add to Saved List</span>
+          </button>
+
           <button type="button" ng-click="viewConceptInTaxonomy(result)"
-                  class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"
+                  class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1 pull-right m-l-5 search-icon"
                   ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red disable' : !result.concept.active }]"
                   ng-mouseover="setTooltipPosition($event);">
             <span ng-if="result.concept.active">View in Taxonomy</span>
             <span ng-if="!result.concept.active">Inactive Concept</span>
-          </button>       
-          <button type="button" ng-click="addItemToSavedList(result)"                 
-                  ng-class="[{'disable' : isInSavedList(result.concept.conceptId)}]"
-                  class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1"
-                  ng-mouseover="setTooltipPosition($event);">
-            <span>Add to Saved List</span>
           </button>
-        
-          <!--<button type="button" ng-click="addItemToFavorites(result)"-->
-                  <!--ng-disabled="isInFavorites(result.concept.conceptId)"-->
-                  <!--class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">-->
-            <!--<span>Add to Project Favorites</span>-->
-          <!--</button>-->          
-          <button type="button" ng-click="addBatchConceptFromResult(result.concept, templateOptions.selectedTemplate)"
-                  ng-show="templateOptions.selectedTemplate"                  
-                  class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2"
-                  ng-mouseover="setTooltipPosition($event);">
-            <span>Add to Batch</span>
-          </button>
-          <button type="button"
-                class= "addButton btn btn-round widget-button tooltips-bottom medium-size-tooltip offset-tooltip-right white"
-                ng-mouseover="setTooltipPosition($event);"
-                ng-click="clone(result)"> <i class="md md-content-copy"></i> <span> Clone this concept </span>
-          </button>
-          
         </div>
       </div>
     </div>
