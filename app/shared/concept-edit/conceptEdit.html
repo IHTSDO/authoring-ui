@@ -392,15 +392,17 @@
 
             <!-- button for each dialect key -->
             <div ng-repeat="dialectId in getDialectIdsForDescription(description)">
-              <button type="button"
-                      class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                      ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels"
-                      ng-click="toggleAcceptability(description, dialectId)">
-                <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
-                </div>
-                <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>              
-              </button>
-              <div ng-if="getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId) !== ''" class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId)}}</span></div> 
+              <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1">
+                  <button type="button"
+                          class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
+                          ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels"
+                          ng-click="toggleAcceptability(description, dialectId)">
+                    <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
+                    </div>
+                    <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>              
+                  </button>
+                  <div ng-if="getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId) !== ''" class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip highlight-icon"><span>{{getComponentChange(description.descriptionId,'ACCEPTABILITY',dialectId)}}</span></div>
+              </div>
             </div>
           </div>
 

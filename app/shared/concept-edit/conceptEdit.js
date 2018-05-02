@@ -1530,14 +1530,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         };
+          
 
 // function to retrieve branch dialect ids as array instead of map
 // NOTE: Required for orderBy in ng-repeat
         scope.dialectLength = null;
         scope.getDialectIdsForDescription = function (description, FSN) {
-          var dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
-          scope.dialectLength = Object.keys(dialects).length;
+          let dialectLength = 0;
+          let dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
+          angular.forEach(scope.getAvailableLanguages(description.moduleId), function(language){
+              let count = 0;
+              angular.forEach(dialects, function(dialect){
+                  if(dialect.indexOf(language) > -1)
+                      {
+                          count++
+                          if(count > dialectLength){
+                              dialectLength = count;
+                          }
+                      }
+              })
+          });
+          if(dialectLength > scope.dialectLength){
+            scope.dialectLength = dialectLength;
+          }
+          
           return Object.keys(dialects).sort(scope.dialectComparator);
+        };
+          
+        scope.getDialectsForDescription = function (description, FSN) {
+          return metadataService.getDialectsForModuleId(description.moduleId, FSN);
         };
 
 // define acceptability types
