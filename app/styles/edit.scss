@@ -932,6 +932,10 @@ background: #43A047;
 .z-index-1 {
     z-index: 1
 }
+div.search-result:hover {
+    background: #d4d4d4;
+}
+
 .search-filter .filter-label {
     padding-right: 0px;
     padding-left: 0px;

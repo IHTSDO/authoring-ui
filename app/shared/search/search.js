@@ -45,6 +45,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // the stored results
       $scope.storedResults = [];
 
+      $scope.checkedToDownload = false;
+
+
       // user controls
       $scope.userOptions = {
         groupByConcept: true,
@@ -237,7 +240,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
         else {
           $scope.results = displayedResults;
-        }       
+        }
 
         // user cue for status
         if ($scope.results.length === 0) {
@@ -320,6 +323,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           window.URL.revokeObjectURL(url);
         };
       }());
+
+      $scope.selectAll = function (isChecked) {
+        angular.forEach($scope.results, function (item) {
+          item.selected = isChecked;
+        });
+      };
 
       $scope.downloadSearchResults = function() {
         let acceptLanguageValue = '';
@@ -976,7 +985,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         angular.forEach(spanTags, function(tag) {
           angular.element(tag).css('top', top - 73);
           angular.element(tag).css('left', left - 40);
-        });                
+        });
       };
       // on extension metadata set
       $scope.$on('setExtensionMetadata', function (event, data) {
