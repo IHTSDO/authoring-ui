@@ -239,7 +239,9 @@ angular.module('singleConceptAuthoringApp')
               if (match) {
                 var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
                 requiredLanguageRefsets.forEach(function(lang) {
-                  languages.push(Object.keys(lang)[0]);
+                  if(!languages.includes(Object.keys(lang)[0])){
+                      languages.push(Object.keys(lang)[0]);
+                  }
                   if(lang.dialectName){
                       dialects[lang[Object.keys(lang)[0]]] = lang.dialectName;
                   }
@@ -249,7 +251,7 @@ angular.module('singleConceptAuthoringApp')
 
                   console.log(lang);
 
-                  if(lang.default === "true"){
+                  if(lang.default === "true" && !defaultLanguages.includes(Object.keys(lang)[0])){
                       defaultLanguages.push(Object.keys(lang)[0]);
                   }
                 });

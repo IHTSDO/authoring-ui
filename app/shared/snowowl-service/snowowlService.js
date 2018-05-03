@@ -1309,9 +1309,17 @@ angular.module('singleConceptAuthoringApp')
 
       // Get traceability log for branch
       // GET /traceability-service/activities?onBranch=
-      function getTraceabilityForBranch(branch) {
+      function getTraceabilityForBranch(branch, conceptId) {
         var deferred = $q.defer();
-        $http.get('/traceability-service/activities?onBranch=' + branch + '&size=50000').then(function (response) {
+        var params = 'size=50000';
+        if(branch) {
+          params += '&onBranch=' + branch;
+        }
+        if(conceptId) {
+          params += '&conceptId=' + conceptId;
+        }
+
+        $http.get('/traceability-service/activities?' + params).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           if (error.status === 404) {

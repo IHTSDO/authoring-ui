@@ -349,7 +349,7 @@ content: '';
 .medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -69px;
 }
-.medium-size-tooltip.tooltips-bottom.highlight-icon:hover span {
+.medium-size-tooltip.tooltips-bottom.triangle-redhl:hover span {
   top: 9px;
   margin-left: -71px;
 }
@@ -365,13 +365,21 @@ content: '';
 .xlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -97px;
 }
+.xlarge-size-tooltip.tooltips-bottom.triangle-redhl:hover span {
+   margin-left: -80px;
+   top: 9px;
+   width: 159px;
+}
 .xxlarge-size-tooltip.tooltips-bottom span {
     width: 255px;
 }
 .xxlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -130px;
 }
-
+.xxlarge-size-tooltip.tooltips-bottom.triangle-redhl:hover span {
+  margin-left: -236px;
+  top: 7px;
+}
 .cI:before {
     content: "Only initial character case insensitive";
 }
