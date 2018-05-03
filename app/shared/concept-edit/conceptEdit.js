@@ -653,96 +653,87 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
 //on load, check if traceability has been pashed from Feedback, then find the differences with concept project
-        var descriptionTypeChangeObject = {},
-            descriptionCaseSignificanceChangeObject = {},
-            descriptionAcceptabilityMapChangeObject = {};
+        scope.innerComponentStyle = {};
 
         if (scope.isFeedback) {
-           lookupComponentChange();
+           lookupInnerComponentStyle();
         }
 
-        function lookupComponentChange (){
-          descriptionTypeChangeObject = {};
-          descriptionCaseSignificanceChangeObject = {};
-          descriptionAcceptabilityMapChangeObject = {};
+        function lookupInnerComponentStyle (){          
+          scope.innerComponentStyle = {};
           var traceabilities = [];
-          snowowlService.getTraceabilityForBranch(scope.branch,scope.concept.conceptId).then(function(response) {
-            if(response.totalElements > 0) {
-              for (var i = response.content.length - 1; i >= 0; i--) {
-                var traceability = response.content[i];
-                if (traceability.conceptChanges) {
-                  for (var j = traceability.conceptChanges.length - 1; j >= 0; j--) {
-                    var conceptChange =  traceability.conceptChanges[j];
-                    if (conceptChange.conceptId === scope.concept.conceptId) {
-                      traceabilities.push(conceptChange);
-                    }
-                  } 
-                }
-              }
-
-              if(traceabilities.length > 0) {
-                snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
-                  var checkList = [];
-                  angular.forEach(traceabilities, function (traceability) {
+          snowowlService.getTraceabilityForBranch(scope.branch,scope.concept.conceptId).then(function(traceabilities) {
+            if(traceabilities.totalElements > 0) {
+              snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
+                var checkList = [];                
+                angular.forEach(traceabilities.content, function (content) {
+                  angular.forEach(content.conceptChanges, function (traceability) {
                     angular.forEach(traceability.componentChanges, function (componentChange) {
-                      if (componentChange.componentType === 'DESCRIPTION'
-                          && componentChange.changeType === 'UPDATE') {
-                        if (checkList.indexOf(componentChange.componentId) == -1) {
-                          checkList.push(componentChange.componentId);
-                          var taskDescription = scope.concept.descriptions.filter( function (des) {
-                            return des.descriptionId === componentChange.componentId;
-                          })[0];
+                      if (componentChange.componentType === 'DESCRIPTION') {
+                        if (componentChange.changeType === 'CREATE') {
+                          scope.innerComponentStyle[componentChange.componentId] = {
+                            message: null, 
+                            style: 'tealhl'
+                          };
+                        } else {
+                          if (checkList.indexOf(componentChange.componentId) == -1) {
+                            checkList.push(componentChange.componentId);
 
-                          var mainDescription = response.descriptions.filter( function (des) {
-                            return des.descriptionId === componentChange.componentId;
-                          })[0];
+                            var taskDescription = scope.concept.descriptions.filter( function (des) {
+                              return des.descriptionId === componentChange.componentId;
+                            })[0];
 
-                          if (taskDescription.type !== mainDescription.type) {
-                            descriptionTypeChangeObject[componentChange.componentId] = "Change from " + mainDescription.type + " to " + taskDescription.type;
+                            var mainDescription = response.descriptions.filter( function (des) {
+                              return des.descriptionId === componentChange.componentId;
+                            })[0];
+
+                            if(mainDescription) {
+                              if (taskDescription.type !== mainDescription.type) {
+                                scope.innerComponentStyle[componentChange.componentId + '-type'] = {
+                                  message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type, 
+                                  style: 'triangle-redhl'
+                                };
+                              }
+                              if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
+                                scope.innerComponentStyle[componentChange.componentId + '-caseSignificance'] = {
+                                  message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription), 
+                                  style: 'triangle-redhl'
+                                };
+                              }
+                              var componentDialects = Object.keys(taskDescription.acceptabilityMap);
+                              componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+                              angular.forEach(componentDialects, function (dialectId) {
+                                if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
+                                  scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                                    message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId), 
+                                    style: 'triangle-redhl'
+                                  };
+                                }
+                                if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
+                                  scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                                    message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable', 
+                                    style: 'triangle-redhl'
+                                  };
+                                }
+                                if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
+                                  && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
+                                  scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                                    message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId), 
+                                    style: 'triangle-redhl'
+                                  };
+                                }
+                              });
+                            }
                           }
-                          if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
-                            descriptionCaseSignificanceChangeObject[componentChange.componentId] = "Change from " + scope.getCaseSignificanceDisplayText(mainDescription) + " to " + scope.getCaseSignificanceDisplayText(taskDescription);
-                          }
-
-                          var componentDialects = Object.keys(taskDescription.acceptabilityMap);
-                          componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
-                          angular.forEach(componentDialects, function (dialectId) {
-                            if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
-                              descriptionAcceptabilityMapChangeObject[componentChange.componentId + '-' + dialectId] = "Change from Not Acceptable to " + scope.getAcceptabilityTooltipText(taskDescription,dialectId);
-                            }
-                            if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
-                              descriptionAcceptabilityMapChangeObject[componentChange.componentId + '-' + dialectId] = "Change from " + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + " to Not Acceptable";
-                            }
-                            if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
-                              && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
-                              descriptionAcceptabilityMapChangeObject[componentChange.componentId + '-' + dialectId] = "Change from " + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + " to " + scope.getAcceptabilityTooltipText(taskDescription,dialectId);
-                            }
-                          });
-                        }
+                        }                                              
                       }
                     });
-                  });            
-                });
-              }
+                  });
+                });                            
+              });              
             }
           });
-        }         
-
-        scope.getComponentChange = function(componentId, property, dialectId) {
-          if(!scope.isFeedback) {
-            return '';
-          }
-          
-          if(property === 'TYPE') {
-            return descriptionTypeChangeObject[componentId] ? descriptionTypeChangeObject[componentId] : '';
-          }
-          if(property === 'CASE_SIGNIFICANCE') {
-            return descriptionCaseSignificanceChangeObject[componentId] ? descriptionCaseSignificanceChangeObject[componentId] : '';
-          }
-          if(property === 'ACCEPTABILITY' && dialectId) {
-            return descriptionAcceptabilityMapChangeObject[componentId + '-' + dialectId] ? descriptionAcceptabilityMapChangeObject[componentId + '-' + dialectId] : '';
-          }
-        };
+        }
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -986,7 +977,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.computeRelationshipGroups();
 
                   if (scope.isFeedback) {
-                     lookupComponentChange();
+                     lookupInnerComponentStyle();
                   }
 
                   // broadcast event to any listeners (currently task detail, crs concept list,
@@ -4075,6 +4066,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             if (scope.componentStyles.hasOwnProperty(key)) {
               return scope.componentStyles[key].style;
+            } else if (scope.innerComponentStyle.hasOwnProperty(key)) {
+              return scope.innerComponentStyle[key].style;
             } else {
               return defaultStyle;
             }
