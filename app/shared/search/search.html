@@ -162,7 +162,7 @@
                     ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
             <span>Fully Defined</span>
           </button>
-          <div class="in-block" ui-draggable="true" drag="getConceptPropertiesObj(result.concept)"
+          <div class="in-block white-text" ui-draggable="true" drag="getConceptPropertiesObj(result.concept)"
                drag-channel="conceptPropertiesObj" drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn">
             <a class="m-l-5 m-r-5 " title="Edit" ng-click="selectItem(result)" ng-disabled="isEdited(result)">
               {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }}
