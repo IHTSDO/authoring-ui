@@ -1043,8 +1043,10 @@ angular.module('singleConceptAuthoringApp')
                 if (response[i].active === false) {
                   response.splice(i, 1);
                 }
+                else if (response[i].concept.conceptId === scope.inactivationConcept.conceptId) {
+                  response.splice(i, 1);
+                }
               }
-              console.log(response);
               return response;
             });
           };
