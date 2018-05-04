@@ -254,7 +254,8 @@ content: '';
     margin-left: -129px;
 }
 .offset-tooltip-right.xxlarge-size-tooltip.tooltips-bottom span:after,
-.offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after {
+.offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after,
+.offset-tooltip-right.small-size-tooltip.tooltips-bottom span:after {
     left: 92%;
 }
 .offset-tooltip-right.medium-size-tooltip.tooltips-top:hover span {
@@ -327,6 +328,40 @@ content: '';
 }
 .tooltips-bottom.small-size-tooltip:hover .md-my-library-books + span {
     margin-left: -35px;
+}
+.tooltips-bottom.small-size-tooltip.primitive-btn:hover span {
+    width: 59px;
+    margin-left: -30px;
+}
+.tooltips-bottom.small-size-tooltip.fully-defined-btn:hover span {
+    width: 84px;
+}
+.tooltips-bottom.offset-tooltip-left.small-size-tooltip.primitive-btn:hover span {
+    margin-left: -8px;
+}
+.tooltips-bottom.small-size-tooltip.offset-tooltip-left.primitive-btn span:after {
+    margin-left: -3px;
+}
+.tooltips-bottom.small-size-tooltip.offset-tooltip-right.primitive-btn span:after {
+    margin-left: -12px;
+}
+.tooltips-bottom.small-size-tooltip.offset-tooltip-right.primitive-btn:hover span {
+    margin-left: -50px;
+}
+.tooltips-bottom.small-size-tooltip.offset-tooltip-right.fully-defined-btn:hover span {
+    margin-left: -77px;
+}
+.tooltips-bottom.small-size-tooltip.offset-tooltip-right.axiom-staus-buttons.fa-minus:hover span {
+    margin-left: -83px;
+}
+.tooltips-bottom.medium-size-tooltip.offset-tooltip-right.md-history:hover span {
+    width: 105px;
+    margin-left: -95px;
+}
+
+.tooltips-bottom.small-size-tooltip.btn-reject:hover span {
+    width: 48px;
+    margin-left: -25px;
 }
 .tooltips-bottom.large-size-tooltip .fa-envelope + span {
     width: 158px;

@@ -146,13 +146,13 @@
           <button type="button"
                   ng-click="addAdditionalAxiom()"
                   ng-if="axiomSupport"
-                  class="btn-default green small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa fa-plus-square-o" style="transform: inherit;">
+                  class="btn-default green small-buttons tooltips-bottom medium-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square-o" style="transform: inherit;">
             <span ng-if="!isStatic">Add Additional Axiom</span>
           </button>
           <button type="button"
                   ng-click="addGCIAxiom()"
                   ng-if="axiomSupport"
-                  class="btn-default green small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa fa-plus-square" style="transform: inherit;">
+                  class="btn-default green small-buttons tooltips-bottom small-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square" style="transform: inherit;">
             <span ng-if="!isStatic">Add GCI Axiom</span>
           </button>
           <button type="button"
@@ -161,7 +161,7 @@
                   ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
           </button>
           <button type="button"
-                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case stated-inferred-view"            
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"            
                   ng-click="toggleInferredRelationships()">{{!showInferredRels ? 'S' : 'I'}}               
                   <span ng-if="!showInferredRels"> Switch to inferred view </span>
                   <span ng-if="showInferredRels"> Switch to stated view </span>
@@ -177,7 +177,7 @@
             <span>Redo Changes</span>
           </button>
           <button type="button"
-                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom tooltips-light"
+                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
                   ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
             <span>Revert to Saved</span>
           </button>
@@ -195,6 +195,7 @@
           <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
                   ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                   class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
+                  ng-class="[{'fully-defined-btn' : concept.definitionStatus === 'FULLY_DEFINED'}]"
                   ng-click="toggleConceptDefinitionStatus(isStatic)">
 
             <div class="badge alert-warning ng-binding">≡&nbsp; </div>
@@ -203,6 +204,7 @@
           <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
                   ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                   class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
+                  ng-class="[{'primitive-btn' : concept.definitionStatus === 'PRIMITIVE'}]"
                   ng-click="toggleConceptDefinitionStatus(isStatic)">
             <div class="badge alert-warning ng-binding">&nbsp; </div>
             <span>Primitive</span>
@@ -606,12 +608,14 @@
                 </div>
 
                 <div ng-if="relationship.target.definitionStatus === 'FULLY_DEFINED'"
-                     class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+                     class="pull-left p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip"
+                     ng-class="[{'fully-defined-btn' : relationship.target.definitionStatus === 'FULLY_DEFINED'}]">
                   <div class="badge alert-warning ng-binding pull-left">≡&nbsp; </div>
                   <span>Fully Defined</span>
                 </div>
                 <div ng-if="relationship.target.definitionStatus === 'PRIMITIVE'"
-                     class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+                     class="pull-left p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip"
+                     ng-class="[{'primitive-btn' : relationship.target.definitionStatus === 'PRIMITIVE'}]">
                   <div class="badge alert-warning ng-binding pull-left">&nbsp; </div>
                   <span>Primitive</span>
                 </div>
