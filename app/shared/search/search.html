@@ -135,7 +135,7 @@
       </div>
       <div class="col-md-3 no-padding">
         <div class="checkbox download-checkbox pull-right m-l-5">
-          <input type="checkbox" ng-model="checkedToDownload" ng-change="selectAll(checkedToDownload)" id="select_all_to_download"/>
+          <input type="checkbox" ng-model="downloadAllResults" ng-change="selectAll(downloadAllResults)" id="select_all_to_download"/>
           <!--<span> Include in Download </span>-->
         </div>
       </div>
@@ -171,7 +171,7 @@
         </div>
         <div class="col-md-4 no-p-lr clear-position in-block">
           <div class="checkbox download-checkbox pull-right m-l-5">
-            <input type="checkbox" ng-model="result.selected" />
+            <input type="checkbox" ng-model="result.selected" ng-change="removeAllSelected()" />
             <!--<span> Include in Download </span>-->
           </div>
 

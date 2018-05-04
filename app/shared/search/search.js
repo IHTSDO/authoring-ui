@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // the stored results
       $scope.storedResults = [];
 
-      $scope.checkedToDownload = false;
+      $scope.downloadAllResults = true;
 
 
       // user controls
@@ -258,6 +258,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           //$("#excel_table").insertAtCaret($(this).text());
           return false;
         });
+
+        $scope.selectAll(true);
       };
 
       function populateResults(displayedResults,tempIds,i) {
@@ -328,6 +330,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         angular.forEach($scope.results, function (item) {
           item.selected = isChecked;
         });
+      };
+
+      $scope.removeAllSelected = function() {
+        $scope.downloadAllResults = false;
       };
 
       $scope.downloadSearchResults = function() {
