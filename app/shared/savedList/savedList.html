@@ -10,12 +10,14 @@
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
+              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left"
+              ng-class="[{'primitive-btn' : item.concept.definitionStatus === 'PRIMITIVE'}]">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
         <span>Primitive</span> </button>
         <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class="p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
+              class="p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left"
+              ng-class="[{'fully-defined-btn' : item.concept.definitionStatus !== 'PRIMITIVE'}]">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
         <span>Fully Defined</span> </button>
       </div>
@@ -56,12 +58,14 @@
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left ">
+              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left "
+              ng-class="[{'primitive-btn' : item.concept.definitionStatus === 'PRIMITIVE'}]">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
         <span>Primitive</span> </button>
         <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left">
+              class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left"
+              ng-class="[{'fully-defined-btn' : item.concept.definitionStatus !== 'PRIMITIVE'}]">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
         <span>Fully Defined</span> </button>
       </div>
