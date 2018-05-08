@@ -664,7 +664,7 @@ angular.module('singleConceptAuthoringApp')
         if (!limit) {
           limit = 10000;
         }
-        
+
         var params = 'destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=' + offset +'&limit=' + limit;
 
         if (active) {
@@ -929,11 +929,17 @@ angular.module('singleConceptAuthoringApp')
         }
 
         // if the user is searching with some form of numerical ID
-        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter)) {
+        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(termFilter)) {
 
           // if user is searching with a conceptID
-          if(termFilter.substr(-2, 1) === '0') {
-            params.conceptIds = [termFilter];
+          if(Array.isArray(termFilter) || termFilter.substr(-2, 1) === '0') {
+            if(!Array.isArray(termFilter)) {
+              params.conceptIds = [termFilter];
+            }
+
+            else {
+              params.conceptIds = termFilter;
+            }
 
             $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
@@ -1067,7 +1073,7 @@ angular.module('singleConceptAuthoringApp')
           params.termFilter = termFilter;
 
           $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
-            
+
             if(tsv) {
               deferred.resolve(response);
             }

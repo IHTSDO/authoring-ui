@@ -46,6 +46,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.storedResults = [];
 
       $scope.downloadAllResults = true;
+      $scope.selectedResultsList = [];
 
 
       // user controls
@@ -336,7 +337,26 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.downloadAllResults = false;
       };
 
-      $scope.downloadSearchResults = function() {
+      $scope.downloadResultFilter = function() {
+        $scope.selectedResultsList = [];
+
+        if(!$scope.downloadAllResults) {
+
+          $scope.results.filter(function(item) {
+            if(item.selected) {
+              $scope.selectedResultsList.push(item.concept.conceptId);
+            }
+          });
+
+          $scope.downloadSearchResults($scope.selectedResultsList);
+        }
+
+        else {
+          $scope.downloadSearchResults();
+        }
+      };
+
+      $scope.downloadSearchResults = function(conceptIdList) {
         let acceptLanguageValue = '';
 
         if($scope.isExtension) {
@@ -376,8 +396,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true).then(function (data) {
+        snowowlService.searchAllConcepts($scope.branch, conceptIdList ? conceptIdList : $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true).then(function (data) {
           let fileName = 'searchResults_' + $routeParams.taskKey;
+
           $scope.dlcDialog(data.data, fileName);
         });
       };

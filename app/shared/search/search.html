@@ -219,7 +219,7 @@
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
-    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top medium-size-tooltip offset-tooltip-right white-icon" ng-click="downloadSearchResults()">
+    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top medium-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
       <span class="tooltip-dl">Download Results</span>
     </a>
   </div>
