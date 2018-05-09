@@ -716,6 +716,7 @@ angular.module('singleConceptAuthoringApp')
           scope.addMultipleToEdit = function (actionTab) {
             var conceptsToAdd = [];
             var conceptsAdded = 0;
+            scope.simultaneousFeedbackAdded = false;            
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
@@ -1227,6 +1228,7 @@ angular.module('singleConceptAuthoringApp')
             });
 
             if ( scope.subjectConcepts.length === 0) {
+              scope.simultaneousFeedbackAdded = false ;
               notificationService.sendWarning('No concepts selected', 5000);
               return
             }
