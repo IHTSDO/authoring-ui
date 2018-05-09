@@ -64,7 +64,7 @@
 
   <!-- Taxonomy, models, and concepts -->
   <div class="no-padding pull-right"  ng-class="getLayoutWidths('modelsAndConcepts')">
-    <div ng-if="viewedConcepts.length > 0">
+    <div ng-if="viewedConcepts.length > 0 && !simultaneousFeedbackAdded">
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
         <div ng-class="getLayoutWidths('models')">
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>
@@ -139,6 +139,52 @@
               <div class="pull-right follow-up-right ">
                 <button class="pull-right btn btn-default  m-r-5"
                         ng-click="submitFeedback(requestFollowup)"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="simultaneousFeedbackAdded">    
+      <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0"> <strong>{{viewedFeedback.length}}</strong> Total Comments
+      </div>
+      <div class="col-md-12 feedback-area">
+        <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
+          <div class="no-feedback-yet" ng-if="viewedFeedback.length === 0"> No Feedback added yet... </div>
+          <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
+            <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 "
+               ng-class="[{
+                          author_feedback_chat : task.assignee.username  === feedback.fromUsername
+                          }]"
+
+            ></p>           
+            <div class="feedback-header" ng-class="[{
+                          pull_right : task.assignee.username  === feedback.fromUsername
+                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
+          </div>
+        </div>
+        <div class="feedback-window col-md-6 no-padding m-t-10">
+          <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
+                        ng-model="$parent.htmlVariable"
+                        ta-text-editor-class="form-control myform2-height"
+                        ta-html-editor-class="form-control myform2-height"
+                        ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+          <div class="col-md-12 p-t-5">
+            <div class="col-md-6 no-padding concept-filter ">
+              <input type="text" class="feedback-search m-b-5 no-border-bottom" placeholder="Search concepts..."
+                     ui-on-drop=""
+                     ng-model="conceptFilter"
+                     typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                     typeahead-focus-first="false"
+                     typeahead-wait-ms="500"
+                     typeahead-on-select="addConceptToFeedback($item, this)"
+                     typeahead-editable="false" typeahead-min-length="3">
+            </div>
+            <div class="col-md-6 no-padding">             
+              <div class="pull-right follow-up-right ">
+                <button class="pull-right btn btn-default  m-r-5"
+                        ng-click="submitFeedback()"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
               </div>
             </div>
           </div>
