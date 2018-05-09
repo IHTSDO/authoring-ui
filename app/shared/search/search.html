@@ -145,7 +145,7 @@
 
     <div class="p-l-10 search-result" ng-repeat="result in results">
       <div class="row">
-        <div class="col-md-8 no-p-lr clear-position in-block">
+        <div class="col-md-1 no-p-lr clear-position in-block">
           <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
                   class="no-p-lr white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
                   ng-class="[{'primitive-btn' : result.concept.definitionStatus === 'PRIMITIVE'}]"
@@ -162,7 +162,9 @@
                     ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
             <span>Fully Defined</span>
           </button>
-          <div class="in-block white-text" ui-draggable="true" drag="getConceptPropertiesObj(result.concept)"
+        </div>
+        <div class="col-md-7 no-p-lr in-block">
+          <div class="in-block white-text result-text" ui-draggable="true" drag="getConceptPropertiesObj(result.concept)"
                drag-channel="conceptPropertiesObj" drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn">
             <a class="m-l-5 m-r-5 " title="Edit" ng-click="selectItem(result)" ng-disabled="isEdited(result)">
               {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }}
