@@ -108,8 +108,6 @@
                ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <!-- Only appears if reviewer role -->
             <div class="pull-right p-5">
-              <!--   <button class="btn btn-round btn-default pink lighten-2 tooltips-bottom normal-case"
-  ng-click="selectConceptsForFeedback()"><div class="md md-forum "></div><span>Add feedback to selected concepts</span></button>-->
               <button
                 class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
                 ng-click="addMultipleToEdit(actionTab)">
@@ -126,6 +124,8 @@
           <div class="col-md-2 no-padding" ng-if="role === 'AUTHOR'"
                ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <div class="pull-right p-r-10 p-t-15">
+               <button class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right normal-case"
+  ng-click="selectConceptsForFeedback()"><div class="md md-forum "></div><span>Add feedback to selected concepts</span></button>
               <button
                 class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
                 ng-click="addMultipleToEdit(actionTab)">

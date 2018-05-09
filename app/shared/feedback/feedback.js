@@ -1198,6 +1198,7 @@ angular.module('singleConceptAuthoringApp')
             if(scope.isDeletedConcept(concept)) {
               notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
             } else {
+              scope.simultaneousFeedbackAdded = false;
               if (actions) {
                 if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
                 if (actions.indexOf('addToEdit') >= 0) scope.addToEdit(concept);
@@ -1220,12 +1221,21 @@ angular.module('singleConceptAuthoringApp')
           scope.selectConceptsForFeedback = function () {
             scope.subjectConcepts = [];
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
-              if (item.selected) {
-                item.read = true;
+              if (item.selected) {             
                 scope.subjectConcepts.push(item);
               }
             });
-            getViewedFeedback();
+
+            if ( scope.subjectConcepts.length === 0) {
+              notificationService.sendWarning('No concepts selected', 5000);
+              return
+            }
+            if (scope.subjectConcepts.length === 1) {
+              scope.selectConcept( scope.subjectConcepts[0], 'addToEdit');
+            } else {
+              scope.simultaneousFeedbackAdded = true;
+              getViewedFeedback();
+            }            
           };
 
           scope.toggleFeedbackUnreadStatus = function (concept) {
