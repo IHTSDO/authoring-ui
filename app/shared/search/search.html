@@ -128,16 +128,17 @@
         <!-- No content -->
       </div>
       <div class="no-padding"
-           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
+           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-7' : userOptions.groupByConcept}]">
         <div class="p-5">
           <strong>{{isExtension ? getExtensionDisplayTitle() : 'FSN'}}</strong>
         </div>
       </div>
-      <div class="col-md-3 no-padding">
+      <div class="col-md-4 no-padding">
         <div class="checkbox download-checkbox pull-right m-l-5">
           <input type="checkbox" ng-model="downloadAllResults" ng-change="selectAll(downloadAllResults)" id="select_all_to_download"/>
           <!--<span> Include in Download </span>-->
         </div>
+        <div class="pull-right">Download All:</div>
       </div>
     </div>
     <!-- results -->
@@ -221,8 +222,8 @@
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
-    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top medium-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
-      <span class="tooltip-dl">Download Results</span>
+    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
+      <span class="tooltip-dl">Download Selected Results</span>
     </a>
   </div>
   <!-- Spacing to temporarily fix margin problems -->
