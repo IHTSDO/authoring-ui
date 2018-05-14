@@ -250,6 +250,12 @@ content: '';
 .offset-tooltip-right.large-size-tooltip.tooltips-bottom span:after {
     left: 90%;
 }
+.offset-tooltip-right.large-size-tooltip.tooltips-top:hover span {
+    margin-left: -136px;
+}
+.offset-tooltip-right.large-size-tooltip.tooltips-top span:after {
+    left: 90%;
+}
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -129px;
 }
@@ -261,6 +267,7 @@ content: '';
 .offset-tooltip-right.medium-size-tooltip.tooltips-top:hover span {
     margin-left: -52px;
 }
+
 .offset-tooltip-left.medium-size-tooltip.tooltips-bottom:hover span {
     margin-left: -7px;
 }

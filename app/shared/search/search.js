@@ -260,7 +260,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           return false;
         });
 
-        $scope.selectAll(true);
+        if($scope.downloadAllResults) {
+          $scope.selectAll(true);
+        }
       };
 
       function populateResults(displayedResults,tempIds,i) {
