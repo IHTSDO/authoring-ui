@@ -889,7 +889,7 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, conceptIdList) {
         let deferred = $q.defer();
         let config = {};
 
@@ -929,17 +929,19 @@ angular.module('singleConceptAuthoringApp')
         }
 
         // if the user is searching with some form of numerical ID
-        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(termFilter)) {
+        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
 
           // if user is searching with a conceptID
-          if(Array.isArray(termFilter) || termFilter.substr(-2, 1) === '0') {
-            if(!Array.isArray(termFilter)) {
+          if(conceptIdList || termFilter.substr(-2, 1) === '0') {
+            if(!Array.isArray(conceptIdList)) {
               params.conceptIds = [termFilter];
             }
 
             else {
-              params.conceptIds = termFilter;
+              params.termFilter = termFilter;
+              params.conceptIds = conceptIdList;
             }
+
 
             $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 

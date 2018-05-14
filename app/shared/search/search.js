@@ -398,7 +398,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, conceptIdList ? conceptIdList : $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true).then(function (data) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, conceptIdList).then(function (data) {
           let fileName = 'searchResults_' + $routeParams.taskKey;
 
           $scope.dlcDialog(data.data, fileName);
