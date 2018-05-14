@@ -40,7 +40,10 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
           scope.limitConceptsLoading = 10;
-
+          scope.projectKey = $routeParams.projectKey;
+          scope.taskKey = $routeParams.taskKey;          
+          scope.selectedReviewer = null;          
+          
           scope.viewTaxonomy = function() {            
             $rootScope.$broadcast('swapToTaxonomy');                
           };
@@ -86,6 +89,9 @@ angular.module('singleConceptAuthoringApp')
               if (scope.role === 'UNDEFINED') {
                 notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
               }
+              if (scope.task.reviewer) {
+                scope.selectedReviewer = scope.task.reviewer;
+              }              
             }
           });
 
@@ -1379,6 +1385,70 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           };        
           
+          scope.searchUsers = function(username, projectKeys, issueKey) {
+            var deferred = $q.defer();            
+            scaService.searchUsers(username,projectKeys,issueKey).then(function (response) {
+              var results = response.filter(function (item) {
+                return item.username !== $rootScope.accountDetails.login;
+              });           
+              deferred.resolve(results);
+            },
+            function (error) {
+              deferred.reject(error.message);
+            });
+            return deferred.promise;
+          };
+
+          scope.editReviewer = false;
+          scope.listenReviewerTypeaheadEvent = function(event){
+            event = event.event
+            if(event.keyCode === 13) {
+              var updateObj = {};
+              if (scope.selectedReviewer && scope.selectedReviewer.username) {
+                scope.task.reviewer = scope.selectedReviewer;
+                updateObj= {'reviewer': scope.selectedReviewer};
+              } else {
+                if (scope.selectedReviewer === null || scope.selectedReviewer === '') {
+                  scope.task.reviewer = null;
+                  updateObj= {'reviewer': {}};
+                } else {
+                  notificationService.sendError('Invalid user', 10000, null);
+                  return;
+                }
+              }
+              scope.typeaheadLoading = true;
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
+                scope.editReviewer = false; 
+                scope.typeaheadLoading = false;
+              });            
+            }
+            if (event.keyCode === 27) {
+              scope.editReviewer = false; 
+            }
+          };
+
+          scope.updateReviewer = function () {
+            scope.task.reviewer = scope.selectedReviewer;
+            var  updateObj= {'reviewer': scope.selectedReviewer};
+            scope.typeaheadLoading = true;
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
+              scope.editReviewer = false; 
+              scope.typeaheadLoading = false;
+            }); 
+          };
+
+          scope.switchToEditReviewer = function () {            
+            scope.editReviewer = true;
+            if (scope.task.reviewer) {
+              scope.selectedReviewer = scope.task.reviewer;
+            } else {
+              scope.selectedReviewer = null;
+            }
+            $timeout(function () {
+              document.getElementById("feedback-edit-reviewer").focus();
+            }, 0);                        
+          };
+
           scope.submitFeedback = function (requestFollowup) {
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {

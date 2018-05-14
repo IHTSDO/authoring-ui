@@ -715,3 +715,31 @@ strong {
         max-height: 220px;
     }
 }
+.feedback-header-main .editable-field .btn {
+    background: transparent; 
+    padding-right: 0px;
+}
+.editable-field,
+.editable-field span {
+    display: inline;
+}
+.editable-field span:hover {
+    cursor: initial;
+}
+.editable-field input.form-control {
+    width: 200px; 
+    display: initial;
+    background-color: #fff;
+    border-radius: 2px;
+    height: 24px;
+    min-height: 0px;
+}
+.editable-field i {
+   position: relative;
+    left: -17px;
+    color: #474747; 
+}
+.feedback-header-main .editable-field .btn {
+    padding-left: 0px;
+    margin-bottom: 2px;
+}

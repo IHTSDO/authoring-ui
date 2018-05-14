@@ -1445,9 +1445,34 @@ angular.module('singleConceptAuthoringApp')
             }
           });
           return deferred.promise;
+        },
+
+        searchUsers : function (username,projectKeys,issueKey,maxResults,startAt) {          
+          var params = 'startAt=' + (startAt ? startAt : 0) 
+                     + '&maxResults=' + (maxResults ? maxResults : 50)
+                     + '&username=' + username
+                     + (projectKeys ? ('&projectKeys=' + projectKeys) : '')
+                     + (issueKey ? ('&issueKey=' + issueKey) : '')
+                     + '&_=' + Date.now();
+          return $http.get(apiEndpoint + 'users/search?' + params).then(function (response) {
+            var results = [];
+            angular.forEach(response.data, function(value, key) {
+              if (value.active) {
+                var user = {};
+                user.avatarUrl = value.avatarUrls['16x16'];
+                user.displayName = value.displayName;
+                user.email = value.emailAddress;
+                user.username = value.key;
+               
+                results.push(user);
+              }              
+            });
+
+            return results;
+          }, function (error) {
+             return [];
+          });
         }
-
-
       };
 
     }])
