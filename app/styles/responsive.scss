@@ -173,6 +173,9 @@
     .inactivation-report.classification-report ~ .table-responsive .table-full tbody > tr > td:last-child {
         padding-right: 0px;
     }
+    .editable-field input.form-control {
+        width: 160px;    
+    }
 }
 @media (max-width: 1300px) {
     .title-text {

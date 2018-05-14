@@ -36,14 +36,33 @@
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
-        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}</div>
+        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong><span ng-if="role === 'REVIEWER'">{{task.reviewer.displayName}}</span></div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
           <button class="btn btn-default primary-action-btn"
                   ng-click="unclaimReview()">Unclaim Review </button>
         </div>
         <div class="switch pull-right p-l-10"> </div>
-        <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'"> &nbsp;Task not claimed by a
-          reviewer </div>
+        <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" > &nbsp; 
+          <div class="editable-field">
+            <input id="feedback-edit-reviewer" type="text" ng-model="selectedReviewer" 
+                typeahead="suggestion as suggestion.displayName for suggestion in searchUsers($viewValue,projectKey,taskKey)"  
+                typeahead-focus-first="true"
+                typeahead-wait-ms="700"
+                typeahead-editable="false"               
+                class="form-control"
+                ng-keyup="listenReviewerTypeaheadEvent({event: $event})"
+                typeahead-on-select="updateReviewer()"                                       
+                ng-show="editReviewer"               
+                typeahead-loading="typeaheadLoading"> 
+                 <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
+            </input>
+           
+            <span ng-show="!editReviewer" ng-click="switchToEditReviewer();">           
+              <span>{{task.reviewer ? task.reviewer.displayName : 'Unassigned'}}</span>
+              <button class="btn btn-default normal-case" ng-click="switchToEditReviewer();"><div class="md md-edit"></div></button>
+            </span>
+          </div>          
+        </div>
         <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
           review </div>
       </div>
