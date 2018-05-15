@@ -507,9 +507,6 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.$on('stopEditing', function (event, data) {
 
-            // remove from the styles list (if present)
-            delete scope.styles[data.concept.conceptId];
-
             // remove from viewed concepts list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
@@ -541,23 +538,6 @@ angular.module('singleConceptAuthoringApp')
 
           // the scope variable containing the map of concept -> [style map]
           scope.styles = {};
-
-          function addConceptStyles(concept) {
-            /*    var styledElements = {};
-             angular.forEach(concept.descriptions, function (description) {
-             if (!description.effectiveTime) {
-             styledElements[description.descriptionId] = {message: null, style: 'tealhl'};
-             }
-             });
-             angular.forEach(concept.relationships, function (relationship) {
-             if (!relationship.effectiveTime) {
-             styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'};
-             }
-             });
-             scope.styles[concept.conceptId] = styledElements;
-             */
-          }
-
 
           function highlightComponent(conceptId, componentId) {
             if (!scope.styles) {
@@ -651,9 +631,6 @@ angular.module('singleConceptAuthoringApp')
               if(sorting) {                
                 scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
               }
-
-              // apply styles
-              addConceptStyles(response);
 
               deferred.resolve(response);
 

@@ -662,75 +662,83 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function lookupInnerComponentStyle (){          
           scope.innerComponentStyle = {};
           var traceabilities = [];
-          snowowlService.getTraceabilityForBranch(scope.branch,scope.concept.conceptId).then(function(traceabilities) {
+          snowowlService.getTraceabilityForBranch(scope.branch).then(function(traceabilities) {
             if(traceabilities.totalElements > 0) {
               snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
                 var checkList = [];                
                 angular.forEach(traceabilities.content, function (content) {
-                  angular.forEach(content.conceptChanges, function (traceability) {
-                    angular.forEach(traceability.componentChanges, function (componentChange) {
-                      if (componentChange.componentType === 'DESCRIPTION') {
-                        if (componentChange.changeType === 'CREATE') {
-                          scope.innerComponentStyle[componentChange.componentId] = {
-                            message: null, 
-                            style: 'tealhl'
-                          };
-                        } else {
-                          if (checkList.indexOf(componentChange.componentId) == -1) {
-                            checkList.push(componentChange.componentId);
+                  if(content.activityType === 'CONTENT_CHANGE') {
+                    angular.forEach(content.conceptChanges, function (traceability) {
+                      if(traceability.conceptId === scope.concept.conceptId) {
+                        angular.forEach(traceability.componentChanges, function (componentChange) {
+                          if (componentChange.componentType === 'DESCRIPTION' 
+                              || (componentChange.componentType === 'RELATIONSHIP' && componentChange.componentSubType === 'STATED_RELATIONSHIP')) {
+                            scope.innerComponentStyle[componentChange.componentId] = {
+                              message: null, 
+                              style: 'tealhl'
+                            };
+                          }                        
+                          if (componentChange.componentType === 'DESCRIPTION') {                          
+                            if (checkList.indexOf(componentChange.componentId) == -1) {
+                              checkList.push(componentChange.componentId);
 
-                            var taskDescription = scope.concept.descriptions.filter( function (des) {
-                              return des.descriptionId === componentChange.componentId;
-                            })[0];
+                              var taskDescription = scope.concept.descriptions.filter( function (des) {
+                                return des.descriptionId === componentChange.componentId;
+                              })[0];
 
-                            var mainDescription = response.descriptions.filter( function (des) {
-                              return des.descriptionId === componentChange.componentId;
-                            })[0];
+                              var mainDescription = response.descriptions.filter( function (des) {
+                                return des.descriptionId === componentChange.componentId;
+                              })[0];
 
-                            if(mainDescription) {
-                              if (taskDescription.type !== mainDescription.type) {
-                                scope.innerComponentStyle[componentChange.componentId + '-type'] = {
-                                  message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type, 
-                                  style: 'triangle-redhl'
-                                };
+                              if(mainDescription && taskDescription) {
+                                highlightComponent(componentChange,mainDescription,taskDescription);
                               }
-                              if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
-                                scope.innerComponentStyle[componentChange.componentId + '-caseSignificance'] = {
-                                  message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription), 
-                                  style: 'triangle-redhl'
-                                };
-                              }
-                              var componentDialects = Object.keys(taskDescription.acceptabilityMap);
-                              componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
-                              angular.forEach(componentDialects, function (dialectId) {
-                                if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
-                                  scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
-                                    message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId), 
-                                    style: 'triangle-redhl'
-                                  };
-                                }
-                                if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
-                                  scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
-                                    message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable', 
-                                    style: 'triangle-redhl'
-                                  };
-                                }
-                                if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
-                                  && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
-                                  scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
-                                    message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId), 
-                                    style: 'triangle-redhl'
-                                  };
-                                }
-                              });
-                            }
+                            }                                                                      
                           }
-                        }                                              
-                      }
+                        });
+                      }                      
                     });
-                  });
+                  }
                 });                            
               });              
+            }
+          });
+        }
+
+        function highlightComponent(componentChange,mainDescription,taskDescription) {
+          if (taskDescription.type !== mainDescription.type) {
+            scope.innerComponentStyle[componentChange.componentId + '-type'] = {
+              message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type, 
+              style: 'triangle-redhl'
+            };
+          }
+          if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
+            scope.innerComponentStyle[componentChange.componentId + '-caseSignificance'] = {
+              message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription), 
+              style: 'triangle-redhl'
+            };
+          }
+          var componentDialects = Object.keys(taskDescription.acceptabilityMap);
+          componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+          angular.forEach(componentDialects, function (dialectId) {
+            if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
+              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId), 
+                style: 'triangle-redhl'
+              };
+            }
+            if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
+              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable', 
+                style: 'triangle-redhl'
+              };
+            }
+            if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
+              && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
+              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId), 
+                style: 'triangle-redhl'
+              };
             }
           });
         }
