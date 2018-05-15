@@ -920,7 +920,7 @@ angular.module('singleConceptAuthoringApp')
         if(tsv) {
           config.headers['Accept'] = 'text/csv';
           params.offset = 0;
-          params.limit = 2000;
+          params.limit = 10000;
           params.expand = 'pt(),fsn()';
         }
 
