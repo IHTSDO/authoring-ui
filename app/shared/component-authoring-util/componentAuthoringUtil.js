@@ -15,8 +15,10 @@ angular.module('singleConceptAuthoringApp')
       function getNewAcceptabilityMap(moduleId, defaultValue, initial, lang) {
         var acceptabilityMap = {};
         var dialects = metadataService.getDialectsForModuleId(moduleId);
+        var dialectDefaults = metadataService.getDialectDefaultsForModuleId(moduleId);
         for (var key in dialects) {
-
+            console.log(dialects);
+            console.log(dialectDefaults);
           // different behavior between extension and international content
           if (metadataService.isExtensionSet() && !initial) {
             // if this key is the default language, set acceptability to preferred
@@ -28,13 +30,17 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           else if (dialects[key].indexOf(lang) !== -1) {
-              acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';;
+              acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
           }
           else if (dialects[key].indexOf(lang) === -1) {
           }
             else {
             acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
           }
+          if(dialectDefaults[key] === "false"){
+              delete acceptabilityMap[key]
+          }
+          
 
 
         }

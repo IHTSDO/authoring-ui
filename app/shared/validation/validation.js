@@ -535,6 +535,18 @@ angular.module('singleConceptAuthoringApp')
             }
             failuresInitialized = true;
 
+            // Checking if users can see whitelist
+            if($rootScope.accountDetails) {             
+              var isExtensionUser = false;
+              $rootScope.accountDetails.roles.forEach(function(role) {
+                  if(role.startsWith('ROLE_ms-')){
+                    isExtensionUser = true;
+                    return;
+                  }
+              });
+              scope.hasViewExclusionsPermission = !isExtensionUser;              
+            }
+
             // retrieve the whitelistable rule ids -- used to display Add to Whitelist button
             configService.getWhiteListEligibleRuleIds().then(function (response) {
               scope.whitelistEligibleRuleIds = response;

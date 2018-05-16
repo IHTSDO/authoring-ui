@@ -14,6 +14,28 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
     $scope.tableLimit = 10000;
 
+    $scope.filterCharacteristicTypes = [              
+        {
+            id: "",
+            title: ""
+        },
+        {
+            id: "STATED_RELATIONSHIP",
+            title: "Stated"
+        },
+        {
+            id: "INFERRED_RELATIONSHIP",
+            title: "Inferred"
+        }
+    ];
+
+    $scope.filterTypeTerms = [              
+        {
+            id: "",
+            term: ""
+        }
+    ];
+
     // declare table parameters
     $scope.tableParamsInboundRelationships = new ngTableParams({
         page: 1,
@@ -32,9 +54,25 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
           if (!$scope.inboundRelationships || $scope.inboundRelationships.length === 0) {
             $defer.resolve([]);
           } else {
-
-            params.total($scope.inboundRelationships.length);
-            let inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships, params.orderBy()) : $scope.inboundRelationships;
+            var results = $scope.inboundRelationships;
+            if(params.$params.filter.characteristicType) {
+              results = results.filter(function (item) {
+                return item.characteristicType === params.$params.filter.characteristicType;
+              });
+            }
+            if(params.$params.filter.typeFsn) {
+              results = results.filter(function (item) {
+                return item.typeFsn.id === params.$params.filter.typeFsn;
+              });
+            }
+            if(params.$params.filter.sourceFsn) {
+              results = results.filter(function (item) {
+                return item.sourceFsn.term.toLowerCase().indexOf(params.$params.filter.sourceFsn) > -1;
+              });
+            }
+            
+            params.total(results.length);
+            let inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')(results, params.orderBy()) : results;
             $defer.resolve(inboundRelationshipsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
         }
@@ -71,6 +109,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     
         $scope.inboundRelationshipsTotal = response.total;
 
+        var tempList = [];
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
         angular.forEach(response.items, function (item) {
@@ -78,10 +117,17 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
             item.sourceFsn = item.source.fsn;
             item.typeFsn = item.type.fsn;
 
+            if (tempList.indexOf(item.typeFsn.id) === -1) {
+              tempList.push(item.typeFsn.id);
+              $scope.filterTypeTerms.push({id: item.typeFsn.id, term: item.typeFsn.term});
+            }
+
             // push to inbound relationships
             $scope.inboundRelationships.push(item);            
           }
         });
+        tempList = []; // empty temporary list
+
         $scope.tableParamsInboundRelationships.reload();
 
         if ($scope.fullConcept && $scope.children && $scope.parents && $scope.inboundRelationships) {

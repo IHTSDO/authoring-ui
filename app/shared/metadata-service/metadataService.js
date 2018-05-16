@@ -9,8 +9,6 @@ angular.module('singleConceptAuthoringApp')
     // project cache (still used?)
     var projects = [];
 
-    var myProjects = [];
-
     var namespaces = [];
 
     // whether mrcm is currently enabled (default true)
@@ -183,6 +181,9 @@ angular.module('singleConceptAuthoringApp')
       languages: ['en'],
       dialects: {
         '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
+      },
+      dialectDefaults: {
+        '900000000000509007': 'true', '900000000000508004': 'true'
       }
     };
 
@@ -213,6 +214,7 @@ angular.module('singleConceptAuthoringApp')
 
         // temporary variables used in parsing metadata
         var dialects = {'900000000000509007': 'en-us'};
+        var dialectDefaults = {};
         var languages = ['en'];
         var defaultLanguages = [];
         var defaultLanguageRefsetId = null;
@@ -254,6 +256,11 @@ angular.module('singleConceptAuthoringApp')
                   if(lang.default === "true" && !defaultLanguages.includes(Object.keys(lang)[0])){
                       defaultLanguages.push(Object.keys(lang)[0]);
                   }
+                  if(lang.default !== null && lang.default !== undefined){
+                      //set dialect default for langauge refset value autogeneration 
+                      dialectDefaults[lang[Object.keys(lang)[0]]] = lang.default;
+                  }
+                  
                 });
 
                 // set the default refset id if not already set
@@ -306,7 +313,8 @@ angular.module('singleConceptAuthoringApp')
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguages: defaultLanguages,
           languages: languages,
-          dialects: dialects
+          dialects: dialects,
+          dialectDefaults: dialectDefaults
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -317,12 +325,7 @@ angular.module('singleConceptAuthoringApp')
         };
           console.log(extensionMetadata);
         }
-//        if(metadata.languageDisplay){
-//            angular.forEach(metadata.languageDisplay, function(lan){
-////                var obj = {lan}
-////                dialects.push(lan)
-//            })
-//        }
+        
         if(getCurrentModuleId() !== '900000000000207008'){
           var found = false;
           for(var i = 0; i < descriptionInactivationReasons.length; i++) {
@@ -476,6 +479,14 @@ angular.module('singleConceptAuthoringApp')
         return internationalMetadata.dialects;
       }
     }
+    
+    function getDialectDefaultsForModuleId(moduleId, FSN) {
+      if (extensionMetadata && !FSN && extensionMetadata.dialectDefaults !== null) {
+        return extensionMetadata.dialectDefaults;
+      } else {
+        return internationalMetadata.dialectDefaults;
+      }
+    }
 
     function getLanguagesForModuleId(moduleId) {
       if (isExtensionModule(moduleId) && extensionMetadata.languages !== null) {
@@ -543,10 +554,6 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
-    function getMyProjects() {
-      return myProjects;
-    }
-
     function getProjectForKey(key) {
       for (var i = 0; i < projects ? projects.length : -1; i++) {
         if (projects[i].key === key) {
@@ -558,10 +565,6 @@ angular.module('singleConceptAuthoringApp')
 
     function setProjects(projectsList) {
       projects = projectsList;
-    }
-
-    function setMyProjects(myProjectList) {
-      myProjects = myProjectList;
     }
 
     function setMrcmEnabled(value) {
@@ -587,39 +590,6 @@ angular.module('singleConceptAuthoringApp')
 
     function isSpellcheckDisabled() {
       return spellcheckDisabled;
-    }
-
-    function checkViewExclusionPermission(projectKey) {
-      if (extensionMetadata !== null) {
-        if (myProjects.length > 0) {
-          if (myProjects.indexOf(projectKey) === -1) {
-            $rootScope.hasViewExclusionsPermission = false;
-          } else {
-            $rootScope.hasViewExclusionsPermission = true;
-          }
-        } else {
-          var interval = null;
-          var count = 0;
-
-          // wait until my project list is set
-          interval = $interval(function () {
-            if (myProjects.length > 0) {
-              if (myProjects.indexOf(projectKey) === -1) {
-                $rootScope.hasViewExclusionsPermission = false;
-              } else {
-                $rootScope.hasViewExclusionsPermission = true;
-              }
-              interval = $interval.cancel(interval);
-            } else if (count > 30) {
-              interval = $interval.cancel(interval);
-            } else {
-              count++;
-            }
-          }, 2000);
-        }
-      } else {
-        $rootScope.hasViewExclusionsPermission = true;
-      }
     }
 
     function setNamespaces(list) {
@@ -648,9 +618,7 @@ angular.module('singleConceptAuthoringApp')
 
       // project, my project cache getters/setters
       setProjects: setProjects,
-      getProjects: getProjects,
-      setMyProjects : setMyProjects,
-      getMyProjects : getMyProjects,
+      getProjects: getProjects,     
       getProjectForKey: getProjectForKey,
 
       // inactivation reason retrieval
@@ -678,6 +646,7 @@ angular.module('singleConceptAuthoringApp')
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
+      getDialectDefaultsForModuleId: getDialectDefaultsForModuleId,
       getAcceptLanguageValueForModuleId: getAcceptLanguageValueForModuleId,
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
@@ -710,8 +679,6 @@ angular.module('singleConceptAuthoringApp')
         return branchMetadata;
       },
 
-      // uitility to check view whitelist in validation report
-      checkViewExclusionPermission: checkViewExclusionPermission,
       setNamespaces: setNamespaces,
       getNamespaces: getNamespaces,
       getNamespaceById: getNamespaceById
