@@ -9,8 +9,6 @@ angular.module('singleConceptAuthoringApp')
     // project cache (still used?)
     var projects = [];
 
-    var myProjects = [];
-
     var namespaces = [];
 
     // whether mrcm is currently enabled (default true)
@@ -543,10 +541,6 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
-    function getMyProjects() {
-      return myProjects;
-    }
-
     function getProjectForKey(key) {
       for (var i = 0; i < projects ? projects.length : -1; i++) {
         if (projects[i].key === key) {
@@ -558,10 +552,6 @@ angular.module('singleConceptAuthoringApp')
 
     function setProjects(projectsList) {
       projects = projectsList;
-    }
-
-    function setMyProjects(myProjectList) {
-      myProjects = myProjectList;
     }
 
     function setMrcmEnabled(value) {
@@ -587,39 +577,6 @@ angular.module('singleConceptAuthoringApp')
 
     function isSpellcheckDisabled() {
       return spellcheckDisabled;
-    }
-
-    function checkViewExclusionPermission(projectKey) {
-      if (extensionMetadata !== null) {
-        if (myProjects.length > 0) {
-          if (myProjects.indexOf(projectKey) === -1) {
-            $rootScope.hasViewExclusionsPermission = false;
-          } else {
-            $rootScope.hasViewExclusionsPermission = true;
-          }
-        } else {
-          var interval = null;
-          var count = 0;
-
-          // wait until my project list is set
-          interval = $interval(function () {
-            if (myProjects.length > 0) {
-              if (myProjects.indexOf(projectKey) === -1) {
-                $rootScope.hasViewExclusionsPermission = false;
-              } else {
-                $rootScope.hasViewExclusionsPermission = true;
-              }
-              interval = $interval.cancel(interval);
-            } else if (count > 30) {
-              interval = $interval.cancel(interval);
-            } else {
-              count++;
-            }
-          }, 2000);
-        }
-      } else {
-        $rootScope.hasViewExclusionsPermission = true;
-      }
     }
 
     function setNamespaces(list) {
@@ -648,9 +605,7 @@ angular.module('singleConceptAuthoringApp')
 
       // project, my project cache getters/setters
       setProjects: setProjects,
-      getProjects: getProjects,
-      setMyProjects : setMyProjects,
-      getMyProjects : getMyProjects,
+      getProjects: getProjects,     
       getProjectForKey: getProjectForKey,
 
       // inactivation reason retrieval
@@ -710,8 +665,6 @@ angular.module('singleConceptAuthoringApp')
         return branchMetadata;
       },
 
-      // uitility to check view whitelist in validation report
-      checkViewExclusionPermission: checkViewExclusionPermission,
       setNamespaces: setNamespaces,
       getNamespaces: getNamespaces,
       getNamespaceById: getNamespaceById
