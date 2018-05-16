@@ -181,6 +181,9 @@ angular.module('singleConceptAuthoringApp')
       languages: ['en'],
       dialects: {
         '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
+      },
+      dialectDefaults: {
+        '900000000000509007': 'true', '900000000000508004': 'true'
       }
     };
 
@@ -211,6 +214,7 @@ angular.module('singleConceptAuthoringApp')
 
         // temporary variables used in parsing metadata
         var dialects = {'900000000000509007': 'en-us'};
+        var dialectDefaults = {};
         var languages = ['en'];
         var defaultLanguages = [];
         var defaultLanguageRefsetId = null;
@@ -252,6 +256,11 @@ angular.module('singleConceptAuthoringApp')
                   if(lang.default === "true" && !defaultLanguages.includes(Object.keys(lang)[0])){
                       defaultLanguages.push(Object.keys(lang)[0]);
                   }
+                  if(lang.default !== null && lang.default !== undefined){
+                      //set dialect default for langauge refset value autogeneration 
+                      dialectDefaults[lang[Object.keys(lang)[0]]] = lang.default;
+                  }
+                  
                 });
 
                 // set the default refset id if not already set
@@ -304,7 +313,8 @@ angular.module('singleConceptAuthoringApp')
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguages: defaultLanguages,
           languages: languages,
-          dialects: dialects
+          dialects: dialects,
+          dialectDefaults: dialectDefaults
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -315,12 +325,7 @@ angular.module('singleConceptAuthoringApp')
         };
           console.log(extensionMetadata);
         }
-//        if(metadata.languageDisplay){
-//            angular.forEach(metadata.languageDisplay, function(lan){
-////                var obj = {lan}
-////                dialects.push(lan)
-//            })
-//        }
+        
         if(getCurrentModuleId() !== '900000000000207008'){
           var found = false;
           for(var i = 0; i < descriptionInactivationReasons.length; i++) {
@@ -472,6 +477,14 @@ angular.module('singleConceptAuthoringApp')
         return extensionMetadata.dialects;
       } else {
         return internationalMetadata.dialects;
+      }
+    }
+    
+    function getDialectDefaultsForModuleId(moduleId, FSN) {
+      if (extensionMetadata && !FSN && extensionMetadata.dialectDefaults !== null) {
+        return extensionMetadata.dialectDefaults;
+      } else {
+        return internationalMetadata.dialectDefaults;
       }
     }
 
@@ -633,6 +646,7 @@ angular.module('singleConceptAuthoringApp')
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
+      getDialectDefaultsForModuleId: getDialectDefaultsForModuleId,
       getAcceptLanguageValueForModuleId: getAcceptLanguageValueForModuleId,
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
