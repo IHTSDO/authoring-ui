@@ -75,15 +75,15 @@
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
             </div>
 
-            <div class="copy-to-clipboard" ng-show="isSctid(concept.conceptId) && concept.fsn">           
+            <div class="copy-to-clipboard" ng-show="isSctid(concept.conceptId) && concept.fsn">
               <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
               <ul class="dropdown-menu">
                   <li><a ng-click="copyToClipboard(concept.conceptId)">Copy ConceptId</a></li>
-                  <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>       
-                  <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and ConceptId</a></li>    
+                  <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>
+                  <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and ConceptId</a></li>
                   <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy Term and ConceptId</a></li>
               </ul>
-            </div> 
+            </div>
       </div>
 
       <!-- concept name -->
@@ -161,11 +161,11 @@
                   ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
           </button>
           <button type="button"
-                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"            
-                  ng-click="toggleInferredRelationships()">{{!showInferredRels ? 'S' : 'I'}}               
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"
+                  ng-click="toggleInferredRelationships()">{{!showInferredRels ? 'S' : 'I'}}
                   <span ng-if="!showInferredRels"> Switch to inferred view </span>
                   <span ng-if="showInferredRels"> Switch to stated view </span>
-          </button>          
+          </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
                   ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
@@ -218,7 +218,7 @@
 
         </div>
       </div>
-        
+
       <div class="no-padding edits concept-title" ng-disabled="saving" ng-class="{'disabled': saving}">
             <button type="button"
                       class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
@@ -226,7 +226,7 @@
                 <span> Shortcuts active</span>
             </button>
       </div>
-        
+
     </div>
   </div>
   <div class="row">
@@ -343,11 +343,11 @@
 
             <span class="{{getCaseSignificanceDisplayText(description)}}"></span>
           </button>
-          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-caseSignificance'].style !== ''" 
+          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-caseSignificance'].style !== ''"
             class="tooltips-bottom tooltips-light medium-size-tooltip custom-margin"
             ng-class="innerComponentStyle[description.descriptionId + '-caseSignificance'].style"><span>{{innerComponentStyle[description.descriptionId + '-caseSignificance'].message}}</span></div>
           <!-- Term -->
-          <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}" 
+          <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
               <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                         ng-model-options="{updateOn: 'blur'}"
@@ -388,7 +388,7 @@
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
-          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-type'].style !== ''" 
+          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-type'].style !== ''"
                 class="tooltips-bottom offset-tooltip-right xlarge-size-tooltip"
                 ng-class="innerComponentStyle[description.descriptionId + '-type'].style"><span>{{innerComponentStyle[description.descriptionId + '-type'].message}}</span></div>
           <!-- Dialect / Acceptability -- never alterable for saved FSN -->
@@ -403,11 +403,11 @@
                           ng-click="toggleAcceptability(description, dialectId)">
                     <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
                     </div>
-                    <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>              
+                    <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>
                   </button>
-                  <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style !== ''" 
+                  <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style !== ''"
                     class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip"
-                    ng-class="innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div> 
+                    ng-class="innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
               </div>
             </div>
           </div>
@@ -578,15 +578,16 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left sourcename relationship-target" drag-enter-class="sca-drag-target"
+                <div class="pull-left sourcename relationship-target small-size-tooltip tooltips-bottom" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic"
-                     ng-class="getTargetSlotStyle(relationship)">
+                     ng-class="getTargetSlotStyle(relationship)"
+                     ng-mouseover="setTooltipPosition($event)">
+                  <span>{{relationship.target.conceptId}}</span>
 
 
-
-                  <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}" 
+                  <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                             ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
                             ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                             class="resizable-text relationship msd-elastic no-border-bottom"
@@ -598,12 +599,11 @@
 
 
 
-                  <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
+                  <div class="pull-left drag-button-width"
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                        drag-channel="conceptPropertiesObj"
                        drag-image="getDragImageForConcept(relationship.target.fsn)">
-                    <span>Drag This Component</span>
                   </div>
                 </div>
 
@@ -694,12 +694,12 @@
     </div>
 
     <!-- rows: Additional axioms -->
-    <div ng-if="axiomSupport" ng-repeat="axiom in concept.additionalAxioms">     
+    <div ng-if="axiomSupport" ng-repeat="axiom in concept.additionalAxioms">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
 
     <!-- rows: General Concept Inclusion axioms -->
-    <div ng-if="axiomSupport" ng-repeat="axiom in concept.gciAxioms">     
+    <div ng-if="axiomSupport" ng-repeat="axiom in concept.gciAxioms">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
     <div class="clearfix"></div>
