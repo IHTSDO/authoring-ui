@@ -365,7 +365,9 @@ content: '';
     width: 105px;
     margin-left: -95px;
 }
-
+.tooltips-bottom.small-size-tooltip.primitive-buttons.search-icon:hover span {
+    width: 76px;
+}
 .tooltips-bottom.small-size-tooltip.btn-reject:hover span {
     width: 48px;
     margin-left: -25px;
