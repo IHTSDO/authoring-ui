@@ -1507,28 +1507,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$on('setExtensionMetadata', function (event, data) { 
           scope.dialects = metadataService.getAllDialects();
         });
-
-// always return en-us dialect first
-        scope.dialectComparator = function (a, b) {
-          if (a === '900000000000509007') {
-            return -1;
-          } else if (b === '900000000000509007') {
-            return 1;
-          } else {
-            // For Belgian module, The order should be US->FR-NL
-            if (metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '11000172109') {
-              if (a === '21000172104') {
-                return -1;
-              } else if (b === '21000172104') {
-                return 1;
-              } else {
-                return a < b;
-              }
-            } else {
-              return a < b;
-            }
-          }
-        };
           
 
 // function to retrieve branch dialect ids as array instead of map
