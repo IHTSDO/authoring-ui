@@ -148,14 +148,14 @@
       <div class="row">
         <div class="no-p-lr clear-position in-block pull-left">
           <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
-                  class="no-p-lr white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"                 
+                  class="no-p-lr white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
                   ng-mouseover="setTooltipPosition($event);">
             <object class="badge alert-warning ng-binding"
                     ng-click="openConceptInformationModal(result)">&nbsp; </object>
             <span>More details</span>
           </button>
           <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
-                  class="no-p-lr primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"                  
+                  class="no-p-lr primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
                   ng-mouseover="setTooltipPosition($event);">
             <object class="badge alert-warning ng-binding"
                     ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
@@ -220,7 +220,7 @@
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
-    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
+    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
       <span class="tooltip-dl">Download Selected Results</span>
     </a>
   </div>
