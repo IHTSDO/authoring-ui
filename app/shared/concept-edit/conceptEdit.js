@@ -1553,7 +1553,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.dialectLength = dialectLength;
           }
           
-          return Object.keys(dialects).sort(scope.dialectComparator);
+          return Object.keys(dialects);
         };
           
         scope.getDialectsForDescription = function (description, FSN) {
