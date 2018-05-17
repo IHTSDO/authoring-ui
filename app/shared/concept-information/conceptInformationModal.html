@@ -128,7 +128,7 @@
             </div>
           </div>
           <!-- all inbound relationships -->
-          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 3}">
+          <div role="tabpanel" class="tab-pane" id="incoming-relationships" ng-class="{active: actionTab === 3}">
             <div ng-show="inboundRelationshipsTotal > tableLimit" class="alert alert-info">Displayed results are limited to {{tableLimit}}</div>
             <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
                    class="table table-full-small" show-filter="true">
