@@ -190,8 +190,11 @@ input[type=checkbox], input[type=radio] {
 #conceptInformationModal .modal-header .sidebar-tabs.nav > li {
 	width: 33.3333%;
 }
-#conceptInformationModal select {
+#conceptInformationModal #incoming-relationships select {
 	width: 100%;
+}
+#conceptInformationModal #incoming-relationships table th:first-child {
+	width: 140px;
 }
 /* concept information modal*/
 
