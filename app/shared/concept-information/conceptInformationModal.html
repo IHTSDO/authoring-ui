@@ -29,7 +29,7 @@
         <li role="presentation" class="no-padding active" ng-click="actionTab=1" ><a ng-click="actionTab=1" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light normal-case">
           <div class="md md-format-list-bulleted"></div>
-          <span>All Incoming ({{inboundRelationshipsTotal}})</span>
+          <span>Incoming relationships</span>
           </a></li>
         <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a aria-controls="home"
                                                   role="tab"
@@ -130,6 +130,7 @@
           </div>
           <!-- all inbound relationships -->
           <div role="tabpanel" class="tab-pane" id="incoming-relationships" ng-class="{active: actionTab===1}">
+            <h4>Incoming Relationships</h4>
             <div ng-show="inboundRelationshipsTotal > tableLimit" class="alert alert-info">Displayed results are limited to {{tableLimit}}</div>
             <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
                    class="table table-full-small" show-filter="true">
