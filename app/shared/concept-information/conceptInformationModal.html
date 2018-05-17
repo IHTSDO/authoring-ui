@@ -26,21 +26,22 @@
     <div class="col-md-4">
       <ul class="nav nav-tabs sidebar-tabs col-md-10 no-padding"
           role="tablist" ng-init="actionTab=1">
-        <li role="presentation" class="no-padding active" ng-click="actionTab=1" ><a aria-controls="home"
-                                                  role="tab"
-                                                  data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
-          <div class=" fa fa-info"></div>
-          <span>Details</span> </a></li>
-        <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
-                                            class="tooltips-bottom tooltips-light normal-case">
-          <div class="md md-my-library-books"></div>
-          <span>Taxonomy</span></a></li>
-          
-        <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation" class="no-padding active" ng-click="actionTab=1" ><a ng-click="actionTab=1" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light normal-case">
           <div class="md md-format-list-bulleted"></div>
           <span>All Incoming ({{inboundRelationshipsTotal}})</span>
           </a></li>
+        <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a aria-controls="home"
+                                                  role="tab"
+                                                  data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
+          <div class=" fa fa-info"></div>
+          <span>Details</span> </a></li>
+        <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+                                            class="tooltips-bottom tooltips-light normal-case">
+          <div class="md md-my-library-books"></div>
+          <span>Taxonomy</span></a></li>
+          
+        
       </ul>
       <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
@@ -53,7 +54,7 @@
         
         <!-- Tab panes -->
         <div class="tab-content col-md-12 no-padding m-t-10 ">
-          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
+          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
             <div class="row grey-rounded p-l-10 p-r-10 p-b-10">
               <h4>Hierarchy</h4>
               <div class="col-md-6 no-padding concept-lists">
@@ -120,7 +121,7 @@
               </table>
             </div>
           </div>
-          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
+          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
             <div class=" col-md-12 no-padding"> 
               
               <!-- don't render the directive until the concept has been loaded (handled above) -->
@@ -128,7 +129,7 @@
             </div>
           </div>
           <!-- all inbound relationships -->
-          <div role="tabpanel" class="tab-pane" id="incoming-relationships" ng-class="{active: actionTab === 3}">
+          <div role="tabpanel" class="tab-pane" id="incoming-relationships" ng-class="{active: actionTab===1}">
             <div ng-show="inboundRelationshipsTotal > tableLimit" class="alert alert-info">Displayed results are limited to {{tableLimit}}</div>
             <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
                    class="table table-full-small" show-filter="true">
