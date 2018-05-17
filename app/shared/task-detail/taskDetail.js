@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           } else {
 
             // clear the preparation notification
-
+            notificationService.clear();
             var modalInstance = $modal.open({
               templateUrl: 'shared/promote-modal/promoteModal.html',
               controller: 'promoteModalCtrl',

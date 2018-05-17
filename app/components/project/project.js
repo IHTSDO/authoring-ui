@@ -201,7 +201,7 @@ angular.module('singleConceptAuthoringApp.project', [
             });
 
           } else {
-
+            notificationService.clear();
             var modalInstance = $modal.open({
               templateUrl: 'shared/promote-modal/promoteModal.html',
               controller: 'promoteModalCtrl',
