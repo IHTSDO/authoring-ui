@@ -47,6 +47,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.downloadAllResults = true;
       $scope.selectedResultsList = [];
+      $scope.downloadButtonActive = true;
 
 
       // user controls
@@ -333,13 +334,32 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         angular.forEach($scope.results, function (item) {
           item.selected = isChecked;
         });
+
+        $scope.selectionCheck();
       };
 
       $scope.removeAllSelected = function() {
         $scope.downloadAllResults = false;
+
+        $scope.selectionCheck();
+      };
+
+      $scope.selectionCheck = function() {
+        let result = false;
+
+        angular.forEach($scope.results, function(item) {
+          if(item.selected) {
+            result = true;
+          }
+        });
+        
+        $scope.downloadButtonActive = result;
       };
 
       $scope.downloadResultFilter = function() {
+
+        console.log($scope.selectionCheck());
+
         $scope.selectedResultsList = [];
 
         if(!$scope.downloadAllResults) {
