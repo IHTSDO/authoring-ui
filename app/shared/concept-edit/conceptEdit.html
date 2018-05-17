@@ -584,7 +584,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic"
                      ng-class="getTargetSlotStyle(relationship)"
                      ng-mouseover="setTooltipPosition($event)">
-                  <span>{{relationship.target.conceptId}}</span>
+                  <span ng-show="relationship.target.conceptId">{{relationship.target.conceptId}}</span>
 
 
                   <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
