@@ -98,6 +98,12 @@
     color: #474747;
     border-bottom: 1px #e6e6e6 solid;
 }
+.sca-light .button-nav .btn.btn-default.classification[disabled],
+.sca-light .button-nav .btn.btn-default.validation[disabled] {
+    border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid;
+    border-bottom: transparent;
+}
 
 /*button colors */
 

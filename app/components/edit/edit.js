@@ -1740,6 +1740,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     //
     
     $scope.classify = function () {
+      if ($scope.task.status === 'Promoted') {
+        return;
+      }
 
       notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
@@ -1774,6 +1777,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.validate = function () {
+      if ($scope.task.status === 'Promoted') {
+        return;
+      }
+      
       notificationService.sendMessage('Submitting task for validation...');
 
       if ($scope.task.status === 'New') {
