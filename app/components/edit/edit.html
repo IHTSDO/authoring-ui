@@ -30,7 +30,10 @@
       <i class="md fa fa-magic"></i>
 
       <span>Create New Concept From Template</span></button>
-    <div class="navigation-link green classify">
+    
+    <!--Display the disabled button for Classification in case task was promoted -->
+    <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case classification"><i class="md md-notifications"></i></button>
+    <div class="navigation-link green classify" ng-if="task.status !== 'Promoted'">
 
       <ul class="sub-navigation-link-list classification-nav">
         <li>
@@ -71,7 +74,9 @@
 
     </div>
 
-    <div class="navigation-link deep-purple darken-2 validate">
+    <!--Display the disabled button for Validation in case task was promoted -->
+    <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case validation"><i class="md md-school"></i></button>
+    <div class="navigation-link deep-purple darken-2 validate" ng-if="task.status !== 'Promoted'">
 
       <ul class="sub-navigation-link-list validation-nav">
         <li>
