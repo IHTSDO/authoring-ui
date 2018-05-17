@@ -17,8 +17,6 @@ angular.module('singleConceptAuthoringApp')
         var dialects = metadataService.getDialectsForModuleId(moduleId);
         var dialectDefaults = metadataService.getDialectDefaultsForModuleId(moduleId);
         for (var key in dialects) {
-            console.log(dialects);
-            console.log(dialectDefaults);
           // different behavior between extension and international content
           if (metadataService.isExtensionSet() && !initial) {
             // if this key is the default language, set acceptability to preferred
@@ -40,8 +38,6 @@ angular.module('singleConceptAuthoringApp')
           if(dialectDefaults[key] === "false"){
               delete acceptabilityMap[key]
           }
-          
-
 
         }
         return acceptabilityMap;
