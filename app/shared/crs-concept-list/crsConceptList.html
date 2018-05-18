@@ -30,16 +30,16 @@
         <span>View Content Request</span> </button>
         </a>
         <button ng-show="item.saved && !item.warning"
-                class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
+                class="btn btn-default saved-list-buttons pull-left btn-checked tooltips-bottom small-size-tooltip">
         <div class="fa fa-check"></div>
         <span>Concept Saved</span> </button>
         <button ng-show="item.warning"
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom offset-tooltip-right ">
         <div class="md md-warning"></div>
         <span>Save Status Uncertain</span> </button>
-        <button ng-show="!item.saved"
+        <button ng-if="!item.saved  || item.deleted"
                 class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom small-size-tooltip"
-                ng-click="removeCrsConcept(item)">
+                ng-click="rejectCrsRequest(item)">
         <div class="md md-remove-circle-outline"></div>
         <span>Reject</span> </button>
       </div>
