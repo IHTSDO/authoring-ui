@@ -224,14 +224,14 @@ angular.module('singleConceptAuthoringApp')
 
 // Reject a CRS concept by Authoring user
       function rejectCrsConcept(concept) {        
-        var deferred = $q.defer();
-        angular.forEach(currentTaskConcepts, function(item, index){
-          if(item.crsId === concept.crsId){
-            currentTaskConcepts.splice(index, 1);
-          }
-        });
-      var apiEndpoint = '../ihtsdo-crs/';
+        var deferred = $q.defer();        
+        var apiEndpoint = '../ihtsdo-crs/';
         $http.put(apiEndpoint + 'api/request/' + concept.crsId + '/status?status=REJECTED', {"reason":"Rejected by Authoring User"}).then(function (response) {
+          angular.forEach(currentTaskConcepts, function(item, index){
+            if(item.crsId === concept.crsId){
+              currentTaskConcepts.splice(index, 1);
+            }
+          });
           saveCrsConceptsUiState();
           deferred.resolve(response);
         }, function (error) {

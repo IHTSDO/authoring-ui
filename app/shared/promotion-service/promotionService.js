@@ -296,6 +296,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         checkClassificationPrerequisites(branch, task.latestClassificationJson, projectKey, taskKey).then(function (flags) {
+          flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);         
           deferred.resolve(flags);
         }, function (error) {
           deferred.reject(error);
@@ -305,6 +306,25 @@ angular.module('singleConceptAuthoringApp')
       });
 
       return deferred.promise;
+    }
+
+    function checkCrsConceptsPrerequisites (projectKey, taskKey, flags) {
+      var crsConcepts = crsService.getCrsConcepts();
+      var deletedCRSConceptFound = false;
+      angular.forEach(crsConcepts, function(concept, key) {
+        if (concept.deleted) {
+          deletedCRSConceptFound = true;
+          return;
+        }
+      });
+      if(deletedCRSConceptFound) {
+        flags.push({
+                    checkTitle: 'Deleted CRS concept',
+                    checkWarning: 'A CRS concept has been deleted on this task, please verify that the request was rejected',
+                    blocksPromotion: false
+                  });
+      }
+      return flags;
     }
 
     function checkPrerequisitesForProject(projectKey) {
