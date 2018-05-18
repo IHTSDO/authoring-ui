@@ -29,10 +29,12 @@ angular.module('singleConceptAuthoringApp')
           });
         };
         
-        scope.removeCrsConcept = function (item) {
+        scope.rejectCrsRequest = function (item) {
           modalService.confirm('Do you really want to reject this concept?').then(function () {
             crsService.rejectCrsConcept(item).then(function(){
               initialize();
+            }, function (error) {
+              notificationService.sendError('Error while rejecting concept');
             });            
           }, function () {
             // do nothing
@@ -45,6 +47,16 @@ angular.module('singleConceptAuthoringApp')
         }
 
         initialize();
+
+        scope.$on('removeItem', function (event, data) {
+          scope.deleteConcept(data.concept);
+        });
+
+        scope.deleteConcept = function(concept) {
+          crsService.deleteCrsConcept(concept.conceptId);
+          scope.crsConcepts = scope.getCrsConcepts();
+        };
+        
       }
     };
   })

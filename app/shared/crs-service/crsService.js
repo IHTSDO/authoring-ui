@@ -394,6 +394,18 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      function deleteCrsConcept(crsId) {
+        for (var i = 0; i < currentTaskConcepts.length; i++) {
+          if (currentTaskConcepts[i].conceptId === crsId) {
+
+            // Mark as deleted        
+            currentTaskConcepts[i].deleted = true;            
+            saveCrsConceptsUiState();
+            break;
+          }
+        }
+      }
+
       var hiddenCrsKeys = ['changeId', 'changeType', 'changed', 'topic', 'summary', 'notes', 'reference', 'reasonForChange', 'namespace', 'currentFsn'];
 
       function crsFilter(definitionOfChanges) {
@@ -481,8 +493,8 @@ angular.module('singleConceptAuthoringApp')
         getRequestUrl: getRequestUrl,
 
         crsFilter: crsFilter,
-        rejectCrsConcept: rejectCrsConcept
-
+        rejectCrsConcept: rejectCrsConcept,
+        deleteCrsConcept: deleteCrsConcept
       };
     }
   )
