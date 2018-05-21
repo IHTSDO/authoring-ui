@@ -89,8 +89,14 @@ angular.module('singleConceptAuthoringApp')
               }
               else {
                 if (searchStr) {
-                  mydata = scope.items.filter(function (item) {
-                    return item.sourceFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.typeFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.destinationFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  let searchResults = searchStr.split(/[ ,]+/);
+
+                  mydata = scope.items;
+
+                  angular.forEach(searchResults, function(word) {
+                    mydata = mydata.filter(function (item) {
+                      return item.sourceFsn.toLowerCase().indexOf(word.toLowerCase()) > -1 || item.typeFsn.toLowerCase().indexOf(word.toLowerCase()) > -1 || item.destinationFsn.toLowerCase().indexOf(word.toLowerCase()) > -1;
+                    });
                   });
                 } else {
                   mydata = scope.items;
