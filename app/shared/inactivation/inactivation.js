@@ -1031,15 +1031,21 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getTargetConceptSuggestions = function (text) {
             return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, text, 0, 10).then(function (response) {
-              for (var i = 0; i < response.length; i++) {
-                for (var j = response.length - 1; j > i; j--) {
-                  if (response[j].concept.conceptId === response[i].concept.conceptId) {
-                    response.splice(j, 1);
-                    j--;
+              // Try to remove any duplicated concepts
+             let n = 0;
+              while (n < response.length) {
+                let m = n + 1;
+                while (m < response.length){
+                  if (response[m].concept.conceptId === response[n].concept.conceptId
+                       && response[m].concept.active === response[n].concept.active) {
+                    response.splice(m, 1);
+                  } else {
+                    m++;
                   }
                 }
+                n++;
               }
-              for (var i = 0; i >= response.length - 1; i--) {
+              for (var i = response.length - 1; i >= 0; i--) {
                 if (response[i].active === false) {
                   response.splice(i, 1);
                 }
@@ -1068,6 +1074,9 @@ angular.module('singleConceptAuthoringApp')
             if (rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
               rel.newTargetFsn = "";
               rel.newTargetId = "";
+            } else {
+              rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
+              rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
             }
 
             var associations = scope.getAssociationsForReason(rel.inactivationIndicator);

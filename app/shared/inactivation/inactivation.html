@@ -215,11 +215,7 @@
 
               </td>
               <td data-title="'Association'" sortable="'refsetName'">
-
-                <select ng-model="rel.refsetName" class="select"
-                        ng-disabled="rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY'"
-                        ng-options="target.id as convertToTextFromCode(target.id) for target in getAssociationsForReason(rel.inactivationIndicator)"
-                        ng-change="updateRefTarget(rel)"></select>
+                {{convertToTextFromCode(rel.refsetName)}}
               </td>
               <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
