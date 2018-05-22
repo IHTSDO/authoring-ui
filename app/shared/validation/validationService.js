@@ -66,7 +66,7 @@ angular.module('singleConceptAuthoringApp')
         }
       },
 
-      addValidationFailureExclusion: function (assertionUuid, assertionText, conceptId, conceptFsn, failureText, user) {
+      addValidationFailureExclusion: function (assertionUuid, assertionText, conceptId, conceptFsn, failureText, user, branchRoot) {
 
         var deferred = $q.defer();
 
@@ -78,7 +78,8 @@ angular.module('singleConceptAuthoringApp')
           conceptFsn: conceptFsn,
           failureText: failureText,
           user: user,
-          timestamp: new Date().getTime()
+          timestamp: new Date().getTime(),
+          branchRoot: branchRoot
         };
 
         // if no assertions for this uuid, create container
