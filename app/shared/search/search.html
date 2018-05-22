@@ -1,6 +1,6 @@
 <div class=" col-md-12 no-padding  search-scroll " ng-class="{'ecl-mode' : isEscgMode}" ng-controller="searchPanelCtrl">
 
-  <div clas="row no-padding m-b-15 overflow-no" ng-show="isEscgMode && !templateOptions.selectedTemplate">
+  <div clas="row no-padding m-b-15 overflow-no" ng-show="isEscgMode && !templateMode">
     <div class="col-md-10 no-padding">
       <textarea id="expandable-search" type="search" class="form-control m-5 expandable-search-box no-border-bottom-search" placeholder="Enter ECL expression"
                       ng-model="escgExpr" ng-change="autoExpand($event)" ui-on-drop="" ng-trim="false" rows="1"></textarea>
@@ -20,7 +20,7 @@
              ng-model-options="{ debounce: 500 }"/></div>
 
   </div>
-  <div class="row no-padding" ng-show="!isEscgMode || templateOptions.selectedTemplate">
+  <div class="row no-padding" ng-show="!isEscgMode && !templateMode">
     <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
       <input focus-on="actionTab===2" type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter at least three characters"
              ng-model="searchStr" ng-change="newSearch()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
@@ -46,10 +46,26 @@
       <!--</button>-->
     <!--</div>-->
   </div>
+    
+  <div class="row no-padding" ng-if="templateMode">
+    <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
+      <textarea type="text" class="form-control inactivation-value" ng-model="userOptions.template"
+                        typeahead="suggestion as suggestion.name for suggestion in getTemplateSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="newSearch(false, suggestion)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3"></textarea>
+    </div>
+    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
+      <button ng-show="searchStr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
+    </div>
+  </div>
 
 
   <div class="row no-padding">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
               title="Search Type"
               ng-click="toggleSearchType()">
@@ -60,12 +76,12 @@
     </div>
 
 
-    <div class="col-md-6" ng-show="!templateOptions.selectedTemplate">
+    <div class="col-md-4">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center  ng-click-active search-type btn-blue"
               title="Search Mode"
               ng-click="toggleSearchMode()">
         <div class="md col-md-12 no-padding text-center ng-binding">
-          {{!isEscgMode ? 'Switch to ECL Mode' : 'Switch to Text Mode'}}
+          {{searchMode}}
         </div>
       </button>
     </div>
