@@ -2006,6 +2006,10 @@ angular.module('singleConceptAuthoringApp.edit', [
               });
             }
 
+            // retrieve all attribute domain members
+            snowowlService.getMrcmAttributeDomainMembers($scope.task.branchPath).then(function (response) {
+              metadataService.setMrcmAttributeDomainMembers(response.items);
+            });
 
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
