@@ -2004,9 +2004,6 @@ angular.module('singleConceptAuthoringApp.edit', [
               }, function (error) {
                 notificationService.sendError('Fatal error: Could not load extension module concept');
               });
-            } else {
-              // Always show whitelist for all users for International
-              $rootScope.hasViewExclusionsPermission = true;
             }
 
 
