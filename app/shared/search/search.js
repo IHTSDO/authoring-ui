@@ -1100,7 +1100,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
 
           scaService.getSelectedLanguegeForUser().then(function (data){
-            if (data) {
+            if (data && Object.keys(data).length > 0 && data.hasOwnProperty('defaultLanguage')) {
               let strArray = data.defaultLanguage.split('-');
               if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
                 if(strArray.length === 2) {
