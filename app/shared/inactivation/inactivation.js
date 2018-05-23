@@ -157,6 +157,7 @@ angular.module('singleConceptAuthoringApp')
 
               // check if referenced description
               else if (snowowlService.isDescriptionId(list[i].referencedComponent.id)) {
+                count++;
                 console.debug('  found description');
                 snowowlService.getDescriptionProperties(list[i].referencedComponent.id, scope.branch).then(function (description) {
 
@@ -1100,12 +1101,14 @@ angular.module('singleConceptAuthoringApp')
           scope.updateDescRefAssocTarget = function (rel) {
             if(rel.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
               rel.refsetName = 'REFERS_TO';
+              rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
+              rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+
             } else {
               rel.refsetName = '';
-            }
-
-            rel.newTargetId = '';
-            rel.newTargetFsn = '';
+              rel.newTargetId = '';
+              rel.newTargetFsn = '';
+            }            
           };
 
           scope.hasNoConceptTarget = function () {           
