@@ -161,7 +161,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.isEscgMode = false;
       $scope.templateMode = false;
       $scope.escgExpr = null;
-      $scope.searchMode = 'Text';
+      $scope.searchMode = 'Switch to ECL';
 
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
@@ -192,18 +192,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if ($scope.searchMode === 'Text') {
-          $scope.searchMode = 'Ecl';
+        if ($scope.searchMode === 'Switch to ECL') {
+          $scope.searchMode = 'Switch to Template';
           $scope.isEscgMode = true;
           $scope.templateMode = false;
         }
-        else if ($scope.searchMode === 'Ecl') {
-          $scope.searchMode = 'Template';
+        else if ($scope.searchMode === 'Switch to Template') {
+          $scope.searchMode = 'Switch to Text';
           $scope.isEscgMode = false;
           $scope.templateMode = true;
         }
         else {
-          $scope.searchMode = 'Text';
+          $scope.searchMode = 'Switch to ECL';
           $scope.isEscgMode = false;
           $scope.templateMode = false;
         }
@@ -800,6 +800,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.resultsPage = 1;
         $scope.results = [];
         $scope.searchStatus = null;
+        $scope.userOptions.template = '';
 
         $scope.escgExpr = '';
         document.getElementById('expandable-search').style.height = '37px';

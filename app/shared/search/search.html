@@ -49,23 +49,23 @@
     
   <div class="row no-padding" ng-if="templateMode">
     <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
-      <textarea type="text" class="form-control inactivation-value" ng-model="userOptions.template"
+      <input type="text" class="form-control m-5 search-box no-border-bottom-search" ng-model="userOptions.template" placeholder="Enter template name"
                         typeahead="suggestion as suggestion.name for suggestion in getTemplateSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
                         typeahead-wait-ms="700"
                         typeahead-on-select="newSearch(false, suggestion)"
                         typeahead-editable="false"
-                        typeahead-min-length="3"></textarea>
+                        typeahead-min-length="3">
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button ng-show="searchStr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
+      <button ng-show="userOptions.template" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
     </div>
   </div>
 
 
   <div class="row no-padding">
-    <div class="col-md-4">
+    <div class="col-md-6">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
               title="Search Type"
               ng-click="toggleSearchType()">
@@ -76,7 +76,7 @@
     </div>
 
 
-    <div class="col-md-4">
+    <div class="col-md-6">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center  ng-click-active search-type btn-blue"
               title="Search Mode"
               ng-click="toggleSearchMode()">
