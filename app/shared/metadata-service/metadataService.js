@@ -13,6 +13,8 @@ angular.module('singleConceptAuthoringApp')
 
     var mrcmAttributeDomainMembers = [];
 
+    var selfGroupedAttributes = [];
+
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
@@ -616,13 +618,14 @@ angular.module('singleConceptAuthoringApp')
       mrcmAttributeDomainMembers = list;
     }
 
+    function setSelfGroupedAttributes (list) {
+      selfGroupedAttributes = list;
+    }
+
     function isSelfGroupAttribute(id) {
-      for (var i = 0; i < mrcmAttributeDomainMembers.length; i++) { 
-          var attribute = mrcmAttributeDomainMembers[i];
-          if(attribute.referencedComponentId === id 
-            && attribute.additionalFields 
-            && attribute.additionalFields.hasOwnProperty('grouped')
-            && attribute.additionalFields.grouped === false) {            
+      for (var i = 0; i < selfGroupedAttributes.length; i++) { 
+          var attribute = selfGroupedAttributes[i];
+          if(attribute.referencedComponentId === id) {            
             return true;
           }
       }
@@ -702,6 +705,7 @@ angular.module('singleConceptAuthoringApp')
       getNamespaces: getNamespaces,
       getNamespaceById: getNamespaceById,
       setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
+      setSelfGroupedAttributes: setSelfGroupedAttributes,
       isSelfGroupAttribute: isSelfGroupAttribute
     };
 
