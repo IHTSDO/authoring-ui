@@ -153,52 +153,52 @@
             <!--Author Controls -->
             <td ng-if="role === 'AUTHOR'" class="  col-md-3"
                 data-title="'Read / Unread'" sortable="'read'"><div class="m-3 ">
-                <div class="pull-right m-r-5">
+                <div class="pull-right m-r-5 clear-position">
                   <button
-                    class="btn btn-round btn-default green base tooltips-bottom large-size-tooltip offset-tooltip-right normal-case"
-                    ng-show="concept.requestFollowup">
+                    class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
+                    ng-show="concept.requestFollowup" ng-mouseover="setTooltipPosition($event);">
                   <div
                       class="md md-flag"></div>
                   <span>Flagged for follow-up</span> </button>
                   <button ng-show="concept.messages.length > 0"
                           class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
-                          ng-click="selectConcept(concept)">
+                          ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
                   <div
-                      ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
+                      ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></div> <span> View/submit feedback for concept</span>
                   </button>
                   <button
                     class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                     ng-click="selectConcept(concept)"
-                    ng-disabled="concept.viewed">
+                    ng-disabled="concept.viewed" ng-mouseover="setTooltipPosition($event);">
                   <div
-                      class="md md-edit "> <span>Add to Edit Panel</span> </div>
+                      class="md md-edit "></div> <span>Add to Edit Panel</span> 
                   </button>
                 </div>
               </div></td>
             <!--Reviewer Controls -->
-            <td ng-if="role === 'REVIEWER'" class="col-md-3"><div class="pull-right-margin">
+            <td ng-if="role === 'REVIEWER'" class="col-md-3"><div class="pull-right-margin clear-position">
                 <button ng-show="concept.messages.length > 0"
                         class="pull-right btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
-                        ng-click="selectConcept(concept)">
+                        ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
                   <div
-                    ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
+                    ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></div> <span> View/submit feedback for concept</span>
                 </button>
                 <button
                   class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
-                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 ">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 " ng-mouseover="setTooltipPosition($event);">
                   <div class="fa-sca fa-comment  "></div>
                   <span>View/submit feedback for concept</span>
                 </button>
                 <button
                   ng-hide="subjectConcepts.length > 0 "
                   class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
-                  ng-click="selectConcept(concept)">
+                  ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
                   <div
-                    class="fa-sca fa-comment  "> <span>View/submit feedback for concept</span> </div>
+                    class="fa-sca fa-comment  "></div> <span>View/submit feedback for concept</span> 
                 </button>
                 <button
-                  class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case pull-right"
-                  ng-click="addToReviewed(concept)">
+                  class="btn btn-round btn-default green base tooltips-bottom small-size-tooltip normal-case pull-right"
+                  ng-click="addToReviewed(concept)" ng-mouseover="setTooltipPosition($event);">
                   <div
                     class="md md-thumb-up "></div>
                   <span>Approve</span>
@@ -206,9 +206,9 @@
                 <button
                   class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case pull-right"
                   ng-click="selectConcept(concept)"
-                  ng-disabled="concept.viewed">
+                  ng-disabled="concept.viewed" ng-mouseover="setTooltipPosition($event);">
                 <div
-                    class="md md-edit "> <span>Add to Edit Panel</span> </div>
+                    class="md md-edit "></div> <span>Add to Edit Panel</span> 
                 </button>
 
               </div></td>
@@ -261,27 +261,27 @@
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
-            <td class=" col-md-3"><div class="pull-right m-r-5">
+            <td class=" col-md-3"><div class="pull-right m-r-5 clear-position">
                 <button ng-show="concept.messages.length > 0"
-                        class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 normal-case"
-                        ng-click="selectConcept(concept)"">
+                        class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 normal-case" ng-mouseover="setTooltipPosition($event);"
+                        ng-click="selectConcept(concept)">
                 <div
-                    ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "> <span> View/submit feedback for concept</span> </div>
+                    ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></div> <span> View/submit feedback for concept</span>
                 </button>
                 <button
-                  class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 normal-case"
-                  ng-if="role === 'REVIEWER' && task.status === 'In Review'"
+                  class="btn btn-round btn-default green base tooltips-bottom small-size-tooltip m-r-2 normal-case"
+                  ng-if="role === 'REVIEWER' && task.status === 'In Review'" ng-mouseover="setTooltipPosition($event);"
                   ng-click="returnToReview(concept)">
                 <div
                     class="md md-thumb-down"></div>
                 <span>Unapprove</span> </button>
                 <button
                   class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 ">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-mouseover="setTooltipPosition($event);" ng-show="subjectConcepts.length > 0 ">
                 <div class="fa-sca fa-comment  "></div>
                 <span>View/submit feedback for concept</span> </button>
                 <button
-                  class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2  normal-case"
+                  class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2  normal-case" ng-mouseover="setTooltipPosition($event);"
                   ng-click="selectConcept(concept,['selectConceptForFeedback','addToEdit'])"
                   ng-disabled="concept.viewed">
                 <div
@@ -318,19 +318,19 @@
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
             <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'"
-                class=" col-md-4 no-padding"><div class="pull-right m-r-5">
+                class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                 <button
                   class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                  ng-click="addToEdit(concept)"
+                  ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
                   ng-disabled="concept.viewed">
                 <div
                     class="md md-edit "></div>
                 <span>Add to Edit Panel</span> </button>
               </div></td>
-            <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5">
+            <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                 <button
                   class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                  ng-click="addToEdit(concept)"
+                  ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
                   ng-disabled="concept.viewed">
                 <div
                     class="md md-edit "></div>
