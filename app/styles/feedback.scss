@@ -138,6 +138,26 @@
     line-height: 17px;
     text-align: center;
 }
+.feedback-lists .tooltips-bottom.large-size-tooltip.offset-tooltip-right:hover .md-edit+span {
+    width: 154px;
+    margin-left: -141px;
+}
+.feedback-lists .tooltips-bottom.medium-size-tooltip.offset-tooltip-right:hover .md-edit+span {
+    width: 104px;
+    margin-left: -91px;
+}
+.feedback-lists .tooltips-bottom.large-size-tooltip.offset-tooltip-right:hover .md-thumb-up+span {
+    width: 152px;
+    margin-left: -138px;
+}
+.feedback-lists .tooltips-bottom.small-size-tooltip:hover .md-thumb-up+span {
+    width: 58px;
+    margin-left: -25px;
+}
+.feedback-lists .tooltips-bottom.medium-size-tooltip.offset-tooltip-right:hover .md-flag+span {
+    width: 124px;
+    margin-left: -110px;
+}
 .feedback .col-checkbox {
     width: 10%;
 }
