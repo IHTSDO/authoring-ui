@@ -726,6 +726,20 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getMrcmAttributeDomainMembers(branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/members?referenceSet=723561005&offset=0&limit=500&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+          if (response.data.total === 0) {
+            deferred.resolve([]);
+          } else {
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       // helper call to populate relationship display names
       function getRelationshipDisplayNames(relationship, branch) {
         var deferred = $q.defer();
@@ -1798,6 +1812,7 @@ angular.module('singleConceptAuthoringApp')
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,
+        getMrcmAttributeDomainMembers: getMrcmAttributeDomainMembers,
         getAttributeValues: getAttributeValues,
         getAttributeValuesByConcept: getAttributeValuesByConcept,
         getAttributeValuesFromEcl: getAttributeValuesFromEcl,

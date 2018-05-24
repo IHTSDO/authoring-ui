@@ -31,12 +31,17 @@
           <div class="md md-format-list-bulleted"></div>
           <span>Incoming relationships</span>
           </a></li>
-        <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a aria-controls="home"
+        <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+                                            class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
+          <div class="md md-toc"></div>
+          <span>Incoming historical associations</span>
+          </a></li>  
+        <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a aria-controls="home"
                                                   role="tab"
                                                   data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
           <div class=" fa fa-info"></div>
           <span>Details</span> </a></li>
-        <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation" class="no-padding" ng-click="actionTab=4" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light normal-case">
           <div class="md md-my-library-books"></div>
           <span>Taxonomy</span></a></li>
@@ -54,7 +59,7 @@
         
         <!-- Tab panes -->
         <div class="tab-content col-md-12 no-padding m-t-10 ">
-          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
+          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
             <div class="row grey-rounded p-l-10 p-r-10 p-b-10">
               <h4>Hierarchy</h4>
               <div class="col-md-6 no-padding concept-lists">
@@ -121,7 +126,7 @@
               </table>
             </div>
           </div>
-          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
+          <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===4}">
             <div class=" col-md-12 no-padding"> 
               
               <!-- don't render the directive until the concept has been loaded (handled above) -->
@@ -140,6 +145,31 @@
                 <td data-title="'FSN'" sortable="'source.fsn.term'" filter="{'sourceFsn': 'text'}"> {{item.source.fsn.term}} </td>
               </tr>
             </table>
+          </div>
+          <!-- all inbound relationships -->
+          <div role="tabpanel" class="tab-pane m-t-15" id="incoming-relationships" ng-class="{active: actionTab===2}">
+            <h4>Incoming Historical Associations</h4>
+            <div ng-show="affectedConceptAssocs.length > 0">
+              <table
+                ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
+                class="table table-full table-full-small">
+                <tr ng-repeat="rel in $data">
+                  <td data-title="'SCTID'" sortable="'id'">{{rel.conceptId}}</td>
+                  <td data-title="'Concept FSN'" sortable="'sourceFsn'">{{rel.fsn}}</td>
+                  <td data-title="'Previous Reason'">{{convertToTextFromCode(rel.inactivationIndicator)}}</td>           
+                </tr>
+
+              </table>
+            </div>
+            <div ng-show="affectedDescToConceptAssocs.length > 0">
+              <b>Inactive descriptions referring to this concept</b>
+              <table ng-table="assocsDescToConceptTableParams" template-pagination="utilities/data-table-pager.html" class="table table-full table-full-small m-t-5">
+                <tr ng-repeat="rel in $data">
+                  <td data-title="'SCTID'" sortable="'id'">{{rel.id}}</td>
+                  <td data-title="'Description Term'" sortable="'term'">{{rel.term}}</td>                
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>

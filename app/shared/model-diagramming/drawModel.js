@@ -5,7 +5,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .directive('drawModel', function (snowowlService) {
+  .directive('drawModel', function (snowowlService,metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -346,19 +346,29 @@ angular.module('singleConceptAuthoringApp')
                   maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
               }
               else{
-                  y = y + 20;
-                  x = x + 20;
-                  var circleSelfgroupAttr = drawAttributeSelfGroupNode(svg, x, y);
-                  connectElements(svg, circle2, circleSelfgroupAttr, 'center', 'left');
-                  x = x + 50;
-                  y = y - 20;                
-                  var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
-                  connectElements(svg, circleSelfgroupAttr, rectAttr, 'right', 'left');
-                  var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
-                  connectElements(svg, rectAttr, rectTarget, 'right', 'left');
-                  y = y + rectTarget.getBBox().height + 25;
-                  maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
-                  x = x - 50;
+                  if (metadataService.isSelfGroupAttribute(relationship.type.conceptId)) {
+                    y = y + 20;
+                    x = x + 20;
+                    var circleSelfgroupAttr = drawAttributeGroupNode(svg, x, y);
+                    connectElements(svg, circle2, circleSelfgroupAttr, 'center', 'left');
+                    y = y - 20;                
+                    x = x + circleSelfgroupAttr.getBBox().width + 40;                
+                    var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                    connectElements(svg, circleSelfgroupAttr, rectAttr, 'right', 'left');
+                    x = x + rectAttr.getBBox().width + 50;
+                    var rectTarget = drawSctBox(svg, x, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                    connectElements(svg, rectAttr, rectTarget, 'right', 'left'); 
+                    x = x - (circleSelfgroupAttr.getBBox().width + rectAttr.getBBox().width + 110);                
+                    y = y + rectTarget.getBBox().height + 25;
+                    maxX = ((maxX < x + 20 + circleSelfgroupAttr.getBBox().width + 50 + rectAttr.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);                    
+                  } else {
+                    var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                    connectElements(svg, circle2, rectAttr, 'center', 'left');
+                    var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                    connectElements(svg, rectAttr, rectTarget, 'right', 'left');
+                    y = y + rectTarget.getBBox().height + 25;
+                    maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+                  }                  
                 }
             } else {
               if (relationship.groupId > maxRoleNumber) {
@@ -729,15 +739,6 @@ angular.module('singleConceptAuthoringApp')
         }
 
         function drawAttributeGroupNode(svg, x, y) {
-          var circle = svg.circle(x, y, 20, {
-            fill: 'white',
-            stroke: 'black',
-            strokeWidth: 2
-          });
-          return circle;
-        }
-
-        function drawAttributeSelfGroupNode(svg, x, y) {
           var circle = svg.circle(x, y, 20, {
             fill: 'white',
             stroke: 'black',

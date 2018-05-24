@@ -1426,6 +1426,23 @@ angular.module('singleConceptAuthoringApp')
             }, 0);                        
           };
 
+          scope.setTooltipPosition = function ($event) {
+            var top = $event.target.getBoundingClientRect().top;
+            var left = $event.target.getBoundingClientRect().left;
+            var spanTags = angular.element($event.target).find('span');
+            if(spanTags.length === 0) {
+              var parents = angular.element($event.target).parent();
+              top = parents[0].getBoundingClientRect().top;
+              left = parents[0].getBoundingClientRect().left;
+              spanTags = angular.element($event.target).parent().find('span');
+            }
+
+            angular.forEach(spanTags, function(tag) {
+              angular.element(tag).css('top', top - 152);
+              angular.element(tag).css('left', left - 45);
+            });                
+          };
+
           scope.submitFeedback = function (requestFollowup) {
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {

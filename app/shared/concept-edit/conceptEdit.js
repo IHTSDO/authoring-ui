@@ -4110,6 +4110,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   && snowowlService.isSctid(scope.concept.conceptId)             
                   && scope.concept.active
                   && !scope.concept.effectiveTime
+                  && !scope.concept.released
                   && partitionIdentifier === '10' /* Long format concept */) {
             var namespaceId = conceptId.slice(conceptId.length - 10, conceptId.length - 3);
             var namespace = metadataService.getNamespaceById(parseInt(namespaceId));        
