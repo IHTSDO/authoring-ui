@@ -11,6 +11,10 @@ angular.module('singleConceptAuthoringApp')
 
     var namespaces = [];
 
+    var mrcmAttributeDomainMembers = [];
+
+    var selfGroupedAttributes = [];
+
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
@@ -610,6 +614,24 @@ angular.module('singleConceptAuthoringApp')
       return null;
     }
 
+    function setMrcmAttributeDomainMembers(list) {
+      mrcmAttributeDomainMembers = list;
+    }
+
+    function setSelfGroupedAttributes (list) {
+      selfGroupedAttributes = list;
+    }
+
+    function isSelfGroupAttribute(id) {
+      for (var i = 0; i < selfGroupedAttributes.length; i++) { 
+          var attribute = selfGroupedAttributes[i];
+          if(attribute.referencedComponentId === id) {            
+            return true;
+          }
+      }
+      return false;
+    }
+
     return {
 
       // relationship functions
@@ -681,7 +703,10 @@ angular.module('singleConceptAuthoringApp')
 
       setNamespaces: setNamespaces,
       getNamespaces: getNamespaces,
-      getNamespaceById: getNamespaceById
+      getNamespaceById: getNamespaceById,
+      setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
+      setSelfGroupedAttributes: setSelfGroupedAttributes,
+      isSelfGroupAttribute: isSelfGroupAttribute
     };
 
   }])

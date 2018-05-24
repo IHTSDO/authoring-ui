@@ -23,6 +23,17 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_PT_FROM_FSN = /(.+)\s\(.*\)/i;
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
     var PATTERN_SLOT = /\$([^$]+)\$/g;
+    
+    function searchByTemplate(templateName, branch){
+        var deferred = $q.defer();
+        var array = [];
+        $http.get(apiEndpoint + branch + '/templates/' + templateName + '/concepts?lexicalMatch=&logicalMatch=true').then(function (idList) {
+                    deferred.resolve(idList);
+            }, function (error) {
+              deferred.reject('Failed to retrieve template concepts: ' + error.message);
+            });
+        return deferred.promise;
+    }
 
     function getSlotValue(slotName, template, nameValueMap) {
       if(template.additionalSlots && template.additionalSlots.indexOf(slotName) !== -1){
@@ -1132,6 +1143,7 @@ angular.module('singleConceptAuthoringApp')
       // Template CRUD functions
       getTemplates: getTemplates,
       getTemplateForName: getTemplateForName,
+      searchByTemplate: searchByTemplate,
       createTemplate: createTemplate,
       updateTemplate: updateTemplate,
 
