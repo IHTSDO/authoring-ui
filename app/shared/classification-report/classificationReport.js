@@ -80,9 +80,16 @@ angular.module('singleConceptAuthoringApp')
             } else {
               if (scope.type === 'equivalence') {
                 if (searchStr) {
-                  mydata = scope.items.filter(function (item) {
-                    return item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  let searchResults = searchStr.split(/[ ,]+/);
+
+                  mydata = scope.items;
+
+                  angular.forEach(searchResults, function(word) {
+                    mydata = mydata.filter(function (item) {
+                      return item[0].label.toLowerCase().indexOf(word.toLowerCase()) > -1;
+                    });
                   });
+
                 } else {
                   mydata = scope.items;
                 }
