@@ -7,7 +7,7 @@
 
     <!-- Create new concept (non-template) -->
     <button
-      ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+      drag-enter-class="sca-drag-target"
       type="button" ng-click="createConcept(true)"
       ng-disabled="task.status === 'Promoted' || !canCreateConcept"
       class="btn btn-default new-concept-button widget-toolbar tooltips-right tooltips-light normal-case">
@@ -30,7 +30,7 @@
       <i class="md fa fa-magic"></i>
 
       <span>Create New Concept From Template</span></button>
-    
+
     <!--Display the disabled button for Classification in case task was promoted -->
     <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case classification"><i class="md md-notifications"></i></button>
     <div class="navigation-link green classify" ng-if="task.status !== 'Promoted'">
@@ -203,8 +203,8 @@
 
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
-          ng-show="$root.displayMainSidebar 
-                    && thisView !== 'validation' 
+          ng-show="$root.displayMainSidebar
+                    && thisView !== 'validation'
                     && thisView !== 'classification'
                     && thisView !== 'conflicts'"
           class="editpanel sca-column"></div>
@@ -315,7 +315,7 @@
     </div>
 
     <!-- Inactivation view -->
-    <div ng-if="thisView === 'inactivation'">     
+    <div ng-if="thisView === 'inactivation'">
 
       <div class="row no-padding no-gutter">
 
