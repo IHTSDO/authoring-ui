@@ -87,6 +87,10 @@ angular.module('singleConceptAuthoringApp')
           return {id: concept.id, name: concept.fsn};
         };
 
+        scope.getCompleteConcept = function(concept) {
+          return {concept: concept};
+        };
+
         /**
          * Gets and sets the children for a tree node
          * @param node The parent node
