@@ -121,7 +121,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
       // get full concept if not retrieved
       snowowlService.getFullConcept($scope.conceptId, $scope.branch).then(function (concept) {
         $scope.fullConcept = concept;
-        if ($scope.fullConcept && $scope.children && $scope.parents && $scope.inboundRelationships) {
+        if ($scope.fullConcept && $scope.children && $scope.parents) {
           $scope.loadComplete = true;
         }
       });
@@ -129,14 +129,14 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
       // get children if not retrieved
       snowowlService.getConceptChildren($scope.conceptId, $scope.branch).then(function (children) {
         $scope.children = children;
-        if ($scope.fullConcept && $scope.children && $scope.parents && $scope.inboundRelationships) {
+        if ($scope.fullConcept && $scope.children && $scope.parents) {
           $scope.loadComplete = true;
         }
       });
 
       snowowlService.getConceptParents($scope.conceptId, $scope.branch).then(function (parents) {
         $scope.parents = parents;
-        if ($scope.fullConcept && $scope.children && $scope.parents && $scope.inboundRelationships) {
+        if ($scope.fullConcept && $scope.children && $scope.parents) {
           $scope.loadComplete = true;
         }
       });
@@ -174,11 +174,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
         $scope.tableParamsInboundRelationships.reload();
 
-        $scope.loadInboundRelationshipComplete = true;
-
-        if ($scope.fullConcept && $scope.children && $scope.parents && $scope.inboundRelationships) {
-          $scope.loadComplete = true;
-        }
+        $scope.loadInboundRelationshipComplete = true;       
       });
     }
 
@@ -194,11 +190,10 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
             $scope.affectedDescToConceptAssocs = parsedAssocs.descriptionsWithConceptTarget;                  
             $scope.affectedOtherAssocs = parsedAssocs.other;
 
-            reloadTables();
-
-            $scope.loadHistoricalAssocComplete = true;
+            reloadTables();           
           });       
         }
+        $scope.loadHistoricalAssocComplete = true;
       });     
     }
 
