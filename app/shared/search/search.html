@@ -106,7 +106,17 @@
   </div>
 
   <div class="row search-filter" ng-if="isEscgMode">
-    <div class="col-md-6"></div>
+    <div class="col-md-6">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">View</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input">
+        <select ng-model="userOptions.statedSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">          
+          <option value="inferred">Inferred</option>
+          <option value="stated">Stated</option>
+        </select>
+      </div>
+    </div>
     <div class="col-md-6 z-index-1">
       <div class="col-md-5 col-sm-4 filter-label">
         <label class="pull-right m-t-10">Def. Status</label>
