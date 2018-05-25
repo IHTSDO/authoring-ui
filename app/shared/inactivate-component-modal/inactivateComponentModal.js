@@ -112,8 +112,11 @@ angular.module('singleConceptAuthoringApp')
         } else {
           response.items = response.items.filter(function (el) {
             if (inactivationIndication) {
-              return ($scope.conceptId !== el.concept.conceptId) &&
-                !(descendants.includes(el.concept.conceptId));
+              if(($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId))) {
+                return ($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId));
+              } else {
+                response.total--;
+              }
             }
           });
         }
