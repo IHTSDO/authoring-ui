@@ -1,4 +1,10 @@
-<div class="col-md-12 scroll-if-height  no-padding" ng-controller="taxonomyPanelCtrl">
+<div class="col-md-12 scroll-if-height no-padding taxonomy-panel" ng-controller="taxonomyPanelCtrl">
+  <div class="col-md-12 filter-input m-b-5">
+    <select ng-model="viewSelection" ng-init="viewSelection = 'inferred'" name="select-type" class="no-padding m-t-5">          
+      <option value="inferred">Inferred View</option>
+      <option value="stated">Stated View</option>
+    </select>
+  </div>
   <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="rootConcept">
     <div class="col-md-11 no-padding" >
       <h4 class="p-l-5">{{rootConcept.preferredSynonym ? rootConcept.preferredSynonym : rootConcept.fsn}}</h4>
@@ -8,6 +14,6 @@
     </div>
   </div>
   <div class=" col-md-12 no-padding">
-    <div taxonomy-tree branch="branch" concept="rootConcept"></div>
+    <div taxonomy-tree branch="branch" concept="rootConcept" default-view="viewSelection"></div>
   </div>
 </div>
