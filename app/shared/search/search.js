@@ -56,6 +56,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         searchType: 1,
         selectedDialect: '',
         defintionSelection: '',
+        statedSelection: 'inferred',
         template: ''
       };
 
@@ -437,7 +438,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, conceptIdList).then(function (data) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
           let fileName = 'searchResults_' + $routeParams.taskKey;
 
           $scope.dlcDialog(data.data, fileName);
@@ -536,7 +537,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           
         if($scope.userOptions.template){
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch).then(function(results){
-                snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, results.data).then(function (results) {
+                snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
                     if (!results) {
                         notificationService.sendError('Unexpected error searching for concepts', 10000);
                       }
@@ -563,7 +564,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
         else{
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection).then(function (results) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection).then(function (results) {
 
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);

@@ -903,7 +903,7 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, conceptIdList) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList) {
         let deferred = $q.defer();
         let config = {};
 
@@ -1058,7 +1058,12 @@ angular.module('singleConceptAuthoringApp')
         // if the user is doing an ecl search
         else if(escgExpr){
           params.termFilter = termFilter;
-          params.eclFilter = escgExpr;
+          
+          if (view === 'stated') {
+            params.statedEclFilter = escgExpr;
+          } else {
+            params.eclFilter = escgExpr;
+          }
 
           $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
