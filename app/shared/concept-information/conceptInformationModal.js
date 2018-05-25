@@ -190,10 +190,12 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
             $scope.affectedDescToConceptAssocs = parsedAssocs.descriptionsWithConceptTarget;                  
             $scope.affectedOtherAssocs = parsedAssocs.other;
 
-            reloadTables();           
+            reloadTables();
+            $scope.loadHistoricalAssocComplete = true;           
           });       
-        }
-        $scope.loadHistoricalAssocComplete = true;
+        } else {
+          $scope.loadHistoricalAssocComplete = true;
+        }        
       });     
     }
 
