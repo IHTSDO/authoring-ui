@@ -33,7 +33,7 @@
           </a></li>
         <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
-          <div class="md md-toc"></div>
+          <div class="md md-restore"></div>
           <span>Incoming historical associations</span>
           </a></li>  
         <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a aria-controls="home"
@@ -152,10 +152,10 @@
             <div ng-show="affectedConceptAssocs.length > 0">
               <table
                 ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
-                class="table table-full table-full-small">
+                class="table table-full-small">
                 <tr ng-repeat="rel in $data">
-                  <td data-title="'SCTID'" sortable="'id'">{{rel.conceptId}}</td>
-                  <td data-title="'Concept FSN'" sortable="'sourceFsn'">{{rel.fsn}}</td>
+                  <td data-title="'SCTID'" sortable="'conceptId'">{{rel.conceptId}}</td>
+                  <td data-title="'Concept FSN'" sortable="'fsn'">{{rel.fsn}}</td>
                   <td data-title="'Previous Reason'">{{convertToTextFromCode(rel.inactivationIndicator)}}</td>           
                 </tr>
 
@@ -163,7 +163,7 @@
             </div>
             <div ng-show="affectedDescToConceptAssocs.length > 0">
               <b>Inactive descriptions referring to this concept</b>
-              <table ng-table="assocsDescToConceptTableParams" template-pagination="utilities/data-table-pager.html" class="table table-full table-full-small m-t-5">
+              <table ng-table="assocsDescToConceptTableParams" template-pagination="utilities/data-table-pager.html" class="table table-full-small m-t-5">
                 <tr ng-repeat="rel in $data">
                   <td data-title="'SCTID'" sortable="'id'">{{rel.id}}</td>
                   <td data-title="'Description Term'" sortable="'term'">{{rel.term}}</td>                
