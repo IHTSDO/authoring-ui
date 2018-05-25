@@ -148,7 +148,7 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <div class="p-5"
+                ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]"
                     ng-click="selectConcept(concept)">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </div></td>
             <!--Author Controls -->
             <td ng-if="role === 'AUTHOR'" class="  col-md-3"
@@ -260,7 +260,7 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <div class="p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </div></td>
+                ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </div></td>
             <td class=" col-md-3"><div class="pull-right m-r-5 clear-position">
                 <button ng-show="concept.messages.length > 0"
                         class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 normal-case" ng-mouseover="setTooltipPosition($event);"
