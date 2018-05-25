@@ -9,6 +9,10 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
     $scope.loadComplete = false;
 
+    $scope.loadInboundRelationshipComplete = false;
+
+    $scope.loadHistoricalAssocComplete = false;
+
     // initialize the arrays
     $scope.inboundRelationships = [];
 
@@ -170,6 +174,8 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
         $scope.tableParamsInboundRelationships.reload();
 
+        $scope.loadInboundRelationshipComplete = true;
+
         if ($scope.fullConcept && $scope.children && $scope.parents && $scope.inboundRelationships) {
           $scope.loadComplete = true;
         }
@@ -189,6 +195,8 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
             $scope.affectedOtherAssocs = parsedAssocs.other;
 
             reloadTables();
+
+            $scope.loadHistoricalAssocComplete = true;
           });       
         }
       });     

@@ -137,7 +137,9 @@
           <div role="tabpanel" class="tab-pane" id="incoming-relationships" ng-class="{active: actionTab===1}">
             <h4>Incoming Relationships</h4>
             <div ng-show="inboundRelationshipsTotal > tableLimit" class="alert alert-info">Displayed results are limited to {{tableLimit}}</div>
-            <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
+            <div class="ng-table-no-results no-margin p-b-10 p-t-10" ng-if="inboundRelationships.length === 0 && loadInboundRelationshipComplete"> No results found</div>
+            <div class="ng-table-no-results no-margin p-b-10 p-t-10" ng-if="!loadInboundRelationshipComplete">Loading...</div>
+            <table ng-table="tableParamsInboundRelationships" ng-show="inboundRelationships.length > 0" template-pagination="utilities/data-table-pager.html"
                    class="table table-full-small" show-filter="true">
               <tr ng-repeat="item in $data">
                 <td data-title="'Characteristic Type'" sortable="'characteristicType'" filter="{ 'characteristicType': 'ng-table/characteristic-type-select.html' }"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
@@ -149,6 +151,8 @@
           <!-- all inbound relationships -->
           <div role="tabpanel" class="tab-pane m-t-15" id="incoming-relationships" ng-class="{active: actionTab===2}">
             <h4>Incoming Historical Associations</h4>
+            <div class="ng-table-no-results no-margin p-b-10 p-t-10" ng-if="affectedConceptAssocs.length === 0 && affectedDescToConceptAssocs.length === 0 && loadHistoricalAssocComplete"> No results found</div>
+            <div class="ng-table-no-results no-margin p-b-10 p-t-10" ng-if="!loadHistoricalAssocComplete">Loading...</div>
             <div ng-show="affectedConceptAssocs.length > 0">
               <table
                 ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
@@ -156,7 +160,7 @@
                 <tr ng-repeat="rel in $data">
                   <td data-title="'SCTID'" sortable="'conceptId'">{{rel.conceptId}}</td>
                   <td data-title="'Concept FSN'" sortable="'fsn'">{{rel.fsn}}</td>
-                  <td data-title="'Previous Reason'">{{convertToTextFromCode(rel.inactivationIndicator)}}</td>           
+                  <td data-title="'Reason'">{{convertToTextFromCode(rel.inactivationIndicator)}}</td>           
                 </tr>
 
               </table>
