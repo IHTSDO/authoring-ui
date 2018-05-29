@@ -33,7 +33,7 @@
           </a></li>
         <li role="presentation" class="no-padding" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
-          <div class="md md-restore"></div>
+          <div class="md md-schedule"></div>
           <span>Incoming historical associations</span>
           </a></li>  
         <li role="presentation" class="no-padding" ng-click="actionTab=3" ><a aria-controls="home"
@@ -160,7 +160,7 @@
                 <tr ng-repeat="rel in $data">
                   <td data-title="'SCTID'" sortable="'conceptId'">{{rel.conceptId}}</td>
                   <td data-title="'Concept FSN'" sortable="'fsn'">{{rel.fsn}}</td>
-                  <td data-title="'Reason'">{{convertToTextFromCode(rel.inactivationIndicator)}}</td>           
+                  <td data-title="'Reason'" sortable="'inactivationIndicator'">{{convertToTextFromCode(rel.inactivationIndicator)}}</td>           
                 </tr>
 
               </table>

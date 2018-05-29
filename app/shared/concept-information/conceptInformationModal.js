@@ -21,7 +21,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     $scope.filterCharacteristicTypes = [              
         {
             id: "",
-            title: ""
+            title: "All"
         },
         {
             id: "STATED_RELATIONSHIP",
@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     $scope.filterTypeTerms = [              
         {
             id: "",
-            term: ""
+            term: "All"
         }
     ];
 
