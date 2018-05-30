@@ -938,7 +938,7 @@ angular.module('singleConceptAuthoringApp')
           params.expand = 'pt(),fsn()';
         }
 
-        if (definitionStatus && escgExpr) {
+        if (definitionStatus && escgExpr || definitionStatus && conceptIdList) {
           params.definitionStatusFilter = definitionStatus;
         }
 

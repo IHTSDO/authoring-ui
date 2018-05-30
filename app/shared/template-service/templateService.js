@@ -27,7 +27,7 @@ angular.module('singleConceptAuthoringApp')
     function searchByTemplate(templateName, branch){
         var deferred = $q.defer();
         var array = [];
-        $http.get(apiEndpoint + branch + '/templates/' + templateName + '/concepts?lexicalMatch=&logicalMatch=true').then(function (idList) {
+        $http.get(apiEndpoint + branch + '/templates/' + encodeURIComponent(templateName) + '/concepts?lexicalMatch=&logicalMatch=true').then(function (idList) {
                     deferred.resolve(idList);
             }, function (error) {
               deferred.reject('Failed to retrieve template concepts: ' + error.message);
