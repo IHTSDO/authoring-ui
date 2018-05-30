@@ -24,10 +24,15 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
     var PATTERN_SLOT = /\$([^$]+)\$/g;
     
-    function searchByTemplate(templateName, branch){
+    function searchByTemplate(templateName, branch, stated){
+        let statedFlag = true;
+        if(stated === 'inferred'){
+            statedFlag = false;
+        }
         var deferred = $q.defer();
         var array = [];
-        $http.get(apiEndpoint + branch + '/templates/' + encodeURIComponent(templateName) + '/concepts?lexicalMatch=&logicalMatch=true').then(function (idList) {
+        let name = templateName.replace(/\//g, '%252F');
+        $http.get(apiEndpoint + branch + '/templates/' + name + '/concepts?lexicalMatch=&logicalMatch=true&stated=' + statedFlag).then(function (idList) {
                     deferred.resolve(idList);
             }, function (error) {
               deferred.reject('Failed to retrieve template concepts: ' + error.message);
