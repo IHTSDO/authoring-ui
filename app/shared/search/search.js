@@ -199,11 +199,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.searchMode = 'Switch to Template';
                   $scope.isEscgMode = true;
                   $scope.templateMode = false;
+                  $scope.userOptions.statedSelection = 'inferred';
                 }
                 else if ($scope.searchMode === 'Switch to Template') {
                   $scope.searchMode = 'Switch to Text';
                   $scope.isEscgMode = false;
                   $scope.templateMode = true;
+                  $scope.userOptions.statedSelection = 'stated';
                 }
                 else {
                   $scope.searchMode = 'Switch to ECL';
@@ -215,6 +217,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             if ($scope.searchMode === 'Switch to ECL') {
               $scope.searchMode = 'Switch to Text';
               $scope.isEscgMode = true;
+              $scope.userOptions.statedSelection = 'inferred';
               $scope.templateMode = false;
             }
             else {
@@ -552,7 +555,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
           
         if($scope.userOptions.template){
-            templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch).then(function(results){
+            templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection).then(function(results){
                 snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
                     if (!results) {
                         notificationService.sendError('Unexpected error searching for concepts', 10000);
