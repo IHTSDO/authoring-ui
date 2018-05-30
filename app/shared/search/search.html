@@ -92,7 +92,7 @@
 
 
   <div class="row no-padding">
-    <div class="col-md-6">
+    <div class="col-md-6" ng-if="!templateMode">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
               title="Search Type"
               ng-click="toggleSearchType()">
@@ -103,7 +103,7 @@
     </div>
 
 
-    <div class="col-md-6">
+    <div class="col-md-6 pull-right">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center  ng-click-active search-type btn-blue"
               title="Search Mode"
               ng-click="toggleSearchMode()">
