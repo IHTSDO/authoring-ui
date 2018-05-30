@@ -1472,7 +1472,23 @@ angular.module('singleConceptAuthoringApp')
           }, function (error) {
              return [];
           });
+        },
+
+        removeIssueLink: function (issueKey, linkId) {
+          if (!issueKey || !linkId) {
+            console.error('Must specify task key or link issue key');
+            return null;
+          }
+
+          return $http.delete(apiEndpoint + 'issue-key/' + issueKey +'/issue-link/'+ linkId).then(
+            function (response) {
+              return response;
+            }, function (error) {
+              return error;
+            }
+          );
         }
+
       };
 
     }])
