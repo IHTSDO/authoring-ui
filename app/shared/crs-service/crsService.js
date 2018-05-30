@@ -223,20 +223,35 @@ angular.module('singleConceptAuthoringApp')
       }
 
 // Reject a CRS concept by Authoring user
-      function rejectCrsConcept(concept) {        
+      function rejectCrsConcept(issueKey, scaId, crsId) {        
         var deferred = $q.defer();        
         var apiEndpoint = '../ihtsdo-crs/';
-        $http.put(apiEndpoint + 'api/request/' + concept.crsId + '/status?status=ACCEPTED', {"reason":"Rejected by Authoring User"}).then(function (response) {
-          angular.forEach(currentTaskConcepts, function(item, index){
-            if(item.crsId === concept.crsId){
-              currentTaskConcepts.splice(index, 1);
-            }
-          });
-          saveCrsConceptsUiState();
-          deferred.resolve(response);
+
+        scaService.removeIssueLink(issueKey, scaId).then(function (response) {
+          if (response == null || response.status !== 200) {
+            deferred.reject();
+            return;
+          }
+
+          $http.put(apiEndpoint + 'api/request/' + crsId + '/status?status=ACCEPTED', {"reason":"Rejected by Authoring User"}).then(function () {            
+            $http.put(apiEndpoint + 'api/request/unassignAuthoringTask?requestId=' + crsId).then(function () {
+              angular.forEach(currentTaskConcepts, function(item, index){
+                if(item.crsId === crsId){
+                  currentTaskConcepts.splice(index, 1);
+                }
+              });
+              saveCrsConceptsUiState();
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error.statusText);
+            });
+          }, function (error) {
+              deferred.reject(error.statusText);
+          });            
         }, function (error) {
           deferred.reject(error.statusText);
         });
+        
         return deferred.promise;             
       }
 

@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
         
         scope.rejectCrsRequest = function (item) {
           modalService.confirm('Do you really want to reject this concept?').then(function () {
-            crsService.rejectCrsConcept(item).then(function(){
+            crsService.rejectCrsConcept(scope.task.key, item.scaId, item.crsId).then(function(){
               initialize();
             }, function (error) {
               notificationService.sendError('Error while rejecting concept');
