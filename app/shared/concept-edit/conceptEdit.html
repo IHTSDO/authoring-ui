@@ -580,7 +580,7 @@
                 <!-- linked concept -->
                 <div class="pull-left sourcename relationship-target small-size-tooltip tooltips-bottom" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
-                     drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
+                     drop-channel="completeConcept" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic"
                      ng-class="getTargetSlotStyle(relationship)"
                      ng-mouseover="setTooltipPosition($event)">
