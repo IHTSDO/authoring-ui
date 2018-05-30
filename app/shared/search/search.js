@@ -193,21 +193,37 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if ($scope.searchMode === 'Switch to ECL') {
-          $scope.searchMode = 'Switch to Template';
-          $scope.isEscgMode = true;
-          $scope.templateMode = false;
+        if(!metadataService.isExtensionSet())
+            {
+                if ($scope.searchMode === 'Switch to ECL') {
+                  $scope.searchMode = 'Switch to Template';
+                  $scope.isEscgMode = true;
+                  $scope.templateMode = false;
+                }
+                else if ($scope.searchMode === 'Switch to Template') {
+                  $scope.searchMode = 'Switch to Text';
+                  $scope.isEscgMode = false;
+                  $scope.templateMode = true;
+                }
+                else {
+                  $scope.searchMode = 'Switch to ECL';
+                  $scope.isEscgMode = false;
+                  $scope.templateMode = false;
+                }
+            }
+        else{
+            if ($scope.searchMode === 'Switch to ECL') {
+              $scope.searchMode = 'Switch to Text';
+              $scope.isEscgMode = true;
+              $scope.templateMode = false;
+            }
+            else {
+              $scope.searchMode = 'Switch to ECL';
+              $scope.isEscgMode = false;
+              $scope.templateMode = false;
+            }
         }
-        else if ($scope.searchMode === 'Switch to Template') {
-          $scope.searchMode = 'Switch to Text';
-          $scope.isEscgMode = false;
-          $scope.templateMode = true;
-        }
-        else {
-          $scope.searchMode = 'Switch to ECL';
-          $scope.isEscgMode = false;
-          $scope.templateMode = false;
-        }
+        
         $scope.newSearch();
       };
 

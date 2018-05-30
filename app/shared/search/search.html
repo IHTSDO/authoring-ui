@@ -61,6 +61,33 @@
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
       <button ng-show="userOptions.template" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
     </div>
+      
+<!--
+    <div class="col-md-6">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">Def. Status</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input" style="">
+        <select ng-model="userOptions.defintionSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
+          <option value="">All</option>
+          <option value="900000000000074008">Primitive</option>
+          <option value="900000000000073002">Fully Defined</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">Mode</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input" style="">
+        <select ng-model="userOptions.statedSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
+          <option value="Inferred">inferred</option>
+          <option value="Stated">stated</option>
+        </select>
+      </div>
+    </div>
+-->
+    
   </div>
 
 
@@ -105,7 +132,7 @@
     </div>
   </div>
 
-  <div class="row search-filter" ng-if="isEscgMode">
+  <div class="row search-filter" ng-if="isEscgMode || templateMode">
     <div class="col-md-6">
       <div class="col-md-5 col-sm-4 filter-label">
         <label class="pull-right m-t-10">View</label>
