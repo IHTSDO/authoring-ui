@@ -6,7 +6,7 @@
         <label class="control-label">Saved List</label>
       </div>
     </div>
-    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items"> 
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items">
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
@@ -22,8 +22,8 @@
         <span>Fully Defined</span> </button>
       </div>
       <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding word-break" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> 
-        <!-- Use the preferred synonym if present, otherwise use fsn --> 
+           drag="getConceptPropertiesObj(item)" drag-channel="completeConcept" drop-channel="">
+        <!-- Use the preferred synonym if present, otherwise use fsn -->
         {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}} </div>
       <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
         <button type="button"
