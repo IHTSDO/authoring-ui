@@ -894,7 +894,7 @@ angular.module('singleConceptAuthoringApp')
           active: data.active,
           concept: {
             active: data.active,
-            conceptId: data.fsn ? data.fsn.conceptId : data.pt.conceptId,
+            conceptId: data.id ? data.id : data.fsn.conceptId,
             definitionStatus: data.definitionStatus,
             fsn: data.fsn ? data.fsn.term : data.fsn,
             preferredSynonym: data.pt ? data.pt.term : data.pt,
