@@ -144,7 +144,6 @@ angular
     $rootScope.notProd = false;
     $timeout(function () {
       var env = $location.host().split(/[.]/)[0];
-      env = 'training-';
       if (env === 'local' || env.startsWith('dev-')) {
         $rootScope.development = true;
         $rootScope.notProd = true;
