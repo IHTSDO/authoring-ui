@@ -148,6 +148,7 @@ angular
     $rootScope.notProd = false;
     $timeout(function () {
       var env = $location.host().split(/[.]/)[0];
+      env = 'training-';
       if (env === 'local' || env.startsWith('dev-')) {
         $rootScope.development = true;
         $rootScope.notProd = true;
@@ -156,10 +157,15 @@ angular
         $rootScope.uat = true;
         $rootScope.notProd = true;
       }
+      else if (env.startsWith('training-')) {
+        $rootScope.training = true;
+        $rootScope.notProd = true;
+      }
       else {
         $rootScope.notProd = false;
         $rootScope.uat = false;
         $rootScope.development = false;
+        $rootScope.training = false;
       }
     }, 3000);
 
