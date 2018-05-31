@@ -1612,7 +1612,7 @@ button.btn.btn-default.transparent,
 .editing-form .btn.pointer.wandbutton {
     padding : 0px;
 }
-.btn.pointer.wandbutton i {    
+.btn.pointer.wandbutton i {
     font-size: 13px;
     padding-left: 5px;
 }
@@ -3671,7 +3671,8 @@ textarea.noresize {
 /* DEV and UAT platform identification */
 
 .development,
-.uat {
+.uat,
+.training {
     display: block;
     font-size: medium;
     color: white;
@@ -3701,6 +3702,12 @@ textarea.noresize {
 
     border: 1px solid yellow;
     /* for feature branch UI deployment visual identification */
+}
+.training::before {
+    content: "TRN";
+    padding: 0 30px;
+    background-color: #228b22;
+    border: 1px solid yellow;
 }
 .checkbox input[type=checkbox],
 .checkbox-inline input[type=checkbox],
