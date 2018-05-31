@@ -550,7 +550,7 @@
                 <div class="pull-left is_a is_a_bg relationship-type"
                      drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
-                     drop-channel="conceptPropertiesObj"
+                     drop-channel="completeConcept"
                      ui-on-drop="dropRelationshipType(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
                                     <textarea id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
@@ -570,7 +570,7 @@
                        ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"
                        ui-draggable="true"
                        drag="getConceptIdNamePairFromAttributeType(relationship)"
-                       drag-channel="conceptPropertiesObj"
+                       drag-channel="completeConcept"
                        drag-image="getDragImageForConcept(relationship.type.fsn)">
                     <span>Drag this component</span>
                   </div>
@@ -602,7 +602,7 @@
                   <div class="pull-left drag-button-width"
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
-                       drag-channel="conceptPropertiesObj"
+                       drag-channel="completeConcept"
                        drag-image="getDragImageForConcept(relationship.target.fsn)">
                   </div>
                 </div>
