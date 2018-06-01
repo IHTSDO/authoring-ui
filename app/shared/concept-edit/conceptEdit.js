@@ -2759,6 +2759,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipType = function (relationship, data) {
 
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.name = data.concept.fsn;
+          }
+
           // cancel if static
           if (scope.isStatic) {
             return;
