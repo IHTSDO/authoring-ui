@@ -139,6 +139,14 @@ td select {
 .taxonomy-list h4 {
     font-size: 12px ;
 }
+.taxonomy-panel .filter-input {
+    box-shadow: inset 0 -1px 0 #ddd;
+}
+.taxonomy-panel .filter-input  select {
+    width: 90px; 
+    background-color: transparent; 
+    box-shadow: none;
+}
 .table-full .btn-round {
     width: 24px;
     height: 24px;
@@ -450,5 +458,9 @@ h4.timeline-title::-webkit-scrollbar-corner{
     opacity: 0.5;
     pointer-events: none;
   }
+}
+.cfp-hotkeys-close {    
+    top: 67px;
+    right: 14px;    
 }
 

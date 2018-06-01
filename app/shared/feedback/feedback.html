@@ -23,7 +23,7 @@
 
  
   <!-- Report, feedback editor, and concept feedback -->
-  <div class="col-md-9 no-padding pull-right white no-gutter" ng-class="{'col-md-9' : !$root.displayMainSidebar, 'col-md-12' : $root.displayMainSidebar}">
+  <div class="no-padding pull-right white no-gutter" ng-class="getLayoutWidths('modelsAndConcepts')">
     <div class="col-md-12 feedback-header-main">
 
       <!-- Title section -->
@@ -36,14 +36,33 @@
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
-        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}</div>
+        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong><span ng-if="role === 'REVIEWER'">{{task.reviewer.displayName}}</span></div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
           <button class="btn btn-default primary-action-btn"
                   ng-click="unclaimReview()">Unclaim Review </button>
         </div>
         <div class="switch pull-right p-l-10"> </div>
-        <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'"> &nbsp;Task not claimed by a
-          reviewer </div>
+        <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" > &nbsp; 
+          <div class="editable-field">
+            <input id="feedback-edit-reviewer" type="text" ng-model="selectedReviewer" 
+                typeahead="suggestion as suggestion.displayName for suggestion in searchUsers($viewValue,projectKey,taskKey)"  
+                typeahead-focus-first="true"
+                typeahead-wait-ms="700"
+                typeahead-editable="false"               
+                class="form-control"
+                ng-keyup="listenReviewerTypeaheadEvent({event: $event})"
+                typeahead-on-select="updateReviewer()"                                       
+                ng-show="editReviewer"               
+                typeahead-loading="typeaheadLoading"> 
+                 <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
+            </input>
+           
+            <span ng-show="!editReviewer" ng-click="switchToEditReviewer();">           
+              <span>{{task.reviewer ? task.reviewer.displayName : 'Unassigned'}}</span>
+              <button class="btn btn-default normal-case" ng-click="switchToEditReviewer();"><div class="md md-edit"></div></button>
+            </span>
+          </div>          
+        </div>
         <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
           review </div>
       </div>
@@ -63,15 +82,15 @@
   </div>
 
   <!-- Taxonomy, models, and concepts -->
-  <div class="no-padding pull-right" ng-class="{'col-md-9' : !$root.displayMainSidebar, 'col-md-12' : $root.displayMainSidebar}">
-    <div ng-if="viewedConcepts.length > 0">
+  <div class="no-padding pull-right"  ng-class="getLayoutWidths('modelsAndConcepts')">
+    <div ng-if="viewedConcepts.length > 0 && !simultaneousFeedbackAdded">
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
-        <div class="col-md-6">
+        <div ng-class="getLayoutWidths('models')">
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>
         </div>
-        <div class="col-md-6">
+        <div ng-class="getLayoutWidths('concepts')">
           <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
-               autosave="role !== 'AUTHOR'"></div>
+               autosave="role !== 'AUTHOR'" feedback-view="true"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter">
@@ -139,6 +158,52 @@
               <div class="pull-right follow-up-right ">
                 <button class="pull-right btn btn-default  m-r-5"
                         ng-click="submitFeedback(requestFollowup)"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="simultaneousFeedbackAdded">    
+      <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0"> <strong>{{viewedFeedback.length}}</strong> Total Comments
+      </div>
+      <div class="col-md-12 feedback-area">
+        <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
+          <div class="no-feedback-yet" ng-if="viewedFeedback.length === 0"> No Feedback added yet... </div>
+          <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
+            <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 "
+               ng-class="[{
+                          author_feedback_chat : task.assignee.username  === feedback.fromUsername
+                          }]"
+
+            ></p>           
+            <div class="feedback-header" ng-class="[{
+                          pull_right : task.assignee.username  === feedback.fromUsername
+                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
+          </div>
+        </div>
+        <div class="feedback-window col-md-6 no-padding m-t-10">
+          <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
+                        ng-model="$parent.htmlVariable"
+                        ta-text-editor-class="form-control myform2-height"
+                        ta-html-editor-class="form-control myform2-height"
+                        ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+          <div class="col-md-12 p-t-5">
+            <div class="col-md-6 no-padding concept-filter ">
+              <input type="text" class="feedback-search m-b-5 no-border-bottom" placeholder="Search concepts..."
+                     ui-on-drop=""
+                     ng-model="conceptFilter"
+                     typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                     typeahead-focus-first="false"
+                     typeahead-wait-ms="500"
+                     typeahead-on-select="addConceptToFeedback($item, this)"
+                     typeahead-editable="false" typeahead-min-length="3">
+            </div>
+            <div class="col-md-6 no-padding">             
+              <div class="pull-right follow-up-right ">
+                <button class="pull-right btn btn-default  m-r-5"
+                        ng-click="submitFeedback()"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
               </div>
             </div>
           </div>

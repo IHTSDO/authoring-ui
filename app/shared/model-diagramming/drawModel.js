@@ -5,7 +5,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .directive('drawModel', function (snowowlService) {
+  .directive('drawModel', function (snowowlService,metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -77,6 +77,10 @@ angular.module('singleConceptAuthoringApp')
                 if (field.type.conceptId === '116680003') {
                   svgIsaModel.push(field);
                 } else {
+                  if(field.groupId > scope.numberOfGroups)
+                  {
+                    scope.numberOfGroups = field.groupId;
+                  }
                   svgAttrModel.push(field);
                 }
               }
@@ -346,12 +350,29 @@ angular.module('singleConceptAuthoringApp')
                   maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
               }
               else{
-                  var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
-                  connectElements(svg, circle2, rectAttr, 'center', 'left');
-                  var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
-                  connectElements(svg, rectAttr, rectTarget, 'right', 'left');
-                  y = y + rectTarget.getBBox().height + 25;
-                  maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+                  if (metadataService.isSelfGroupAttribute(relationship.type.conceptId)) {
+                    y = y + 20;
+                    x = x + (scope.numberOfGroups > 0 ? 0 : 20);
+                    var circleSelfgroupAttr = drawAttributeGroupNode(svg, x, y);
+                    connectElements(svg, circle2, circleSelfgroupAttr, 'center', 'left');
+                    y = y - 20;                
+                    x = x + circleSelfgroupAttr.getBBox().width + 40;                
+                    var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                    connectElements(svg, circleSelfgroupAttr, rectAttr, 'right', 'left');
+                    x = x + rectAttr.getBBox().width + 50;
+                    var rectTarget = drawSctBox(svg, x, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                    connectElements(svg, rectAttr, rectTarget, 'right', 'left'); 
+                    x = x - (circleSelfgroupAttr.getBBox().width + rectAttr.getBBox().width + 90 + (scope.numberOfGroups > 0 ? 0 : 20) );                
+                    y = y + rectTarget.getBBox().height + 25;
+                    maxX = ((maxX < x + 20 + circleSelfgroupAttr.getBBox().width + 50 + rectAttr.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);                    
+                  } else {
+                    var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                    connectElements(svg, circle2, rectAttr, 'center', 'left');
+                    var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                    connectElements(svg, rectAttr, rectTarget, 'right', 'left');
+                    y = y + rectTarget.getBBox().height + 25;
+                    maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+                  }                  
                 }
             } else {
               if (relationship.groupId > maxRoleNumber) {

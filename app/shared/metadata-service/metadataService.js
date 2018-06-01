@@ -9,9 +9,11 @@ angular.module('singleConceptAuthoringApp')
     // project cache (still used?)
     var projects = [];
 
-    var myProjects = [];
-
     var namespaces = [];
+
+    var mrcmAttributeDomainMembers = [];
+
+    var selfGroupedAttributes = [];
 
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
@@ -139,22 +141,28 @@ angular.module('singleConceptAuthoringApp')
     ];
 
     var drugsModelOrdering = [
-      {id: '127489000', display: 1},
-      {id: '732943007', display: 2},
-      {id: '733724008', display: 3},
-      {id: '733725009', display: 4},
-      {id: '733723002', display: 5},
-      {id: '733722007', display: 6},
+      {id: '116680003', display: 1},
+      {id: '411116001', display: 2},
+      {id: '763032000', display: 3},
+      {id: '127489000', display: 4},
+      {id: '762949000', display: 5},
+      {id: '732943007', display: 6},
       {id: '732944001', display: 7},
       {id: '732945000', display: 8},
       {id: '732946004', display: 9},
       {id: '732947008', display: 10},
-      {id: '116680003', display: 11},
-      {id: '736476002', display: 12},
-      {id: '736474004', display: 13},
-      {id: '736475003', display: 14},
-      {id: '736473005', display: 15},
-      {id: '736472000', display: 16}
+      {id: '733724008', display: 11},
+      {id: '733725009', display: 12},
+      {id: '733723002', display: 13},
+      {id: '733722007', display: 14},
+      {id: '736476002', display: 15},
+      {id: '736474004', display: 16},
+      {id: '736475003', display: 17},
+      {id: '736473005', display: 18},
+      {id: '736472000', display: 19},
+      {id: '766952006', display: 20},
+      {id: '766954007', display: 21},
+      {id: '766953001', display: 22}
     ];
 
     //
@@ -177,6 +185,9 @@ angular.module('singleConceptAuthoringApp')
       languages: ['en'],
       dialects: {
         '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
+      },
+      dialectDefaults: {
+        '900000000000509007': 'true', '900000000000508004': 'true'
       }
     };
 
@@ -207,6 +218,7 @@ angular.module('singleConceptAuthoringApp')
 
         // temporary variables used in parsing metadata
         var dialects = {'900000000000509007': 'en-us'};
+        var dialectDefaults = {};
         var languages = ['en'];
         var defaultLanguages = [];
         var defaultLanguageRefsetId = null;
@@ -233,7 +245,9 @@ angular.module('singleConceptAuthoringApp')
               if (match) {
                 var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
                 requiredLanguageRefsets.forEach(function(lang) {
-                  languages.push(Object.keys(lang)[0]);
+                  if(!languages.includes(Object.keys(lang)[0])){
+                      languages.push(Object.keys(lang)[0]);
+                  }
                   if(lang.dialectName){
                       dialects[lang[Object.keys(lang)[0]]] = lang.dialectName;
                   }
@@ -241,9 +255,15 @@ angular.module('singleConceptAuthoringApp')
                     dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
                   }
                   console.log(lang);
-                  if(lang.default === "true"){
+
+                  if(lang.default === "true" && !defaultLanguages.includes(Object.keys(lang)[0])){
                       defaultLanguages.push(Object.keys(lang)[0]);
                   }
+                  if(lang.default !== null && lang.default !== undefined){
+                      //set dialect default for langauge refset value autogeneration
+                      dialectDefaults[lang[Object.keys(lang)[0]]] = lang.default;
+                  }
+
                 });
 
                 // set the default refset id if not already set
@@ -296,7 +316,8 @@ angular.module('singleConceptAuthoringApp')
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguages: defaultLanguages,
           languages: languages,
-          dialects: dialects
+          dialects: dialects,
+          dialectDefaults: dialectDefaults
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -307,12 +328,7 @@ angular.module('singleConceptAuthoringApp')
         };
           console.log(extensionMetadata);
         }
-//        if(metadata.languageDisplay){
-//            angular.forEach(metadata.languageDisplay, function(lan){
-////                var obj = {lan}
-////                dialects.push(lan)
-//            })
-//        }
+
         if(getCurrentModuleId() !== '900000000000207008'){
           var found = false;
           for(var i = 0; i < descriptionInactivationReasons.length; i++) {
@@ -467,6 +483,14 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    function getDialectDefaultsForModuleId(moduleId, FSN) {
+      if (extensionMetadata && !FSN && extensionMetadata.dialectDefaults !== null) {
+        return extensionMetadata.dialectDefaults;
+      } else {
+        return internationalMetadata.dialectDefaults;
+      }
+    }
+
     function getLanguagesForModuleId(moduleId) {
       if (isExtensionModule(moduleId) && extensionMetadata.languages !== null) {
         return extensionMetadata.languages;
@@ -571,39 +595,6 @@ angular.module('singleConceptAuthoringApp')
       return spellcheckDisabled;
     }
 
-    function checkViewExclusionPermission(projectKey) {
-      if (extensionMetadata !== null) {
-        if (myProjects.length > 0) {
-          if (myProjects.indexOf(projectKey) === -1) {
-            $rootScope.hasViewExclusionsPermission = false;
-          } else {
-            $rootScope.hasViewExclusionsPermission = true;
-          }
-        } else {
-          var interval = null;
-          var count = 0;
-
-          // wait until my project list is set
-          interval = $interval(function () {
-            if (myProjects.length > 0) {
-              if (myProjects.indexOf(projectKey) === -1) {
-                $rootScope.hasViewExclusionsPermission = false;
-              } else {
-                $rootScope.hasViewExclusionsPermission = true;
-              }
-              interval = $interval.cancel(interval);
-            } else if (count > 30) {
-              interval = $interval.cancel(interval);
-            } else {
-              count++;
-            }
-          }, 2000);
-        }
-      } else {
-        $rootScope.hasViewExclusionsPermission = true;
-      }
-    }
-
     function setNamespaces(list) {
       namespaces = list;
     }
@@ -620,6 +611,24 @@ angular.module('singleConceptAuthoringApp')
       }
 
       return null;
+    }
+
+    function setMrcmAttributeDomainMembers(list) {
+      mrcmAttributeDomainMembers = list;
+    }
+
+    function setSelfGroupedAttributes (list) {
+      selfGroupedAttributes = list;
+    }
+
+    function isSelfGroupAttribute(id) {
+      for (var i = 0; i < selfGroupedAttributes.length; i++) {
+          var attribute = selfGroupedAttributes[i];
+          if(attribute.referencedComponentId === id) {
+            return true;
+          }
+      }
+      return false;
     }
 
     return {
@@ -657,6 +666,7 @@ angular.module('singleConceptAuthoringApp')
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
+      getDialectDefaultsForModuleId: getDialectDefaultsForModuleId,
       getAcceptLanguageValueForModuleId: getAcceptLanguageValueForModuleId,
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
@@ -689,11 +699,12 @@ angular.module('singleConceptAuthoringApp')
         return branchMetadata;
       },
 
-      // uitility to check view whitelist in validation report
-      checkViewExclusionPermission: checkViewExclusionPermission,
       setNamespaces: setNamespaces,
       getNamespaces: getNamespaces,
-      getNamespaceById: getNamespaceById
+      getNamespaceById: getNamespaceById,
+      setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
+      setSelfGroupedAttributes: setSelfGroupedAttributes,
+      isSelfGroupAttribute: isSelfGroupAttribute
     };
 
   }])

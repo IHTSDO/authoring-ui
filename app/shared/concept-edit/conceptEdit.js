@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp')
     link: function (scope, element, attrs) {
       // Bind keyboard events: arrows up(38) / down(40)
       element.bind('keydown', function (evt) {
-        if (evt.which === 38 || evt.which === 40) {         
+        if (evt.which === 38 || evt.which === 40) {
           scope.$broadcast('TypeaheadActiveChanged', {'key' : evt.which});
         }
       });
@@ -87,23 +87,23 @@ angular.module('singleConceptAuthoringApp')
             var key =  data.key;
 
             // Make sure option is visible:
-            var myElement = $(option[0]);          
+            var myElement = $(option[0]);
             var topPos = $(myElement)[0].offsetTop;
             var parent = $(myElement).closest("ul");
             var parentHeight = parent[0].clientHeight;
             var scrollPos = parent[0].scrollTop;
-         
+
             if (key === 40) {
               if (topPos > parentHeight) {
                 $(parent).scrollTop(topPos - parentHeight + 24);
               } else {
                 $(parent).scrollTop(0);
               }
-            } else { 
-              if (topPos < (scrollPos)) {              
-                $(parent).scrollTop(topPos);  
-              }              
-            }             
+            } else {
+              if (topPos < (scrollPos)) {
+                $(parent).scrollTop(topPos);
+              }
+            }
           }
         }
       });
@@ -169,7 +169,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         showInactive: '@?',
 
         // a function to update reference concept if any
-        updateConceptReference: '&'
+        updateConceptReference: '&',
+
+        // whether this directive is used in feedback view
+        feedbackView: '@?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -417,6 +420,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isBatch = false;
         }
 
+        if (scope.feedbackView === 'true' || scope.feedbackView === true) {
+          scope.isFeedback = true;
+        } else {
+          scope.isFeedback = false;
+        }
+
+
         if (scope.showInactive === 'true' || scope.showInactive === true) {
           scope.hideInactive = false;
         } else {
@@ -642,6 +652,96 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         }
 
+//on load, check if traceability has been pashed from Feedback, then find the differences with concept project
+        scope.innerComponentStyle = {};
+
+        if (scope.isFeedback) {
+           lookupInnerComponentStyle();
+        }
+
+        function lookupInnerComponentStyle (){
+          scope.innerComponentStyle = {};
+          var traceabilities = [];
+          snowowlService.getTraceabilityForBranch(scope.branch).then(function(traceabilities) {
+            if(traceabilities.totalElements > 0) {
+              snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
+                var checkList = [];
+                angular.forEach(traceabilities.content, function (content) {
+                  if(content.activityType === 'CONTENT_CHANGE') {
+                    angular.forEach(content.conceptChanges, function (traceability) {
+                      if(traceability.conceptId === scope.concept.conceptId) {
+                        angular.forEach(traceability.componentChanges, function (componentChange) {
+                          if (componentChange.componentType === 'DESCRIPTION'
+                              || (componentChange.componentType === 'RELATIONSHIP' && componentChange.componentSubType === 'STATED_RELATIONSHIP')) {
+                            scope.innerComponentStyle[componentChange.componentId] = {
+                              message: null,
+                              style: 'tealhl'
+                            };
+                          }
+                          if (componentChange.componentType === 'DESCRIPTION') {
+                            if (checkList.indexOf(componentChange.componentId) == -1) {
+                              checkList.push(componentChange.componentId);
+
+                              var taskDescription = scope.concept.descriptions.filter( function (des) {
+                                return des.descriptionId === componentChange.componentId;
+                              })[0];
+
+                              var mainDescription = response.descriptions.filter( function (des) {
+                                return des.descriptionId === componentChange.componentId;
+                              })[0];
+
+                              if(mainDescription && taskDescription) {
+                                highlightComponent(componentChange,mainDescription,taskDescription);
+                              }
+                            }
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              });
+            }
+          });
+        }
+
+        function highlightComponent(componentChange,mainDescription,taskDescription) {
+          if (taskDescription.type !== mainDescription.type) {
+            scope.innerComponentStyle[componentChange.componentId + '-type'] = {
+              message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type,
+              style: 'triangle-redhl'
+            };
+          }
+          if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
+            scope.innerComponentStyle[componentChange.componentId + '-caseSignificance'] = {
+              message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
+              style: 'triangle-redhl'
+            };
+          }
+          var componentDialects = Object.keys(taskDescription.acceptabilityMap);
+          componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+          angular.forEach(componentDialects, function (dialectId) {
+            if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
+              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
+                style: 'triangle-redhl'
+              };
+            }
+            if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
+              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable',
+                style: 'triangle-redhl'
+              };
+            }
+            if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
+              && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
+              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
+                message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
+                style: 'triangle-redhl'
+              };
+            }
+          });
+        }
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -883,6 +983,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   sortRelationships();
 
                   scope.computeRelationshipGroups();
+
+                  if (scope.isFeedback) {
+                     lookupInnerComponentStyle();
+                  }
 
                   // broadcast event to any listeners (currently task detail, crs concept list,
                   // conflict/feedback resolved lists)
@@ -1400,39 +1504,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.dialects = metadataService.getAllDialects();
 
 // on extension metadata set
-        scope.$on('setExtensionMetadata', function (event, data) { 
+        scope.$on('setExtensionMetadata', function (event, data) {
           scope.dialects = metadataService.getAllDialects();
         });
 
-// always return en-us dialect first
-        scope.dialectComparator = function (a, b) {
-          if (a === '900000000000509007') {
-            return -1;
-          } else if (b === '900000000000509007') {
-            return 1;
-          } else {
-            // For Belgian module, The order should be US->FR-NL
-            if (metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '11000172109') {
-              if (a === '21000172104') {
-                return -1;
-              } else if (b === '21000172104') {
-                return 1;
-              } else {
-                return a < b;
-              }
-            } else {
-              return a < b;
-            }
-          }
-        };
 
 // function to retrieve branch dialect ids as array instead of map
 // NOTE: Required for orderBy in ng-repeat
         scope.dialectLength = null;
         scope.getDialectIdsForDescription = function (description, FSN) {
-          var dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
-          scope.dialectLength = Object.keys(dialects).length;
-          return Object.keys(dialects).sort(scope.dialectComparator);
+          let dialectLength = 0;
+          let dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
+          angular.forEach(scope.getAvailableLanguages(description.moduleId), function(language){
+              let count = 0;
+              angular.forEach(dialects, function(dialect){
+                  if(dialect.indexOf(language) > -1)
+                      {
+                          count++
+                          if(count > dialectLength){
+                              dialectLength = count;
+                          }
+                      }
+              })
+          });
+          if(dialectLength > scope.dialectLength){
+            scope.dialectLength = dialectLength;
+          }
+
+          return Object.keys(dialects);
+        };
+
+        scope.getDialectsForDescription = function (description, FSN) {
+          return metadataService.getDialectsForModuleId(description.moduleId, FSN);
         };
 
 // define acceptability types
@@ -1799,20 +1902,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
                 description = componentAuthoringUtil.getNewDescription(moduleId, language);
 
-                var dialect = '';
+                let matchingDialects = [];
                 for (var key in dialects) {
                   if (dialects[key].indexOf(language) !== -1) {
-                    dialect = key;
+                    matchingDialects.push(key);
                   }
                 }
 
-                var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
-                    return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
-                  }).length > 0;
+                angular.forEach(matchingDialects, function(dialect){
+                    var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
+                        return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
+                      }).length > 0;
 
-                if(havingPreferredSynonym) {
-                  description.acceptabilityMap[dialect] = 'ACCEPTABLE';
-                }
+                    if(havingPreferredSynonym) {
+                      description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                    }
+                });
 
                 if (afterIndex === null || afterIndex === undefined) {
                   scope.concept.descriptions.push(description);
@@ -2301,7 +2406,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute the relationship groups
           scope.computeRelationshipGroups();
-          
+
           // Binding mouse scroll event
           $timeout(function () {
             registerMouseScrollEvent();
@@ -2502,6 +2607,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.name = data.concept.fsn;
+          }
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -2649,6 +2759,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipType = function (relationship, data) {
 
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.name = data.concept.fsn;
+          }
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -2759,7 +2874,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // reset module id
-          copy.moduleId = metadataService.getCurrentModuleId();
+          copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
           var targetIndex = scope.concept.descriptions.indexOf(target);
           if (targetIndex === -1) {
@@ -3300,7 +3415,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
             var descDialects = scope.getDialectIdsForDescription(description);
             angular.forEach(descDialects, function (dialectId) {
-              if (!metadataService.isExtensionSet() 
+              if (!metadataService.isExtensionSet()
                   || (metadataService.isExtensionSet() && (descDialects.length <= 2 || description.lang === scope.dialects[dialectId]))) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               }
@@ -3947,6 +4062,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             if (scope.componentStyles.hasOwnProperty(key)) {
               return scope.componentStyles[key].style;
+            } else if (scope.innerComponentStyle.hasOwnProperty(key)) {
+              return scope.innerComponentStyle[key].style;
             } else {
               return defaultStyle;
             }
@@ -3954,10 +4071,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getDuplicatedRelOrCircularReferenceStyle = function (component) {
-          
+
           // relationship is specified and newly created one
           if(component) {
-            if (scope.concept.conceptId === component.target.conceptId 
+            if (scope.concept.conceptId === component.target.conceptId
                 && !component.relationshipId) {
               return 'redhl';
             }
@@ -3976,7 +4093,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             for (var i = 0; i < scope.concept.relationships.length; i++) {
               var relationship = scope.concept.relationships[i];
               if (relationship.characteristicType === 'STATED_RELATIONSHIP'
-                && relationship.target.conceptId === scope.concept.conceptId 
+                && relationship.target.conceptId === scope.concept.conceptId
                 && !relationship.relationshipId) {
                 return 'redhl';
               }
@@ -4000,12 +4117,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var conceptId = scope.concept.conceptId + '';
           var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
           if (!metadataService.isExtensionSet()
-                  && snowowlService.isSctid(scope.concept.conceptId)             
+                  && snowowlService.isSctid(scope.concept.conceptId)
                   && scope.concept.active
                   && !scope.concept.effectiveTime
+                  && !scope.concept.released
                   && partitionIdentifier === '10' /* Long format concept */) {
             var namespaceId = conceptId.slice(conceptId.length - 10, conceptId.length - 3);
-            var namespace = metadataService.getNamespaceById(parseInt(namespaceId));        
+            var namespace = metadataService.getNamespaceById(parseInt(namespaceId));
             scope.extensionNamespace =  namespace.organizationName;
             return namespace.organizationName;
           }
@@ -4102,15 +4220,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         }
 
-        // set the initial binding mouse wheel event when content is fully loaded      
-        angular.element(document).ready(function () {    
+        // set the initial binding mouse wheel event when content is fully loaded
+        angular.element(document).ready(function () {
             registerMouseScrollEvent();
         });
 
         scope.$on('registerMouseScrollEvent', function (event, data) {
           if (scope.concept.conceptId === data.id) {
             registerMouseScrollEvent();
-          }          
+          }
         });
 //
 // CRS Key Filtering and Display

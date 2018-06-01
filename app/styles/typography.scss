@@ -744,6 +744,10 @@ strong {
 .no-p-l {
   padding-left: 0;
 }
+.no-p-lr {
+  padding-left: 0;
+  padding-right: 0;
+}
 .no-pad-lr,
 .no-pad-rl,
 .pad-b-only,
@@ -774,6 +778,9 @@ strong {
 }
 .m-5 {
   margin: 5px;
+}
+.m-t-2 {
+  margin-top: 2px;
 }
 .m-t-5 {
   margin-top: 5px;

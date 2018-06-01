@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'snowowlService', 'notificationService', 'accountService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, snowowlService, notificationService, accountService, $timeout, $modal) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'snowowlService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, snowowlService, notificationService, accountService, $timeout, $modal, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -413,11 +413,14 @@ angular.module('singleConceptAuthoringApp')
               getData: function ($defer, params) {
 
                 var orderedData = [];
+                var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN'; 
                 validationService.getValidationFailureExclusions().then(function (exclusions) {
 
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
-                      orderedData.push(failure);
+                      if (!failure.hasOwnProperty('branchRoot') || failure['branchRoot'] === branchRoot) {
+                        orderedData.push(failure);
+                      }                      
                     });
                   }
 
@@ -654,6 +657,7 @@ angular.module('singleConceptAuthoringApp')
             accountService.getAccount().then(function (accountDetails) {
               // get the user name
               var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
+              var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
 
               // set the local flag to false to ensure immediate removal
               failure.isUserExclusion = true;
@@ -665,7 +669,8 @@ angular.module('singleConceptAuthoringApp')
                 failure.conceptId,
                 failure.conceptFsn,
                 failure.detailUnmodified,
-                userName).then(function () {
+                userName,
+                branchRoot).then(function () {
 
                 scope.reloadTables();
               });

@@ -95,15 +95,20 @@ angular.module('singleConceptAuthoringApp')
     function addCommas(integer) {
       return (integer + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
     }
-    
+
     $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
       return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
           response.items = response.items.filter(function (el) {
             if (inactivationIndication) {
-              return ($scope.conceptId !== el.concept.conceptId)
+
+              if(($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId))) {
+                return ($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId));
+              } else {
+                response.total--;
+              }
             }
           });
-        
+
 
         let dropdown = $('.dropdown-menu');
 

@@ -653,7 +653,7 @@ angular.module('singleConceptAuthoringApp')
 
       // Retrieve inbound relationships of a concept
       // GET /{path}/concepts/{conceptId}/inbound-relationships
-      function getConceptRelationshipsInbound(conceptId, branch, offset, limit) {
+      function getConceptRelationshipsInbound(conceptId, branch, offset, limit, active) {
 
         var deferred = $q.defer();
 
@@ -665,7 +665,13 @@ angular.module('singleConceptAuthoringApp')
           limit = 10000;
         }
 
-        $http.get(apiEndpoint + branch + '/relationships?destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=' + offset +'&limit=' + limit).then(function (response) {
+        var params = 'destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=' + offset +'&limit=' + limit;
+
+        if (active) {
+          params += '&active=' + active;
+        }
+
+        $http.get(apiEndpoint + branch + '/relationships?' + params).then(function (response) {
 
           // if zero-count, return empty array (no blank array returned)
           if (response.data.total === 0) {
@@ -709,6 +715,20 @@ angular.module('singleConceptAuthoringApp')
       function getMembersByTargetComponent(conceptId, branch) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+          if (response.data.total === 0) {
+            deferred.resolve([]);
+          } else {
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
+      function getMrcmAttributeDomainMembers(branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/members?referenceSet=723561005&offset=0&limit=500&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
           if (response.data.total === 0) {
             deferred.resolve([]);
           } else {
@@ -869,37 +889,21 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////
       // Browser Functions
       //////////////////////////
-      function browserStructureConversion(data, syn) {
-        if(syn) {
-          return {
+      function browserStructureConversion(data) {
+        return {
+          active: data.active,
+          concept: {
             active: data.active,
-            concept: {
-              active: data.active,
-              conceptId: data.pt.conceptId,
-              definitionStatus: data.definitionStatus,
-              fsn: data.fsn,
-              preferredSynonym: data.pt.term,
-              moduleId: data.moduleId
-            }
-          };
-        }
-
-        else {
-          return {
-            active: data.active,
-            concept: {
-              active: data.active,
-              conceptId: data.fsn.conceptId,
-              definitionStatus: data.definitionStatus,
-              fsn: data.fsn.term,
-              preferredSynonym: data.preferredSynonym,
-              moduleId: data.moduleId
-            }
-          };
-        }
+            conceptId: data.id ? data.id : data.fsn.conceptId,
+            definitionStatus: data.definitionStatus,
+            fsn: data.fsn ? data.fsn.term : data.fsn,
+            preferredSynonym: data.pt ? data.pt.term : data.pt,
+            moduleId: data.moduleId
+          }
+        };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, csv) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList) {
         let deferred = $q.defer();
         let config = {};
 
@@ -911,12 +915,6 @@ angular.module('singleConceptAuthoringApp')
 
         if (!config.headers) {
           config.headers = {};
-        }
-
-        if(csv) {
-          config.headers['Accept'] = 'text/csv';
-          params.offset = 0;
-          params.limit = 1000;
         }
 
         if (lang) {
@@ -933,16 +931,35 @@ angular.module('singleConceptAuthoringApp')
           params.activeFilter = activeFilter;
         }
 
+        if(tsv) {
+          config.headers['Accept'] = 'text/csv';
+          params.offset = 0;
+          params.limit = 10000;
+          params.expand = 'pt(),fsn()';
+        }
+
+        if (definitionStatus && escgExpr || definitionStatus && conceptIdList) {
+          params.definitionStatusFilter = definitionStatus;
+        }
+
         // if the user is searching with some form of numerical ID
-        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter)) {
+        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
 
           // if user is searching with a conceptID
-          if(termFilter.substr(-2, 1) === '0') {
-            params.conceptIds = [termFilter];
+          if(conceptIdList || termFilter.substr(-2, 1) === '0') {
+            if(!Array.isArray(conceptIdList)) {
+              params.conceptIds = [termFilter];
+            }
+
+            else {
+              params.termFilter = termFilter;
+              params.conceptIds = conceptIdList;
+            }
+
 
             $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-              if(csv) {
+              if(tsv) {
                 deferred.resolve(response);
               }
 
@@ -950,7 +967,7 @@ angular.module('singleConceptAuthoringApp')
                 let results = [];
 
                 angular.forEach(response.data.items, function(item) {
-                  let obj = browserStructureConversion(item, syn);
+                  let obj = browserStructureConversion(item);
 
                   results.push(obj);
                 });
@@ -972,7 +989,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                if(csv) {
+                if(tsv) {
                   deferred.resolve(response);
                 }
 
@@ -980,7 +997,7 @@ angular.module('singleConceptAuthoringApp')
                   let results = [];
 
                   angular.forEach(response.data.items, function(item) {
-                    let obj = browserStructureConversion(item, syn);
+                    let obj = browserStructureConversion(item);
 
                     results.push(obj);
                   });
@@ -1006,7 +1023,7 @@ angular.module('singleConceptAuthoringApp')
 
               $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function(response) {
 
-                if(csv) {
+                if(tsv) {
                   deferred.resolve(response);
                 }
 
@@ -1014,7 +1031,7 @@ angular.module('singleConceptAuthoringApp')
                   let results = [];
 
                   angular.forEach(response.data.items, function(item) {
-                    let obj = browserStructureConversion(item, syn);
+                    let obj = browserStructureConversion(item);
 
                     results.push(obj);
                   });
@@ -1041,11 +1058,16 @@ angular.module('singleConceptAuthoringApp')
         // if the user is doing an ecl search
         else if(escgExpr){
           params.termFilter = termFilter;
-          params.eclFilter = escgExpr;
+          
+          if (view === 'stated') {
+            params.statedEclFilter = escgExpr;
+          } else {
+            params.eclFilter = escgExpr;
+          }
 
           $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
-            if(csv) {
+            if(tsv) {
               deferred.resolve(response);
             }
 
@@ -1053,7 +1075,7 @@ angular.module('singleConceptAuthoringApp')
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
-                let obj = browserStructureConversion(item, syn);
+                let obj = browserStructureConversion(item);
 
                 results.push(obj);
               });
@@ -1073,7 +1095,7 @@ angular.module('singleConceptAuthoringApp')
 
           $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
 
-            if(csv) {
+            if(tsv) {
               deferred.resolve(response);
             }
 
@@ -1081,7 +1103,7 @@ angular.module('singleConceptAuthoringApp')
               let results = [];
 
               angular.forEach(response.data.items, function(item) {
-                let obj = browserStructureConversion(item, syn);
+                let obj = browserStructureConversion(item);
 
                 results.push(obj);
               });
@@ -1314,9 +1336,17 @@ angular.module('singleConceptAuthoringApp')
 
       // Get traceability log for branch
       // GET /traceability-service/activities?onBranch=
-      function getTraceabilityForBranch(branch) {
+      function getTraceabilityForBranch(branch, conceptId) {
         var deferred = $q.defer();
-        $http.get('/traceability-service/activities?onBranch=' + branch + '&size=50000').then(function (response) {
+        var params = 'size=50000';
+        if(branch) {
+          params += '&onBranch=' + branch;
+        }
+        if(conceptId) {
+          params += '&conceptId=' + conceptId;
+        }
+
+        $http.get('/traceability-service/activities?' + params).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           if (error.status === 404) {
@@ -1779,6 +1809,7 @@ angular.module('singleConceptAuthoringApp')
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,
+        getMrcmAttributeDomainMembers: getMrcmAttributeDomainMembers,
         getAttributeValues: getAttributeValues,
         getAttributeValuesByConcept: getAttributeValuesByConcept,
         getAttributeValuesFromEcl: getAttributeValuesFromEcl,

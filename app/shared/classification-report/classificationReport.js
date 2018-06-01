@@ -63,10 +63,10 @@ angular.module('singleConceptAuthoringApp')
           count: 10,          // count per page
           sorting: {
             changeNature: 'asc',    // initial sorting
-            sourceName: 'asc',
+            sourceFsn: 'asc',
             group : 'asc',
-            typeName : 'asc',
-            destinationName :  'asc'
+            typeFsn : 'asc',
+            destinationFsn :  'asc'
           },
           orderBy: 'changeNature'
         }, {
@@ -80,17 +80,30 @@ angular.module('singleConceptAuthoringApp')
             } else {
               if (scope.type === 'equivalence') {
                 if (searchStr) {
-                  mydata = scope.items.filter(function (item) {
-                    return item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  let searchResults = searchStr.split(/[ ,]+/);
+
+                  mydata = scope.items;
+
+                  angular.forEach(searchResults, function(word) {
+                    mydata = mydata.filter(function (item) {
+                      return item[0].label.toLowerCase().indexOf(word.toLowerCase()) > -1;
+                    });
                   });
+
                 } else {
                   mydata = scope.items;
                 }
               }
               else {
                 if (searchStr) {
-                  mydata = scope.items.filter(function (item) {
-                    return item.sourceFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.typeFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.destinationFsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  let searchResults = searchStr.split(/[ ,]+/);
+
+                  mydata = scope.items;
+
+                  angular.forEach(searchResults, function(word) {
+                    mydata = mydata.filter(function (item) {
+                      return item.sourceFsn.toLowerCase().indexOf(word.toLowerCase()) > -1 || item.typeFsn.toLowerCase().indexOf(word.toLowerCase()) > -1 || item.destinationFsn.toLowerCase().indexOf(word.toLowerCase()) > -1;
+                    });
                   });
                 } else {
                   mydata = scope.items;

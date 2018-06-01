@@ -73,7 +73,8 @@ angular.module('singleConceptAuthoringApp.home', [
                                 return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                                     || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                                     || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                                    || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                                    || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                                    || item.updated.indexOf(searchStr) > -1;
                             });
                         } else {
                             mydata = $scope.tasks;
@@ -88,12 +89,45 @@ angular.module('singleConceptAuthoringApp.home', [
                         params.total(mydata.length);
                         mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
+                        if(params.sorting().feedbackMessageDate === 'asc'){                           
+                            mydata.sort(function (a, b) {
+                                return sortFeedbackFn(a,b,'asc');
+                            });                        
+                        } else if(params.sorting().feedbackMessageDate === 'desc') {
+                            mydata.sort(function (a, b) {
+                               return sortFeedbackFn(a,b,'desc');                    
+                            });                         
+                        }
+
                         $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                     }
 
                 }
             }
         );
+
+        function sortFeedbackFn (a, b, direction) {
+            if (a.feedbackMessageDate && b.feedbackMessageDate &&
+                a.feedbackMessagesStatus === 'unread' && b.feedbackMessagesStatus === 'unread') {
+                var dateA = new Date(a.feedbackMessageDate); 
+                var dateB = new Date(b.feedbackMessageDate);
+                if (direction === 'asc') {
+                    return dateA - dateB;  
+                } else {
+                    return dateB - dateA;  
+                }                
+            } else if (a.feedbackMessageDate && a.feedbackMessagesStatus === 'unread') {
+                return -1;
+            } else if (b.feedbackMessageDate && b.feedbackMessagesStatus === 'unread') {                                
+                return 1;                            
+            } else if (a.feedbackMessagesStatus === 'read') {
+                return -1;
+            } else if (b.feedbackMessagesStatus === 'read') {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
 
         $scope.toggleShowPromotedTasks = function () {
             $scope.showPromotedTasks = !$scope.showPromotedTasks;

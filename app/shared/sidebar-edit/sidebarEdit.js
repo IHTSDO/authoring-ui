@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebarEdit', [])
 
-  .controller('sidebarEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService) {
+  .controller('sidebarEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService', 'savedListService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService, savedListService) {
 
       // on load, switch to Task Detail tab
         if($routeParams.mode === 'batch'){
@@ -18,7 +18,7 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
 
       $scope.setActiveTab = function (tabIndex) {
         $scope.actionTab = tabIndex;
-      }
+      };
       $scope.$on('viewTaxonomy', function(event, data) {
         $scope.actionTab = 1;
         $rootScope.displayMainSidebar = true;
@@ -43,6 +43,31 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
         $scope.actionTab = 4;
         $rootScope.displayMainSidebar = true;
       });
-      
+
+      $scope.savedList = {items: []};
+      $scope.$watch(function () {
+          return savedListService.savedList;
+        },
+        function(newVal, oldVal) {
+          $scope.savedList = newVal;
+        }, true);
+
+      $scope.dropConcept = function(item) {
+        if($scope.isInSavedList(item.concept.conceptId)) return;
+        savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);
+      };
+
+      $scope.isInSavedList = function (id) {
+        if (!$scope.savedList || !$scope.savedList.items) {
+          return false;
+        }
+
+        for (let i = 0, len = $scope.savedList.items.length; i < len; i++) {
+          if ($scope.savedList.items[i].concept.conceptId === id) {
+            return true;
+          }
+        }
+        return false;
+      };
     }
   ]);

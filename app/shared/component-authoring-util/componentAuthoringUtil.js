@@ -15,12 +15,11 @@ angular.module('singleConceptAuthoringApp')
       function getNewAcceptabilityMap(moduleId, defaultValue, initial, lang) {
         var acceptabilityMap = {};
         var dialects = metadataService.getDialectsForModuleId(moduleId);
+        var dialectDefaults = metadataService.getDialectDefaultsForModuleId(moduleId);
         for (var key in dialects) {
-
           // different behavior between extension and international content
           if (metadataService.isExtensionSet() && !initial) {
             // if this key is the default language, set acceptability to preferred
-              console.log(dialects[key]);
             if (dialects[key].indexOf(lang) !== -1) {
               acceptabilityMap[key] = 'PREFERRED';
             }
@@ -29,14 +28,16 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           else if (dialects[key].indexOf(lang) !== -1) {
-              acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';;
+              acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
           }
           else if (dialects[key].indexOf(lang) === -1) {
           }
             else {
             acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
           }
-
+          if(dialectDefaults[key] === "false"){
+              delete acceptabilityMap[key]
+          }
 
         }
         return acceptabilityMap;
@@ -224,28 +225,6 @@ angular.module('singleConceptAuthoringApp')
 
         return axiom;
       }
-
-//      function getNewBelgianConcept(concept,moduleId) {
-//        var dialects = metadataService.getAllDialects();
-//
-//        var newFSN = getNewFsn(moduleId, true);        
-//        newFSN.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // FSN US Preferred Term          
-//        concept.descriptions.push(newFSN);
-//
-//        var newPT = getNewPt(moduleId, true);
-//        newPT.acceptabilityMap = {'900000000000509007':'PREFERRED'}; // SYN US Preferred Term  
-//        concept.descriptions.push(newPT);
-//
-//        var duDesc = getNewDescription(moduleId, true);
-//        duDesc.acceptabilityMap = {'31000172101':'PREFERRED'}; // SYN DU Preferred Term 
-//        duDesc.lang = dialects['31000172101'];
-//        concept.descriptions.push(duDesc);
-//
-//        var frDesc = getNewDescription(moduleId, true);
-//        frDesc.acceptabilityMap = {'21000172104':'PREFERRED'}; // SYN FR Preferred Term 
-//        frDesc.lang = dialects['21000172104'];
-//        concept.descriptions.push(frDesc);
-//      }
 
       /**
        * Checks if concept has basic fields required and adds them if not

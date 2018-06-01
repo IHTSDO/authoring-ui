@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
-    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService) {
+  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
+    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, snowowlService) {
 
       // TODO Wire this to endpoint service, endpoint config
       var apiEndpoint = '../authoring-services/';
@@ -952,8 +952,7 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/promote
 // Promote the project to MAIN
         promoteProject: function (projectKey) {
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {
-            notificationService.sendMessage('Project Promoted Successfully', 10000);
+          return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {            
             return response.data;
           }, function (error) {
             if (error.status === 504) {
@@ -1011,8 +1010,7 @@ angular.module('singleConceptAuthoringApp')
 // Promote the task to the Project
         promoteTask: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
-            notificationService.sendMessage('Task successfully promoted', 5000);
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {            
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 504) {
@@ -1056,6 +1054,7 @@ angular.module('singleConceptAuthoringApp')
         },
 // GET /projects/{projectKey}/tasks/{taskKey}/auto-promote/status
         getAutomatePromotionStatus: function (projectKey, taskKey) {
+          if (!projectKey || !taskKey) return null;
           return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote/status').then(function (response) {
             return response.data;
           }, function (error) {
@@ -1145,7 +1144,7 @@ angular.module('singleConceptAuthoringApp')
                 console.log('Server notification:', response.data);
 
                 // getNotifications returns an array, get the latest
-                var newNotification = response.data[0];
+                var newNotification = response.data[response.data.length - 1];
                 var msg = null;
                 var url = null;
 
@@ -1168,8 +1167,34 @@ angular.module('singleConceptAuthoringApp')
                       // TODO Handle conflict report notifications
                       break;
 
+                    /*
+                     Promotion completion object structure
+                     {
+                     project: "WRPAS",
+                     task: "WRPAS-76",
+                     entityType: "Promotion",
+                     event: "Task successfully promoted"}
+                     */
                     case 'Promotion':
-                      // TODO Handle promotion notifications
+                      msg = newNotification.event;
+                      if (newNotification.task) {
+                        msg += ' for ' + newNotification.task;
+                        if(!$routeParams.taskKey || newNotification.task !== $routeParams.taskKey) {
+                          url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                          notificationService.sendMessage(msg, 0, url); 
+                        } else {
+                          notificationService.sendMessage(msg, 0);
+                        }                       
+                      } else {
+                        msg += ' for ' + newNotification.project;
+                        if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
+                          url = '#/project/' + newNotification.project;
+                          notificationService.sendMessage(msg, 0, url); 
+                        } else {
+                          notificationService.sendMessage(msg, 0); 
+                        }
+                      }                      
+
                       break;
 
                     /*
@@ -1420,8 +1445,49 @@ angular.module('singleConceptAuthoringApp')
             }
           });
           return deferred.promise;
-        }
+        },
 
+        searchUsers : function (username,projectKeys,issueKey,maxResults,startAt) {          
+          var params = 'startAt=' + (startAt ? startAt : 0) 
+                     + '&maxResults=' + (maxResults ? maxResults : 50)
+                     + '&username=' + username
+                     + (projectKeys ? ('&projectKeys=' + projectKeys) : '')
+                     + (issueKey ? ('&issueKey=' + issueKey) : '')
+                     + '&_=' + Date.now();
+          return $http.get(apiEndpoint + 'users/search?' + params).then(function (response) {
+            var results = [];
+            angular.forEach(response.data, function(value, key) {
+              if (value.active) {
+                var user = {};
+                user.avatarUrl = value.avatarUrls['16x16'];
+                user.displayName = value.displayName;
+                user.email = value.emailAddress;
+                user.username = value.key;
+               
+                results.push(user);
+              }              
+            });
+
+            return results;
+          }, function (error) {
+             return [];
+          });
+        },
+
+        removeIssueLink: function (issueKey, linkId) {
+          if (!issueKey || !linkId) {
+            console.error('Must specify task key or link issue key');
+            return null;
+          }
+
+          return $http.delete(apiEndpoint + 'issue-key/' + issueKey +'/issue-link/'+ linkId).then(
+            function (response) {
+              return response;
+            }, function (error) {
+              return error;
+            }
+          );
+        }
 
       };
 

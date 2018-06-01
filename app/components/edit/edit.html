@@ -7,7 +7,7 @@
 
     <!-- Create new concept (non-template) -->
     <button
-      ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+      drag-enter-class="sca-drag-target"
       type="button" ng-click="createConcept(true)"
       ng-disabled="task.status === 'Promoted' || !canCreateConcept"
       class="btn btn-default new-concept-button widget-toolbar tooltips-right tooltips-light normal-case">
@@ -30,7 +30,10 @@
       <i class="md fa fa-magic"></i>
 
       <span>Create New Concept From Template</span></button>
-    <div class="navigation-link green classify">
+
+    <!--Display the disabled button for Classification in case task was promoted -->
+    <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case classification"><i class="md md-notifications"></i></button>
+    <div class="navigation-link green classify" ng-if="task.status !== 'Promoted'">
 
       <ul class="sub-navigation-link-list classification-nav">
         <li>
@@ -71,7 +74,9 @@
 
     </div>
 
-    <div class="navigation-link deep-purple darken-2 validate">
+    <!--Display the disabled button for Validation in case task was promoted -->
+    <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case validation"><i class="md md-school"></i></button>
+    <div class="navigation-link deep-purple darken-2 validate" ng-if="task.status !== 'Promoted'">
 
       <ul class="sub-navigation-link-list validation-nav">
         <li>
@@ -198,8 +203,8 @@
 
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
-          ng-show="$root.displayMainSidebar 
-                    && thisView !== 'validation' 
+          ng-show="$root.displayMainSidebar
+                    && thisView !== 'validation'
                     && thisView !== 'classification'
                     && thisView !== 'conflicts'"
           class="editpanel sca-column"></div>
@@ -270,7 +275,7 @@
     <div ng-if="thisView === 'edit-no-model'">
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 pull-right no-padding hide-scroll"
+      <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')"
            sca-infinite-scroll="addMoreItems()"
            sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
@@ -310,18 +315,18 @@
     </div>
 
     <!-- Inactivation view -->
-    <div ng-if="thisView === 'inactivation'">     
+    <div ng-if="thisView === 'inactivation'">
 
       <div class="row no-padding no-gutter">
 
-        <div class="col-md-3">
+        <div ng-class="getLayoutWidths('sidebar')">
           <!-- sidebar -->
           <!--<div class="editpanel sca-column no-padding" ng-include src="'shared/sidebar-edit/sidebarEdit.html'">
           </div>-->
         </div>
 
         <!-- inactivation screen -->
-        <div class="col-md-9">
+        <div ng-class="getLayoutWidths('modelsAndConcepts')">
           <div inactivation inactivation-concept="inactivationConcept" branch="targetBranch"></div>
         </div>
       </div>
@@ -345,9 +350,7 @@
     <!-- Review/Feedback view -->
     <div ng-if="thisView === 'feedback'">
       <!-- feedback report -->
-      <div
-         ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding' : !$root.displayMainSidebar,
-                    'col-xs-9 col-sm-9 col-md-9 col-lg-9 col-xl-9 no-padding pull-right' : $root.displayMainSidebar}">
+      <div>
         <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
       </div>
     </div>
@@ -366,7 +369,7 @@
     <div ng-if="thisView === 'batch'" class="batch-editing">
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 pull-right no-padding hide-scroll">
+      <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')">
         <div batch-editing branch="targetBranch" task="task"></div>
       </div>
     </div>

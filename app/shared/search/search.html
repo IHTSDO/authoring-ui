@@ -1,14 +1,14 @@
 <div class=" col-md-12 no-padding  search-scroll " ng-class="{'ecl-mode' : isEscgMode}" ng-controller="searchPanelCtrl">
 
-  <div clas="row no-padding m-b-15" ng-show="isEscgMode && !templateOptions.selectedTemplate">
-    <div class="col-md-9 no-padding">
+  <div clas="row no-padding m-b-15 overflow-no" ng-show="isEscgMode && !templateMode">
+    <div class="col-md-10 no-padding">
       <textarea id="expandable-search" type="search" class="form-control m-5 expandable-search-box no-border-bottom-search" placeholder="Enter ECL expression"
                       ng-model="escgExpr" ng-change="autoExpand($event)" ui-on-drop="" ng-trim="false" rows="1"></textarea>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
       <button ng-show="escgExpr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1 no-padding">
       <button type="button" class="btn btn-default blue md md-search"
               title="Execute ECL Search"
               ng-click="newSearch()"></button>
@@ -20,7 +20,7 @@
              ng-model-options="{ debounce: 500 }"/></div>
 
   </div>
-  <div class="row no-padding" ng-show="!isEscgMode || templateOptions.selectedTemplate">
+  <div class="row no-padding" ng-show="!isEscgMode && !templateMode">
     <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
       <input focus-on="actionTab===2" type="search" class="form-control m-5 search-box no-border-bottom-search" placeholder="Enter at least three characters"
              ng-model="searchStr" ng-change="newSearch()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
@@ -46,10 +46,53 @@
       <!--</button>-->
     <!--</div>-->
   </div>
+    
+  <div class="row no-padding" ng-if="templateMode">
+    <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
+      <input type="text" class="form-control m-5 search-box no-border-bottom-search" ng-model="userOptions.template" placeholder="Enter template name"
+                        typeahead="suggestion as suggestion.name for suggestion in getTemplateSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="newSearch(false, suggestion)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3">
+    </div>
+    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
+      <button ng-show="userOptions.template" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
+    </div>
+      
+<!--
+    <div class="col-md-6">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">Def. Status</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input" style="">
+        <select ng-model="userOptions.defintionSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
+          <option value="">All</option>
+          <option value="900000000000074008">Primitive</option>
+          <option value="900000000000073002">Fully Defined</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">Mode</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input" style="">
+        <select ng-model="userOptions.statedSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
+          <option value="Inferred">inferred</option>
+          <option value="Stated">stated</option>
+        </select>
+      </div>
+    </div>
+-->
+    
+  </div>
 
 
   <div class="row no-padding">
-    <div class="col-md-6">
+    <div class="col-md-6" ng-if="!templateMode">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
               title="Search Type"
               ng-click="toggleSearchType()">
@@ -60,12 +103,12 @@
     </div>
 
 
-    <div class="col-md-6" ng-show="!templateOptions.selectedTemplate">
+    <div class="col-md-6 pull-right">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center  ng-click-active search-type btn-blue"
               title="Search Mode"
               ng-click="toggleSearchMode()">
         <div class="md col-md-12 no-padding text-center ng-binding">
-          {{!isEscgMode ? 'Switch to ECL Mode' : 'Switch to Text Mode'}}
+          {{searchMode}}
         </div>
       </button>
     </div>
@@ -89,6 +132,32 @@
     </div>
   </div>
 
+  <div class="row search-filter" ng-if="isEscgMode || templateMode">
+    <div class="col-md-6">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">View</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input">
+        <select ng-model="userOptions.statedSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">          
+          <option value="inferred">Inferred</option>
+          <option value="stated">Stated</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-6 z-index-1">
+      <div class="col-md-5 col-sm-4 filter-label">
+        <label class="pull-right m-t-10">Def. Status</label>
+      </div>
+      <div class="col-md-7 col-sm-8 filter-input" style="">
+        <select ng-model="userOptions.defintionSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
+          <option value="">All</option>
+          <option value="900000000000074008">Primitive</option>
+          <option value="900000000000073002">Fully Defined</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-12 text-center" ng-if="searchStatus">{{searchStatus}}</div>
 
 
@@ -100,9 +169,9 @@
     </div>
   </div>
 
-  <div full-height additional-padding-bottom="146" ng-show="results.length > 0" class="m-l-10 scroll-if-height">
+  <div full-height additional-padding-bottom="146" ng-show="results.length > 0" class="scroll-if-height">
     <!-- headers -->
-    <div class="row no-padding">
+    <div class="row no-padding m-l-10">
       <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
         <div class="p-5">
           <strong>Term</strong>
@@ -112,79 +181,86 @@
         <!-- No content -->
       </div>
       <div class="no-padding"
-           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
+           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-7' : userOptions.groupByConcept}]">
         <div class="p-5">
           <strong>{{isExtension ? getExtensionDisplayTitle() : 'FSN'}}</strong>
         </div>
       </div>
-      <div class="col-md-1 no-padding">
-        <!-- No content -->
-      </div>
-      <div class="col-md-1 no-padding">
-        <!-- No content -->
+      <div class="col-md-4 no-padding">
+        <div class="checkbox download-checkbox pull-right m-l-5">
+          <input type="checkbox" ng-model="downloadAllResults" ng-change="selectAll(downloadAllResults)" id="select_all_to_download"/>
+          <!--<span> Include in Download </span>-->
+        </div>
+        <div class="pull-right">Download All:</div>
       </div>
     </div>
     <!-- results -->
-    <div ng-repeat="result in results">
+
+
+    <div class="p-l-10 search-result" ng-repeat="result in results">
       <div class="row">
-        <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
-          <div class="p-5 white-text light-button wordbreak">{{result.term}}</div>
+        <div class="no-p-lr clear-position in-block pull-left">
+          <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
+                  class="no-p-lr white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <object class="badge alert-warning ng-binding"
+                    ng-click="openConceptInformationModal(result)">&nbsp; </object>
+            <span>More details</span>
+          </button>
+          <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
+                  class="no-p-lr primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <object class="badge alert-warning ng-binding"
+                    ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
+            <span>More details</span>
+          </button>
         </div>
-        <div class=" col-md-1 no-padding">
-          <div class="">
-            <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
-                    class=" p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
-              <object class="badge alert-warning ng-binding"
-                      ng-click="openConceptInformationModal(result)">&nbsp; </object>
-              <span>Primitive</span>
-            </button>
-            <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
-                    class=" p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
-              <object class="badge alert-warning ng-binding"
-                      ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
-              <span>Fully Defined</span>
-            </button>
+        <div class="result-width p-l-10 in-block">
+          <div class="in-block white-text result-text" ui-draggable="true" drag="result"
+               drag-channel="completeConcept" drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn">
+            <a title="Edit" ng-click="selectItem(result)" ng-disabled="isEdited(result)">
+              {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }}
+            </a>
           </div>
         </div>
-        <div class="no-padding"
-             ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-          <div class="p-5 white-text  wordbreak" ui-draggable="true"
-               drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
-               drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a
-            class=" wordbreak  " title="Edit"
-            ng-click=" selectItem(result)"
-            ng-disabled="isEdited(result)">
-
-
-            {{isExtension ? getExtensionDisplayTerm(result) : result.concept.fsn }} </a>
+        <div class="no-p-lr clear-position in-block pull-right m-t-2">
+          <div class="checkbox download-checkbox pull-right m-l-5">
+            <input type="checkbox" ng-model="result.selected" ng-change="removeAllSelected()" />
+            <!--<span> Include in Download </span>-->
           </div>
-        </div>
-        <div class="col-md-3 no-padding">
-          <button type="button" ng-click="viewConceptInTaxonomy(result)" ng-disabled="!result.concept.active"
-                  class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"
-                  ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red' : !result.concept.active }]">
-            <span ng-if="result.concept.active">View in Taxonomy</span>
-            <span ng-if="!result.concept.active">Inactive Concept</span>
+
+          <button type="button"
+                  class= "addButton btn btn-round widget-button tooltips-bottom medium-size-tooltip offset-tooltip-right white pull-right m-l-5 search-icon"
+                  ng-mouseover="setTooltipPosition($event);" ng-click="clone(result)">
+            <i class="md md-content-copy"></i> <span> Clone this concept </span>
           </button>
-          <button type="button" ng-click="addItemToSavedList(result)"
-                  ng-disabled="isInSavedList(result.concept.conceptId)"
-                  class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1">
-            <span>Add to Saved List</span>
-          </button>
-          <!--<button type="button" ng-click="addItemToFavorites(result)"-->
-                  <!--ng-disabled="isInFavorites(result.concept.conceptId)"-->
-                  <!--class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">-->
-            <!--<span>Add to Project Favorites</span>-->
-          <!--</button>-->
+
           <button type="button" ng-click="addBatchConceptFromResult(result.concept, templateOptions.selectedTemplate)"
                   ng-show="templateOptions.selectedTemplate"
-                  ng-disabled=""
-                  class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2">
+                  class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2 pull-right m-l-5 search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
             <span>Add to Batch</span>
           </button>
-          <button type="button"
-                class= "addButton btn btn-round widget-button tooltips-bottom medium-size-tooltip offset-tooltip-right white"
-                ng-click="clone(result)"> <i class="md md-content-copy"></i> <span> Clone this concept </span>
+
+          <!--<button type="button" ng-click="addItemToFavorites(result)"-->
+          <!--ng-disabled="isInFavorites(result.concept.conceptId)"-->
+          <!--class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">-->
+          <!--<span>Add to Project Favorites</span>-->
+          <!--</button>-->
+
+          <button type="button" ng-click="addItemToSavedList(result)"
+                  ng-class="[{'disable' : isInSavedList(result.concept.conceptId)}]"
+                  class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1 pull-right m-l-5 search-icon"
+                  ng-mouseover="setTooltipPosition($event);">
+            <span>Add to Saved List</span>
+          </button>
+
+          <button type="button" ng-click="viewConceptInTaxonomy(result)"
+                  class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1 pull-right m-l-5 search-icon"
+                  ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red disable' : !result.concept.active }]"
+                  ng-mouseover="setTooltipPosition($event);">
+            <span ng-if="result.concept.active">View in Taxonomy</span>
+            <span ng-if="!result.concept.active">Inactive Concept</span>
           </button>
         </div>
       </div>
@@ -197,8 +273,8 @@
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
-    <a ng-show="loadPerformed" ng-disabled="!results.length" class="btn btn-primary col-md-2 fa fa-download tooltips-top medium-size-tooltip offset-tooltip-right white-icon" ng-click="downloadSearchResults()">
-      <span class="tooltip-dl">Download Results</span>
+    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
+      <span class="tooltip-dl">Download Selected Results</span>
     </a>
   </div>
   <!-- Spacing to temporarily fix margin problems -->
