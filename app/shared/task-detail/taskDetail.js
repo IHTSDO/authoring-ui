@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           } else {
 
             // clear the preparation notification
-
+            notificationService.clear();
             var modalInstance = $modal.open({
               templateUrl: 'shared/promote-modal/promoteModal.html',
               controller: 'promoteModalCtrl',
@@ -447,10 +447,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;               
                 $rootScope.automatedPromotionInQueued = false;
                 if (!isInitialInvoke) {  
-                  $rootScope.$broadcast('reloadTask');
-                  $timeout(function () {
-                     notificationService.sendMessage('Automated promotion completed');
-                  }, 1000); 
+                  $rootScope.$broadcast('reloadTask');                  
                 }             
                 break;
               case 'Failed':               

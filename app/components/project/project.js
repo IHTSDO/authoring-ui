@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
 
-      hotkeys.bindTo($scope)   
+      hotkeys.bindTo($scope)
       .add({
         combo: 'alt+y',
         description: 'Start classification',
@@ -58,6 +58,9 @@ angular.module('singleConceptAuthoringApp.project', [
           // set the local project and branch for use by containers (classification/validation)
           $scope.project = response;
           $scope.branch = response.branchPath;
+
+          // last promotion time
+          getLastPromotedTime();
 
           // set the branch metadata for use by other elements
           metadataService.setBranchMetadata($scope.project);
@@ -84,6 +87,12 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
+      function getLastPromotedTime() {
+        snowowlService.getLastPromotionTime($scope.branch).then(function(response) {
+          let date = new Date(response);
+          $scope.project.lastPromotion = date.toUTCString();
+        });
+      }
 
       $scope.$on('reloadProject', function (event, data) {
         $scope.getProject();
@@ -178,7 +187,6 @@ angular.module('singleConceptAuthoringApp.project', [
                   if (!response.metadata || response.metadata && !response.metadata.lock) {
                     notificationService.sendMessage('Promoting project...');
                     scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                      notificationService.sendMessage('Project successfully promoted', 5000);
                       $scope.getProject();
                     });
                   }
@@ -193,7 +201,7 @@ angular.module('singleConceptAuthoringApp.project', [
             });
 
           } else {
-
+            notificationService.clear();
             var modalInstance = $modal.open({
               templateUrl: 'shared/promote-modal/promoteModal.html',
               controller: 'promoteModalCtrl',
@@ -215,7 +223,6 @@ angular.module('singleConceptAuthoringApp.project', [
                       if (!response.metadata || response.metadata && !response.metadata.lock) {
                         notificationService.sendMessage('Promoting project...');
                         scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                          notificationService.sendMessage('Project successfully promoted', 5000);
                           $scope.getProject();
                         });
                       }
@@ -354,7 +361,7 @@ angular.module('singleConceptAuthoringApp.project', [
             viewedMergePoll = $interval(function () {
               snowowlService.getMergeReview(mergeReviewId).then(function (response) {
                 if (response.status === 'PENDING' || response.status === 'CURRENT') {
-                  $rootScope.rebaseRunning = true;                 
+                  $rootScope.rebaseRunning = true;
                 } else {
                   $rootScope.rebaseRunning = false;
                   scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review-id');
@@ -373,7 +380,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open classification results from notification link
       $scope.$on('toggleClassificationResults', function () {
-        setTimeout(function waitForClassificationContainerPresent() {         
+        setTimeout(function waitForClassificationContainerPresent() {
           if ($scope.project
             && $scope.project.latestClassificationJson) {
              $scope.classificationCollapsed = false;
@@ -385,22 +392,22 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
-        setTimeout(function waitForValidationContainerPresent() {         
+        setTimeout(function waitForValidationContainerPresent() {
           if ( $scope.branch
-            && $scope.validationContainer 
-            && $scope.validationContainer.report 
-            && $scope.validationContainer.report.rvfValidationResult 
-             ) {            
+            && $scope.validationContainer
+            && $scope.validationContainer.report
+            && $scope.validationContainer.report.rvfValidationResult
+             ) {
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               $scope.validationContainer = response;
               $scope.validationCollapsed = true;
-            });  
+            });
           } else {
             $scope.validationContainer = null;
             setTimeout(waitForValidationContainerPresent, 500);
           }
         }, 500);
- 
+
       });
 
       //

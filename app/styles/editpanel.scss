@@ -332,6 +332,7 @@ select.primitive {
     position: absolute;
     margin-left: 5px;
     margin-top: 2px;
+    transform: none;
 }
 textarea,
 input,
@@ -1002,6 +1003,9 @@ button.fsn-title-button {
 .fa.pull-right {
     margin: 0px;
 }
+.fa.pull-right.m-l-5 {
+  margin-left: 5px;
+}
 .col-md-1.role-group-drag {
     float: right
 }
@@ -1349,4 +1353,11 @@ button-link .bluehl .grey.darken-3 {
 }
 .editpanel input#select_all_to_review {
     min-height : 10px;
+}
+.editpanel .saved-list .saved-list-buttons.btn-reject,
+.editpanel .saved-list .saved-list-buttons.btn-checked {
+    margin-left: .3em;
+}
+.result-width {
+  width: calc(100% - 125px);
 }

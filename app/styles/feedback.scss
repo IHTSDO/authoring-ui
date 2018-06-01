@@ -138,6 +138,26 @@
     line-height: 17px;
     text-align: center;
 }
+.feedback-lists .tooltips-bottom.large-size-tooltip.offset-tooltip-right:hover .md-edit+span {
+    width: 154px;
+    margin-left: -141px;
+}
+.feedback-lists .tooltips-bottom.medium-size-tooltip.offset-tooltip-right:hover .md-edit+span {
+    width: 104px;
+    margin-left: -91px;
+}
+.feedback-lists .tooltips-bottom.large-size-tooltip.offset-tooltip-right:hover .md-thumb-up+span {
+    width: 152px;
+    margin-left: -138px;
+}
+.feedback-lists .tooltips-bottom.small-size-tooltip:hover .md-thumb-up+span {
+    width: 58px;
+    margin-left: -25px;
+}
+.feedback-lists .tooltips-bottom.medium-size-tooltip.offset-tooltip-right:hover .md-flag+span {
+    width: 124px;
+    margin-left: -110px;
+}
 .feedback .col-checkbox {
     width: 10%;
 }
@@ -645,6 +665,9 @@ strong {
     color: #76747c;
     background-color: #424249;
 }
+.feedback-lists .fa-sca.fa-comment {
+    height: 15px;
+}
 .feedback-table {
     width: 98%;
     margin: 1%
@@ -714,4 +737,32 @@ strong {
     .feedback-table tbody {
         max-height: 220px;
     }
+}
+.feedback-header-main .editable-field .btn {
+    background: transparent; 
+    padding-right: 0px;
+}
+.editable-field,
+.editable-field span {
+    display: inline;
+}
+.editable-field span:hover {
+    cursor: initial;
+}
+.editable-field input.form-control {
+    width: 200px; 
+    display: initial;
+    background-color: #fff;
+    border-radius: 2px;
+    height: 24px;
+    min-height: 0px;
+}
+.editable-field i {
+   position: relative;
+    left: -17px;
+    color: #474747; 
+}
+.feedback-header-main .editable-field .btn {
+    padding-left: 0px;
+    margin-bottom: 2px;
 }

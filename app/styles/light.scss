@@ -98,6 +98,12 @@
     color: #474747;
     border-bottom: 1px #e6e6e6 solid;
 }
+.sca-light .button-nav .btn.btn-default.classification[disabled],
+.sca-light .button-nav .btn.btn-default.validation[disabled] {
+    border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid;
+    border-bottom: transparent;
+}
 
 /*button colors */
 
@@ -1024,4 +1030,8 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-light .small-buttons.amber[disabled]:hover{
     background-color: transparent;
     color: #444;
+}
+.sca-light .search-scroll button.md-playlist-add.disable {
+    color: #666;
+    background-color: transparent;
 }

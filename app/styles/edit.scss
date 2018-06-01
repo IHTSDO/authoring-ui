@@ -317,10 +317,10 @@ textarea.form-control.inactivation-value{
     color: #fff;
 }
 @media screen and (max-width:1400px) {
-    .editing-form .add-buttons {       
+    .editing-form .add-buttons {
         padding: 4px 2px;
-        min-height : 10px; 
-        height : 15px;       
+        min-height : 10px;
+        height : 15px;
     }
 
     .editing-form .add-buttons.button-width-plus,
@@ -890,6 +890,15 @@ button[disabled] .project-icon {
     cursor:not-allowed;
     background-color: #e0e0e0;
 }
+div.checkbox.download-checkbox {
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 20px;
+}
+div.checkbox.download-checkbox input {
+  margin-left: 0;
+  position: relative;
+}
 .close {
     font-size: 28px;
     padding-top: 5px;
@@ -914,6 +923,10 @@ background: #43A047;
 .z-index-1 {
     z-index: 1
 }
+div.search-result:hover {
+    background: rgba(0,0,0,0.05);
+}
+
 .search-filter .filter-label {
     padding-right: 0px;
     padding-left: 0px;
@@ -921,10 +934,41 @@ background: #43A047;
     font-size: 13px;
 }
 .search-filter .filter-input {
-    padding-right: 0px; 
+    padding-right: 0px;
     padding-left: 10px;
 }
 .search-filter select {
     height: 30px;
     font-size: 14px;
+}
+.feedback-lists .clear-position,
+.feedback-lists .clear-position div,
+.feedback-lists .clear-position button,
+.search-scroll .clear-position,
+.search-scroll .clear-position div,
+.search-scroll .clear-position button {
+    position: unset;
+}
+.search-scroll button.disable {
+    cursor: not-allowed;
+    pointer-events: visibleFill;
+    opacity: 1;
+}
+.search-scroll button.md-playlist-add.disable {
+    color: #76747c;
+    background-color: #424249;
+}
+.search-scroll button.fa-power-off.disable:hover,
+.search-scroll button.md-playlist-add.disable:hover {
+    background-color: #c13244;
+    color: #fff;
+}
+.editing-form .triangle-redhl {
+    border-top: 9px solid red;
+    border-left: 9px solid transparent;
+    width: 0px; position: absolute;
+    margin-left: -9px;
+}
+.editing-form .triangle-redhl.custom-margin {
+    margin-left: -12px;
 }

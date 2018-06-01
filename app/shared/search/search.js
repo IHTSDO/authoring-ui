@@ -45,11 +45,19 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // the stored results
       $scope.storedResults = [];
 
+      $scope.downloadAllResults = true;
+      $scope.selectedResultsList = [];
+      $scope.downloadButtonActive = true;
+
+
       // user controls
       $scope.userOptions = {
         groupByConcept: true,
         searchType: 1,
-        selectedDialect: ''
+        selectedDialect: '',
+        defintionSelection: '',
+        statedSelection: 'inferred',
+        template: ''
       };
 
       $scope.favorites = {items: []};
@@ -99,6 +107,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.search();
         }
       };
+        
+      $scope.getTemplateSuggestions = function (text) {
+            return $scope.templates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
+          };
 
       $scope.updateTemplateOptions = function () {
 
@@ -148,7 +160,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.searchType = 'Active Only';
       $scope.isEscgMode = false;
+      $scope.templateMode = false;
       $scope.escgExpr = null;
+      $scope.searchMode = 'Switch to ECL';
 
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
@@ -172,17 +186,48 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.newSearch();
         // $scope.processResults();
       };
-
+        
       $scope.toggleSearchMode = function () {
-        $scope.isEscgMode = !$scope.isEscgMode;
         $scope.escgExpr = '';
         $scope.searchStr = '';
         $scope.results = [];
+        $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if($scope.isEscgMode) {
-          $scope.searchType = 'Active Only';
-          $scope.userOptions.searchType = 1;
+        if(!metadataService.isExtensionSet())
+            {
+                if ($scope.searchMode === 'Switch to ECL') {
+                  $scope.searchMode = 'Switch to Template';
+                  $scope.isEscgMode = true;
+                  $scope.templateMode = false;
+                  $scope.userOptions.statedSelection = 'inferred';
+                }
+                else if ($scope.searchMode === 'Switch to Template') {
+                  $scope.searchMode = 'Switch to Text';
+                  $scope.isEscgMode = false;
+                  $scope.templateMode = true;
+                  $scope.userOptions.statedSelection = 'stated';
+                }
+                else {
+                  $scope.searchMode = 'Switch to ECL';
+                  $scope.isEscgMode = false;
+                  $scope.templateMode = false;
+                }
+            }
+        else{
+            if ($scope.searchMode === 'Switch to ECL') {
+              $scope.searchMode = 'Switch to Text';
+              $scope.isEscgMode = true;
+              $scope.userOptions.statedSelection = 'inferred';
+              $scope.templateMode = false;
+            }
+            else {
+              $scope.searchMode = 'Switch to ECL';
+              $scope.isEscgMode = false;
+              $scope.templateMode = false;
+            }
         }
+        
+        $scope.newSearch();
       };
 
       /**
@@ -238,7 +283,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.results = displayedResults;
         }
 
-
         // user cue for status
         if ($scope.results.length === 0) {
           $scope.searchStatus = 'No results';
@@ -255,6 +299,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           //$("#excel_table").insertAtCaret($(this).text());
           return false;
         });
+
+        if($scope.downloadAllResults) {
+          $scope.selectAll(true);
+        }
       };
 
       function populateResults(displayedResults,tempIds,i) {
@@ -321,7 +369,55 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         };
       }());
 
-      $scope.downloadSearchResults = function() {
+      $scope.selectAll = function (isChecked) {
+        angular.forEach($scope.results, function (item) {
+          item.selected = isChecked;
+        });
+
+        $scope.selectionCheck();
+      };
+
+      $scope.removeAllSelected = function() {
+        $scope.downloadAllResults = false;
+
+        $scope.selectionCheck();
+      };
+
+      $scope.selectionCheck = function() {
+        let result = false;
+
+        angular.forEach($scope.results, function(item) {
+          if(item.selected) {
+            result = true;
+          }
+        });
+        
+        $scope.downloadButtonActive = result;
+      };
+
+      $scope.downloadResultFilter = function() {
+
+        console.log($scope.selectionCheck());
+
+        $scope.selectedResultsList = [];
+
+        if(!$scope.downloadAllResults) {
+
+          $scope.results.filter(function(item) {
+            if(item.selected) {
+              $scope.selectedResultsList.push(item.concept.conceptId);
+            }
+          });
+
+          $scope.downloadSearchResults($scope.selectedResultsList);
+        }
+
+        else {
+          $scope.downloadSearchResults();
+        }
+      };
+
+      $scope.downloadSearchResults = function(conceptIdList) {
         let acceptLanguageValue = '';
 
         if($scope.isExtension) {
@@ -361,8 +457,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true).then(function (data) {
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
           let fileName = 'searchResults_' + $routeParams.taskKey;
+
           $scope.dlcDialog(data.data, fileName);
         });
       };
@@ -383,15 +480,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       }
 
       $scope.newSearch = function (appendResults) {
+          console.log('new search');
 
         if ($scope.userOptions.selectedDialect) {
           scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
         }
 
-        // Previously a template based search was able to be detected via:
-        // $scope.templateOptions.selectedTemplate
-        // Not actively in use, may need to be included in the below statement in the future
-        if((!$scope.searchStr || $scope.searchStr.length < 3) && !$scope.escgExpr) {
+        if((!$scope.searchStr || $scope.searchStr.length < 3) && !$scope.escgExpr && !$scope.userOptions.template) {
           return;
         }
 
@@ -458,8 +553,37 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         let fsnSearchFlag = !metadataService.isExtensionSet() ||
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
+          
+        if($scope.userOptions.template){
+            templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection).then(function(results){
+                snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
+                    if (!results) {
+                        notificationService.sendError('Unexpected error searching for concepts', 10000);
+                      }
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false).then(function (results) {
+                      $scope.loadPerformed = true;
+
+                      if(results.total || $scope.escgExpr) {
+                        $scope.searchTotal = addCommas(results.total);
+                        $scope.loadMoreEnabled = results.items.length === $scope.resultsSize;
+                        $scope.storedResults = appendResults ? $scope.storedResults.concat(results.items) : results.items;
+                      }
+
+                      else {
+                        $scope.searchTotal = addCommas(results.length);
+                        $scope.loadMoreEnabled = results.length === $scope.resultsSize;
+                        $scope.storedResults = appendResults ? $scope.storedResults.concat(results) : results;
+                      }
+
+                      $scope.processResults();
+                });
+                
+            })
+            
+        }
+        else{
+
+        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection).then(function (results) {
 
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -490,6 +614,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.searchStatus += ': ' + error.data.message;
           }
         });
+          };
       };
 
       /**
@@ -695,6 +820,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.resultsPage = 1;
         $scope.results = [];
         $scope.searchStatus = null;
+        $scope.userOptions.template = '';
 
         $scope.escgExpr = '';
         document.getElementById('expandable-search').style.height = '37px';
@@ -764,16 +890,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
       };
       $scope.viewConceptInTaxonomy = function (item) {
-        $rootScope.$broadcast('viewTaxonomy', {
-          concept: {
-            conceptId: item.concept.conceptId,
-            fsn: item.concept.fsn,
-            preferredSynonym: item.concept.preferredSynonym
-          }
-        });
-      };
-
-      $scope.viewConceptInTaxonomy = function (item) {
+        if (!item.concept.active) return;
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
@@ -789,6 +906,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        *   {}}
        */
       $scope.addItemToSavedList = function (item) {
+        if($scope.isInSavedList(item.concept.conceptId)) return;
         savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);
       };
 
@@ -970,6 +1088,22 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
       };
 
+      $scope.setTooltipPosition = function ($event) {
+        var top = $event.target.getBoundingClientRect().top;
+        var left = $event.target.getBoundingClientRect().left;
+        var spanTags = angular.element($event.target).find('span');
+        if(spanTags.length === 0) {
+          var parents = angular.element($event.target).parent();
+          top = parents[0].getBoundingClientRect().top;
+          left = parents[0].getBoundingClientRect().left;
+          spanTags = angular.element($event.target).parent().find('span');
+        }
+
+        angular.forEach(spanTags, function(tag) {
+          angular.element(tag).css('top', top - 73);
+          angular.element(tag).css('left', left - 40);
+        });
+      };
       // on extension metadata set
       $scope.$on('setExtensionMetadata', function (event, data) {
         $scope.isExtension = metadataService.isExtensionSet();
@@ -987,7 +1121,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
 
           scaService.getSelectedLanguegeForUser().then(function (data){
-            if (data) {
+            if (data && Object.keys(data).length > 0 && data.hasOwnProperty('defaultLanguage')) {
               let strArray = data.defaultLanguage.split('-');
               if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
                 if(strArray.length === 2) {

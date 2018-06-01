@@ -10,7 +10,8 @@ angular.module('singleConceptAuthoringApp')
         concept: '=?',
         branch: '=',
         limit: '@?',
-        view: '='
+        view: '=',
+        defaultView: '='
       },
       templateUrl: 'shared/taxonomy-tree/taxonomyTree.html',
 
@@ -38,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
         scope.synonymFlag = null;
 
         // boolean search flag indicating stated (true) vs inferred (false) mode
-        scope.statedFlag = false; // not yet implemented
+        scope.statedFlag = false;
 
         // whether in an extension -- uses preferred synonyms instead of fsns
         scope.isExtension = metadataService.isExtensionSet();
@@ -85,6 +86,10 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.getConceptPropertiesObj = function (concept) {
           return {id: concept.id, name: concept.fsn};
+        };
+
+        scope.getCompleteConcept = function(concept) {
+          return {concept: concept};
         };
 
         /**
@@ -338,7 +343,13 @@ angular.module('singleConceptAuthoringApp')
           scope.searchExtensionFlag = metadataService.isExtensionSet();
           scope.synonymFlag = metadataService.isExtensionSet();
           scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
-            scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
+          scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
+
+          if (scope.defaultView && scope.defaultView === 'stated') {
+            scope.statedFlag = true;
+          } else {
+            scope.statedFlag = false;
+          }
 
           // clear any existing trees
           scope.terminologyTree = [];
@@ -412,6 +423,10 @@ angular.module('singleConceptAuthoringApp')
           initialize();
         }, false);
 
+        scope.$watch('defaultView', function () {
+          initialize();
+        }, false);
+        
         scope.$on('reloadTaxonomy', function (event, data) {
           initialize();
         });

@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler) {
       return {
         restrict: 'A',
         transclude: false,
@@ -40,7 +40,10 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
           scope.limitConceptsLoading = 10;
-
+          scope.projectKey = $routeParams.projectKey;
+          scope.taskKey = $routeParams.taskKey;          
+          scope.selectedReviewer = null;          
+          
           scope.viewTaxonomy = function() {            
             $rootScope.$broadcast('swapToTaxonomy');                
           };
@@ -86,6 +89,9 @@ angular.module('singleConceptAuthoringApp')
               if (scope.role === 'UNDEFINED') {
                 notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
               }
+              if (scope.task.reviewer) {
+                scope.selectedReviewer = scope.task.reviewer;
+              }              
             }
           });
 
@@ -183,6 +189,13 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+
+          /**
+           * May need to change depending on responsive needs
+           * @param name the unique column name
+           * @returns (*) an array of col-(size)-(width) class names
+           */
+          scope.getLayoutWidths = layoutHandler.getLayoutWidths;
 
           scope.conceptsClassifiedTableParams = new NgTableParams({
               page: 1,
@@ -494,9 +507,6 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.$on('stopEditing', function (event, data) {
 
-            // remove from the styles list (if present)
-            delete scope.styles[data.concept.conceptId];
-
             // remove from viewed concepts list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
@@ -528,23 +538,6 @@ angular.module('singleConceptAuthoringApp')
 
           // the scope variable containing the map of concept -> [style map]
           scope.styles = {};
-
-          function addConceptStyles(concept) {
-            /*    var styledElements = {};
-             angular.forEach(concept.descriptions, function (description) {
-             if (!description.effectiveTime) {
-             styledElements[description.descriptionId] = {message: null, style: 'tealhl'};
-             }
-             });
-             angular.forEach(concept.relationships, function (relationship) {
-             if (!relationship.effectiveTime) {
-             styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'};
-             }
-             });
-             scope.styles[concept.conceptId] = styledElements;
-             */
-          }
-
 
           function highlightComponent(conceptId, componentId) {
             if (!scope.styles) {
@@ -639,9 +632,6 @@ angular.module('singleConceptAuthoringApp')
                 scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
               }
 
-              // apply styles
-              addConceptStyles(response);
-
               deferred.resolve(response);
 
               // after a slight delay, broadcast a draw event
@@ -709,6 +699,7 @@ angular.module('singleConceptAuthoringApp')
           scope.addMultipleToEdit = function (actionTab) {
             var conceptsToAdd = [];
             var conceptsAdded = 0;
+            scope.simultaneousFeedbackAdded = false;            
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
@@ -1191,6 +1182,7 @@ angular.module('singleConceptAuthoringApp')
             if(scope.isDeletedConcept(concept)) {
               notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
             } else {
+              scope.simultaneousFeedbackAdded = false;
               if (actions) {
                 if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
                 if (actions.indexOf('addToEdit') >= 0) scope.addToEdit(concept);
@@ -1213,12 +1205,22 @@ angular.module('singleConceptAuthoringApp')
           scope.selectConceptsForFeedback = function () {
             scope.subjectConcepts = [];
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
-              if (item.selected) {
-                item.read = true;
+              if (item.selected) {             
                 scope.subjectConcepts.push(item);
               }
             });
-            getViewedFeedback();
+
+            if ( scope.subjectConcepts.length === 0) {
+              scope.simultaneousFeedbackAdded = false ;
+              notificationService.sendWarning('No concepts selected', 5000);
+              return
+            }
+            if (scope.subjectConcepts.length === 1) {
+              scope.selectConcept( scope.subjectConcepts[0], 'addToEdit');
+            } else {
+              scope.simultaneousFeedbackAdded = true;
+              getViewedFeedback();
+            }            
           };
 
           scope.toggleFeedbackUnreadStatus = function (concept) {
@@ -1358,6 +1360,87 @@ angular.module('singleConceptAuthoringApp')
             });
 
             return deferred.promise;
+          };        
+          
+          scope.searchUsers = function(username, projectKeys, issueKey) {
+            var deferred = $q.defer();            
+            scaService.searchUsers(username,projectKeys,issueKey).then(function (response) {
+              var results = response.filter(function (item) {
+                return item.username !== $rootScope.accountDetails.login;
+              });           
+              deferred.resolve(results);
+            },
+            function (error) {
+              deferred.reject(error.message);
+            });
+            return deferred.promise;
+          };
+
+          scope.editReviewer = false;
+          scope.listenReviewerTypeaheadEvent = function(event){
+            event = event.event
+            if(event.keyCode === 13) {
+              var updateObj = {};
+              if (scope.selectedReviewer && scope.selectedReviewer.username) {
+                scope.task.reviewer = scope.selectedReviewer;
+                updateObj= {'reviewer': scope.selectedReviewer};
+              } else {
+                if (scope.selectedReviewer === null || scope.selectedReviewer === '') {
+                  scope.task.reviewer = null;
+                  updateObj= {'reviewer': {}};
+                } else {
+                  notificationService.sendError('Invalid user', 10000, null);
+                  return;
+                }
+              }
+              scope.typeaheadLoading = true;
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
+                scope.editReviewer = false; 
+                scope.typeaheadLoading = false;
+              });            
+            }
+            if (event.keyCode === 27) {
+              scope.editReviewer = false; 
+            }
+          };
+
+          scope.updateReviewer = function () {
+            scope.task.reviewer = scope.selectedReviewer;
+            var  updateObj= {'reviewer': scope.selectedReviewer};
+            scope.typeaheadLoading = true;
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
+              scope.editReviewer = false; 
+              scope.typeaheadLoading = false;
+            }); 
+          };
+
+          scope.switchToEditReviewer = function () {            
+            scope.editReviewer = true;
+            if (scope.task.reviewer) {
+              scope.selectedReviewer = scope.task.reviewer;
+            } else {
+              scope.selectedReviewer = null;
+            }
+            $timeout(function () {
+              document.getElementById("feedback-edit-reviewer").focus();
+            }, 0);                        
+          };
+
+          scope.setTooltipPosition = function ($event) {
+            var top = $event.target.getBoundingClientRect().top;
+            var left = $event.target.getBoundingClientRect().left;
+            var spanTags = angular.element($event.target).find('span');
+            if(spanTags.length === 0) {
+              var parents = angular.element($event.target).parent();
+              top = parents[0].getBoundingClientRect().top;
+              left = parents[0].getBoundingClientRect().left;
+              spanTags = angular.element($event.target).parent().find('span');
+            }
+
+            angular.forEach(spanTags, function(tag) {
+              angular.element(tag).css('top', top - 152);
+              angular.element(tag).css('left', left - 45);
+            });                
           };
 
           scope.submitFeedback = function (requestFollowup) {

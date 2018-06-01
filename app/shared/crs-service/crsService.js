@@ -222,6 +222,39 @@ angular.module('singleConceptAuthoringApp')
         scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
       }
 
+// Reject a CRS concept by Authoring user
+      function rejectCrsConcept(issueKey, scaId, crsId) {        
+        var deferred = $q.defer();        
+        var apiEndpoint = '../ihtsdo-crs/';
+
+        scaService.removeIssueLink(issueKey, scaId).then(function (response) {
+          if (response == null || response.status !== 200) {
+            deferred.reject();
+            return;
+          }
+
+          $http.put(apiEndpoint + 'api/request/' + crsId + '/status?status=ACCEPTED', {"reason":"Rejected by Authoring User"}).then(function () {            
+            $http.put(apiEndpoint + 'api/request/unassignAuthoringTask?requestId=' + crsId).then(function () {
+              angular.forEach(currentTaskConcepts, function(item, index){
+                if(item.crsId === crsId){
+                  currentTaskConcepts.splice(index, 1);
+                }
+              });
+              saveCrsConceptsUiState();
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error.statusText);
+            });
+          }, function (error) {
+              deferred.reject(error.statusText);
+          });            
+        }, function (error) {
+          deferred.reject(error.statusText);
+        });
+        
+        return deferred.promise;             
+      }
+
 // initialize ui states for a CRS task
       function initializeCrsTask() {
         var deferred = $q.defer();
@@ -376,6 +409,18 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      function deleteCrsConcept(crsId) {
+        for (var i = 0; i < currentTaskConcepts.length; i++) {
+          if (currentTaskConcepts[i].conceptId === crsId) {
+
+            // Mark as deleted        
+            currentTaskConcepts[i].deleted = true;            
+            saveCrsConceptsUiState();
+            break;
+          }
+        }
+      }
+
       var hiddenCrsKeys = ['changeId', 'changeType', 'changed', 'topic', 'summary', 'notes', 'reference', 'reasonForChange', 'namespace', 'currentFsn'];
 
       function crsFilter(definitionOfChanges) {
@@ -462,8 +507,9 @@ angular.module('singleConceptAuthoringApp')
         getCrsTaskComment: getCrsTaskComment,
         getRequestUrl: getRequestUrl,
 
-        crsFilter: crsFilter
-
+        crsFilter: crsFilter,
+        rejectCrsConcept: rejectCrsConcept,
+        deleteCrsConcept: deleteCrsConcept
       };
     }
   )

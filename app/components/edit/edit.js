@@ -74,7 +74,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('conceptFocused', function (event, data) {
           $scope.selectedConcept = data.id;
         });
-    
+
     hotkeys.bindTo($scope)
     .add({
       combo: 'alt+1',
@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               }
               else{conceptId = $scope.concepts[0].conceptId;}
           }
-          $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});         
+          $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
       }
     })
     .add({
@@ -158,7 +158,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               }
               else{conceptId = $scope.concepts[$scope.concepts.length -1].conceptId;}
           }
-          $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});         
+          $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
       }
     })
     .add({
@@ -188,12 +188,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.currentTask = null;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
-    // Note : This flag is used for indicating where sitebar comes from "be loaded from begining"  
+    // Note : This flag is used for indicating where sitebar comes from "be loaded from begining"
     // or "be loading from Feedback view". Currently, we have 2 diffenent sitebars.
     // DO NOT USE FOR OTHER PURPOSES
     /////////////////////////////////////////////////////////////////////////////////////////////
     $rootScope.displayMainSidebar = true;
-  
+
     //////////////////////////////
     // Infinite Scroll
     //////////////////////////////
@@ -212,13 +212,13 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     $scope.goToConflicts = function () {
       scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-        .then(function (uiState) {            
+        .then(function (uiState) {
             if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
               redirectToConflicts();
             }
             else {
-              var promises = [];                    
-              for (var i = 0; i < uiState.length; i++) {               
+              var promises = [];
+              for (var i = 0; i < uiState.length; i++) {
                 promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
               }
               // on resolution of all promises
@@ -238,7 +238,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               });
             }
           }
-        );      
+        );
     };
 
     function redirectToConflicts() {
@@ -251,7 +251,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       });
     }
-    
+
     $scope.gotoHome = function () {
       $location.url('home');
     };
@@ -301,14 +301,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         setDefaultLayout(layout);
       } else {
         layout = {};
-      }      
+      }
     }
 
     function setDefaultLayout(layout){
       accountService.getUserPreferences().then(function (preferences) {
         if (preferences && preferences.layout && preferences.layout.editDefault) {
           layout = preferences.layout.editDefault;
-        } 
+        }
         // set the widths for easy access
         layoutHandler.setLayout(layout);
       });
@@ -322,7 +322,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
 
-      $scope.getEditPanel();      
+      $scope.getEditPanel();
     };
 
     $scope.getEditPanel = function () {
@@ -548,7 +548,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.$on('viewClassification', function (event, data) {
       $scope.setView('classification');
-    });    
+    });
 
     // pass inactivation service function to determine whether in active inactivation (heh)
     $scope.isInactivation = inactivationService.isInactivation;
@@ -587,7 +587,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
           });
         });
-        deferred.resolve();        
+        deferred.resolve();
       });
 
       return deferred.promise;
@@ -627,27 +627,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     /**
-     * edit.js-specific helper function to return full boostrap col names
      * May need to change depending on responsive needs
      * @param name the unique column name
      * @returns (*) an array of col-(size)-(width) class names
      */
-    $scope.getLayoutWidths = function (name) {
-
-      if (!$rootScope.layoutWidths || !$rootScope.layoutWidths[name]) {
-        return;
-      }
-
-      var width = $rootScope.layoutWidths[name];
-      var colClasses = [
-        'col-xs-12',
-        'col-sm-' + width,
-        'col-md-' + width,
-        'col-lg-' + width,
-        'col-xl-' + width
-      ];
-      return colClasses;
-    };
+    $scope.getLayoutWidths = layoutHandler.getLayoutWidths;
 
     $scope.conceptUpdateFunction = function (project, task, concept) {
 
@@ -693,7 +677,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
 
             if ($scope.concepts.length === $scope.editList.length) {
-              if($scope.concepts.length > $scope.conceptsDisplayed 
+              if($scope.concepts.length > $scope.conceptsDisplayed
                 && external
                 && ($scope.thisView === 'edit-no-sidebar'
                 || $scope.thisView === 'edit-no-model'
@@ -702,7 +686,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               } else {
                 notificationService.sendMessage('All concepts loaded', 10000, null);
               }
-              
+
               // ensure loaded concepts match order of edit list
               $scope.concepts.sort(function (a, b) {
                 return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
@@ -767,7 +751,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (crsConcept && !crsConcept.saved) {
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
-          if($scope.concepts.length > $scope.conceptsDisplayed 
+          if($scope.concepts.length > $scope.conceptsDisplayed
             && external
             && ($scope.thisView === 'edit-no-sidebar'
             || $scope.thisView === 'edit-no-model'
@@ -776,7 +760,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           } else {
             notificationService.sendMessage('All concepts loaded', 5000, null);
           }
-          
+
           $scope.conceptLoading = false;
         }
 
@@ -794,7 +778,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           $scope.conceptLoading = false;
-          if($scope.concepts.length > $scope.conceptsDisplayed 
+          if($scope.concepts.length > $scope.conceptsDisplayed
             && external
             && ($scope.thisView === 'edit-no-sidebar'
             || $scope.thisView === 'edit-no-model'
@@ -803,7 +787,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           } else {
             notificationService.sendMessage('All concepts loaded', 10000, null);
           }
-          
+
           $scope.updateEditListUiState();
         } else {
           // send loading notification for user display
@@ -914,17 +898,17 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($scope.conceptLoading) {
         return;
       }
-     
-      if($scope.thisView === 'feedback' 
+
+      if($scope.thisView === 'feedback'
         || $scope.thisView === 'batch'
         || $scope.thisView === 'inactivation') {
-        $scope.setView('edit-default');                 
-      } 
+        $scope.setView('edit-default');
+      }
       processUiStateUpdate(data.conceptId);
-      
+
     });
 
-    function processUiStateUpdate(conceptId) {      
+    function processUiStateUpdate(conceptId) {
       $scope.conceptLoading = true;
 
       // verify that this SCTID does not exist in the edit list
@@ -937,9 +921,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           return;
         }
       }
-  
+
       $scope.addConceptToListFromId(conceptId,true);
-      $scope.editList.push(conceptId);      
+      $scope.editList.push(conceptId);
       $scope.updateEditListUiState();
       // set focus on the selected concept
       setTimeout(function waitForConceptRender() {
@@ -949,7 +933,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         } else {
           setTimeout(waitForConceptRender, 500);
         }
-      }, 500);      
+      }, 500);
     }
 
 // watch for concept cloning from the edit sidebar
@@ -1000,7 +984,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
         if (!conceptExists) {
           $scope.concepts.push(response);
-        }        
+        }
 
         // deep copy the object -- note: does not work in IE8, but screw
         // that!
@@ -1020,10 +1004,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (isExtension
               || (description.moduleId !== internationalMetadata.modules[1].id  && description.moduleId !==internationalMetadata.modules[2].id)) {
             description.moduleId = metadataService.getCurrentModuleId();
-          } 
+          }
 
           delete description.conceptId;
-          
+
           if(!description.$$hashKey) {
             description.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
           }
@@ -1032,13 +1016,13 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           // Remove en-gb description if Extension is enable
-          if (isExtension && 
+          if (isExtension &&
             description.acceptabilityMap.hasOwnProperty("900000000000508004")) {
             if(Object.keys(description.acceptabilityMap).length === 1) {
               clonedConcept.descriptions.splice(k, 1);
             } else {
               delete description.acceptabilityMap['900000000000508004'];
-            }            
+            }
           }
         }
 
@@ -1071,7 +1055,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             || (clonedConcept.moduleId !== internationalMetadata.modules[1].id  && clonedConcept.moduleId !==internationalMetadata.modules[2].id)) {
           clonedConcept.moduleId = metadataService.getCurrentModuleId();
         }
-        
+
         clonedConcept.fsn = null;
         clonedConcept.released = false;
 
@@ -1132,7 +1116,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // remove the concept
         var editIndex = $scope.concepts.indexOf(data.concept);
-        
+
         // Look for next concept to be focus
         var nextConceptIdToBeFocus = null;
         if ($scope.concepts.length > 1) {
@@ -1142,7 +1126,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             nextConceptIdToBeFocus = $scope.concepts[editIndex + 1].conceptId;
           }
         }
-      
+
         $scope.concepts.splice(editIndex, 1);
 
         // only update the edit list if actually in an edit view
@@ -1150,7 +1134,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.updateEditListUiState();
           if(nextConceptIdToBeFocus) {
             $rootScope.$broadcast('conceptFocused', {id: nextConceptIdToBeFocus});
-          }          
+          }
         }
       }
     });
@@ -1166,7 +1150,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
         $scope.clearTemplate();
-        
+
         // Binding mouse scroll event
         $timeout(function () {
           $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
@@ -1175,7 +1159,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         templateService.createTemplateConcept(templateService.getSelectedTemplate(), null).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
-          
+
           // Binding mouse scroll event
           $timeout(function () {
             $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
@@ -1185,7 +1169,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
- //Remove all concepts from editing   
+ //Remove all concepts from editing
     $scope.closeAllConcepts = function() {
       if ($scope.concepts.length === 0) {
         notificationService.sendMessage('No concept is removed from editing', 5000);
@@ -1193,18 +1177,18 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
       notificationService.sendMessage('Removing all concepts from editing', 10000);
       scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-        .then(function (uiState) {            
+        .then(function (uiState) {
           if (uiState && Object.getOwnPropertyNames(uiState).length > 0) {
-            var promises = [];                    
-            for (var i = 0; i < uiState.length; i++) {               
+            var promises = [];
+            for (var i = 0; i < uiState.length; i++) {
               promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
             }
             // on resolution of all promises
             $q.all(promises).then(function (responses) {
               var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
               if (hasUnsavedConcept) {
-                var msg = 'There are some unsaved concepts. Please save them before removing.';                 
-                modalService.message(msg);               
+                var msg = 'There are some unsaved concepts. Please save them before removing.';
+                modalService.message(msg);
               } else {
                 $rootScope.$broadcast('removeConceptFromEditing', {});
               }
@@ -1335,7 +1319,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           // on resolution of all promises
           $q.all(promises).then(function () {
             $scope.feedbackContainer.review = review ? review : {};
-          }, function (error) {             
+          }, function (error) {
           });
         });
 
@@ -1486,9 +1470,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.promoteProject = function () {
       notificationService.sendMessage('Promoting project....', 0);
       scaService.promoteProject($routeParams.projectKey).then(function (response) {
-        if (response !== null) {
-          notificationService.sendMessage('Project successfully promoted', 10000);
-        } else {
+        if (response === null) {
           notificationService.sendError('Error promoting project', 10000);
         }
       });
@@ -1532,15 +1514,15 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 
-    $scope.viewReview = function () {     
-      if($scope.thisView === 'feedback'){         
+    $scope.viewReview = function () {
+      if($scope.thisView === 'feedback'){
         $rootScope.$broadcast('viewReview', {});
        } else {
         $rootScope.displayMainSidebar = false;
         $scope.setView('feedback');
        }
     };
-    
+
     $scope.viewBatch = function () {
        $scope.setView('batch');
     };
@@ -1571,7 +1553,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
           if (!response) {
-            deferred.reject('Task could not be retrieved');
+            $scope.gotoHome();
+            return;
+            //deferred.reject('Task could not be retrieved');
           }
 
           if (angular.isUndefined(response.linkedIssues)) {
@@ -1603,7 +1587,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       loadTask();
     });
 
-    $scope.$on('swapToTaxonomy', function (event, data) {      
+    $scope.$on('swapToTaxonomy', function (event, data) {
       $rootScope.$broadcast('viewTaxonomy', {});
     });
 
@@ -1611,18 +1595,18 @@ angular.module('singleConceptAuthoringApp.edit', [
       $rootScope.$broadcast('viewSearch', {});
     });
 
-    $scope.$on('swapToSavedList', function (event, data) {           
+    $scope.$on('swapToSavedList', function (event, data) {
       $rootScope.$broadcast('viewList', {});
     });
-    
-    $scope.$on('swapToBatch', function (event, data) {      
-      $rootScope.$broadcast('viewBatch', {});  
+
+    $scope.$on('swapToBatch', function (event, data) {
+      $rootScope.$broadcast('viewBatch', {});
       $scope.viewBatch();
     });
 
-    $scope.$on('swapToTaskDetails', function (event, data) {    
+    $scope.$on('swapToTaskDetails', function (event, data) {
       $rootScope.$broadcast('viewInfo', {});
-    });    
+    });
 
     function loadBranch(branchPath) {
 
@@ -1636,7 +1620,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             notificationService.sendWarning('Task initialization complete', 3000);
             $rootScope.$broadcast('reloadTaxonomy');
-            $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey; 
+            $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
 
             // add slight timeout to allow propagation of branch information
             // TODO Added because crsService was receiving 404 on branch initially, but succeeding on reload
@@ -1658,7 +1642,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // declare table parameters
     $scope.templateTableParams = new ngTableParams({
         page: 1,
-        count: 200       
+        count: 200
       },
       {
         filterDelay: 50,
@@ -1694,7 +1678,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.createConcept(false);
       });
     };
-    
+
     $scope.selectFocusForTemplate = function(concept){
         var initialTemplates = $scope.innerTemplates;
         templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
@@ -1709,11 +1693,11 @@ angular.module('singleConceptAuthoringApp.edit', [
               $scope.innerTemplates = initialTemplates;
             });
         }
-    
+
     $scope.clearTemplate = function () {
       templateService.selectTemplate(null);
     };
-    
+
     $scope.getConceptsForTypeahead = function (searchStr) {
             return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
 
@@ -1748,14 +1732,17 @@ angular.module('singleConceptAuthoringApp.edit', [
       } else {
         $scope.setView('feedback');
         $rootScope.displayMainSidebar=false;
-      }      
+      }
     };
 
     //
     // Sidebar menu actions -- duplicative of taskDetail
     //
-    
+
     $scope.classify = function () {
+      if ($scope.task.status === 'Promoted') {
+        return;
+      }
 
       notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
@@ -1765,7 +1752,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
       } else {
         doClassify();
-      }     
+      }
     };
 
     function doClassify() {
@@ -1790,6 +1777,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.validate = function () {
+      if ($scope.task.status === 'Promoted') {
+        return;
+      }
+
       notificationService.sendMessage('Submitting task for validation...');
 
       if ($scope.task.status === 'New') {
@@ -1798,7 +1789,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
       } else {
         doValidate();
-      }      
+      }
     };
 
     function doValidate() {
@@ -1919,7 +1910,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 //////////////////////////////////////////
 
     function initialize() {
-        
+
       $('body').on('mouseup', function(e) {
             if(!$(e.target).closest('.popover').length) {
                 $('.popover').each(function(){
@@ -1943,12 +1934,15 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       notificationService.sendMessage('Loading task details...');
-        
+
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
       // initialize the task and project
       $q.all([loadTask(), loadProject()]).then(function () {
+
+        // load self-grouped attributes
+        loadSelfGroupedAttribute();
 
         // set the task for the template service
         templateService.setTask($scope.task);
@@ -1960,7 +1954,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
         metadataService.setTemplatesEnabled($scope.project.projectTemplatesDisabled);
         metadataService.setSpellcheckDisabled($scope.project.projectSpellCheckDisabled);
-          
+
         // retrieve available templates
         if(!metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (templates) {
@@ -1988,7 +1982,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.templateTableParams.reload();
           });
         }
-          
+
         else{$scope.templates = null}
 
         // initialize the CRS service
@@ -2068,9 +2062,24 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     }
 
+    function loadSelfGroupedAttribute() {
+      // retrieve all self-grouped attribute domain members
+      snowowlService.getMrcmAttributeDomainMembers($scope.task.branchPath).then(function (response) {
+        var selfGroupedAttributes = [];
+        if (response.items) {
+          selfGroupedAttributes = response.items.filter(function(attribute) {
+            return attribute.additionalFields
+                    && attribute.additionalFields.hasOwnProperty('grouped')
+                    && attribute.additionalFields.grouped;
+          });
+        }
+
+        // set only self-grouped attributes
+        metadataService.setSelfGroupedAttributes(selfGroupedAttributes);
+      });
+    }
+
     initialize();
-
-
 
   })
 ;

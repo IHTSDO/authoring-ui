@@ -23,6 +23,22 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_PT_FROM_FSN = /(.+)\s\(.*\)/i;
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
     var PATTERN_SLOT = /\$([^$]+)\$/g;
+    
+    function searchByTemplate(templateName, branch, stated){
+        let statedFlag = true;
+        if(stated === 'inferred'){
+            statedFlag = false;
+        }
+        var deferred = $q.defer();
+        var array = [];
+        let name = templateName.replace(/\//g, '%252F');
+        $http.get(apiEndpoint + branch + '/templates/' + name + '/concepts?lexicalMatch=&logicalMatch=true&stated=' + statedFlag).then(function (idList) {
+                    deferred.resolve(idList);
+            }, function (error) {
+              deferred.reject('Failed to retrieve template concepts: ' + error.message);
+            });
+        return deferred.promise;
+    }
 
     function getSlotValue(slotName, template, nameValueMap) {
       if(template.additionalSlots && template.additionalSlots.indexOf(slotName) !== -1){
@@ -497,6 +513,7 @@ angular.module('singleConceptAuthoringApp')
                 }
             }
             var nameValueMap;
+          var componentsToBeRemoved = [];
           getTemplateValues(conceptCopy, template).then(function (map) {
             nameValueMap = map;
             angular.forEach(template.conceptOutline.descriptions, function (dt) {
@@ -528,6 +545,10 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                       else{
+                          if (d.type === 'FSN') {
+                            d.term = d.term.replace(/\(([^)]*)\)[^(]*$/, '').trim();
+                            componentsToBeRemoved.push(angular.copy(d));
+                          }
                           if(d.type !== 'DEFINITION'){
                               d.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                               d.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
@@ -549,6 +570,25 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
+        // Cycle all descriptions and remove any duplicated ones
+            if (componentsToBeRemoved.length > 0) {
+              angular.forEach(componentsToBeRemoved, function (item) {
+                var count = 0;
+                for (var i = conceptCopy.descriptions.length - 1; i >= 0; i--) {
+                  var d = conceptCopy.descriptions[i];
+                  if (!d.template 
+                    && item.term === d.term
+                    && item.lang === d.lang
+                    && d.active
+                    && d.type === 'SYNONYM') {
+                    count++;
+                    if (count > 1) {
+                      conceptCopy.descriptions.splice(i, 1);
+                    }                    
+                  }
+                }                
+              });
+            }
         // cycle over all descriptions -- no style flag means not in template
 
         // otherwise, flag as outside template
@@ -1108,6 +1148,7 @@ angular.module('singleConceptAuthoringApp')
       // Template CRUD functions
       getTemplates: getTemplates,
       getTemplateForName: getTemplateForName,
+      searchByTemplate: searchByTemplate,
       createTemplate: createTemplate,
       updateTemplate: updateTemplate,
 

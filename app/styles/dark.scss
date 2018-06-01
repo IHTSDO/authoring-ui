@@ -347,6 +347,10 @@ h4.timeline-title {
     border-top: 1px #1f2731 solid;
     border-right: 1px #1f2731 solid
 }
+.sca-dark .button-nav .btn.btn-default.classification[disabled],
+.sca-dark .button-nav .btn.btn-default.validation[disabled] {
+    border-right: 1px #1f2731 solid;
+}
 .sca-dark .blue.darken-2 {
     color: #1976D2;
     background-color: transparent;
@@ -1173,11 +1177,27 @@ background-color: #262e39;}
     color: #eee;
 }
 .sca-dark .search-scroll .btn-default.saved-list-buttons{color: #eee}
-.sca-dark .search-filter select option {background-color: #2e3743;}
+.sca-dark .search-filter select option , 
+.sca-dark .taxonomy-panel select option {
+    background-color: #2e3743;
+}
 .sca-dark .search-filter .filter-label label{color: #eee;}
-.sca-dark .search-filter select{
+.sca-dark .search-filter select,
+.sca-dark .taxonomy-panel select {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAUUlEQVR42mNgGAWjYBTQBDx79uw/uXhwWhQbG8tNjiWhoaHMJAcfqZaRZQmpllFkCbGWUcUSQpZR1RJcltHEEhgAGs4JTcJMo6XNKBgFwxgAAL7XMZG1qmwLAAAAAElFTkSuQmCC);
 }
-.sca-dark .search-filter select:focus{
+.sca-dark .search-filter select:focus,
+.sca-dark .taxonomy-panel select:focus {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAATUlEQVR42mNgGAWjYBTQBPynAAxOi2JjY7nJsSQ0NJSZ5OAj1TKyLCHVMoosIdYyqlhCyDKqWoLLMppYAgNAwzmhSZhptLQZBaNgGAMAnbVItrY8buUAAAAASUVORK5CYII=);
+}
+.sca-dark .search-scroll button.fa-power-off.disable,
+.sca-dark .search-scroll button.md-playlist-add.disable {
+    color: #666;
+    background-color: transparent;
+}
+
+.sca-dark .search-scroll button.fa-power-off.disable:hover,
+.sca-dark .search-scroll button.md-playlist-add.disable:hover {
+    background-color: #c13244;
+    color: #fff;
 }

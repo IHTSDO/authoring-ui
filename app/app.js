@@ -152,10 +152,15 @@ angular
         $rootScope.uat = true;
         $rootScope.notProd = true;
       }
+      else if (env.startsWith('training-')) {
+        $rootScope.training = true;
+        $rootScope.notProd = true;
+      }
       else {
         $rootScope.notProd = false;
         $rootScope.uat = false;
         $rootScope.development = false;
+        $rootScope.training = false;
       }
     }, 3000);
 

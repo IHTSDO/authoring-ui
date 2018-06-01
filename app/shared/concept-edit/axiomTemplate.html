@@ -21,13 +21,14 @@
     <div class=" p-t-3 p-r-5 pull-right ">
       <button type="button"
               ng-click="removeAxiom(axiom,axiom.type)"                      
-              class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus"
+              class="btn-default red small-buttons tooltips-bottom small-size-tooltip offset-tooltip-right tooltips-light normal-case editbuttons fa-sca fa-minus axiom-staus-buttons"
               ng-disabled="isStatic || isLockedModule(concept.moduleId)">
         <span>Delete Axiom</span>
       </button>
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'FULLY_DEFINED'"
               ng-disabled="isStatic || isLockedModule(concept.moduleId)"
-              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
+              class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right"
+              ng-class="[{'fully-defined-btn' : axiom.definitionStatus === 'FULLY_DEFINED'}]"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
 
         <div class="badge alert-warning ng-binding">≡&nbsp; </div>
@@ -35,7 +36,8 @@
       </button>
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic || isLockedModule(concept.moduleId)"
-              class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
+              class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right"
+              ng-class="[{'primitive-btn' : axiom.definitionStatus === 'PRIMITIVE'}]"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
         <div class="badge alert-warning ng-binding">&nbsp; </div>
         <span>Primitive</span>
@@ -135,12 +137,14 @@
             </div>
 
             <div ng-if="relationship.target.definitionStatus === 'FULLY_DEFINED'"
-                 class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+                 class="pull-left p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip"
+                 ng-class="[{'fully-defined-btn' : relationship.target.definitionStatus === 'FULLY_DEFINED'}]">
               <div class="badge alert-warning ng-binding pull-left">≡&nbsp; </div>
               <span>Fully Defined</span>
             </div>
             <div ng-if="relationship.target.definitionStatus === 'PRIMITIVE'"
-                 class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+                 class="pull-left p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip"
+                 ng-class="[{'primitive-btn' : relationship.target.definitionStatus === 'PRIMITIVE'}]">
               <div class="badge alert-warning ng-binding pull-left">&nbsp; </div>
               <span>Primitive</span>
             </div>
