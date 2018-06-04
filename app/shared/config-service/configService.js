@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
     function getConfigProperties() {
       var deferred = $q.defer();
       if (!properties) {
-        $http.get('/config/endpointConfig.json').then(function (response) {
+        $http.get('/authoring-services/ui-configuration').then(function (response) {
           properties = response.data;
           $http.get('/validationConfig/validationConfig.json').then(function (validationResponse) {
               validationProperties = validationResponse.data;

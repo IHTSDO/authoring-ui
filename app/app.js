@@ -176,7 +176,8 @@ angular
       // Success block -- config properties retrieved
       function (response) {
         var endpoints = response;
-        console.log(response);
+        $rootScope.endpoints = response;
+        snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
@@ -212,6 +213,45 @@ angular
 
           })
         });
+          
+        // begin polling the sca endpoint at 10s intervals
+          
+        scaService.startPolling(10000);
+
+        ///////////////////////////////////////////
+        // Cache local data
+        ///////////////////////////////////////////
+        scaService.getProjects().then(function (response) {
+          metadataService.setProjects(response);
+        });
+
+        cisService.getAllNamespaces().then(function (response) {
+          if(response.length > 0) {
+            metadataService.setNamespaces(response);
+          }
+        });
+
+        hotkeys.bindTo($rootScope)
+            .add({
+              combo: 'alt+h',
+              description: 'Go to Home - My Tasks',
+              callback: function() {$location.url('home');}
+            })
+            .add({
+              combo: 'alt+b',
+              description: 'Open TS Browser',
+              callback: function() {window.open('/browser', '_blank');}
+            })
+            .add({
+              combo: 'alt+p',
+              description: 'Go to Projects',
+              callback: function() {$location.url('projects');}
+            })
+            .add({
+              combo: 'alt+w',
+              description: 'Go to Review Tasks',
+              callback: function() {$location.url('review-tasks');}
+            })
 
         ///////////////////////////////////////////
         // Cache local data
