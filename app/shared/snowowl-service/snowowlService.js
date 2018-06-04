@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService',
-    function ($http, $q, $timeout, notificationService, metadataService) {
-      var apiEndpoint = '../snowowl/snomed-ct/v2/';
+  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', '$rootScope',
+    function ($http, $q, $timeout, notificationService, metadataService, $rootScope) {
+      let apiEndpoint = null;
 
       /////////////////////////////////////
       // Snowowl Concept Retrieval Methods
@@ -1819,6 +1819,11 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
+        
+      //Config service instatiates endpoint after config load
+      function setEndpoint(url){
+          apiEndpoint = url;
+      }
 
       function searchMerge (source, target, status) {
         return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
@@ -1922,8 +1927,7 @@ angular.module('singleConceptAuthoringApp')
         cleanConcept: cleanConcept,
         cleanDescription: cleanDescription,
         cleanRelationship: cleanRelationship,
-        // setEndpoint: setEndpoint,
-        searchMerge: searchMerge
+        setEndpoint: setEndpoint
       };
     }
 
