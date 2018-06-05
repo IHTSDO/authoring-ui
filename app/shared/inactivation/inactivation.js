@@ -1047,7 +1047,7 @@ angular.module('singleConceptAuthoringApp')
                 n++;
               }
               for (var i = response.length - 1; i >= 0; i--) {
-                if (response[i].active === false) {
+                if (response[i].concept.active === false) {
                   response.splice(i, 1);
                 }
                 else if (response[i].concept.conceptId === scope.inactivationConcept.conceptId) {
