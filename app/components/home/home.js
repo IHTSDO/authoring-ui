@@ -13,7 +13,7 @@ angular.module('singleConceptAuthoringApp.home', [
                 templateUrl: 'components/home/home.html'
             });
     })
-  
+
     .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService) {
 
         // clear task-related i nformation
