@@ -941,6 +941,9 @@ div.search-result:hover {
     height: 30px;
     font-size: 14px;
 }
+.search-result .result-width.in-block {
+    line-height: 15px;
+}
 .feedback-lists .clear-position,
 .feedback-lists .clear-position div,
 .feedback-lists .clear-position button,
