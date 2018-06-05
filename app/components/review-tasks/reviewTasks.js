@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, localStorageService) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       // declare table parameters
       $scope.reviewTableParams = new ngTableParams({
           page: 1,
-          count: 10,
+          count: localStorageService.get('table-display-number') ? localStorageService.get('table-display-number') : 10,
           sorting: {updated: 'desc', name: 'asc'}
         },
         {
@@ -53,6 +53,12 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           total: $scope.reviewTasks ? $scope.reviewTasks.length : 0, // length of
                                                                      // data
           getData: function ($defer, params) {
+
+            // Store display number to local storage, then can be re-used later
+            if (!localStorageService.get('table-display-number') 
+                || params.count() !== localStorageService.get('table-display-number')) {
+                localStorageService.set('table-display-number', params.count());
+            }
 
             if (!$scope.reviewTasks || $scope.reviewTasks.length === 0) {
               $defer.resolve([]);

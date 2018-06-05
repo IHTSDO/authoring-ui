@@ -61,6 +61,7 @@ module.exports = function(config) {
       'bower_components/tinymce/tinymce.js',
       'bower_components/angular-ui-tinymce/src/tinymce.js',
       'bower_components/angular-hotkeys/build/hotkeys.js',
+      'bower_components/angular-local-storage/dist/angular-local-storage.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/components/*.js",
