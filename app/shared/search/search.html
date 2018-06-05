@@ -49,7 +49,7 @@
     
   <div class="row no-padding" ng-if="templateMode">
     <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
-      <input type="text" class="form-control m-5 search-box no-border-bottom-search" ng-model="userOptions.template" placeholder="Enter template name"
+      <input class="form-control m-5 search-box no-border-bottom-search" ng-model="userOptions.template" placeholder="Enter template name"
                         typeahead="suggestion as suggestion.name for suggestion in getTemplateSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
