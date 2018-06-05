@@ -316,15 +316,16 @@ angular.module('singleConceptAuthoringApp')
     if ($scope.conceptId && $scope.branch) {
 
       // limit the number of descendants retrieved to prevent overload
-      snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response) {
+      snowowlService.searchAllConcepts($scope.branch, '', '<<' + $scope.conceptId, 0, 50, null, true, true).then(function (response) {
         $scope.descendants = response;
         $rootScope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
+        console.log(response);
 
         // convert the term into a top-level attribute for ng-table sorting
         angular.forEach($scope.descendants.items, function (descendant) {
-          descendant.sortableName = descendant.fsn.term;
+          descendant.sortableName = descendant.concept.fsn;
         });
       });
     }

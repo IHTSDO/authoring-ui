@@ -137,7 +137,7 @@
         <table ng-table="tableParamsDescendants" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
-            <td data-title="'ID'" sortable="'id'">{{item.id}}</td>
+            <td data-title="'ID'" sortable="'id'">{{item.concept.conceptId}}</td>
             <td data-title="'FSN'" sortable="'sortableName'"> {{item.sortableName}} </td>
           </tr>
         </table>
