@@ -31,6 +31,7 @@ angular
     'ui.tree',
     'ui.tinymce',
     'cfp.hotkeys',
+    'LocalStorageModule',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -58,9 +59,12 @@ angular
   })
 
 
-  .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider) {
+  .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider, localStorageServiceProvider) {
 
     console.log('Configuring application');
+
+    localStorageServiceProvider.setPrefix('singleConceptAuthoringApp')
+                               .setStorageType('localStorage');
 
     // up the digest limit to account for extremely long depth of SNOMEDCT trees leading to spurious errors
     // this is not an ideal solution, but this is a known edge-case until Angular 2.0 (see https://github.com/angular/angular.js/issues/6440)

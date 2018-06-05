@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.home', [
                 templateUrl: 'components/home/home.html'
             });
     })
-
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService) {
+  
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp.home', [
         // flags for displaying promoted tasks
         $scope.showPromotedTasks = false;
         $scope.showPromotedReviews = false;
-    
+
         hotkeys.bindTo($scope)
             .add({
               combo: 'alt+n',
@@ -52,13 +52,19 @@ angular.module('singleConceptAuthoringApp.home', [
         // declare table parameters
         $scope.tableParams = new ngTableParams({
                 page: 1,
-                count: 10,
+                count: localStorageService.get('table-display-number') ? localStorageService.get('table-display-number') : 10,
                 sorting: {updated: 'desc', name: 'asc'}
             },
             {
                 filterDelay: 50,
                 total: $scope.tasks ? $scope.tasks.length : 0, // length of data
                 getData: function ($defer, params) {
+
+                    // Store display number to local storage, then can be re-used later
+                    if (!localStorageService.get('table-display-number')
+                        || params.count() !== localStorageService.get('table-display-number')) {
+                        localStorageService.set('table-display-number', params.count());
+                    }
 
                     if (!$scope.tasks || $scope.tasks.length === 0) {
                         $defer.resolve([]);
@@ -89,14 +95,14 @@ angular.module('singleConceptAuthoringApp.home', [
                         params.total(mydata.length);
                         mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
-                        if(params.sorting().feedbackMessageDate === 'asc'){                           
+                        if(params.sorting().feedbackMessageDate === 'asc'){
                             mydata.sort(function (a, b) {
                                 return sortFeedbackFn(a,b,'asc');
-                            });                        
+                            });
                         } else if(params.sorting().feedbackMessageDate === 'desc') {
                             mydata.sort(function (a, b) {
-                               return sortFeedbackFn(a,b,'desc');                    
-                            });                         
+                               return sortFeedbackFn(a,b,'desc');
+                            });
                         }
 
                         $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -109,17 +115,17 @@ angular.module('singleConceptAuthoringApp.home', [
         function sortFeedbackFn (a, b, direction) {
             if (a.feedbackMessageDate && b.feedbackMessageDate &&
                 a.feedbackMessagesStatus === 'unread' && b.feedbackMessagesStatus === 'unread') {
-                var dateA = new Date(a.feedbackMessageDate); 
+                var dateA = new Date(a.feedbackMessageDate);
                 var dateB = new Date(b.feedbackMessageDate);
                 if (direction === 'asc') {
-                    return dateA - dateB;  
+                    return dateA - dateB;
                 } else {
-                    return dateB - dateA;  
-                }                
+                    return dateB - dateA;
+                }
             } else if (a.feedbackMessageDate && a.feedbackMessagesStatus === 'unread') {
                 return -1;
-            } else if (b.feedbackMessageDate && b.feedbackMessagesStatus === 'unread') {                                
-                return 1;                            
+            } else if (b.feedbackMessageDate && b.feedbackMessagesStatus === 'unread') {
+                return 1;
             } else if (a.feedbackMessagesStatus === 'read') {
                 return -1;
             } else if (b.feedbackMessagesStatus === 'read') {
@@ -169,19 +175,19 @@ angular.module('singleConceptAuthoringApp.home', [
             snowowlService.getBranch(projectBranch).then(function (response) {
                 if (!response.metadata || response.metadata && !response.metadata.lock) {
                     scaService.getUiStateForTask(task.projectKey, task.key, 'edit-panel')
-                        .then(function (uiState) {            
+                        .then(function (uiState) {
                             if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
                               redirectToConflicts(task.branchPath,task.projectKey,task.key);
                             }
                             else {
-                              var promises = [];                    
-                              for (var i = 0; i < uiState.length; i++) {               
+                              var promises = [];
+                              for (var i = 0; i < uiState.length; i++) {
                                 promises.push(scaService.getModifiedConceptForTask(task.projectKey, task.key, uiState[i]));
                               }
                               // on resolution of all promises
                               $q.all(promises).then(function (responses) {
                                 var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-                                if (hasUnsavedConcept) {                                 
+                                if (hasUnsavedConcept) {
                                   modalService.message('There are some unsaved concepts. Please go to task editing and save them before rebasing.');
                                 } else {
                                   redirectToConflicts(task.branchPath,task.projectKey,task.key);
@@ -189,7 +195,7 @@ angular.module('singleConceptAuthoringApp.home', [
                               });
                             }
                           }
-                        );                  
+                        );
                 }
                 else {
                     notificationService.sendWarning('Unable to open conflicts view for ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
