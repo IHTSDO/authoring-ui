@@ -108,11 +108,20 @@
           <div class="col-md-6 no-gutter no-padding darken-3 grey"></div>
         </div>
       </div>
-      <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0"> <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
-        ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}
-        &nbsp;&nbsp;
-        <button class="btn-default m-5 primary-action-btn" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button>
-        </span> </div>
+      <div class="row">
+        <div class="light_greys no-padding" ng-show="subjectConcepts.length > 0" ng-class="[{'col-md-12' : viewedConcepts.length!==1 || !isToReviewConcept(viewedConcepts[0])},{'col-md-10' : viewedConcepts.length===1 && isToReviewConcept(viewedConcepts[0])}]"> <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
+          ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}
+          &nbsp;&nbsp;
+          <button class="btn-default m-5 primary-action-btn" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button>
+          </span> </div>
+        <div class="light_greys pull-right no-padding"               
+              ng-class="[{'col-md-2' : viewedConcepts.length===1 && isToReviewConcept(viewedConcepts[0])}]"
+              ng-style="subjectConcepts.length===0 && {'background':'transparent'}"
+              ng-if="role === 'REVIEWER'"
+              ng-show="viewedConcepts.length===1 && isToReviewConcept(viewedConcepts[0])"> 
+          <button class="btn-default m-5 primary-action-btn pull-right" ng-click="approveAndLoadNext(viewedConcepts[0])">Approve and Load Next</button>
+        </div>
+      </div>
       <div class="col-md-12 feedback-area">
         <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
           <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0"> No Feedback added yet... </div>
