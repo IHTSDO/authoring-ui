@@ -4016,6 +4016,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         }, 250);
 
+// adjust for all textareas covered by Angular Elastic
+// see https://github.com/monospaced/angular-elastic
+        $timeout(function () {
+           $rootScope.$broadcast('elastic:adjust');
+        }, 0);
+        
 // sets the popover direction (left, bottom, right) based on current
 // position of root element
         scope.setPopoverDirection = function ($event) {
