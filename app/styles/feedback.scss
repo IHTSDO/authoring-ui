@@ -138,6 +138,17 @@
     line-height: 17px;
     text-align: center;
 }
+.feedback-lists button.disable {
+    cursor: not-allowed;
+    pointer-events: visibleFill;
+    opacity: 1;
+    color: #76747c;
+    background-color: #424249;
+}
+.feedback-lists button.disable:hover {
+    background-color: #c13244;
+    color: #fff;
+}
 .feedback-lists .tooltips-bottom.large-size-tooltip.offset-tooltip-right:hover .md-edit+span {
     width: 154px;
     margin-left: -141px;

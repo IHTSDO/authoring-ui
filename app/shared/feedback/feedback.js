@@ -503,6 +503,53 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
+          scope.isToReviewConcept = function (concept) {
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
+              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+              if (concept.conceptId === reviewConcept.conceptId) { 
+                return true;
+              }
+            }
+
+            return false;
+          }
+
+          scope.approveAndLoadNext = function (concept) { 
+            var elementPos = 0;
+            for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
+              if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {
+                elementPos = i;
+              }
+            }
+
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
+              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+              if (concept.conceptId === reviewConcept.conceptId) {               
+
+                // moove to reviewed list
+                reviewConcept.viewed = false
+                scope.addToReviewed(reviewConcept,true);
+
+                // remove from viewed concepts list
+                for (var i = 0; i < scope.viewedConcepts.length; i++) {
+                  if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
+                    scope.viewedConcepts.splice(i, 1);
+                    break;
+                  }
+                }                            
+
+                updateReviewedListUiState();
+                break;
+              }
+            }
+
+            // load next concept
+            if (elementPos < scope.conceptsToReviewViewed.length) {
+              var nextConcept = scope.conceptsToReviewViewed[elementPos];
+              scope.selectConcept(nextConcept,['addToEdit']);
+            }
+          };
+
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
 
@@ -1240,12 +1287,15 @@ angular.module('singleConceptAuthoringApp')
           };
 
 
-          scope.selectConcept = function (concept, actions) {
+          scope.selectConcept = function (concept, actions, disabledAction) {
+            if(disabledAction) {
+              return;
+            }
             if(scope.isDeletedConcept(concept)) {
               notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
             } else {
               scope.simultaneousFeedbackAdded = false;
-              if (actions) {
+              if (actions && actions.length > 0) {
                 if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
                 if (actions.indexOf('addToEdit') >= 0) scope.addToEdit(concept);
                 if (actions.indexOf('viewConceptInTaxonomy') >= 0) scope.viewConceptInTaxonomy(concept);

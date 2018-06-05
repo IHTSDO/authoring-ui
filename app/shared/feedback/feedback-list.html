@@ -168,8 +168,8 @@
                   </button>
                   <button
                     class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="selectConcept(concept)"
-                    ng-disabled="concept.viewed" ng-mouseover="setTooltipPosition($event);">
+                    ng-click="selectConcept(concept, [], concept.viewed ? true : false)"
+                    ng-class="[{'disable' : concept.viewed}]" ng-mouseover="setTooltipPosition($event);">
                   <div
                       class="md md-edit "></div> <span>Add to Edit Panel</span> 
                   </button>
@@ -205,8 +205,8 @@
                 </button>
                 <button
                   class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case pull-right"
-                  ng-click="selectConcept(concept)"
-                  ng-disabled="concept.viewed" ng-mouseover="setTooltipPosition($event);">
+                  ng-click="selectConcept(concept, [], concept.viewed ? true : false)"
+                  ng-class="[{'disable' : concept.viewed}]" ng-mouseover="setTooltipPosition($event);">
                 <div
                     class="md md-edit "></div> <span>Add to Edit Panel</span> 
                 </button>
@@ -282,8 +282,8 @@
                 <span>View/submit feedback for concept</span> </button>
                 <button
                   class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2  normal-case" ng-mouseover="setTooltipPosition($event);"
-                  ng-click="selectConcept(concept,['selectConceptForFeedback','addToEdit'])"
-                  ng-disabled="concept.viewed">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback','addToEdit'], concept.viewed ? true : false)"
+                  ng-class="[{'disable' : concept.viewed}]">
                 <div
                     class="md md-edit "></div>
                 <span>Add to Edit Panel</span> </button>
@@ -322,7 +322,7 @@
                 <button
                   class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                   ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
-                  ng-disabled="concept.viewed">
+                  ng-class="[{'disable' : concept.viewed}]">
                 <div
                     class="md md-edit "></div>
                 <span>Add to Edit Panel</span> </button>
@@ -331,7 +331,7 @@
                 <button
                   class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                   ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
-                  ng-disabled="concept.viewed">
+                  ng-class="[{'disable' : concept.viewed}]">
                 <div
                     class="md md-edit "></div>
                 <span>Add to Edit Panel</span> </button>
