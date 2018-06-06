@@ -547,6 +547,7 @@ angular.module('singleConceptAuthoringApp')
             if (elementPos < scope.conceptsToReviewViewed.length) {
               var nextConcept = scope.conceptsToReviewViewed[elementPos];
               scope.selectConcept(nextConcept,['addToEdit']);
+              scope.selectConcept(nextConcept,['viewConceptInTaxonomy']);              
             }
           };
 
