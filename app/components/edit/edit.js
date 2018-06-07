@@ -1579,6 +1579,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
 
+          // initialize all reviewd list
+          $rootScope.reviewedListIds = [];
+          if($scope.task.status === 'In Review' || $scope.task.status === 'Review Completed') {
+            loadReviewedConcepts();
+          }
 
           deferred.resolve(response);
         }, function (error) {
@@ -2093,6 +2098,18 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set only self-grouped attributes
         metadataService.setSelfGroupedAttributes(selfGroupedAttributes);
+      });
+    }
+
+    function loadReviewedConcepts() {
+      scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+        $rootScope.reviewedListIds = response;
+
+        // ensure response is in form of array for indexOf checking
+        // later
+        if (!$rootScope.reviewedListIds || !Array.isArray($rootScope.reviewedListIds)) {
+          $rootScope.reviewedListIds = [];
+        }
       });
     }
 

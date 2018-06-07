@@ -1167,6 +1167,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       validation: scope.validation
                     });
                   } else {
+                    for (var i = 0; i < $rootScope.reviewedListIds.length; i++) {
+                      if (scope.concept.conceptId === $rootScope.reviewedListIds[i]) {
+                        var message = '<p>Modified since approval</p>';
+                        var subjectConceptIds = [];
+                        subjectConceptIds.push(scope.concept.conceptId);
+                        scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, message, subjectConceptIds, false);                       
+                        break;
+                      }
+                    }
                     notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
                     scope.focusHandler(true, false);
                   }
