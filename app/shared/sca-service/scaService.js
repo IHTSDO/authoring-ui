@@ -843,6 +843,7 @@ angular.module('singleConceptAuthoringApp')
         addFeedbackToTaskReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
 
           var feedbackContainer = {
+            event: 'new',
             subjectConceptIds: subjectConceptIds,
             messageHtml: messageHtml,
             feedbackRequested: requestFollowup
