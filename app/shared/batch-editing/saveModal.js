@@ -8,29 +8,32 @@ angular.module('singleConceptAuthoringApp')
      * { checkTitle, checkWarning, blocksPromotion }
      * If not supplied, indicates checks not performed or fatal error in performing checks
      */
-    $scope.saving = 1;
     $scope.saved = 0;
     $scope.warning = 0;
     $scope.errors = 0;
     $scope.complete = false;
-    $scope.total = concepts.length;
-    console.log(concepts);
+    $scope.total = concepts.length;   
 
     $rootScope.$on('batchEditing.conceptSaved', function () {
-            $scope.saving++;
             $scope.saved++;
+            $scope.complete = ($scope.errors + $scope.warning + $scope.saved) === $scope.total;
           });
     $rootScope.$on('batchEditing.conceptSavedWithWarnings', function () {
-            $scope.saving++;
             $scope.warning++;
+            $scope.complete = ($scope.errors + $scope.warning + $scope.saved) === $scope.total;
           });
     $rootScope.$on('batchEditing.conceptSavedWithErrors', function () {
-            $scope.saving++;
             $scope.errors++;
+            $scope.complete = ($scope.errors + $scope.warning + $scope.saved) === $scope.total;
           });
     $rootScope.$on('batchEditing.batchSaveComplete', function () {
-            $scope.complete = true;
+            $scope.complete = ($scope.errors + $scope.warning + $scope.saved) === $scope.total;
           });
+    $rootScope.$on('batchEditing.batchSaveConceptsComplete', function (event, data) {
+            $scope.saved += data.numberSavedConcepts;
+            $scope.complete = ($scope.errors + $scope.warning + $scope.saved) === $scope.total;
+          }); 
+
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
