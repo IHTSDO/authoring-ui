@@ -1580,10 +1580,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
 
           // initialize all reviewd list
-          $rootScope.reviewedListIds = [];
-          if($scope.task.status === 'In Review' || $scope.task.status === 'Review Completed') {
-            loadReviewedConcepts();
-          }
+          $rootScope.reviewedIds = [];          
+          loadReviewedConcepts();         
 
           deferred.resolve(response);
         }, function (error) {
@@ -2103,12 +2101,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function loadReviewedConcepts() {
       scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
-        $rootScope.reviewedListIds = response;
+        $rootScope.reviewedIds = response;
 
         // ensure response is in form of array for indexOf checking
         // later
-        if (!$rootScope.reviewedListIds || !Array.isArray($rootScope.reviewedListIds)) {
-          $rootScope.reviewedListIds = [];
+        if (!$rootScope.reviewedIds || !Array.isArray($rootScope.reviewedIds)) {
+          $rootScope.reviewedIds = [];
         }
       });
     }

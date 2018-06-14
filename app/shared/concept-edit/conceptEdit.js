@@ -1167,8 +1167,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       validation: scope.validation
                     });
                   } else {
-                    for (var i = 0; i < $rootScope.reviewedListIds.length; i++) {
-                      if (scope.concept.conceptId === $rootScope.reviewedListIds[i]) {
+                    for (var i = 0; i < $rootScope.reviewedIds.length; i++) {
+                      if (scope.concept.conceptId === $rootScope.reviewedIds[i]) {
                         var message = '<p>Modified since approval</p>';
                         var subjectConceptIds = [];
                         subjectConceptIds.push(scope.concept.conceptId);
