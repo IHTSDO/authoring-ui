@@ -469,4 +469,12 @@ h4.timeline-title::-webkit-scrollbar-corner{
     top: 67px;
     right: 14px;    
 }
-
+.icon-spin {
+    animation: 1.5s linear 0s normal none infinite spin;
+    -webkit-animation: 1.5s linear 0s normal none infinite spin;
+    display: inline-block;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to {transform: rotate(359deg); }
+}

@@ -999,6 +999,28 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function bulkLogTemplateConceptSave(projectKey, conceptIdList, template) {
+      var deferred = $q.defer();
+      scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
+        var newList = list ? list : [];
+        angular.forEach(conceptIdList, function(id) {
+          var item = {
+            conceptId: id,         
+            templateName: template.name,
+            templateVersion: template.version,
+            saveDate: new Date().getTime()
+          };
+          newList.push(item);
+        });
+        
+        scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list', newList).then(function () {
+          deferred.resolve();
+        }, function (error) {
+          deferred.reject('UI State Error: ' + error.message);
+        });
+      });
+      return deferred.promise;
+    }
 
     function storeTemplateForConcept(projectKey, conceptId, template) {
       var deferred = $q.defer();
@@ -1269,6 +1291,7 @@ angular.module('singleConceptAuthoringApp')
       removeStoredTemplateForConcept: removeStoredTemplateForConcept,
       getStoredTemplateForConcept: getStoredTemplateForConcept,
       logTemplateConceptSave: logTemplateConceptSave,
+      bulkLogTemplateConceptSave: bulkLogTemplateConceptSave,
         
       // batch functions
       downloadTemplateCsv: downloadTemplateCsv,

@@ -7,7 +7,8 @@
 
   <div class="modal-body">
       <div ng-if="!complete">
-          Saving concept {{saving}} of {{total}}
+          <i class="glyphicon glyphicon-refresh icon-spin"></i>&nbsp;
+          Saving {{total}} concepts
       </div>
       <div ng-if="complete">
           {{warning + saved}} Concepts saved, {{warning}} with warnings. 

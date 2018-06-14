@@ -35,11 +35,11 @@ angular.module('singleConceptAuthoringApp')
 
       //Update array of concepts
       //PUT /browser/{path}/concepts/{conceptId}
-      function bulkUpdateConcept(branch, conceptArray) {
+      function bulkUpdateConcept(branch, conceptArray, allowCreate) {
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
+        $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk' + (allowCreate ? '?allowCreate=' + allowCreate : ''), conceptArray).then(function (response) {
           pollForBulkUpdate(response.headers('Location'), 1000).then(function (result) {
-            deferred.resolve(response.data);
+            deferred.resolve(result);
           }, function (error) {
             deferred.reject(error);
           });
