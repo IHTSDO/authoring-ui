@@ -741,47 +741,48 @@ angular.module('singleConceptAuthoringApp')
                 }
                  // bulk save concepts
                 snowowlService.bulkUpdateConcept(scope.branch,cloneConcepts,true).then(function(response){
+                  snowowlService.bulkRetrieveFullConcept(response.conceptIds,scope.branch).then(function(concepts){
+                    // save template for persisted concept
+                    var storeTemplateForConcepts = function(idList) {
+                      var deferred = $q.defer();
+                      var storeTemplateForChunkConcepts = function(list, chunkSize) {
+                        //Split list into what will be processed and what should be held
+                        var processList = list.slice(0,chunkSize);
+                        var holdList = list.slice(chunkSize);
 
-                  // save template for persisted concept
-                  var storeTemplateForConcepts = function(idList) {
-                    var deferred = $q.defer();
-                    var storeTemplateForChunkConcepts = function(list, chunkSize) {
-                      //Split list into what will be processed and what should be held
-                      var processList = list.slice(0,chunkSize);
-                      var holdList = list.slice(chunkSize);
-
-                      var promises = [];
-                      for (var i = 0; i < processList.length; i++) {
-                        promises.push(templateService.storeTemplateForConcept(scope.task.projectKey, processList[i], scope.template));
-                      }
-                      $q.all(promises).then(function() {
-                        if(holdList.length > 0) {
-                          storeTemplateForChunkConcepts(holdList, chunkSize);
-                        } else {
-                           deferred.resolve();
+                        var promises = [];
+                        for (var i = 0; i < processList.length; i++) {
+                          promises.push(templateService.storeTemplateForConcept(scope.task.projectKey, processList[i], scope.template));
                         }
+                        $q.all(promises).then(function() {
+                          if(holdList.length > 0) {
+                            storeTemplateForChunkConcepts(holdList, chunkSize);
+                          } else {
+                             deferred.resolve();
+                          }
+                        });
+                      };
+                      storeTemplateForChunkConcepts(idList,10);
+                      return deferred.promise;
+                    }
+
+                    var promises = [];
+                    promises.push(storeTemplateForConcepts(response.conceptIds));
+                    promises.push(templateService.bulkLogTemplateConceptSave(scope.task.projectKey, concepts, scope.template));
+
+                    $q.all(promises).then(function() {
+
+                      // Remove concept from editing and table
+                      angular.forEach(ids, function(id) {
+                        batchEditingService.removeBatchConcept(id).then(function () {
+                          removeViewedConcept(id);
+                          scope.batchTableParams.reload();
+                        }, function (error) {
+                          notificationService.sendError('Unexpected error removing batch concept: ' + error);
+                        });
                       });
-                    };
-                    storeTemplateForChunkConcepts(idList,10);
-                    return deferred.promise;
-                  }
-
-                  var promises = [];
-                  promises.push(storeTemplateForConcepts(response.conceptIds));
-                  promises.push(templateService.bulkLogTemplateConceptSave(scope.task.projectKey, response.conceptIds, scope.template));
-
-                  $q.all(promises).then(function() {
-
-                    // Remove concept from editing and table
-                    angular.forEach(ids, function(id) {
-                      batchEditingService.removeBatchConcept(id).then(function () {
-                        removeViewedConcept(id);
-                        scope.batchTableParams.reload();
-                      }, function (error) {
-                        notificationService.sendError('Unexpected error removing batch concept: ' + error);
-                      });
+                      $rootScope.$broadcast('batchEditing.batchSaveConceptsComplete', {numberSavedConcepts : scope.validConcepts.length});
                     });
-                    $rootScope.$broadcast('batchEditing.batchSaveConceptsComplete', {numberSavedConcepts : scope.validConcepts.length});
                   });
                 }, function (error) {
                   notificationService.sendError('Unexpected error saving batch concept: ' + error);
