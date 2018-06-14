@@ -999,13 +999,14 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function bulkLogTemplateConceptSave(projectKey, conceptIdList, template) {
+    function bulkLogTemplateConceptSave(projectKey, concepts, template) {
       var deferred = $q.defer();
       scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
         var newList = list ? list : [];
-        angular.forEach(conceptIdList, function(id) {
+        angular.forEach(concepts, function(c) {
           var item = {
-            conceptId: id,         
+            conceptId: c.conceptId, 
+            fsn: c.fsn,        
             templateName: template.name,
             templateVersion: template.version,
             saveDate: new Date().getTime()
