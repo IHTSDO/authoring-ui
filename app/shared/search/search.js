@@ -57,7 +57,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         selectedDialect: '',
         defintionSelection: '',
         statedSelection: 'inferred',
-        template: ''
+        template: '',
+        model: 'logical'
       };
 
       $scope.favorites = {items: []};
@@ -555,7 +556,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
           
         if($scope.userOptions.template){
-            templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection).then(function(results){
+            templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
                     if (!results) {
                         notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -969,6 +970,30 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         });
 
+        modalInstance.result.then(function (response) {
+          // do nothing
+        }, function () {
+          // do nothing
+        });
+      };
+        
+      $scope.openTransformModal = function () {
+        let modalInstance = $modal.open({
+          templateUrl: 'shared/transform/transformModal.html',
+          controller: 'transformModalCtrl',
+          resolve: {
+            results: function () {
+              return $scope.results;
+            },
+            branch: function () {
+              return $scope.branch;
+            },
+            templateFrom: function () {
+              return $scope.userOptions.template;
+            },
+          }
+        });
+          
         modalInstance.result.then(function (response) {
           // do nothing
         }, function () {
