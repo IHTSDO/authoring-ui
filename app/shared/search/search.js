@@ -557,6 +557,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           
         if($scope.userOptions.template){
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
+                $scope.batchIdList = results.data;
                 snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
                     if (!results) {
                         notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -983,7 +984,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           controller: 'transformModalCtrl',
           resolve: {
             results: function () {
-              return $scope.results;
+              return $scope.batchIdList;
             },
             branch: function () {
               return $scope.branch;
@@ -995,7 +996,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         });
           
         modalInstance.result.then(function (response) {
-          // do nothing
+          console.log(response);
+          batchEditingService.addBatchConcepts(response).then(function(){
+              notificationService.sendMessage('Successfully added batch concepts', 3000);
+              $rootScope.$broadcast('batchConcept.change');
+              if(window.location.href.indexOf('batch') > -1){
+                $route.reload();
+              }
+              else{
+                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
+              }
+            });
         }, function () {
           // do nothing
         });

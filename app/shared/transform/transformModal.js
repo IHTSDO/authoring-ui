@@ -1,7 +1,8 @@
 angular.module('singleConceptAuthoringApp.transformModal', [])
 
-  .controller('transformModalCtrl', function ($scope, $modalInstance, results, templateFrom, templateService, metadataService) {
+  .controller('transformModalCtrl', function ($scope, $modalInstance, branch, results, templateFrom, templateService, metadataService) {
 
+    $scope.branch = branch;
     $scope.results = results;
     $scope.templateFrom = templateFrom;
     $scope.templateTo = '';
@@ -27,8 +28,10 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
             return $scope.templates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
           };
     
-    $scope.promote = function() {
-      $modalInstance.close(true);
+    $scope.transform = function() {
+      templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, 'NONCOMFORMANCE_TO_EDITORIAL_POLICY', $scope.results).then(function(response){
+          $modalInstance.close(response);
+      });
     };
 
     $scope.cancel = function () {

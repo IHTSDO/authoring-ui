@@ -56,6 +56,22 @@ angular.module('singleConceptAuthoringApp')
             });
         return deferred.promise;
     }
+    
+    function transform(branch, source, target, reason, concepts){
+        var deferred = $q.defer();
+        concepts = concepts.slice(0, 6);
+        $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform?conceptsToTransform=' + concepts + '&sourceTemplate=' + source.name.replace(/\//g, '%252F') + '&inactivationReason=' + reason).then(function (results) {
+            console.log(results);
+                    angular.forEach(results.data, function(result){
+                        console.log(result);
+                        result.template = target;
+                    });
+                    deferred.resolve(results.data);
+            }, function (error) {
+              deferred.reject('Failed to retrieve template concepts: ' + error.message);
+            });
+        return deferred.promise;
+    }
 
     function getSlotValue(slotName, template, nameValueMap) {
       if(template.additionalSlots && template.additionalSlots.indexOf(slotName) !== -1){
@@ -1195,7 +1211,8 @@ angular.module('singleConceptAuthoringApp')
         
       // batch functions
       downloadTemplateCsv: downloadTemplateCsv,
-      uploadTemplateCsv: uploadTemplateCsv
+      uploadTemplateCsv: uploadTemplateCsv,
+      transform: transform
     };
 
   })
