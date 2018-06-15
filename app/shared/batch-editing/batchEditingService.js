@@ -213,7 +213,9 @@ angular.module('singleConceptAuthoringApp')
           }, function (error) {
             deferred.reject(error);
           });
-        }        
+        }  else {
+           deferred.resolve();
+        }      
         return deferred.promise;
       }
 
