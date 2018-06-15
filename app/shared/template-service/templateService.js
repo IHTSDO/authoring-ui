@@ -24,15 +24,28 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
     var PATTERN_SLOT = /\$([^$]+)\$/g;
     
-    function searchByTemplate(templateName, branch, stated){
+    function searchByTemplate(templateName, branch, stated, model){
         let statedFlag = true;
+        let logical = '';
+        let lexical = '';
         if(stated === 'inferred'){
             statedFlag = false;
         }
+        console.log(model);
+        if(model === 'logical')
+            {
+                logical = 'true';
+                lexical = '';
+            }
+        else
+            {
+                logical = 'true';
+                lexical = 'true';
+            }
         var deferred = $q.defer();
         var array = [];
         let name = templateName.replace(/\//g, '%252F');
-        $http.get(apiEndpoint + branch + '/templates/' + name + '/concepts?lexicalMatch=&logicalMatch=true&stated=' + statedFlag).then(function (idList) {
+        $http.get(apiEndpoint + branch + '/templates/' + name + '/concepts?lexicalMatch=' + lexical + '&logicalMatch=' + logical + '&stated=' + statedFlag).then(function (idList) {
                     deferred.resolve(idList);
             }, function (error) {
               deferred.reject('Failed to retrieve template concepts: ' + error.message);

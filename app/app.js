@@ -48,6 +48,7 @@ angular
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail',
     'singleConceptAuthoringApp.conceptInformationModal',
+    'singleConceptAuthoringApp.transformModal',
     'singleConceptAuthoringApp.uploadBatch'
   ])
   .factory('httpRequestInterceptor', function () {

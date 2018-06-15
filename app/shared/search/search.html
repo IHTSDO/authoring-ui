@@ -133,7 +133,7 @@
   </div>
 
   <div class="row search-filter" ng-if="isEscgMode || templateMode">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="col-md-5 col-sm-4 filter-label">
         <label class="pull-right m-t-10">View</label>
       </div>
@@ -144,9 +144,9 @@
         </select>
       </div>
     </div>
-    <div class="col-md-6 z-index-1">
+    <div class="col-md-4 z-index-1">
       <div class="col-md-5 col-sm-4 filter-label">
-        <label class="pull-right m-t-10">Def. Status</label>
+        <label class="pull-right m-t-10">Def.</label>
       </div>
       <div class="col-md-7 col-sm-8 filter-input" style="">
         <select ng-model="userOptions.defintionSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
@@ -156,6 +156,19 @@
         </select>
       </div>
     </div>
+      <div class="row search-filter" ng-if="templateMode">
+        <div class="col-md-4">
+          <div class="col-md-5 col-sm-4 filter-label">
+            <label class="pull-right m-t-10">Type</label>
+          </div>
+          <div class="col-md-7 col-sm-8 filter-input">
+            <select ng-model="userOptions.model" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">          
+              <option value="logical">logical</option>
+              <option value="lexical">lexical</option>
+            </select>
+          </div>
+        </div>
+      </div>
   </div>
 
   <div class="col-md-12 text-center" ng-if="searchStatus">{{searchStatus}}</div>
@@ -164,9 +177,12 @@
   <div class="row no-padding" ng-if="results.length > 0">
 
 
-    <div class="col-md-12" ng-class="{'m-t-negative' : isExtension && !isEscgMode, 'm-t-10' : !isExtension || isEscgMode}">
+    <div class="col-md-10" ng-class="{'m-t-negative' : isExtension && !isEscgMode, 'm-t-10' : !isExtension || isEscgMode}">
       <h5 class="dark-centured-text total-text"><span>{{searchTotal}}</span> concepts found</h5>
     </div>
+    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive || !templateMode" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip white-icon" ng-click="openTransformModal()">
+      <span class="tooltip-dl">Transform</span>
+    </a>
   </div>
 
   <div full-height additional-padding-bottom="146" ng-show="results.length > 0" class="scroll-if-height">
