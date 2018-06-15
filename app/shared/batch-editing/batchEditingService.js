@@ -159,7 +159,7 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function updateBatchConcept(concept, previousConceptId) {
+      function updateBatchConcept(concept, previousConceptId, skipUpdateBatchUiState) {
         var deferred = $q.defer();
          if (!batchConcepts) {
           deferred.reject('Cannot update batch concept, batch concepts not initialized');
@@ -185,16 +185,20 @@ angular.module('singleConceptAuthoringApp')
 
 
         }
-
-        updateBatchUiState().then(function () {
+        if (skipUpdateBatchUiState) {
           deferred.resolve(concept);
-        }, function (error) {
-          deferred.reject(error);
-        });
+        } else {
+          updateBatchUiState().then(function () {
+            deferred.resolve(concept);
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }
+        
         return deferred.promise;
       }
 
-      function removeBatchConcept(conceptId) {
+      function removeBatchConcept(conceptId, skipUpdateBatchUiState) {
         var deferred = $q.defer();
         if (!batchConcepts) {
           batchConcepts = [];
@@ -203,11 +207,13 @@ angular.module('singleConceptAuthoringApp')
           return c.conceptId
         }).indexOf(conceptId);
         batchConcepts.splice(index, 1);
-        updateBatchUiState().then(function () {
-          deferred.resolve();
-        }, function (error) {
-          deferred.reject(error);
-        });
+        if (!skipUpdateBatchUiState) {
+          updateBatchUiState().then(function () {
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }        
         return deferred.promise;
       }
 
@@ -228,7 +234,8 @@ angular.module('singleConceptAuthoringApp')
         addBatchConcept: addBatchConcept,
         addBatchConcepts: addBatchConcepts,
         updateBatchConcept: updateBatchConcept,
-        removeBatchConcept: removeBatchConcept
+        removeBatchConcept: removeBatchConcept,
+        updateBatchUiState: updateBatchUiState
 
       }
     }
