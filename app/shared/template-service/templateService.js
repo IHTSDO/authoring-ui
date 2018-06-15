@@ -31,11 +31,15 @@ angular.module('singleConceptAuthoringApp')
         if(stated === 'inferred'){
             statedFlag = false;
         }
-        console.log(model);
         if(model === 'logical')
             {
                 logical = 'true';
                 lexical = '';
+            }
+        else if(model === 'logical!lexical')
+            {
+                logical = 'true';
+                lexical = 'false';
             }
         else
             {
