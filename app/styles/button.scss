@@ -1049,3 +1049,38 @@ ul.dashboard-link-list li:hover .hamberger {
     background-color: transparent;
     color: lightslategray;
 }
+
+.reasonModal [type=text].form-control[readonly] {
+  border-bottom: none;
+  box-shadow: inset 0 -1px 0 #ddd;
+}
+
+.reasonModal [type=text].form-control[readonly]:focus {
+  box-shadow: inset 0 -2px 0 #00a6e5;
+}
+
+.reasonModal select.form-control.p-l-10 {
+  padding-left: 10px;
+}
+
+.reasonModal [type=text].form-control.no-padding-left {
+  padding-left: 0px;
+}
+
+.reasonModal label {
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.reasonModal input[type=radio] {
+  -webkit-appearance: radio;
+  margin-right: 5px;
+}
+
+.reasonModal input[type=radio]::before {
+  content: none;
+}
+
+.reasonModal input[type=radio]::after {
+  content: none;
+}
