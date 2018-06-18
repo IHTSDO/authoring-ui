@@ -1158,6 +1158,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     });
                   }
                   else if (scope.validation.hasWarnings) {
+                    for (var i = 0; i < $rootScope.reviewedIds.length; i++) {
+                      if (scope.concept.conceptId === $rootScope.reviewedIds[i]) {
+                        var message = '<p>Modified since approval</p>';
+                        var subjectConceptIds = [];
+                        subjectConceptIds.push(scope.concept.conceptId);
+                        scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, message, subjectConceptIds, false);                       
+                        scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey);                       
+                        break;
+                      }
+                    }
                     notificationService.sendWarning('Concept saved, but contradictions of conventions were detected. Please review Convention Warnings.');
                     $rootScope.$broadcast('conceptEdit.validation', {
                       branch: scope.branch,
