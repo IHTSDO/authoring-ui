@@ -6,6 +6,8 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.results = results;
     $scope.templateFrom = templateFrom;
     $scope.templateTo = '';
+    $scope.reasons = metadataService.getDescriptionInactivationReasons();
+    $scope.inactivationReason = '';
     
     if(!metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
@@ -28,8 +30,12 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
             return $scope.templates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
           };
     
+    $scope.updateAssociations = function (inactivationReason) {
+      $scope.inactivationReason = inactivationReason;
+    };
+    
     $scope.transform = function() {
-      templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, 'NONCOMFORMANCE_TO_EDITORIAL_POLICY', $scope.results).then(function(response){
+      templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results).then(function(response){
           $modalInstance.close(response);
       });
     };

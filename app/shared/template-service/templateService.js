@@ -60,7 +60,13 @@ angular.module('singleConceptAuthoringApp')
     function transform(branch, source, target, reason, concepts){
         var deferred = $q.defer();
         concepts = concepts.slice(0, 6);
-        $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform?conceptsToTransform=' + concepts + '&sourceTemplate=' + source.name.replace(/\//g, '%252F') + '&inactivationReason=' + reason).then(function (results) {
+        let body = {
+                  "conceptsToTransform": concepts,
+                  "inactivationReason": reason,
+                  "sourceTemplate": source.name
+                }
+        
+        $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform', body).then(function (results) {
             console.log(results);
                     angular.forEach(results.data, function(result){
                         console.log(result);

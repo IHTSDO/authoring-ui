@@ -5,6 +5,9 @@
   </div>
   <div class="modal-body">
       <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
+      <div class="col-md-12">
+              <label> Select Transformation Target</label>
+            </div>
       <input class="form-control m-5 search-box no-border-bottom-search" ng-model="templateTo" placeholder="Select Target Template"
                         typeahead="suggestion as suggestion.name for suggestion in getTemplateSuggestions($viewValue)"
                         typeahead-focus-first="false"
@@ -14,16 +17,30 @@
                         typeahead-editable="false"
                         typeahead-min-length="3">
     </div>
+    <div class="row col-md-12 no-padding top-modal add-triangles-bottom reasonModal row">
+        <div class="col-md-12">
+          <label> Select Inactivation Reason </label>
+        </div>
+        <div class="col-md-12">
+          <div ng-repeat="reason in reasons">
+            <label><input type="radio" name="reason" ng-value="reason" ng-model="inactivationReason" ng-init="$index==0?(inactivationReason=reason):''" ng-click="updateAssociations(inactivationReason)">{{reason.text}}</label>
+          </div>
+        </div>
+    </div>
   </div>
   <div class="modal-footer">
-    <div class="row no-padding no-gutter">
-      <div class="col-md-6">
-        <button type="button" class=" col-md-12 btn red no-margin"
-                ng-click="cancel()">Cancel</button>
+    <div class="row no-padding no-gutter"> 
+      <!-- If has a key, option to delete task --> 
+      
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="cancel()">Cancel </button>
       </div>
-      <div class="col-md-6">
-        <button type="button" class="col-md-12 btn green no-margin"
-                ng-click="transform()">Transform</button>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-info no-margin"
+                ng-click="transform()">Transform </button>
       </div>
     </div>
   </div>
