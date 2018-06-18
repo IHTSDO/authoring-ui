@@ -514,7 +514,11 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
 
-          scope.approveAndLoadNext = function (concept) { 
+          scope.$on('approveAndLoadNext', function (event, concept) {
+            approveAndLoadNext(concept);
+          });
+
+          function approveAndLoadNext (concept) { 
             var elementPos = 0;
             for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
               if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {
@@ -544,10 +548,12 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // load next concept
-            if (elementPos < scope.conceptsToReviewViewed.length) {
-              var nextConcept = scope.conceptsToReviewViewed[elementPos];
-              scope.selectConcept(nextConcept);             
-            }
+            if (scope.viewedConcepts.length === 0) {
+              if (elementPos < scope.conceptsToReviewViewed.length) {
+                var nextConcept = scope.conceptsToReviewViewed[elementPos];
+                scope.selectConcept(nextConcept);             
+              }
+            }            
           };
 
           // move item from Reviewed to ToReview
