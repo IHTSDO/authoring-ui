@@ -1580,9 +1580,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
 
           // initialize all reviewd list
-          $rootScope.reviewedIds = [];          
-          loadReviewedConcepts();         
-
+          $rootScope.reviewedIds = [];
+          if($scope.task.status === 'In Review' || $scope.task.status === 'Review Completed') {
+            loadReviewedConcepts();
+          }
           deferred.resolve(response);
         }, function (error) {
           deferred.reject('Task load failed');
