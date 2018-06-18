@@ -133,6 +133,12 @@
             <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
           <button type="button"
+                  class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-thumb-up"
+                   ng-if="isFeedback && role==='REVIEWER'"
+                  ng-click="approveAndLoadNext()">              
+            <span>Approve and load next</span> 
+          </button>
+          <button type="button"
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
                   ng-click="toggleConceptActive(concept)"
                   ng-if="concept.released"

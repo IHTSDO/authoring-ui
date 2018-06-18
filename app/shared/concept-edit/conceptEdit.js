@@ -172,7 +172,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         updateConceptReference: '&',
 
         // whether this directive is used in feedback view
-        feedbackView: '@?'
+        feedbackView: '@?',
+
+        // role for task (not requried)
+        role: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -1434,6 +1437,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           return false;
         }
+
+        /**
+         * Function to mark concept as approval and load next concept in editor
+         */
+        scope.approveAndLoadNext = function() {
+          scope.$emit('approveAndLoadNext', scope.concept);
+        };
 
         /**
          * Function to toggle the definition status of the displayed concept,
