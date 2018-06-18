@@ -152,7 +152,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.approveAllConcepts();
               }
             });
-          
+
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
 
