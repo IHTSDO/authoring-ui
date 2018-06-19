@@ -1,7 +1,39 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-
+  .directive('typeahead', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attr, ctrl) {
+            element.bind('click', function () {
+              if (ctrl.$viewValue) {
+                ctrl.$setViewValue(ctrl.$viewValue);
+              }
+              else {
+                ctrl.$setViewValue(' '); 
+              }
+            });
+            element.bind('focus', function () {
+              if (ctrl.$viewValue) {
+                ctrl.$setViewValue(ctrl.$viewValue);
+              }
+              else {
+                ctrl.$setViewValue(' '); 
+              }
+            });
+            element.bind('keyup', function (event) {
+              if (event.keyCode === 13) return;
+              
+              if (ctrl.$viewValue) {
+                ctrl.$setViewValue(ctrl.$viewValue);
+              }
+              else {
+                ctrl.$setViewValue(' '); 
+              }
+            });
+        }
+    };
+  })
   .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler',
     function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler) {
       return {
@@ -43,7 +75,37 @@ angular.module('singleConceptAuthoringApp')
           scope.projectKey = $routeParams.projectKey;
           scope.taskKey = $routeParams.taskKey;          
           scope.selectedReviewer = null;          
+          scope.reviewers = [];
           
+          function getReviewers(start, end) {            
+            var expand =  'users[' + start + ':' + end + ']';         
+            scaService.getUsers(expand).then(function (response) {
+              if (response.users.items.length > 0) {
+                angular.forEach(response.users.items, function (item) {
+                  if (item.key !== $rootScope.accountDetails.login) {
+                    var user = {};
+                    user.avatarUrl = item.avatarUrls['16x16'];
+                    user.displayName = item.displayName;
+                    user.email = item.emailAddress;
+                    user.username = item.key;
+                    scope.reviewers.push(user);
+                  }   
+                });
+              }
+
+              if (response.users.size > end) {
+                getReviewers(start + 50, end + 50);
+              }              
+            },
+            function (error) {});           
+          }
+
+          getReviewers(0,50);
+
+          scope.authorInputOnFocus = function (event){
+            console.log(event);
+          };
+
           scope.viewTaxonomy = function() {            
             $rootScope.$broadcast('swapToTaxonomy');                
           };
@@ -1361,20 +1423,6 @@ angular.module('singleConceptAuthoringApp')
 
             return deferred.promise;
           };        
-          
-          scope.searchUsers = function(username, projectKeys, issueKey) {
-            var deferred = $q.defer();            
-            scaService.searchUsers(username,projectKeys,issueKey).then(function (response) {
-              var results = response.filter(function (item) {
-                return item.username !== $rootScope.accountDetails.login;
-              });           
-              deferred.resolve(results);
-            },
-            function (error) {
-              deferred.reject(error.message);
-            });
-            return deferred.promise;
-          };
 
           scope.editReviewer = false;
           scope.listenReviewerTypeaheadEvent = function(event){
