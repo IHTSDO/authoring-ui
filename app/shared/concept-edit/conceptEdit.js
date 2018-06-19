@@ -174,8 +174,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // whether this directive is used in feedback view
         feedbackView: '@?',
 
-        // role for task (not requried)
-        role: '=?'
+        // indicate if user has permission to approve concept in review panel
+        allowApproval: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 

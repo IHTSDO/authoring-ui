@@ -128,13 +128,13 @@
           <!-- control buttons -->
           <button type="button"
                   ng-click="toggleConceptActive(concept, true)"
-                  ng-if="!(isFeedback && role==='REVIEWER') && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
             <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
           <button type="button"
                   class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-thumb-up"
-                   ng-if="isFeedback && role==='REVIEWER'"
+                   ng-if="allowApproval"
                   ng-click="approveAndLoadNext()">              
             <span>Approve</span> 
           </button>
