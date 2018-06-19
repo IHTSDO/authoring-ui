@@ -503,14 +503,15 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-          scope.isToReviewConcept = function (concept) {
-            for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
-              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
-              if (concept.conceptId === reviewConcept.conceptId) { 
-                return true;
+          scope.checkApprovalPermission = function (concept) {
+            if (scope.role === 'REVIEWER') {
+              for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
+                var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+                if (concept.conceptId === reviewConcept.conceptId) { 
+                  return true;
+                }
               }
             }
-
             return false;
           }
 
@@ -549,12 +550,30 @@ angular.module('singleConceptAuthoringApp')
 
             // load next concept
             if (scope.viewedConcepts.length === 0) {
-              if (elementPos < scope.conceptsToReviewViewed.length) {
-                var nextConcept = scope.conceptsToReviewViewed[elementPos];
-                scope.selectConcept(nextConcept);             
+              loadNextConcept(elementPos);              
+            } else {
+              var found = false;
+              angular.forEach(scope.viewedConcepts, function (viewConcept) {
+                angular.forEach(scope.conceptsToReviewViewed, function (conceptToReviewViewed) {
+                  if (viewConcept.conceptId === conceptToReviewViewed.conceptId) {
+                    found = true;
+                  }
+                });
+              });
+              if(!found) {
+                loadNextConcept(elementPos);
               }
             }            
           };
+
+          function loadNextConcept(elementPos) {
+            if (elementPos < scope.conceptsToReviewViewed.length) {
+              var nextConcept = scope.conceptsToReviewViewed[elementPos];
+              if (!scope.isDeletedConcept(nextConcept)) {
+                scope.selectConcept(nextConcept);
+              }                             
+            }
+          }
 
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {

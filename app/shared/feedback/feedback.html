@@ -91,7 +91,7 @@
         </div>
         <div ng-class="getLayoutWidths('concepts')">
           <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
-               autosave="role !== 'AUTHOR'" feedback-view="true" role="role"></div>
+               autosave="role !== 'AUTHOR'" feedback-view="true" allow-approval="checkApprovalPermission(concept)"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter">
