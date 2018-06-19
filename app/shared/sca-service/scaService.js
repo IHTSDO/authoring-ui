@@ -1474,6 +1474,22 @@ angular.module('singleConceptAuthoringApp')
           });
         },
 
+        getUsers : function (expand) {          
+          var deferred = $q.defer();
+
+          // get the list
+          $http.get(apiEndpoint + 'users?expand=' + expand).then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            if (error.status === 404) {
+              deferred.resolve({});
+            } else {
+              deferred.reject('Error retrieving users');
+            }
+          });
+          return deferred.promise;          
+        },
+
         removeIssueLink: function (issueKey, linkId) {
           if (!issueKey || !linkId) {
             console.error('Must specify task key or link issue key');

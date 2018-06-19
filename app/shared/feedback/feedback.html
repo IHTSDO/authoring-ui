@@ -44,17 +44,15 @@
         <div class="switch pull-right p-l-10"> </div>
         <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" > &nbsp; 
           <div class="editable-field">
-            <input id="feedback-edit-reviewer" type="text" ng-model="selectedReviewer" 
-                typeahead="suggestion as suggestion.displayName for suggestion in searchUsers($viewValue,projectKey,taskKey)"  
-                typeahead-focus-first="true"
-                typeahead-wait-ms="700"
-                typeahead-editable="false"               
-                class="form-control"
-                ng-keyup="listenReviewerTypeaheadEvent({event: $event})"
-                typeahead-on-select="updateReviewer()"                                       
-                ng-show="editReviewer"               
-                typeahead-loading="typeaheadLoading"> 
-                 <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
+            <input id="feedback-edit-reviewer" class="form-control" type="text" ng-model="selectedReviewer" ng-show="editReviewer"
+                typeahead="suggestion as suggestion.displayName for suggestion in reviewers | filter:{displayName:$viewValue}"  
+                typeahead-focus-first="false"                
+                typeahead-editable="false"
+                typeahead-on-select="updateReviewer()"
+                typeahead-loading="typeaheadLoading"
+                typeahead
+                ng-keyup="listenReviewerTypeaheadEvent({event: $event})"> 
+                <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
             </input>
            
             <span ng-show="!editReviewer" ng-click="switchToEditReviewer();">           
