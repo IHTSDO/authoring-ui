@@ -355,17 +355,28 @@
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
-              <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
-                        ng-model-options="{updateOn: 'blur'}"
-                        ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
-                        maxlength="255"
-                        ng-model="description.term"
-                        class="form-control msd-elastic no-border-bottom desc"
-                        ng-class="[{'template-editable' : description.template}]"
-                        type="text"
-                        placeholder="Description">
-              </textarea>
+            <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
+                      ng-model-options="{updateOn: 'blur'}"
+                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
+                      maxlength="255"
+                      ng-model="description.term"
+                      class="form-control msd-elastic no-border-bottom desc"
+                      ng-class="[{'template-editable' : description.template}]"
+                      type="text"
+                      placeholder="Description">
+            </textarea>
 
+            <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && isFeedback" ng-change="updateDescription(description)"
+                      ng-model-options="{updateOn: 'blur'}"
+                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
+                      maxlength="255"
+                      ng-model="description.term"
+                      class="form-control msd-elastic no-border-bottom desc"
+                      ng-class="[{'template-editable' : description.template}]"
+                      type="text"
+                      placeholder="Description">
+            </textarea>
+            
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
@@ -374,7 +385,8 @@
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control  msd-elastic no-border-bottom desc" type="text"
                       placeholder="Description" custom-autofocus="true">
-                        </textarea>
+            </textarea>
+            
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="2048"
                       ng-change="updateDescription(description)"
@@ -383,7 +395,10 @@
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control msd-elastic no-border-bottom">
-                        </textarea>
+            </textarea>
+
+
+
           </div>
 
           <!-- TypeId -->
@@ -559,18 +574,32 @@
                      drop-channel="completeConcept"
                      ui-on-drop="dropRelationshipType(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
-                                    <textarea id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                                              custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
-                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
-                                              class="resizable-text form-control msd-elastic no-border-bottom rel"
-                                              typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
-                                              typeahead-focus-first="false"
-                                              typeahead-loading="typeTypeaheadLoading"
-                                              typeahead-wait-ms="700"
-                                              typeahead-on-select="setRelationshipTypeConcept(relationship, $item, concept.conceptId, relationship.groupId, $index)"
-                                              typeahead-editable="false"
-                                              typeahead-min-length="0">
+                  <textarea ng-if="!isFeedback"
+                            id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
+                            custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                            ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
+                            class="resizable-text form-control msd-elastic no-border-bottom rel"
+                            typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
+                            typeahead-focus-first="false"
+                            typeahead-loading="typeTypeaheadLoading"
+                            typeahead-wait-ms="700"
+                            typeahead-on-select="setRelationshipTypeConcept(relationship, $item, concept.conceptId, relationship.groupId, $index)"
+                            typeahead-editable="false"
+                            typeahead-min-length="0">
+                  </textarea>
 
+                  <textarea ng-if="isFeedback"
+                            id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
+                            ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                            ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
+                            class="resizable-text form-control msd-elastic no-border-bottom rel"
+                            typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
+                            typeahead-focus-first="false"
+                            typeahead-loading="typeTypeaheadLoading"
+                            typeahead-wait-ms="700"
+                            typeahead-on-select="setRelationshipTypeConcept(relationship, $item, concept.conceptId, relationship.groupId, $index)"
+                            typeahead-editable="false"
+                            typeahead-min-length="0">
                                     </textarea>
                   <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom"
                        ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"

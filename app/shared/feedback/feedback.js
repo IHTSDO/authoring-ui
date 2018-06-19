@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys) {
       return {
         restrict: 'A',
         transclude: false,
@@ -140,16 +140,8 @@ angular.module('singleConceptAuthoringApp')
               combo: 'alt+down',
               description: 'Next Concept',
               callback: function() {
+                console.log('key pressed');
                 scope.selectNextConcept();
-              }
-            });
-
-          hotkeys.bindTo(scope)
-            .add({
-              combo: 'alt+a',
-              description: 'Approve Concept',
-              callback: function() {
-                scope.approveAllConcepts();
               }
             });
 
@@ -548,9 +540,9 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$on('editConcept', function (event, data) {
             notificationService.sendMessage('Loading concept ' + data.fsn);
-            addToEditHelper(data.conceptId).then(function (response) {              
+            addToEditHelper(data.conceptId).then(function (response) {
               notificationService.sendMessage('Concept loaded', 5000);
-            });                           
+            });
           });
 
           function closeAllConcepts () {
@@ -1394,7 +1386,27 @@ angular.module('singleConceptAuthoringApp')
                 scope.viewConceptInTaxonomy(concept);
               }
             }
-          }
+          };
+
+          scope.selectNextConcept = function() {
+            let breakout = false;
+            let viewedList = [];
+
+            angular.forEach(scope.viewedConcepts, function(viewedConcept) {
+              viewedList.push(viewedConcept.conceptId);
+            });
+
+            angular.forEach(scope.conceptsToReviewViewed, function(item) {
+
+              if(!viewedList.includes(item.conceptId) && !breakout) {
+                scope.selectConceptForFeedback(item);
+                scope.addToEdit(item);
+                scope.viewConceptInTaxonomy(item);
+
+                breakout = true;
+              }
+            });
+          };
 
           scope.selectConceptForFeedback = function (concept, deletedConceptChecking) {
             concept.read = true;
