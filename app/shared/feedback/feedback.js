@@ -140,8 +140,16 @@ angular.module('singleConceptAuthoringApp')
               combo: 'alt+down',
               description: 'Next Concept',
               callback: function() {
-                console.log('key pressed');
                 scope.selectNextConcept();
+              }
+            });
+
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+a',
+              description: 'Approve Concept',
+              callback: function() {
+                scope.approveAllConcepts();
               }
             });
 
@@ -963,6 +971,21 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // update the ui state
+            updateReviewedListUiState();
+          };
+
+          scope.approveAllConcepts = function() {
+            var itemList = [];
+
+            angular.forEach(scope.conceptsToReviewViewed, function (item) {
+              item.viewed = false;
+              itemList.push(item);
+            });
+
+            scope.addToReviewed({}, true, itemList);
+
+            scope.viewedConcepts = [];
+
             updateReviewedListUiState();
           };
 
