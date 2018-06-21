@@ -40,6 +40,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         }
       });
 
+      // flags for displaying new edit tasks
+      $scope.showNewEdits = false;
+
       // flags for displaying promoted tasks
       $scope.showPromotedReviews = false;
       // declare table parameters
@@ -86,6 +89,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                 });
               }
 
+              if ($scope.showNewEdits) {
+                mydata = mydata.filter(function (item) {
+                  return item.status === 'In Review' && $scope.hasNewEdits(item);
+                });
+              }
 
               params.total(mydata.length);
               mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
@@ -99,6 +107,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.toggleShowPromotedReviews = function () {
         $scope.showPromotedReviews = !$scope.showPromotedReviews;
+        $scope.reviewTableParams.reload();
+      };
+
+      $scope.toggleShowNewEdits = function () {
+        $scope.showNewEdits = !$scope.showNewEdits;
         $scope.reviewTableParams.reload();
       };
 
@@ -318,6 +331,14 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         })
       };
 
+      $scope.hasNewEdits = function (task) {
+        if (task && task.branchHeadTimestamp && task.feedbackMessageDate) {
+          var branchModifiedDate = new Date(task.branchHeadTimestamp);
+          var feedbackMessageDate = new Date(task.feedbackMessageDate);
+          return branchModifiedDate > feedbackMessageDate;
+        }
+        return false;
+      }
 
 // Initialization:  get tasks and classifications
       function initialize() {

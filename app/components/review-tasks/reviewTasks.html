@@ -25,9 +25,12 @@
             </div>
           </div>
           <div class="col-md-2 promoted-check-box">
-            <button class="btn btn-default form-control dark-fix transparent"
+            <button class="btn btn-default form-control dark-fix transparent m-r-15"
                     ng-class="[{'md-check-box' : showPromotedReviews}, {'md-check-box-outline-blank' : !showPromotedReviews}]"
                     ng-click="toggleShowPromotedReviews()"> <span class="promoted-check-box">Show Promoted</span></button>
+            <button class="btn btn-default form-control dark-fix transparent"
+                    ng-class="[{'md-check-box' : showNewEdits}, {'md-check-box-outline-blank' : !showNewEdits}]"
+                    ng-click="toggleShowNewEdits()"> <span class="promoted-check-box">Show New Edits</span></button>
           </div>
           <div class="col-md-1"> &nbsp;&nbsp;
             <button ng-show="hasSelectedClaimedTasks()"
@@ -52,8 +55,8 @@
                   </label>
                 </div></td>
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'" header-class="'header-tooltips'"
-                  filter="{ 'summary': 'text' }"><a class="tooltips-right"
-                   ng-click="viewReviewTask(task)"> {{task.summary}}<span> Click to open reviewer view</span></a></td>
+                  filter="{ 'summary': 'text' }"><div ng-if="task.status === 'In Review' && hasNewEdits(task)" class="new-edits pull-left">New Edits</div><a class="tooltips-right"
+                   ng-click="viewReviewTask(task)">{{task.summary}}<span> Click to open reviewer view</span></a></td>
               <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }"> {{task.key}} </td>
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'"> {{task.updated | date: "yyyy-MM-dd"}} </td>
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'assignee.displayName'"
