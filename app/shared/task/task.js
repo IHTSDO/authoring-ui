@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete, $location) {
+  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete, $location, accountService) {
 
     // scope variables
     $scope.projects = null;
     $scope.task = task;
     $scope.canDelete = canDelete;
+    $scope.preferences = {};
 
     // if no task passed in, create empty object
     if (!$scope.task) {
@@ -20,6 +21,15 @@ angular.module('singleConceptAuthoringApp')
     function initialize() {
       $scope.disabled = false;
       $scope.projects = metadataService.getProjects();
+
+      accountService.getUserPreferences().then(function (preferences) {
+        $scope.preferences = preferences;
+        
+        if(preferences.hasOwnProperty("lastProjectKey")) {
+          $scope.task.projectKey = $scope.preferences.lastProjectKey;
+        }
+      });
+      
     }
 
     // TODO Consider relaxing jshint to allow functions to be called pre
@@ -56,7 +66,11 @@ angular.module('singleConceptAuthoringApp')
           } else {
             // close modal
             $modalInstance.close(response);
-          }          
+          }
+
+          $scope.preferences.lastProjectKey = $scope.task.projectKey;
+          accountService.saveUserPreferences($scope.preferences);
+          
         }, function (error) {
           $scope.disabled = false;
           $scope.msgSuccess = '';
