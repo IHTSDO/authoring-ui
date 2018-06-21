@@ -136,6 +136,13 @@
 .card-title .promoted-check-box .btn-default:focus
  {border-color:transparent;}
  
+.review-tasks .promoted-check-box .btn {
+	width: auto;
+	padding:  unset;
+}
+.review-tasks .table-responsive .new-edits+a {	
+    bottom: -6px;
+}
  /* review badges */
    .promoted-check-box {
     background: transparent;
