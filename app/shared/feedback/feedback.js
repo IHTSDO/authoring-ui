@@ -519,6 +519,24 @@ angular.module('singleConceptAuthoringApp')
             approveAndLoadNext(concept);
           });
 
+           // Close all concepts listener
+          scope.$on('closeAllOpenningConcepts', function () {
+            scope.viewedConcepts = [];
+            // mark as unviewed in ToReview list
+            angular.forEach(scope.conceptsToReviewViewed, function (item) {              
+              item.viewed = false;             
+            });
+
+            // mark as unviewed in Reviewed list
+            angular.forEach(scope.conceptsReviewedViewed, function (item) {             
+              item.viewed = false;              
+            });
+            
+            angular.forEach(scope.conceptsClassified, function (item) {             
+              item.viewed = false;            
+            });
+          });
+
           function approveAndLoadNext (concept) { 
             var elementPos = 0;
             for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
