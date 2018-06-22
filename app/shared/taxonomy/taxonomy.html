@@ -16,4 +16,7 @@
   <div class=" col-md-12 no-padding">
     <div taxonomy-tree branch="branch" concept="rootConcept" default-view="viewSelection"></div>
   </div>
+  <div class=" col-md-12 no-padding">
+    <div taxonomy-tree branch="branch" concept="rootConcept" ng-if="rootConcept != null && thisView === 'feedback'" default-view="'stated'"></div>
+  </div>
 </div>
