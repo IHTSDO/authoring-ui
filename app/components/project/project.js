@@ -63,7 +63,12 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.branch = response.branchPath;
 
           // last promotion time
-          getLastPromotedTime();
+          snowowlService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
+            if (promotionTime) {
+              let date = new Date(promotionTime);
+              $scope.project.lastPromotion = date.toUTCString();
+            }            
+          });
 
           // set the branch metadata for use by other elements
           metadataService.setBranchMetadata($scope.project);
@@ -92,13 +97,6 @@ angular.module('singleConceptAuthoringApp.project', [
           }         
         });
       };
-
-      function getLastPromotedTime() {
-        snowowlService.getLastPromotionTime($scope.branch).then(function(response) {
-          let date = new Date(response);
-          $scope.project.lastPromotion = date.toUTCString();
-        });
-      }
 
       $scope.$on('reloadProject', function (event, data) {
         $scope.getProject();
