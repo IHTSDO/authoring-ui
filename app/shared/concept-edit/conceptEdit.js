@@ -114,7 +114,7 @@ angular.module('singleConceptAuthoringApp')
   };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -305,6 +305,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         }
+
+        scope.role = null;
+        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+          if (task) {            
+            accountService.getRoleForTask(task).then(function (role) {
+              scope.role = role;
+            });
+            if (scope.role === 'UNDEFINED') {
+              notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
+            }                       
+          }
+        });
 
         var focusListener = function () {
           scope.focusHandler(true, false);
@@ -3717,6 +3729,74 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.computeRelationshipGroups();
           }
         };
+        
+        scope.revertToVersion = function () {
+          notificationService.sendMessage('Reverting concept to version...');
+          var codeSystemShortName = '';
+          getCodeSystemShortName().then(function (response) {
+            codeSystemShortName = response;
+            getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
+              if (response.items.length > 0) {
+                var version = response.items[response.items.length - 1].version;
+                var fullBranch = null;
+                if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
+                  fullBranch = 'MAIN/' + version;
+                } else {
+                  var arr = scope.branch.split("/");
+                  fullBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
+                }
+                snowowlService.getFullConcept(scope.concept.conceptId, fullBranch).then(function (response) {
+                  scope.concept = response;
+                  scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+                  scope.isModified = false;
+                  scope.saveConcept();
+                });
+              } else {               
+                notificationService.sendError('Failed to get versions');
+              }
+            });
+          })
+        };
+
+        function getCodeSystemShortName() {
+          var deferred = $q.defer();
+          
+          if (!metadataService.isExtensionSet()) {
+            deferred.resolve('SNOMEDCT');
+          } else {
+            //var branch = 'MAIN/2018-01-31/SNOMEDCT-DK/TESTDK1/TESTDK1-34';
+            var arr = scope.branch.split("/");
+            var branch = arr.slice(0,arr.length - 2).join("/");
+            snowowlService.getBranch(branch).then(function (response) {
+              deferred.resolve(response.metadata.codeSystemShortName);
+            });
+          }
+          return deferred.promise;
+        }
+
+        function getAllCodeSystemVersionsByShortName (codeSystemShortName) {
+          var deferred = $q.defer();
+          var result = {};
+          result.isNewBranch = false;
+          var allCodeSystemVersion = function (codeSystem) {
+            snowowlService.getAllCodeSystemVersionsByShortName(codeSystem).then(function (response) {
+              if (response.data.items && response.data.items.length > 0) {
+                result.items = response.data.items;
+                deferred.resolve(result);
+              } else {
+                if (codeSystem != 'SNOMEDCT') {
+                  result.isNewBranch = true;
+                  allCodeSystemVersion('SNOMEDCT');
+                } else {
+                  result.items = [];
+                  deferred.resolve(result);
+                }              
+              }
+            });
+          }
+          allCodeSystemVersion(codeSystemShortName);
+          return deferred.promise;
+        }
 
         /**
          * Undo all:  Add original version to end of history and update
