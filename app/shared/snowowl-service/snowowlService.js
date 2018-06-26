@@ -1387,6 +1387,23 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
+ 
+      ////////////////////////////////
+      // Snow Owl Administrative Services
+      ////////////////////////////////
+      function getAllCodeSystemVersionsByShortName (codeSystemShortName) {
+        if(!codeSystemShortName) {
+          console.error('Error retrieving versions: code system is not defined');
+          return null;
+        }
+       
+        return $http.get('snowowl/admin/codesystems/' + codeSystemShortName + '/versions').then(function (response) {
+          return response;
+        }, function (error) {
+          return null;
+        });
+      }
+
 
       //////////////////////////////////////////////////////
       // Branch Functions
@@ -1859,6 +1876,9 @@ angular.module('singleConceptAuthoringApp')
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
         getLastPromotionTime: getLastPromotionTime,
+
+        // Snow Owl Administrative Services
+        getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
 
         // merge-review functionality
         getMergeReview: getMergeReview,
