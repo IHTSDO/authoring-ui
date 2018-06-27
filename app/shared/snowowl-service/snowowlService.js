@@ -79,6 +79,18 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      //Validate array of concepts
+      //POST /browser/{path}/validate/concepts
+      function bulkValidateConcepts(branch, conceptArray) {
+        var deferred = $q.defer();
+        $http.post(apiEndpoint + 'browser/' + branch + '/validate/concepts', conceptArray).then(function (response) {
+          deferred.resolve(response);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       function isSctid(id) {
         if (!id) {
           return false;
@@ -1784,6 +1796,7 @@ angular.module('singleConceptAuthoringApp')
         getConceptFsn: getConceptFsn,
         updateConcept: updateConcept,
         bulkUpdateConcept: bulkUpdateConcept,
+        bulkValidateConcepts: bulkValidateConcepts,
         createConcept: createConcept,
         inactivateConcept: inactivateConcept,
         inactivateDescription: inactivateDescription,
