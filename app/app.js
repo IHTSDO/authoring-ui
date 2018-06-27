@@ -172,7 +172,7 @@ angular
         console.log(response);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
-        if(!endpoints.axiomDisabled){
+        if(!endpoints.axiomDisabled || endpoints.axiomDisabled === 'false'){
             console.log("false")
             $rootScope.axiomSupport = true;
         }
