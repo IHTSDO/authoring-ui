@@ -493,48 +493,20 @@ angular.module('singleConceptAuthoringApp')
 
               lookupMedicinalProductWhiteList(medicinalProductWhitelist).then(function(whitelist) {
                 if (whitelist.length > 0) {               
-                    var userName = $rootScope.accountDetails.login;
-                    var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
-
-                    var addMedicinalProductWhiteList = function (list) {
-                      var df = $q.defer();
-                      var addToWhiteList = function(whiteList) {
-                        if (whiteList.length === 0) {                     
-                          df.resolve();
-                          return;
-                        }
-                        var item = whiteList[0];
-                        validationService.addValidationFailureExclusion(item.assertionUuid,
-                          item.assertionText,
-                          item.conceptId,
-                          item.conceptFsn,
-                          item.detailUnmodified,
-                          userName,
-                          branchRoot).then(function () {
-                            addToWhiteList(whiteList.slice(1));                          
-                        }); 
-                      };
-                      addToWhiteList(angular.copy(list));
-                      return df.promise;                    
-                    };
-
-                    addMedicinalProductWhiteList(whitelist).then(function(){
-                      // remove from error table
-                      angular.forEach(scope.assertionsFailed, function (assertion) {
-                        if (assertion.failureCount !== -1) {                       
-                          angular.forEach(assertion.firstNInstances, function (instance) {
-                            angular.forEach(whitelist, function (item) {
-                              if (assertion.assertionUuid === item.assertionUuid &&
-                                  instance.conceptId === item.conceptId) {
-                                instance.isUserExclusion = true;
-                                instance.hasUserExclusions = true;
-                              }                          
-                            });                                                    
-                          });
-                        }
-                      });                   
-                      deferred.resolve();
-                    });
+                  // Enable whitelist for specific failure
+                  angular.forEach(scope.assertionsFailed, function (assertion) {
+                    if (assertion.failureCount !== -1) {                       
+                      angular.forEach(assertion.firstNInstances, function (instance) {
+                        angular.forEach(whitelist, function (item) {
+                          if (assertion.assertionUuid === item.assertionUuid &&
+                              instance.conceptId === item.conceptId) {
+                            instance.whitelistEnabled = true;                            
+                          }                          
+                        });                                                    
+                      });
+                    }
+                  });                   
+                  deferred.resolve();
                 } else {              
                   deferred.resolve();
                 }
