@@ -151,13 +151,13 @@
           </button>
           <button type="button"
                   ng-click="addAdditionalAxiom()"
-                  ng-if="axiomSupport && !isFeedback"
+                  ng-if="axiomSupport && role === 'AUTHOR'"
                   class="btn-default green small-buttons tooltips-bottom medium-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square-o" style="transform: inherit;">
             <span ng-if="!isStatic">Add Additional Axiom</span>
           </button>
           <button type="button"
                   ng-click="addGCIAxiom()"
-                  ng-if="axiomSupport && !isFeedback"
+                  ng-if="axiomSupport && role === 'AUTHOR'"
                   class="btn-default green small-buttons tooltips-bottom small-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square" style="transform: inherit;">
             <span ng-if="!isStatic">Add GCI Axiom</span>
           </button>
