@@ -551,7 +551,7 @@ angular.module('singleConceptAuthoringApp')
             closeAllConcepts();
           });
 
-          cope.$on('closeAllConceptsFromReview', function () {
+          scope.$on('closeAllConceptsFromReview', function () {
             closeAllConcepts();
           });
 
