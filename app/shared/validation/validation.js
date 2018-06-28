@@ -675,8 +675,7 @@ angular.module('singleConceptAuthoringApp')
                 detailUnmodified : instance.detailUnmodified,
                 selected: false,
                 isBranchModification: instance.isBranchModification,
-                isUserExclusion: instance.isUserExclusion,
-                whitelistEnabled: instance.whitelistEnabled
+                isUserExclusion: instance.isUserExclusion
               };
 
               objArray.push(obj);
