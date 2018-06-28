@@ -98,7 +98,7 @@
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
-            <td ng-if="whitelistEnabled || failure.whitelistEnabled" class="button-column"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
+            <td ng-if="whitelistEnabled" class="button-column"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
               Whitelist </button></td>
             <td ng-if="editable" data-header="'editheader.html'" class="button-column"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
