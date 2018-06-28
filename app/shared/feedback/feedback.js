@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
                 ctrl.$setViewValue(ctrl.$viewValue);
               }
               else {
-                ctrl.$setViewValue(' '); 
+                ctrl.$setViewValue(' ');
               }
             });
             element.bind('focus', function () {
@@ -18,17 +18,17 @@ angular.module('singleConceptAuthoringApp')
                 ctrl.$setViewValue(ctrl.$viewValue);
               }
               else {
-                ctrl.$setViewValue(' '); 
+                ctrl.$setViewValue(' ');
               }
             });
             element.bind('keyup', function (event) {
               if (event.keyCode === 13) return;
-              
+
               if (ctrl.$viewValue) {
                 ctrl.$setViewValue(ctrl.$viewValue);
               }
               else {
-                ctrl.$setViewValue(' '); 
+                ctrl.$setViewValue(' ');
               }
             });
         }
@@ -73,12 +73,12 @@ angular.module('singleConceptAuthoringApp')
           scope.displayStatus = '';
           scope.limitConceptsLoading = 10;
           scope.projectKey = $routeParams.projectKey;
-          scope.taskKey = $routeParams.taskKey;          
-          scope.selectedReviewer = null;          
+          scope.taskKey = $routeParams.taskKey;
+          scope.selectedReviewer = null;
           scope.reviewers = [];
-          
-          function getReviewers(start, end) {            
-            var expand =  'users[' + start + ':' + end + ']';         
+
+          function getReviewers(start, end) {
+            var expand =  'users[' + start + ':' + end + ']';
             scaService.getUsers(expand).then(function (response) {
               if (response.users.items.length > 0) {
                 angular.forEach(response.users.items, function (item) {
@@ -89,15 +89,15 @@ angular.module('singleConceptAuthoringApp')
                     user.email = item.emailAddress;
                     user.username = item.key;
                     scope.reviewers.push(user);
-                  }   
+                  }
                 });
               }
 
               if (response.users.size > end) {
                 getReviewers(start + 50, end + 50);
-              }              
+              }
             },
-            function (error) {});           
+            function (error) {});
           }
 
           getReviewers(0,50);
@@ -106,25 +106,25 @@ angular.module('singleConceptAuthoringApp')
             console.log(event);
           };
 
-          scope.viewTaxonomy = function() {            
-            $rootScope.$broadcast('swapToTaxonomy');                
+          scope.viewTaxonomy = function() {
+            $rootScope.$broadcast('swapToTaxonomy');
           };
 
-          scope.viewSearch = function () {            
+          scope.viewSearch = function () {
             $rootScope.$broadcast('swapToSearch');
           };
 
-          scope.viewSavedList = function () {           
+          scope.viewSavedList = function () {
             $rootScope.$broadcast('swapToSavedList');
           };
 
-          scope.viewBatch = function () {            
+          scope.viewBatch = function () {
             $rootScope.$broadcast('swapToBatch');
           };
 
-          scope.viewTaskDetails = function () {           
+          scope.viewTaskDetails = function () {
             $rootScope.$broadcast('swapToTaskDetails');
-          };                    
+          };
 
           // the editor scope variables
           scope.htmlVariable = '';
@@ -134,6 +134,33 @@ angular.module('singleConceptAuthoringApp')
           scope.booleanObj = {};
           scope.booleanObj.checkedToReview = false;
           scope.booleanObj.checkedReviewed = false;
+
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+down',
+              description: 'Next Concept',
+              callback: function() {
+                scope.selectNextConcept();
+              }
+            });
+
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+a',
+              description: 'Approve Concept',
+              callback: function() {
+                scope.approveAllConcepts();
+              }
+            });
+
+          hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+q',
+              description: 'Close all concepts',
+              callback: function() {
+                closeAllConcepts();
+              }
+            });
 
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
@@ -153,7 +180,7 @@ angular.module('singleConceptAuthoringApp')
               }
               if (scope.task.reviewer) {
                 scope.selectedReviewer = scope.task.reviewer;
-              }              
+              }
             }
           });
 
@@ -507,7 +534,7 @@ angular.module('singleConceptAuthoringApp')
             if (scope.role === 'REVIEWER') {
               for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
                 var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
-                if (concept.conceptId === reviewConcept.conceptId) { 
+                if (concept.conceptId === reviewConcept.conceptId) {
                   return true;
                 }
               }
@@ -519,25 +546,33 @@ angular.module('singleConceptAuthoringApp')
             approveAndLoadNext(concept);
           });
 
-           // Close all concepts listener
+           // Close all concepts listenerS
           scope.$on('closeAllOpenningConcepts', function () {
+            closeAllConcepts();
+          });
+
+          cope.$on('closeAllConceptsFromReview', function () {
+            closeAllConcepts();
+          });
+
+          function closeAllConcepts () {
             scope.viewedConcepts = [];
             // mark as unviewed in ToReview list
-            angular.forEach(scope.conceptsToReviewViewed, function (item) {              
-              item.viewed = false;             
+            angular.forEach(scope.conceptsToReviewViewed, function (item) {
+              item.viewed = false;
             });
 
             // mark as unviewed in Reviewed list
-            angular.forEach(scope.conceptsReviewedViewed, function (item) {             
-              item.viewed = false;              
+            angular.forEach(scope.conceptsReviewedViewed, function (item) {
+              item.viewed = false;
             });
-            
-            angular.forEach(scope.conceptsClassified, function (item) {             
-              item.viewed = false;            
-            });
-          });
 
-          function approveAndLoadNext (concept) { 
+            angular.forEach(scope.conceptsClassified, function (item) {
+              item.viewed = false;
+            });
+          }
+
+          function approveAndLoadNext (concept) {
             var elementPos = 0;
             for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
               if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {
@@ -547,7 +582,7 @@ angular.module('singleConceptAuthoringApp')
 
             for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
               var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
-              if (concept.conceptId === reviewConcept.conceptId) {               
+              if (concept.conceptId === reviewConcept.conceptId) {
 
                 // moove to reviewed list
                 reviewConcept.viewed = false
@@ -559,7 +594,7 @@ angular.module('singleConceptAuthoringApp')
                     scope.viewedConcepts.splice(i, 1);
                     break;
                   }
-                }                            
+                }
 
                 updateReviewedListUiState();
                 break;
@@ -568,7 +603,7 @@ angular.module('singleConceptAuthoringApp')
 
             // load next concept
             if (scope.viewedConcepts.length === 0) {
-              loadNextConcept(elementPos);              
+              loadNextConcept(elementPos);
             } else {
               var found = false;
               angular.forEach(scope.viewedConcepts, function (viewConcept) {
@@ -581,7 +616,7 @@ angular.module('singleConceptAuthoringApp')
               if(!found) {
                 loadNextConcept(elementPos);
               }
-            }            
+            }
           };
 
           function loadNextConcept(elementPos) {
@@ -589,7 +624,7 @@ angular.module('singleConceptAuthoringApp')
               var nextConcept = scope.conceptsToReviewViewed[elementPos];
               if (!scope.isDeletedConcept(nextConcept)) {
                 scope.selectConcept(nextConcept);
-              }                             
+              }
             }
           }
 
@@ -635,7 +670,7 @@ angular.module('singleConceptAuthoringApp')
           scope.isDeletedConcept = function(concept) {
             for (var i = 0; i < concept.componentChanges.length; i++) {
               var change = concept.componentChanges[i];
-              if (change.componentType === 'CONCEPT' 
+              if (change.componentType === 'CONCEPT'
                 && change.changeType === 'DELETE'
                 && !concept.term) {
                 return true;
@@ -780,7 +815,7 @@ angular.module('singleConceptAuthoringApp')
               scope.viewedConcepts.push(response);
 
               // Sort concepts
-              if(sorting) {                
+              if(sorting) {
                 scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
               }
 
@@ -851,17 +886,17 @@ angular.module('singleConceptAuthoringApp')
           scope.addMultipleToEdit = function (actionTab) {
             var conceptsToAdd = [];
             var conceptsAdded = 0;
-            scope.simultaneousFeedbackAdded = false;            
+            scope.simultaneousFeedbackAdded = false;
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
-                  conceptsToAdd.push(item);                  
+                  conceptsToAdd.push(item);
                 }
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
-                  conceptsToAdd.push(item.conceptId);                  
+                  conceptsToAdd.push(item.conceptId);
                 }
               });
             }
@@ -872,8 +907,8 @@ angular.module('singleConceptAuthoringApp')
 
             if(conceptsToAdd.length > scope.limitConceptsLoading) {
               var msg = '';
-              msg = 'Your selection exceeds the number of concepts that can be loaded. Please change your selection to a maximum of ' + scope.limitConceptsLoading + ' concepts';      
-              
+              msg = 'Your selection exceeds the number of concepts that can be loaded. Please change your selection to a maximum of ' + scope.limitConceptsLoading + ' concepts';
+
               notificationService.sendWarning(msg, 10000);
               return;
             }
@@ -1343,14 +1378,14 @@ angular.module('singleConceptAuthoringApp')
                 if (actions.indexOf('addToEdit') >= 0) scope.addToEdit(concept);
                 if (actions.indexOf('viewConceptInTaxonomy') >= 0) scope.viewConceptInTaxonomy(concept);
               } else {
-                scope.selectConceptForFeedback(concept); 
-                scope.addToEdit(concept); 
+                scope.selectConceptForFeedback(concept);
+                scope.addToEdit(concept);
                 scope.viewConceptInTaxonomy(concept);
-              }              
-            }            
+              }
+            }
           }
 
-          scope.selectConceptForFeedback = function (concept, deletedConceptChecking) {            
+          scope.selectConceptForFeedback = function (concept, deletedConceptChecking) {
             concept.read = true;
             //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
             scope.subjectConcepts = [concept];
@@ -1360,7 +1395,7 @@ angular.module('singleConceptAuthoringApp')
           scope.selectConceptsForFeedback = function () {
             scope.subjectConcepts = [];
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
-              if (item.selected) {             
+              if (item.selected) {
                 scope.subjectConcepts.push(item);
               }
             });
@@ -1375,7 +1410,7 @@ angular.module('singleConceptAuthoringApp')
             } else {
               scope.simultaneousFeedbackAdded = true;
               getViewedFeedback();
-            }            
+            }
           };
 
           scope.toggleFeedbackUnreadStatus = function (concept) {
@@ -1511,11 +1546,11 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               });
-              deferred.resolve();              
+              deferred.resolve();
             });
 
             return deferred.promise;
-          };        
+          };
 
           scope.editReviewer = false;
           scope.listenReviewerTypeaheadEvent = function(event){
@@ -1536,12 +1571,12 @@ angular.module('singleConceptAuthoringApp')
               }
               scope.typeaheadLoading = true;
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
-                scope.editReviewer = false; 
+                scope.editReviewer = false;
                 scope.typeaheadLoading = false;
-              });            
+              });
             }
             if (event.keyCode === 27) {
-              scope.editReviewer = false; 
+              scope.editReviewer = false;
             }
           };
 
@@ -1550,12 +1585,12 @@ angular.module('singleConceptAuthoringApp')
             var  updateObj= {'reviewer': scope.selectedReviewer};
             scope.typeaheadLoading = true;
             scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
-              scope.editReviewer = false; 
+              scope.editReviewer = false;
               scope.typeaheadLoading = false;
-            }); 
+            });
           };
 
-          scope.switchToEditReviewer = function () {            
+          scope.switchToEditReviewer = function () {
             scope.editReviewer = true;
             if (scope.task.reviewer) {
               scope.selectedReviewer = scope.task.reviewer;
@@ -1564,7 +1599,7 @@ angular.module('singleConceptAuthoringApp')
             }
             $timeout(function () {
               document.getElementById("feedback-edit-reviewer").focus();
-            }, 0);                        
+            }, 0);
           };
 
           scope.setTooltipPosition = function ($event) {
@@ -1581,7 +1616,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(spanTags, function(tag) {
               angular.element(tag).css('top', top - 152);
               angular.element(tag).css('left', left - 45);
-            });                
+            });
           };
 
           scope.submitFeedback = function (requestFollowup) {
@@ -1712,7 +1747,7 @@ angular.module('singleConceptAuthoringApp')
                     // on resolution of all promises
                     $q.all(promises).then(function () {
                       scope.feedbackContainer.review = review ? review : {};
-                    }, function (error) {             
+                    }, function (error) {
                     });
                   });
                   notificationService.sendMessage('Feedback Submitted', 5000, null);
