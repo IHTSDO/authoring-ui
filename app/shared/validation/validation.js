@@ -466,81 +466,79 @@ angular.module('singleConceptAuthoringApp')
             scope.reloadTables();
           };
 
-          function addMedicinalProductToWhiteList (medicinalProductWhitelist) {
-            var deferred = $q.defer();  
-            validationService.getValidationFailureExclusions().then(function() {
-              var lookupMedicinalProductWhiteList = function (list) {
+          function addMedicinalProductToWhiteList (medicinalProductWhitelist) {            
+            var lookupMedicinalProductWhiteList = function (list) {
               var df = $q.defer();
-              var result = [];
+              var result = {};
               var getAncestors = function(list) {
                   if (list.length === 0) {                     
                     df.resolve(result);
-                    return;
                   }
                   var item = list[0];
                   snowowlService.searchAllConcepts(scope.branch, '', '>' + item.conceptId, 0, 100, null, null, true, false, null, '').then(function (response) {                   
                     angular.forEach(response.items, function (item) {
                       if (item.concept.conceptId === '763158003') {/*Medicinal product (product)*/
-                        result.push(list[0]);                   
+                        result.push(list[0]);
                       }
                     });
                     getAncestors(list.slice(1));                                    
                   });
-                };
-                getAncestors(angular.copy(list));
-                return df.promise;
               };
+              getAncestors(angular.copy(list));
+              return df.promise;
+            };
 
-              lookupMedicinalProductWhiteList(medicinalProductWhitelist).then(function(whitelist) {
-                if (whitelist.length > 0) {               
-                    var userName = $rootScope.accountDetails.login;
-                    var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
+            lookupMedicinalProductWhiteList(medicinalProductWhitelist).then(function(whitelist) {
+              if (whitelist.length > 0) {               
+                  var userName = $rootScope.accountDetails.login;
+                  var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
 
-                    var addMedicinalProductWhiteList = function (list) {
-                      var df = $q.defer();
-                      var addToWhiteList = function(whiteList) {
-                        if (whiteList.length === 0) {                     
-                          df.resolve();
-                          return;
-                        }
-                        var item = whiteList[0];
-                        validationService.addValidationFailureExclusion(item.assertionUuid,
-                          item.assertionText,
-                          item.conceptId,
-                          item.conceptFsn,
-                          item.detailUnmodified,
-                          userName,
-                          branchRoot).then(function () {
-                            addToWhiteList(whiteList.slice(1));                          
-                        }); 
-                      };
-                      addToWhiteList(angular.copy(list));
-                      return df.promise;                    
+                  var addMedicinalProductWhiteList = function (list) {
+                    var df = $q.defer();
+                    var addToWhiteList = function(whiteList) {
+                      if (ids.length === 0) {                     
+                        whiteList.resolve();
+                      }
+                      var item = whiteList[0];
+                      validationService.addValidationFailureExclusion(item.assertionUuid,
+                        item.assertionText,
+                        item.conceptId,
+                        item.conceptFsn,
+                        item.detailUnmodified,
+                        userName,
+                        branchRoot).then(function () {
+                          addToWhiteList(whiteList.slice(1));                          
+                      }); 
                     };
+                    addToWhiteList(angular.copy(list));
+                    return df.promise;                    
+                  };
 
-                    addMedicinalProductWhiteList(whitelist).then(function(){
-                      // remove from error table
-                      angular.forEach(scope.assertionsFailed, function (assertion) {
-                        if (assertion.failureCount !== -1) {                       
-                          angular.forEach(assertion.firstNInstances, function (instance) {
-                            angular.forEach(whitelist, function (item) {
-                              if (assertion.assertionUuid === item.assertionUuid &&
-                                  instance.conceptId === item.conceptId) {
-                                instance.isUserExclusion = true;
-                                instance.hasUserExclusions = true;
-                              }                          
-                            });                                                    
-                          });
-                        }
-                      });                   
-                      deferred.resolve();
+                  addMedicinalProductWhiteList(whitelist).then(function(){
+                    // remove from error table
+                    angular.forEach(scope.assertionsFailed, function (assertion) {
+                      if (assertion.failureCount !== -1) {                       
+                        angular.forEach(assertion.firstNInstances, function (instance) {
+                          angular.forEach(whitelist, function (item) {
+                            if (assertion.assertionUuid === item.assertionUuid &&
+                                instance.conceptId === item.conceptId) {
+                              instance.isUserExclusion = true;
+                              instance.hasUserExclusions = true;
+                            }                          
+                          });                                                    
+                        });
+                      }
                     });
-                } else {              
-                  deferred.resolve();
-                }
-              });
+                    // load the tables
+                    scope.reloadTables();
+                    deferred.resolve();
+                  });
+              } else {
+                // load the tables
+                scope.reloadTables();
+                deferred.resolve();
+              }
             });
-            return deferred.promise;
           }
 
           scope.userModifiedConceptIds = [];
@@ -586,9 +584,9 @@ angular.module('singleConceptAuthoringApp')
                                                         || assertion.assertionText === 'For each active FSN there is a synonym that has the same text.')) {
                         var obj = {};
                         obj.assertionUuid = assertion.assertionUuid;
-                        obj.assertionText = assertion.assertionText;
+                        obj.assertion = assertion.assertionText;
                         obj.conceptId = instance.conceptId;
-                        obj.conceptFsn = instance.detail;
+                        obj.conceptFsn = instance.conceptFsn;
                         obj.detailUnmodified = instance.detailUnmodified;
                         medicinalProductWhitelist.push(obj);
                       }
@@ -597,11 +595,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               if(medicinalProductWhitelist.length > 0) {
-                addMedicinalProductToWhiteList (medicinalProductWhitelist).then(function () {
-                  // load the tables
-                  scope.reloadTables();
-                  deferred.resolve();
-                });
+                addMedicinalProductToWhiteList (medicinalProductWhitelist);
               } else {
                 // load the tables
                 scope.reloadTables();
