@@ -165,9 +165,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       combo: 'alt+q',
       description: 'Close all concepts',
       callback: function() {
-        if ($scope.thisView !== 'conflicts') {
-          $scope.closeAllConcepts();
-        }
+        $scope.closeAllConcepts();      
       }
     })
     .add({
@@ -1174,9 +1172,15 @@ angular.module('singleConceptAuthoringApp.edit', [
 
  //Remove all concepts from editing
     $scope.closeAllConcepts = function() {
-      if ($scope.thisView === 'feedback') {        
+      if ($scope.thisView === 'conflicts') {        
         return;
       }
+
+      if ($scope.thisView === 'feedback') {
+        $rootScope.$broadcast('closeAllConceptsFromReview');
+        return;
+      }
+
       if ($scope.concepts.length === 0) {
         notificationService.sendMessage('No concept is removed from editing', 5000);
         return;
