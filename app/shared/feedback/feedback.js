@@ -152,16 +152,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.approveAllConcepts();
               }
             });
-
-          hotkeys.bindTo(scope)
-            .add({
-              combo: 'alt+q',
-              description: 'Close all concepts',
-              callback: function() {
-                closeAllConcepts();
-              }
-            });
-
+          
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
 
@@ -818,6 +809,19 @@ angular.module('singleConceptAuthoringApp')
               if(sorting) {
                 scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
               }
+
+              // Re-bind shortcut
+              $timeout(function () {
+                hotkeys.bindTo(scope)
+                  .add({
+                    combo: 'alt+q',
+                    description: 'Close all concepts',
+                    callback: function() {
+                      closeAllConcepts();
+                    }
+                  });
+              }, 1000);
+
 
               deferred.resolve(response);
 
