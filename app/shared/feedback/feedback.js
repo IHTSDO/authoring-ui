@@ -537,6 +537,44 @@ angular.module('singleConceptAuthoringApp')
             approveAndLoadNext(concept);
           });
 
+          scope.$on('selectNextConcept', function (event, data) {
+            var index = null;
+            var conceptId = null;
+            angular.forEach(scope.viewedConcepts, function(concept){
+                if(concept.conceptId === data.id){
+                    index = scope.viewedConcepts.indexOf(concept);
+                }
+            });
+            if(index != null){
+                if(scope.viewedConcepts[index + 1]){
+                  conceptId = scope.viewedConcepts[index + 1].conceptId;
+                }
+                else{
+                  conceptId = scope.viewedConcepts[0].conceptId;
+                }
+            }
+            $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});  
+          });
+
+          scope.$on('selectPreviousConcept', function (event, data) {
+            var index = null;
+            var conceptId = null;
+            angular.forEach(scope.viewedConcepts, function(concept){
+                if(concept.conceptId === data.id){
+                  index = scope.viewedConcepts.indexOf(concept);
+                }
+            });
+            if(index != null){
+                if(scope.viewedConcepts[index -1]){
+                  conceptId = scope.viewedConcepts[index - 1].conceptId;
+                }
+                else{
+                  conceptId = scope.viewedConcepts[scope.viewedConcepts.length -1].conceptId;
+                }
+            }
+            $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
+          });
+
            // Close all concepts listenerS
           scope.$on('closeAllOpenningConcepts', function () {
             closeAllConcepts();

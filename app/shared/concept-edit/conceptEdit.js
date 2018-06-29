@@ -181,18 +181,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
-      scope.axiomSupport =  $rootScope.axiomSupport
-
-        hotkeys.bindTo(scope)
-          .add({
-            combo: 'alt+a',
-            description: 'Approve concept: ' + scope.concept.fsn,
-            callback: function() {
-              if (scope.allowApproval) {
-                scope.approveAndLoadNext();
-              }
-            }
-          });
+        scope.axiomSupport =  $rootScope.axiomSupport;
 
         scope.enterListener = function(event){
             event = event.event
@@ -270,6 +259,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               combo: 'alt+a',
               description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
               callback: function() {scope.toggleHideInactive()}
+            });
+          } else {
+             hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+a',
+              description: 'Approve concept: ' + scope.concept.fsn,
+              callback: function() {                
+                scope.approveAndLoadNext();                
+              }
             });
           }
         }
