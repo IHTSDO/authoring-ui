@@ -125,6 +125,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       combo: 'alt+right',
       description: 'Select next concept',
       callback: function() {
+          if ($scope.thisView === 'feedback') {
+            $rootScope.$broadcast('selectNextConcept', {id : $scope.selectedConcept});
+            return;
+          }
           var index = null;
           var conceptId = null;
           angular.forEach($scope.concepts, function(concept){
@@ -145,6 +149,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       combo: 'alt+left',
       description: 'Select previous concept',
       callback: function() {
+          if ($scope.thisView === 'feedback') {
+            $rootScope.$broadcast('selectPreviousConcept', {id : $scope.selectedConcept});
+            return;
+          }
           var index = null;
           var conceptId = null;
           angular.forEach($scope.concepts, function(concept){
