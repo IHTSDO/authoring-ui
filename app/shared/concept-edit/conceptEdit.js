@@ -183,6 +183,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       {
       scope.axiomSupport =  $rootScope.axiomSupport
 
+        hotkeys.bindTo(scope)
+          .add({
+            combo: 'alt+a',
+            description: 'Approve concept: ' + scope.concept.fsn,
+            callback: function() {
+              if (scope.allowApproval) {
+                scope.approveAndLoadNext();
+              }
+            }
+          });
 
         scope.enterListener = function(event){
             event = event.event
@@ -233,13 +243,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               combo: 'alt+x',
               description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
               callback: function() {scope.removeConcept(scope.concept)}
-            })
-          hotkeys.bindTo(scope)
-            .add({
-              combo: 'alt+a',
-              description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
-              callback: function() {scope.toggleHideInactive()}
-            })
+            })          
           hotkeys.bindTo(scope)
           .add({
             combo: 'alt+t',
@@ -258,7 +262,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             combo: 'alt+q',
             description: 'Close all concepts',
             callback: function() {$rootScope.$broadcast('closeAllOpenningConcepts', {});}
-          })
+          });
+
+          if (!scope.allowApproval) {
+            hotkeys.bindTo(scope)
+            .add({
+              combo: 'alt+a',
+              description: 'Toggle display of active/inactive: ' + scope.concept.fsn,
+              callback: function() {scope.toggleHideInactive()}
+            });
+          }
         }
 
         scope.focusHandler = function(enter, external){
