@@ -147,6 +147,14 @@ td select {
     background-color: transparent; 
     box-shadow: none;
 }
+.taxonomy-panel .second-taxonomy {
+    min-height : 250px;
+}
+.taxonomy-panel .second-taxonomy .btn {
+    padding-bottom: 0px; 
+    float: right; 
+    bottom: -8px;
+}
 .table-full .btn-round {
     width: 24px;
     height: 24px;
