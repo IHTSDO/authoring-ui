@@ -30,7 +30,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
       };
 
       $scope.dropConcept = function (concept) {
-        if ($scope.thisView === 'feedback') {
+        if ($scope.thisView === 'feedback' && $scope.rootConcept) {
           checkInferredRelationships($scope.rootConcept.conceptId).then(function(flag) {
             if (flag) {
               $scope.secondRootConcept = {conceptId: concept.id,fsn: concept.name};
@@ -54,7 +54,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
           searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());          
 
           snowowlService.getConceptParents(conceptId, $scope.branch, acceptLanguageValue, searchExtensionFlag, false).then(function (parents) {             
-              deferred.resolve(parents ? true : false);
+              deferred.resolve(parents.length !== 0 ? true : false);
             },
             function () {
               console.error('Could not retrieve parents for node', node);
