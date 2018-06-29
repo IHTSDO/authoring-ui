@@ -136,7 +136,9 @@ angular.module('singleConceptAuthoringApp')
     function getUserPreferences() {
       return scaService.getUiStateForUser('user-preferences').then(function(response) {
         // Always set sca-default view since Application View Setting is no longer used.
-        response.appView = "sca-default";
+        if(response !== null && response !== undefined){
+            response.appView = "sca-default";
+        }
         return response;
       }, function(error) {
         return null;
