@@ -16,13 +16,21 @@
   <div class=" col-md-12 no-padding">
     <div taxonomy-tree branch="branch" concept="rootConcept" default-view="viewSelection"></div>
   </div>
+
+  <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="secondRootConcept">
+    <div class="col-md-11 no-padding" >
+      <h4 class="p-l-5">{{secondRootConcept.preferredSynonym ? secondRootConcept.preferredSynonym : secondRootConcept.fsn}}</h4>
+    </div>
+    <div class="col-md-1 no-padding">
+      <button class="btn btn-default md md-close light-button transparent" title="Close second Taxonomy" ng-click="closeTaxonomy()"></button>
+    </div>
+  </div>
   <div class=" col-md-12 no-padding second-taxonomy"
       ng-if="thisView === 'feedback' || thisView === 'edit-default' || thisView === 'edit-no-model'"
       drag-enter-class="sca-drag-target"
       drag-hover-class="sca-drag-hover"
       drop-channel="completeConcept" 
-      ui-on-drop="dropConcept($data)">
-    <button  ng-if="secondRootConcept != null" class="btn btn-default md md-close light-button transparent" title="Close" ng-click="closeTaxonomy()"></button>
+      ui-on-drop="dropConcept($data)">    
     <div taxonomy-tree branch="branch" concept="secondRootConcept" ng-if="secondRootConcept != null" default-view="viewSelection"></div>
   </div>
 </div>
