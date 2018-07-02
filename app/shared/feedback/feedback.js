@@ -840,7 +840,10 @@ angular.module('singleConceptAuthoringApp')
             // check if concept already exists in list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === conceptId) {
-                notificationService.sendWarning('Concept already shown');
+                notificationService.sendWarning('Concept already shown'); 
+                if (scope.role === 'REVIEWER') {
+                  $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
+                }
                 return;
               }
             }
@@ -897,6 +900,10 @@ angular.module('singleConceptAuthoringApp')
                 item.modifiedSinceReview = false;
               });
               addToEditHelper(item.conceptId).then(function (response) {
+                if (scope.role === 'REVIEWER') {
+                  $rootScope.$broadcast('conceptFocusedFromKey', {id : item.conceptId});
+                }
+                 
                 notificationService.sendMessage('Concept loaded', 5000);
               });
             }
