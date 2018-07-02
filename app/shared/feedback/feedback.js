@@ -901,7 +901,15 @@ angular.module('singleConceptAuthoringApp')
               });
               addToEditHelper(item.conceptId).then(function (response) {
                 if (scope.role === 'REVIEWER') {
-                  $rootScope.$broadcast('conceptFocusedFromKey', {id : item.conceptId});
+                  // set focus on the selected concept
+                  setTimeout(function waitForConceptRender() {
+                    var elm = document.getElementById('height-' + conceptId);
+                    if (document.body.contains(elm)) {
+                      $rootScope.$broadcast('conceptFocusedFromKey', {id : item.conceptId});
+                    } else {
+                      setTimeout(waitForConceptRender, 500);
+                    }
+                  }, 500);                  
                 }
                  
                 notificationService.sendMessage('Concept loaded', 5000);
