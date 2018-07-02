@@ -1,4 +1,4 @@
-<div id="transformModal" class="clearfix">
+<div id="transformModal" class="clearfix" ng-show="!loading">
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Template Transformation</h4>
@@ -19,7 +19,7 @@
     </div>
     <div class="row col-md-12 no-padding top-modal add-triangles-bottom reasonModal row">
         <div class="col-md-12">
-          <label> Select Inactivation Reason </label>
+          <label> Select Description Inactivation Reason </label>
         </div>
         <div class="col-md-12">
           <div ng-repeat="reason in reasons">
@@ -44,4 +44,28 @@
       </div>
     </div>
   </div>
+</div>
+<div id="transformModal" class="clearfix loading-merges blue darken-1" style="height:auto" ng-show="loading">
+    <div class="clock">
+        <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+          <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
+            <animatetransform attributeName="transform"
+       dur="2s"
+       type="rotate"
+       from="0 50 50"
+       to="360 50 50"
+       repeatCount="indefinite" />
+          </line>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
+            <animatetransform attributeName="transform"
+       dur="15s"
+       type="rotate"
+       from="0 50 50"
+       to="360 50 50"
+       repeatCount="indefinite" />
+          </line>
+        </svg>
+    </div>
 </div>

@@ -8,6 +8,7 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.templateTo = '';
     $scope.reasons = metadataService.getDescriptionInactivationReasons();
     $scope.inactivationReason = '';
+    $scope.loading = false;
     
     if(!metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
@@ -35,7 +36,9 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     };
     
     $scope.transform = function() {
+      $scope.loading = true;
       templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results).then(function(response){
+          $scope.loading = false;
           $modalInstance.close(response);
       });
     };

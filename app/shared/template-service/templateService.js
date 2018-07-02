@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil) {
+  .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil, $interval) {
 
     var apiEndpoint = '../template-service/';
 
@@ -59,20 +59,35 @@ angular.module('singleConceptAuthoringApp')
     
     function transform(branch, source, target, reason, concepts){
         var deferred = $q.defer();
-        concepts = concepts.slice(0, 6);
         let body = {
                   "conceptsToTransform": concepts,
                   "inactivationReason": reason,
                   "sourceTemplate": source.name
                 }
         
-        $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform', body).then(function (results) {
-            console.log(results);
-                    angular.forEach(results.data, function(result){
-                        console.log(result);
-                        result.template = target;
-                    });
-                    deferred.resolve(results.data);
+        $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform', body).then(function (response) {
+                    let id = response.headers('location');
+                    id = id.substring(id.lastIndexOf("/") + 1);
+                    let transformStatus = $interval(function () {
+                            $http.get(apiEndpoint + 'templates/transform/' + id).then(function (response) {
+                              if (response.data.status === 'COMPLETED') {
+                                  $http.get(apiEndpoint + 'templates/transform/' + id + '/results/').then(function (results) {
+                                      angular.forEach(results.data.concepts, function(result){
+                                          result.template = target;
+                                      });
+                                      deferred.resolve(results.data.concepts);
+                                      $interval.cancel(transformStatus);
+                                });
+                              }
+                              else if (response.data.status === 'COMPLETED_WITH_ERRORS') {
+                                  $interval.cancel(transformStatus);
+                              }
+                              else if (response.data.status === 'FAILED') {
+                                  $interval.cancel(transformStatus);
+                              }
+                            });
+                        }, 5000);
+                    
             }, function (error) {
               deferred.reject('Failed to retrieve template concepts: ' + error.message);
             });

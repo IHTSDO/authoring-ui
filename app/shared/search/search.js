@@ -558,6 +558,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if($scope.userOptions.template){
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
+                if(results.data)
                 snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
                     if (!results) {
                         notificationService.sendError('Unexpected error searching for concepts', 10000);
