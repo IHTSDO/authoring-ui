@@ -903,7 +903,7 @@ angular.module('singleConceptAuthoringApp')
                 if (scope.role === 'REVIEWER') {
                   // set focus on the selected concept
                   setTimeout(function waitForConceptRender() {
-                    var elm = document.getElementById('height-' + item.conceptId);
+                    var elm = document.getElementById('conceptId-' + item.conceptId);
                     if (document.body.contains(elm)) {
                       $rootScope.$broadcast('conceptFocusedFromKey', {id : item.conceptId});
                     } else {
