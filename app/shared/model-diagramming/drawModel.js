@@ -237,12 +237,12 @@ angular.module('singleConceptAuthoringApp')
           var height = 350;
           var width  = 700;
           $.each(svgIsaModel, function (i, field) {
-              height = height + 40;
+              height = height + 50;
               width = width + 80;
           });
             
            $.each(svgAttrModel, function (i, field) {
-              height = height + 55;
+              height = height + 65;
               width = width + 110;
           });
         
