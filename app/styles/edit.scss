@@ -132,6 +132,44 @@ button.widget-toolbar {
 .modelScrollBox {
     background-color: #fff;
 }
+.modelScrollBox::-webkit-scrollbar
+{
+    width: 7px;
+    height: 7px;
+    background-color: transparent;
+}
+.modelScrollBox::-webkit-scrollbar-track
+{
+    background-color: #F5F5F5;
+}
+.modelScrollBox::-webkit-scrollbar-thumb:vertical {
+    background-color: #009cd7;  
+    border: none;    
+}
+.modelViewContainer button.md.md-remove {
+    height: 23px;
+}
+.modelViewContainer button.md.md-add {
+    height: 24px;
+}
+.modelViewContainer button.md.md-remove,
+.modelViewContainer button.md.md-add,
+.modelViewContainer button.md.md-remove:hover,
+.modelViewContainer button.md.md-add:hover,
+.modelViewContainer button.md.md-remove:active,
+.modelViewContainer button.md.md-add:active {
+    background: transparent;
+    color: #4CAF50;
+}
+.modelViewContainer .modelScrollBox {
+    overflow: auto;
+}
+.modelViewContainer .zoom {
+    position: absolute; 
+    z-index: 1; 
+    color: black; 
+    right: 3px;
+}
 .modelViewContainer {
     background: #ffffff;
 }

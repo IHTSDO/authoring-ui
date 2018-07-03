@@ -32,6 +32,11 @@
     <div ng-if="!loading">
       <div class="no-padding no-gutter"
              ng-class="[{'col-md-12' : !conceptAfter && !classificationSaved}, {'col-md-6' : conceptAfter || classificationSaved}]">
+        <div class="zoom"><span>zoom |</span>
+          <button type="button" class="btn-default small-buttons normal-case editbuttons md md-remove" ng-click="zoom('out')"></button>         
+          {{zoomPercentage}}%
+          <button type="button" class="btn-default small-buttons normal-case editbuttons md md-add" ng-click="zoom('in')"></button>          
+        </div>    
         <div draw-model class="modelScrollBox" concept="concept" view="view" concept-snf="conceptSNF"></div>
       </div>
       
