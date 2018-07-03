@@ -13,10 +13,10 @@
           class="btn btn-round btn-default lighten-2 blue no-padding keep  tooltips-bottom medium-size-tooltip  md md-open-in-new keep"> <span class="keep">Open Model in new Tab</span> </button>
         <button class="btn btn-default pull-right m-r-5 model-buttons-toggle " ng-init="view = 'stated'"
                 ng-class="[{'grey darken-2' : view !== 'inferred'}, {'blue' : view === 'inferred'}]"
-                ng-click="view = 'inferred'">Inferred </button>
+                ng-click="view = 'inferred'; resetImageSize()">Inferred </button>
         <button class="btn btn-default pull-right model-buttons-toggle m-r-5"
                 ng-class="[{'grey darken-2' : view !== 'stated'}, {'blue' : view === 'stated'}]"
-                ng-click="view = 'stated'">Stated </button>
+                ng-click="view = 'stated'; resetImageSize()">Stated </button>
         <button ng-if="displaySnf" class="btn btn-default pull-right model-buttons-toggle m-r-5  tooltips-bottom small-size-tooltip"
                 ng-class="[{'grey darken-2' : view !== 'snf'}, {'blue' : view === 'snf'}]"
                 ng-click="getSNF(concept.conceptId);">AF<span>Authoring Form</span> </button>

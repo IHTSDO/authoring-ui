@@ -61,6 +61,8 @@ angular.module('singleConceptAuthoringApp')
                 scope.view = 'snf';
                 scope.loading = false;
             }
+
+            scope.resetImageSize();
         }
 
         // on open image requests, broadcast concept id to drawModel.js
@@ -106,6 +108,19 @@ angular.module('singleConceptAuthoringApp')
           }
         };
         
+        scope.resetImageSize = function () {
+          var scaModel = $('#image-' + scope.concept.conceptId);
+          var parentTag = $(scaModel).parent().get(0);
+          
+          if( $(parentTag).css('max-height') !== 'none' ) {
+            $(parentTag).css('max-height', '');
+          }
+          if( $(parentTag).css('max-width') !== 'none' ) {
+            $(parentTag).css('max-width', '');
+          }
+
+          scope.zoomPercentage = 100;
+        }
       }
     }
   }]);
