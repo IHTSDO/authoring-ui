@@ -63,6 +63,9 @@
             </span>
           </div>          
         </div>
+        <div ng-show="role === 'AUTHOR' && task.status !== 'In Review' && task.reviewer" > &nbsp; 
+          <span>{{task.reviewer.displayName}}</span>          
+        </div>
         <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
           review </div>
       </div>
