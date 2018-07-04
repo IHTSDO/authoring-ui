@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .directive('typeahead', function () {
+  .directive('typeaheadFocusCustom', function () {
     return {
         require: 'ngModel',
         link: function (scope, element, attr, ctrl) {

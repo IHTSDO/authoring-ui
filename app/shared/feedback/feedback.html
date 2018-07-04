@@ -50,7 +50,7 @@
                 typeahead-editable="false"
                 typeahead-on-select="updateReviewer()"
                 typeahead-loading="typeaheadLoading"
-                typeahead
+                typeahead-focus-custom
                 ng-keyup="listenReviewerTypeaheadEvent({event: $event})"> 
                 <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
             </input>
