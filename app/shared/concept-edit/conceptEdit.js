@@ -175,7 +175,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         feedbackView: '@?',
 
         // indicate if user has permission to approve concept in review panel
-        allowApproval: '=?'
+        allowApproval: '=?',
+
+        // whether to initially display taxonomy comparison
+        taxonomiesComparisonVisible: '@?',
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -788,6 +791,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.toggleInferredRelationships = function () {
            scope.showInferredRels = ! scope.showInferredRels;
            scope.computeRelationshipGroups();
+        };
+
+        scope.toggleShowTaxonomiesComparison = function () {
+           scope.showTaxonomyComparison = ! scope.showTaxonomyComparison;
+           scope.$emit('showTaxonomyComparison', {conceptId : scope.concept.conceptId, flag : scope.showTaxonomyComparison});
         };
 
 ////////////////////////////////

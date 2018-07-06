@@ -1,0 +1,46 @@
+<div class="col-md-12 no-padding taxonomies-comparison-panel">
+  <div class="col-md-12 no-padding  model-header-sca darken-3 grey keep">
+    <div class="col-md-8 no-padding ">
+      <div class="fsn-title-button"> <span class="fsn p-t-3 p-l-5">{{concept.fsn}}</span></div>
+    </div>
+    <div class="col-md-4 no-padding ">
+      <div class="p-4" ng-init="view = 'inferred'">
+        <button class="btn btn-default pull-right m-r-5 model-buttons-toggle "
+                ng-class="[{'grey darken-2' : view !== 'inferred'}, {'blue' : view === 'inferred'}]"
+                ng-click="view = 'inferred'; resetImageSize()">Inferred </button>
+        <button class="btn btn-default pull-right model-buttons-toggle m-r-5"
+                ng-class="[{'grey darken-2' : view !== 'stated'}, {'blue' : view === 'stated'}]"
+                ng-click="view = 'stated'; resetImageSize()">Stated </button>        
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="m-l-10 m-t-15 taxonomy-list" ng-if="parentConcept">
+        <div class="col-md-11 no-padding" >
+          <h4 class="p-l-5">Project - {{parentConcept.preferredSynonym ? parentConcept.preferredSynonym : parentConcept.fsn}}</h4>
+        </div>
+        <div class="col-md-1 no-padding">
+          <button class="btn btn-default md md-close light-button transparent" title="Return to SNOMEDCT hieararchy view" ng-click="closeTaxonomy(true)"></button>
+        </div>
+      </div>
+      <div class=" col-md-12 no-padding">
+        <div taxonomy-tree branch="parentBranch" concept="parentConcept" default-view="view"></div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="taskConcept">
+        <div class="col-md-11 no-padding" >
+          <h4 class="p-l-5">Task - {{taskConcept.preferredSynonym ? taskConcept.preferredSynonym : taskConcept.fsn}}</h4>
+        </div>
+        <div class="col-md-1 no-padding">
+          <button class="btn btn-default md md-close light-button transparent" title="Return to SNOMEDCT hieararchy view" ng-click="closeTaxonomy()"></button>
+        </div>
+      </div>
+      <div class=" col-md-12 no-padding">
+        <div taxonomy-tree branch="branch" concept="taskConcept" default-view="view"></div>
+      </div>
+    </div>
+  </div>
+</div>

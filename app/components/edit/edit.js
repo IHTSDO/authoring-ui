@@ -517,6 +517,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.lastView = $scope.thisView;
       $scope.thisView = name;
 
+      // Clear data
+      taxonomyComparisonList = [];
+
       // set layout based on view
       setLayout();
 
@@ -1400,6 +1403,36 @@ angular.module('singleConceptAuthoringApp.edit', [
       return deferred.promise;
     };
 
+    $scope.getParentBranch = function (branch) {
+      if (!branch) {
+        return '';
+      }
+
+      return branch.substring(0,branch.lastIndexOf('/'));
+    };
+
+    var taxonomyComparisonList = [];
+    $scope.showTaxonomiesComparison = function (concept) {
+      for (var i =0; i < taxonomyComparisonList.length; i++) {
+        if (concept.conceptId === taxonomyComparisonList[i]) {
+          return true;
+        }
+      } 
+      return false;
+    };
+
+    $scope.$on('showTaxonomyComparison', function (event, data) {
+      if (data.flag) {
+        taxonomyComparisonList.push(data.conceptId);
+      } else {
+        for (var i =0; i < taxonomyComparisonList.length; i++) {
+          if (data.conceptId === taxonomyComparisonList[i]) {
+            taxonomyComparisonList.splice(i,1);
+            return;
+          }
+        } 
+      }      
+    });
 //////////////////////////////////////////
 // Conflict Report & Controls
 //////////////////////////////////////////

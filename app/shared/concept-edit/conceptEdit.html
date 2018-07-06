@@ -173,6 +173,12 @@
                   <span ng-if="showInferredRels"> Switch to stated view </span>
           </button>
           <button type="button"
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip offset-tooltip-right  normal-case md md-my-library-books"
+                  ng-class="[{'red' : showTaxonomyComparison}, {'green' : !showTaxonomyComparison}]"
+                  ng-if="taxonomiesComparisonVisible"
+                  ng-click="toggleShowTaxonomiesComparison()"><span> Show/hide taxonomies comparison </span>
+          </button>
+          <button type="button"
                   class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
                   ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
             <span>Undo Changes</span>
