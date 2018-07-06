@@ -2,7 +2,7 @@
 <div id="inactivateComponentModal" class="clearfix">
   <div ng-if="!deletion" class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4 class="modal-title">Select Reason For Inactivating {{componentType}}</h4>
+    <h4 class="modal-title">Select Reason For Inactivating {{componentType === 'Concept' ? (concept.fsn + ' | ' + concept.conceptId) : componentType}}</h4>
   </div>
   <div ng-if="deletion" class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
