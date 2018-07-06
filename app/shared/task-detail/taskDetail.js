@@ -427,6 +427,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Classified with results':                
+                if ($scope.task.latestClassificationJson.status === 'SAVED') {
+                  break;
+                }               
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
                 $rootScope.automatedPromotionInQueued = false;                
