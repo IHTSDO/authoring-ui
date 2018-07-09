@@ -103,7 +103,10 @@
     background-color: transparent;
     border: none;
 }
-
+.taxonomy-panel .second-taxonomy.sca-drag-hover {
+    border: 1px dashed #9f9f9f;
+    background: #dedede;
+}
 .sca-drag-target {
     border: 1px dashed #9f9f9f;
     background: #dedede;
