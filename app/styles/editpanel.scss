@@ -1164,6 +1164,9 @@ button-link .bluehl .grey.darken-3 {
 .editing-form button.concept-edit-button.green:active {
      color: #474747;
 }
+.editing-form .relationship-target .small-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -185px;
+}
 .color_ .custom-button:focus {
     background-color: #b7dbff;
 }
