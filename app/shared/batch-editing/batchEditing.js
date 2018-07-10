@@ -491,12 +491,12 @@ angular.module('singleConceptAuthoringApp')
           }
 
 
-          scope.saveAll = function () {           
+          scope.saveAll = function () {
             scope.batchTableParams.reload();
             $timeout(function () {
                 angular.forEach(scope.batchTableParams.data, function (c) {
                   c.errorMsg = null;
-                  c.tableAction = 'Waiting...'
+                  c.tableAction = 'Waiting...';
                 });
                 var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
                 var modalInstance = $modal.open({
@@ -507,7 +507,7 @@ angular.module('singleConceptAuthoringApp')
                       return concepts;
                     }
                   }
-                });                
+                });
                 saveAllHelper(concepts);
               }, 1000);
 
@@ -662,6 +662,204 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
 
           };
+          
+          // 1. Find any duplicated concetps from local and add them to warning list
+          // 2. Validate all concepts against term server -> find warning/error/valid concepts
+          // 3. Save valid and warning concepts to term server
+          // 4. Save batch UI
+          function bulkSaveConcepts (concepts) {
+            console.log("start time : " + (new Date()));
+            scope.warningConcepts = [];
+            scope.errorConcepts = [];
+            scope.validConcepts = [];
+            scope.template = null;
+            var originalConcepts = angular.copy(concepts);
+              console.log(concepts);
+            // looking for error/warning/valid concepts from local
+            angular.forEach(concepts, function(concept, i) {
+              if (componentAuthoringUtil.checkConceptComplete(concept).length > 0) {
+                concept.errorMsg = 'Incomplete';
+                scope.errorConcepts.push(concept);
+                scope.batchTableParams.reload();
+                $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+              } else if (isDuplicatedConcept(concept, i, originalConcepts)) {
+                scope.warningConcepts.push(concept);
+              } else {
+                scope.validConcepts.push(concept);
+              }
+            });
+              console.log(scope.validConcepts);
+
+            // validate against Term-server for valid concepts
+            var copiedValidConcepts = [];
+            for (var i = 0; i < scope.validConcepts.length; i++) {
+              scope.validConcepts[i].tableAction = 'Validating...';
+              scope.validConcepts[i].validation = null;
+              var copiedConcept = angular.copy(scope.validConcepts[i]);
+              snowowlService.cleanConcept(copiedConcept, true);
+              copiedValidConcepts.push(copiedConcept);
+            }
+            scope.template = scope.validConcepts[0].template;
+
+            bulkValidateConcepts(copiedValidConcepts).then(function(){
+              if (scope.validConcepts.length > 0) {
+                var clonedConcepts = [];
+                for (var i = 0; i < scope.validConcepts.length; i++) {
+                  scope.validConcepts[i].tableAction = 'Saving...';
+                  var copiedConcept = angular.copy(scope.validConcepts[i]);
+                  snowowlService.cleanConcept(copiedConcept, false);
+                  clonedConcepts.push(copiedConcept);
+                }
+                console.log(clonedConcepts);
+                 // bulk save concepts
+                snowowlService.bulkUpdateConcept(scope.branch,clonedConcepts,true).then(function(response){
+                  snowowlService.bulkRetrieveFullConcept(response.conceptIds,scope.branch).then(function(concepts){
+                    console.log("bulk save finish time : " + (new Date()));
+                    // Save all warning concepts one-by-one
+                    if ( scope.warningConcepts.length > 0) {
+                      saveAllHelper(scope.warningConcepts);
+                    }
+
+                    bulkStoreAndLogTempleteConcept(concepts).then(function() {
+                        // Remove concept from editing and table
+                        angular.forEach(scope.validConcepts, function(concept) {
+                          batchEditingService.removeBatchConcept(concept.conceptId, true).then(function () {
+                            removeViewedConcept(concept.conceptId);
+                            scope.batchTableParams.reload();
+                          }, function (error) {
+                            notificationService.sendError('Unexpected error removing batch concept: ' + error);
+                          });
+                        });
+
+                        // update state after remove
+                        batchEditingService.updateBatchUiState();
+                        $rootScope.$broadcast('batchEditing.batchSaveConceptsComplete', {numberSavedConcepts : concepts.length});
+                      });
+                  });
+                }, function (error) {
+                  notificationService.sendError('Unexpected error saving batch concept: ' + error);
+                });
+              }
+
+              // Save all warning concepts one-by-one
+              if (scope.validConcepts.length == 0 && scope.warningConcepts.length > 0) {
+                saveAllHelper(scope.warningConcepts);
+              }
+            });
+          };
+
+          function bulkValidateConcepts (concepts) {
+            var deferred = $q.defer();
+            snowowlService.bulkValidateConcepts(scope.branch, concepts).then(function(responses){
+              console.log("validation finish time : " + (new Date()));
+
+              angular.forEach(responses.data, function(item) {
+                var validation = {
+                  hasWarnings: false,
+                  hasErrors: false,
+                  warnings: {},
+                  errors: {}
+                };
+                if (item.severity === 'ERROR') {
+                  for (var i = 0; i < scope.validConcepts.length; i++) {
+                    if (scope.validConcepts[i].conceptId === item.conceptId) {
+                      if (scope.validConcepts[i].validation) {
+                        validation = scope.validConcepts[i].validation ;
+                      }
+                      validation.hasErrors = true;
+                      if (!validation.errors[item.componentId]) {
+                        validation.errors[item.componentId] = [];
+                      }
+                      validation.errors[item.componentId].push(item.message);
+                      scope.validConcepts[i].validation = validation;
+                      scope.validConcepts[i].tableAction = '';
+                      $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+                      break;
+                    }
+                  }
+                } else if (item.severity === 'WARNING') {
+                  for (var i = 0; i < scope.validConcepts.length; i++) {
+                    if (scope.validConcepts[i].conceptId === item.conceptId) {
+                      if (scope.validConcepts[i].validation) {
+                        validation = scope.validConcepts[i].validation ;
+                      }
+                      validation.hasWarnings = true;
+                      if (!validation.warnings[item.componentId]) {
+                        validation.warnings[item.componentId] = [];
+                      }
+                      validation.warnings[item.componentId].push(item.message);
+                      scope.validConcepts[i].validation = validation;
+                      scope.validConcepts[i].tableAction = '';
+                      break;
+                    }
+                  }
+                } else {
+                  // Do nothing
+                }
+              });
+
+              // update state after validation
+              batchEditingService.updateBatchUiState();
+
+              // Re-filter for error/warning/valid concepts
+              scope.warningConcepts = scope.warningConcepts.concat(scope.validConcepts.filter(function(item){return  item.validation && item.validation.hasWarnings && !item.validation.hasErrors}));
+              scope.errorConcepts = scope.errorConcepts.concat(scope.validConcepts.filter(function(item){return  item.validation && item.validation.hasErrors}));
+              scope.validConcepts = scope.validConcepts.filter(function(item){return  !item.validation});
+              deferred.resolve();
+            });
+
+            return deferred.promise;
+          }
+
+          function bulkStoreAndLogTempleteConcept(concepts) {
+            var deferred = $q.defer();
+            // save template for persisted concept
+            var storeTemplateForConcepts = function(idList) {
+              var df = $q.defer();
+              var storeTemplateForChunkConcepts = function(list, chunkSize) {
+                //Split list into what will be processed and what should be held
+                var processList = list.slice(0,chunkSize);
+                var holdList = list.slice(chunkSize);
+
+                var promises = [];
+                for (var i = 0; i < processList.length; i++) {
+                  promises.push(templateService.storeTemplateForConcept(scope.task.projectKey, processList[i], scope.template));
+                }
+                $q.all(promises).then(function() {
+                  if(holdList.length > 0) {
+                    storeTemplateForChunkConcepts(holdList, chunkSize);
+                  } else {
+                    df.resolve();
+                  }
+                });
+              };
+              storeTemplateForChunkConcepts(idList,10);
+              return df.promise;
+            }
+
+            var promises = [];
+
+            var conceptIds = [];
+            angular.forEach(concepts, function(concept) {
+              conceptIds.push(concept.conceptId);
+            });
+            promises.push(storeTemplateForConcepts(conceptIds));
+            promises.push(templateService.bulkLogTemplateConceptSave(scope.task.projectKey, concepts, scope.template));
+            $q.all(promises).then(function() {
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }
+
+          function isDuplicatedConcept(concept, index, originalConcepts) {
+             angular.forEach(originalConcepts, function(originalConcept, i) {
+                if (concept.fsn === originalConcept.fsn && index !== i) {
+                  return true;
+                }
+             });
+
+             return false;
+          }
 
           scope.saveFunction  = function () {
             var deferred = $q.defer();
@@ -669,21 +867,21 @@ angular.module('singleConceptAuthoringApp')
             scope.saveConcept(concept).then(function (response){
               if (response.validation.hasErrors || response.validation.hasWarnings) {
                 scope.viewedConcepts = [];
-                $timeout(function () {                        
+                $timeout(function () {
                   scope.editConcept(response);
                 }, 200);
-                
+
               } else {
-                $timeout(function () {                        
+                $timeout(function () {
                   scope.removeConcept(concept);
-                }, 200);                
+                }, 200);
               }
               deferred.resolve(response);
             }, function (error) {
               scope.viewedConcepts = [];
-              $timeout(function () {                        
+              $timeout(function () {
                   scope.editConcept(concept);
-              }, 200);            
+              }, 200);
               deferred.reject(error);
             });
             return deferred.promise;
@@ -741,7 +939,7 @@ angular.module('singleConceptAuthoringApp')
               $timeout(function () {
                 $.each($("#batchEditingTable textarea"), function () {
                   this.style.overflowY = 'hidden';
-                  this.style.height = 'auto';                 
+                  this.style.height = 'auto';
                   $(this).height(this.scrollHeight);
                 });
               });
