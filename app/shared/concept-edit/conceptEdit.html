@@ -578,26 +578,25 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left sourcename relationship-target small-size-tooltip tooltips-bottom" drag-enter-class="sca-drag-target"
+                <div class="pull-left sourcename relationship-target" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="completeConcept" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic"
                      ng-class="getTargetSlotStyle(relationship)"
                      ng-mouseover="setTooltipPosition($event)">
-                  <span ng-show="relationship.target.conceptId">{{relationship.target.conceptId}}</span>
-
-
-                  <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                            ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
-                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
-                            class="resizable-text relationship msd-elastic no-border-bottom"
-                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
-                            typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
-                            typeahead-wait-ms="700"
-                            typeahead-on-select="setRelationshipTargetConcept(relationship, $item, concept.conceptId, relationship.groupId, $index)"
-                            typeahead-editable="false" typeahead-min-length="3"></textarea>
-
-
+                  
+                  <div class="small-size-tooltip tooltips-bottom">
+                    <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
+                              ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
+                              ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
+                              class="resizable-text relationship msd-elastic no-border-bottom"
+                              typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
+                              typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
+                              typeahead-wait-ms="700"
+                              typeahead-on-select="setRelationshipTargetConcept(relationship, $item, concept.conceptId, relationship.groupId, $index)"
+                              typeahead-editable="false" typeahead-min-length="3"></textarea>
+                    <span ng-show="relationship.target.conceptId">{{relationship.target.conceptId}}</span>
+                  </div>
 
                   <div class="pull-left drag-button-width"
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
