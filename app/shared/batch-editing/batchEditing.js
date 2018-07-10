@@ -692,7 +692,7 @@ angular.module('singleConceptAuthoringApp')
             scope.validConcepts = [];
             scope.template = null;
             var originalConcepts = angular.copy(concepts);
-
+              console.log(concepts);
             // looking for error/warning/valid concepts from local
             angular.forEach(concepts, function(concept, i) {
               if (componentAuthoringUtil.checkConceptComplete(concept).length > 0) {
@@ -706,6 +706,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.validConcepts.push(concept);
               }
             });
+              console.log(scope.validConcepts);
 
             // validate against Term-server for valid concepts
             var copiedValidConcepts = [];
@@ -720,6 +721,7 @@ angular.module('singleConceptAuthoringApp')
 
             bulkValidateConcepts(copiedValidConcepts).then(function(){
               if (scope.validConcepts.length > 0) {
+<<<<<<< HEAD
                 var clonedConcepts = [];
                 for (var i = 0; i < scope.validConcepts.length; i++) {
                   scope.validConcepts[i].tableAction = 'Saving...';
@@ -727,6 +729,16 @@ angular.module('singleConceptAuthoringApp')
                   snowowlService.cleanConcept(copiedConcept, snowowlService.isSctid(copiedConcept.conceptId) ? true: false);
                   clonedConcepts.push(copiedConcept);
                 }
+=======
+                var clonedConcepts = [];                
+                for (var i = 0; i < scope.validConcepts.length; i++) {  
+                  scope.validConcepts[i].tableAction = 'Saving...';
+                  var copiedConcept = angular.copy(scope.validConcepts[i]);
+                  snowowlService.cleanConcept(copiedConcept, false);
+                  clonedConcepts.push(copiedConcept);           
+                } 
+                console.log(clonedConcepts);
+>>>>>>> b50d383f... TBBA-270 bulk validation and saving of concepts generated via transformation
                  // bulk save concepts
                 snowowlService.bulkUpdateConcept(scope.branch,clonedConcepts,true).then(function(response){
                   snowowlService.bulkRetrieveFullConcept(response.conceptIds,scope.branch).then(function(concepts){
