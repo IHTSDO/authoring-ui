@@ -355,6 +355,15 @@ select {
     min-height: 30px;
     font-size: 14px;
 }
+.concept-headers > div:first-child{
+    width: 80px;
+}
+.concept-headers .dropdown-menu {
+    top: unset;
+}
+.concept-headers > div:first-child button {
+    padding-left: 0px;
+}
 /* Global form widths */
 
 .concept-headers .col-md-1 {
