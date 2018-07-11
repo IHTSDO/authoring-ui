@@ -980,12 +980,23 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
         
       $scope.openTransformModal = function () {
+        let transformConcepts = [];
+        if(!$scope.downloadAllResults) {
+          $scope.results.filter(function(item) {
+            if(item.selected) {
+              transformConcepts.push(item.concept.conceptId);
+            }
+          });
+        }
+        else{
+            transformConcepts = $scope.batchIdList;
+        }
         let modalInstance = $modal.open({
           templateUrl: 'shared/transform/transformModal.html',
           controller: 'transformModalCtrl',
           resolve: {
             results: function () {
-              return $scope.batchIdList;
+              return transformConcepts;
             },
             branch: function () {
               return $scope.branch;
