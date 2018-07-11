@@ -96,8 +96,31 @@ angular.module('singleConceptAuthoringApp')
                                       $interval.cancel(transformStatus);
                                 });
                               }
-                              else if (response.data.status === 'COMPLETED_WITH_ERRORS') {
-                                  $interval.cancel(transformStatus);
+                              else if (response.data.status === 'COMPLETED_WITH_FAILURE') {
+                                  $http.get(apiEndpoint + 'templates/transform/' + id + '/results/').then(function (results) {
+                                      angular.forEach(results.data.concepts, function(result){
+                                          result.template = target;
+                                          angular.forEach(result.relationships, function(rel){
+                                              if(rel.type.moduleId){
+                                                  delete rel.type.moduleId;
+                                              }
+                                              if(rel.type.definitionStatus){
+                                                  delete rel.type.definitionStatus;
+                                              }
+                                              if(!rel.relationshipId){
+                                                  rel.relationshipId = snowowlService.createGuid();
+                                              }
+                                          });
+                                          angular.forEach(result.descriptions, function(rel){
+                                              if(!rel.descriptionId){
+                                                  rel.descriptionId = snowowlService.createGuid();
+                                              }
+                                          });
+                                      });
+                                      console.log(results.data.concepts);
+                                      deferred.resolve(results.data.concepts);
+                                      $interval.cancel(transformStatus);
+                                });
                               }
                               else if (response.data.status === 'FAILED') {
                                   $interval.cancel(transformStatus);
