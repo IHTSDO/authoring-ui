@@ -218,6 +218,15 @@ angular.module('singleConceptAuthoringApp')
         }      
         return deferred.promise;
       }
+        
+      function isTransform(){
+          if(snowowlService.isSctid(batchConcepts[0].conceptId)){
+              return true;
+          }
+          else{
+              return false
+          }
+      }
 
       return {
 
@@ -237,7 +246,8 @@ angular.module('singleConceptAuthoringApp')
         addBatchConcepts: addBatchConcepts,
         updateBatchConcept: updateBatchConcept,
         removeBatchConcept: removeBatchConcept,
-        updateBatchUiState: updateBatchUiState
+        updateBatchUiState: updateBatchUiState,
+        isTransform: isTransform
 
       }
     }

@@ -41,7 +41,7 @@
                       ng-focus="addCssToParentElement($event)"
                       ng-blur="removeCssFromParentElement($event)"></textarea>
         </td>
-        <td ng-repeat="slot in templateSlots" class="editable-input" ng-click="setFocusToChildElement($event)">
+        <td ng-if="!transform" ng-repeat="slot in templateSlots" class="editable-input" ng-click="setFocusToChildElement($event)">
            <textarea autogrow type="text" ng-model="concept[slot.slotName]"
                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, slot.slotName, $viewValue)"
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -72,14 +72,25 @@
       </tr>
     </table>
   </div>
-
-  <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
-    <div class="col-md-6">
-      <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-    </div>
-    <div class="col-md-6">
-      <div concept-edit concept="concept" branch="branch" autosave="false" batch="true" update-concept-reference="updateConceptReference(concept)" save-function="saveFunction()"></div>
-    </div>
+  <div ng-if="!transform">
+      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
+        <div class="col-md-6">
+          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
+        </div>
+        <div class="col-md-6">
+          <div concept-edit concept="concept" branch="branch" autosave="false" batch="true" update-concept-reference="updateConceptReference(concept)" save-function="saveFunction()"></div>
+        </div>
+      </div>
+  </div>
+  <div ng-if="transform">
+      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
+        <div class="col-md-6">
+          <div concept-edit concept="beforeConcept" branch="parentBranch" autosave="false" batch="true" update-concept-reference="updateConceptReference(concept)" save-function="saveFunction()" static="true"></div>
+        </div>
+        <div class="col-md-6">
+          <div concept-edit concept="concept" branch="branch" autosave="false" batch="true" update-concept-reference="updateConceptReference(concept)" save-function="saveFunction()"></div>
+        </div>
+      </div>
   </div>
 </div>
 </div>
