@@ -41,7 +41,7 @@
 
     <div class="row grey concept-headers darken-4" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
 
-      <div class="pull-left no-padding" ng-disabled="saving" ng-class="{'disabled': saving}">
+      <div class="pull-left no-padding col-md-1" ng-disabled="saving" ng-class="{'disabled': saving}">
           <button ng-click="setConceptProperties(concept, $event)" type="button" id="component-{{concept.conceptId ? concept.conceptId : getHashkey(concept)}}"
                   class="btn btn-default morebuttons transparent md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
                   popover-template="'shared/component-more/conceptMore.html'"
@@ -68,7 +68,7 @@
                   popover-placement="left-bottom"
                   popover-trigger="click: click"
                   popover-append-to-body="true"
-                  ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch"
+
                   class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton">
               <i class="md fa fa-magic"></i><span>Attach Template</span></div>
           </div>
@@ -111,17 +111,9 @@
 
       </div>
 
-      <div class="  no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
+      <div class="edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
            ng-class="{'disabled': saving}">
-        <div class=" p-t-3 p-r-5 pull-right ">
-          <div class="no-padding edits concept-title" ng-disabled="saving" ng-class="{'disabled': saving}">
-            <button type="button"
-                      class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
-                      ng-show="hasFocus">
-                <span> Shortcuts active</span>
-            </button>
-           </div>
-
+        <div class=" p-t-3 p-r-5 pull-right">
           <button type="button"
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
                   ng-click="saveConcept()" ng-if="isMerge">
@@ -137,6 +129,12 @@
                    ng-if="allowApproval"
                   ng-click="approveAndLoadNext()">
             <span>Approve</span>
+          </button>
+          <button type="button"
+                  ng-click="toggleConceptActive(concept, true)"
+                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  class="btn-default red tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus small-buttons">
+            <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
@@ -278,10 +276,15 @@
                   ng-click="collapse(concept)"
                   type="button"
                   ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"></button>
-
         </div>
       </div>
-
+      <div class="no-padding edits concept-title" ng-disabled="saving" ng-class="{'disabled': saving}">
+        <button type="button"
+                  class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
+                  ng-show="hasFocus">
+            <span> Shortcuts active</span>
+        </button>
+      </div>
     </div>
   </div>
   <div class="row">
