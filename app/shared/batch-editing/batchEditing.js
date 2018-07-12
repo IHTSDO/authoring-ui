@@ -293,8 +293,23 @@ angular.module('singleConceptAuthoringApp')
             if (scope.viewedConcepts.filter(function (c) {
                 return c.conceptId === concept.conceptId;
               }).length === 0) {
-              scope.viewedConcepts = [];
-              scope.viewedConcepts.push(concept);
+              if(scope.transform){
+                  notificationService.sendMessage('Loading concept...', 10000, null);
+                  snowowlService.getFullConcept(concept.conceptId, scope.branch).then(function(beforeConcept){
+                        let project = scope.task.branchPath;
+                        scope.beforeConcept = beforeConcept;
+                        scope.parentBranch = project.substr(0, project.lastIndexOf("\/"));
+                        console.log(scope.task.branchPath);
+                        scope.viewedConcepts = [];
+                        scope.viewedConcepts.push(concept);
+                        notificationService.sendMessage('Concept Loaded', 1000, null);
+                  });
+              }
+              else{
+                    scope.viewedConcepts = [];
+                    scope.viewedConcepts.push(concept);
+              }
+              
             } else {
               notificationService.sendWarning('Concept already added', 3000);
             }
@@ -1013,33 +1028,36 @@ angular.module('singleConceptAuthoringApp')
             batchEditingService.initializeFromScope(scope).then(function () {
 
               scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
+              scope.transform = batchEditingService.isTransform();
               $timeout(function () {
                     scope.batchTableParams.reload();
                   }, 1000);
-              $timeout(function () {
+                if(!scope.transform){
+                  $timeout(function () {
 
-                  (function($) {
-                      var count = 0;
-                      var i = 0;
-                      var panel = {};
-                      for(var j = 0; j < scope.templateSlots.length; j++){
-                          var item = $(".sca-batch-table table thead tr th:nth-of-type(4)");
-                          var clone = item.clone();
-                          item.after(clone);
-                      }
-                        $(".sca-batch-table table thead tr th").each(function(){
-                            if(i > 2){
-                                if(scope.templateSlots[count] !== undefined)
-                                    {
-                                        jQuery(this).text(scope.templateSlots[count].slotName);
-                                        count++;
-                                    }
-                            }
-                            i++;
-                        });
-                    }(jQuery));
+                      (function($) {
+                          var count = 0;
+                          var i = 0;
+                          var panel = {};
+                          for(var j = 0; j < scope.templateSlots.length; j++){
+                              var item = $(".sca-batch-table table thead tr th:nth-of-type(4)");
+                              var clone = item.clone();
+                              item.after(clone);
+                          }
+                            $(".sca-batch-table table thead tr th").each(function(){
+                                if(i > 2){
+                                    if(scope.templateSlots[count] !== undefined)
+                                        {
+                                            jQuery(this).text(scope.templateSlots[count].slotName);
+                                            count++;
+                                        }
+                                }
+                                i++;
+                            });
+                        }(jQuery));
 
-                  }, 1500);
+                      }, 1500);
+                }
 
 
 
