@@ -62,13 +62,12 @@
               </li>
             </ul>
           </div>
-          <div id="wrap">
+          <div id="wrap" ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch">
               <div
                   popover-template="'components/edit/editTemplateSelect.html'"
                   popover-placement="left-bottom"
                   popover-trigger="click: click"
-                  popover-append-to-body="true"
-                  ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch"
+                  popover-append-to-body="true"                  
                   class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton">
               <i class="md fa fa-magic"></i><span>Attach Template</span></div>
           </div>
@@ -111,7 +110,7 @@
 
       </div>
 
-      <div class="edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
+      <div class="no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
            ng-class="{'disabled': saving}">
         <div class=" p-t-3 p-r-5 pull-right">
           <button type="button"

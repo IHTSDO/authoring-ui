@@ -759,9 +759,11 @@ sca-column .hasSVG {
 .concept-headers {
     padding-bottom: 5px;
 }
-.concept-headers > .no-padding .fa-minus,
 .concept-headers > .no-padding .md-save {
     margin-top: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 .classify-buttons {
     border: 1.5px solid ;
