@@ -547,20 +547,20 @@ angular.module('singleConceptAuthoringApp')
             } else {
 
               var concept = angular.copy(originalConcept);
-              angular.forEach(originalConcept.descriptions, function(desc){
-                  angular.forEach(concept.descriptions, function(newDesc){
-                          if(desc.term === newDesc.term){
-                              newDesc.descriptionId = desc.descriptionId;
-                          }
-                      })
-                  });
-              angular.forEach(originalConcept.relationships, function(rel){
-                  angular.forEach(concept.relationships, function(newRel){
-                          if(rel.groupId === newRel.groupId && rel.target.conceptId === newRel.target.conceptId && rel.type.conceptId === newRel.type.conceptId){
-                              newRel.relationshipId = rel.relationshipId;
-                          }
-                      })
-                  });
+//              angular.forEach(originalConcept.descriptions, function(desc){
+//                  angular.forEach(concept.descriptions, function(newDesc){
+//                          if(desc.term === newDesc.term){
+//                              newDesc.descriptionId = desc.descriptionId;
+//                          }
+//                      })
+//                  });
+//              angular.forEach(originalConcept.relationships, function(rel){
+//                  angular.forEach(concept.relationships, function(newRel){
+//                          if(rel.groupId === newRel.groupId && rel.target.conceptId === newRel.target.conceptId && rel.type.conceptId === newRel.type.conceptId){
+//                              newRel.relationshipId = rel.relationshipId;
+//                          }
+//                      })
+//                  });
 
               // store template
               var template = concept.template;
