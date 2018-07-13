@@ -165,7 +165,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       combo: 'alt+q',
       description: 'Close all concepts',
       callback: function() {
-        $scope.closeAllConcepts();      
+        $scope.closeAllConcepts();
       }
     })
     .add({
@@ -900,9 +900,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      if($scope.thisView === 'feedback'
+      if(!data.noSwitchView && ($scope.thisView === 'feedback'
         || $scope.thisView === 'batch'
-        || $scope.thisView === 'inactivation') {
+        || $scope.thisView === 'inactivation')) {
         $scope.setView('edit-default');
       }
       processUiStateUpdate(data.conceptId);
@@ -1172,7 +1172,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
  //Remove all concepts from editing
     $scope.closeAllConcepts = function() {
-      if ($scope.thisView === 'conflicts') {        
+      if ($scope.thisView === 'conflicts') {
         return;
       }
 

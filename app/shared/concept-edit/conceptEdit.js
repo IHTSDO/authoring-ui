@@ -4292,6 +4292,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return words.map(capitalize).join(' ');
         };
 
+        scope.openConceptTarget = function (rel){
+          if (!rel || !rel.target || !rel.target.conceptId) {
+            return;
+          }     
+          $rootScope.$broadcast('editConcept', {conceptId: rel.target.conceptId, fsn: rel.target.fsn, noSwitchView: true});
+        };
+
       }
     }
       ;

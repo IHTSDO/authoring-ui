@@ -546,6 +546,13 @@ angular.module('singleConceptAuthoringApp')
             closeAllConcepts();
           });
 
+          scope.$on('editConcept', function (event, data) {
+            notificationService.sendMessage('Loading concept ' + data.fsn);
+            addToEditHelper(data.conceptId).then(function (response) {              
+              notificationService.sendMessage('Concept loaded', 5000);
+            });                           
+          });
+
           function closeAllConcepts () {
             scope.viewedConcepts = [];
             // mark as unviewed in ToReview list

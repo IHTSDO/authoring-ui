@@ -608,7 +608,8 @@
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                        drag-channel="completeConcept"
-                       drag-image="getDragImageForConcept(relationship.target.fsn)">
+                       drag-image="getDragImageForConcept(relationship.target.fsn)"
+                       ng-dblclick="openConceptTarget(relationship)">
                   </div>
                 </div>
 
