@@ -36,7 +36,7 @@
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
-        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong><span ng-if="role === 'REVIEWER'">{{task.reviewer.displayName}}</span></div>
+        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong><span ng-if="role === 'REVIEWER'"> {{task.reviewer.displayName}}</span></div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
           <button class="btn btn-default primary-action-btn"
                   ng-click="unclaimReview()">Unclaim Review </button>
