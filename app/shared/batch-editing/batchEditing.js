@@ -604,12 +604,12 @@ angular.module('singleConceptAuthoringApp')
                   // need to delete SCTIDs without effective time on descriptions and relationships
                   // otherwise the values revert to termserver version
                   angular.forEach(concept.descriptions, function (description) {
-                    if (!description.effectiveTime) {
+                    if (!description.released) {
                       delete description.descriptionId;
                     }
                   });
                   angular.forEach(concept.relationships, function (relationship) {
-                    if (!relationship.effectiveTime) {
+                    if (!relationship.released) {
                       delete relationship.relationshipId;
                     }
                   });
