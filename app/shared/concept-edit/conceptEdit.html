@@ -577,7 +577,8 @@
                        ui-draggable="true"
                        drag="getConceptIdNamePairFromAttributeType(relationship)"
                        drag-channel="completeConcept"
-                       drag-image="getDragImageForConcept(relationship.type.fsn)">
+                       drag-image="getDragImageForConcept(relationship.type.fsn)"
+                       ng-dblclick="openAttributeConcept(relationship)">
                     <span>Drag this component</span>
                   </div>
 
