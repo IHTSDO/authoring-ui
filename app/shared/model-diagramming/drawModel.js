@@ -878,7 +878,7 @@ angular.module('singleConceptAuthoringApp')
           //create temporary canvas
           var canvas = document.createElement('canvas');
           canvas.id = "temp-canvas-" + pageName;
-          canvas.height = window.innerHeight;
+          canvas.height = scope.height;
           canvas.width = window.innerWidth;
           canvas.style="display: none;"
           element.append(canvas);
