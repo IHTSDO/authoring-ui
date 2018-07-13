@@ -502,6 +502,8 @@ angular.module('singleConceptAuthoringApp')
             svgCode.substr(svgCode.indexOf("svg") + 4)
           svgCode = svgCode.replace('width="1000px" height="2000px"', 'width="' + maxX + '" height="' + y + '"');
 //            var b64 = Base64.encode(svgCode);
+          // Store svg code for reuse
+          scope.backupSvgCode = svgCode;
 
           convertToPng(svgCode, concept.conceptId);
         }
@@ -871,8 +873,34 @@ angular.module('singleConceptAuthoringApp')
         });
 
         scope.openImage = function(pageName){
-            var w = window.open(pageName);
-            w.document.write(scope.img.outerHTML);
+          var w = window.open(pageName);
+
+          //create temporary canvas
+          var canvas = document.createElement('canvas');
+          canvas.id = "temp-canvas-" + pageName;
+          canvas.height = window.innerHeight;
+          canvas.width = window.innerWidth;
+          canvas.style="display: none;"
+          element.append(canvas);
+
+          // adjust width of canvas      
+          var svgCode = angular.copy(scope.backupSvgCode);          
+          svgCode = svgCode.substr(0, svgCode.indexOf("svg") + 4) + ' style="width: 100%; height:98%" ' + svgCode.substr(svgCode.indexOf("svg") + 4);
+          
+          var c = document.getElementById('temp-canvas-' + pageName);
+          var ctx = c.getContext('2d');
+          ctx.drawSvg(svgCode, 0, 0);
+          cropImageFromCanvas(ctx, document.getElementById('temp-canvas-' + pageName));          
+
+          var img = new Image();
+          img.id = 'image-' + pageName;         
+          img.src = canvas.toDataURL();
+          
+          // draw image for new window                   
+          w.document.write(img.outerHTML);
+
+          //remove temporary canvas
+          element.find('#temp-canvas-' + pageName).remove();
         };
 
         function cropImageFromCanvas(ctx, canvas) {
