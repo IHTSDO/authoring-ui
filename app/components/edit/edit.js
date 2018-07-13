@@ -900,6 +900,15 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
+      if (data.noSwitchView) {
+         if ($scope.thisView === 'edit-default'
+            || $scope.thisView === 'edit-no-sidebar'
+            || $scope.thisView === 'edit-no-model') {
+            processUiStateUpdate(data.conceptId);
+         }
+        return;
+      }
+
       if(!data.noSwitchView && ($scope.thisView === 'feedback'
         || $scope.thisView === 'batch'
         || $scope.thisView === 'inactivation')) {
