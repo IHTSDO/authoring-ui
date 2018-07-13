@@ -118,6 +118,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function cleanDescription(description) {
+        console.log(description);
         var allowableDescriptionProperties = [
           'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap', 'inactivationIndicator', 'associationTargets',
         ];
@@ -145,6 +146,7 @@ angular.module('singleConceptAuthoringApp')
           // replace any 2+ sequences of space with single space
           description.term = description.term.replace(/[ ]{2,}/g, ' ');
         }
+        console.log(description);
       }
 
       function cleanAxiom(axiom) {
