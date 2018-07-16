@@ -67,7 +67,7 @@
                   popover-template="'components/edit/editTemplateSelect.html'"
                   popover-placement="left-bottom"
                   popover-trigger="click: click"
-                  popover-append-to-body="true"                  
+                  popover-append-to-body="true"
                   class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton">
               <i class="md fa fa-magic"></i><span>Attach Template</span></div>
           </div>
@@ -161,6 +161,12 @@
             <span>Revert to version</span>
           </button>
           <button type="button"
+                  ng-click="toggleConceptActive(concept, true)"
+                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  class="btn-default red tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus small-buttons">
+            <span ng-if="!isStatic">Delete Unpublished Concept</span>
+          </button>
+          <button type="button"
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
                   ng-click="toggleConceptActive(concept)"
                   ng-if="concept.released"
@@ -172,17 +178,29 @@
             <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
           </button>
           <button type="button"
-                  ng-click="addAdditionalAxiom()"
-                  ng-if="axiomSupport && role === 'AUTHOR'"
-                  class="btn-default green small-buttons tooltips-bottom medium-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square-o" style="transform: inherit;">
-            <span ng-if="!isStatic">Add Additional Axiom</span>
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"
+                  ng-click="toggleInferredRelationships()">{{!showInferredRels ? 'S' : 'I'}}
+                  <span ng-if="!showInferredRels"> Switch to inferred view </span>
+                  <span ng-if="showInferredRels"> Switch to stated view </span>
           </button>
           <button type="button"
-                  ng-click="addGCIAxiom()"
-                  ng-if="axiomSupport && role === 'AUTHOR'"
-                  class="btn-default green small-buttons tooltips-bottom small-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square" style="transform: inherit;">
-            <span ng-if="!isStatic">Add GCI Axiom</span>
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip offset-tooltip-right  normal-case md md-my-library-books"
+                  ng-class="[{'red' : showTaxonomyComparison}, {'green' : !showTaxonomyComparison}]"
+                  ng-if="taxonomiesComparisonVisible"
+                  ng-click="toggleShowTaxonomiesComparison()"><span> Show/hide taxonomies comparison </span>
           </button>
+
+          <ul class="dashboard-link-list" ng-if="axiomSupport && role === 'AUTHOR'">
+            <li>
+              <div class="home-link pointerbtn-link withoutripple">
+                <span><i class="md md-menu"></i></span>
+              </div>
+              <ul>
+                <li ng-click="addAdditionalAxiom()">Add Additional Axiom</li>
+                <li ng-click="addGCIAxiom()">Add GCI Axiom</li>
+              </ul>
+            </li>
+          </ul>
           <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
                   ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                   class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
