@@ -168,7 +168,12 @@ button.widget-toolbar {
     position: absolute; 
     z-index: 1; 
     color: black; 
-    right: 3px;
+    right: 7px;
+    background-color: #ffffff;
+    opacity: 0.7;
+}
+.modelViewContainer .zoom:hover {
+    opacity: 1;
 }
 .modelViewContainer {
     background: #ffffff;
