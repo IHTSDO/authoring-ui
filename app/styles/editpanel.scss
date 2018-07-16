@@ -1367,3 +1367,16 @@ button-link .bluehl .grey.darken-3 {
 .result-width {
   width: calc(100% - 125px);
 }
+.concept-title ul.dashboard-link-list li:hover ul {    
+    z-index: 1;
+    left: -124px;
+    top: 30px;
+    width: 147px;
+}
+.concept-title ul.dashboard-link-list li ul:after {
+    margin-left: 50px;
+}
+.concept-title ul.dashboard-link-list li i.md.md-menu {
+    height: 23px;
+    width: 17px;
+}
