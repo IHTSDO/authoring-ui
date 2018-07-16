@@ -335,7 +335,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         if (task && task.branchHeadTimestamp && task.feedbackMessageDate) {
           var branchModifiedDate = new Date(task.branchHeadTimestamp);
           var feedbackMessageDate = new Date(task.feedbackMessageDate);
-          return branchModifiedDate > feedbackMessageDate;
+          var viewDate = null;
+          if (task.viewDate) {
+            viewDate = new Date(task.viewDate);
+          }
+          return task.feedbackMessageDate && branchModifiedDate > feedbackMessageDate && viewDate < branchModifiedDate;
         }
         return false;
       }
