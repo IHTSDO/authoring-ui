@@ -1219,19 +1219,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // Update feedback
         function updateReviewFeedback() {
           scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
-            var reviewedListIds = response;
-            for (var i = 0; i < reviewedListIds.length; i++) {
-              if (scope.concept.conceptId === reviewedListIds[i]) {
-                var message = '<p>Modified since approval</p>';
-                var subjectConceptIds = [];
-                subjectConceptIds.push(scope.concept.conceptId);
-                scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, message, subjectConceptIds, false);
-                scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey);
-                reviewedListIds.splice(i,1);
-                break;
+            if (response) {
+              var reviewedListIds = response;
+              for (var i = 0; i < reviewedListIds.length; i++) {
+                if (scope.concept.conceptId === reviewedListIds[i]) {
+                  var message = '<p>Modified since approval</p>';
+                  var subjectConceptIds = [];
+                  subjectConceptIds.push(scope.concept.conceptId);
+                  scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, message, subjectConceptIds, false);
+                  scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey);
+                  reviewedListIds.splice(i,1);
+                  break;
+                }
               }
+              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', reviewedListIds) ;
             }
-            scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', reviewedListIds) ;
           });
         }
 
