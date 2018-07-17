@@ -749,12 +749,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // id required, used in drawModel.js
             $('#image-' + concept.conceptId).css('display', 'inline-block');
+            var zoomElm = $('#image-' + concept.conceptId).parent().parent().find('.zoom')[0];
+            $(zoomElm).css('display', 'inline-block');
           }
           else {
             scope.isCollapsed = true;
 
             // id required, used in drawModel.js
             $('#image-' + concept.conceptId).css('display', 'none');
+            var zoomElm = $('#image-' + concept.conceptId).parent().parent().find('.zoom')[0];
+            $(zoomElm).css('display', 'none');
           }
 
         };
