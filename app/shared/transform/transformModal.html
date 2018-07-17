@@ -8,7 +8,7 @@
       <div class="col-md-12">
               <label> Select Transformation Target</label>
             </div>
-      <input class="form-control m-5 search-box no-border-bottom-search" ng-model="templateTo" placeholder="Select Target Template"
+      <input class="form-control m-15 search-box no-border-bottom-search transform-target" ng-model="templateTo" placeholder="Select Target Template"
                         typeahead="suggestion as suggestion.name for suggestion in getTemplateSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
@@ -17,7 +17,7 @@
                         typeahead-editable="false"
                         typeahead-min-length="3">
     </div>
-    <div class="row col-md-12 no-padding top-modal add-triangles-bottom reasonModal row">
+    <div class="row col-md-12 no-padding top-modal add-triangles-bottom reasonModal row transform-indicator">
         <div class="col-md-12">
           <label> Select Description Inactivation Reason </label>
         </div>
@@ -45,7 +45,7 @@
     </div>
   </div>
 </div>
-<div id="transformModal" class="clearfix loading-merges blue darken-1" style="height:358px;" ng-show="loading">
+<div id="transformModal" class="clearfix loading-merges blue darken-1" style="height:700px;" ng-show="loading">
     <div class="clock">
         <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
@@ -68,4 +68,8 @@
           </line>
         </svg>
     </div>
+    <div class="loading-merges">
+      <h3>Transforming concepts, please allow some time for the process to complete, you will be automatically re-routed to view the results.</h3>
+    </div>
+    <div></div>
 </div>

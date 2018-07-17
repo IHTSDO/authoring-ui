@@ -6,7 +6,13 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.results = results;
     $scope.templateFrom = templateFrom;
     $scope.templateTo = '';
-    $scope.reasons = metadataService.getDescriptionInactivationReasons();
+    let reasons = metadataService.getDescriptionInactivationReasons();
+    $scope.reasons = [];
+    angular.forEach(reasons, function(reason){
+        if (reason.id !== 'NOT_SEMANTICALLY_EQUIVALENT'){
+            $scope.reasons.push(reason);
+        }
+    })
     $scope.inactivationReason = '';
     $scope.loading = false;
     
