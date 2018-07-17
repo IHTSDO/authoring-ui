@@ -62,15 +62,16 @@
               </li>
             </ul>
           </div>
-          <div id="wrap" ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch">
-              <div
-                  popover-template="'components/edit/editTemplateSelect.html'"
-                  popover-placement="left-bottom"
-                  popover-trigger="click: click"
-                  popover-append-to-body="true"
-                  class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton">
-              <i class="md fa fa-magic"></i><span>Attach Template</span></div>
+
+          <div ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch"
+              popover-template="'components/edit/editTemplateSelect.html'"
+              popover-placement="left-bottom"
+              popover-trigger="click: click"
+              popover-append-to-body="true"
+              class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton attach-template-control">
+            <i class="md fa fa-magic"></i><span>Attach Template</span>
           </div>
+
 
           <div class="copy-to-clipboard" ng-show="isSctid(concept.conceptId) && concept.fsn">
             <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
