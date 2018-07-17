@@ -115,6 +115,12 @@
            ng-class="{'disabled': saving}">
         <div class=" p-t-3 p-r-5 pull-right">
           <button type="button"
+              class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
+              ng-click="saveConcept()"
+              ng-if="!isMerge && isModified && !isStatic">
+            <span> Save Concept </span>
+          </button>
+          <button type="button"
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
                   ng-click="saveConcept()" ng-if="isMerge">
             <span> Accept This Version </span>
