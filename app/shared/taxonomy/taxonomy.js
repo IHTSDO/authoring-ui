@@ -30,37 +30,12 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
       };
 
       $scope.dropConcept = function (concept) {
-        if ($scope.thisView === 'feedback' && $scope.rootConcept) {
-          checkInferredRelationships($scope.rootConcept.conceptId).then(function(flag) {
-            if (flag) {
-              $scope.secondRootConcept = {conceptId: concept.id,fsn: concept.name};
-            } else {
-              $scope.secondRootConcept = null;
-            }
-          })
-        } else {
+        if (concept) {
           $scope.secondRootConcept = {conceptId: concept.id,fsn: concept.name};
         }       
-      }
+      };
 
       $scope.closeTaxonomy = function () {
         $scope.secondRootConcept = null;
-      }
-
-      function checkInferredRelationships (conceptId) {
-          var deferred = $q.defer();
-          var searchExtensionFlag = metadataService.isExtensionSet();
-          var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
-          searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());          
-
-          snowowlService.getConceptParents(conceptId, $scope.branch, acceptLanguageValue, searchExtensionFlag, false).then(function (parents) {             
-              deferred.resolve(parents.length !== 0 ? true : false);
-            },
-            function () {
-              console.error('Could not retrieve parents for node', node);
-              deferred.resolve(false);
-            }
-          );
-          return deferred.promise;
-        };
+      };      
     }]);
