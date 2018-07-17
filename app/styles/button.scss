@@ -127,7 +127,8 @@ button {
 .btn.focus,
 .btn:focus,
 .btn:hover {
-    color: #fff;
+    opacity: .8;
+    filter: alpha(opacity=80);
     text-decoration: none;
 }
 .btn.active,
