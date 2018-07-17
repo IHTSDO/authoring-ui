@@ -55,6 +55,9 @@ form-control hover-fix:hover{
 .tab-content .btn[disabled] {
     cursor: not-allowed ;
     pointer-events: none ;
+    opacity: .65;
+    filter: alpha(opacity=65);
+    box-shadow: none;
 }
 .sidebar-bg .sidebar-grey {
     background-color: #ececec;

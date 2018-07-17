@@ -175,14 +175,9 @@
     <div class="col-md-10" ng-class="{'m-t-negative' : isExtension && !isEscgMode, 'm-t-10' : !isExtension || isEscgMode}">
       <h5 class="dark-centured-text total-text"><span>{{searchTotal}}</span> concepts found</h5>
     </div>
-    <a ng-show="loadPerformed && userOptions.model === 'lexical'" ng-disabled="!results.length || !downloadButtonActive || !templateMode" class="btn btn-primary col-md-2 fa fa-file-excel-o tooltips-top large-size-tooltip white-icon" ng-click="openTransformModal()">
-      <span class="tooltip-dl">Transform</span>
-    </a>
   </div>
-
-  <div full-height additional-padding-bottom="146" ng-show="results.length > 0" class="scroll-if-height">
-    <!-- headers -->
-    <div class="row no-padding m-l-10">
+    
+  <div class="row no-padding m-l-10" ng-if="results.length > 0">
       <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
         <div class="p-5">
           <strong>Term</strong>
@@ -205,9 +200,8 @@
         <div class="pull-right">Download All:</div>
       </div>
     </div>
-    <!-- results -->
 
-
+  <div full-height additional-padding-bottom="146" ng-show="results.length > 0" class="scroll-if-height">
     <div class="p-l-10 search-result" ng-repeat="result in results">
       <div class="row">
         <div class="no-p-lr clear-position in-block pull-left">
@@ -278,7 +272,7 @@
     </div>
   </div>
   <!-- load more button -->
-  <div class="col-md-12 m-t-10">
+  <div class="col-md-12 m-t-10" ng-show="!templateMode || userOptions.model !== 'lexical'">
     <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-10 load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
@@ -286,6 +280,19 @@
     </button>
     <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
       <span class="tooltip-dl">Download Selected Results</span>
+    </a>
+  </div>
+  <div class="col-md-12 m-t-10" ng-show="templateMode || userOptions.model === 'lexical'">
+    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-8 load-more" ng-click="loadMore()"
+            ng-disabled="!loadMoreEnabled">
+      <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
+      <span ng-if="!loadMoreEnabled ">End of Results</span>
+    </button>
+    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
+      <span class="tooltip-dl">Download Selected Results</span>
+    </a>
+    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive || !templateMode || userOptions.model !== 'lexical'" class="btn col-md-2 fa fa-random green tooltips-top large-size-tooltip white-icon" ng-click="openTransformModal()">
+      <span class="tooltip-dl">Transform</span>
     </a>
   </div>
   <!-- Spacing to temporarily fix margin problems -->
