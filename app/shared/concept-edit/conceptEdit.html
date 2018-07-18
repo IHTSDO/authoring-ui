@@ -135,8 +135,8 @@
           <button type="button"
                   class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-thumb-up"
                    ng-if="allowApproval"
-                  ng-click="approveAndLoadNext()">              
-            <span>Approve</span> 
+                  ng-click="approveAndLoadNext()">
+            <span>Approve</span>
           </button>
           <button type="button"
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
@@ -221,12 +221,37 @@
             <div class="badge alert-warning ng-binding">&nbsp; </div>
             <span>Primitive</span>
           </button>
-
-
-          <button ng-init="isCollapsed = false" class="btn-default editbuttons small-buttons"
-                  ng-click="collapse(concept)"
-                  type="button"
-                  ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"></button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip offset-tooltip-right  normal-case md md-my-library-books"
+                  ng-class="[{'red' : showTaxonomyComparison}, {'green' : !showTaxonomyComparison}]"
+                  ng-if="taxonomiesComparisonVisible"
+                  ng-disabled="!isSctid(concept.conceptId)"
+                  ng-click="toggleShowTaxonomiesComparison()"><span> Show/hide taxonomies comparison </span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
+                  ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span>
+          </button>
+          <div ng-repeat="field in concept.additionalFields">
+                    <textarea class="msd-elastic resizable-text no-border-bottom" ng-model-options="{updateOn: 'blur'}"
+                              ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
+                    </textarea>
+          </div>
+          <ul class="dashboard-link-list">
+            <li>
+              <div class="home-link pointerbtn-link withoutripple" ng-init="isCollapsed = false">
+                <span><i class="btn-default editbuttons small-buttons 0 darken-4 toggle-buttons fa-sca fa-caret-up"
+                          ng-class="[{'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"
+                          ng-click="collapse(concept)"></i></span>
+              </div>
+              <ul ng-if="(axiomSupport && role === 'AUTHOR') || !isStatic">
+                <li ng-click="addAdditionalAxiom()" ng-if="axiomSupport && role === 'AUTHOR'">Add Additional Axiom</li>
+                <li ng-click="addGCIAxiom()" ng-if="axiomSupport && role === 'AUTHOR'">Add GCI Axiom</li>
+                <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
+                <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
+              </ul>
+            </li>
+          </ul>
 
         </div>
       </div>
@@ -382,7 +407,7 @@
                       type="text"
                       placeholder="Description">
             </textarea>
-            
+
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
@@ -392,7 +417,7 @@
                       class="form-control  msd-elastic no-border-bottom desc" type="text"
                       placeholder="Description" custom-autofocus="true">
             </textarea>
-            
+
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="2048"
                       ng-change="updateDescription(description)"
@@ -613,7 +638,7 @@
                        drag="getConceptIdNamePairFromAttributeType(relationship)"
                        drag-channel="completeConcept"
                        drag-image="getDragImageForConcept(relationship.type.fsn)"
-                       ng-dblclick="openAttributeConcept(relationship)">                    
+                       ng-dblclick="openAttributeConcept(relationship)">
                   </div>
 
                 </div>
@@ -625,7 +650,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic"
                      ng-class="getTargetSlotStyle(relationship)"
                      ng-mouseover="setTooltipPosition($event)">
-                  
+
                   <div class="small-size-tooltip tooltips-bottom">
                     <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                               ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
