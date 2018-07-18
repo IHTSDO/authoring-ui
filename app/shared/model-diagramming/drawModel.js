@@ -307,6 +307,13 @@ angular.module('singleConceptAuthoringApp')
           connectElements(svg, circle1, circle2, 'right', 'left', 'LineMarker');
           x = x + 40;
           y = y - 18;
+
+          // Adjust position if no IS_A relationship was defined
+          if (!svgIsaModel || svgIsaModel.length === 0) {
+            x = x + 20;
+            y = y + 3;
+          }
+
           maxX = ((maxX < x) ? x : maxX);
           // load stated parents
           sctClass = "sct-defined-concept";
