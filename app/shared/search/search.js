@@ -1012,12 +1012,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           batchEditingService.addBatchConcepts(response).then(function(){
               notificationService.sendMessage('Successfully added batch concepts', 3000);
               $rootScope.$broadcast('batchConcept.change');
-              if(window.location.href.indexOf('batch') > -1){
-                $route.reload();
-              }
-              else{
-                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
-              }
+              $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
             });
         }, function () {
           // do nothing
