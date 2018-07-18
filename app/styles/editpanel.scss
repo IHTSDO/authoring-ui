@@ -1370,6 +1370,11 @@ button-link .bluehl .grey.darken-3 {
     top: 30px;
     width: 147px;
 }
+.concept-title ul.dashboard-link-list li ul li[disabled] {    
+    background-color: #424249;
+    color: #76747c;
+    border-bottom: 1px #76747c solid;
+}
 .concept-title ul.dashboard-link-list li ul:after {
     margin-left: 65px;
 }
