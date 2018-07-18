@@ -105,6 +105,14 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                         internationalDialectAutomationPromies.push(componentAuthoringUtil.runInternationalDialectAutomationForConcept(concept, false));
                       });
                       $q.all(internationalDialectAutomationPromies).then(function (concepts) {
+                        angular.forEach(concepts, function(concept){
+                          //if any concepts have had descriptions added through automation, ensure that they have uuid's
+                          angular.forEach(concept.descriptions, function (description) {
+                            if(!description.descriptionId){
+                                description.descriptionId = snowowlService.createGuid();
+                            }
+                          });
+                        })
                         batchEditingService.addBatchConcepts(concepts).then(function(){
                           notificationService.sendMessage('Successfully added batch concepts', 3000);
                           $rootScope.$broadcast('batchConcept.change');
