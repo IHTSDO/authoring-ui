@@ -558,28 +558,33 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if($scope.userOptions.template){
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
-                if(results.data)
-                snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
-                    if (!results) {
-                        notificationService.sendError('Unexpected error searching for concepts', 10000);
-                      }
+                if(results.data.length > 0){
+                    snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data).then(function (results) {
+                        if (!results) {
+                            notificationService.sendError('Unexpected error searching for concepts', 10000);
+                          }
 
-                      $scope.loadPerformed = true;
+                          $scope.loadPerformed = true;
 
-                      if(results.total || $scope.escgExpr) {
-                        $scope.searchTotal = addCommas(results.total);
-                        $scope.loadMoreEnabled = results.items.length === $scope.resultsSize;
-                        $scope.storedResults = appendResults ? $scope.storedResults.concat(results.items) : results.items;
-                      }
+                          if(results.total || $scope.escgExpr) {
+                            $scope.searchTotal = addCommas(results.total);
+                            $scope.loadMoreEnabled = results.items.length === $scope.resultsSize;
+                            $scope.storedResults = appendResults ? $scope.storedResults.concat(results.items) : results.items;
+                          }
 
-                      else {
-                        $scope.searchTotal = addCommas(results.length);
-                        $scope.loadMoreEnabled = results.length === $scope.resultsSize;
-                        $scope.storedResults = appendResults ? $scope.storedResults.concat(results) : results;
-                      }
+                          else {
+                            $scope.searchTotal = addCommas(results.length);
+                            $scope.loadMoreEnabled = results.length === $scope.resultsSize;
+                            $scope.storedResults = appendResults ? $scope.storedResults.concat(results) : results;
+                          }
 
-                      $scope.processResults();
-                });
+                          $scope.processResults();
+                    });
+                }
+                else{
+                    $scope.loadPerformed = false;
+                    $scope.searchStatus = 'No results';
+                }
                 
             })
             
