@@ -12,10 +12,8 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
         if (reason.id !== 'NOT_SEMANTICALLY_EQUIVALENT'){
             $scope.reasons.push(reason);
         }
-    })
-    $scope.inactivationReason ={
-        'id': 'OUTDATED'
-    }
+    });
+    $scope.inactivationReason.id = 'OUTDATED';
     $scope.loading = false;
 
     if(!metadataService.isTemplatesEnabled()){
