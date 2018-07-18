@@ -1039,3 +1039,7 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     color: #666;
     background-color: transparent;
 }
+.sca-light .concept-title ul.dashboard-link-list li ul li[disabled] {    
+    background-color: #d1d1d1;
+    color: #474747;
+}
