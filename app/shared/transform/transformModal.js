@@ -13,9 +13,11 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
             $scope.reasons.push(reason);
         }
     })
-    $scope.inactivationReason = '';
+    $scope.inactivationReason ={
+        'id': 'OUTDATED'
+    }
     $scope.loading = false;
-    
+
     if(!metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
           for(let i = response.length -1; i <= 0; i--){
@@ -36,11 +38,11 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.getTemplateSuggestions = function (text) {
             return $scope.templates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
           };
-    
+
     $scope.updateAssociations = function (inactivationReason) {
       $scope.inactivationReason = inactivationReason;
     };
-    
+
     $scope.transform = function() {
       $scope.loading = true;
       templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results).then(function(response){

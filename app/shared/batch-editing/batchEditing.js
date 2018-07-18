@@ -662,7 +662,7 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
 
           };
-          
+
           // 1. Find any duplicated concetps from local and add them to warning list
           // 2. Validate all concepts against term server -> find warning/error/valid concepts
           // 3. Save valid and warning concepts to term server
