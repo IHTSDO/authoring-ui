@@ -17,10 +17,11 @@ angular.module('singleConceptAuthoringApp')
 
         scope.taskConcept = scope.concept;
         scope.projectConcept = null;
+        scope.loadingCompleted = false;
         
-        scope.closeTaxonomy = function (isParentConcept) {
-          if (isParentConcept)  {
-            scope.parentConcept = null;
+        scope.closeTaxonomy = function (isProjectConcept) {
+          if (isProjectConcept)  {
+            scope.projectConcept = null;
           } else {
             scope.taskConcept = null;
           }
@@ -29,6 +30,7 @@ angular.module('singleConceptAuthoringApp')
         function intialize() {
           snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response){
             scope.projectConcept = response;
+            scope.loadingCompleted = true;
           });
         }
         intialize();
