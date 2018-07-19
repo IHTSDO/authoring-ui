@@ -172,14 +172,23 @@ angular
 
 
     // get endpoint information and set route provider options
-    configService.getEndpoints().then(
+    configService.getConfigurations().then(
       // Success block -- config properties retrieved
       function (response) {
-        var endpoints = response;
+        var endpoints = response.endpoints;
+        var features = response.features
         $rootScope.endpoints = response;
         snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
+        if(!features.axiomDisabled || features.axiomDisabled === 'false'){
+            console.log("false")
+            $rootScope.axiomSupport = true;
+        }
+        else{
+            console.log("true")
+            $rootScope.axiomSupport = false;
+        }
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;

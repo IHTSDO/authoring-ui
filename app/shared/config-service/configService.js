@@ -35,10 +35,10 @@ angular.module('singleConceptAuthoringApp')
     }
 
     return {
-      getEndpoints: function () {
+      getConfigurations: function () {
         var deferred = $q.defer();
         getConfigProperties().then(function() {
-          deferred.resolve(properties.endpoints);
+          deferred.resolve(properties);
         }, function(error) {
           deferred.reject(error);
         });
