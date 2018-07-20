@@ -720,6 +720,14 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
             
+            // Already loaded check
+            if(scope.viewedConcepts 
+              && scope.viewedConcepts.length > 0
+              && scope.viewedConcepts.filter(function(item) { return item.conceptId === failure.conceptId; }).length === 1) {
+              notificationService.sendWarning('Concept already loaded');              
+              return;
+            }
+
             notificationService.sendMessage('Loading concept...');
             editConceptHelper(failure).then(function (response) {
               notificationService.sendMessage('Concept loaded', 5000);
