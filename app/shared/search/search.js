@@ -414,7 +414,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
 
         else {
-          $scope.downloadSearchResults($scope.batchIdList ? $scope.batchIdList : undefined);
+          $scope.downloadSearchResults($scope.templateMode ? $scope.batchIdList : undefined);
         }
       };
 
