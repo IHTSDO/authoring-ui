@@ -399,9 +399,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.downloadResultFilter = function() {
-
-        console.log($scope.selectionCheck());
-
+        
         $scope.selectedResultsList = [];
 
         if(!$scope.downloadAllResults) {
@@ -411,12 +409,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.selectedResultsList.push(item.concept.conceptId);
             }
           });
-
+          
           $scope.downloadSearchResults($scope.selectedResultsList);
         }
 
         else {
-          $scope.downloadSearchResults();
+          $scope.downloadSearchResults($scope.batchIdList ? $scope.batchIdList : undefined);
         }
       };
 
