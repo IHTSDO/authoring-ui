@@ -21,8 +21,6 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     if(!metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
           for(let i = response.length -1; i <= 0; i--){
-            console.log(response[i]);
-              console.log(response[i].additionalSlots.length);
               if(response[i].additionalSlots.length > 0)
                 {
                   response.splice(i, 1);
@@ -36,7 +34,13 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     // Modal control buttons
     /////////////////////////////////////////
     $scope.getTemplateSuggestions = function (text) {
-            return $scope.templates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
+            let tempTemplates = [];
+            angular.forEach($scope.templates, function(template){
+                if(template.name !== $scope.templateFrom.name){
+                    tempTemplates.push(template);
+                }
+            })
+            return tempTemplates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
           };
 
     $scope.updateAssociations = function (inactivationReason) {
