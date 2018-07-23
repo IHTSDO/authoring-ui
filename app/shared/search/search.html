@@ -272,7 +272,7 @@
     </div>
   </div>
   <!-- load more button -->
-  <div class="col-md-12 m-t-10" ng-show="!templateMode || userOptions.model !== 'lexical'">
+  <div class="col-md-12 m-t-10" ng-show="!templateMode && loadPerformed">
     <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-10 load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
@@ -282,7 +282,7 @@
       <span class="tooltip-dl">Download Selected Results</span>
     </a>
   </div>
-  <div class="col-md-12 m-t-10" ng-show="templateMode || userOptions.model === 'lexical'">
+  <div class="col-md-12 m-t-10" ng-show="templateMode && loadPerformed">
     <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-8 load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
