@@ -132,8 +132,9 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="undoAll()" ng-if="!isStatic && !concept.released" ng-disabled="!isModified">
-            <span>Revert to Saved</span>
+                  ng-click="revertToVersion()" ng-if="!isStatic && role === 'AUTHOR'"
+                  ng-disabled="!isSctid(concept.conceptId) || !concept.active">
+            <span>Revert to version</span>
           </button>
           <button type="button"
                   ng-click="toggleConceptActive(concept, true)"
@@ -158,21 +159,6 @@
                   <span ng-if="!showInferredRels"> Switch to inferred view </span>
                   <span ng-if="showInferredRels"> Switch to stated view </span>
           </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="undoAll()" ng-if="!isStatic && !concept.released" ng-disabled="!isModified">
-            <span>Revert to Saved</span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="revertToVersion()" ng-if="!isStatic && concept.released && role === 'AUTHOR'">
-            <span>Revert to version</span>
-          </button>
-          <div ng-repeat="field in concept.additionalFields">
-                    <textarea class="msd-elastic resizable-text no-border-bottom" ng-model-options="{updateOn: 'blur'}"
-                              ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
-                    </textarea>
-          </div>
           <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
                   ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                   class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
