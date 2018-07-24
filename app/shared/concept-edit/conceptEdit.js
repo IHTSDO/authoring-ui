@@ -3738,19 +3738,57 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
               if (response.items.length > 0) {
                 var version = response.items[response.items.length - 1].version;
-                var fullBranch = null;
+                var versionBranch = null;
                 if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
-                  fullBranch = 'MAIN/' + version;
+                  versionBranch = 'MAIN/' + version;
                 } else {
                   var arr = scope.branch.split("/");
-                  fullBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
+                  versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
                 }
-                snowowlService.getFullConcept(scope.concept.conceptId, fullBranch).then(function (response) {
-                  scope.concept = response;
-                  scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
-                  scope.isModified = false;
-                  scope.saveConcept();
-                });
+
+                var result = {};
+                result.versionedConcept = null;
+                result.projectConcept = null;
+
+                var getVersionedConceptFn = function () {
+                  var deferred = $q.defer();
+                  snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
+                    result.versionedConcept = response;
+                    deferred.resolve();
+                  }, function (error) {
+                    deferred.resolve();
+                  });
+                  return deferred.promise;
+                };
+                
+                var getProjectConceptFn = function () {
+                  var deferred = $q.defer();
+                  var arr = scope.branch.split("/");
+                  var branch = arr.slice(0,arr.length - 1).join("/");
+                  snowowlService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
+                    result.projectConcept = response;
+                    deferred.resolve();
+                  }, function (error) {
+                    deferred.resolve();
+                  });
+                  return deferred.promise;
+                };
+
+                var promises = [];
+                promises.push(getVersionedConceptFn());
+                promises.push(getProjectConceptFn());
+                // on resolution of all promises
+                $q.all(promises).then(function () {
+                  if (!result.versionedConcept && !result.projectConcept){
+                    notificationService.clear();
+                    modalService.message('This concept was created on this task, please use the delete functionality to remove it.');
+                  } else {
+                    scope.concept = result.versionedConcept ? result.versionedConcept : result.projectConcept;
+                    scope.unmodifiedConcept = JSON.parse(JSON.stringify(result.versionedConcept ? result.versionedConcept : result.projectConcept));
+                    scope.isModified = false;
+                    scope.saveConcept();
+                  }
+                });                
               } else {               
                 notificationService.sendError('Failed to get versions');
               }
