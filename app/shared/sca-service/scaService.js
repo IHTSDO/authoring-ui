@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
-    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, snowowlService) {
+  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'snowowlService', '$timeout',
+    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, snowowlService, $timeout) {
 
       // TODO Wire this to endpoint service, endpoint config
       var apiEndpoint = '../authoring-services/';
@@ -163,6 +163,33 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function pollForGetTaskPromotionStatus(projectKey, taskKey, intervalTime) {
+        var deferred = $q.defer();
+        if (!intervalTime) {
+          intervalTime = 1000;
+        }
+
+        $timeout(function () {
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote/status').then(function (response) {
+            // if review is ready, get the details
+            if (response && response.data && response.data.status === 'Promotion Complete') {
+              deferred.resolve(response.data);
+            } else if (response && response.data && response.data.status === 'Promotion Error') {
+              deferred.reject(response.data.message);
+            } else {
+              pollForGetTaskPromotionStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+                deferred.resolve(pollResults);
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+          }, function (error) {
+            deferred.reject();
+          });
+        }, intervalTime);
+
+        return deferred.promise;
+      }
 
       return {
           
@@ -1011,22 +1038,17 @@ angular.module('singleConceptAuthoringApp')
 // Promote the task to the Project
         promoteTask: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {            
-            deferred.resolve(response.data);
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
+            pollForGetTaskPromotionStatus(projectKey, taskKey, 1000).then(function (result) {
+              deferred.resolve(result);
+            }, function (error) {
+               notificationService.sendError('Error promoting task : ' + error, 10000);
+              deferred.reject(error);
+            });
           }, function (error) {
-            if (error.status === 504) {
-              notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
-              deferred.reject(error.message);
-            }
-            else if (error.status === 409) {
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              deferred.reject(error.message);
-            }
-            else {
-              console.error('Error promoting project ' + projectKey);
-              notificationService.sendError('Error promoting project', 10000);
-              deferred.reject(error.message);
-            }
+            console.error('Error promoting task ' + projectKey);
+            notificationService.sendError('Error promoting task', 10000);
+            deferred.reject(error.message);
           });
           return deferred.promise;
         },
