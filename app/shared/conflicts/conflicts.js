@@ -527,7 +527,28 @@ angular.module('singleConceptAuthoringApp')
 
             if ($routeParams.taskKey) {
               scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                if (response !== null && response !== 1) {
+                if (response.status === 'Rebase Complete') {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = true;
+                  scope.warning = false;
+                  scope.fiveOFour = false;
+
+                  // switch to edit view on success
+                  exitConflictsView();
+                } else if (response.status === 'CONFLICTS') {
+                  scope.rebaseRunning = true;
+                  scope.conflicts = true;
+                  var merge = JSON.parse(response.message);
+                  snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                    if (response && response.items && response.items.length > 0) {
+                      // show conflicts
+                    }
+                  });
+                } else {
+                  notificationService.sendError('Error pulling changes from project: ' + response.message);
+                }
+                
+                /*if (response !== null && response !== 1) {
                   scope.rebaseRunning = false;
                   scope.rebaseComplete = true;
                   scope.warning = false;
@@ -549,7 +570,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.warning = true;
                   $rootScope.canConflict = true;
                   scope.fiveOFour = false;
-                }
+                } */
 
               }, function (error) {
                 scope.rebaseRunning = false;
@@ -562,7 +583,28 @@ angular.module('singleConceptAuthoringApp')
             } else {
 
               scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                if (response !== null && response !== 1) {
+                if (response.status === 'Rebase Complete') {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = true;
+                  scope.warning = false;
+                  scope.fiveOFour = false;
+
+                  // switch to edit view on success
+                  exitConflictsView();
+                } else if (response.status === 'CONFLICTS') {
+                  scope.rebaseRunning = true;
+                  scope.conflicts = true;
+                  var merge = JSON.parse(response.message);
+                  snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                    if (response && response.items && response.items.length > 0) {
+                      // show conflicts
+                    }
+                  });
+                } else {
+                  notificationService.sendError('Error pulling changes from mainline content: ' + response.message);
+                }
+
+                /*if (response !== null && response !== 1) {
                   scope.rebaseRunning = false;
                   scope.rebaseComplete = true;
                   scope.warning = false;
@@ -589,7 +631,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // NOTE: Do not switch to edit view on warning
                   // TODO Need to revisit this
-                }
+                } */
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
