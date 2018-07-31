@@ -23,7 +23,7 @@
         </div>
         <div class="col-md-12">
           <div ng-repeat="reason in reasons">
-            <label><input type="radio" name="reason" ng-value="reason" ng-model="inactivationReason" ng-init="$index==0?(inactivationReason=reason):''" ng-click="updateAssociations(inactivationReason)">{{reason.text}}</label>
+            <label><input type="radio" name="reason" ng-value="reason" ng-model="inactivationReason" ng-init="reason.id=='NONCONFORMANCE_TO_EDITORIAL_POLICY'?(inactivationReason=reason):''" ng-click="updateAssociations(inactivationReason)">{{reason.text}}</label>
           </div>
         </div>
     </div>

@@ -46,7 +46,7 @@
       <!--</button>-->
     <!--</div>-->
   </div>
-    
+
   <div class="row no-padding" ng-if="templateMode">
     <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
       <input class="form-control m-5 search-box no-border-bottom-search" ng-model="userOptions.template" placeholder="Enter template name"
@@ -61,7 +61,7 @@
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
       <button ng-show="userOptions.template" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
     </div>
-      
+
 <!--
     <div class="col-md-6">
       <div class="col-md-5 col-sm-4 filter-label">
@@ -87,7 +87,7 @@
       </div>
     </div>
 -->
-    
+
   </div>
 
 
@@ -135,7 +135,7 @@
   <div class="row search-filter" ng-if="isEscgMode || templateMode">
     <div class="col-md-4">
       <div class="col-md-12 col-sm-8 filter-input">
-        <select ng-model="userOptions.statedSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">          
+        <select ng-model="userOptions.statedSelection" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
           <option value="inferred">Inferred</option>
           <option value="stated">Stated</option>
         </select>
@@ -156,7 +156,7 @@
       <div class="row search-filter" ng-if="templateMode">
         <div class="col-md-5">
           <div class="col-md-12 col-sm-8 filter-input">
-            <select ng-model="userOptions.model" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">          
+            <select ng-model="userOptions.model" ng-change="newSearch()" name="select-type" class="form-control no-padding m-t-10">
               <option value="logical">Logical</option>
               <option value="lexical">Logical and Lexical</option>
               <option value="logical!lexical">Logical not Lexical</option>
@@ -176,7 +176,7 @@
       <h5 class="dark-centured-text total-text"><span>{{searchTotal}}</span> concepts found</h5>
     </div>
   </div>
-    
+
   <div class="row no-padding m-l-10" ng-if="results.length > 0">
       <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
         <div class="p-5">
@@ -282,16 +282,17 @@
       <span class="tooltip-dl">Download Selected Results</span>
     </a>
   </div>
-  <div class="col-md-12 m-t-10" ng-show="templateMode && loadPerformed">
-    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-8 load-more" ng-click="loadMore()"
-            ng-disabled="!loadMoreEnabled">
+  <div class="col-md-12 m-t-10 load-performed" ng-show="templateMode && loadPerformed">
+    <button ng-show="loadPerformed" class="btn btn-default classify light-button load-more" ng-click="loadMore()"
+            ng-disabled="!loadMoreEnabled"
+            ng-class="[{'col-md-8' : userOptions.model === 'lexical'}, {'col-md-10' : userOptions.model !== 'lexical'}]">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
     <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
       <span class="tooltip-dl">Download Selected Results</span>
     </a>
-    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive || !templateMode || userOptions.model !== 'lexical'" class="btn col-md-2 fa fa-random green tooltips-top large-size-tooltip white-icon" ng-click="openTransformModal()">
+    <a ng-show="loadPerformed" ng-if="userOptions.model === 'lexical'" ng-disabled="!results.length || !downloadButtonActive || !templateMode" class="btn col-md-2 fa fa-random green tooltips-top large-size-tooltip white-icon" ng-click="openTransformModal()">
       <span class="tooltip-dl">Transform</span>
     </a>
   </div>

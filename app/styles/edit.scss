@@ -143,8 +143,8 @@ button.widget-toolbar {
     background-color: #F5F5F5;
 }
 .modelScrollBox::-webkit-scrollbar-thumb:vertical {
-    background-color: #009cd7;  
-    border: none;    
+    background-color: #009cd7;
+    border: none;
 }
 .modelViewContainer button.md.md-remove {
     height: 23px;
@@ -165,9 +165,9 @@ button.widget-toolbar {
     overflow: auto;
 }
 .modelViewContainer .zoom {
-    position: absolute; 
-    z-index: 1; 
-    color: black; 
+    position: absolute;
+    z-index: 1;
+    color: black;
     right: 7px;
     background-color: #ffffff;
     opacity: 0.7;
@@ -1017,6 +1017,13 @@ div.search-result:hover {
 .search-scroll button.md-playlist-add.disable:hover {
     background-color: #c13244;
     color: #fff;
+}
+.search-scroll .load-performed a[disabled]{
+    background-color: #424249;
+    color: #76747c;
+}
+.load-performed .fa-random.tooltips-top:hover span {
+    margin-left: -32px;
 }
 .editing-form .triangle-redhl {
     border-top: 9px solid red;
