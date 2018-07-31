@@ -170,7 +170,7 @@ angular
       function (response) {
         var endpoints = response.endpoints;
         var features = response.features
-        $rootScope.endpoints = endpoints;
+        $rootScope.endpoints = response;
         snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
