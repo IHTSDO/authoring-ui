@@ -173,7 +173,7 @@ angular
         snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
-        if(!endpoints.axiomDisabled || endpoints.axiomDisabled === 'false'){
+        if(!endpoints.axiomDisabled){
             console.log("false")
             $rootScope.axiomSupport = true;
         }
