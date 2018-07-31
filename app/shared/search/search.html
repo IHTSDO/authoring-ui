@@ -272,7 +272,7 @@
     </div>
   </div>
   <!-- load more button -->
-  <div class="col-md-12 m-t-10" ng-show="!templateMode && loadPerformed">
+  <div class="col-md-12 m-t-10 load-performed" ng-show="!templateMode && loadPerformed">
     <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-10 load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
