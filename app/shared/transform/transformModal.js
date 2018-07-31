@@ -13,7 +13,16 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
             $scope.reasons.push(reason);
         }
     });
-    $scope.inactivationReason.id = 'OUTDATED';
+
+    $scope.reasons.sort(function (a, b) {
+      if (b.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+        return 1;
+      }
+      return 0;
+    });
+    $scope.inactivationReason ={
+        'id': 'NONCONFORMANCE_TO_EDITORIAL_POLICY'
+    };
     $scope.loading = false;
 
     if(!metadataService.isTemplatesEnabled()){
