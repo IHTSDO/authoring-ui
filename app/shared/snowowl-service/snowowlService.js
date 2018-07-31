@@ -159,7 +159,7 @@ angular.module('singleConceptAuthoringApp')
 
           if (key === 'relationships') {
             angular.forEach(axiom[key], function (relationship) {
-              cleanRelationship(relationship);              
+              cleanRelationship(relationship);
             });
           }
         }
@@ -268,7 +268,7 @@ angular.module('singleConceptAuthoringApp')
             cleanAxiom(axiom);
           });
         }
-        
+
         if (concept.gciAxioms) {
           angular.forEach(concept.gciAxioms, function (axiom) {
             cleanAxiom(axiom);
@@ -1003,7 +1003,7 @@ angular.module('singleConceptAuthoringApp')
                   });
                 } else {
                   deferred.resolve(response);
-                }                
+                }
               }, function (error) {
                 deferred.reject(error);
               });
@@ -1011,7 +1011,7 @@ angular.module('singleConceptAuthoringApp')
             else {
               params.termFilter = termFilter;
               params.conceptIds = conceptIdList;
-            }            
+            }
           }
 
           // if user is searching with a descriptionID
@@ -1074,7 +1074,7 @@ angular.module('singleConceptAuthoringApp')
           // if the id is unrecognised
           else {
             console.error('unrecognised ID');
-            params.termFilter = termFilter;            
+            params.termFilter = termFilter;
           }
         }
 
@@ -1086,12 +1086,12 @@ angular.module('singleConceptAuthoringApp')
             params.statedEclFilter = escgExpr;
           } else {
             params.eclFilter = escgExpr;
-          }          
+          }
         }
 
         // if the user is searching for text
         else {
-          params.termFilter = termFilter;                    
+          params.termFilter = termFilter;
         }
 
         if (!isAsychronousRequest) {
@@ -1387,19 +1387,19 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
- 
+
       // Get last active for branchs
-      function getLastActivityOnBranches(branches) {        
+      function getLastActivityOnBranches(branches) {
         if(!branches) {
           console.error('Error retrieving last activity for branches. No such branch is provided');
           return null;
         }
-        
+
         return $http.post('/traceability-service/activities/branches/last', branches).then(function (response) {
           return response.data;
         }, function (error) {
           return null;
-        });        
+        });
       }
 
       ////////////////////////////////
@@ -1410,7 +1410,7 @@ angular.module('singleConceptAuthoringApp')
           console.error('Error retrieving versions: code system is not defined');
           return null;
         }
-       
+
         return $http.get('snowowl/admin/codesystems/' + codeSystemShortName + '/versions').then(function (response) {
           return response;
         }, function (error) {
@@ -1915,7 +1915,9 @@ angular.module('singleConceptAuthoringApp')
         isRelationshipId: isRelationshipId,
         cleanConcept: cleanConcept,
         cleanDescription: cleanDescription,
-        cleanRelationship: cleanRelationship
+        cleanRelationship: cleanRelationship,
+        setEndpoint: setEndpoint,
+        searchMerge: searchMerge
       };
     }
 

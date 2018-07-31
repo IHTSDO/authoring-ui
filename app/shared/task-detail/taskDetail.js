@@ -85,6 +85,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               }
             }, function (error) {
               $scope.promoting = false;
+              notificationService.sendError('Error promoting task to project: ' + error);
             });
           } else {
 
@@ -119,6 +120,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   }
                 }, function (error) {
                   $scope.promoting = false;
+                   notificationService.sendError('Error promoting task to project: ' + error);
                 });
               } else {
                 notificationService.clear();

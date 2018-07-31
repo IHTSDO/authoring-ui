@@ -172,7 +172,7 @@ angular.module('singleConceptAuthoringApp')
         $timeout(function () {
           $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote/status').then(function (response) {
             // if review is ready, get the details
-            if (response && response.data && response.data.status === 'Promotion Complete') {
+            if (response && response.data && (response.data.status === 'Promotion Complete' || response.data.status === 'CONFLICTS')) {
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'Promotion Error') {
               deferred.reject(response.data.message);
@@ -190,6 +190,90 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
+
+      function pollForGetProjectPromotionStatus(projectKey, taskKey, intervalTime) {
+        var deferred = $q.defer();
+        if (!intervalTime) {
+          intervalTime = 1000;
+        }
+
+        $timeout(function () {
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/promote/status').then(function (response) {
+            // if review is ready, get the details
+            if (response && response.data && (response.data.status === 'Promotion Complete' || response.data.status === 'CONFLICTS')) {
+              deferred.resolve(response.data);
+            } else if (response && response.data && response.data.status === 'Promotion Error') {
+              deferred.reject(response.data.message);
+            } else {
+              pollForGetProjectPromotionStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+                deferred.resolve(pollResults);
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+          }, function (error) {
+            deferred.reject();
+          });
+        }, intervalTime);
+
+        return deferred.promise;
+      }        
+
+      function pollForGetTaskRebaseStatus(projectKey, taskKey, intervalTime) {
+        var deferred = $q.defer();
+        if (!intervalTime) {
+          intervalTime = 1000;
+        }
+
+        $timeout(function () {
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase/status').then(function (response) {
+            // if review is ready, get the details
+            if (response && response.data && (response.data.status === 'Rebase Complete' || response.data.status === 'CONFLICTS')) {
+              deferred.resolve(response.data);
+            } else if (response && response.data && response.data.status === 'Rebase Error') {
+              deferred.reject(response.data.message);
+            } else {
+              pollForGetTaskRebaseStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+                deferred.resolve(pollResults);
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+          }, function (error) {
+            deferred.reject();
+          });
+        }, intervalTime);
+
+        return deferred.promise;
+      }
+
+      function pollForGetProjectRebaseStatus(projectKey, intervalTime) {
+        var deferred = $q.defer();
+        if (!intervalTime) {
+          intervalTime = 1000;
+        }
+
+        $timeout(function () {
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/rebase/status').then(function (response) {
+            // if review is ready, get the details
+            if (response && response.data && (response.data.status === 'Rebase Complete' || response.data.status === 'CONFLICTS')) {
+              deferred.resolve(response.data);
+            } else if (response && response.data && response.data.status === 'Rebase Error') {
+              deferred.reject(response.data.message);
+            } else {
+              pollForGetProjectRebaseStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+                deferred.resolve(pollResults);
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+          }, function (error) {
+            deferred.reject();
+          });
+        }, intervalTime);
+
+        return deferred.promise;
+      }      
 
       return {
           
@@ -980,7 +1064,22 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/promote
 // Promote the project to MAIN
         promoteProject: function (projectKey) {
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {            
+          var deferred = $q.defer();
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {
+            pollForGetProjectPromotionStatus(projectKey, 1000).then(function (result) {
+              deferred.resolve(result);
+            }, function (error) {
+              notificationService.sendError('Error promoting project : ' + error, 10000);
+              deferred.reject(error);
+            });
+          }, function (error) {
+            console.error('Error promoting project ' + projectKey);
+            notificationService.sendError('Error promoting project', 10000);
+            deferred.reject(error.message);
+          });
+          return deferred.promise;
+
+          /*return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {            
             return response.data;
           }, function (error) {
             if (error.status === 504) {
@@ -997,7 +1096,7 @@ angular.module('singleConceptAuthoringApp')
               return null;
             }
 
-          });
+          });*/
         },
 
 // GET /projects/{projectKey}/rebase
@@ -1015,7 +1114,22 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/rebase
 // Rebase the project from MAIN
         rebaseProject: function (projectKey) {
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {
+          var deferred = $q.defer();
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {            
+            pollForGetProjectRebaseStatus(projectKey, taskKey, 1000).then(function (result) {
+              deferred.resolve(result);
+            }, function (error) {
+              notificationService.sendError('Error rebasing Project: ' + projectKey);
+              deferred.reject(error);
+            });
+          }, function (error) {
+            notificationService.sendError('Error rebasing Project: ' + projectKey);
+            deferred.reject(error);
+          });
+          return deferred.promise;
+
+
+          /*return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {
             notificationService.sendMessage('Project Rebased Successfully', 10000);
             return response.data;
           }, function (error) {
@@ -1032,7 +1146,7 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('Error rebasing Task: ' + projectKey);
               return null;
             }
-          });
+          }); */
         },
 // POST /projects/{projectKey}/tasks/{taskKey}/promote
 // Promote the task to the Project
@@ -1101,22 +1215,19 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/tasks/{taskKey}/rebase
 // Rebase the task from the project
         rebaseTask: function (projectKey, taskKey) {
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
-            return response;
-          }, function (error) {
-            if (error.status === 504) {
-              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will unlock when the rebase completes.');
-              return 1;
-            }
-            else if (error.status === 409) {
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
-            }
-            else {
+          var deferred = $q.defer();
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {            
+            pollForGetTaskRebaseStatus(projectKey, taskKey, 1000).then(function (result) {
+              deferred.resolve(result);
+            }, function (error) {
               notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
-              return null;
-            }
+              deferred.reject(error);
+            });
+          }, function (error) {
+            notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
+            deferred.reject(error);
           });
+          return deferred.promise;
         },
 
 //////////////////////////////////////////
