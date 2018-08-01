@@ -177,7 +177,7 @@ angular.module('singleConceptAuthoringApp')
             } else if (response && response.data && response.data.status === 'Promotion Error') {
               deferred.reject(response.data.message);
             } else {
-              pollForGetTaskPromotionStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+              pollForGetTaskPromotionStatus(projectKey, taskKey, 10000).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
                 deferred.reject(error);
@@ -205,7 +205,7 @@ angular.module('singleConceptAuthoringApp')
             } else if (response && response.data && response.data.status === 'Promotion Error') {
               deferred.reject(response.data.message);
             } else {
-              pollForGetProjectPromotionStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+              pollForGetProjectPromotionStatus(projectKey, taskKey, 10000).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
                 deferred.reject(error);
@@ -233,7 +233,7 @@ angular.module('singleConceptAuthoringApp')
             } else if (response && response.data && response.data.status === 'Rebase Error') {
               deferred.reject(response.data.message);
             } else {
-              pollForGetTaskRebaseStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+              pollForGetTaskRebaseStatus(projectKey, taskKey, 10000).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
                 deferred.reject(error);
@@ -261,7 +261,7 @@ angular.module('singleConceptAuthoringApp')
             } else if (response && response.data && response.data.status === 'Rebase Error') {
               deferred.reject(response.data.message);
             } else {
-              pollForGetProjectRebaseStatus(projectKey, taskKey, 3000).then(function (pollResults) {
+              pollForGetProjectRebaseStatus(projectKey, 10000).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
                 deferred.reject(error);
@@ -1116,7 +1116,7 @@ angular.module('singleConceptAuthoringApp')
         rebaseProject: function (projectKey) {
           var deferred = $q.defer();
           $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {            
-            pollForGetProjectRebaseStatus(projectKey, taskKey, 1000).then(function (result) {
+            pollForGetProjectRebaseStatus(projectKey, 1000).then(function (result) {
               deferred.resolve(result);
             }, function (error) {
               notificationService.sendError('Error rebasing Project: ' + projectKey);
