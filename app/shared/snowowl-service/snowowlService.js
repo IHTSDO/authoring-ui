@@ -1816,7 +1816,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function searchMerge (source, target, status) {
-        return $http.get(apiEndpoint + 'searchMerge?' + 'source=' + source + '&target=' + target + '&status=' + status).then(function (response) {
+        return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
           var mergeReview = response.data;
           return mergeReview;
         }, function (error) {
