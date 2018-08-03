@@ -105,6 +105,47 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       },
 
+      addValidationFailuresExclusion: function (assertionUuid, assertionText, failures, user, branchRoot) {
+
+        var deferred = $q.defer();
+
+        angular.forEach(failures, function (failure) {                
+          // create the exclusion
+          var exclusion = {
+            assertionUuid: assertionUuid,
+            assertionText: assertionText,
+            conceptId: failure.conceptId,
+            conceptFsn: failure.conceptFsn,
+            failureText: failure.detailUnmodified,
+            user: user,
+            timestamp: new Date().getTime(),
+            branchRoot: branchRoot
+          };
+
+          // if no assertions for this uuid, create container
+          if (!validationFailureExclusions[failure.conceptId]) {
+            validationFailureExclusions[failure.conceptId] = new Array();
+          }
+
+          // doublecheck this assertion does not already exist
+          if (validationFailureExclusions[failure.conceptId].filter(function (item) {
+              return item.conceptId === failure.conceptId && item.failureText === failure.failureText;
+            }).length === 0) {
+
+            // add and set the exclusions
+            validationFailureExclusions[failure.conceptId].push(exclusion);
+          }
+        });        
+
+        updateValidationFailureExclusions().then(function () {
+          deferred.resolve();
+        }, function () {
+          deferred.reject();
+        });
+
+        return deferred.promise;
+      },
+
       removeValidationFailureExclusion: function (assertionUuid, conceptId, failureText) {
 
         var deferred = $q.defer();
