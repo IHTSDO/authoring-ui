@@ -775,6 +775,40 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
+          scope.excludeFailures = function () {
+            var failures = scope.failureTableParams.data;
+            var failuresToAddWhiteList = failures.filter(function (failure) {
+              return failure.selected;
+            });
+
+            if(failuresToAddWhiteList.length === 0) {
+              return;
+            }
+
+            accountService.getAccount().then(function (accountDetails) {
+              // get the user name
+              var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
+              var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
+
+              // set the local flag to false to ensure immediate removal
+              angular.forEach(failuresToAddWhiteList, function (failure) {                
+                failure.isUserExclusion = true;
+              });              
+
+              // add the exclusion and update tables
+              // NOTE: Must use the unmodified detail, not the referenced component modified detail
+              validationService.addValidationFailuresExclusion(scope.assertionFailureViewed.assertionUuid,
+                scope.assertionFailureViewed.assertionText,
+                failuresToAddWhiteList,
+                userName,
+                branchRoot).then(function () {
+
+                scope.reloadTables();
+              });
+            });
+
+          };
+
           scope.openCreateTaskModal = function (task, editList, savedList) {
 
             var modalInstance = $modal.open({
