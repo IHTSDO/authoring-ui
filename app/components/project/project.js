@@ -201,7 +201,7 @@ angular.module('singleConceptAuthoringApp.project', [
                               if (item.id == merge.id) {
                                 angular.forEach(item.conflicts, function (conflict) {
                                   if (msg.length > 0) {
-                                    msg = msg + ' \n ';
+                                    msg = msg + ' \n';
                                   }
                                   msg += conflict.message;
                                   conflictCount++;
@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp.project', [
                               }                        
                             });
                             if (msg.length > 0) {
-                              notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n ' : '') + msg);
+                              notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
                             }
                           }
                         });
@@ -261,7 +261,7 @@ angular.module('singleConceptAuthoringApp.project', [
                                   if (item.id == merge.id) {
                                     angular.forEach(item.conflicts, function (conflict) {
                                       if (msg.length > 0) {
-                                        msg = msg + ' \n ';
+                                        msg = msg + ' \n';
                                       }
                                       msg += conflict.message;
                                       conflictCount++;
@@ -269,7 +269,7 @@ angular.module('singleConceptAuthoringApp.project', [
                                   }                        
                                 });
                                 if (msg.length > 0) {
-                                  notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n ' : '') + msg);
+                                  notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
                                 }
                               }
                             });
