@@ -1016,8 +1016,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           console.log(response);
           batchEditingService.addBatchConcepts(response).then(function(){
               notificationService.sendMessage('Successfully added batch concepts', 3000);
-              $rootScope.$broadcast('batchConcept.change');
-              $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
+              $rootScope.$broadcast('batchConcept.change');              
+              $rootScope.$broadcast('swapToBatch');
             });
         }, function () {
           // do nothing
