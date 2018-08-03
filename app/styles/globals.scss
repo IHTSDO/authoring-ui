@@ -358,6 +358,9 @@ td select {
 .header-alerts button:focus {
     background-color: transparent
 }
+.header-alerts strong {
+    white-space: pre-wrap;
+}
 section.tables-data > div.card div.table-responsive > table.table-full > tbody > tr > td {
     height: 45px;
 }
