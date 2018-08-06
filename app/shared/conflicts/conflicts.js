@@ -552,7 +552,7 @@ angular.module('singleConceptAuthoringApp')
                             msg += conflict.message;
                             conflictCount++;
                           });
-                        }                        
+                        }
                       });
                       if (msg.length > 0) {
                         notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
@@ -585,7 +585,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.warning = true;
                   $rootScope.canConflict = true;
                   scope.fiveOFour = false;
-                }
+                }*/
 
               }, function (error) {
                 scope.rebaseRunning = false;
@@ -622,7 +622,7 @@ angular.module('singleConceptAuthoringApp')
                             msg += conflict.message;
                             conflictCount++;
                           });
-                        }                        
+                        }
                       });
                       if (msg.length > 0) {
                         notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
@@ -660,7 +660,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // NOTE: Do not switch to edit view on warning
                   // TODO Need to revisit this
-                }
+                }*/
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
