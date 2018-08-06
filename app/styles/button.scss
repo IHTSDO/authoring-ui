@@ -567,6 +567,7 @@ button.fsn-title-button {
 }
 .copy-to-clipboard {
     display: inline-block;
+    padding-left: 4px;
 }
 .copy-to-clipboard button.btn:active:hover {
     color: #333;
@@ -574,6 +575,8 @@ button.fsn-title-button {
 .editing-form .copy-to-clipboard button.btn {
     background-color: transparent;
     font-size: 12px;
+    padding-right: 0px;
+    padding-left: 0px;
 }
 .task-details .btn {
     padding: 0px;

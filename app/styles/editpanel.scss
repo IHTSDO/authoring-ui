@@ -355,6 +355,9 @@ select {
     min-height: 30px;
     font-size: 14px;
 }
+.concept-headers > div:first-child button {
+    padding-left: 0px;
+}
 /* Global form widths */
 
 .concept-headers .col-md-1 {
@@ -874,10 +877,7 @@ button.fsn-title-button {
     z-index: 1070;
     max-width: inherit !important;
 }
-#wrap {
-    display: inline-block;
-}
-#wrap .popover {
+.attach-template-control.popover {
     margin-top: 1px;
     min-width: 250px;
     z-index: 1070;
@@ -1363,4 +1363,22 @@ button-link .bluehl .grey.darken-3 {
 }
 .result-width {
   width: calc(100% - 125px);
+}
+.concept-title ul.dashboard-link-list li:hover ul {    
+    z-index: 1;
+    left: -139px;
+    top: 30px;
+    width: 147px;
+}
+.concept-title ul.dashboard-link-list li ul li[disabled] {    
+    background-color: #424249;
+    color: #76747c;
+    border-bottom: 1px #76747c solid;
+}
+.concept-title ul.dashboard-link-list li ul:after {
+    margin-left: 65px;
+}
+.concept-title ul.dashboard-link-list li i.md.md-menu {
+    height: 23px;
+    width: 17px;
 }
