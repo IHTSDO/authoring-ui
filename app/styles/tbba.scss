@@ -173,6 +173,12 @@ ul.review-nav .btn:hover,
     height: 19px;
     width: 19px;
     float: left;
+    padding-left: 2px;
+}
+.editing-form .btn.pointer.wandbutton.attach-template-control {
+    padding-top: 0px;    
+    padding-right: 0px;
+    padding-left: 4px;
 }
 .template-controls .sub-navigation-link-list .btn {
     padding: 0px;

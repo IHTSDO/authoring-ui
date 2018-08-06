@@ -135,6 +135,8 @@ h4.timeline-title {
 .sca-dark .small-buttons.btn-default[disabled]:hover {
     color: #D0D0D0
 }
+.sca-dark .concept-headers .small-buttons.btn-default[disabled],
+.sca-dark .concept-headers .small-buttons.btn-default[disabled]:hover,
 .sca-dark .new-concept .small-buttons.btn-default[disabled],
 .sca-dark .new-concept .small-buttons.btn-default[disabled]:hover {
     color: #444;
@@ -1207,4 +1209,8 @@ background-color: #262e39;}
 }
 .sca-dark .taxonomies-comparison-panel {
     background-color: #2e3743;
+}
+.sca-dark .concept-title ul.dashboard-link-list li ul li[disabled] {
+    color: #bdbdbd;
+    background-color: #424249;
 }

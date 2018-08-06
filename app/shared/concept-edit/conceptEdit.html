@@ -41,49 +41,59 @@
 
     <div class="row grey concept-headers darken-4" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
 
-      <div class="pull-left col-md-1 no-padding" ng-disabled="saving" ng-class="{'disabled': saving}">
-            <button ng-click="setConceptProperties(concept, $event)" type="button" id="component-{{concept.conceptId ? concept.conceptId : getHashkey(concept)}}"
-                    class="btn btn-default morebuttons transparent md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
-                    popover-template="'shared/component-more/conceptMore.html'"
-                    popover-placement="{{popoverDirection}}"
-                    popover-trigger="click: click"
-                    popover-append-to-body="true">
-              <span>More details</span>
-            </button>
-            <div class="template-controls " ng-if="template && !isMerge && !isStatic && !isBatch">
-              <ul class="sub-navigation-link-list ">
-                <li>
-                  <a>
-                    <div class="pointer btn tooltips-right tooltips-light normal-case wandbutton" ng-disabled="isStatic" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
-                    <span>Detach Template {{template.name}} v {{template.version}}</span>
-                    </div>
-                  </a>
+      <div class="pull-left no-padding col-md-1" ng-disabled="saving" ng-class="{'disabled': saving}">
+          <button ng-click="setConceptProperties(concept, $event)" type="button" id="component-{{concept.conceptId ? concept.conceptId : getHashkey(concept)}}"
+                  class="btn btn-default morebuttons transparent md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
+                  popover-template="'shared/component-more/conceptMore.html'"
+                  popover-placement="{{popoverDirection}}"
+                  popover-trigger="click: click"
+                  popover-append-to-body="true">
+            <span>More details</span>
+          </button>
+          <div class="template-controls " ng-if="template && !isMerge && !isStatic && !isBatch">
+            <ul class="sub-navigation-link-list ">
+              <li>
+                <a>
+                  <div class="pointer btn tooltips-right tooltips-light normal-case wandbutton" ng-disabled="isStatic" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
+                  <span>Detach Template {{template.name}} v {{template.version}}</span>
+                  </div>
+                </a>
 
-                </li>
+              </li>
+            </ul>
+          </div>
 
-              </ul>
+          <div ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch"
+              popover-template="'components/edit/editTemplateSelect.html'"
+              popover-placement="left-bottom"
+              popover-trigger="click: click"
+              popover-append-to-body="true"
+              class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton attach-template-control">
+            <i class="md fa fa-magic"></i><span>Attach Template</span>
+          </div>
 
-            </div>
-            <div id="wrap">
-                <div
-                    popover-template="'components/edit/editTemplateSelect.html'"
-                    popover-placement="left-bottom"
-                    popover-trigger="click: click"
-                    popover-append-to-body="true"
-                    ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch"
-                    class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton">
-      <i class="md fa fa-magic"></i><span>Attach Template</span></div>
-            </div>
 
-            <div class="copy-to-clipboard" ng-show="isSctid(concept.conceptId) && concept.fsn">
-              <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
-              <ul class="dropdown-menu">
-                  <li><a ng-click="copyToClipboard(concept.conceptId)">Copy ConceptId</a></li>
-                  <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>
-                  <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and ConceptId</a></li>
-                  <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy Term and ConceptId</a></li>
-              </ul>
-            </div>
+          <div class="copy-to-clipboard" ng-if="isSctid(concept.conceptId) && concept.fsn">
+            <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
+            <ul class="dropdown-menu">
+                <li><a ng-click="copyToClipboard(concept.conceptId)">Copy ConceptId</a></li>
+                <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>
+                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and ConceptId</a></li>
+                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy Term and ConceptId</a></li>
+            </ul>
+          </div>
+          <button type="button"
+                  ng-click="toggleConceptActive(concept, true)"
+                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  class="btn-default red tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus small-buttons">
+            <span ng-if="!isStatic">Delete Unpublished Concept</span>
+          </button>
+          <button type="button"
+                class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
+                ng-click="saveConcept()"
+                ng-if="!isMerge && isModified && !isStatic">
+            <span> Save Concept </span>
+          </button>
       </div>
 
       <!-- concept name -->
@@ -101,18 +111,16 @@
 
       </div>
 
-      <div class="  no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
+      <div class="no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
            ng-class="{'disabled': saving}">
-        <div class=" p-t-3 p-r-5 pull-right ">
-
+        <div class=" p-t-3 p-r-5 pull-right">
           <button type="button"
-                  class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                  ng-click="saveConcept()"
-                  ng-if="!isMerge && isModified && !isStatic">
+              class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
+              ng-click="saveConcept()"
+              ng-if="!isMerge && !isStatic"
+              ng-disabled="!isModified">
             <span> Save Concept </span>
           </button>
-
-
           <button type="button"
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
                   ng-click="saveConcept()" ng-if="isMerge">
@@ -123,20 +131,38 @@
             Revert
           </button>
 
-
-
-          <!-- control buttons -->
-          <button type="button"
-                  ng-click="toggleConceptActive(concept, true)"
-                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
-                  class="btn-default red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
-            <span ng-if="!isStatic">Delete Unpublished Concept</span>
-          </button>
           <button type="button"
                   class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-thumb-up"
                    ng-if="allowApproval"
                   ng-click="approveAndLoadNext()">
             <span>Approve</span>
+          </button>
+          <button type="button"
+                  ng-click="toggleConceptActive(concept, true)"
+                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  class="btn-default red tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus small-buttons">
+            <span ng-if="!isStatic">Delete Unpublished Concept</span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
+                  ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
+                  ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
+                  ng-click="undoAll()" ng-if="!isStatic && !concept.released" ng-disabled="!isModified">
+            <span>Revert to Saved</span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
+                  ng-click="revertToVersion()" ng-if="!isStatic && concept.released && role === 'AUTHOR'">
+            <span>Revert to version</span>
+          </button>
+          <button type="button"
+                  ng-click="toggleConceptActive(concept, true)"
+                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  class="btn-default red tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus small-buttons">
+            <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
           <button type="button"
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
@@ -150,49 +176,16 @@
             <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
           </button>
           <button type="button"
-                  ng-click="addAdditionalAxiom()"
-                  ng-if="axiomSupport && role === 'AUTHOR'"
-                  class="btn-default green small-buttons tooltips-bottom medium-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square-o" style="transform: inherit;">
-            <span ng-if="!isStatic">Add Additional Axiom</span>
-          </button>
-          <button type="button"
-                  ng-click="addGCIAxiom()"
-                  ng-if="axiomSupport && role === 'AUTHOR'"
-                  class="btn-default green small-buttons tooltips-bottom small-size-tooltip tooltips-light normal-case editbuttons fa fa-plus-square" style="transform: inherit;">
-            <span ng-if="!isStatic">Add GCI Axiom</span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
-                  ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
-                  ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
-          </button>
-          <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"
                   ng-click="toggleInferredRelationships()">{{!showInferredRels ? 'S' : 'I'}}
                   <span ng-if="!showInferredRels"> Switch to inferred view </span>
                   <span ng-if="showInferredRels"> Switch to stated view </span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
-                  ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
-            <span>Undo Changes</span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons amber md md-redo tooltips-bottom tooltips-light small-size-tooltip"
-                  ng-click="redo()" ng-if="!isStatic" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1">
-            <span>Redo Changes</span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
-            <span>Revert to Saved</span>
           </button>
           <div ng-repeat="field in concept.additionalFields">
                     <textarea class="msd-elastic resizable-text no-border-bottom" ng-model-options="{updateOn: 'blur'}"
                               ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
                     </textarea>
           </div>
-
           <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
                   ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                   class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
@@ -234,25 +227,22 @@
                           ng-click="collapse(concept)"></i></span>
               </div>
               <ul ng-if="(axiomSupport && role === 'AUTHOR') || !isStatic">
-                <li ng-click="addAdditionalAxiom()" ng-if="axiomSupport && role === 'AUTHOR'">Add Additional Axiom</li>
-                <li ng-click="addGCIAxiom()" ng-if="axiomSupport && role === 'AUTHOR'">Add GCI Axiom</li>
+                <li ng-click="addAdditionalAxiom()" ng-if="axiomSupport">Add Additional Axiom</li>
+                <li ng-click="addGCIAxiom()" ng-if="axiomSupport">Add GCI Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
               </ul>
             </li>
           </ul>
-
         </div>
       </div>
-
       <div class="no-padding edits concept-title" ng-disabled="saving" ng-class="{'disabled': saving}">
-            <button type="button"
-                      class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
-                      ng-show="hasFocus">
-                <span> Shortcuts active</span>
-            </button>
+        <button type="button"
+                  class="btn-default fa-sca fa-keyboard-o tooltips-bottom editbuttons small-size-tooltip small-buttons shortcutIndicator"
+                  ng-show="hasFocus">
+            <span> Shortcuts active</span>
+        </button>
       </div>
-
     </div>
   </div>
   <div class="row">

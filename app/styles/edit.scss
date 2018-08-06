@@ -759,6 +759,14 @@ sca-column .hasSVG {
 .concept-headers {
     padding-bottom: 5px;
 }
+.concept-headers > .fa-ellipsis-v {
+    min-height: 20px;
+    padding-bottom: 0px;
+    padding-top: 5px;
+    padding-right: 0px;
+    height: 19px;
+}
+
 .classify-buttons {
     border: 1.5px solid ;
     border-radius: 3px ;
