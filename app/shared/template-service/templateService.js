@@ -273,8 +273,8 @@ angular.module('singleConceptAuthoringApp')
             d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
             d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
 
-            if (!d.released) {
-              d.descriptionId = snowowlService.createGuid();
+            if (!d.released && snowowlService.isSctid(d.descriptionId)) {
+              delete d.descriptionId;
             }
             
             // check case sensitive terms for non-CS terms
