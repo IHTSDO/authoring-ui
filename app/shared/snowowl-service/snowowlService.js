@@ -1070,7 +1070,7 @@ angular.module('singleConceptAuthoringApp')
         // if the user is doing an ecl search
         else if(escgExpr){
           params.termFilter = termFilter;
-
+          
           if (view === 'stated') {
             params.statedEclFilter = escgExpr;
           } else {
@@ -1373,7 +1373,7 @@ angular.module('singleConceptAuthoringApp')
 
       // Get last promotion for branch
       // GET /traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
-      function getLastPromotionTime(branchRoot) {
+      function getLastPromotionTime(branchRoot) {        
         if(!branchRoot) {
           console.error('Error retrieving last promotion time: Branh root is missing');
           return null;
@@ -1383,7 +1383,7 @@ angular.module('singleConceptAuthoringApp')
           return response.data.content[0].commitDate;
         }, function (error) {
           return null;
-        });
+        });        
       }
 
       //////////////////////////////////////////////////////
@@ -1781,15 +1781,7 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-      
-      function searchMerge (source, target, status) {
-        return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
-          var mergeReview = response.data;
-          return mergeReview;
-        }, function (error) {
-          return null;
-        });
-      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!

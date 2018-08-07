@@ -542,20 +542,16 @@ angular.module('singleConceptAuthoringApp')
                   snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                     if (response && response.items && response.items.length > 0) {
                       var msg = '';
-                      var conflictCount = 0;
                       angular.forEach(response.items, function (item) {
-                        if (item.id == merge.id) {
-                          angular.forEach(item.conflicts, function (conflict) {
-                            if (msg.length > 0) {
-                              msg = msg + ' \n ';
-                            }
-                            msg += conflict.message;
-                            conflictCount++;
-                          });
-                        }                        
+                        angular.forEach(item.conflicts, function (conflict) {
+                          if (msg.length > 0) {
+                            msg = msg + '<br />';
+                          }
+                          msg += conflict.message;
+                        });
                       });
                       if (msg.length > 0) {
-                        notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n ' : '') + msg);
+                        notificationService.sendError('Confilcts : ' + msg);
                       }
                     }
                   });
@@ -612,20 +608,16 @@ angular.module('singleConceptAuthoringApp')
                   snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                     if (response && response.items && response.items.length > 0) {
                       var msg = '';
-                      var conflictCount = 0;
                       angular.forEach(response.items, function (item) {
-                        if (item.id == merge.id) {
-                          angular.forEach(item.conflicts, function (conflict) {
-                            if (msg.length > 0) {
-                              msg = msg + ' \n ';
-                            }
-                            msg += conflict.message;
-                            conflictCount++;
-                          });
-                        }                        
+                        angular.forEach(item.conflicts, function (conflict) {
+                          if (msg.length > 0) {
+                            msg = msg + '<br />';
+                          }
+                          msg += conflict.message;
+                        });
                       });
                       if (msg.length > 0) {
-                        notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n ' : '') + msg);
+                        notificationService.sendError('Confilcts : ' + msg);
                       }
                     }
                   });
