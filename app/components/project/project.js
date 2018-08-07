@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
-      
+
       // reset flag before checking in getting project detail
       $rootScope.hasViewExclusionsPermission = false;
 
@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp.project', [
             if (promotionTime) {
               let date = new Date(promotionTime);
               $scope.project.lastPromotion = date.toUTCString();
-            }            
+            }
           });
 
           // set the branch metadata for use by other elements
@@ -94,7 +94,7 @@ angular.module('singleConceptAuthoringApp.project', [
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               $scope.validationContainer = response;
             });
-          }         
+          }
         });
       };
 
@@ -191,7 +191,16 @@ angular.module('singleConceptAuthoringApp.project', [
                   if (!response.metadata || response.metadata && !response.metadata.lock) {
                     notificationService.sendMessage('Promoting project...');
                     scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                      $scope.getProject();
+                      if (response.status === 'CONFLICTS') {
+                        var merge = JSON.parse(response.message);
+                        snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                          if (response && response.items && response.items.length > 0) {
+                            // show conflicts
+                          }
+                        });
+                      } else {
+                        $scope.getProject();
+                      }
                     });
                   }
                   else {
@@ -227,7 +236,16 @@ angular.module('singleConceptAuthoringApp.project', [
                       if (!response.metadata || response.metadata && !response.metadata.lock) {
                         notificationService.sendMessage('Promoting project...');
                         scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                          $scope.getProject();
+                          if (response.status === 'CONFLICTS') {
+                            var merge = JSON.parse(response.message);
+                            snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                              if (response && response.items && response.items.length > 0) {
+                                // show conflicts
+                              }
+                            });
+                          } else {
+                            $scope.getProject();
+                          }
                         });
                       }
                       else {
