@@ -1242,12 +1242,11 @@ angular.module('singleConceptAuthoringApp')
                             // assign results to the classification container (note,
                             // chronological order, use last value)
                             var classification = classifications[classifications.length - 1];
+                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                             if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                              msg += ' - Changes found';
-                              url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                              msg += ' - Changes found';                              
                             } else {
-                              msg += ' - No changes found';
-                              url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                              msg += ' - No changes found';                              
                             }
 
                             notificationService.sendMessage(msg, 0, url);
