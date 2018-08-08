@@ -130,11 +130,19 @@ angular.module('singleConceptAuthoringApp')
                     blocksPromotion: false
                   });
                 } else {
-                  flags.push({
-                    checkTitle: 'Classification Not Current',
-                    checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.  Promote only if you are sure any changes will not affect future classification.',
-                    blocksPromotion: false
-                  });
+                  if (task) {
+                    flags.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.  Promote only if you are sure any changes will not affect future classification.',
+                      blocksPromotion: false
+                    });
+                  } else {
+                    flags.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Promotion is disabled as the classification is not current. Please return to project and start a new classification.',
+                      blocksPromotion: false
+                    });
+                  }
                 }
               }
 
@@ -163,11 +171,19 @@ angular.module('singleConceptAuthoringApp')
                   });
                 }
                 else {
-                  flags.push({
-                    checkTitle: 'Classification Not Current',
-                    checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                    blocksPromotion: false
-                  });
+                  if (task) {
+                    flags.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+                      blocksPromotion: false
+                    });
+                  } else {
+                    flags.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Promotion is disabled as the classification is not current. Please return to project and start a new classification.',
+                      blocksPromotion: false
+                    });
+                  }
                 }
               }
 
