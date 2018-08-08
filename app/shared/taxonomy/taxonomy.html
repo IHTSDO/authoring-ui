@@ -4,6 +4,13 @@
       <option value="inferred">Inferred View</option>
       <option value="stated">Stated View</option>
     </select>
+
+    <div class="pull-right">
+      <label class="m-r-10 control-label">Language:</label>
+      <select ng-model="selectedLanguage" name="select-type" class="no-padding m-t-5 pull-right"
+              ng-options="item as item.label for item in languages track by item.id">
+      </select>
+    </div>
   </div>
   <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="rootConcept">
     <div class="col-md-11 no-padding" >
@@ -14,7 +21,7 @@
     </div>
   </div>
   <div class=" col-md-12 no-padding">
-    <div taxonomy-tree branch="branch" concept="rootConcept" default-view="viewSelection"></div>
+    <div taxonomy-tree branch="branch" concept="rootConcept" default-view="viewSelection" default-language="selectedLanguage.id"></div>
   </div>
 
   <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="secondRootConcept">
@@ -31,6 +38,6 @@
       drag-hover-class="sca-drag-hover"
       drop-channel="completeConcept" 
       ui-on-drop="dropConcept($data)">    
-    <div taxonomy-tree branch="branch" concept="secondRootConcept" ng-if="secondRootConcept != null" default-view="viewSelection"></div>
+    <div taxonomy-tree branch="branch" concept="secondRootConcept" ng-if="secondRootConcept != null" default-view="viewSelection" default-language="selectedLanguage.id"></div>
   </div>
 </div>

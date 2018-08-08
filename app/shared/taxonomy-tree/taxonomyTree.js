@@ -11,7 +11,8 @@ angular.module('singleConceptAuthoringApp')
         branch: '=',
         limit: '@?',
         view: '=',
-        defaultView: '='
+        defaultView: '=',
+        defaultLanguage: '=?'
       },
       templateUrl: 'shared/taxonomy-tree/taxonomyTree.html',
 
@@ -351,6 +352,18 @@ angular.module('singleConceptAuthoringApp')
             scope.statedFlag = false;
           }
 
+          if (scope.defaultLanguage) {
+            if (scope.defaultLanguage === '900000000000509007-fsn') {
+              scope.searchExtensionFlag = false;
+              scope.synonymFlag = false;
+              scope.acceptLanguageValue = null;
+            } else if (scope.defaultLanguage === '900000000000509007-pt') {
+              scope.synonymFlag = true;
+            } else {
+              // do nothing
+            }
+          }
+
           // clear any existing trees
           scope.terminologyTree = [];
 
@@ -424,6 +437,10 @@ angular.module('singleConceptAuthoringApp')
         }, false);
 
         scope.$watch('defaultView', function () {
+          initialize();
+        }, false);
+
+        scope.$watch('defaultLanguage', function () {
           initialize();
         }, false);
         

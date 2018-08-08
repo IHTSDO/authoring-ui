@@ -9,6 +9,8 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
       // initialize with root concept (triggers rendering of full SNOMEDCT hierarchy)
       $scope.rootConcept = null;
       $scope.secondRootConcept = null;
+      $scope.languages = [];
+      $scope.selectedLanguage = null;
 
       /**
        * Drag and drop object
@@ -38,4 +40,63 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
       $scope.closeTaxonomy = function () {
         $scope.secondRootConcept = null;
       };      
+
+      function initLanguagesDropdown () {
+        let usModel = {
+          moduleId: '731000124108',
+          dialectId: '900000000000509007'
+        };
+
+        let usFSN = {id: '900000000000509007-fsn', label: 'FSN in US'};
+        let usPT = {id: '900000000000509007-pt', label: 'PT in US'};
+        var internatinalFilter = [];
+        internatinalFilter.push(usFSN);
+        internatinalFilter.push(usPT);           
+
+        var extensionFilter = [];
+        extensionFilter.push(usFSN);
+
+        var isExtension = metadataService.isExtensionSet();
+
+        if (isExtension) {          
+          var dialects = metadataService.getAllDialects();
+          // Remove 'en-gb' if any
+          let gbDialectId = '900000000000508004';
+          if (dialects.hasOwnProperty(gbDialectId)) {             
+            delete dialects[gbDialectId];
+          }
+
+          // us dialect + extension with one dialect
+          if (Object.keys(dialects).length === 2 
+              && metadataService.getCurrentModuleId() !== usModel.moduleId) {
+            for (var key in dialects) {
+              if (key !== usModel.dialectId) {
+                var dialect = {id: key, label: 'PT in ' + dialects[key].toUpperCase()}
+                extensionFilter.push(dialect);
+                $scope.selectedLanguage = dialect; // Set PT in extension by default
+              }
+            }
+            $scope.languages = extensionFilter;
+          } else {
+            // multiple dialects or us module
+            $scope.languages = internatinalFilter;
+            $scope.selectedLanguage = usPT; // Set PT in US by default
+          }                
+        } else {
+          $scope.languages = internatinalFilter;
+          $scope.selectedLanguage = usFSN; // Set FSN in US by default
+        }
+      }      
+
+      // on extension metadata set
+      $scope.$on('setExtensionMetadata', function (event, data) {
+        initLanguagesDropdown();        
+      });
+
+      function initialize () {
+        initLanguagesDropdown();
+      }
+      
+      initialize ();
+
     }]);
