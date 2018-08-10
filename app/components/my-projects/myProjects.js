@@ -110,6 +110,10 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       if (!$scope.projects || $scope.projects.length === 0) {
       }
       else {
+        // add top-level element for ng-table sorting
+        angular.forEach($scope.projects, function(project) {
+          project.lead = project.projectLead.displayName;
+        });
         $scope.tableParams.reload();
       }
 
