@@ -328,10 +328,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           case 'Review Complete':
             accountService.getRoleForTask($scope.task).then(function (role) {
               if (role === 'AUTHOR') {
-                reviewService.cancelReview($scope.task).then(function () {
-                  notificationService.sendMessage('Review cancelled', 3000);
-                }, function (error) {
-                  notificationService.sendError('Error cancelling review: ' + error);
+                scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+                  var reviewedListIds = response;
+                  if (reviewedListIds && reviewedListIds.length > 0) {
+                    modalService.confirm('There are ' + reviewedListIds.length + ' approved concepts in the review. Cancelling will reset all concepts to unapproved and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review. Are you sure you want to cancel this review?').then(function () {
+                      reviewService.cancelReview($scope.task).then(function () {
+                        notificationService.sendMessage('Review Cancelled', 2000);                     
+                      });
+                    }, function () {
+                      // do nothing
+                    });
+                  } else {
+                    reviewService.cancelReview($scope.task).then(function () {
+                      notificationService.sendMessage('Review Cancelled', 2000);                     
+                    });
+                  }
                 });
               } else {
                 reviewService.unclaimReview($scope.task).then(function () {
