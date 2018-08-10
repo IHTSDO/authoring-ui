@@ -721,15 +721,6 @@ angular.module('singleConceptAuthoringApp')
 
             bulkValidateConcepts(copiedValidConcepts).then(function(){
               if (scope.validConcepts.length > 0) {
-<<<<<<< HEAD
-                var clonedConcepts = [];
-                for (var i = 0; i < scope.validConcepts.length; i++) {
-                  scope.validConcepts[i].tableAction = 'Saving...';
-                  var copiedConcept = angular.copy(scope.validConcepts[i]);
-                  snowowlService.cleanConcept(copiedConcept, snowowlService.isSctid(copiedConcept.conceptId) ? true: false);
-                  clonedConcepts.push(copiedConcept);
-                }
-=======
                 var clonedConcepts = [];                
                 for (var i = 0; i < scope.validConcepts.length; i++) {  
                   scope.validConcepts[i].tableAction = 'Saving...';
@@ -738,7 +729,6 @@ angular.module('singleConceptAuthoringApp')
                   clonedConcepts.push(copiedConcept);           
                 } 
                 console.log(clonedConcepts);
->>>>>>> b50d383f... TBBA-270 bulk validation and saving of concepts generated via transformation
                  // bulk save concepts
                 snowowlService.bulkUpdateConcept(scope.branch,clonedConcepts,true).then(function(response){
                   snowowlService.bulkRetrieveFullConcept(response.conceptIds,scope.branch).then(function(concepts){
