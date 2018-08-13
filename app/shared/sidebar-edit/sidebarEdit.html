@@ -33,7 +33,7 @@
         <div class="fa fa-envelope"></div>
         <span>Review Not Available </span></a></li>
 
-        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch && templates.length > 0"><a ng-click="setActiveTab(5);viewBatch();" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch && templates.length > 0 && $parent.isOwnTask"><a ng-click="setActiveTab(5);viewBatch();" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
 
         <div class="fa fa-file-excel-o"></div>
