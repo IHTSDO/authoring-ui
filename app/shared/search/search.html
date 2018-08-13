@@ -141,7 +141,7 @@
         </select>
       </div>
     </div>
-    <div class="col-md-8 z-index-1 pull-right">     
+    <div class="col-md-8 z-index-1 pull-right">
       <div class="col-md-5 col-sm-4 filter-label">
         <label class="pull-right m-t-10">Def.</label>
       </div>
@@ -285,14 +285,14 @@
   <div class="col-md-12 m-t-10 load-performed" ng-show="templateMode && loadPerformed">
     <button ng-show="loadPerformed" class="btn btn-default classify light-button load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled"
-            ng-class="[{'col-md-8' : userOptions.model === 'lexical'}, {'col-md-10' : userOptions.model !== 'lexical'}]">
+            ng-class="[{'col-md-8' : userOptions.model !== 'logical!lexical' }, {'col-md-10' : userOptions.model === 'logical!lexical'|| $parent.role !== 'AUTHOR'}]">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
     <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
       <span class="tooltip-dl">Download Selected Results</span>
     </a>
-    <a ng-show="loadPerformed" ng-if="userOptions.model === 'lexical'" ng-disabled="!results.length || !downloadButtonActive || !templateMode" class="btn col-md-2 fa fa-random green tooltips-top large-size-tooltip white-icon" ng-click="openTransformModal()">
+    <a ng-show="loadPerformed" ng-if="$parent.role === 'AUTHOR' && (userOptions.model === 'lexical' || userOptions.model === 'logical')" ng-disabled="!results.length || !downloadButtonActive || !templateMode" class="btn col-md-2 fa fa-random green tooltips-top large-size-tooltip white-icon transform" ng-click="openTransformModal()">
       <span class="tooltip-dl">Transform</span>
     </a>
   </div>

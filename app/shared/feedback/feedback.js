@@ -163,12 +163,11 @@ angular.module('singleConceptAuthoringApp')
               scope.reviewComplete = task.status !== 'In Review';
               accountService.getRoleForTask(task).then(function (role) {
                 scope.role = role;
-              });
-
-
-              if (scope.role === 'UNDEFINED') {
+              }, function() {
+                scope.role = 'UNKNOWN';
                 notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
-              }
+              });
+              
               if (scope.task.reviewer) {
                 scope.selectedReviewer = scope.task.reviewer;
               }
@@ -188,6 +187,8 @@ angular.module('singleConceptAuthoringApp')
                   scope.reviewComplete = task.status !== 'In Review';
                   accountService.getRoleForTask(task).then(function (role) {
                     scope.role = role;
+                  }, function() {
+                    scope.role = 'UNKNOWN';
                   });
                   console.log(oldStatus);
                   if (oldStatus === 'In Review' && task.status === 'In Progress') {
