@@ -14,6 +14,7 @@ angular.module('singleConceptAuthoringApp')
 
       function getNewAcceptabilityMap(moduleId, defaultValue, initial, lang) {
         var acceptabilityMap = {};
+        var readOnly = metadataService.getReadOnlyDialectsForModuleId(moduleId);
         var dialects = metadataService.getDialectsForModuleId(moduleId);
         var dialectDefaults = metadataService.getDialectDefaultsForModuleId(moduleId);
         for (var key in dialects) {
@@ -35,10 +36,12 @@ angular.module('singleConceptAuthoringApp')
             else {
             acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
           }
-          if(dialectDefaults[key] === "false"){
+          if(dialectDefaults[key] === "false" && !initial){
               delete acceptabilityMap[key]
           }
-
+          if(readOnly[key] === "true"){
+              delete acceptabilityMap[key];
+          }
         }
         return acceptabilityMap;
       }

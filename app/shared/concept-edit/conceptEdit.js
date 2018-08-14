@@ -203,6 +203,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         };
+          
+        scope.checkReadOnlyDialect = function(dialectId){
+            let readOnly = metadataService.getReadOnlyDialectsForModuleId(scope.concept.moduleId);
+            if(readOnly[dialectId] === 'true'){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
 
         function bindShortcutToScope () {
           hotkeys.bindTo(scope)
@@ -1970,7 +1980,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       }).length > 0;
 
                     if(havingPreferredSynonym) {
-                      description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                      if(metadataService.getDialectDefaultsForModuleId(moduleId)[dialect] !== "false"){
+                          description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                      }
                     }
                 });
 
