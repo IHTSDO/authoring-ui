@@ -3731,69 +3731,74 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
         
         scope.revertToVersion = function () {
-          notificationService.sendMessage('Reverting concept to version...');
-          var codeSystemShortName = '';
-          getCodeSystemShortName().then(function (response) {
-            codeSystemShortName = response;
-            getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
-              if (response.items.length > 0) {
-                var version = response.items[response.items.length - 1].version;
-                var versionBranch = null;
-                if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
-                  versionBranch = 'MAIN/' + version;
-                } else {
-                  var arr = scope.branch.split("/");
-                  versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
-                }
-
-                var result = {};
-                result.versionedConcept = null;
-                result.projectConcept = null;
-
-                var getVersionedConceptFn = function () {
-                  var deferred = $q.defer();
-                  snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
-                    result.versionedConcept = response;
-                    deferred.resolve();
-                  }, function (error) {
-                    deferred.resolve();
-                  });
-                  return deferred.promise;
-                };
-                
-                var getProjectConceptFn = function () {
-                  var deferred = $q.defer();
-                  var arr = scope.branch.split("/");
-                  var branch = arr.slice(0,arr.length - 1).join("/");
-                  snowowlService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
-                    result.projectConcept = response;
-                    deferred.resolve();
-                  }, function (error) {
-                    deferred.resolve();
-                  });
-                  return deferred.promise;
-                };
-
-                var promises = [];
-                promises.push(getVersionedConceptFn());
-                promises.push(getProjectConceptFn());
-                // on resolution of all promises
-                $q.all(promises).then(function () {
-                  if (!result.versionedConcept && !result.projectConcept){
-                    notificationService.clear();
-                    modalService.message('This concept was created on this task, please use the delete functionality to remove it.');
+          modalService.confirm('The concept will be reverted to the version that was present when the task was created. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Reverting concept to version...');
+            var codeSystemShortName = '';
+            getCodeSystemShortName().then(function (response) {
+              codeSystemShortName = response;
+              getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
+                if (response.items.length > 0) {
+                  var version = response.items[response.items.length - 1].version;
+                  var versionBranch = null;
+                  if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
+                    versionBranch = 'MAIN/' + version;
                   } else {
-                    scope.concept = result.versionedConcept ? result.versionedConcept : result.projectConcept;
-                    scope.unmodifiedConcept = JSON.parse(JSON.stringify(result.versionedConcept ? result.versionedConcept : result.projectConcept));
-                    scope.isModified = false;
-                    scope.saveConcept();
+                    var arr = scope.branch.split("/");
+                    versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
                   }
-                });                
-              } else {               
-                notificationService.sendError('Failed to get versions');
-              }
+
+                  var result = {};
+                  result.versionedConcept = null;
+                  result.projectConcept = null;
+
+                  var getVersionedConceptFn = function () {
+                    var deferred = $q.defer();
+                    snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
+                      result.versionedConcept = response;
+                      deferred.resolve();
+                    }, function (error) {
+                      deferred.resolve();
+                    });
+                    return deferred.promise;
+                  };
+                  
+                  var getProjectConceptFn = function () {
+                    var deferred = $q.defer();
+                    var arr = scope.branch.split("/");
+                    var branch = arr.slice(0,arr.length - 1).join("/");
+                    snowowlService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
+                      result.projectConcept = response;
+                      deferred.resolve();
+                    }, function (error) {
+                      deferred.resolve();
+                    });
+                    return deferred.promise;
+                  };
+
+                  var promises = [];
+                  promises.push(getVersionedConceptFn());
+                  promises.push(getProjectConceptFn());
+                  // on resolution of all promises
+                  $q.all(promises).then(function () {
+                    if (!result.versionedConcept && !result.projectConcept){
+                      notificationService.clear();
+                      modalService.message('This concept was created on this task, please use the delete functionality to remove it.');
+                    } else {
+                      scope.concept = result.versionedConcept ? result.versionedConcept : result.projectConcept;
+                      scope.unmodifiedConcept = JSON.parse(JSON.stringify(result.versionedConcept ? result.versionedConcept : result.projectConcept));
+                      scope.isModified = false;
+                      scope.saveConcept();
+                    }
+                  });                
+                } else {               
+                  notificationService.sendError('Failed to get versions');
+                }
+              });
             });
-          })
+          }, function () {
+            // do nothing
+          });
+          
         };
 
         function getCodeSystemShortName() {
