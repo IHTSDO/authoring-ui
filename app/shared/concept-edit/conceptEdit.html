@@ -403,7 +403,7 @@
               <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1">
                   <button type="button"
                           class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                          ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels"
+                          ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels || checkReadOnlyDialect(dialectId)"
                           ng-click="toggleAcceptability(description, dialectId)">
                     <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
                     </div>
