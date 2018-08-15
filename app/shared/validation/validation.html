@@ -7,10 +7,9 @@
   </script>
   <script type="text/ng-template" id="excludeheader.html">
     <button type="button" ng-click="excludeFailures()"
-            class="btn btn-round btn-default red" title="Add all selected failures to exclusion list"
+            class="btn btn-default back-button"
             ng-if="editable && whitelistEnabled">
-            <span
-              class="md md-block"></span>
+            Add selected to Whitelist
     </button>
   </script>
   <script type="text/ng-template" id="editheader.html">
@@ -99,9 +98,9 @@
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
-            <td ng-if="editable && whitelistEnabled" data-header="'excludeheader.html'" class="button-column"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
+            <td data-header="'excludeheader.html'"><button ng-if="editable && whitelistEnabled" type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
               Whitelist </button></td>
-            <td ng-if="editable" data-header="'editheader.html'" class="button-column"><button type="button" class="btn btn-round btn-default blue"
+            <td ng-if="editable" data-header="'editheader.html'"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
                       title="View/Edit Concept"> <span class="md md-edit"></span> </button></td>
           </tr>
