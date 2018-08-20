@@ -24,7 +24,7 @@
     </li>
  
     <li>
-      <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()">
+      <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-disabled="!isProjectsLoaded()">
     New Task
       </button>
     </li>
