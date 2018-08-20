@@ -18,6 +18,9 @@
 	box-shadow: none;
 }
 
+.btn.dashboard-links[disabled] {
+	color: #76747c;
+}
 .dashboard-links i {
 	font-size: 20px;
 	line-height: 23px;

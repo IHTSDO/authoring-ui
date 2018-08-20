@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebar', [])
 
-  .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal',
-    function sidebarCtrl($scope, $rootScope, $location, $modal) {
+  .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal','metadataService',
+    function sidebarCtrl($scope, $rootScope, $location, $modal, metadataService) {
 
       $scope.gotoBrowser = function() {
         window.open('/browser', '_blank');
@@ -21,6 +21,11 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
       };
       $scope.gotoReviews = function() {
         $location.url('review-tasks');
+      };
+
+      $scope.isProjectsLoaded = function() {
+        var projects = metadataService.getProjects();
+        return projects && projects.length > 0;
       };
 
       $scope.openCreateTaskModal = function () {

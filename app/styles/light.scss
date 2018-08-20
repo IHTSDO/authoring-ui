@@ -1023,6 +1023,9 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-light .navigation-link.green.classify .btn:hover {
   color: #474747;
 }
+.sca-light .btn.dashboard-links[disabled] {
+    color: #d1d1d1;
+}
 .sca-light .tasks-bubble {
   color: #fff;
 }
