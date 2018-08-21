@@ -365,7 +365,7 @@ angular.module('singleConceptAuthoringApp')
                       if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
                         if (rel.accepted !== false) {
                           rel.accepted = false;
-                          rowsAccepted++;
+                          rowsAccepted--;
                         }
                       }
                     });
@@ -400,7 +400,7 @@ angular.module('singleConceptAuthoringApp')
                       if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
                         if (rel.accepted !== false) {
                           rel.accepted = false;
-                          rowsAccepted++;
+                          rowsAccepted--;
                         }
                       }
                     });
@@ -429,14 +429,14 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(scope.affectedConceptAssocs, function (rel) {
                   if (rel.accepted !== false) {
                     rel.accepted = false;
-                    rowsAccepted++;
+                    rowsAccepted--;
                   }
                 });
                 angular.forEach(scope.affectedDescToConceptAssocs, function (rel) {
                   console.debug('accepting', rel);
                   if (rel.accepted !== false) {
                     rel.accepted = false;
-                    rowsAccepted++;
+                    rowsAccepted--;
                   }
                 });
               }
