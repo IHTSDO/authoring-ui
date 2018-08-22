@@ -60,6 +60,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
         var extensionFilter = [];
         extensionFilter.push(usFSN);
+        extensionFilter.push(usPT);
 
         var isExtension = metadataService.isExtensionSet();
 
@@ -87,15 +88,13 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
             $scope.languages = internatinalFilter;
             $scope.selectedLanguage = usPT; // Set PT in US by default
           } else if (metadataService.getCurrentModuleId() === noModel.moduleId) {
-            // no module
-            extensionFilter.push(usPT);
+            // no module           
             let noPT = {id: noModel.dialectId, label: 'PT in NO'};
             extensionFilter.push(noPT);
             $scope.languages = extensionFilter;
             $scope.selectedLanguage = noPT; // Set PT in NO by default
           } else {
             // multiple dialects
-            extensionFilter.push(usPT);
             for (var key in dialects) {
               if (key !== usModel.dialectId) {
                 var dialect = {id: key, label: 'PT in ' + dialects[key].toUpperCase()}
