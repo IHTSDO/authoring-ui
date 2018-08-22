@@ -28,7 +28,7 @@
 
       <!-- fsn (draggable) -->
       <span ui-draggable="true" ng-click="clickNode(node)" drag="getCompleteConcept(node)" drag-channel="completeConcept" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
-        {{isExtension && node.preferredSynonym ? node.preferredSynonym : node.fsn}}
+        {{isDisplayPreferredSynonym() ? node.preferredSynonym : node.fsn}}
       </span>
     </div>
     <div>
