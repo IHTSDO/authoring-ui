@@ -337,6 +337,9 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        scope.isDisplayPreferredSynonym = function () {
+          return scope.defaultLanguage !== '900000000000509007-fsn';
+        };
 
         function initialize() {
 
