@@ -343,9 +343,15 @@ angular.module('singleConceptAuthoringApp')
           scope.loadComplete = false;
           scope.searchExtensionFlag = metadataService.isExtensionSet();
           scope.synonymFlag = metadataService.isExtensionSet();
-          scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
-          scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
-
+        
+          if (scope.searchExtensionFlag
+              && scope.defaultLanguage !== '900000000000509007-fsn' 
+              && scope.defaultLanguage !== '900000000000509007-pt') {
+            scope.acceptLanguageValue = metadataService.getExtensionAcceptLanguageValueByDialectId(scope.defaultLanguage);                
+          } else {
+            scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+          }
+         
           if (scope.defaultView && scope.defaultView === 'stated') {
             scope.statedFlag = true;
           } else {
