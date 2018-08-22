@@ -544,7 +544,12 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
-
+    function getExtensionAcceptLanguageValueByDialectId (dialectId) {
+      if (extensionMetadata) {
+        var languageNames = extensionMetadata.dialects[dialectId].split('-')     
+        return (languageNames.length > 1 ? languageNames[1] : languageNames[0]) + '-' + (extensionMetadata.shortname ? extensionMetadata.shortname.toUpperCase() : 'XX') + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';        
+      }
+    }
     //
     // Relationship metadata functions
     //
@@ -741,6 +746,7 @@ angular.module('singleConceptAuthoringApp')
       getDialectDefaultsForModuleId: getDialectDefaultsForModuleId,
       getReadOnlyDialectsForModuleId: getReadOnlyDialectsForModuleId,
       getAcceptLanguageValueForModuleId: getAcceptLanguageValueForModuleId,
+      getExtensionAcceptLanguageValueByDialectId: getExtensionAcceptLanguageValueByDialectId,
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
         return extensionMetadata !== null;

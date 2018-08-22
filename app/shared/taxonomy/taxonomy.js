@@ -47,6 +47,11 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
           dialectId: '900000000000509007'
         };
 
+        let noModel = {
+          moduleId: '51000202101',
+          dialectId: '61000202103'
+        };
+
         let usFSN = {id: '900000000000509007-fsn', label: 'FSN in US'};
         let usPT = {id: '900000000000509007-pt', label: 'PT in US'};
         var internatinalFilter = [];
@@ -77,9 +82,27 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
               }
             }
             $scope.languages = extensionFilter;
-          } else {
-            // multiple dialects or us module
+          } else if (metadataService.getCurrentModuleId() === usModel.moduleId) {
+            // us module
             $scope.languages = internatinalFilter;
+            $scope.selectedLanguage = usPT; // Set PT in US by default
+          } else if (metadataService.getCurrentModuleId() === noModel.moduleId) {
+            // no module
+            extensionFilter.push(usPT);
+            let noPT = {id: noModel.dialectId, label: 'PT in NO'};
+            extensionFilter.push(noPT);
+            $scope.languages = extensionFilter;
+            $scope.selectedLanguage = noPT; // Set PT in NO by default
+          } else {
+            // multiple dialects
+            extensionFilter.push(usPT);
+            for (var key in dialects) {
+              if (key !== usModel.dialectId) {
+                var dialect = {id: key, label: 'PT in ' + dialects[key].toUpperCase()}
+                extensionFilter.push(dialect);               
+              }
+            }
+            $scope.languages = extensionFilter;
             $scope.selectedLanguage = usPT; // Set PT in US by default
           }                
         } else {
