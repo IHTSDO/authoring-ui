@@ -14,8 +14,8 @@
         <li role="presentation" ng-class="{active : actionTab === 1}" class=""> <a
                                                                                 ng-click="actionTab=1"
                                                                                 aria-controls="home" role="tab"
-                                                                                data-toggle="tab"> Inactivation
-          Reason</a> </li>
+                                                                                data-toggle="tab"> {{deletion ? '&nbsp' : 'Inactivation
+          Reason'}}</a> </li>
         <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 2}" class=""><a
         ng-click="actionTab=2" aria-controls="home"
         role="tab"

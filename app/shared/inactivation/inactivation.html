@@ -194,7 +194,7 @@
 
       </div>
       <div ng-show="actionTab==3" class="table-responsive white">
-        <div ng-show="affectedConceptAssocs.length > 0">
+        <div ng-show="affectedConceptAssocs.length > 0" ng-if="!deletion">
 
           <table
             ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
@@ -261,6 +261,59 @@
               -->
             </tr>
 
+          </table>
+        </div>
+        <div ng-show="affectedConceptAssocs.length > 0" ng-if="deletion">
+          <table
+            ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
+            class="table table-full table-full-small">
+            <tr ng-repeat="rel in $data">
+
+              <td data-title="'SCTID'" sortable="'id'">{{rel.conceptId}}</td>
+
+              <td data-title="'Concept FSN'" sortable="'sourceFsn'">{{rel.fsn}}
+              </td>              
+              <td data-title="'Reason'" sortable="''">
+
+                <select ng-model="rel.inactivationIndicator" class="select"
+                        ng-options="reason.id as convertToTextFromCode(reason.id) for reason in inactivationReasons"
+                        ng-change="resetRelTargetConcept(rel)"></select>
+
+              </td>
+              <td data-title="'Association'" sortable="'refsetName'">
+                {{convertToTextFromCode(rel.refsetName)}}
+              </td>
+              <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
+                <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropAssociationTarget(rel, $data)">
+              <textarea type="text" class="form-control inactivation-value" ng-model="rel.newTargetFsn"
+                        ng-disabled="rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY'"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setTargetConcept(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3"></textarea>
+                </div>
+              </td>
+              <td>
+                <button type="button"
+                        class="btn btn-round btn-default blue"
+                        ng-click="viewAssociationConcept(rel.conceptId)"
+                        title="View/Edit Concept">
+                  <div class="md md-edit"></div>
+                </button>
+              </td>
+              <td>
+                <a class="btn btn-round btn-default base approve-button"
+                   ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                   ng-click="toggleRowAccepted(rel)">
+                  <div class="md md-thumb-up "></div>
+                </a>
+              </td>              
+            </tr>
           </table>
         </div>
         <div ng-show="affectedDescToConceptAssocs.length > 0">
