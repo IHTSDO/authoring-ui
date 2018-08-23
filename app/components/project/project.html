@@ -13,7 +13,7 @@
           {{project.projectLead.displayName}}
         </p>       
         <div class="col-md-12 no-padding" ng-if="project.lastPromotion">
-          <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotion}}</p>
+          <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotion | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
         </div>       
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
@@ -191,7 +191,7 @@
 
               </td>
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">
-                {{task.updated | date: "yyyy-MM-dd"}}
+                {{task.updated | date: "yyyy-MM-dd":"UTC"}}
               </td>
               <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
                  <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">

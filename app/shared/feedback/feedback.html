@@ -130,7 +130,7 @@
             <span>Reviewer requested follow-up</span></button>
             <div class="feedback-header" ng-class="[{
                           pull_right : task.assignee.username  === feedback.fromUsername
-                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
+                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
           </div>
         </div>
         <div class="feedback-window col-md-6 no-padding m-t-10" ng-show="subjectConcepts.length > 0">
@@ -181,7 +181,7 @@
             ></p>           
             <div class="feedback-header" ng-class="[{
                           pull_right : task.assignee.username  === feedback.fromUsername
-                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
+                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
           </div>
         </div>
         <div class="feedback-window col-md-6 no-padding m-t-10">
