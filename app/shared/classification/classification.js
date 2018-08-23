@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp')
               case 'COMPLETED':
               case 'SAVING_IN_PROGRESS':
               case 'SAVED':
-                scope.statusText = 'Classifier finished at ' + scope.classificationContainer.completionDate;
+                scope.statusText = 'Classifier finished at ' + $filter('date')(scope.classificationContainer.completionDate, "yyyy-MM-ddTHH:mm:ss'Z'","UTC");
                 break;
               case 'RUNNING':
                 scope.statusText = 'Running...';

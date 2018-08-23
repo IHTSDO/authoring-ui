@@ -58,7 +58,7 @@
                   filter="{ 'summary': 'text' }"><div ng-if="task.status === 'In Review' && hasNewEdits(task)" class="new-edits pull-left">New Edits</div><a class="tooltips-right"
                    ng-click="viewReviewTask(task)">{{task.summary}}<span> Click to open reviewer view</span></a></td>
               <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }"> {{task.key}} </td>
-              <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'"> {{task.updated | date: "yyyy-MM-dd"}} </td>
+              <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'"> {{task.updated | date: "yyyy-MM-dd":"UTC"}} </td>
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'assignee.displayName'"
                   filter="{ 'author': 'text' }"> {{task.assignee.displayName}} </td>
               <td header-title="'Click to sort'" data-title="'Classification'"
@@ -115,7 +115,7 @@
                   >
                 <div class="md md-email"></div>
                 <span>New feedback is available </span> </button>
-                </a> <span class="feedback-message-date" ng-show="task.feedbackMessagesStatus === 'unread'"> &nbsp;{{task.feedbackMessageDate | date : 'short'}} </span></td>
+                </a> <span class="feedback-message-date" ng-show="task.feedbackMessagesStatus === 'unread'"> &nbsp;{{task.feedbackMessageDate | date : "yyyy-MM-ddTHH:mm'Z'":"UTC"}} </span></td>
               <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'"><div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
                   Review </div>
                 <div ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}"> {{task.status}} </div>

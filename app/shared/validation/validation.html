@@ -133,7 +133,7 @@
         <td class="col-md-3" header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
             ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
         <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'"> {{failure.failureText}} </td>
-        <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date:'medium'}} </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
         <td class="button-column"><button
             title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
