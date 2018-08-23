@@ -116,13 +116,16 @@ angular.module('singleConceptAuthoringApp')
                         angular.forEach(scope.histAssocTargets.concepts, function (innerConcept) {
 
                           var item = concept;
-                          if (!concept.active && concept.inactivationIndicator) {
-                            item.oldInactivationIndicator = concept.inactivationIndicator;
-                          }
-                          item.refsetName = innerConcept.assocName;
-                          item.inactivationIndicator = scope.reasonId;
+                          if (!scope.deletion) {
+                            if (!concept.active && concept.inactivationIndicator) {
+                              item.oldInactivationIndicator = concept.inactivationIndicator;
+                            }
+                            item.inactivationIndicator = scope.reasonId;
+                          }                          
+
+                          item.refsetName = innerConcept.assocName;                          
                           item.newTargetId = innerConcept.conceptId;
-                          item.newTargetFsn = innerConcept.fsn;
+                          item.newTargetFsn = innerConcept.fsn; 
 
                           // if this concept not already added
                           if (parsedComponents.concepts.map(function (c) {
@@ -596,7 +599,7 @@ angular.module('singleConceptAuthoringApp')
           //
           scope.cancelInactivation = function () {
             if(scope.deletion){
-                modalService.confirm('All changes made during inactivation will be lost, are you sure?').then(function () {
+                modalService.confirm('All changes made during deletion will be lost, are you sure?').then(function () {
                     inactivationService.cancelInactivation(null);
                   $rootScope.$broadcast('inactivation.cancelInactivation');
                 }, function (error) {
