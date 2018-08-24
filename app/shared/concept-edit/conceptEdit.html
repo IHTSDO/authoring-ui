@@ -560,7 +560,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
                   <textarea ng-if="!isFeedback"
                             id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                            custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                            custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.type.fsn"
                             ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                             class="resizable-text form-control msd-elastic no-border-bottom rel"
                             typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
@@ -574,7 +574,7 @@
 
                   <textarea ng-if="isFeedback"
                             id="relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                            ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                            ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.type.fsn"
                             ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                             class="resizable-text form-control msd-elastic no-border-bottom rel"
                             typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
@@ -606,7 +606,7 @@
 
                   <div class="small-size-tooltip tooltips-bottom">
                     <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                              ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
+                              ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.target.fsn"
                               ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                               class="resizable-text relationship msd-elastic no-border-bottom"
                               typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"

@@ -4063,6 +4063,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         }
 
+        scope.consolidateRelationship = function (relationship) {          
+          if(relationship) {
+            if (relationship.target && !relationship.target.fsn) {
+              relationship.target = {};
+            }
+            if (relationship.type && !relationship.type.fsn) {
+              relationship.type = {};
+            }
+          }
+        };
+
         scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, conceptId, relationshipGroupId, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
