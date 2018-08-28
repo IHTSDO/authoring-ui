@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService, notificationService, hotkeys) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService, notificationService, hotkeys, localStorageService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     // declare table parameters
     $scope.tableParams = new ngTableParams({
         page: 1,
-        count: 10,
+        count: localStorageService.get('my-project-table-display-number') ? localStorageService.get('my-project-table-display-number') : 10,
         sorting: {
           title: 'asc',
           lead: 'asc',
@@ -55,6 +55,11 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         filterDelay: 50,
         total: $scope.projects ? $scope.projects.length : 0, // length of data
         getData: function ($defer, params) {
+          // Store display number to local storage, then can be re-used later
+          if (!localStorageService.get('my-project-table-display-number') 
+              || params.count() !== localStorageService.get('my-project-table-display-number')) {
+              localStorageService.set('my-project-table-display-number', params.count());
+          }
 
           if (!$scope.projects || $scope.projects.length === 0) {
             $defer.resolve(new Array());
