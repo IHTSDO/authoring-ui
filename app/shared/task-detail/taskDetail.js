@@ -333,14 +333,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   if (reviewedListIds && reviewedListIds.length > 0) {
                     modalService.confirm('There are ' + reviewedListIds.length + ' approved concepts in the review. Cancelling will reset all concepts to unapproved and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review. Are you sure you want to cancel this review?').then(function () {
                       reviewService.cancelReview($scope.task).then(function () {
-                        notificationService.sendMessage('Review Cancelled', 2000);                     
+                        notificationService.sendMessage('Review Cancelled', 2000);
                       });
                     }, function () {
                       // do nothing
                     });
                   } else {
                     reviewService.cancelReview($scope.task).then(function () {
-                      notificationService.sendMessage('Review Cancelled', 2000);                     
+                      notificationService.sendMessage('Review Cancelled', 2000);
                     });
                   }
                 });
@@ -419,19 +419,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
       };
-      $scope.isAutomatePromotionRunning = function (){
-        if($scope.automatePromotionStatus === 'Rebasing'
-          || $scope.automatePromotionStatus === 'Classifying'
-          || $scope.automatePromotionStatus === 'Promoting') {
-          return true;
-        }
-        return false;
-      }
 
       $scope.checkAutomatePromotionStatus = function (isInitialInvoke) {
         $scope.automatePromotionErrorMsg = '';
         promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          if (response) {
+          if (response && $scope.task.status !== 'Promoted') {
             $scope.automatePromotionStatus = response.status;
             switch ($scope.automatePromotionStatus) {
               case 'Queued':
@@ -445,6 +437,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Rebased with conflicts':
+                if ($scope.task.branchState === 'FORWARD'
+                    || $scope.task.branchState === 'UP_TO_DATE') {
+                  break;
+                }
                 $rootScope.branchLocked = false;
                 $rootScope.automatedPromotionInQueued = false;
                 $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
