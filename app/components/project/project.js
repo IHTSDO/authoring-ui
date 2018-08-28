@@ -66,7 +66,7 @@ angular.module('singleConceptAuthoringApp.project', [
           snowowlService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
             if (promotionTime) {
               let date = new Date(promotionTime);
-              $scope.project.lastPromotion = date.toUTCString();
+              $scope.project.lastPromotion = date;
             }
           });
 
