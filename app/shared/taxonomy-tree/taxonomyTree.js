@@ -337,8 +337,13 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-        scope.isDisplayPreferredSynonym = function () {
-          return scope.defaultLanguage !== '900000000000509007-fsn';
+        scope.getTerm = function (node) {          
+          if (node.preferredSynonym 
+              && scope.defaultLanguage 
+              && scope.defaultLanguage !== '900000000000509007-fsn') {
+            return node.preferredSynonym;
+          }
+          return node.fsn;
         };
 
         function initialize() {
