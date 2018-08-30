@@ -15,7 +15,10 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope) {
 
-        scope.taskConcept = scope.concept;
+        scope.taskConcept = {};
+        scope.taskConcept.conceptId = scope.concept.conceptId;
+        scope.taskConcept.fsn = scope.concept.fsn;
+
         scope.projectConcept = null;
         scope.loadingCompleted = false;
         scope.projectConceptFound = false;
@@ -30,7 +33,10 @@ angular.module('singleConceptAuthoringApp')
 
         function intialize() {
           snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response){
-            scope.projectConcept = response;
+            scope.projectConcept = {};
+            scope.projectConcept.conceptId = response.conceptId;
+            scope.projectConcept.fsn = response.fsn;
+                     
             scope.loadingCompleted = true;
             scope.projectConceptFound = true;
           }, function (error) {
