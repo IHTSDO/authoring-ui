@@ -869,6 +869,7 @@ angular.module('singleConceptAuthoringApp')
           element.find('#image-' + id).css('max-width', '100%');
           element.find('#image-' + id).css('max-height', '100%');
           element.find('#image-' + id).css('padding', '10px');
+          element.find('#image-' + id).css('width', (canvas.width + 20) + 'px');
 
         }
 
