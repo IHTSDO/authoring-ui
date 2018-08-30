@@ -121,6 +121,10 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
       // get full concept if not retrieved
       snowowlService.getFullConcept($scope.conceptId, $scope.branch).then(function (concept) {
         $scope.fullConcept = concept;
+        $scope.taxonomyConcept = {};
+        $scope.taxonomyConcept.conceptId = concept.conceptId;
+        $scope.taxonomyConcept.fsn = concept.fsn;
+        
         if ($scope.fullConcept && $scope.children && $scope.parents) {
           $scope.loadComplete = true;
         }

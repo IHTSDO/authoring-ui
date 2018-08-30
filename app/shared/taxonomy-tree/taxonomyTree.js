@@ -338,12 +338,12 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.getTerm = function (node) {          
-          if (node.preferredSynonym 
-              && scope.defaultLanguage 
-              && scope.defaultLanguage !== '900000000000509007-fsn') {
-            return node.preferredSynonym;
-          }
-          return node.fsn;
+          if ((node.preferredSynonym && scope.defaultLanguage && scope.defaultLanguage !== '900000000000509007-fsn')
+            ||(!scope.defaultLanguage && scope.synonymFlag)) {
+            return node.preferredSynonym;         
+          } else {
+            return node.fsn; 
+          }          
         };
 
         function initialize() {
@@ -355,7 +355,11 @@ angular.module('singleConceptAuthoringApp')
           if (scope.searchExtensionFlag
               && scope.defaultLanguage !== '900000000000509007-fsn' 
               && scope.defaultLanguage !== '900000000000509007-pt') {
-            scope.acceptLanguageValue = metadataService.getExtensionAcceptLanguageValueByDialectId(scope.defaultLanguage);                
+            if (scope.defaultLanguage) {
+              scope.acceptLanguageValue = metadataService.getExtensionAcceptLanguageValueByDialectId(scope.defaultLanguage);
+            } else {
+              scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+            }                            
           } else {
             scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
           }
