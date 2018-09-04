@@ -31,6 +31,10 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.showPromotedReviews = false;
         var loadingTask = false;
 
+        if (!$rootScope.taskFilter || Object.keys($rootScope.taskFilter).length === 0) {
+            $rootScope.taskFilter = {};
+        }        
+        
         hotkeys.bindTo($scope)
             .add({
               combo: 'alt+n',
@@ -54,7 +58,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.tableParams = new ngTableParams({
                 page: 1,
                 count: localStorageService.get('table-display-number') ? localStorageService.get('table-display-number') : 10,
-                sorting: {updated: 'desc', name: 'asc'}
+                sorting: $rootScope.taskFilter.sorting ? $rootScope.taskFilter.sorting : {updated: 'desc', name: 'asc'}
             },
             {
                 filterDelay: 50,
@@ -72,6 +76,8 @@ angular.module('singleConceptAuthoringApp.home', [
                     } else {
 
                         var searchStr = params.filter().search;
+                        $rootScope.taskFilter.searchStr = searchStr;
+
                         var mydata = [];
 
 
@@ -94,6 +100,7 @@ angular.module('singleConceptAuthoringApp.home', [
                         }
 
                         params.total(mydata.length);
+                        $rootScope.taskFilter.sorting = params.sorting();
                         mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
                         if(params.sorting().feedbackMessageDate === 'asc'){
@@ -138,6 +145,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.toggleShowPromotedTasks = function () {
             $scope.showPromotedTasks = !$scope.showPromotedTasks;
+            $rootScope.taskFilter.showPromoted = $scope.showPromotedTasks;
             loadTasks();
         };
 
@@ -150,6 +158,11 @@ angular.module('singleConceptAuthoringApp.home', [
             $scope.tasks = null;
             $scope.reviewTasks = null;
             loadingTask = true;
+            $scope.tableParams.filter()['search'] = $rootScope.taskFilter.searchStr ? $rootScope.taskFilter.searchStr : '';
+            if ($rootScope.taskFilter.showPromoted) {
+                $scope.showPromotedTasks = $rootScope.taskFilter.showPromoted;
+            }
+
             scaService.getTasks($scope.showPromotedTasks ? false : true).then(function (response) {
                 $scope.tasks = response;
                 loadingTask = false;
