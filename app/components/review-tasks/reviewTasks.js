@@ -25,7 +25,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.reviewTasks = null;
       $scope.projects = [];
       $scope.browserLink = '..';
-    
+      
+      if (!$rootScope.reviewTaskFilter || Object.keys($rootScope.reviewTaskFilter).length === 0) {
+        $rootScope.reviewTaskFilter = {};
+      }
+
       hotkeys.bindTo($scope)
         .add({
           combo: 'alt+n',
@@ -49,7 +53,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.reviewTableParams = new ngTableParams({
           page: 1,
           count: localStorageService.get('table-display-number') ? localStorageService.get('table-display-number') : 10,
-          sorting: {updated: 'desc', name: 'asc'}
+          sorting: $rootScope.reviewTaskFilter.sorting ? $rootScope.reviewTaskFilter.sorting : {updated: 'desc', name: 'asc'}
         },
         {
           filterDelay: 50,
@@ -68,6 +72,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             } else {
 
               var searchStr = params.filter().search;
+              $rootScope.reviewTaskFilter.searchStr = searchStr;
               var mydata = [];
 
               if (searchStr) {
@@ -96,6 +101,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               }
 
               params.total(mydata.length);
+              $rootScope.reviewTaskFilter.sorting = params.sorting();
               mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
               $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -107,11 +113,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.toggleShowPromotedReviews = function () {
         $scope.showPromotedReviews = !$scope.showPromotedReviews;
+        $rootScope.reviewTaskFilter.showPromoted = $scope.showPromotedReviews;
         $scope.reviewTableParams.reload();
       };
 
       $scope.toggleShowNewEdits = function () {
         $scope.showNewEdits = !$scope.showNewEdits;
+        $rootScope.reviewTaskFilter.showNewEdits = $scope.showNewEdits;
         $scope.reviewTableParams.reload();
       };
 
@@ -121,7 +129,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
         notificationService.sendMessage('Loading tasks...', 0);
         $scope.reviewTasks = null;
-
+        $scope.reviewTableParams.filter()['search'] = $rootScope.reviewTaskFilter.searchStr ? $rootScope.reviewTaskFilter.searchStr : '';
+        if ($rootScope.reviewTaskFilter.showPromoted) {
+            $scope.showPromotedReviews = $rootScope.reviewTaskFilter.showPromoted;
+        }
+        if ($rootScope.reviewTaskFilter.showNewEdits) {
+            $scope.showNewEdits = $rootScope.reviewTaskFilter.showNewEdits;
+        }
         scaService.getReviewTasks().then(function (response) {
           $scope.reviewTasks = response;
           if ($scope.reviewTasks) {
