@@ -18,6 +18,7 @@
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
                      placeholder="Search My Tasks" autofocus/>
 
+              <button ng-show="tableParams.filter()['search'] !== ''" class="btn btn-default md md-close light-button transparent" ng-click="tableParams.filter()['search'] = ''"></button>
             </div>
 
           </div>
