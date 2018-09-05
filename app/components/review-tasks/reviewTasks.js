@@ -66,13 +66,15 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                 || params.count() !== localStorageService.get('table-display-number')) {
                 localStorageService.set('table-display-number', params.count());
             }
+            $rootScope.reviewTaskFilter.searchStr = params.filter().search;
+            $rootScope.reviewTaskFilter.sorting = params.sorting();
 
             if (!$scope.reviewTasks || $scope.reviewTasks.length === 0) {
               $defer.resolve([]);
             } else {
 
               var searchStr = params.filter().search;
-              $rootScope.reviewTaskFilter.searchStr = searchStr;
+             
               var mydata = [];
 
               if (searchStr) {
@@ -101,7 +103,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               }
 
               params.total(mydata.length);
-              $rootScope.reviewTaskFilter.sorting = params.sorting();
+              
               mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
               $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));

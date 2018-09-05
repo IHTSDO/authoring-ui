@@ -33,8 +33,8 @@ angular.module('singleConceptAuthoringApp.home', [
 
         if (!$rootScope.taskFilter || Object.keys($rootScope.taskFilter).length === 0) {
             $rootScope.taskFilter = {};
-        }        
-        
+        }
+
         hotkeys.bindTo($scope)
             .add({
               combo: 'alt+n',
@@ -70,13 +70,15 @@ angular.module('singleConceptAuthoringApp.home', [
                         || params.count() !== localStorageService.get('table-display-number')) {
                         localStorageService.set('table-display-number', params.count());
                     }
+                    
+                    $rootScope.taskFilter.searchStr = params.filter().search;
+                    $rootScope.taskFilter.sorting = params.sorting();
 
                     if (!$scope.tasks || $scope.tasks.length === 0) {
                         $defer.resolve([]);
                     } else {
 
                         var searchStr = params.filter().search;
-                        $rootScope.taskFilter.searchStr = searchStr;
 
                         var mydata = [];
 
@@ -100,7 +102,7 @@ angular.module('singleConceptAuthoringApp.home', [
                         }
 
                         params.total(mydata.length);
-                        $rootScope.taskFilter.sorting = params.sorting();
+
                         mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
                         if(params.sorting().feedbackMessageDate === 'asc'){
@@ -256,8 +258,8 @@ angular.module('singleConceptAuthoringApp.home', [
             });
 
             modalInstance.result.then(function (response) {
-                if (response) {                    
-                    addingTaskToList(response);                  
+                if (response) {
+                    addingTaskToList(response);
                 }
             }, function () {
             });
@@ -265,19 +267,19 @@ angular.module('singleConceptAuthoringApp.home', [
 
         function addingTaskToList (newTask) {
             if (loadingTask) {
-                var loadingTasksPoll = $interval(function () {                            
+                var loadingTasksPoll = $interval(function () {
                     if (!loadingTask) {
                         if ($scope.tasks.filter(function (task) {
                             return newTask.key === task.key;
                           }).length === 0) {
                             $scope.tasks.push(newTask);
-                        }                    
-                        $interval.cancel(loadingTasksPoll);                               
+                        }
+                        $interval.cancel(loadingTasksPoll);
                     }
                 }, 100);
             } else {
-                $scope.tasks.push(newTask);  
-            }            
+                $scope.tasks.push(newTask);
+            }
         }
 
         $scope.isProjectsLoaded = function() {
@@ -287,10 +289,10 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.$on('reloadTasks', function (event, data) {
             if (data.isCreateTask) {
-                addingTaskToList(data.concept);               
+                addingTaskToList(data.concept);
             } else {
-                loadTasks();  
-            }            
+                loadTasks();
+            }
         });
 
 // Initialization:  get tasks and classifications

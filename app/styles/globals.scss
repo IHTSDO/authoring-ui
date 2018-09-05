@@ -308,6 +308,11 @@ td select {
 .dash-tables {
     width: 90.5% ;
 }
+.dash-tables .table-search .btn.md-close {
+    position: absolute; 
+    right: 35px;
+    top: 12px;
+}
 .pager .btn {
     padding: 1px 8px;
 }
