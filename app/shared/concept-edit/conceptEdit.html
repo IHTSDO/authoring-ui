@@ -372,7 +372,7 @@
             </textarea>
 
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
-                      maxlength="2048"
+                      maxlength="4096"
                       ng-change="updateDescription(description)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       ng-model-options="{updateOn: 'blur'}"
