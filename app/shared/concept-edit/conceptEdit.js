@@ -846,7 +846,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // do nothing
             });
 
-          } else if (scope.isModified) {
+          } else if (scope.isModified && !scope.isStatic) {
             modalService.confirm('This concept has unsaved changes; removing it will abandon your modifications.  Continue?').then(function () {
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
               $rootScope.$broadcast('stopEditing', {concept: concept});
