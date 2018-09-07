@@ -179,6 +179,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // whether to initially display taxonomy comparison
         taxonomiesComparisonVisible: '@?',
+
+        loadValidation: '@?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -917,7 +919,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         }
 
-
+// on load, load validation report for REVIEWER
+        if (scope.loadValidation === 'true' || scope.loadValidation === true) {
+          scope.validateConcept();
+        }
+        
         /**
          * Helper function to save or update concept after validation
          * @param concept
