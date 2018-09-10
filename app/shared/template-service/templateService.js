@@ -123,6 +123,7 @@ angular.module('singleConceptAuthoringApp')
                                 });
                               }
                               else if (response.data.status === 'FAILED') {
+                                  deferred.reject(response.data.errorMsg);
                                   $interval.cancel(transformStatus);
                               }
                             });
