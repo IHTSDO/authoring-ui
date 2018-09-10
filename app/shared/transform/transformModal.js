@@ -1,6 +1,6 @@
 angular.module('singleConceptAuthoringApp.transformModal', [])
 
-  .controller('transformModalCtrl', function ($scope, $modalInstance, branch, results, templateFrom, templateService, metadataService) {
+  .controller('transformModalCtrl', function ($scope, $modalInstance, branch, results, templateFrom, templateService, metadataService, notificationService) {
 
     $scope.branch = branch;
     $scope.results = results;
@@ -59,6 +59,10 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
       templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results).then(function(response){
           $scope.loading = false;
           $modalInstance.close(response);
+      }, function (error) {
+          $scope.loading = false;
+          $modalInstance.dismiss();
+          notificationService.sendError('Error: ' + error);
       });
     };
 
