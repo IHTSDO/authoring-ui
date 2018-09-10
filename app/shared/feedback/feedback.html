@@ -87,11 +87,12 @@
     <div ng-if="viewedConcepts.length > 0 && !simultaneousFeedbackAdded">
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
         <div ng-class="getLayoutWidths('models')">
-          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>
+          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'" ng-if="!showTaxonomiesComparison(concept)"></div>
+        <div taxonomies-comparison concept="concept" branch="branch" parent-branch="getParentBranch(branch)" view="'inferred'" ng-if="showTaxonomiesComparison(concept)"></div>
         </div>
         <div ng-class="getLayoutWidths('concepts')">
           <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
-               autosave="role !== 'AUTHOR'" feedback-view="true" allow-approval="checkApprovalPermission(concept)" id="conceptId-{{concept.conceptId}}" load-validation="{{role === 'REVIEWER'}}"></div>
+               autosave="role !== 'AUTHOR'" feedback-view="true" allow-approval="checkApprovalPermission(concept)" id="conceptId-{{concept.conceptId}}" load-validation="{{role === 'REVIEWER'}}" taxonomies-comparison-visible="true"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter">

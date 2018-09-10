@@ -1705,6 +1705,37 @@ angular.module('singleConceptAuthoringApp')
             }, 0);
           };
 
+          var taxonomyComparisonList = [];
+          scope.showTaxonomiesComparison = function (concept) {
+            for (var i =0; i < taxonomyComparisonList.length; i++) {
+              if (concept.conceptId === taxonomyComparisonList[i]) {
+                return true;
+              }
+            } 
+            return false;
+          };
+
+          scope.getParentBranch = function (branch) {
+            if (!branch) {
+              return '';
+            }
+
+            return branch.substring(0,branch.lastIndexOf('/'));
+          };
+
+          scope.$on('showTaxonomyComparison', function (event, data) {
+            if (data.flag) {
+              taxonomyComparisonList.push(data.conceptId);
+            } else {
+              for (var i =0; i < taxonomyComparisonList.length; i++) {
+                if (data.conceptId === taxonomyComparisonList[i]) {
+                  taxonomyComparisonList.splice(i,1);
+                  return;
+                }
+              } 
+            }      
+          });
+
           scope.setTooltipPosition = function ($event) {
             var top = $event.target.getBoundingClientRect().top;
             var left = $event.target.getBoundingClientRect().left;
