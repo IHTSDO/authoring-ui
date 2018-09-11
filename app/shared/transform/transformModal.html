@@ -5,6 +5,7 @@
   </div>
   <div class="modal-body">
       <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 no-padding">
+      <div class="alert alert-danger" ng-if="errorMsg">{{errorMsg}}</div>
       <div class="col-md-12">
               <label> Select Transformation Target</label>
             </div>
@@ -13,7 +14,7 @@
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
                         typeahead-wait-ms="700"
-                        typeahead-on-select="newSearch(false, suggestion)"
+                        typeahead-on-select="selectTemplate()"
                         typeahead-editable="false"
                         typeahead-min-length="3">
     </div>
