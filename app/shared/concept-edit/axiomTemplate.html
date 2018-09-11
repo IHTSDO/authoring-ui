@@ -81,7 +81,7 @@
             <div class="pull-left is_a is_a_bg"
                  drag-enter-class="sca-drag-target"
                  drag-hover-class="sca-drag-hover"
-                 drop-channel="conceptPropertiesObj"
+                 drop-channel="completeConcept"
                  ui-on-drop="dropAxiomRelationshipType(relationship, $data, axiom.type)"
                  drop-validate="!relationship.effectiveTime && !isStatic">
 
@@ -102,7 +102,7 @@
                    ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"
                    ui-draggable="true"
                    drag="getConceptIdNamePairFromAttributeType(relationship)"
-                   drag-channel="conceptPropertiesObj"
+                   drag-channel="completeConcept"
                    drag-image="getDragImageForConcept(relationship.type.fsn)">
                 <span>Drag this component</span>
               </div>
@@ -112,7 +112,7 @@
             <!-- linked concept -->
             <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
                  drag-hover-class="sca-drag-hover"
-                 drop-channel="conceptPropertiesObj" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type)"
+                 drop-channel="completeConcept" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type)"
                  drop-validate="!relationship.effectiveTime && !isStatic"
                  ng-class="getTargetSlotStyle(relationship)">
 
@@ -130,7 +130,7 @@
               <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                    ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                    ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
-                   drag-channel="conceptPropertiesObj"
+                   drag-channel="completeConcept"
                    drag-image="getDragImageForConcept(relationship.target.fsn)">
                 <span>Drag This Component</span>
               </div>
