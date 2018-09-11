@@ -6,6 +6,7 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.results = results;
     $scope.templateFrom = templateFrom;
     $scope.templateTo = '';
+    $scope.errorMsg = '';
     let reasons = metadataService.getDescriptionInactivationReasons();
     $scope.reasons = [];
     angular.forEach(reasons, function(reason){
@@ -54,15 +55,19 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
       $scope.inactivationReason = inactivationReason;
     };
 
+    $scope.selectTemplate = function() {
+      $scope.errorMsg = '';
+    };
+
     $scope.transform = function() {
       $scope.loading = true;
+      $scope.errorMsg = '';
       templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results).then(function(response){
           $scope.loading = false;
           $modalInstance.close(response);
       }, function (error) {
           $scope.loading = false;
-          $modalInstance.dismiss();
-          notificationService.sendError('Error: ' + error);
+          $scope.errorMsg = error;
       });
     };
 
