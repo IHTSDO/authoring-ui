@@ -177,8 +177,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // indicate if user has permission to approve concept in review panel
         allowApproval: '=?',
 
-        // whether to initially display taxonomy comparison
-        taxonomiesComparisonVisible: '@?',
+        // whether to initially display project taxonomy
+        projectTaxonomyVisible: '@?',
 
         loadValidation: '@?'
       },
@@ -817,9 +817,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
            scope.computeRelationshipGroups();
         };
 
-        scope.toggleShowTaxonomiesComparison = function () {
-           scope.showTaxonomyComparison = ! scope.showTaxonomyComparison;
-           scope.$emit('showTaxonomyComparison', {conceptId : scope.concept.conceptId, flag : scope.showTaxonomyComparison});
+        scope.toggleProjectTaxonomy = function () {
+           scope.isProjectTaxonomyVisible = !scope.isProjectTaxonomyVisible;
+           scope.$emit('viewProjectTaxonomy', {conceptId : scope.concept.conceptId, flag : scope.isProjectTaxonomyVisible});
+           if (scope.isProjectTaxonomyVisible) {
+              $rootScope.$broadcast('viewTaxonomy', {
+              concept: {
+                conceptId: scope.concept.conceptId,
+                fsn: scope.concept.fsn
+              }
+            });
+           }
         };
 
 ////////////////////////////////
