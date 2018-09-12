@@ -15,32 +15,18 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="m-l-10 m-t-15 taxonomy-list">
         <div class="col-md-11 no-padding" >
           <h4 class="p-l-5">Project - {{loadingCompleted ? (projectConceptFound ?( projectConcept.preferredSynonym ? projectConcept.preferredSynonym : projectConcept.fsn) : 'Not found') : 'Loading'}}</h4>
         </div>
         <div class="col-md-1 no-padding">
-          <button class="btn btn-default md md-close light-button transparent" title="Return to SNOMEDCT hieararchy view" ng-click="closeTaxonomy(true)"></button>
-        </div>
-      </div>
-      <div class="col-md-12 no-padding" ng-if="loadingCompleted">
-        <div taxonomy-tree branch="parentBranch" concept="projectConcept" default-view="view"></div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="row m-l-10 m-t-15 taxonomy-list">
-        <div class="col-md-11 no-padding" >
-          <h4 class="p-l-5">Task - {{loadingCompleted ? (taskConcept.preferredSynonym ? taskConcept.preferredSynonym : taskConcept.fsn) : 'Loading'}}</h4>
-        </div>
-        <div class="col-md-1 no-padding">
           <button class="btn btn-default md md-close light-button transparent" title="Return to SNOMEDCT hieararchy view" ng-click="closeTaxonomy()"></button>
         </div>
       </div>
-      <div class=" col-md-12 no-padding" ng-if="loadingCompleted">
-        <div taxonomy-tree branch="branch" concept="taskConcept" default-view="view"></div>
+      <div class="col-md-12 no-padding" ng-if="loadingCompleted">
+        <div taxonomy-tree branch="projectBranch" concept="projectConcept" default-view="view"></div>
       </div>
-    </div>
+    </div> 
   </div>
 </div>

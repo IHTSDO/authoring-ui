@@ -1,38 +1,44 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('taxonomiesComparison', function ($rootScope, $q, snowowlService) {
+  .directive('projectTaxonomy', function ($rootScope, $q, snowowlService) {
     return {
       restrict: 'A',
       transclude: false,
       replace: true,
       scope: {
-        concept: '=',
-        branch: '=',
-        parentBranch: '=',
+        concept: '=',        
+        branch: '=', // task branch
         view: '=?',
       },
-      templateUrl: 'shared/taxonomies-comparison/taxonomiesComparison.html',
+      templateUrl: 'shared/project-taxonomy/projectTaxonomy.html',
 
-      link: function (scope) {
-
-        scope.taskConcept = {};
-        scope.taskConcept.conceptId = scope.concept.conceptId;
-        scope.taskConcept.fsn = scope.concept.fsn;
+      link: function (scope) {       
 
         scope.projectConcept = null;
         scope.loadingCompleted = false;
         scope.projectConceptFound = false;
-        
-        scope.closeTaxonomy = function (isProjectConcept) {
-          if (isProjectConcept)  {
-            scope.projectConcept = null;
-          } else {
-            scope.taskConcept = null;
-          }
+        scope.projectBranch = null;
+
+        scope.closeTaxonomy = function () {
+          scope.projectConcept = null;
         };
 
+        function getParentBranch (branch) {
+          if (!branch) {
+            return '';
+          }
+
+          return branch.substring(0,branch.lastIndexOf('/'));
+        }
+
         function intialize() {
-          snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response){
+          scope.projectBranch = getParentBranch(scope.branch);
+
+          if (scope.projectBranch === '') {
+            console.error('Project branch is not definied.');
+          }
+          
+          snowowlService.getFullConcept(scope.concept.conceptId, scope.projectBranch).then(function (response){
             scope.projectConcept = {};
             scope.projectConcept.conceptId = response.conceptId;
             scope.projectConcept.fsn = response.fsn;

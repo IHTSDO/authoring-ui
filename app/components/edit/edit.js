@@ -518,7 +518,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.thisView = name;
 
       // Clear data
-      taxonomyComparisonList = [];
+      projectTaxonomyList = [];
 
       // set layout based on view
       setLayout();
@@ -1403,31 +1403,25 @@ angular.module('singleConceptAuthoringApp.edit', [
       return deferred.promise;
     };
 
-    $scope.getParentBranch = function (branch) {
-      if (!branch) {
-        return '';
-      }
+    
 
-      return branch.substring(0,branch.lastIndexOf('/'));
-    };
-
-    var taxonomyComparisonList = [];
-    $scope.showTaxonomiesComparison = function (concept) {
-      for (var i =0; i < taxonomyComparisonList.length; i++) {
-        if (concept.conceptId === taxonomyComparisonList[i]) {
+    var projectTaxonomyList = [];
+    $scope.isProjectTaxonomyVisisble = function (concept) {
+      for (var i =0; i < projectTaxonomyList.length; i++) {
+        if (concept.conceptId === projectTaxonomyList[i]) {
           return true;
         }
       } 
       return false;
     };
 
-    $scope.$on('showTaxonomyComparison', function (event, data) {
+    $scope.$on('viewProjectTaxonomy', function (event, data) {
       if (data.flag) {
-        taxonomyComparisonList.push(data.conceptId);
+        projectTaxonomyList.push(data.conceptId);
       } else {
-        for (var i =0; i < taxonomyComparisonList.length; i++) {
-          if (data.conceptId === taxonomyComparisonList[i]) {
-            taxonomyComparisonList.splice(i,1);
+        for (var i =0; i < projectTaxonomyList.length; i++) {
+          if (data.conceptId === projectTaxonomyList[i]) {
+            projectTaxonomyList.splice(i,1);
             return;
           }
         } 

@@ -235,8 +235,8 @@
 
             <!-- model -->
             <div class="no-gutter col-md-7">
-              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'" ng-if="!showTaxonomiesComparison(concept)"></div>
-              <div taxonomies-comparison concept="concept" branch="targetBranch" parent-branch="getParentBranch(targetBranch)" view="'inferred'" ng-if="showTaxonomiesComparison(concept)"></div>
+              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'" ng-if="!isProjectTaxonomyVisisble(concept)"></div>
+              <div project-taxonomy concept="concept" branch="targetBranch" view="'inferred'" ng-if="isProjectTaxonomyVisisble(concept)"></div>
             </div>
 
             <!-- concept -->
@@ -244,7 +244,7 @@
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
                    branch="targetBranch" static="branchLocked || !isOwnTask"
                    ui-state-update-fn="updateEditListUiState()"
-                   taxonomies-comparison-visible="true"
+                   project-taxonomy-visible="true"
               >
               </div>
             </div>

@@ -178,10 +178,10 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip offset-tooltip-right  normal-case md md-my-library-books"
-                  ng-class="[{'red' : showTaxonomyComparison}, {'green' : !showTaxonomyComparison}]"
-                  ng-if="taxonomiesComparisonVisible"
+                  ng-class="[{'red' : isProjectTaxonomyVisible}, {'green' : !isProjectTaxonomyVisible}]"
+                  ng-if="projectTaxonomyVisible"
                   ng-disabled="!isSctid(concept.conceptId)"
-                  ng-click="toggleShowTaxonomiesComparison()"><span> Show/hide taxonomies comparison </span>
+                  ng-click="toggleProjectTaxonomy()"><span>See project version</span>
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
