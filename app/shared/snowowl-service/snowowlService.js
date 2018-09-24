@@ -280,16 +280,13 @@ angular.module('singleConceptAuthoringApp')
       function getConceptDescendants(conceptId, branch, offset, limit) {
         var deferred = $q.defer();
         // default values
-        if (!offset) {
-          offset = 0;
-        }
         if (!limit) {
           limit = 50;
         }
         if (limit > 200) {
           limit = 200;
         }
-        $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '?expand=descendants(form:"inferred",direct:false,offset:0,limit:200,expand(fsn()))').then(function (response) {
+        $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '?expand=descendants(form:"inferred",direct:false,limit:200,expand(fsn()))').then(function (response) {
           deferred.resolve(response.data.descendants);
         }).then(function (error) {
           deferred.reject(error);
@@ -682,15 +679,11 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
-        if (!offset) {
-          offset = 0;
-        }
-
         if (!limit) {
           limit = 10000;
         }
 
-        var params = 'destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&offset=' + offset +'&limit=' + limit;
+        var params = 'destination=' + conceptId + '&expand=source(expand(fsn())),type(expand(fsn()))&limit=' + limit;
 
         if (active) {
           params += '&active=' + active;
@@ -876,7 +869,7 @@ angular.module('singleConceptAuthoringApp')
             queryString += concept;
           }
         });
-        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&escg=' + queryString).then(function (response) {
+        $http.get(apiEndpoint + branch + '/concepts?limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&escg=' + queryString).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -1314,7 +1307,7 @@ angular.module('singleConceptAuthoringApp')
             searchStr = encodeURIComponent(searchStr);
 
           // use browser/{path}/descriptions?{options} call
-          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset + descTypeStr, config).then(function (response) {
+          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + descTypeStr, config).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 500) {
@@ -1487,7 +1480,7 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////////////////////////////
 
       function getDomainAttributes(branch, parentIds) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn()&offset=0&limit=50').then(function (response) {
+        return $http.get(apiEndpoint + 'mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn()&limit=50').then(function (response) {
           return response.data ? response.data : [];
         }, function (error) {
           return null;
@@ -1495,7 +1488,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getAttributeValues(branch, attributeId, searchStr) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') : '') + '&expand=fsn()&offset=0&limit=50').then(function (response) {
+        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') : '') + '&expand=fsn()&limit=50').then(function (response) {
           return response.data.items ? response.data.items : [];
         }, function (error) {
           return null;
@@ -1503,7 +1496,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getAttributeValuesByConcept(branch, attributeId, searchStr) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + 'termPrefix=' + encodeURIComponent(searchStr) + '&expand=fsn()&offset=0&limit=50').then(function (response) {
+        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + 'termPrefix=' + encodeURIComponent(searchStr) + '&expand=fsn()&limit=50').then(function (response) {
           return response.data.items ? response.data.items : [];
         }, function (error) {
           return null;
@@ -1791,7 +1784,7 @@ angular.module('singleConceptAuthoringApp')
 
         // paging/filtering/sorting with defaults applied
         var params = {
-          offset: offset ? offset : '0',
+          // offset: offset ? offset : '0',
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
