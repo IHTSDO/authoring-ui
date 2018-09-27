@@ -2798,6 +2798,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropAxiomRelationshipTarget = function (relationship, data, type) {
 
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.name = data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym;
+          }
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -2902,6 +2907,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropAxiomRelationshipType = function (relationship, data, type) {
 
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.name = data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym;
+          }
+          
           // cancel if static
           if (scope.isStatic) {
             return;
