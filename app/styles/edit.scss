@@ -409,6 +409,14 @@ textarea.form-control.inactivation-value{
     .editing-form select {
         font-size: 12px ;
     }
+    .editing-form .add-buttons.fa-minus,
+    .editing-form .add-buttons.fa-plus {
+        font-size: 12px;
+        padding-top: 5px;
+    }
+    .editing-form .add-buttons.fa-minus {
+        margin-right: 4px;
+    }
     .form-control {
         height: 30px;
     }
