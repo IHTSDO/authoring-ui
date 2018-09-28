@@ -2589,6 +2589,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addAdditionalAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
+          if (!snowowlService.isSctid(scope.concept.conceptId)) {
+            axiom.axiomId = null; 
+          }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
 
           if(!scope.concept.hasOwnProperty('additionalAxioms')){
@@ -2602,6 +2605,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addGCIAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
+          if (!snowowlService.isSctid(scope.concept.conceptId)) {
+            axiom.axiomId = null; 
+          }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
 
           if(!scope.concept.hasOwnProperty('gciAxioms')){
