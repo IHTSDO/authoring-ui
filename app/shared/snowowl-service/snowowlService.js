@@ -1388,6 +1388,20 @@ angular.module('singleConceptAuthoringApp')
         });
       }
  
+      // Get last active for branchs
+      function getLastActivityOnBranches(branches) {        
+        if(!branches) {
+          console.error('Error retrieving last activity for branches. No such branch is provided');
+          return null;
+        }
+        
+        return $http.post('/traceability-service/activities/branches/last', branches).then(function (response) {
+          return response.data;
+        }, function (error) {
+          return null;
+        });        
+      }
+
       ////////////////////////////////
       // Snow Owl Administrative Services
       ////////////////////////////////
@@ -1873,6 +1887,7 @@ angular.module('singleConceptAuthoringApp')
         getBranch: getBranch,
         createBranch: createBranch,
         getTraceabilityForBranch: getTraceabilityForBranch,
+        getLastActivityOnBranches: getLastActivityOnBranches,
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
         getLastPromotionTime: getLastPromotionTime,

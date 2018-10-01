@@ -166,12 +166,75 @@ angular.module('singleConceptAuthoringApp.home', [
             }
 
             scaService.getTasks($scope.showPromotedTasks ? false : true).then(function (response) {
-                $scope.tasks = response;
-                loadingTask = false;
-                if ($scope.tasks) {
-                    notificationService.sendMessage('All tasks loaded', 5000);
-                }
+                if (response && response.length > 0) {
+                    var branches = [];
+                    for (let i =0 ; i < response.length; i++) {
+                        if (response[i].status !== 'New') {
+                            branches.push(response[i].branchPath);
+                        }                        
+                    }
+                    if (branches.length > 0) {
+                        findAndSetLastModifiedDate(branches, response).then(function(results) {
+                            $scope.tasks = results;
+                            loadingTask = false;
+                            if ($scope.tasks) {
+                                notificationService.sendMessage('All tasks loaded', 5000);
+                            }   
+                        });
+                    } else {
+                        $scope.tasks = response;
+                        loadingTask = false;
+                        if ($scope.tasks) {
+                            notificationService.sendMessage('All tasks loaded', 5000);
+                        }
+                    }
+                } else {
+                   $scope.tasks = response;
+                    loadingTask = false;
+                    if ($scope.tasks) {
+                        notificationService.sendMessage('All tasks loaded', 5000);
+                    } 
+                }                
             });
+        }
+
+        function findAndSetLastModifiedDate (branches, tasks) {
+            var deferred = $q.defer();            
+            snowowlService.getLastActivityOnBranches(branches).then(function(activities) {
+                if(activities && activities.length > 0) {
+                    var map = {};
+                    for (let i =0 ; i < activities.length; i++) {                                    
+                        map[activities[i].branch.branchPath] = activities[i].commitDate;                                                       
+                    }
+                    var results = tasks;
+                    for (let i =0 ; i < results.length; i++) {                                    
+                        var item = results[i];
+                        if (item.branchHeadTimestamp) {
+                            item.updated = new Date(item.updated).getTime() < item.branchHeadTimestamp ? 
+                                            $filter('date')(new Date(item.branchHeadTimestamp), 'yyyy-MM-ddTHH:mm:ss.sssZ', 'UTC') : item.updated;
+                        }
+                        if (map.hasOwnProperty(item.branchPath)) {
+                            item.updated = new Date(item.updated).getTime() < new Date(map[item.branchPath]).getTime() ? 
+                                            $filter('date')(new Date(map[item.branchPath]), 'yyyy-MM-ddTHH:mm:ss.sssZ', 'UTC') : item.updated;
+                        }
+                    }
+                    deferred.resolve(results);
+                } else {
+                    var results = tasks;
+                    for (let i =0 ; i < results.length; i++) {                                    
+                        var item = results[i];
+                        if (item.branchHeadTimestamp) {
+                            item.updated = new Date(item.updated).getTime() < item.branchHeadTimestamp ? 
+                                            $filter('date')(new Date(item.branchHeadTimestamp), 'yyyy-MM-ddTHH:mm:ss.sssZ', 'UTC') : item.updated;
+                        }                       
+                    }
+                    deferred.resolve(results);
+                }
+            }, function (error) {
+                deferred.resolve(tasks);
+            });
+            
+            return deferred.promise;
         }
 
         $scope.goToTask = function (task) {
