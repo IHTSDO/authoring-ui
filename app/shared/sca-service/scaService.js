@@ -703,9 +703,9 @@ angular.module('singleConceptAuthoringApp')
           return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/validation', {}).then(
             function (response) {
               return response;
-            }, function (error) {
+            }, function (error, status) {
               console.error('Error starting validation for ' + projectKey + ', ' + taskKey);
-              return null;
+              throw status + " " + error;
             });
         },
 
@@ -737,9 +737,9 @@ angular.module('singleConceptAuthoringApp')
           // POST call takes no data
           return $http.post(apiEndpoint + 'projects/' + projectKey + '/validation', {}).then(function (response) {
             return response.data;
-          }, function (error) {
+          }, function (error, status) {
             console.error('Error getting validation for project ' + projectKey);
-            return null;
+            throw status + " " + error;
           });
 
         },
