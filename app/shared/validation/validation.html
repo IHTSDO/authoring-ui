@@ -84,7 +84,7 @@
         <table ng-show="failureTableParams.total() > 0"
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table">
-          <tr ng-repeat="failure in $data" ng-class="[{'validation-table-padding' : !whitelistEnabled && !editable}]">
+          <tr ng-repeat="failure in $data" ng-class="[{'validation-table-padding' : !editable}]">
             <td header-title="'Click to select all'"
                 header="'ng-table/headers/checkboxHeader.html'"
                 ng-show="task"><div class="checkbox">
