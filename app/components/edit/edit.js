@@ -58,6 +58,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         scope.$on('repeatComplete', function (event, data) {
           scope.initializeWindowSize();
         });
+        scope.$on('conceptRemovedFromUI', function (event, data) {
+          scope.initializeWindowSize();
+        });
       }
     };
   })
@@ -1167,6 +1170,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
       }
+
+      // Re-calculate the min-height for the last item
+      // so that it will fit all remaining height of screen
+      $timeout(function () {
+        $rootScope.$broadcast('conceptRemovedFromUI');
+      }, 0);      
     });
 
 // creates a blank (unsaved) concept in the editing list
