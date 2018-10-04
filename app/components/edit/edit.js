@@ -55,12 +55,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           scope.first = false;
           scope.initializeWindowSize();
         });
-        scope.$on('repeatComplete', function (event, data) {
+        scope.$on('resetFillHeight', function (event, data) {
           scope.initializeWindowSize();
-        });
-        scope.$on('conceptRemovedFromUI', function (event, data) {
-          scope.initializeWindowSize();
-        });
+        });        
       }
     };
   })
@@ -219,7 +216,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     $scope.renderingComplete = function () {
 
-      $rootScope.$broadcast('repeatComplete');
+      $rootScope.$broadcast('resetFillHeight');
       $scope.conceptsRendering = false;
     };
     $scope.goToConflicts = function () {
@@ -1174,7 +1171,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // Re-calculate the min-height for the last item
       // so that it will fit all remaining height of screen
       $timeout(function () {
-        $rootScope.$broadcast('conceptRemovedFromUI');
+        $rootScope.$broadcast('resetFillHeight');
       }, 0);      
     });
 
