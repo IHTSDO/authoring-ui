@@ -55,7 +55,7 @@
     <div class="p-l-15 p-r-15" ng-if="task.status === 'Promoted'">
       <div class="alert alert-warning">Task has been promoted. No further changes allowed.</div>
     </div>
-    <div class="p-l-15 p-r-15" ng-if="branchLocked && automatePromotionStatus === ''">
+    <div class="p-l-15 p-r-15" ng-if="branchLocked && automatePromotionStatus === '' && task.status !== 'Promoted'">
       <div class="alert alert-warning">Task branch is locked due to an ongoing rebase, promotion or classification</div>
     </div>
     <div class="p-l-15 p-r-15" ng-if="(automatePromotionStatus === 'Queued'

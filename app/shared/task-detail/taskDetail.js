@@ -392,7 +392,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.checkForLock = function () {
 
         snowowlService.getBranch($scope.branch).then(function (response) {
-          
+
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
             if(response.metadata.lock.context.description === 'classifying the ontology')
@@ -403,7 +403,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $timeout(function () {
               $scope.checkForLock();
             }, 10000);
-           }         
+           }
           else {
             snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response && response.length > 0) {
@@ -415,12 +415,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   }, 10000);
                 } else {
                   $rootScope.branchLocked = false;
-                }                
+                }
               } else {
                 $rootScope.branchLocked = false;
               }
             });
-            
+
           }
         });
 
@@ -443,13 +443,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Rebased with conflicts':
-                if ($scope.task.branchState === 'FORWARD'
-                    || $scope.task.branchState === 'UP_TO_DATE') {
-                  break;
-                }
-                $rootScope.branchLocked = false;
+                scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  $scope.task = response;
+                  if ($scope.task.branchState !== 'FORWARD'
+                    && $scope.task.branchState !== 'UP_TO_DATE') {
+                    $rootScope.branchLocked = false;
                 $rootScope.automatedPromotionInQueued = false;
                 $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
+                  }
+                });
                 break;
               case 'Classifying':
                 $rootScope.branchLocked = true;
