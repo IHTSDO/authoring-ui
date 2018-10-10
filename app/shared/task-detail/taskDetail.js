@@ -482,6 +482,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               case 'Completed':
                 $rootScope.classificationRunning = false;
                 $rootScope.automatedPromotionInQueued = false;
+                $rootScope.branchLocked = true;
                 if (!isInitialInvoke) {
                   $rootScope.$broadcast('reloadTask');
                 }
@@ -561,7 +562,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
           $scope.ontologyLock = $rootScope.classificationRunning;
-          $scope.checkAutomatePromotionStatus(true);
+          if ($scope.task.status !== 'Promoted') {
+            $scope.checkAutomatePromotionStatus(true);
+          } else {
+            $rootScope.branchLocked = true;
+          }
 
           snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });
