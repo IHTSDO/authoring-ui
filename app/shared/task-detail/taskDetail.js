@@ -460,7 +460,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Classified with results':
-                if ($scope.task.latestClassificationJson.status === 'SAVED') {
+                if ($scope.task.latestClassificationJson.status === 'SAVED'
+                    || $scope.task.latestClassificationJson.status === 'RUNNING'
+                    || new Date($scope.task.latestClassificationJson.completionDate) > new Date(response.completeDate)) {
+                   $scope.automatePromotionStatus = '';
                   break;
                 }
                 $rootScope.classificationRunning = false;
