@@ -70,7 +70,7 @@ angular.module('singleConceptAuthoringApp.home', [
                         || params.count() !== localStorageService.get('table-display-number')) {
                         localStorageService.set('table-display-number', params.count());
                     }
-                    
+
                     $rootScope.taskFilter.searchStr = params.filter().search;
                     $rootScope.taskFilter.sorting = params.sorting();
 
@@ -113,6 +113,20 @@ angular.module('singleConceptAuthoringApp.home', [
                             mydata.sort(function (a, b) {
                                return sortFeedbackFn(a,b,'desc');
                             });
+                        } else {
+                            // do nothing
+                        }
+
+                        if(params.sorting().status === 'asc'){
+                            mydata.sort(function (a, b) {
+                                return sortStatusFn(a,b,'asc');
+                            });
+                        } else if(params.sorting().status === 'desc') {
+                            mydata.sort(function (a, b) {
+                               return sortStatusFn(a,b,'desc');
+                            });
+                        } else {
+                            // do nothing
                         }
 
                         $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -145,6 +159,22 @@ angular.module('singleConceptAuthoringApp.home', [
             }
         }
 
+        function sortStatusFn (a, b, direction) {
+            a.tempStatus = (a.status == 'In Review' && !a.reviewer) ? 'Ready for Review' : a.status;
+            b.tempStatus = (b.status == 'In Review' && !b.reviewer) ? 'Ready for Review' : b.status;
+            if (direction === 'asc') {
+                var result = a.tempStatus.localeCompare(b.tempStatus);
+                delete a.tempStatus;
+                delete b.tempStatus;
+                return result;
+            } else {
+                var result = b.tempStatus.localeCompare(a.tempStatus);
+                delete a.tempStatus;
+                delete b.tempStatus;
+                return result;
+            }
+        }
+
         $scope.toggleShowPromotedTasks = function () {
             $scope.showPromotedTasks = !$scope.showPromotedTasks;
             $rootScope.taskFilter.showPromoted = $scope.showPromotedTasks;
@@ -171,7 +201,7 @@ angular.module('singleConceptAuthoringApp.home', [
                     for (let i =0 ; i < response.length; i++) {
                         if (response[i].status !== 'New') {
                             branches.push(response[i].branchPath);
-                        }                        
+                        }
                     }
                     if (branches.length > 0) {
                         findAndSetLastModifiedDate(branches, response).then(function(results) {
@@ -179,7 +209,7 @@ angular.module('singleConceptAuthoringApp.home', [
                             loadingTask = false;
                             if ($scope.tasks) {
                                 notificationService.sendMessage('All tasks loaded', 5000);
-                            }   
+                            }
                         });
                     } else {
                         $scope.tasks = response;
@@ -193,47 +223,47 @@ angular.module('singleConceptAuthoringApp.home', [
                     loadingTask = false;
                     if ($scope.tasks) {
                         notificationService.sendMessage('All tasks loaded', 5000);
-                    } 
-                }                
+                    }
+                }
             });
         }
 
         function findAndSetLastModifiedDate (branches, tasks) {
-            var deferred = $q.defer();            
+            var deferred = $q.defer();
             snowowlService.getLastActivityOnBranches(branches).then(function(activities) {
                 if(activities && activities.length > 0) {
                     var map = {};
-                    for (let i =0 ; i < activities.length; i++) {                                    
-                        map[activities[i].branch.branchPath] = activities[i].commitDate;                                                       
+                    for (let i =0 ; i < activities.length; i++) {
+                        map[activities[i].branch.branchPath] = activities[i].commitDate;
                     }
                     var results = tasks;
-                    for (let i =0 ; i < results.length; i++) {                                    
+                    for (let i =0 ; i < results.length; i++) {
                         var item = results[i];
                         if (item.branchHeadTimestamp) {
-                            item.updated = new Date(item.updated).getTime() < item.branchHeadTimestamp ? 
+                            item.updated = new Date(item.updated).getTime() < item.branchHeadTimestamp ?
                                             $filter('date')(new Date(item.branchHeadTimestamp), 'yyyy-MM-ddTHH:mm:ss.sssZ', 'UTC') : item.updated;
                         }
                         if (map.hasOwnProperty(item.branchPath)) {
-                            item.updated = new Date(item.updated).getTime() < new Date(map[item.branchPath]).getTime() ? 
+                            item.updated = new Date(item.updated).getTime() < new Date(map[item.branchPath]).getTime() ?
                                             $filter('date')(new Date(map[item.branchPath]), 'yyyy-MM-ddTHH:mm:ss.sssZ', 'UTC') : item.updated;
                         }
                     }
                     deferred.resolve(results);
                 } else {
                     var results = tasks;
-                    for (let i =0 ; i < results.length; i++) {                                    
+                    for (let i =0 ; i < results.length; i++) {
                         var item = results[i];
                         if (item.branchHeadTimestamp) {
-                            item.updated = new Date(item.updated).getTime() < item.branchHeadTimestamp ? 
+                            item.updated = new Date(item.updated).getTime() < item.branchHeadTimestamp ?
                                             $filter('date')(new Date(item.branchHeadTimestamp), 'yyyy-MM-ddTHH:mm:ss.sssZ', 'UTC') : item.updated;
-                        }                       
+                        }
                     }
                     deferred.resolve(results);
                 }
             }, function (error) {
                 deferred.resolve(tasks);
             });
-            
+
             return deferred.promise;
         }
 
