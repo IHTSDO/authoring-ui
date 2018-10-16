@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
       },
       templateUrl: 'shared/project-taxonomy/projectTaxonomy.html',
 
-      link: function (scope) {       
+      link: function (scope, element) {       
 
         scope.projectConcept = null;
         scope.loadingCompleted = false;
@@ -29,6 +29,14 @@ angular.module('singleConceptAuthoringApp')
           }
 
           return branch.substring(0,branch.lastIndexOf('/'));
+        }
+
+        function setLayoutWith() {
+          let documentResult = document.getElementsByClassName('sidebar-bg');
+          let wrappedDocumentResult = angular.element(documentResult);
+          let width = wrappedDocumentResult[0].clientWidth;    
+          let elementResult = element[0].querySelector('.custom-width');
+          elementResult.style.width = (width + 30) + 'px';
         }
 
         function intialize() {
@@ -53,6 +61,9 @@ angular.module('singleConceptAuthoringApp')
               console.error('Error retrieving concept from project branch');
             }            
           });
+
+          // set width for project taxonomy similar with side bar
+          setLayoutWith();
         }
         intialize();
 
