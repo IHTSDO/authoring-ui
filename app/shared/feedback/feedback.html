@@ -85,7 +85,7 @@
   <!-- Taxonomy, models, and concepts -->
   <div class="no-padding pull-right"  ng-class="getLayoutWidths('modelsAndConcepts')">
     <div ng-if="viewedConcepts.length > 0 && !simultaneousFeedbackAdded">
-      <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
+      <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts" ng-class="[{'first' : $first}]">
         <div ng-class="getLayoutWidths('models')">
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'" ng-if="!isProjectTaxonomyVisisble(concept)"></div>
         <div project-taxonomy concept="concept" branch="branch" view="'inferred'" ng-if="isProjectTaxonomyVisisble(concept)"></div>
