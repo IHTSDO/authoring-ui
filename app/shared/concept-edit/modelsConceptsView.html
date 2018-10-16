@@ -9,7 +9,7 @@
     <!-- model & concept data-->
     <div class="row-fluid no-gutter edit-row"
          ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-         ng-class="isLast($last)"
+         ng-class="[{'last' : $last}, {'first' : $first}]"
          repeat-complete callback="renderingComplete()">
 
       <!-- model -->
