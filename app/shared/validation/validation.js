@@ -232,7 +232,7 @@ angular.module('singleConceptAuthoringApp')
           function getConceptNames(failures) {
             var deferred = $q.defer();
             var promises = [];
-
+            conceptIds = [];
             angular.forEach(failures, function (failure) {
               promises.push(getConceptIdForFailure(failure));
             });
