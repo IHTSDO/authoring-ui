@@ -3631,11 +3631,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // recompute the domain attributes from MRCM service
-          constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
-            scope.allowedAttributes = attributes;
-          }, function (error) {
-            notificationService.sendError('Error getting allowable domain attributes: ' + error);
-          });
+          if (!scope.isStatic) {
+            constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
+              scope.allowedAttributes = attributes;
+            }, function (error) {
+              notificationService.sendError('Error getting allowable domain attributes: ' + error);
+            });
+          }
         };
 
         scope.updateAxiomRelationship = function (relationship, type) {
@@ -3929,11 +3931,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
 
           // recompute the domain attributes from MRCM service
-          constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
-            scope.allowedAttributes = attributes;
-          }, function (error) {
-            notificationService.sendError('Error getting allowable domain attributes: ' + error);
-          });
+          if (!scope.isStatic) {
+            constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
+              scope.allowedAttributes = attributes;
+            }, function (error) {
+              notificationService.sendError('Error getting allowable domain attributes: ' + error);
+            });
+          }
 
           // compute the role groups
           scope.computeRelationshipGroups();
