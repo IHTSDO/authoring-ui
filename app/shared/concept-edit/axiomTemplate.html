@@ -8,7 +8,12 @@
         popover-append-to-body="true"
         id="component-{{axiom.axiomId}}">
         <span>More details</span>
-      </button>
+    </button>
+    <button
+      class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
+      ui-draggable="true" drag="axiom" drag-channel="axiomObj" drag-image="getDragImageForAxiom(axiom)">
+      <span>Drag This Row</span>
+    </button> 
   </div>
 
   <div class="col-md-6 no-padding">
