@@ -3075,6 +3075,45 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
         };
+        
+        scope.dropAxiom = function (source) {
+          if (!source) {
+            console.error('Cannot drop axiom, source not specified');
+            return;
+          }
+         
+          // check if target is static
+          if (scope.isStatic) {
+            console.error('Scope is static, cannot drop');
+            return;
+          }
+          if (scope.concept.conceptId === source.relationships[0].sourceId) {
+            return;
+          }
+
+          let axiom = angular.copy(source);
+          axiom.axiomId = null; 
+          if (axiom.type === axiomType.ADDITIONAL) {
+            if(!scope.concept.hasOwnProperty('additionalAxioms')){
+              scope.concept.additionalAxioms = [];
+            }
+            axiom.relationships.forEach(function (rel) {
+              rel.sourceId = scope.concept.conceptId;
+            });           
+            scope.concept.additionalAxioms.push(axiom);
+            scope.computeAxioms(axiomType.ADDITIONAL);
+          } else {
+            if(!scope.concept.hasOwnProperty('gciAxioms')){
+              scope.concept.gciAxioms = [];
+            }
+            axiom.relationships.forEach(function (rel) {
+              rel.sourceId = scope.concept.conceptId;
+            });           
+            scope.concept.gciAxioms.push(axiom);
+            scope.computeAxioms(axiomType.GCI);
+          }
+          autoSave();;
+        };
 
         scope.dropAxiomRelationship = function (target, source, axiom) {
 
@@ -3321,6 +3360,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getDragImageForConcept = function (fsn) {
           return fsn;
+        };
+        scope.getDragImageForAxiom = function (axiom) {
+          return axiom.title;
         };
 
         scope.getDragImageForRelationship = function (relationship) {

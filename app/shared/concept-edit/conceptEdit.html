@@ -1,5 +1,5 @@
 
-<div class="edits editing-form darken-3 grey">
+<div class="edits editing-form darken-3 grey" drop-channel="axiomObj" ui-on-drop="dropAxiom($data)" drag-enter-class="sca-drag-target">
   <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="getExtensionNamespace() !== ''">
      <span >Unpublished concept from {{extensionNamespace}}</span>
   </i>
