@@ -7,6 +7,9 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.templateFrom = templateFrom;
     $scope.templateTo = '';
     $scope.errorMsg = '';
+    $scope.transformType = 'logical&lexical';
+    $scope.logical = true;
+    $scope.lexical = true;
     let reasons = metadataService.getDescriptionInactivationReasons();
     $scope.reasons = [];
     angular.forEach(reasons, function(reason){
@@ -60,9 +63,21 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     };
 
     $scope.transform = function() {
+      if($scope.transformType === 'logical&lexical'){
+          $scope.logical = true;
+          $scope.lexical = false;
+      }
+      else if($scope.transformType === 'logical'){
+          $scope.logical = true;
+          $scope.lexical = false;
+      }
+      else{
+          $scope.lexical = true;
+          $scope.logical = false;
+      }
       $scope.loading = true;
       $scope.errorMsg = '';
-      templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results).then(function(response){
+      templateService.transform($scope.branch, $scope.templateFrom, $scope.templateTo, $scope.inactivationReason.id, $scope.results, $scope.logical, $scope.lexical).then(function(response){
           $scope.loading = false;
           $modalInstance.close(response);
       }, function (error) {

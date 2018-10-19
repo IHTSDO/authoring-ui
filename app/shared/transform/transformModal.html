@@ -28,6 +28,18 @@
           </div>
         </div>
     </div>
+    <div class="row col-md-12 no-padding top-modal add-triangles-bottom reasonModal row transform-indicator">
+        <div class="col-md-12">
+          <label> Select Transformation Type</label>
+        </div>
+        <div class="col-md-12 col-sm-8 filter-input">
+            <select ng-model="transformType" name="select-type" class="form-control no-padding m-t-10">   
+              <option value="logical&lexical" selected>Logical and Lexical</option>
+              <option value="logical">Logical</option>
+              <option value="lexical">Lexical</option>
+            </select>
+        </div>
+    </div>
   </div>
   <div class="modal-footer">
     <div class="row no-padding no-gutter"> 

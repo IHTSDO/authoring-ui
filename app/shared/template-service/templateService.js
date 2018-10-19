@@ -57,12 +57,14 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
     }
     
-    function transform(branch, source, target, reason, concepts){
+    function transform(branch, source, target, reason, concepts, logical, lexical){
         var deferred = $q.defer();
         let body = {
                   "conceptsToTransform": concepts,
                   "inactivationReason": reason,
-                  "sourceTemplate": source.name
+                  "sourceTemplate": source.name,
+                  "lexicalTransform": lexical,
+                  "logicalTransform": logical
                 }
         
         $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform', body).then(function (response) {
