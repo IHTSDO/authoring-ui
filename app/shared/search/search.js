@@ -985,43 +985,66 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
         
       $scope.openTransformModal = function () {
-        let transformConcepts = [];
+        let transformConcepts = [];        
+        let openModel = function(concepts) {
+          let modalInstance = $modal.open({
+            templateUrl: 'shared/transform/transformModal.html',
+            controller: 'transformModalCtrl',
+            resolve: {
+              results: function () {
+                return concepts;
+              },
+              branch: function () {
+                return $scope.branch;
+              },
+              templateFrom: function () {
+                return $scope.userOptions.template;
+              },
+            }
+          });
+
+          modalInstance.result.then(function (response) {
+            console.log(response);
+            batchEditingService.addBatchConcepts(response).then(function(){
+                notificationService.sendMessage('Successfully added batch concepts', 3000);
+                $rootScope.$broadcast('batchConcept.change');              
+                $rootScope.$broadcast('swapToBatch');
+              });
+          }, function () {
+            // do nothing
+          });
+        };
+        
         if(!$scope.downloadAllResults) {
           $scope.results.filter(function(item) {
             if(item.selected) {
               transformConcepts.push(item.concept.conceptId);
-            }
+            }            
           });
+          openModel(transformConcepts);
         }
         else{
-            transformConcepts = $scope.batchIdList;
-        }
-        let modalInstance = $modal.open({
-          templateUrl: 'shared/transform/transformModal.html',
-          controller: 'transformModalCtrl',
-          resolve: {
-            results: function () {
-              return transformConcepts;
-            },
-            branch: function () {
-              return $scope.branch;
-            },
-            templateFrom: function () {
-              return $scope.userOptions.template;
-            },
+          let acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+          let activeFilter = null;
+
+          switch($scope.userOptions.searchType) {
+            case 1:
+            activeFilter = true;
+            break;
+
+            case 2:
+            activeFilter = false;
+            break;
           }
-        });
-          
-        modalInstance.result.then(function (response) {
-          console.log(response);
-          batchEditingService.addBatchConcepts(response).then(function(){
-              notificationService.sendMessage('Successfully added batch concepts', 3000);
-              $rootScope.$broadcast('batchConcept.change');              
-              $rootScope.$broadcast('swapToBatch');
-            });
-        }, function () {
-          // do nothing
-        });
+
+          snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, 0, 10000, false, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, $scope.batchIdList).then(function (response) {
+            
+            angular.forEach(response.items, function (item) {
+              transformConcepts.push(item.concept.conceptId);
+            });           
+            openModel(transformConcepts);
+          });            
+        }
       };
 
       /**
