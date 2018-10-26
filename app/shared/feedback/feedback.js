@@ -986,21 +986,51 @@ angular.module('singleConceptAuthoringApp')
             }
 
             if (conceptsToAdd.length > 1) {
-              notificationService.sendMessage('Loading concepts (0/' + conceptsToAdd.length + ')');
+              notificationService.sendMessage('Loading '+ conceptsToAdd.length +' concepts');
             }
 
+            conceptsToAdd = conceptsToAdd.filter(function(concept) {
+                            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+                              if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
+                                return false;
+                              }
+                            }                            
+                            return true;
+                          });
+
             var sortingDirection = scope.conceptsToReviewTableParams.sorting().term;
+            let idList = [];
             for (var i = 0; i < conceptsToAdd.length; i++) {
               conceptsToAdd[i].viewed = true;
-              addToEditHelper(conceptsToAdd[i].conceptId,sortingDirection).then(function (response) {
-                conceptsAdded++;
-                if (conceptsAdded === conceptsToAdd.length) {
-                  notificationService.sendMessage('All concepts loaded', 5000);
-                } else {
-                  notificationService.sendMessage('Loading concepts (' + conceptsAdded + '/' + conceptsToAdd.length + ')');
-                }
-              });
+              idList.push(conceptsToAdd[i].conceptId);           
             }
+
+            snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+              angular.forEach(response, function (item) {
+                scope.viewedConcepts.push(item);
+              });
+              // Sort concepts
+              scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sortingDirection === 'asc' ? '+fsn' : '-fsn');
+
+              // Re-bind shortcut
+              $timeout(function () {
+                hotkeys.bindTo(scope)
+                  .add({
+                    combo: 'alt+q',
+                    description: 'Close all concepts',
+                    callback: function() {
+                      closeAllConcepts();
+                    }
+                  });
+              }, 1000);
+
+              // after a slight delay, broadcast a draw event
+              $timeout(function () {
+                $rootScope.$broadcast('comparativeModelDraw');
+              }, 500);
+
+              notificationService.sendMessage('All concepts loaded', 5000);
+            });
           };
 
           // move all selected objects from one list to the other
