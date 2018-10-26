@@ -180,7 +180,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // whether to initially display project taxonomy
         projectTaxonomyVisible: '@?',
 
-        loadValidation: '@?'
+        loadValidation: '@?',
+
+        // traceability that will be passed from Feedback
+        traceabilities: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -701,49 +704,48 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         function lookupInnerComponentStyle (){
-          scope.innerComponentStyle = {};
-          var traceabilities = [];
-          snowowlService.getTraceabilityForBranch(scope.branch).then(function(traceabilities) {
-            if(traceabilities.totalElements > 0) {
-              snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
-                var checkList = [];
-                angular.forEach(traceabilities.content, function (content) {
-                  if(content.activityType === 'CONTENT_CHANGE') {
-                    angular.forEach(content.conceptChanges, function (traceability) {
-                      if(traceability.conceptId === scope.concept.conceptId) {
-                        angular.forEach(traceability.componentChanges, function (componentChange) {
-                          if (componentChange.componentType === 'DESCRIPTION'
-                              || (componentChange.componentType === 'RELATIONSHIP' && componentChange.componentSubType === 'STATED_RELATIONSHIP')) {
-                            scope.innerComponentStyle[componentChange.componentId] = {
-                              message: null,
-                              style: 'tealhl'
-                            };
-                          }
-                          if (componentChange.componentType === 'DESCRIPTION') {
-                            if (checkList.indexOf(componentChange.componentId) == -1) {
-                              checkList.push(componentChange.componentId);
+          scope.innerComponentStyle = {};        
+          
+          if(scope.traceabilities.totalElements > 0) {
+            snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
+              var checkList = [];
+              angular.forEach(scope.traceabilities.content, function (content) {
+                if(content.activityType === 'CONTENT_CHANGE') {
+                  angular.forEach(content.conceptChanges, function (traceability) {
+                    if(traceability.conceptId === scope.concept.conceptId) {
+                      angular.forEach(traceability.componentChanges, function (componentChange) {
+                        if (componentChange.componentType === 'DESCRIPTION'
+                            || (componentChange.componentType === 'RELATIONSHIP' && componentChange.componentSubType === 'STATED_RELATIONSHIP')) {
+                          scope.innerComponentStyle[componentChange.componentId] = {
+                            message: null,
+                            style: 'tealhl'
+                          };
+                        }
+                        if (componentChange.componentType === 'DESCRIPTION') {
+                          if (checkList.indexOf(componentChange.componentId) == -1) {
+                            checkList.push(componentChange.componentId);
 
-                              var taskDescription = scope.concept.descriptions.filter( function (des) {
-                                return des.descriptionId === componentChange.componentId;
-                              })[0];
+                            var taskDescription = scope.concept.descriptions.filter( function (des) {
+                              return des.descriptionId === componentChange.componentId;
+                            })[0];
 
-                              var mainDescription = response.descriptions.filter( function (des) {
-                                return des.descriptionId === componentChange.componentId;
-                              })[0];
+                            var mainDescription = response.descriptions.filter( function (des) {
+                              return des.descriptionId === componentChange.componentId;
+                            })[0];
 
-                              if(mainDescription && taskDescription) {
-                                highlightComponent(componentChange,mainDescription,taskDescription);
-                              }
+                            if(mainDescription && taskDescription) {
+                              highlightComponent(componentChange,mainDescription,taskDescription);
                             }
                           }
-                        });
-                      }
-                    });
-                  }
-                });
+                        }
+                      });
+                    }
+                  });
+                }
               });
-            }
-          });
+            });
+          }
+         
         }
 
         function highlightComponent(componentChange,mainDescription,taskDescription) {
