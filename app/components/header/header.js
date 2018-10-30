@@ -213,6 +213,10 @@ angular.module('singleConceptAuthoringApp')
               }
           });
         };
+        
+        scope.openReporting = function() {
+          window.open('/reporting/');
+        };
       }
     };
   }]);
