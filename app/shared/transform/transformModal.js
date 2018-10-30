@@ -65,7 +65,7 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     $scope.transform = function() {
       if($scope.transformType === 'logical&lexical'){
           $scope.logical = true;
-          $scope.lexical = false;
+          $scope.lexical = true;
       }
       else if($scope.transformType === 'logical'){
           $scope.logical = true;
