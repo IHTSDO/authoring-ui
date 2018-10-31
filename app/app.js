@@ -49,7 +49,8 @@ angular
     'singleConceptAuthoringApp.taskDetail',
     'singleConceptAuthoringApp.conceptInformationModal',
     'singleConceptAuthoringApp.transformModal',
-    'singleConceptAuthoringApp.uploadBatch'
+    'singleConceptAuthoringApp.uploadBatch',
+    'singleConceptAuthoringApp.owlAxiomExpressionModal'
   ])
   .factory('httpRequestInterceptor', function () {
     return {

@@ -3806,6 +3806,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
         
+        scope.downloadOWLAxiom = function () {
+          $modal.open({
+            templateUrl: 'shared/owl-axiom-expression/owlAxiomExpression.html',
+            controller: 'owlAxiomExpressionModalCtrl',
+            resolve: {
+              branch: function () {
+                return scope.branch;
+              },
+              conceptId: function () {
+                return scope.concept.conceptId;
+              },
+              conceptFSN: function() {
+                return scope.concept.fsn;
+              },
+              additionalAxioms: function () {
+                return scope.concept.additionalAxioms;
+              },
+              gciAxioms: function () {
+                return scope.concept.gciAxioms;
+              }
+            }
+          });
+        };
+
         scope.revertToVersion = function () {
           modalService.confirm('The concept will be reverted to the version that was present when the task was created. Do you want to proceed?').then(function () {
             notificationService.sendMessage('Reverting concept to version...');

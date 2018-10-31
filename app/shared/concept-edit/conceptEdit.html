@@ -204,6 +204,7 @@
                 <li ng-click="addGCIAxiom()" ng-if="axiomSupport && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
+                <li ng-click="downloadOWLAxiom()">Download OWL Axiom</li>
               </ul>
             </li>
           </ul>
