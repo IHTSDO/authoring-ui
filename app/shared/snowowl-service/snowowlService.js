@@ -740,6 +740,21 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      // GET /{path}/concepts/{conceptId}/members
+      function getMembersByReferencedComponent(conceptId, branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/members?referencedComponentId=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+          if (response.data.total === 0) {
+            deferred.resolve([]);
+          } else {
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       function getMrcmAttributeDomainMembers(branch) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + branch + '/members?referenceSet=723561005&offset=0&limit=500&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
@@ -1849,6 +1864,7 @@ angular.module('singleConceptAuthoringApp')
         searchAllConcepts: searchAllConcepts,
         getReview: getReview,
         getMembersByTargetComponent: getMembersByTargetComponent,
+        getMembersByReferencedComponent:getMembersByReferencedComponent,
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,

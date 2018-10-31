@@ -1,0 +1,57 @@
+
+<div id="owlAxiomExpressionModel" class="clearfix owl-axiom-expression">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title" ng-if="loading">Loading</h4>
+    <h4 class="modal-title" ng-if="!loading">Owl Axiom Expression for {{conceptFSN}} | {{conceptId}}</h4>
+  </div>
+  <div class="modal-body" ng-if="!loading">
+    <div class="col-xs-12 no-padding">
+      <div class="alert alert-danger" ng-if="errorMsg">{{errorMsg}}</div>
+      <div ng-repeat="additionalAxiom in additionalAxioms">
+        <h4>Additional Axiom</h4>
+        <div class="row col-xs-12 no-padding">
+          Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[additionalAxiom.axiomId]}}</label>
+        </div>
+        <div>
+          <div>
+            <button type="button"
+                  class="btn small-buttons tooltips-bottom tooltips-light medium-size-tooltip offset-tooltip-right normal-case md md-content-copy copy-to-clipboard"                  
+                  ng-click="copyToClipboard(owlAxiomExpression[additionalAxiom.axiomId])"><span>Copy To Clipboard</span>
+            </button>
+          </div>
+          <pre>{{formatOwlAxiomExpression(owlAxiomExpression[additionalAxiom.axiomId])}}</pre>
+        </div>
+      </div>
+
+      <div ng-repeat="gciAxiom in gciAxioms">
+        <h4>General Concept Inclusion</h4>
+        <div class="row col-xs-12 no-padding">
+          Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[gciAxiom.axiomId]}}</label>
+        </div>
+        <div>
+          <div>
+            <button type="button"
+                  class="btn small-buttons tooltips-bottom tooltips-light medium-size-tooltip offset-tooltip-right normal-case md md-content-copy copy-to-clipboard"                 
+                  ng-click="copyToClipboard(owlAxiomExpression[gciAxiom.axiomId])"><span>Copy To Clipboard</span>
+            </button>
+          </div>
+          <pre>{{formatOwlAxiomExpression(owlAxiomExpression[gciAxiom.axiomId])}}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" ng-if="!loading">
+    <div class="row no-padding no-gutter">
+      <div class="col-md-4">
+        <button type="button" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="cancel()">Cancel </button>
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-info no-margin"
+                ng-click="download()">Download</button>
+      </div>
+    </div>
+  </div>
+</div>
