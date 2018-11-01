@@ -14,6 +14,7 @@ angular.module('singleConceptAuthoringApp')
       function createConcept(project, task, concept) {
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+          normaliseSnowstormConcept(response.data);
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -26,6 +27,7 @@ angular.module('singleConceptAuthoringApp')
       function updateConcept(project, task, concept) {
         var deferred = $q.defer();
         $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+          normaliseSnowstormConcept(response.data);
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -473,6 +475,7 @@ angular.module('singleConceptAuthoringApp')
         if (typeof component.pt == "object") {
           // Flatten Snowstorm PT data structure
           component.pt = component.pt.term;
+          component.preferredSynonym = component.pt;
         }
       }
 
@@ -853,7 +856,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, config).then(function (response) {
-
+          normaliseSnowstormConcept(response.data);
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
