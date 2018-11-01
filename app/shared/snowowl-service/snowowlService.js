@@ -449,13 +449,31 @@ angular.module('singleConceptAuthoringApp')
 
       }
 
-      function makeSnowstormResponseCompatible(items) {
-        angular.forEach(items, function(conceptMini) {
-          if (typeof conceptMini.fsn == "object") {
-            // Flatten Snowstorm FSN data structure
-            conceptMini.fsn = conceptMini.fsn.term;
-          }
+      function normaliseSnowstormConcepts(items) {
+        angular.forEach(items, function(concept) {
+          normaliseSnowstormConcept(concept);
         });
+      }
+
+      function normaliseSnowstormConcept(concept) {
+        normaliseSnowstormTerms(concept);
+        if (typeof concept.relationships == "object") {
+          angular.forEach(concept.relationships, function(relationship) {
+            normaliseSnowstormTerms(relationship.type);
+            normaliseSnowstormTerms(relationship.target);
+          });
+        }
+      }
+
+      function normaliseSnowstormTerms(component) {
+        if (typeof component.fsn == "object") {
+          // Flatten Snowstorm FSN data structure
+          component.fsn = component.fsn.term;
+        }
+        if (typeof component.pt == "object") {
+          // Flatten Snowstorm PT data structure
+          component.pt = component.pt.term;
+        }
       }
 
       // Retrieve parents of a concept
@@ -486,7 +504,7 @@ angular.module('singleConceptAuthoringApp')
 
         // call and return promise
         return $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId + '/parents' + (queryParams ? '?' + queryParams : ''), config).then(function (response) {
-          makeSnowstormResponseCompatible(response.data);
+          normaliseSnowstormConcepts(response.data);
           return response.data;
         }, function (error) {
           // TODO Handle error
@@ -532,7 +550,7 @@ angular.module('singleConceptAuthoringApp')
 
         // call and return promise
         return $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId + '/children' + (queryParams ? '?' + queryParams : ''), config).then(function (response) {
-          makeSnowstormResponseCompatible(response.data);
+          normaliseSnowstormConcepts(response.data);
           return response.data;
         }, function (error) {
           // TODO Handle error
@@ -835,6 +853,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, config).then(function (response) {
+
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
