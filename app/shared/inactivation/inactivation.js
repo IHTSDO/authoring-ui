@@ -751,13 +751,9 @@ angular.module('singleConceptAuthoringApp')
                     scope.inactivationConcept.inactivationIndicator = scope.reasonId;
                     scope.inactivationConcept.associationTargets = scope.assocs;
                     scope.inactivationConcept.active = false;
-
-                    // remove attribute ""display" prior to performing to back end
-                    angular.forEach(scope.inactivationConcept.relationships, function (rel){
-                      if(typeof rel.display !== 'undefined') {
-                        delete rel.display;
-                      }
-                    });
+                                        
+                    snowowlService.cleanConcept(scope.inactivationConcept);
+                    
                     conceptArray.push(scope.inactivationConcept);
                     console.log(conceptArray);
                     snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
