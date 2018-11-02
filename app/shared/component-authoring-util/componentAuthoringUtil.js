@@ -1037,14 +1037,18 @@ function getFsnDescriptionForConcept(concept) {
         }
 
         // check Additional Axiom
-        for (var l = 0; l < concept.additionalAxioms.length; l++) {
-          errors = errors.concat(checkAxiomComplete(concept.additionalAxioms[l], 'additional'));
-        }
+        if (concept.additionalAxioms) {
+           for (var l = 0; l < concept.additionalAxioms.length; l++) {
+            errors = errors.concat(checkAxiomComplete(concept.additionalAxioms[l], 'additional'));
+          }
+        }       
 
         // check GCI
-        for (var m = 0; m < concept.gciAxioms.length; m++) {
-          errors = errors.concat(checkAxiomComplete(concept.gciAxioms[m], 'gci'));
-        }
+        if (concept.gciAxioms) {
+          for (var m = 0; m < concept.gciAxioms.length; m++) {
+            errors = errors.concat(checkAxiomComplete(concept.gciAxioms[m], 'gci'));
+          }
+        }        
 
         // strip any duplicate messages
         for (var i = 0; i < errors.length; i++) {
