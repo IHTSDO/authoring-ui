@@ -2,14 +2,14 @@
 
   <div clas="row no-padding m-b-15 overflow-no" ng-show="isEscgMode && !templateMode">
     <div class="col-md-10 no-padding">
-      <textarea id="expandable-search" type="search" class="form-control m-5 expandable-search-box no-border-bottom-search" placeholder="Enter ECL expression"
+      <textarea id="expandable-search" type="search" class="form-control expandable-search-box no-border-bottom-search" placeholder="Enter ECL expression"
                       ng-model="escgExpr" ng-change="autoExpand($event)" ui-on-drop="" ng-trim="false" rows="1"></textarea>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
       <button ng-show="escgExpr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
     </div>
     <div class="col-md-1 no-padding">
-      <button type="button" class="btn btn-default blue md md-search"
+      <button type="button" class="btn btn-default blue md md-search fullwidth no-p-lr"
               title="Execute ECL Search"
               ng-click="newSearch()"></button>
     </div>
