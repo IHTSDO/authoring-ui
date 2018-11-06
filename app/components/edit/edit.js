@@ -1066,7 +1066,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             relationship.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
           }
 
-          if (relationship.active === false || relationship.characteristicType === 'INFERRED_RELATIONSHIP') {
+          if (relationship.active === false || relationship.characteristicType !== 'STATED_RELATIONSHIP') {
             clonedConcept.relationships.splice(j, 1);
           }
         }
