@@ -1386,26 +1386,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return;
               }
 
-              // Do not allow inactivation when Relationships or Descriptions have no effective time
-              if(conceptCopy.released === true && hasInactiveDescriptionOrRelationship(conceptCopy)) {
-                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
-                scope.componentStyles = (typeof scope.componentStyles !== 'undefined') ? scope.componentStyles : {};
-                scope.concept.descriptions.forEach(function (item) {
-                  if(!item.released || (item.released && typeof item.effectiveTime === 'undefined')) {
-                    item.templateStyle = 'redhl';
-                  } else {
-                    item.templateStyle = null;;
-                  }
-                });
-
-                scope.concept.relationships.forEach(function (item) {
-                  if(item.characteristicType !== 'INFERRED_RELATIONSHIP'
-                    && (!item.released || (item.released && typeof item.effectiveTime === 'undefined'))) {
-                    item.templateStyle = 'redhl';
-                  } else {
-                    item.templateStyle = null;
-                  }
-                });
+              // Check unpublished changes for concept
+              if(scope.concept.released === true && hasUnpublishedChanges()) {
+                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];                             
                 return;
               }
 
@@ -1497,24 +1480,71 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return patt.test(fsn);
         }
 
-        var hasInactiveDescriptionOrRelationship = function(concept) {
-          //checking description has no effective time
-          for(var i = 0; i < concept.descriptions.length; i++) {
-            var desc =  concept.descriptions[i];
-            if(!desc.released || (desc.released && typeof desc.effectiveTime === 'undefined')) {
-              return true;
+        function hasUnpublishedChanges() {
+          let hasUnpublishedDescriptions = false;
+          scope.concept.descriptions.forEach(function (item) {
+            if(!item.released || (item.released && typeof item.effectiveTime === 'undefined')) {
+              hasUnpublishedDescriptions = true;
+              item.templateStyle = 'redhl';
+            } else {
+              item.templateStyle = null;;
             }
+          });
+
+          let hasUnpublishedRelationships = false;
+          scope.concept.relationships.forEach(function (item) {
+            if(item.characteristicType !== 'INFERRED_RELATIONSHIP'
+              && (!item.released || (item.released && typeof item.effectiveTime === 'undefined'))) {
+              hasUnpublishedRelationships = true;
+              item.templateStyle = 'redhl';
+            } else {
+              item.templateStyle = null;
+            }
+          });
+
+          let hasUnpublishedAdditionalAxioms = false;
+          if (scope.concept.additionalAxioms && scope.concept.additionalAxioms.length > 0) {
+            scope.concept.additionalAxioms.forEach(function (item) {
+              if (!item.released) {
+                hasUnpublishedAdditionalAxioms = true;
+                item.relationships.forEach(function (relationship) {
+                  if (!relationship.released) {
+                    relationship.templateStyle = 'redhl';
+                  }                  
+                });
+              } else {
+                item.relationships.forEach(function (relationship) {
+                  if (!relationship.released) {
+                    hasUnpublishedAdditionalAxioms = true;
+                    relationship.templateStyle = 'redhl';
+                  }                  
+                });
+              }
+            });
+          }          
+
+          let hasUnpublishedGCIs = false;
+          if (scope.concept.gciAxioms && scope.concept.gciAxioms.length > 0) {
+            scope.concept.gciAxioms.forEach(function (item) {
+              if (!item.released) {
+                hasUnpublishedGCIs = true;
+                item.relationships.forEach(function (relationship) {
+                  if (!relationship.released) {
+                    relationship.templateStyle = 'redhl';
+                  }                  
+                });
+              } else {
+                item.relationships.forEach(function (relationship) {
+                  if (!relationship.released) {
+                    hasUnpublishedGCIs = true;
+                    relationship.templateStyle = 'redhl';
+                  }                  
+                });
+              }
+            });
           }
 
-          // checking relationships has no effective time and not INFERRED_RELATIONSHIP characteristicType
-          for(var i = 0; i < concept.relationships.length; i++) {
-            var rel =  concept.relationships[i];
-            if(rel.characteristicType !== 'INFERRED_RELATIONSHIP'
-              && (!rel.released || (rel.released && typeof rel.effectiveTime === 'undefined'))) {
-              return true;
-            }
-          }
-          return false;
+          return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedAdditionalAxioms || hasUnpublishedGCIs;
         }
 
         /**
