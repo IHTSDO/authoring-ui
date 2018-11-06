@@ -156,7 +156,14 @@ angular.module('singleConceptAuthoringApp')
           if (allowableAxiomRelationshipProperties.indexOf(key) === -1) {
             delete axiom[key];
           }
+
+          if (key === 'relationships') {
+            angular.forEach(axiom[key], function (relationship) {
+              cleanRelationship(relationship);              
+            });
+          }
         }
+
       }
 
       function removeInvalidCharacters(term) {
@@ -256,13 +263,17 @@ angular.module('singleConceptAuthoringApp')
 
         });
 
-        angular.forEach(concept.additionalAxioms, function (axiom) {
-          cleanAxiom(axiom);
-        });
-
-        angular.forEach(concept.gciAxioms, function (axiom) {
-          cleanAxiom(axiom);
-        });
+        if (concept.additionalAxioms) {
+          angular.forEach(concept.additionalAxioms, function (axiom) {
+            cleanAxiom(axiom);
+          });
+        }
+        
+        if (concept.gciAxioms) {
+          angular.forEach(concept.gciAxioms, function (axiom) {
+            cleanAxiom(axiom);
+          });
+        }
       }
 
       // function to remove disallowed elements from a concept
