@@ -13,7 +13,7 @@
         <div class="row col-xs-12 no-padding">
           Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[additionalAxiom.axiomId]}}</label>
         </div>
-        <div>
+        <div class="row col-xs-12 no-padding">
           <div>
             <button type="button"
                   class="btn small-buttons tooltips-bottom tooltips-light medium-size-tooltip offset-tooltip-right normal-case md md-content-copy copy-to-clipboard"                  
@@ -29,7 +29,7 @@
         <div class="row col-xs-12 no-padding">
           Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[gciAxiom.axiomId]}}</label>
         </div>
-        <div>
+        <div class="row col-xs-12 no-padding">
           <div>
             <button type="button"
                   class="btn small-buttons tooltips-bottom tooltips-light medium-size-tooltip offset-tooltip-right normal-case md md-content-copy copy-to-clipboard"                 
@@ -37,6 +37,22 @@
             </button>
           </div>
           <pre>{{formatOwlAxiomExpression(owlAxiomExpression[gciAxiom.axiomId])}}</pre>
+        </div>
+      </div>
+
+      <div ng-repeat="key in getOtherExpressions()">
+        <h4>Owl Axiom Expression</h4>
+        <div class="row col-xs-12 no-padding">
+          Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[key]}}</label>
+        </div>
+        <div class="row col-xs-12 no-padding">
+          <div>
+            <button type="button"
+                  class="btn small-buttons tooltips-bottom tooltips-light medium-size-tooltip offset-tooltip-right normal-case md md-content-copy copy-to-clipboard"                 
+                  ng-click="copyToClipboard(owlAxiomExpression[key])"><span>Copy To Clipboard</span>
+            </button>
+          </div>
+          <pre>{{formatOwlAxiomExpression(owlAxiomExpression[key])}}</pre>
         </div>
       </div>
     </div>
@@ -50,6 +66,7 @@
       <div class="col-md-4"></div>
       <div class="col-md-4">
         <button type="button" class="col-md-12 btn btn-info no-margin"
+                ng-disabled="getOwlAxiomExpressionsCount() === 0"
                 ng-click="download()">Download</button>
       </div>
     </div>
