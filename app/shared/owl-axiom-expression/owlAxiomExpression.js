@@ -121,6 +121,13 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
         result = result +  $scope.formatOwlAxiomExpression($scope.owlAxiomExpression[gciAxiom.axiomId]);
         result = result + '\n\n';      
       });
+
+      angular.forEach( $scope.getOtherExpressions(), function(key){
+        result = result + 'Owl Axiom Expression \n';
+        result = result + 'Owl Axiom Expression: ' + $scope.owlAxiomExpression[key] + '\n';
+        result = result +  $scope.formatOwlAxiomExpression($scope.owlAxiomExpression[key]);
+        result = result + '\n\n';      
+      });
       return result;
     }
    
@@ -128,23 +135,57 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
       $modalInstance.dismiss();
     };
 
-    function initializeConceptMap () {
+    $scope.getOwlAxiomExpressionsCount = function () {
+      return Object.keys($scope.owlAxiomExpression).length;
+    };
+
+    $scope.getOtherExpressions = function() {
+      var others= [];
+      var ids = [];
+      angular.forEach($scope.additionalAxioms, function(aixom){
+        ids.push(aixom.axiomId);
+      });
+      angular.forEach($scope.gciAxioms, function(aixom){
+        ids.push(aixom.axiomId);
+      });
+
+      angular.forEach(Object.keys($scope.owlAxiomExpression), function(key){
+        if (ids.indexOf(key) === -1) {
+          others.push(key);
+        }        
+      });
+
+      return others;
+    };
+
+    function initializeConceptMap (concepts) {
       conceptMap[$scope.conceptId] = $scope.conceptFSN;
       conceptMap[609096000] = 'Role group (attribute)';
       conceptMap[116680003] = 'Is a (attribute)';
-           
-      angular.forEach($scope.additionalAxioms, function(additionalAxiom){
-        angular.forEach(additionalAxiom.relationships, function(relationship){
-          conceptMap[relationship.type.conceptId] = relationship.type.fsn;
-          conceptMap[relationship.target.conceptId] = relationship.target.fsn; 
-        });         
-      });
-      angular.forEach($scope.gciAxioms, function(gciAxiom){
-        angular.forEach(gciAxiom.relationships, function(relationship){
-          conceptMap[relationship.type.conceptId] = relationship.type.fsn;
-          conceptMap[relationship.target.conceptId] = relationship.target.fsn; 
-        });         
-      });
+      
+      if ($scope.additionalAxioms && $scope.additionalAxioms.length !== 0) {
+        angular.forEach($scope.additionalAxioms, function(additionalAxiom){
+          angular.forEach(additionalAxiom.relationships, function(relationship){
+            conceptMap[relationship.type.conceptId] = relationship.type.fsn;
+            conceptMap[relationship.target.conceptId] = relationship.target.fsn; 
+          });         
+        });
+      } 
+      
+      if ($scope.gciAxioms && $scope.gciAxioms.length !== 0) {
+        angular.forEach($scope.gciAxioms, function(gciAxiom){
+          angular.forEach(gciAxiom.relationships, function(relationship){
+            conceptMap[relationship.type.conceptId] = relationship.type.fsn;
+            conceptMap[relationship.target.conceptId] = relationship.target.fsn; 
+          });         
+        });
+      }
+      
+      if (concepts && concepts.length > 0) {
+        angular.forEach(concepts, function(concept){
+          conceptMap[concept.fsn.conceptId] = concept.fsn.term;
+        });
+      }
     }
 
     function getOwlAxiomExpressions () {
@@ -158,14 +199,34 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
             }
           });
         }
-        $scope.loading = false;
+
+        if ($scope.getOwlAxiomExpressionsCount() !== 0) {
+          let conceptIds = [];
+          for (var key in $scope.owlAxiomExpression) {
+            var regex = /(:\d*)/g;
+            var found = $scope.owlAxiomExpression[key].match(regex);
+            angular.forEach(found, function (item) {
+              var conceptId = item.replace(':','').trim();
+              if (conceptIds.indexOf(conceptId) === -1) {
+                conceptIds.push(conceptId);
+              }              
+            });                        
+          }
+          if (conceptIds.length !== 0) {
+              snowowlService.bulkGetConcept(conceptIds, $scope.branch).then(function(response) {
+                initializeConceptMap(response.items);
+                $scope.loading = false;
+              });
+            } else {
+               $scope.loading = false;
+            }
+        } else {
+          $scope.loading = false;
+        }        
       });
     }
 
     function initialize () {
-      
-      initializeConceptMap();
-
       getOwlAxiomExpressions();      
     }
 
