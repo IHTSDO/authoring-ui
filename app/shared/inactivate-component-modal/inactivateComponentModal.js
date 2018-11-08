@@ -7,6 +7,12 @@ angular.module('singleConceptAuthoringApp')
     $scope.actionTab = 1;
 
     $scope.descendants = null;
+    
+    $scope.useFirstTargetSelection = true;
+
+    $scope.updateCheckboxSelection = function() {
+      $scope.useFirstTargetSelection = !$scope.useFirstTargetSelection;
+    };
 
     $scope.filterByInactivationReason = function () {
       return function (item) {
@@ -259,6 +265,11 @@ angular.module('singleConceptAuthoringApp')
 
           // add the association type/target
           else {
+
+            if ($scope.componentType === 'Concept' && $scope.associationTargets.length > 0 
+                && $scope.useFirstTargetSelection && i !==0) {
+              break
+            }
 
             if(!association.type || association.type === null){
                 association.type = {id: ' '}
