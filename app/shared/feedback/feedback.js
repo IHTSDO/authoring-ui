@@ -1001,8 +1001,10 @@ angular.module('singleConceptAuthoringApp')
             var sortingDirection = scope.conceptsToReviewTableParams.sorting().term;
             let idList = [];
             for (var i = 0; i < conceptsToAdd.length; i++) {
-              conceptsToAdd[i].viewed = true;
-              idList.push(conceptsToAdd[i].conceptId);           
+              if (!scope.isDeletedConcept(conceptsToAdd[i])) {
+                conceptsToAdd[i].viewed = true;
+                idList.push(conceptsToAdd[i].conceptId);
+              }                         
             }
 
             snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
