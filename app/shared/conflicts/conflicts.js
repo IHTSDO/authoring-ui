@@ -22,13 +22,6 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope) {
 
           $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
-          if ($routeParams.taskKey) {
-            scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-            scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-          } else {
-            scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-            scope.sourceBranch = metadataService.getBranchRoot();
-          }
 
           // pass task key to scope for display trigger
           scope.taskKey = $routeParams.taskKey;
@@ -537,7 +530,7 @@ angular.module('singleConceptAuthoringApp')
                   exitConflictsView();
                 } else if (response.status === 'CONFLICTS') {
                   scope.rebaseRunning = true;
-                  scope.conflicts = true;
+                  scope.conflicts = [];
                   var merge = JSON.parse(response.message);
                   snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                     if (response && response.items && response.items.length > 0) {
@@ -607,7 +600,7 @@ angular.module('singleConceptAuthoringApp')
                   exitConflictsView();
                 } else if (response.status === 'CONFLICTS') {
                   scope.rebaseRunning = true;
-                  scope.conflicts = true;
+                  scope.conflicts = [];
                   var merge = JSON.parse(response.message);
                   snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                     if (response && response.items && response.items.length > 0) {
@@ -856,15 +849,29 @@ angular.module('singleConceptAuthoringApp')
 
             scope.actionTab = 1;
 
-            if ($routeParams.taskKey) {
-              scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
-                getReviewStatusAndInitialize(mergeReviewId);
-              });
-            } else {
-              scaService.getUiStateForUser($routeParams.projectKey + '-merge-review').then(function (mergeReviewId) {
-                getReviewStatusAndInitialize(mergeReviewId);
-              });
-            }
+            setTimeout(function waitForFetchingBranchRoot() {              
+              if (metadataService.getBranch()) {
+                if ($routeParams.taskKey) {
+                  scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+                  scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+                } else {
+                  scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+                  scope.sourceBranch = metadataService.getBranchRoot();
+                }
+
+                if ($routeParams.taskKey) {
+                  scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
+                    getReviewStatusAndInitialize(mergeReviewId);
+                  });
+                } else {
+                  scaService.getUiStateForUser($routeParams.projectKey + '-merge-review').then(function (mergeReviewId) {
+                    getReviewStatusAndInitialize(mergeReviewId);
+                  });
+                }
+              } else {
+                setTimeout(waitForFetchingBranchRoot, 100);
+              }
+            }, 100);            
           };
 
           scope.initialize();
