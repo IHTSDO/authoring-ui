@@ -5,7 +5,7 @@
 
       <div ng-show="batchHasData">
           <button class="col-md-2 btn btn-default complete-action-btn pull-right m-r-15"
-                  ng-click="saveAll()">Save All
+                  ng-click="saveAll()" ng-disabled="warningConcepts || errorConcepts">Save All
           </button>
         </div>
         <div ng-show="batchHasData">
