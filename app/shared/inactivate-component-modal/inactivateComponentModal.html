@@ -72,7 +72,7 @@
             </div>
             <div class="row p-t-5" ng-repeat="association in associations">
               <div class="col-md-5">
-                <textarea type="text" class="form-control no-padding-left" ng-model="association.type.text" readonly="true"></textarea>
+                <textarea type="text" class="form-control no-padding-left" ng-model="association.type" readonly="true"></textarea>
               </div>
               <div class="col-md-6">
 
@@ -132,7 +132,7 @@
                class="table table-full-small">
           <tr ng-repeat="item in $data">
             <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
-            <td data-title="'FSN'" sortable="'source.fsn.term'"> {{item.source.fsn.term}} </td>
+            <td data-title="'FSN'" sortable="'source.fsn'"> {{item.source.fsn}} </td>
           </tr>
         </table>
       </div>
@@ -158,8 +158,8 @@
                class="table table-full-small">
           <tr ng-repeat="item in $data">
             <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
-            <td data-title="'Type'" sortable="'type.fsn.term'"> {{item.type.fsn.term}} </td>
-            <td data-title="'FSN'" sortable="'source.fsn.term'"> {{item.source.fsn.term}} </td>
+            <td data-title="'Type'" sortable="'type.fsn'"> {{item.type.fsn}} </td>
+            <td data-title="'FSN'" sortable="'source.fsn'"> {{item.source.fsn}} </td>
           </tr>
         </table>
         <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
