@@ -36,8 +36,15 @@ angular.module('singleConceptAuthoringApp')
 
       function normaliseSnowstormRelationships(items) {
         angular.forEach(items, function(relationship) {
-            normaliseSnowstormTerms(relationship.type);
-            normaliseSnowstormTerms(relationship.target);
+            if (typeof relationship.source == "object") {
+              normaliseSnowstormTerms(relationship.source);
+            }
+            if (typeof relationship.type == "object") {
+              normaliseSnowstormTerms(relationship.type);
+            }
+            if (typeof relationship.target == "object") {
+              normaliseSnowstormTerms(relationship.target);
+            }
         });
       }
 
