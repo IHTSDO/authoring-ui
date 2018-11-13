@@ -18,11 +18,20 @@ angular.module('singleConceptAuthoringApp')
       function normaliseSnowstormConcept(concept) {
         normaliseSnowstormTerms(concept);
         if (typeof concept.relationships == "object") {
-          angular.forEach(concept.relationships, function(relationship) {
-            normaliseSnowstormTerms(relationship.type);
-            normaliseSnowstormTerms(relationship.target);
-          });
+          normaliseSnowstormRelationships(concept.relationships);
         }
+        if (typeof concept.additionalAxioms == "object") {
+          normaliseSnowstormAxioms(concept.additionalAxioms);
+        }
+        if (typeof concept.gciAxioms == "object") {
+          normaliseSnowstormAxioms(concept.gciAxioms);
+        }
+      }
+
+      function normaliseSnowstormAxioms(items) {
+        angular.forEach(items, function(axiom) {
+          normaliseSnowstormRelationships(axiom.relationships)
+        });
       }
 
       function normaliseSnowstormRelationships(items) {
