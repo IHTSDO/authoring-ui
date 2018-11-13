@@ -441,6 +441,7 @@ angular.module('singleConceptAuthoringApp')
       // get preview of model
       function getModelPreview(classifierId, branch, id) {
         return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function (response) {
+          normaliseSnowstormConcept(response);
           return response.data;
         });
       }
