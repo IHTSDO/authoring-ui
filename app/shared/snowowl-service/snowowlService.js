@@ -761,7 +761,7 @@ angular.module('singleConceptAuthoringApp')
             deferred.resolve({total: 0, inboundRelationships: []});
           } else {
             // otherwise, return the passed array
-            normaliseSnowstormRelationships(response.data);
+            normaliseSnowstormRelationships(response.data.items);
             deferred.resolve(response.data);
           }
         }, function (error) {
