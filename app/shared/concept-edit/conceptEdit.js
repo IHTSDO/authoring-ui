@@ -2158,6 +2158,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (description.type === 'FSN') {
               description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
             }
+
+            if (metadataService.isExtensionSet()) {
+              if (description.type === 'FSN') {
+                angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+                  if (!metadataService.isUsDialect(dialectId)) {
+                    delete description.acceptabilityMap[dialectId];
+                  }
+                });                
+              } else {
+
+                // Strip out US, GB dialects
+                delete description.acceptabilityMap['900000000000509007'];
+                delete description.acceptabilityMap['900000000000508004'];
+              }
+            }
             autoSave();
           }
 
