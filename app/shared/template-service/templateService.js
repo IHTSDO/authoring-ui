@@ -329,8 +329,8 @@ angular.module('singleConceptAuthoringApp')
       });
 
       if (conceptIds.length > 0) {
-        snowowlService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (response) {
-          deferred.resolve(response.items);
+        snowowlService.bulkRetrieveFullConcept(conceptIds, currentTask.branchPath).then(function (response) {
+          deferred.resolve(response);
         }, function (error) {
           deferred.reject(error);
         });
@@ -356,7 +356,6 @@ angular.module('singleConceptAuthoringApp')
       // get full target concepts
       getTargetSlotConcepts(concept).then(function (targetConcepts) {
 
-
         angular.forEach(template.lexicalTemplates, function (lt) {
 
           // find the matching relationship target slot by takeFSNFromSlot
@@ -366,9 +365,11 @@ angular.module('singleConceptAuthoringApp')
             if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
 
               var targetConcept = targetConcepts.filter(function (c) {
-                return c.id === r.target.conceptId;
+                return c.conceptId === r.target.conceptId;
               })[0];
-              var fsn = targetConcept.fsn;
+              var fsn = targetConcept.descriptions.filter(function(description) {
+                return description.active === true && description.term === targetConcept.fsn;});
+              }
 
               // determine value based on case signifiance
               switch (fsn.caseSignificance) {
