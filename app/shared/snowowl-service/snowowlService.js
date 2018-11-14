@@ -1814,7 +1814,7 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-      
+
       function searchMerge (source, target, status) {
         return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
           var mergeReview = response.data;
@@ -1916,7 +1916,7 @@ angular.module('singleConceptAuthoringApp')
         cleanConcept: cleanConcept,
         cleanDescription: cleanDescription,
         cleanRelationship: cleanRelationship,
-        setEndpoint: setEndpoint,
+        // setEndpoint: setEndpoint,
         searchMerge: searchMerge
       };
     }
