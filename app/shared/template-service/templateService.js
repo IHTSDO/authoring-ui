@@ -369,7 +369,7 @@ angular.module('singleConceptAuthoringApp')
               })[0];
               var fsn = targetConcept.descriptions.filter(function(description) {
                 return description.active === true && description.term === targetConcept.fsn;
-              });
+              })[0];
 
               // determine value based on case signifiance
               switch (fsn.caseSignificance) {
