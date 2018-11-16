@@ -149,23 +149,21 @@
               </td>
 
               <td data-title="'Status'" sortable="'status'" header-title="'Click to sort'">
-                <div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
+                <div ng-if="task.status === 'In Review' && (!task.reviewers || task.reviewers.length === 0)" class="badge {{task.status}}"> Ready for
                   Review
                 </div>
-                <div ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}">
+                <div ng-if="task.status === 'In Review' && task.reviewers && task.reviewers.length !== 0" class="badge {{task.status}}">
                   {{task.status}}
                 </div>
                 <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
 
-              <td data-title="'Review'" sortable="'reviewer'" header-title="'Click to sort'">
+              <td data-title="'Review'">
                 <div ng-show="task.status === 'Review Completed' || task.status === 'In Review'">
-                  <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
-                  <div ng-if="!task.reviewer" class="badge Available">Available</div>
-
+                  <div ng-if="task.reviewers && task.reviewers.length !== 0" class="badge Claimed">Claimed</div>
+                  <div ng-if="!task.reviewers || task.reviewers.length === 0" class="badge Available">Available</div>
                 </div>
               </td>
-</td>
             </tr>
           </table>
 

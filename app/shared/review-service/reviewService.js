@@ -13,9 +13,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       // create the request body
       var updateObj = {
-        'reviewer': {
-          'username': ''
-        },
+        'reviewers': [],
         'status': 'IN_REVIEW'
       };
 
@@ -43,7 +41,16 @@ angular.module('singleConceptAuthoringApp')
 
     function unclaimReview(task) {
       var deferred = $q.defer();
-      scaService.unassignReview(task.projectKey, task.key).then(function () {
+      var reviewers = task.reviewers ? task.reviewers : [];
+      if (reviewers.length !== 0) {
+        var i = reviewers.length;
+        while (i--) {              
+          if (reviewers[i].username === $rootScope.accountDetails.login) { 
+            reviewers.splice(i, 1);
+          } 
+        }
+      }
+      scaService.unassignReview(task.projectKey, task.key, reviewers).then(function () {
         $rootScope.$broadcast('reloadTask');
         deferred.resolve();
       }, function (error) {

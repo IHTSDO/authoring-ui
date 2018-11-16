@@ -74,10 +74,9 @@ angular.module('singleConceptAuthoringApp')
           scope.limitConceptsLoading = 10;
           scope.projectKey = $routeParams.projectKey;
           scope.taskKey = $routeParams.taskKey;
-          scope.selectedReviewer = null;
-          scope.reviewers = [];
+          var users = [];
 
-          function getReviewers(start, end) {
+          function getUsers(start, end) {
             var expand =  'users[' + start + ':' + end + ']';
             scaService.getUsers(expand).then(function (response) {
               if (response.users.items.length > 0) {
@@ -88,19 +87,19 @@ angular.module('singleConceptAuthoringApp')
                     user.displayName = item.displayName;
                     user.email = item.emailAddress;
                     user.username = item.key;
-                    scope.reviewers.push(user);
+                    users.push(user);
                   }
                 });
               }
 
               if (response.users.size > end) {
-                getReviewers(start + 50, end + 50);
+                getUsers(start + 50, end + 50);
               }
             },
             function (error) {});
           }
 
-          getReviewers(0,50);
+          getUsers(0,50);
 
           scope.authorInputOnFocus = function (event){
             console.log(event);
@@ -167,10 +166,6 @@ angular.module('singleConceptAuthoringApp')
                 scope.role = 'UNKNOWN';
                 notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
               });
-              
-              if (scope.task.reviewer) {
-                scope.selectedReviewer = scope.task.reviewer;
-              }
             }
           });
 
@@ -387,9 +382,7 @@ angular.module('singleConceptAuthoringApp')
                   modalService.confirm('There are ' + scope.feedbackContainer.review.conceptsReviewed.length + ' approved concepts in the review. Cancelling will reset all concepts to unapproved and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review. Are you sure you want to cancel this review?').then(function () {
                     var taskObj = {
                         'status': 'IN_PROGRESS',
-                        'reviewer': {
-                        'username': ''
-                        }
+                        'reviewers': []
                     };
                     scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                       notificationService.sendMessage('Review Cancelled', 2000);
@@ -416,9 +409,7 @@ angular.module('singleConceptAuthoringApp')
                 else{
                     var taskObj = {
                         'status': 'IN_PROGRESS',
-                        'reviewer': {
-                        'username': ''
-                        }
+                        'reviewers': []
                     };
                     scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                       notificationService.sendMessage('Review Cancelled', 2000);
@@ -439,7 +430,7 @@ angular.module('singleConceptAuthoringApp')
                       });
                     });
                 }
-            });              
+            });
           };
 
           // controls to allow author to view only concepts with feedeback
@@ -557,7 +548,7 @@ angular.module('singleConceptAuthoringApp')
                   conceptId = scope.viewedConcepts[0].conceptId;
                 }
             }
-            $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});  
+            $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
           });
 
           scope.$on('selectPreviousConcept', function (event, data) {
@@ -844,7 +835,7 @@ angular.module('singleConceptAuthoringApp')
             // check if concept already exists in list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === conceptId) {
-                notificationService.sendWarning('Concept already shown'); 
+                notificationService.sendWarning('Concept already shown');
                 if (scope.role === 'REVIEWER') {
                   $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
                 }
@@ -913,9 +904,9 @@ angular.module('singleConceptAuthoringApp')
                     } else {
                       setTimeout(waitForConceptRender, 500);
                     }
-                  }, 500);                  
+                  }, 500);
                 }
-                 
+
                 notificationService.sendMessage('Concept loaded', 5000);
               });
             }
@@ -994,7 +985,7 @@ angular.module('singleConceptAuthoringApp')
                               if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
                                 return false;
                               }
-                            }                            
+                            }
                             return true;
                           });
 
@@ -1004,7 +995,7 @@ angular.module('singleConceptAuthoringApp')
               if (!scope.isDeletedConcept(conceptsToAdd[i])) {
                 conceptsToAdd[i].viewed = true;
                 idList.push(conceptsToAdd[i].conceptId);
-              }                         
+              }
             }
 
             snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
@@ -1633,7 +1624,16 @@ angular.module('singleConceptAuthoringApp')
            * returning the user to the home page
            */
           scope.unclaimReview = function () {
-            scaService.unassignReview($routeParams.projectKey, $routeParams.taskKey).then(function () {
+            var reviewers = scope.task.reviewers ? scope.task.reviewers : [];
+            if (reviewers.length !== 0) {
+              var i = reviewers.length;
+              while (i--) {
+                if (reviewers[i].username === $rootScope.accountDetails.login) {
+                  reviewers.splice(i, 1);
+                }
+              }
+            }
+            scaService.unassignReview($routeParams.projectKey, $routeParams.taskKey, reviewers).then(function () {
               notificationService.sendMessage('Review unclaimed for task ' + $routeParams.taskKey, 5000);
               $location.url('review-tasks');
             }, function (error) {
@@ -1689,52 +1689,83 @@ angular.module('singleConceptAuthoringApp')
 
           scope.editReviewer = false;
           scope.listenReviewerTypeaheadEvent = function(event){
-            event = event.event
-            if(event.keyCode === 13) {
-              var updateObj = {};
-              if (scope.selectedReviewer && scope.selectedReviewer.username) {
-                scope.task.reviewer = scope.selectedReviewer;
-                updateObj= {'reviewer': scope.selectedReviewer};
-              } else {
-                if (scope.selectedReviewer === null || scope.selectedReviewer === '') {
-                  scope.task.reviewer = null;
-                  updateObj= {'reviewer': {}};
-                } else {
-                  notificationService.sendError('Invalid user', 10000, null);
-                  return;
-                }
-              }
-              scope.typeaheadLoading = true;
-              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
-                scope.editReviewer = false;
-                scope.typeaheadLoading = false;
-              });
-            }
+            event = event.event;
+
+
+            // escape
             if (event.keyCode === 27) {
               scope.editReviewer = false;
             }
           };
 
-          scope.updateReviewer = function () {
-            scope.task.reviewer = scope.selectedReviewer;
-            var  updateObj= {'reviewer': scope.selectedReviewer};
-            scope.typeaheadLoading = true;
-            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function() {
-              scope.editReviewer = false;
-              scope.typeaheadLoading = false;
+          scope.addReviewer = function (reviewer) {
+            let found = false;
+            if (scope.task.reviewers) {
+              for (let i =0; i < scope.task.reviewers.length; i++) {
+                if (scope.task.reviewers[i].username === reviewer.username) {
+                  found = true;
+                  break;
+                }
+              }
+            }
+            if (!found) {
+              var reviewers = scope.task.reviewers ? angular.copy(scope.task.reviewers) : [];
+              reviewers.push(reviewer);
+              scope.typeaheadLoading = true;
+              notificationService.sendMessage('Adding reviewer...');
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'reviewers': reviewers}).then(function(){
+                scope.editReviewer = false;
+                scope.typeaheadLoading = false;
+                scope.task.reviewers = reviewers;
+                notificationService.sendMessage(reviewer.displayName + ' has been assigned to this task as REVIEWER', 5000);
+              });
+            }
+          };
+
+          scope.removeReviewer = function (reviewer) {
+            modalService.confirm('Do you want to remove this reviewer?').then(function () {
+              var reviewers = scope.task.reviewers ? angular.copy(scope.task.reviewers) : [];
+              var i = reviewers.length;
+              while (i--) {
+                if (reviewers[i].username === reviewer.username) {
+                  reviewers.splice(i, 1);
+                }
+              }
+              notificationService.sendMessage('Removing reviewer...');
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'reviewers': reviewers}).then(function(){
+                scope.task.reviewers = reviewers;
+                notificationService.sendMessage(reviewer.displayName + ' has been unassigned from this task', 5000);
+              });
+            }, function () {
+              // do nothing
             });
           };
 
-          scope.switchToEditReviewer = function () {
+          scope.switchToAddReviewer = function () {
             scope.editReviewer = true;
-            if (scope.task.reviewer) {
-              scope.selectedReviewer = scope.task.reviewer;
-            } else {
-              scope.selectedReviewer = null;
-            }
             $timeout(function () {
               document.getElementById("feedback-edit-reviewer").focus();
             }, 0);
+          };
+
+          scope.convertReviewersToText = function (reviewers, property) {
+            if (reviewers) {
+              var list = reviewers.map(a => a[property]);
+              return list.join(', ');
+            }
+            return '';
+          };
+          scope.getAvailableUsers = function() {
+            if (users.length === 0) {
+              return [];
+            }
+            var reviewers = [];
+            if (scope.task.reviewers) {
+              scope.task.reviewers.forEach(function (reviewer) {
+                reviewers.push(reviewer.username);
+              });
+            }
+            return users.filter(item => -1 === reviewers.indexOf(item.username));
           };
 
           var projectTaxonomyList = [];
@@ -1743,7 +1774,7 @@ angular.module('singleConceptAuthoringApp')
               if (concept.conceptId === projectTaxonomyList[i]) {
                 return true;
               }
-            } 
+            }
             return false;
           };
 
@@ -1756,8 +1787,8 @@ angular.module('singleConceptAuthoringApp')
                   projectTaxonomyList.splice(i,1);
                   return;
                 }
-              } 
-            }      
+              }
+            }
           });
 
           scope.setTooltipPosition = function ($event) {
