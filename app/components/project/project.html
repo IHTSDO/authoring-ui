@@ -186,8 +186,8 @@
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
-              <td header-title="'Click to sort'" data-title="'Reviewer'" sortable="'reviewerKey'" filter="{ 'reviewer' : 'text' }">
-                {{task.reviewer.displayName}}
+              <td header-title="'Click to sort'" data-title="'Reviewers'" filter="{ 'reviewer' : 'text' }">
+                {{convertReviewersToText(task.reviewers,'displayName')}}
 
               </td>
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">

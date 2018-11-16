@@ -28,7 +28,7 @@
 
       <!-- Title section -->
 
-      <div class="p-l-20 col-md-8">
+      <div class="p-l-20" ng-class="[{ 'col-md-8' : role === 'REVIEWER'}, { 'col-md-12' : role === 'AUTHOR'}]">
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
           <button class="btn btn-default pink darken-2 review-button-list  "
@@ -36,43 +36,67 @@
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
-        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong><span ng-if="role === 'REVIEWER'"> {{task.reviewer.displayName}}</span></div>
+        <div class="pull-left p-l-15 "><strong>Task Reviewers:</strong><span ng-if="role === 'REVIEWER'"> {{convertReviewersToText(task.reviewers,'displayName')}}</span></div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
           <button class="btn btn-default primary-action-btn"
                   ng-click="unclaimReview()">Unclaim Review </button>
         </div>
         <div class="switch pull-right p-l-10"> </div>
-        <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" > &nbsp; 
+        <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" > 
           <div class="editable-field">
-            <input id="feedback-edit-reviewer" class="form-control" type="text" ng-model="selectedReviewer" ng-show="editReviewer"
-                typeahead="suggestion as suggestion.displayName for suggestion in reviewers | filter:{displayName:$viewValue}"  
+
+            <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
+              <div ng-repeat="reviewer in task.reviewers track by reviewer.displayName" class="in-block">                  
+                  <div class="badge Available">
+                    <span>{{reviewer.displayName}}</span>
+                    <button class="btn btn-default tooltips-bottom medium-size-tooltip remove-reviewer" ng-click="removeReviewer(reviewer)">
+                      <div>X</div>
+                      <span>Remove Reviewer</span>
+                    </button>                     
+                  </div>
+              </div>              
+            </div>
+            
+            <div ng-if="!task.reviewers ||task.reviewers.length === 0" ng-show="!editReviewer" class="inline">
+              <span>&nbsp; Unassigned</span>              
+            </div>
+            
+            <div class="m-l-5 inline">
+              <button class="btn btn-round btn-default green tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="!editReviewer" ng-click="switchToAddReviewer();">
+                <div class="md md-add"></div>
+                <span>Add Reviewer</span>
+              </button>
+              <input id="feedback-edit-reviewer" class="form-control" type="text" ng-if="editReviewer" ng-model="selectedItem"
+                typeahead="suggestion as suggestion.displayName for suggestion in getAvailableUsers() | filter:{displayName:$viewValue}"  
                 typeahead-focus-first="false"                
                 typeahead-editable="false"
-                typeahead-on-select="updateReviewer()"
+                typeahead-on-select="addReviewer($item)"
                 typeahead-loading="typeaheadLoading"
                 typeahead-focus-custom
                 ng-keyup="listenReviewerTypeaheadEvent({event: $event})"> 
                 <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
-            </input>
-           
-            <span ng-show="!editReviewer" ng-click="switchToEditReviewer();">           
-              <span>{{task.reviewer ? task.reviewer.displayName : 'Unassigned'}}</span>
-              <button class="btn btn-default normal-case" ng-click="switchToEditReviewer();"><div class="md md-edit"></div></button>
-            </span>
+              </input>
+            </div>
+
           </div>          
         </div>
-        <div ng-show="role === 'AUTHOR' && task.status !== 'In Review' && task.reviewer" > &nbsp; 
-          <span>{{task.reviewer.displayName}}</span>          
+        <div ng-show="role === 'AUTHOR' && task.status !== 'In Review' && task.reviewers && task.reviewers.length !== 0" > &nbsp; 
+          <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
+              <div ng-repeat="reviewer in task.reviewers track by reviewer.displayName" class="in-block">                  
+                  <div class="badge Available">
+                    <span>{{reviewer.displayName}}</span>                                       
+                  </div>
+              </div>              
+            </div>         
         </div>
-        <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
+        <div ng-show="task && !task.reviewer && task.status !== 'In Review'" class="inline"> &nbsp;Task not submitted for
           review </div>
       </div>
-      <div class="col-md-4">
+      <div ng-class="[{ 'col-md-4' : role === 'REVIEWER'}]" ng-if="role === 'REVIEWER'">
         <!-- Cancel/Unclaim Review button -->
 
         <!-- Review In Progress / Review Complete toggle -->
-        <div ng-if="role === 'REVIEWER'"
-             class="switch pull-right white-text">
+        <div class="switch pull-right white-text">
           <label class="switch"> Review in Progress
             <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
                    ng-change="toggleReviewStatus()">

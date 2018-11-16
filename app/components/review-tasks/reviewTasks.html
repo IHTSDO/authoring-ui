@@ -118,12 +118,12 @@
                 <div class="md md-email"></div>
                 <span>New feedback is available </span> </button>
                 </a> <span class="feedback-message-date" ng-show="task.feedbackMessagesStatus === 'unread'"> &nbsp;{{task.feedbackMessageDate | date : "yyyy-MM-ddTHH:mm'Z'":"UTC"}} </span></td>
-              <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'"><div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
+              <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'"><div ng-if="task.status === 'In Review' && (!task.reviewers || task.reviewers.length === 0)" class="badge {{task.status}}"> Ready for
                   Review </div>
-                <div ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}"> {{task.status}} </div>
+                <div ng-if="task.status === 'In Review' && task.reviewers && task.reviewers.length !== 0" class="badge {{task.status}}"> {{task.status}} </div>
                 <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div></td>
-              <td header-title="'Click to sort'" data-title="'Review'" sortable="'reviewer'"><div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
-                <div ng-if="!task.reviewer" class="badge Available">Available</div></td>
+              <td header-title="'Click to sort'" data-title="'Review'" sortable="'reviewer'"><div ng-if="task.reviewers && task.reviewers.length !== 0" class="badge Claimed">Claimed</div>
+                <div ng-if="!task.reviewers || task.reviewers.length === 0" class="badge Available">Available</div></td>
               
               <!--          <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()">
                           <input type="checkbox" ng-model="task.selectedClaimed" ui-on-drop="" ng-show="isClaimedTask(task)">

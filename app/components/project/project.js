@@ -325,8 +325,8 @@ angular.module('singleConceptAuthoringApp.project', [
                     item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
-                    item.reviewer.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
-                    item.reviewer.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    $scope.convertReviewersToText(item.reviewers,'username').toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                    $scope.convertReviewersToText(item.reviewers,'displayName').toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                 });
               } else {
                 mydata = $scope.tasks;
@@ -388,6 +388,13 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
+      $scope.convertReviewersToText = function (reviewers, property) {       
+        if (reviewers) {
+          var list = reviewers.map(a => a[property]);
+          return list.join(', ');
+        }
+        return '';
+      };
 
       // on load, retrieve tasks for project
       function initialize() {
@@ -399,7 +406,6 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.tasks = response;
           angular.forEach($scope.tasks, function (task) {
             task.authorKey = task.assignee ? task.assignee.displayName : '';
-            task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
           });
           $scope.taskTableParams.reload();
         });
