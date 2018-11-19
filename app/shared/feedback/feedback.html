@@ -28,7 +28,7 @@
 
       <!-- Title section -->
 
-      <div class="p-l-20" ng-class="[{ 'col-md-8' : role === 'REVIEWER'}, { 'col-md-12' : role === 'AUTHOR'}]">
+      <div class="p-l-20" ng-class="[{ 'col-md-9' : role === 'REVIEWER'}, { 'col-md-12' : role === 'AUTHOR'}]">
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
           <button class="btn btn-default pink darken-2 review-button-list  "
@@ -92,7 +92,7 @@
         <div ng-show="task && !task.reviewer && task.status !== 'In Review'" class="inline"> &nbsp;Task not submitted for
           review </div>
       </div>
-      <div ng-class="[{ 'col-md-4' : role === 'REVIEWER'}]" ng-if="role === 'REVIEWER'">
+      <div ng-class="[{ 'col-md-3' : role === 'REVIEWER'}]" ng-if="role === 'REVIEWER'">
         <!-- Cancel/Unclaim Review button -->
 
         <!-- Review In Progress / Review Complete toggle -->
