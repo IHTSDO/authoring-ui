@@ -792,6 +792,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // id required, used in drawModel.js
             $('#image-' + concept.conceptId).css('display', 'inline-block');
+            $('#project-taxonomy-' + concept.conceptId).css('display', 'inline-block');            
             var zoomElm = $('#image-' + concept.conceptId).parent().parent().find('.zoom')[0];
             $(zoomElm).css('display', 'inline-block');
           }
@@ -800,6 +801,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // id required, used in drawModel.js
             $('#image-' + concept.conceptId).css('display', 'none');
+            $('#project-taxonomy-' + concept.conceptId).css('display', 'none');
             var zoomElm = $('#image-' + concept.conceptId).parent().parent().find('.zoom')[0];
             $(zoomElm).css('display', 'none');
           }
