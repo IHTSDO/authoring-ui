@@ -119,6 +119,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.viewedConcepts.push(conceptModelObj);
                   notificationService.clear();
 
+                  scope.stopLoadingTaxonomy();
                   // after a slight delay, broadcast a draw and taxonomy
                   // request event
                   $timeout(function () {
@@ -129,7 +130,7 @@ angular.module('singleConceptAuthoringApp')
               } else {
                 scope.viewedConcepts.push(conceptModelObj);
                 notificationService.clear();
-
+                scope.stopLoadingTaxonomy();
                 // after a slight delay, broadcast a draw event
                 $timeout(function () {
                   $rootScope.$broadcast('comparativeModelDraw');
@@ -546,7 +547,19 @@ angular.module('singleConceptAuthoringApp')
                 fsn: concept.fsn
               }
             });
+            $rootScope.$broadcast('stopLoadingTaxonomy', {
+              stopLoadingTaxonomy: false
+            });
           };
+
+          scope.stopLoadingTaxonomy = function () {
+            $timeout(function () {
+              $rootScope.$broadcast('stopLoadingTaxonomy', {
+                stopLoadingTaxonomy: true
+              });
+            }, 0);
+            
+          }
 
           ////////////////////////////////////
           // Validation Functions
