@@ -199,12 +199,12 @@
                           ng-class="[{'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"
                           ng-click="collapse(concept)"></i></span>
               </div>
-              <ul ng-if="(axiomSupport && role === 'AUTHOR') || !isStatic">
+              <ul ng-if="(axiomSupport && role === 'AUTHOR') || !isStatic || role === 'REVIEWER'">
                 <li ng-click="addAdditionalAxiom()" ng-if="axiomSupport && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Additional Axiom</li>
                 <li ng-click="addGCIAxiom()" ng-if="axiomSupport && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
-                <li ng-click="downloadOWLAxiom()" ng-if="axiomSupport">View OWL Axiom</li>
+                <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
               </ul>
             </li>
           </ul>
