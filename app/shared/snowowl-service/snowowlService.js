@@ -876,7 +876,7 @@ angular.module('singleConceptAuthoringApp')
             queryString += concept;
           }
         });
-        $http.get(apiEndpoint + branch + '/concepts?limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&escg=' + queryString).then(function (response) {
+        $http.get(apiEndpoint + branch + '/concepts?limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&ecl=' + queryString).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
