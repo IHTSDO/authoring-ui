@@ -869,6 +869,15 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
+        updateProject: function (projectKey, object) {
+          var deferred = $q.defer();
+          $http.put(apiEndpoint + 'projects/' + projectKey, object).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.statusText);
+          });
+          return deferred.promise;
+        },
 //////////////////////////////////////////
 // Review & Feedback
 //////////////////////////////////////////

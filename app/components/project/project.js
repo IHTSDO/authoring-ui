@@ -70,6 +70,14 @@ angular.module('singleConceptAuthoringApp.project', [
             }
           });
 
+          // last rebase time
+          snowowlService.getTraceabilityForBranch($scope.branch, null, 'REBASE').then (function(response) {
+            if (response && response.content.length !== 0) {
+              let date = new Date(response.content[response.content.length -1].commitDate);
+              $scope.project.lastRebaseTime = date;
+            }
+          });
+
           // set the branch metadata for use by other elements
           metadataService.setBranchMetadata($scope.project);
 
@@ -396,6 +404,17 @@ angular.module('singleConceptAuthoringApp.project', [
         return '';
       };
 
+       $scope.toggleProjectScheduledRebase = function () {
+        $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
+        notificationService.sendMessage('Updating Project Scheduled Rebase...');
+        scaService.updateProject($scope.project.key, {'projectScheduledRebaseDisabled': $scope.project.projectScheduledRebaseDisabled}).then(function (response) {         
+          notificationService.sendMessage('Project Scheduled Rebase successfully updated', 5000);
+        }, function (error) {
+          $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
+          notificationService.sendError('Error udpating Project Scheduled Rebase: ' + error);
+        });
+      };
+      
       // on load, retrieve tasks for project
       function initialize() {
         // initialize the project

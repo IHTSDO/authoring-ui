@@ -293,7 +293,21 @@ td select {
     background-color: #424249 ;
 }
 /* temp for wrp-2269 */
-
+.sca-scheduled-rebase {
+    i {
+        font-size: 25px;
+    }
+    p {
+        position: absolute; 
+        right: 50px;
+    }
+    i.active {
+        color: #5cb85c;
+    }
+    i.inactive {
+        color: #d9534f;
+    }
+}
 .dashboard-sidebar button {
     width: 100%;
     padding: 15px;
