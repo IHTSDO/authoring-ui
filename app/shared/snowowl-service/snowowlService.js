@@ -870,13 +870,13 @@ angular.module('singleConceptAuthoringApp')
         var queryString = '';
         angular.forEach(conceptIdList, function (concept, key) {
           if (key + 1 !== conceptIdList.length) {
-            queryString += concept + '%20UNION%20';
+            queryString += concept + '%20OR%20';
           }
           else {
             queryString += concept;
           }
         });
-        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&escg=' + queryString).then(function (response) {
+        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&ecl=' + queryString).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
