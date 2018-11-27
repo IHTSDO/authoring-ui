@@ -60,9 +60,12 @@
             <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
         </div>
-        <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectScheduledRebaseDisabled !== undefined && project.projectLead.username === $root.accountDetails.login">
-          <div><i class="fa fa-toggle-on pull-right" ng-class="project.projectScheduledRebaseDisabled ? 'fa-rotate-180 inactive' : 'active'" ng-click="toggleProjectScheduledRebase();" /></div>     
-          <div><p class="pull-right">Project Scheduled Rebase</p></div>
+        <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectScheduledRebaseDisabled !== undefined">
+          <div><button class="btn btn-default transparent pull-right no-padding"          
+            ng-class="[{'md-check-box' : !project.projectScheduledRebaseDisabled}, {'md-check-box-outline-blank' : project.projectScheduledRebaseDisabled}]"
+            ng-click="toggleProjectScheduledRebase()" />
+         </div>     
+          <div><p class="pull-right">Enable automated rebase</p></div>
         </div>
       </div>      
 </div>
