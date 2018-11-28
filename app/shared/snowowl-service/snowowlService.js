@@ -948,7 +948,7 @@ angular.module('singleConceptAuthoringApp')
         let config = {};
 
         let params = {
-          offset: offset ? offset : '0',
+          //offset: offset ? offset : '0',
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
@@ -973,7 +973,7 @@ angular.module('singleConceptAuthoringApp')
 
         if(tsv) {
           config.headers['Accept'] = 'text/csv';
-          params.offset = 0;
+          //params.offset = 0;
           params.limit = 10000;
           params.expand = 'pt(),fsn()';
         }
