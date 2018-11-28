@@ -36,11 +36,49 @@
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
-        <div class="pull-left p-l-15 "><strong>Task Reviewers:</strong><span ng-if="role === 'REVIEWER'"> {{convertReviewersToText(task.reviewers,'displayName')}}</span></div>
-        <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
-          <button class="btn btn-default primary-action-btn"
-                  ng-click="unclaimReview()">Unclaim Review </button>
+        <div class="pull-left p-l-15 "><strong>Task Reviewers:</strong></div>
+        <div ng-if="role === 'REVIEWER'">          
+          <div class="editable-field">
+            <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
+              <div ng-repeat="reviewer in sortReviewers(task.reviewers) track by reviewer.displayName" class="in-block">                  
+                  <div class="badge Available">
+                    <span>{{reviewer.displayName}}</span>
+                    <button ng-if="reviewer.username !== $root.accountDetails.login" class="btn btn-default tooltips-bottom medium-size-tooltip remove-reviewer" ng-click="removeReviewer(reviewer)">
+                      <div>X</div>
+                      <span>Remove Reviewer</span>
+                    </button>                     
+                  </div>
+              </div>              
+            </div>
+            
+            <div ng-if="!task.reviewers ||task.reviewers.length === 0" ng-show="!editReviewer" class="inline">
+              <span ng-click="switchToAddReviewer();">&nbsp; Unassigned</span>              
+            </div>
+            
+            <div class="inline">
+              <button class="btn btn-round btn-default tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="!editReviewer" ng-click="switchToAddReviewer();">
+                <div class="md md-add"></div>
+                <span>Add Reviewer</span>
+              </button>
+              <input id="feedback-edit-reviewer" class="form-control" type="text" ng-if="editReviewer" ng-model="selectedItem"
+                typeahead="suggestion as suggestion.displayName for suggestion in getAvailableUsers([task.assignee.username]) | filter:{displayName:$viewValue}"  
+                typeahead-focus-first="false"                
+                typeahead-editable="false"
+                typeahead-on-select="addReviewer($item)"
+                typeahead-loading="typeaheadLoading"
+                typeahead-focus-custom
+                ng-keyup="listenReviewerTypeaheadEvent({event: $event})"> 
+                <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
+              </input>
+            </div>            
+          </div>
+
+          <div class="p-l-15 inline">
+            <button class="btn btn-default primary-action-btn"
+                      ng-click="unclaimReview()">Unclaim Review </button>
+          </div>
         </div>
+        
         <div class="switch pull-right p-l-10"> </div>
         <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" > 
           <div class="editable-field">
@@ -58,11 +96,11 @@
             </div>
             
             <div ng-if="!task.reviewers ||task.reviewers.length === 0" ng-show="!editReviewer" class="inline">
-              <span>&nbsp; Unassigned</span>              
+              <span ng-click="switchToAddReviewer();">&nbsp; Unassigned</span>              
             </div>
             
-            <div class="m-l-5 inline">
-              <button class="btn btn-round btn-default green tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="!editReviewer" ng-click="switchToAddReviewer();">
+            <div class="inline">
+              <button class="btn btn-round btn-default tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="!editReviewer" ng-click="switchToAddReviewer();">
                 <div class="md md-add"></div>
                 <span>Add Reviewer</span>
               </button>

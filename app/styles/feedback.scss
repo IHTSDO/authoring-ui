@@ -752,6 +752,10 @@ strong {
 .feedback-header-main .editable-field .btn {
     padding-right: 0px;
 }
+.feedback-header-main .editable-field .btn.btn-round {
+    color: #fff;
+    background-color: #00a4e4;
+}
 .editable-field,
 .editable-field span {
     display: inline;
