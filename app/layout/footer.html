@@ -7,7 +7,7 @@
     <li><a href="http://www.snomed.org/contact-us/" target="_blank">Contact Us</a></li>
 
   </ul>
-
+  <div class="network-connection-warning" id="networkWarning"><i class="fa fa-exclamation-triangle"/>&nbsp Your network connection is slow</div>
   <button class="btn btn-primary navbar-right" id="myCustomTrigger">Raise an Issue</button>
 
     <div ng-if="collectorUrl">
@@ -21,6 +21,18 @@
                     });
                 }
             };
+
+            function monitorNetworkConnection() {              
+              var downlink = navigator.connection.downlink;
+              if (downlink && downlink < 2) {
+                $("#networkWarning").css("display", "inline");
+              } else {
+                $("#networkWarning").css("display", "none");
+              }
+              setTimeout(monitorNetworkConnection,15000);
+            }
+
+            setTimeout(monitorNetworkConnection,1000);            
         </script>
     </div>
 </div>
