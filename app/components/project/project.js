@@ -62,19 +62,16 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.project = response;
           $scope.branch = response.branchPath;
 
+          // last rebased time
+          if ($scope.project.branchBaseTimestamp) {
+            $scope.project.lastRebaseTime = new Date($scope.project.branchBaseTimestamp);
+          }
+
           // last promotion time
           snowowlService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
             if (promotionTime) {
               let date = new Date(promotionTime);
               $scope.project.lastPromotion = date.toUTCString();
-            }
-          });
-
-          // last rebase time
-          snowowlService.getTraceabilityForBranch($scope.branch, null, 'REBASE').then (function(response) {
-            if (response && response.content.length !== 0) {
-              let date = new Date(response.content[response.content.length -1].commitDate);
-              $scope.project.lastRebaseTime = date;
             }
           });
 
