@@ -175,8 +175,14 @@ angular
     configService.getEndpoints().then(
       // Success block -- config properties retrieved
       function (response) {
-        var endpoints = response;
-        console.log(response);
+        var endpoints = response.endpoints;
+        var features = response.features
+        $rootScope.endpoints = endpoints;
+
+        if (features.network && features.network.connection.minimum) {
+          window.minNetworkConnection = features.network.connection.minimum;
+        }
+        snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         if(!endpoints.axiomDisabled){
