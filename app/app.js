@@ -175,14 +175,8 @@ angular
     configService.getEndpoints().then(
       // Success block -- config properties retrieved
       function (response) {
-        var endpoints = response.endpoints;
-        var features = response.features
-        $rootScope.endpoints = endpoints;
-
-        if (features.network && features.network.connection.minimum) {
-          window.minNetworkConnection = features.network.connection.minimum;
-        }
-        snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
+        var endpoints = response;
+        console.log(response);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         if(!endpoints.axiomDisabled){
@@ -268,12 +262,12 @@ angular
       metadataService.setProjects(response);
 
       var projectKeys = [];
-      var promises = [];
+      var promises = [];                    
       promises.push(scaService.getTasks());
-      promises.push(scaService.getReviewTasks());
-
+      promises.push(scaService.getReviewTasks());     
+        
       // on resolution of all promises
-      $q.all(promises).then(function (responses) {
+      $q.all(promises).then(function (responses) {                
           for (var i = 0; i < responses.length; i++) {
             angular.forEach(responses[i], function (task) {
               if (projectKeys.indexOf(task.projectKey) === -1) {
@@ -291,8 +285,8 @@ angular
                 }
             });
           });
-
-          if (myProjects.length > 0) {
+          
+          if (myProjects.length > 0) {            
             metadataService.setMyProjects(myProjects);
           }
       });
