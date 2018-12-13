@@ -303,10 +303,11 @@ td select {
         position: absolute; 
         right: 0px;
         top: 8px;
+    }   
+    .btn.btn-default {
+        color: #474747;
     }
-    .btn:active {
-        color: #666
-    }
+
 }
 .dashboard-sidebar button {
     width: 100%;
