@@ -31,10 +31,10 @@ angular.module('singleConceptAuthoringApp')
           return branch.substring(0,branch.lastIndexOf('/'));
         }
 
-        function setLayoutWith() {
+        function setLayoutWidth() {
           let documentResult = document.getElementsByClassName('sidebar-bg');
           let wrappedDocumentResult = angular.element(documentResult);
-          let width = wrappedDocumentResult[0].clientWidth;    
+          let width = wrappedDocumentResult[0].clientWidth !== 0 ? wrappedDocumentResult[0].clientWidth : wrappedDocumentResult[1].clientWidth;    
           let elementResult = element[0].querySelector('.custom-width');
           elementResult.style.width = (width + 30) + 'px';
         }
@@ -62,8 +62,8 @@ angular.module('singleConceptAuthoringApp')
             }            
           });
 
-          // set width for project taxonomy similar with side bar
-          setLayoutWith();
+          // set width for project taxonomy similar to side bar
+          setLayoutWidth();
         }
         intialize();
 

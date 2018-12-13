@@ -14,6 +14,9 @@
         </p>       
         <div class="col-md-12 no-padding" ng-if="project.lastPromotion">
           <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotion | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
+        </div>
+        <div class="col-md-12 no-padding" ng-if="project.lastRebaseTime">
+          <p class="p-l-15 m-b-0 promotion-box">Last rebased date: {{project.lastRebaseTime | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
         </div>       
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
@@ -56,6 +59,13 @@
             <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote This Project to the Mainline</div>
             <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
+        </div>
+        <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectScheduledRebaseDisabled !== undefined">
+          <div><button class="btn btn-default transparent pull-right no-padding"          
+            ng-class="[{'md-check-box' : !project.projectScheduledRebaseDisabled}, {'md-check-box-outline-blank' : project.projectScheduledRebaseDisabled}]"
+            ng-click="toggleProjectScheduledRebase()" />
+         </div>     
+          <div><p class="pull-right">Enable automated rebase</p></div>
         </div>
       </div>      
 </div>
@@ -186,8 +196,8 @@
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
-              <td header-title="'Click to sort'" data-title="'Reviewer'" sortable="'reviewerKey'" filter="{ 'reviewer' : 'text' }">
-                {{task.reviewer.displayName}}
+              <td header-title="'Click to sort'" data-title="'Reviewers'" filter="{ 'reviewer' : 'text' }">
+                {{convertReviewersToText(task.reviewers,'displayName')}}
 
               </td>
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">

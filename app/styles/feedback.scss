@@ -750,8 +750,11 @@ strong {
     }
 }
 .feedback-header-main .editable-field .btn {
-    background: transparent; 
     padding-right: 0px;
+}
+.feedback-header-main .editable-field .btn.btn-round {
+    color: #fff;
+    background-color: #00a4e4;
 }
 .editable-field,
 .editable-field span {
@@ -759,6 +762,18 @@ strong {
 }
 .editable-field span:hover {
     cursor: initial;
+}
+.editable-field .remove-reviewer {
+    color: red;
+    background: transparent;
+    height: 12px;
+    padding: 0px;
+    margin: 0px;
+    top: -6px;
+}
+.editable-field .remove-reviewer:hover,
+.editable-field .remove-reviewer:active {
+    background-color: transparent;
 }
 .editable-field input.form-control {
     width: 200px; 

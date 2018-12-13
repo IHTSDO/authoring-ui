@@ -25,7 +25,7 @@ angular.module('singleConceptAuthoringApp')
       accountService.getUserPreferences().then(function (preferences) {
         $scope.preferences = preferences;
         
-        if(preferences.hasOwnProperty("lastProjectKey")) {
+        if(preferences.hasOwnProperty("lastProjectKey") && !$scope.task.key) {
           $scope.task.projectKey = $scope.preferences.lastProjectKey;
         }
       });

@@ -869,6 +869,15 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
+        updateProject: function (projectKey, object) {
+          var deferred = $q.defer();
+          $http.put(apiEndpoint + 'projects/' + projectKey, object).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.statusText);
+          });
+          return deferred.promise;
+        },
 //////////////////////////////////////////
 // Review & Feedback
 //////////////////////////////////////////
@@ -876,7 +885,7 @@ angular.module('singleConceptAuthoringApp')
         // mark as ready for review -- no return value
         assignReview: function (projectKey, taskKey, username) {
           var deferred = $q.defer();
-          var updateObj = {'status': 'IN_REVIEW', 'reviewer': {'username': username}};
+          var updateObj = {'status': 'IN_REVIEW', 'reviewers': [{'username': username}]};
 
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
@@ -886,9 +895,9 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        unassignReview: function (projectKey, taskKey) {
+        unassignReview: function (projectKey, taskKey, reviewers) {
           var deferred = $q.defer();
-          var updateObj = {'status': 'IN_REVIEW', 'reviewer': {}};
+          var updateObj = {'status': 'IN_REVIEW', 'reviewers': reviewers};
 
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
@@ -901,7 +910,7 @@ angular.module('singleConceptAuthoringApp')
 
         markTaskInProgress: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          var updateObj = {'status': 'IN_PROGRESS', 'reviewer': {}};
+          var updateObj = {'status': 'IN_PROGRESS', 'reviewers': []};
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
@@ -1349,6 +1358,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                       msg = newNotification.event + ' feedback for task ' + newNotification.task;
                       url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
+                      notificationService.sendMessage(msg, 0, url); 
                       break;
 
                     /*

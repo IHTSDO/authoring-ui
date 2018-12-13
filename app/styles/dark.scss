@@ -64,6 +64,13 @@ h4.timeline-title {
     color: #76747c;
     background-color: #424249;
 }
+.sca-dark .feedback-header-main .editable-field .Available.badge {
+    background-color: #00b0ff;
+    color: #fff;
+}
+.sca-dark .feedback-header-main .editable-field .remove-reviewer {
+    color: red;
+}
 .sca-dark .project-page {
     background-color: #525463
 }
@@ -1220,4 +1227,7 @@ background-color: #262e39;}
 .sca-dark .concept-title ul.dashboard-link-list li ul li[disabled] {
     color: #bdbdbd;
     background-color: #424249;
+}
+.sca-dark .sca-scheduled-rebase .btn {
+    border: none;
 }
