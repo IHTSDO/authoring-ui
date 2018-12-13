@@ -265,51 +265,56 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
 
-    function replaceLexicalValues(concept, template) {
+    function replaceLexicalValues(concept, template, branch) {
       var deferred = $q.defer();
-      getTemplateValues(concept, template).then(function (nameValueMap) {
-
-        // replace values in descriptions
-        for (var i = 0; i < concept.descriptions.length; i++) {
-          var d = concept.descriptions[i];
-          if (d.template) {
-            d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
-            d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
-
+      let templeteConceptComplete = isTemplateComplete(concept);        
+      if (!templeteConceptComplete) {
+        deferred.resolve(concept);
+      } else {
+        var copiedConcept = angular.copy(concept);
+        snowowlService.cleanConcept(copiedConcept);
+        copiedConcept.descriptions = [];
+        transformConceptToTemplate(branch, template, copiedConcept).then(function(response) {
+          concept.descriptions = angular.copy(response.descriptions);
+          angular.forEach(concept.descriptions, function(d) {
             if (!d.released && snowowlService.isSctid(d.descriptionId)) {
               delete d.descriptionId;
             }
-            
-            // check case sensitive terms for non-CS terms
-            if (d.caseSignificance !== 'ENTIRE_TERM_CASE_SENSITIVE') {
-              if (d.term.substring(1).toLowerCase() !== d.term.substring(1)) {
-                d.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
-              } else {
-                d.caseSignificance = 'CASE_INSENSITIVE';
-              }
-            }
-          }
-        }
-
-        // placeholder resolution in anticipation of replacement using promises
-        deferred.resolve();
-      }, function (error) {
-        deferred.reject('Could not replace lexical valus: ' + error);
-      });
+          }); 
+          concept.fsn = response.fsn;
+          applyTemplateToConcept(concept, template);
+          deferred.resolve(concept);
+        });
+      }
+      
       return deferred.promise;
     }
 
-    function updateTargetSlot(concept, template, relationship) {
+    function updateTargetSlot(branch, concept, template, relationship) {
       var deferred = $q.defer();
 
       replaceLogicalValuesForRelationship(concept, relationship).then(function () {
-        replaceLexicalValues(concept, template).then(function () {
+        replaceLexicalValues(concept, template, branch).then(function () {
           deferred.resolve(concept);
         }, function (error) {
           deferred.reject(error);
         });
       }, function (error) {
         deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+
+
+    function transformConceptToTemplate (branch, destinationTemplate, conceptToTransform){
+      var deferred = $q.defer();
+      if (!branch || !destinationTemplate || !conceptToTransform) {
+        deferred.reject('Invalid arguments');
+      }
+      $http.post(apiEndpoint + branch + '/templates/' + destinationTemplate.name.replace(/\//g, '%252F') + '/transform/concept', conceptToTransform).then(function (response) {        
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject('Failed to retrieve template concepts: ' + error.message);
       });
       return deferred.promise;
     }
@@ -432,7 +437,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function createTemplateConcept(template, targetSlotMap, relAndDescMap) {
+    function createTemplateConcept(template, targetSlotMap, relAndDescMap, branch) {
       var deferred = $q.defer();
       // check required arguments
       if (!template) {
@@ -511,7 +516,7 @@ angular.module('singleConceptAuthoringApp')
           // replace logical values
           replaceLogicalValues(tc).then(function () {
             // replace template values (i.e. to replace display $term-x with x
-            replaceLexicalValues(tc, template).then(function () {
+            replaceLexicalValues(tc, template, branch).then(function () {
                 getConceptNames(tc.relationships, currentTask).then(function(rels){
                     tc.relationships = rels;
                     angular.forEach(tc.descriptions, function (d) {
@@ -572,7 +577,7 @@ angular.module('singleConceptAuthoringApp')
       });
     }
     
-    function applyTemplateToExistingConcept(concept, template){
+    function applyTemplateToExistingConcept(concept, template, branch){
         var deferred = $q.defer();
         var conceptCopy = angular.copy(concept);
         conceptCopy.templateMessages = [];
@@ -707,7 +712,7 @@ angular.module('singleConceptAuthoringApp')
 
             componentAuthoringUtil.setDefaultFields(conceptCopy);
             replaceLogicalValues(conceptCopy).then(function () {
-                replaceLexicalValues(conceptCopy, template).then(function () {
+                replaceLexicalValues(conceptCopy, template, branch).then(function () {
                       deferred.resolve(conceptCopy);
                     }, function (error) {
                       deferred.reject(error);
@@ -727,7 +732,7 @@ angular.module('singleConceptAuthoringApp')
      * (1) Appends template elements to each component, adds missing components
      * (2) Options: replace values, append user messages, apply conditional styling
      */
-    function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
+    function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles, branch) {
       var deferred = $q.defer();
 
       // reset all template variables
@@ -919,9 +924,9 @@ angular.module('singleConceptAuthoringApp')
         componentAuthoringUtil.setDefaultFields(concept);
 
 
-        if (applyValues) {
-          concept = replaceLexicalValues(concept, template);
-        }
+        //if (applyValues) {
+        //  concept = replaceLexicalValues(concept, template, branch);
+        //}
 
 // apply top-level messages
         if (applyMessages) {
@@ -971,11 +976,13 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function isTemplateComplete(concept) {
-      angular.forEach(concept.relationships, function (relationship) {
+      for (var i =0; i < concept.relationships.length; i++) {
+        var relationship = concept.relationships[i];
         if (relationship.targetSlot && !relationship.target.conceptId) {
           return false;
         }
-      });
+      }
+      
       return true;
     }
 
@@ -1158,82 +1165,6 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function getTemplateForName(name, refreshCache) {
-      var deferred = $q.defer();
-
-      getTemplates(refreshCache).then(function (templates) {
-        var tf = templates.filter(function (t) {
-          return t.name === name;
-        });
-        if (tf.length === 1) {
-          deferred.resolve(tf[0]);
-        } else if (tf.length > 1) {
-          deferred.reject('Multiple templates for name: ' + name);
-        } else {
-          deferred.reject('No template for name: ' + name);
-        }
-      }, function (error) {
-        deferred.reject('Could not get templates: ' + error);
-      });
-      return deferred.promise;
-    }
-
-    function createTemplate(template) {
-      var deferred = $q.defer();
-      if (!template || !template.name) {
-        deferred.reject('Template or template name not specified');
-      } else {
-
-        $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(template.name), template).then(function (response) {
-          getTemplates(true).then(function () {
-            if (templateCache.filter(function (t) {
-                return t.name === template.name;
-              }).length === 0) {
-              deferred.reject('Template creation reported successful, but not present in refreshed cache');
-            } else {
-              deferred.resolve(templateCache);
-            }
-          }, function (error) {
-            deferred.reject('Template creation reported successful, but could not refresh template cache: ' + error.message);
-          });
-        }, function (error) {
-          deferred.reject('Failed to create template: ' + error.message);
-        });
-      }
-      return deferred.promise;
-    }
-
-
-    function updateTemplate(template) {
-      var deferred = $q.defer();
-      if (!template || !template.name) {
-        deferred.reject('Template or template name not specified');
-      } else if (templateCache.filter(function (t) {
-          return t.name === template.name;
-        }).length === 0) {
-        deferred.reject('Update called, but template not in cache');
-      } else {
-
-        var version = template.version;
-        $http.put(apiEndpoint + 'templates/' + encodeURIComponent(template.name), template).then(function (response) {
-          getTemplates(true).then(function () {
-            if (templateCache.filter(function (t) {
-                return t.name === template.name && t.version === template.version;
-              }).length > 0) {
-              deferred.reject('Template update reported successful, but version not updated');
-            } else {
-              deferred.resolve(response.data);
-            }
-          }, function (error) {
-            deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.message);
-          });
-        }, function (error) {
-          deferred.reject('Failed to update template: ' + error.message);
-        });
-      }
-      return deferred.promise;
-    }
-
     function setTask(task) {
       currentTask = task;
     }
@@ -1270,11 +1201,8 @@ angular.module('singleConceptAuthoringApp')
       setTask: setTask,
 
       // Template CRUD functions
-      getTemplates: getTemplates,
-      getTemplateForName: getTemplateForName,
+      getTemplates: getTemplates,      
       searchByTemplate: searchByTemplate,
-      createTemplate: createTemplate,
-      updateTemplate: updateTemplate,
 
       // global template selection
       selectTemplate: selectTemplate,
@@ -1286,11 +1214,9 @@ angular.module('singleConceptAuthoringApp')
       applyTemplateToExistingConcept: applyTemplateToExistingConcept,
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
-      clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
       updateTargetSlot: updateTargetSlot,
 
-      // utility functions
-      isTemplateComplete: isTemplateComplete,
+      // utility functions      
       relationshipHasTargetSlot: relationshipHasTargetSlot,
       relationshipInLogicalModel: relationshipInLogicalModel,
 

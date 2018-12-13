@@ -509,7 +509,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.applyTemplate = function (template) {
-            templateService.applyTemplateToExistingConcept(scope.concept, template).then(function(concept){
+            templateService.applyTemplateToExistingConcept(scope.concept, template, scope.branch).then(function(concept){
                 $timeout(function () {
                     scope.template = template;
                     scope.concept = concept;
@@ -3683,7 +3683,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.validation = {};
 
 
-            templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
+            templateService.updateTargetSlot(scope.branch, scope.concept, scope.template ? scope.template : scope.concept.template, relationship).then(function () {
               scope.computeRelationshipGroups();
               sortRelationships();
 
