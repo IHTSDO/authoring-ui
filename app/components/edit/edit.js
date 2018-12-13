@@ -1192,7 +1192,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
         }, 1500);
       } else {
-        templateService.createTemplateConcept(templateService.getSelectedTemplate(), null).then(function (concept) {
+        templateService.createTemplateConcept(templateService.getSelectedTemplate(), null, null, $scope.branch).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
 
