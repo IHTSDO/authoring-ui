@@ -160,8 +160,8 @@ angular.module('singleConceptAuthoringApp.home', [
         }
 
         function sortStatusFn (a, b, direction) {
-            a.tempStatus = (a.status == 'In Review' && !a.reviewer) ? 'Ready for Review' : a.status;
-            b.tempStatus = (b.status == 'In Review' && !b.reviewer) ? 'Ready for Review' : b.status;
+            a.tempStatus = (a.status == 'In Review' && (!a.reviewers || a.reviewers.length === 0)) ? 'Ready for Review' : a.status;
+            b.tempStatus = (b.status == 'In Review' && (!b.reviewers || b.reviewers.length === 0)) ? 'Ready for Review' : b.status;
             if (direction === 'asc') {
                 var result = a.tempStatus.localeCompare(b.tempStatus);
                 delete a.tempStatus;

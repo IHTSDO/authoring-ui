@@ -62,6 +62,11 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.project = response;
           $scope.branch = response.branchPath;
 
+          // last rebased time
+          if ($scope.project.branchBaseTimestamp) {
+            $scope.project.lastRebaseTime = new Date($scope.project.branchBaseTimestamp);
+          }
+
           // last promotion time
           snowowlService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
             if (promotionTime) {
@@ -325,8 +330,8 @@ angular.module('singleConceptAuthoringApp.project', [
                     item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
-                    item.reviewer.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
-                    item.reviewer.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    $scope.convertReviewersToText(item.reviewers,'username').toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                    $scope.convertReviewersToText(item.reviewers,'displayName').toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                 });
               } else {
                 mydata = $scope.tasks;
@@ -388,7 +393,25 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
+      $scope.convertReviewersToText = function (reviewers, property) {       
+        if (reviewers) {
+          var list = reviewers.map(a => a[property]);
+          return list.join(', ');
+        }
+        return '';
+      };
 
+       $scope.toggleProjectScheduledRebase = function () {
+        $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
+        notificationService.sendMessage('Updating Project Scheduled Rebase...');
+        scaService.updateProject($scope.project.key, {'projectScheduledRebaseDisabled': $scope.project.projectScheduledRebaseDisabled}).then(function (response) {         
+          notificationService.sendMessage('Project Scheduled Rebase successfully updated', 5000);
+        }, function (error) {
+          $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
+          notificationService.sendError('Error udpating Project Scheduled Rebase: ' + error);
+        });
+      };
+      
       // on load, retrieve tasks for project
       function initialize() {
         // initialize the project
@@ -399,7 +422,6 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.tasks = response;
           angular.forEach($scope.tasks, function (task) {
             task.authorKey = task.assignee ? task.assignee.displayName : '';
-            task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
           });
           $scope.taskTableParams.reload();
         });

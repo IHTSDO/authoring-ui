@@ -204,14 +204,14 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.viewReviewTask = function (task) {
 
         // if no reviewer or task in progress, attempt to assign
-        if (task && !task.reviewer) {
+        if (task && (!task.reviewers || task.reviewers.length === 0)) {
 
           // re-retrieve task to doublecheck availability for assignment
           scaService.getTaskForProject(task.projectKey, task.key).then(function (response) {
 
             // if a reviewer specified, has been claimed since last task refresh
             // send warning and reload tasks
-            if (response.reviewer) {
+            if (response.reviewers && response.reviewers.length !== 0) {
               notificationService.sendWarning('Review task ' + task.key + ' has been claimed by another user', 1000);
               loadTasks();
             }
@@ -232,10 +232,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         } else {
           $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
         }
-      };
-      $scope.isReviewer = function () {
-        return accountService.isReviewer();
-      };
+      };     
 
       //
       // Multi-task selection/action functions
@@ -243,7 +240,15 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       // Claimed tasks (right hand column)
       $scope.isClaimedTask = function (task) {
-        return task.reviewer && $rootScope.accountDetails && task.reviewer.username === $rootScope.accountDetails.login;
+        if (task.reviewers && task.reviewers.length !== 0 && $rootScope.accountDetails) {
+          for (var i = 0; i < task.reviewers.length; i++) {
+            if (task.reviewers[i].username === $rootScope.accountDetails.login) {
+              return true;
+            }
+          }
+          return false;
+        }
+        return false;
       };
 
       $scope.hasClaimedTasks = function () {
@@ -270,15 +275,17 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.unassignSelectedClaimedTasks = function () {
         var promises = [];
-        var updateObj = {
-          'reviewer': {
-            'username': ''
-          }
-        };
-
+        
         // update all tasks and push promises into array
         angular.forEach($scope.getSelectedClaimedTasks(), function (task) {
-          promises.push(scaService.updateTask(task.projectKey, task.key, updateObj));
+          task.reviewers = task.reviewers ? task.reviewers : [];
+          var i = task.reviewers.length;
+          while (i--) {              
+            if (task.reviewers[i].username === $rootScope.accountDetails.login) { 
+              task.reviewers.splice(i, 1);
+            } 
+          }
+          promises.push(scaService.updateTask(task.projectKey, task.key, {'reviewers': task.reviewers}));
         });
 
         // on resolution of all promises
@@ -299,7 +306,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       // Unclaimed tasks (left hand column)
       $scope.isUnclaimedTask = function (task) {
-        return task.status === 'In Review' && !task.reviewer;
+        return task.status === 'In Review' && !task.reviewers;
       };
 
       $scope.hasUnclaimedTasks = function () {
@@ -327,15 +334,12 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.assignSelectedUnclaimedTasks = function () {
         var promises = [];
-        var updateObj = {
-          'reviewer': {
-            'username': $rootScope.accountDetails.login
-          }
-        };
-
+        
         // update all tasks and push promises into array
         angular.forEach($scope.getSelectedUnclaimedTasks(), function (task) {
-          promises.push(scaService.updateTask(task.projectKey, task.key, updateObj));
+          var reviewers = task.reviewers ? task.reviewers : [];
+          reviewers.push({'username' : $rootScope.accountDetails.login});
+          promises.push(scaService.updateTask(task.projectKey, task.key, {'reviewers': reviewers}));
         });
 
         // on resolution of all promises

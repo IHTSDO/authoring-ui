@@ -11,6 +11,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
       $scope.secondRootConcept = null;
       $scope.languages = [];
       $scope.selectedLanguage = null;
+      $scope.stopLoadingTaxonomy = false;
 
       /**
        * Drag and drop object
@@ -25,6 +26,11 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
       $scope.$on('viewTaxonomy', function(event, data) {
         $scope.rootConcept = data.concept;
         $scope.secondRootConcept = null;         
+      });
+
+      // watch for viewTaxonomy reder
+      $scope.$on('stopLoadingTaxonomy', function(event, data) {
+        $scope.stopLoadingTaxonomy = data.stopLoadingTaxonomy;
       });
 
       $scope.clearConcept = function() {

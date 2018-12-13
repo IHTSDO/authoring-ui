@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp')
       getAccount().then(function(accountDetails) {
 
         // check reviewer first
-        if (task.reviewer && accountDetails.login === task.reviewer.username) {
+        if (task.reviewers && isReviewer(accountDetails.login,task.reviewers)) {
           deferred.resolve('REVIEWER');
         }
 
@@ -73,11 +73,13 @@ angular.module('singleConceptAuthoringApp')
       return 'UNDEFINED';
     }
     
-    function isReviewer() {
-        if (accountDetails.roles.indexOf('ROLE_ihtsdo-sca-reviwer')) {
-            return true;
-        }
-        else{return false;}
+    function isReviewer(loginUser, reviewers) {
+      for (let i =0; i < reviewers.length; i++) {
+        if (loginUser === reviewers[i].username) {
+          return true;
+        }        
+      }
+      return false;
     }
 
     /**
@@ -153,8 +155,7 @@ angular.module('singleConceptAuthoringApp')
     return {
       getAccount: getAccount,
       getRoleForTask: getRoleForTask,
-      getRoleForProject: getRoleForProject,
-      isReviewer: isReviewer,
+      getRoleForProject: getRoleForProject,     
       applyUserPreferences : applyUserPreferences,
       getUserPreferences: getUserPreferences,
       saveUserPreferences: saveUserPreferences
