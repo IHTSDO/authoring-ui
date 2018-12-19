@@ -46,6 +46,9 @@
         margin-top: 2px;
         margin-left: -1px;
    }
+   .validation-report.report-table thead tr > th input[type=checkbox].project:checked:before{      
+      left: 49px;
+    }    
   .validation-report.report-table thead tr > th input[type=checkbox]:after {
       margin-top: 2px;
   }
