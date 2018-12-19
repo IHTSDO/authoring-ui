@@ -1086,6 +1086,27 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
+    function isOptionalAttribute(relationship) {
+      if (!relationship) {
+        return false;
+      }
+
+      if ((relationship.cardinalityMin 
+          && relationship.cardinalityMax
+          && relationship.cardinalityMin === '0'
+          && relationship.cardinalityMax === '1')
+        || (relationship.template
+          && relationship.template.cardinalityMin 
+          && relationship.template.cardinalityMax
+          && relationship.template.cardinalityMin === '0'
+          && relationship.template.cardinalityMax === '1')) {
+        return true;
+      }
+      
+      return false;
+
+    }
+
     function relationshipHasTargetSlot(relationship, template) {
 
       if (!template) {
@@ -1215,10 +1236,12 @@ angular.module('singleConceptAuthoringApp')
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
       updateTargetSlot: updateTargetSlot,
+      replaceLexicalValues: replaceLexicalValues,
 
       // utility functions      
       relationshipHasTargetSlot: relationshipHasTargetSlot,
       relationshipInLogicalModel: relationshipInLogicalModel,
+      isOptionalAttribute: isOptionalAttribute,
 
       // template-flagging
       storeTemplateForConcept: storeTemplateForConcept,
