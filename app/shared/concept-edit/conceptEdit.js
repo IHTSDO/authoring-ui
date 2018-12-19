@@ -495,6 +495,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.relationshipHasTargetSlot = templateService.relationshipHasTargetSlot;
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
+        scope.isOptionalAttribute = templateService.isOptionalAttribute;
 
         //
         // Functionality for stashing and reapplying template, intended for use after cleanConcept invocations
@@ -2595,8 +2596,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             console.error('Error removing relationship; relationship not found');
           }
-          scope.computeRelationshipGroups();
-
+          if(scope.template || scope.concept.template) {
+            templateService.replaceLexicalValues(scope.concept, scope.template ? scope.template : scope.concept.template, scope.branch).then(function(concept) {
+              scope.concept = concept;
+              scope.computeRelationshipGroups();
+            });
+          } else {
+            scope.computeRelationshipGroups();
+          }
         };
 
         scope.removeAxiomRelationship = function (relationship, axiom) {

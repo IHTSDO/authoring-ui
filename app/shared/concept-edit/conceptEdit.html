@@ -640,15 +640,15 @@
                   <span>Primitive</span>
                 </div>
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
 
-                  <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
+                  <button ng-if="!template && !concept.template" type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Add New Relationship</span>
                   </button>
 
                   <button type="button" ng-click="removeRelationship(relationship)"
-                          ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
+                          ng-if="!relationship.released && ((!template && !concept.template) || (template && (!relationshipInLogicalModel(relationship, template) || isOptionalAttribute(relationship))))"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Remove Relationship</span>
                   </button>
