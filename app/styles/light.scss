@@ -221,7 +221,8 @@
     color: #7e57c2;
     background-color: transparent;
 }
-.sca-light .pink1 {
+.sca-light .pink1,
+.sca-light .pink1.btn-default:focus {
     color: #e94281;
     background-color: transparent;
 }

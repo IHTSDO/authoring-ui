@@ -733,7 +733,8 @@ button.fsn-title-button {
     background-color: #4527a0;
     color: #fff
 }
-.pink1 {
+.pink1,
+.pink1.btn-default:focus {
     background-color: #e91e63;
     color: #fff;
 }

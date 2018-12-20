@@ -10,6 +10,8 @@ angular.module('singleConceptAuthoringApp')
 
       var currentTaskConcepts = null;
 
+      var crsRequestStatus = null;
+
       function getJsonAttachmentsForTask() {
         var deferred = $q.defer();
 
@@ -315,10 +317,16 @@ angular.module('singleConceptAuthoringApp')
               // if already initialized, simply return
               if (concepts) {
                 currentTaskConcepts = concepts;
+
+                if(isSingleCRSRequest()) {
+                  getCRSStatus();
+                }
                 deferred.resolve(concepts);
               } else {
                 initializeCrsTask().then(function () {
-
+                  if(isSingleCRSRequest()) {
+                    getCRSStatus();
+                  }
                   deferred.resolve(currentTaskConcepts);
                 }, function () {
                   // NOTE: Must resolve to prevent blocking in edit.js
@@ -358,6 +366,56 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         return false;
+      }
+
+      function isSingleCRSRequest() {
+        if (!currentTaskConcepts) {
+          return false;
+        }
+        if(currentTaskConcepts.length === 1){
+          return true;
+        }
+        let crsId = currentTaskConcepts[0].crsId;
+        for (var i = 1; i < currentTaskConcepts.length; i++) {
+          if (currentTaskConcepts[i].crsId !== crsId) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      function requestClarification() {       
+        if (!currentTaskConcepts) {
+          return;
+        }
+        let crsId = currentTaskConcepts[0].crsId;
+
+        var apiEndpoint = '../ihtsdo-crs/';
+         $http.put(apiEndpoint + 'api/request/' + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Classification by Authoring User"}).then(function () { 
+          crsRequestStatus = 'CLARIFICATION_NEEDED';
+          notificationService.sendMessage("Pending classification successfully.", 5000);
+         }, function(error) {
+          notificationService.sendError('Error while updating status of Pending Classification for CRS request. Error message: '+ error.data.error.message);
+         });
+      }
+
+      function getCRSStatus() {        
+        if (!currentTaskConcepts) {
+          return;
+        }
+        let crsId = currentTaskConcepts[0].crsId;
+
+        var apiEndpoint = '../ihtsdo-crs/';
+         $http.get(apiEndpoint + 'api/request/' + crsId + '/status').then(function (response) { 
+           crsRequestStatus = response.data;
+         }, function(error) {
+          notificationService.sendError('Error while getting status of CRS request. Error message: '+ error.data.error.message);
+         });
+      }
+
+      function isRequestPendingClassification() {
+        return crsRequestStatus === 'CLARIFICATION_NEEDED';
       }
 
       function getCrsConcept(id) {
@@ -499,6 +557,7 @@ angular.module('singleConceptAuthoringApp')
       return {
         setTask: setTask,
         isCrsConcept: isCrsConcept,
+        isSingleCRSRequest: isSingleCRSRequest,
         requiresCreation: requiresCreation,
         getCrsConcept: getCrsConcept,
         getCrsConcepts: getCrsConcepts,
@@ -509,7 +568,9 @@ angular.module('singleConceptAuthoringApp')
 
         crsFilter: crsFilter,
         rejectCrsConcept: rejectCrsConcept,
-        deleteCrsConcept: deleteCrsConcept
+        deleteCrsConcept: deleteCrsConcept,
+        requestClarification: requestClarification,
+        isRequestPendingClassification: isRequestPendingClassification
       };
     }
   )
