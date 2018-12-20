@@ -15,10 +15,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.automatePromotionStatus = "";
       $scope.automatePromotionErrorMsg = "";
       $scope.isSingleCRSRequest = crsService.isSingleCRSRequest;      
-      $scope.isRequestPendingClassification = crsService.isRequestPendingClassification;
+      $scope.isRequestPendingClarification = crsService.isRequestPendingClarification;
 
       $scope.requestClarification = function() {
-        modalService.confirm('Do you really want to change CRS request to Pending Classification?').then(function () {
+        modalService.confirm('Do you really want to change CRS request to Pending Clarification?').then(function () {
           crsService.requestClarification();
         });        
       };
