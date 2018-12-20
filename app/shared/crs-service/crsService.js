@@ -414,7 +414,7 @@ angular.module('singleConceptAuthoringApp')
          });
       }
 
-      function isRequestPendingClassification() {
+      function isRequestPendingClarification() {
         return crsRequestStatus === 'CLARIFICATION_NEEDED';
       }
 
@@ -570,7 +570,7 @@ angular.module('singleConceptAuthoringApp')
         rejectCrsConcept: rejectCrsConcept,
         deleteCrsConcept: deleteCrsConcept,
         requestClarification: requestClarification,
-        isRequestPendingClassification: isRequestPendingClassification
+        isRequestPendingClarification: isRequestPendingClarification
       };
     }
   )
