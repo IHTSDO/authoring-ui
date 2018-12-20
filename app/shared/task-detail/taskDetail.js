@@ -14,6 +14,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.promoting = false;
       $scope.automatePromotionStatus = "";
       $scope.automatePromotionErrorMsg = "";
+      $scope.isSingleCRSRequest = crsService.isSingleCRSRequest;      
+      $scope.isRequestPendingClassification = crsService.isRequestPendingClassification;
+
+      $scope.requestClarification = function() {
+        modalService.confirm('Do you really want to change CRS request to Pending Classification?').then(function () {
+          crsService.requestClarification();
+        });        
+      };
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
