@@ -31,13 +31,24 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
 
     if(!metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
-          for(let i = response.length -1; i <= 0; i--){
-              if(response[i].additionalSlots.length > 0)
-                {
-                  response.splice(i, 1);
-                }
+          var list = [];
+          var patt1 =  new RegExp("^.*\\((.*)\\)$");
+          var patt2 =  new RegExp("^.*\\((.*)\\)");
+          var symanticTagOfTemplateFrom1 = patt1.exec($scope.templateFrom.domain.replace(/\|/g,'').trim())[1];
+          var symanticTagOfTemplateFrom2 = patt2.exec($scope.templateFrom.name.replace(/\|/g,'').trim())[1];
+          var pattSymanticTag1 =  new RegExp("^.*\\(("+ symanticTagOfTemplateFrom1 +")\\)");
+          var pattSymanticTag2 =  new RegExp("^.*\\(("+ symanticTagOfTemplateFrom2 +")\\)");
+          for(let i = response.length -1; i >= 0; i--){
+            if(response[i].additionalSlots.length === 0
+              && (pattSymanticTag1.test(response[i].name) 
+                || pattSymanticTag2.test(response[i].name)
+                || pattSymanticTag1.test(response[i].domain)
+                || pattSymanticTag2.test(response[i].domain))) {
+              list.push(response[i]);
+            }
           }
-          $scope.templates = response;
+
+          $scope.templates = list;
         });
       }
 
