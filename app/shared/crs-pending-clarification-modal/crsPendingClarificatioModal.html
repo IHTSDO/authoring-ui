@@ -1,0 +1,45 @@
+<div id="crsPendingClarificatioModaL" class="clearfix pending-clarification-modaL">
+  <script type="text/ng-template" id="ng-table/headers/pendingClarificationcheckboxHeader.html">
+    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" ui-on-drop="" name="filter-checkbox" value=""/>
+  </script>
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Selecting CRS requests for Pending Clarification</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row" ng-if="message">{{message}}</div>
+    <div class="row">
+      <table ng-table="pendingClarificationTableParams" class="table">
+      <tr ng-repeat="request in $data">
+        <td header-title="'Click to select all'"
+                header="'ng-table/headers/pendingClarificationcheckboxHeader.html'"><div class="checkbox">
+                <label class="filled">
+                  <input type="checkbox" ng-model="request.selected" ui-on-drop="" ng-if="request.status !== 'CLARIFICATION_NEEDED'">
+                </label>
+              </div>
+        </td>
+        <!-- other columns here -->
+        <td data-title="'CRS ID'"> {{request.crsId}}</td>
+        <td data-title="'FSN'">{{getCrsRequest(request.crsId).fsn}} </td>
+        <td data-title="'Status'">{{getStatusText(request.status)}} </td>
+      </tr>        
+    </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="row no-padding no-gutter"> 
+      <!-- If has a key, option to delete task -->
+      <div class="col-md-4">
+        <button type="button" class="btn-default col-md-12 btn btn-warning no-margin" ng-disabled="getSelectedItems().length === 0"
+                ng-click="requestClarification()">Proceed</button>
+      </div>
+      <div class="col-md-4"></div>
+      
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" class=" col-md-12 btn btn-info no-margin"
+                ng-click="cancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

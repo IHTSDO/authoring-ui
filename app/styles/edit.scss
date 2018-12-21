@@ -110,7 +110,9 @@ button.widget-toolbar {
 }
 
 /*disabled buttons*/
-
+.pending-clarification-modaL .btn-default[disabled],
+.pending-clarification-modaL .btn-default[disabled]:hover,  
+.task-details .promote.btn-default[disabled],
 .classification-btn .btn-default[disabled],
 .task-details .editingtask.btn-default[disabled],
 .task-details .classify.btn-default[disabled],

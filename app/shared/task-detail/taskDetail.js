@@ -13,14 +13,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.taskBranch = null;
       $scope.promoting = false;
       $scope.automatePromotionStatus = "";
-      $scope.automatePromotionErrorMsg = "";
-      $scope.isSingleCRSRequest = crsService.isSingleCRSRequest;      
-      $scope.isRequestPendingClarification = crsService.isRequestPendingClarification;
+      $scope.automatePromotionErrorMsg = "";    
+      $scope.hasRequestPendingClarification = crsService.hasRequestPendingClarification;
+      $scope.isAllRequestsPendingClarification = crsService.isAllRequestsPendingClarification;
 
       $scope.requestClarification = function() {
-        modalService.confirm('Do you really want to change CRS request to Pending Clarification?').then(function () {
-          crsService.requestClarification();
-        });        
+        $modal.open({
+          templateUrl: 'shared/crs-pending-clarification-modal/crsPendingClarificatioModal.html',
+          controller: 'crsPendingClarificatioModalCtrl'              
+        });               
       };
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
