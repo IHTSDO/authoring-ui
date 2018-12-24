@@ -28,7 +28,7 @@
 
       <!-- Title section -->
 
-      <div class="p-l-20" ng-class="[{ 'col-md-9' : role === 'REVIEWER'}, { 'col-md-12' : role === 'AUTHOR'}]">
+      <div class="p-l-20 col-md-12">
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
           <button class="btn btn-default pink darken-2 review-button-list  "
@@ -76,6 +76,14 @@
           <div class="p-l-15 inline">
             <button class="btn btn-default primary-action-btn"
                       ng-click="unclaimReview()">Unclaim Review </button>
+          </div>
+
+          <!-- Review In Progress / Review Complete toggle -->
+          <div class="switch pull-right white-text">
+            <label class="switch"> Review in Progress
+              <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
+                     ng-change="toggleReviewStatus()">
+              <span class="lever"></span> Review Complete </label>
           </div>
         </div>
         
@@ -129,17 +137,6 @@
         </div>
         <div ng-show="task && !task.reviewer && task.status !== 'In Review'" class="inline"> &nbsp;Task not submitted for
           review </div>
-      </div>
-      <div ng-class="[{ 'col-md-3' : role === 'REVIEWER'}]" ng-if="role === 'REVIEWER'">
-        <!-- Cancel/Unclaim Review button -->
-
-        <!-- Review In Progress / Review Complete toggle -->
-        <div class="switch pull-right white-text">
-          <label class="switch"> Review in Progress
-            <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
-                   ng-change="toggleReviewStatus()">
-            <span class="lever"></span> Review Complete </label>
-        </div>
       </div>
     </div>
   </div>
