@@ -1273,6 +1273,7 @@ angular.module('singleConceptAuthoringApp')
           return null;
         },
 
+// start polling
         connectWebsocket: function (username) {
 
           //console.log('Starting application notification polling with interval ' + intervalInMs + 'ms');
@@ -1372,7 +1373,7 @@ angular.module('singleConceptAuthoringApp')
 
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
-                      snowowlService.getClassifications(newNotification.branchPath).then(function (classifications) {
+                      snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
@@ -1389,13 +1390,14 @@ angular.module('singleConceptAuthoringApp')
                           }
 
                           notificationService.sendMessage(msg, 0, url);
+
                         }
                       });
 
                       $rootScope.$broadcast('reloadTask');
                       $rootScope.$broadcast('reloadClassification');
                     } else if (newNotification.project) {
-                      snowowlService.getClassifications(newNotification.branchPath).then(function (classifications) {
+                      snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
