@@ -95,7 +95,10 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // set the notification
-            scope.notification = notification;
+            $timeout(function () {
+              scope.notification = notification;
+            }, 0);
+
 
             // if a duration supplied, apply it
             if (notification.durationInMs > 0) {

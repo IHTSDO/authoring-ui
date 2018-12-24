@@ -1274,249 +1274,240 @@ angular.module('singleConceptAuthoringApp')
         },
 
 // start polling
-        startPolling: function (intervalInMs) {
+        connectWebsocket: function (username) {
 
-          console.log('Starting application notification polling with interval ' + intervalInMs + 'ms');
+          //console.log('Starting application notification polling with interval ' + intervalInMs + 'ms');
 
-          // instantiate poll (every 10s)
-          var scaPoll = $interval(function () {
+          var stompClient = null;
+          var socket = new SockJS(apiEndpoint + 'authoring-services-websocket');
+          stompClient = Stomp.over(socket);
+          stompClient.connect({}, function (frame) {              
+            stompClient.subscribe('/topic/user/' + username + '/notifications', function (message) {
+              
+              var newNotification = JSON.parse(message.body)
+              var msg = null;
+              var url = null;
 
-            $http.get(apiEndpoint + 'notifications').then(function (response) {
-              if (response && response.data && response.data[0]) {
+              /**
+               * Current supported notification entity types:
+               *  Validation, Feedback, Classification, Rebase, Promotion,
+               * ConflictReport, BranchState
+               */
 
-                console.log('Server notification:', response.data);
+              if (newNotification.entityType) {
 
-                // getNotifications returns an array, get the latest
-                var newNotification = response.data[response.data.length - 1];
-                var msg = null;
-                var url = null;
+                // construct message and url based on entity type
+                switch (newNotification.entityType) {
 
-                /**
-                 * Current supported notification entity types:
-                 *  Validation, Feedback, Classification, Rebase, Promotion,
-                 * ConflictReport, BranchState
-                 */
+                  case 'Rebase':
+                    // TODO Handle rebase notifications
+                    break;
 
-                if (newNotification.entityType) {
+                  case 'ConflictReport':
+                    // TODO Handle conflict report notifications
+                    break;
 
-                  // construct message and url based on entity type
-                  switch (newNotification.entityType) {
-
-                    case 'Rebase':
-                      // TODO Handle rebase notifications
-                      break;
-
-                    case 'ConflictReport':
-                      // TODO Handle conflict report notifications
-                      break;
-
-                    /*
-                     Promotion completion object structure
-                     {
-                     project: "WRPAS",
-                     task: "WRPAS-76",
-                     entityType: "Promotion",
-                     event: "Task successfully promoted"}
-                     */
-                    case 'Promotion':
-                      msg = newNotification.event;
-                      if (newNotification.task) {
-                        msg += ' for ' + newNotification.task;
-                        if(!$routeParams.taskKey || newNotification.task !== $routeParams.taskKey) {
-                          url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
-                          notificationService.sendMessage(msg, 0, url); 
-                        } else {
-                          notificationService.sendMessage(msg, 0);
-                        }                       
-                      } else {
-                        msg += ' for ' + newNotification.project;
-                        if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
-                          url = '#/project/' + newNotification.project;
-                          notificationService.sendMessage(msg, 0, url); 
-                        } else {
-                          notificationService.sendMessage(msg, 0); 
-                        }
-                      }                      
-
-                      break;
-
-                    /*
-                     Feedback completion object structure
-                     {
-                     project: "WRPAS",
-                     task: "WRPAS-76",
-                     entityType: "Feedback",
-                     event: "new"}
-                     */
-
-                    case 'Feedback':
-                      if (newNotification.event) {
-                        // convert to first-character capitalized for all words
-                        newNotification.event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
-                          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                        });
-                      }
-                      msg = newNotification.event + ' feedback for task ' + newNotification.task;
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
-                      notificationService.sendMessage(msg, 0, url); 
-                      break;
-
-                    /*
-                     Classification completion object structure
-                     entityType: "Classification"
-                     event: "Classification completed successfully"
-                     project: "WRPAS"
-                     task: "WRPAS-98" (omitted for project)
-                     */
-                    case 'Classification':
-                      msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
-
-
-                      // retrieve the latest classification
-
-                      // set url and broadcast classification complete to taskDetail.js or project.js
-                      if (newNotification.task) {
-                        snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
-                          if (!classifications || classifications.length === 0) {
-                            msg += ' but no classifications could be retrieved';
-                            notificationService.sendError(msg);
-                            return;
-                          } else {
-                            // assign results to the classification container (note,
-                            // chronological order, use last value)
-                            var classification = classifications[classifications.length - 1];
-                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
-                            if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                              msg += ' - Changes found';                              
-                            } else {
-                              msg += ' - No changes found';                              
-                            }
-
-                            notificationService.sendMessage(msg, 0, url);
-
-                          }
-                        });
-
-                        $rootScope.$broadcast('reloadTask');
-                        $rootScope.$broadcast('reloadClassification');
-                      } else if (newNotification.project) {
-                        snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
-                          if (!classifications || classifications.length === 0) {
-                            msg += ' but no classifications could be retrieved';
-                            notificationService.sendError(msg);
-                            return;
-                          } else {
-                            // assign results to the classification container (note,
-                            // chronological order, use last value)
-                            var classification = classifications[classifications.length - 1];
-                            if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                              msg += ': Changes found';
-                              url = '#/project/' + newNotification.project;
-                            } else {
-                              msg += ': No changes found';
-                              url = '#/project/' + newNotification.project;
-                            }
-
-                            notificationService.sendMessage(msg, 0, url);
-
-                          }
-                        });
-
-                        $rootScope.$broadcast('reloadProject');
-                      } else {
-                        console.error('Classification notification could not be processed', newNotification);
-                      }
-
-
-                      break;
-
-                    /*
-                     Branch status change completion object structure
-                     entityType: "BranchState"
-                     event: "New Status" (listening for DIVERGED to handle the list refresh on the concepts page)
-                     */
-                    case 'BranchState':
-                      if (newNotification.event === 'DIVERGED') {
-                        //$rootScope.$broadcast('branchDiverged');
-                        $rootScope.$broadcast('notification.branchState', newNotification);
-                      }
-                      break;
-
-                    /*
-                     Rebase Complete object structure
-                     project: "WRPAS"
-                     task: "WRPAS-98" (omitted for project)
-                     entityType: "Rebase"
-                     event: "Rebase from MAIN to ORPHANET completed without conflicts in 0:15:11.882"
-                     */
-                    case 'Rebase':
-                      msg = newNotification.event;
-
-                      // set url and broadcast classification complete to taskDetail.js or project.js
-                      if (newNotification.task) {
+                  /*
+                   Promotion completion object structure
+                   {
+                   project: "WRPAS",
+                   task: "WRPAS-76",
+                   entityType: "Promotion",
+                   event: "Task successfully promoted"}
+                   */
+                  case 'Promotion':
+                    msg = newNotification.event;
+                    if (newNotification.task) {
+                      msg += ' for ' + newNotification.task;
+                      if(!$routeParams.taskKey || newNotification.task !== $routeParams.taskKey) {
                         url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
-                        $rootScope.$broadcast('reloadTask');
-                        $rootScope.$broadcast('rebaseComplete');
+                        notificationService.sendMessage(msg, 0, url); 
                       } else {
+                        notificationService.sendMessage(msg, 0);
+                      }                       
+                    } else {
+                      msg += ' for ' + newNotification.project;
+                      if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
                         url = '#/project/' + newNotification.project;
-                        $rootScope.$broadcast('reloadProject');
+                        notificationService.sendMessage(msg, 0, url); 
+                      } else {
+                        notificationService.sendMessage(msg, 0); 
                       }
+                    }                      
 
+                    break;
 
-                      break;
+                  /*
+                   Feedback completion object structure
+                   {
+                   project: "WRPAS",
+                   task: "WRPAS-76",
+                   entityType: "Feedback",
+                   event: "new"}
+                   */
 
-                    /*
-                     Validation completion object structure
-                     entityType: "Validation"
-                     event: "COMPLETED"
-                     project: "WRPAS"
-                     task: "WRPAS-98" (omitted for project)
-                     */
-                    case 'Validation':
-
+                  case 'Feedback':
+                    if (newNotification.event) {
                       // convert to first-character capitalized for all words
-                      var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
+                      newNotification.event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                       });
-                      msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  'project ' + newNotification.project);
-
-                      // do not supply a url (button link) for FAILED status
-                      if (event !== 'FAILED') {
-                        if (newNotification.task) {
-                          url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
-                        } else {
-                          url = '#/project/' + newNotification.project;
-                        }
-                      }
-                      // broadcast validation complete to taskDetail
-                      $rootScope.$broadcast('reloadTask');
-                      break;
-                    default:
-                      console.error('Unknown entity type for notification, stopping', +newNotification);
-                      return;
-                  }
-
-                  // Special handling for classification -- also this whole structure is suboptimal...
-                  if (newNotification.entityType !== 'Classification') {
-
-                    // send the notification (if message supplied) with optional url
-                    if (msg) {
-
-                      notificationService.sendMessage(msg, 0, url);
                     }
-                  }
-                } else {
-                  console.error('Unknown notification type received', newNotification);
-                  notificationService.sendError('Unknown notification received', 10000, null);
+                    msg = newNotification.event + ' feedback for task ' + newNotification.task;
+                    url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
+                    notificationService.sendMessage(msg, 0, url); 
+                    break;
+
+                  /*
+                   Classification completion object structure
+                   entityType: "Classification"
+                   event: "Classification completed successfully"
+                   project: "WRPAS"
+                   task: "WRPAS-98" (omitted for project)
+                   */
+                  case 'Classification':
+                    msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
+
+
+                    // retrieve the latest classification
+
+                    // set url and broadcast classification complete to taskDetail.js or project.js
+                    if (newNotification.task) {
+                      snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
+                        if (!classifications || classifications.length === 0) {
+                          msg += ' but no classifications could be retrieved';
+                          notificationService.sendError(msg);
+                          return;
+                        } else {
+                          // assign results to the classification container (note,
+                          // chronological order, use last value)
+                          var classification = classifications[classifications.length - 1];
+                          url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                          if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
+                            msg += ' - Changes found';                              
+                          } else {
+                            msg += ' - No changes found';                              
+                          }
+
+                          notificationService.sendMessage(msg, 0, url);
+
+                        }
+                      });
+
+                      $rootScope.$broadcast('reloadTask');
+                      $rootScope.$broadcast('reloadClassification');
+                    } else if (newNotification.project) {
+                      snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
+                        if (!classifications || classifications.length === 0) {
+                          msg += ' but no classifications could be retrieved';
+                          notificationService.sendError(msg);
+                          return;
+                        } else {
+                          // assign results to the classification container (note,
+                          // chronological order, use last value)
+                          var classification = classifications[classifications.length - 1];
+                          if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
+                            msg += ': Changes found';
+                            url = '#/project/' + newNotification.project;
+                          } else {
+                            msg += ': No changes found';
+                            url = '#/project/' + newNotification.project;
+                          }
+
+                          notificationService.sendMessage(msg, 0, url);
+
+                        }
+                      });
+
+                      $rootScope.$broadcast('reloadProject');
+                    } else {
+                      console.error('Classification notification could not be processed', newNotification);
+                    }
+
+
+                    break;
+
+                  /*
+                   Branch status change completion object structure
+                   entityType: "BranchState"
+                   event: "New Status" (listening for DIVERGED to handle the list refresh on the concepts page)
+                   */
+                  case 'BranchState':
+                    if (newNotification.event === 'DIVERGED') {
+                      //$rootScope.$broadcast('branchDiverged');
+                      $rootScope.$broadcast('notification.branchState', newNotification);
+                    }
+                    break;
+
+                  /*
+                   Rebase Complete object structure
+                   project: "WRPAS"
+                   task: "WRPAS-98" (omitted for project)
+                   entityType: "Rebase"
+                   event: "Rebase from MAIN to ORPHANET completed without conflicts in 0:15:11.882"
+                   */
+                  case 'Rebase':
+                    msg = newNotification.event;
+
+                    // set url and broadcast classification complete to taskDetail.js or project.js
+                    if (newNotification.task) {
+                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                      $rootScope.$broadcast('reloadTask');
+                      $rootScope.$broadcast('rebaseComplete');
+                    } else {
+                      url = '#/project/' + newNotification.project;
+                      $rootScope.$broadcast('reloadProject');
+                    }
+
+
+                    break;
+
+                  /*
+                   Validation completion object structure
+                   entityType: "Validation"
+                   event: "COMPLETED"
+                   project: "WRPAS"
+                   task: "WRPAS-98" (omitted for project)
+                   */
+                  case 'Validation':
+
+                    // convert to first-character capitalized for all words
+                    var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
+                      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    });
+                    msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  'project ' + newNotification.project);
+
+                    // do not supply a url (button link) for FAILED status
+                    if (event !== 'FAILED') {
+                      if (newNotification.task) {
+                        url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
+                      } else {
+                        url = '#/project/' + newNotification.project;
+                      }
+                    }
+                    // broadcast validation complete to taskDetail
+                    $rootScope.$broadcast('reloadTask');
+                    break;
+                  default:
+                    console.error('Unknown entity type for notification, stopping', +newNotification);
+                    return;
                 }
 
-              }
-            }, function (error) {
-              if (error.status === 403) {
-                $location.path('/login');
+                // Special handling for classification -- also this whole structure is suboptimal...
+                if (newNotification.entityType !== 'Classification') {
+
+                  // send the notification (if message supplied) with optional url
+                  if (msg) {
+
+                    notificationService.sendMessage(msg, 0, url);
+                  }
+                }
+              } else {
+                console.error('Unknown notification type received', newNotification);
+                notificationService.sendError('Unknown notification received', 10000, null);
               }
             });
-          }, intervalInMs);
+          });
         },
 
 
