@@ -197,6 +197,9 @@ angular
         // get the account details
         accountService.getAccount(accountUrl).then(function (account) {
 
+          // start connecting websocket
+          scaService.connectWebsocket(account.login);
+
           // get the user preferences (once logged in status confirmed)
           accountService.getUserPreferences().then(function (preferences) {
 
@@ -217,6 +220,41 @@ angular
 
           })
         });
+
+        ///////////////////////////////////////////
+        // Cache local data
+        ///////////////////////////////////////////
+        scaService.getProjects().then(function (response) {
+          metadataService.setProjects(response);
+        });
+
+        cisService.getAllNamespaces().then(function (response) {
+          if(response.length > 0) {
+            metadataService.setNamespaces(response);
+          }
+        });
+
+        hotkeys.bindTo($rootScope)
+            .add({
+              combo: 'alt+h',
+              description: 'Go to Home - My Tasks',
+              callback: function() {$location.url('home');}
+            })
+            .add({
+              combo: 'alt+b',
+              description: 'Open TS Browser',
+              callback: function() {window.open('/browser', '_blank');}
+            })
+            .add({
+              combo: 'alt+p',
+              description: 'Go to Projects',
+              callback: function() {$location.url('projects');}
+            })
+            .add({
+              combo: 'alt+w',
+              description: 'Go to Review Tasks',
+              callback: function() {$location.url('review-tasks');}
+            })
 
 
         // add required endpoints to route provider
@@ -262,12 +300,12 @@ angular
       metadataService.setProjects(response);
 
       var projectKeys = [];
-      var promises = [];                    
+      var promises = [];
       promises.push(scaService.getTasks());
-      promises.push(scaService.getReviewTasks());     
-        
+      promises.push(scaService.getReviewTasks());
+
       // on resolution of all promises
-      $q.all(promises).then(function (responses) {                
+      $q.all(promises).then(function (responses) {
           for (var i = 0; i < responses.length; i++) {
             angular.forEach(responses[i], function (task) {
               if (projectKeys.indexOf(task.projectKey) === -1) {
@@ -285,8 +323,8 @@ angular
                 }
             });
           });
-          
-          if (myProjects.length > 0) {            
+
+          if (myProjects.length > 0) {
             metadataService.setMyProjects(myProjects);
           }
       });
