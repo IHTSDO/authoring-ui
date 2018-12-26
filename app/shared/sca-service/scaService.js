@@ -1379,7 +1379,7 @@ angular.module('singleConceptAuthoringApp')
 
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
-                      snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
+                      snowowlService.getClassifications(newNotification.branchPath).then(function (classifications) {
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
@@ -1396,14 +1396,13 @@ angular.module('singleConceptAuthoringApp')
                           }
 
                           notificationService.sendMessage(msg, 0, url);
-
                         }
                       });
 
                       $rootScope.$broadcast('reloadTask');
                       $rootScope.$broadcast('reloadClassification');
                     } else if (newNotification.project) {
-                      snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
+                      snowowlService.getClassifications(newNotification.branchPath).then(function (classifications) {
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
@@ -1421,7 +1420,6 @@ angular.module('singleConceptAuthoringApp')
                           }
 
                           notificationService.sendMessage(msg, 0, url);
-
                         }
                       });
 
