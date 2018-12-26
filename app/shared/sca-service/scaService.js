@@ -1274,6 +1274,12 @@ angular.module('singleConceptAuthoringApp')
         },
 
 // start polling
+        startPolling: function (intervalInMs) {
+          $interval(function () {
+            $http.post(apiEndpoint + 'monitor/keep-alive').then(function () {});
+          }, intervalInMs);
+        },
+
         connectWebsocket: function (username) {
 
           //console.log('Starting application notification polling with interval ' + intervalInMs + 'ms');
