@@ -318,7 +318,7 @@ angular.module('singleConceptAuthoringApp')
           defaultLanguages.push(languages[0]);
         }
           
-        if (!defaultLanguageRefsetId) {
+        if (!defaultLanguageRefsetId && metadata.defaultModuleId !== '731000124108' /*US extension*/) {
           console.error('Could not determine language refset for extension metadata');
         }
 
