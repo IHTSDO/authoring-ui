@@ -786,36 +786,6 @@ angular.module('singleConceptAuthoringApp')
           scope.reloadRoute = function () {
             window.location.reload();
           };
-          // Clears the current review state and
-          scope.reinitialize = function () {
-
-            // clear the displayed conflicts
-            scope.conflicts = null;
-
-            // set bad state detected to false to trigger display of loading
-            // screen
-            scope.badStateDetected = false;
-
-            // clear the ui states (task level), then re-initialize
-            if ($routeParams.taskKey) {
-              scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function () {
-                scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function () {
-                  scope.initialize();
-                });
-              });
-              scope.initialize();
-            }
-
-            // clear the ui states (project level), then re-initialize
-            else {
-              scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review').then(function () {
-                scaService.deleteUiStateForUser($routeParams.projectKey + '-merges-accepted').then(function () {
-                  scope.initialize();
-                });
-              });
-              scope.initialize();
-            }
-          };
 
           // on load, check ui-state for previously viewed merge review id
           scope.initialize = function () {
@@ -858,16 +828,24 @@ angular.module('singleConceptAuthoringApp')
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
                   scope.sourceBranch = metadataService.getBranchRoot();
                 }
-
-                if ($routeParams.taskKey) {
-                  scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
-                    getReviewStatusAndInitialize(mergeReviewId);
-                  });
-                } else {
-                  scaService.getUiStateForUser($routeParams.projectKey + '-merge-review').then(function (mergeReviewId) {
-                    getReviewStatusAndInitialize(mergeReviewId);
-                  });
-                }
+                snowowlService.getBranch(scope.targetBranch).then(function(response) {
+                  if (response && response.state && response.state === 'BEHIND') {
+                    rebase();
+                  } else {
+                    if ($routeParams.taskKey) {
+                      scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
+                        getReviewStatusAndInitialize(mergeReviewId);
+                      });
+                    } else {
+                      scaService.getUiStateForUser($routeParams.projectKey + '-merge-review').then(function (mergeReviewId) {
+                        getReviewStatusAndInitialize(mergeReviewId);
+                      });
+                    }
+                  }                  
+                }, function(error) {
+                  console.error('Error while determine branch state. Error: ' + error);
+                })
+                
               } else {
                 setTimeout(waitForFetchingBranchRoot, 100);
               }
