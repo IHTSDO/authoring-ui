@@ -622,6 +622,80 @@ angular.module('singleConceptAuthoringApp')
           }
           ;
 
+          scope.downloadFailures = function(assertionFailure) {
+            var objArray = [];
+            var promises = [];
+            conceptIds = [];
+
+            angular.forEach(assertionFailure.firstNInstances, function (instance) {
+              promises.push(getConceptIdForFailure(instance));
+              var obj = {
+                conceptId: instance.conceptId,                       
+              };
+              objArray.push(obj);
+            });                 
+
+            $q.all(promises).then(function () {
+               // skip if no concept ids
+              if (conceptIds.length > 0) {
+
+              // bulk call for concept ids
+              snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                var idNameMap = {};
+                angular.forEach(concepts.items, function (concept) {
+                  idNameMap[concept.id] = concept.fsn.term;
+                });
+                angular.forEach(objArray, function (failure) {
+                  failure.conceptFsn = idNameMap[failure.conceptId];
+                });
+
+                objArray.unshift({
+                  conceptId: 'Concept ID',
+                  conceptFsn : 'FSN'
+                });
+                var fileName = 'validation_' + (new Date()).getTime();
+                scope.dlcDialog(convertToCSV(objArray), fileName);        
+              });
+              } 
+            });
+          };
+
+          function convertToCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += '\t'
+
+                    line += array[i][index];
+                }
+
+                str += line + '\r\n';
+            }
+
+            return str;
+          }
+
+          // creates element for dialog download of classification data
+          scope.dlcDialog = (function (data, fileName) {
+
+            // create the hidden element
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+
+            return function (data, fileName) {
+              var
+              blob = new Blob([data], {type: 'text/tab-separated-values'}),
+              url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = fileName;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+          }());
+
           scope.selectAll = function (selectAllActive) {
             angular.forEach(scope.failures, function (failure) {
               failure.selected = selectAllActive;

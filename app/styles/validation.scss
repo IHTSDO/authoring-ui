@@ -52,3 +52,6 @@
   .validation-report.report-table thead tr > th input[type=checkbox]:after {
       margin-top: 2px;
   }
+  .validation-report.report-table tbody tr > td.button-column {
+      width: 115px;
+  }
