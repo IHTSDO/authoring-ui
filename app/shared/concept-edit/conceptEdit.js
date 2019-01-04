@@ -3667,6 +3667,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.updateConceptReference({concept: scope.concept});
           }
 
+          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
+            if (description.lang === 'en') {
+              // strip any non-us dialect
+              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+                if (!metadataService.isUsDialect(dialectId)) {
+                  delete description.acceptabilityMap[dialectId];
+                }
+              });
+            } else {
+              // strip us dialect if any
+              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+                if (metadataService.isUsDialect(dialectId)) {
+                  delete description.acceptabilityMap[dialectId];
+                }
+              });
+            }
+          }
+
           componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
               autoSave();
           }, function (error) {
