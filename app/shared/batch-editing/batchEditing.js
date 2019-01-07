@@ -770,7 +770,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             snowowlService.bulkValidateConcepts(scope.branch, concepts).then(function(responses){
               console.log("validation finish time : " + (new Date()));
-
+              var conceptErrors = [];
               angular.forEach(responses.data, function(item) {
                 var validation = {
                   hasWarnings: false,
@@ -790,8 +790,12 @@ angular.module('singleConceptAuthoringApp')
                       }
                       validation.errors[item.componentId].push(item.message);
                       scope.validConcepts[i].validation = validation;
-                      scope.validConcepts[i].tableAction = '';
-                      $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+                      scope.validConcepts[i].tableAction = '';   
+
+                      if (conceptErrors.indexOf(item.conceptId) === -1) {
+                        conceptErrors.push(item.conceptId);
+                        $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+                      }
                       break;
                     }
                   }
