@@ -3903,8 +3903,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.revertToVersion = function () {
-          modalService.confirm('The concept will be reverted to the version that was present when the task was created. Do you want to proceed?').then(function () {
-            notificationService.sendMessage('Reverting concept to version...');
+          modalService.confirm('The concept will be reverted to the previously published version. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Reverting concept to the previously published version...');
             var codeSystemShortName = '';
             getCodeSystemShortName().then(function (response) {
               codeSystemShortName = response;
