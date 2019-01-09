@@ -817,6 +817,9 @@ angular.module('singleConceptAuthoringApp')
                           highlightComponent(concept.conceptId, componentChange.componentId);
                         }
                         break;
+                      case 'OWLAXIOM':                       
+                        highlightComponent(concept.conceptId, componentChange.componentId);                        
+                        break;
                       case 'CONCEPT':
                         //console.debug('Concept', concept.conceptId, componentChange.componentType, componentChange.changeType)
                         if (componentChange.changeType === 'CREATE') {
