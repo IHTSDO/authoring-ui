@@ -936,15 +936,17 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter) {
         let deferred = $q.defer();
         let config = {};
-
         let params = {
           //offset: offset ? offset : '0',
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
+        if(searchAfter !== null){
+            params.searchAfter = searchAfter;
+        }
 
         if (!config.headers) {
           config.headers = {};
