@@ -85,37 +85,25 @@ angular.module('singleConceptAuthoringApp')
               descriptionsWithDescriptionTarget: [],
               other: []
             };
-            var count = 0;
 
-            for (var i = list.length - 1; i >= 0; i--) {
+            var buildConceptHistoricalAssoc = function(conceptId) {
+              var def = $q.defer();
+              // retrieve the referenced concept
+              snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
 
-              console.debug('parsing component', list[i].referencedComponent);
-              
-              if(list[i].active === false){
-                count++;
-                parsedComponents.other.push(list[i].referencedComponent);
-                if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === count) {
-                deferred.resolve(parsedComponents);
-              }}
-              // check if referenced concept
-              else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
-                count++;
-                // retrieve the referenced concept
-                snowowlService.getFullConcept(list[i].referencedComponent.id, scope.branch).then(function (concept) {
+                // check against the available association target types
+                for (var j = 0; j < scope.associationTargets.length; j++) {
 
-                  // check against the available association target types
-                  for (var j = 0; j < scope.associationTargets.length; j++) {
+                  // if concept has this association target
+                  if (Object.keys(concept.associationTargets).indexOf(scope.associationTargets[j].id) !== -1) {
 
-                    // iif concept has this association target
-                    if (Object.keys(concept.associationTargets).indexOf(scope.associationTargets[j].id) !== -1) {
-
-                      // if historical association targets were supplied to inactivation process
+                    // if historical association targets were supplied to inactivation process
                       if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
 
-                        // for each supplied concept
-                        angular.forEach(scope.histAssocTargets.concepts, function (innerConcept) {
-
-                          var item = concept;
+                      // for each supplied concept
+                      angular.forEach(scope.histAssocTargets.concepts, function (innerConcept, index) {
+                        if (!scope.useFirstTarget   || (scope.useFirstTarget && index === 0)) {
+                          var item = angular.copy(concept);
                           if (!scope.deletion) {
                             if (!concept.active && concept.inactivationIndicator) {
                               item.oldInactivationIndicator = concept.inactivationIndicator;
@@ -127,70 +115,61 @@ angular.module('singleConceptAuthoringApp')
                           item.newTargetId = innerConcept.conceptId;
                           item.newTargetFsn = innerConcept.fsn; 
 
-                          // if this concept not already added
-                          if (parsedComponents.concepts.map(function (c) {
-                              return c.conceptId
-                            }).indexOf(item.conceptId) === -1) {
-                            parsedComponents.concepts.push(item);
-                          }
-                        });
-                      }
-
-                      // if no historical association targets supplied, add single blank one
-                      else {
-                        var item = concept;
-                        item.inactivationIndicator = scope.reasonId;
-                        item.refsetName = scope.associationTargets[j].id;
-                        if (parsedComponents.concepts.map(function (c) {
-                            return c.conceptId
-                          }).indexOf(item.conceptId) === -1) {
                           parsedComponents.concepts.push(item);
                         }
-                      }
+                      });
+                    }
+
+                    // if no historical association targets supplied, add single blank one
+                    else {
+                      var item = angular.copy(concept);
+                      item.inactivationIndicator = scope.reasonId;
+                      item.refsetName = scope.associationTargets[j].id;
+
+                      parsedComponents.concepts.push(item);
                     }
                   }
+                }
 
-                  console.debug('check', parsedComponents, list.length);
-                  if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === count) {
-                    deferred.resolve(parsedComponents);
-                  }
-                });
+                def.resolve();
+              });         
 
-              }
+              return def.promise;
+            };
 
-              // check if referenced description
-              else if (snowowlService.isDescriptionId(list[i].referencedComponent.id)) {
-                count++;
-                console.debug('  found description');
-                snowowlService.getDescriptionProperties(list[i].referencedComponent.id, scope.branch).then(function (description) {
+            var buildDescriptionHistoricalAssoc = function(descriptionId) {
+              var def = $q.defer();
+              snowowlService.getDescriptionProperties(descriptionId, scope.branch).then(function (description) {
 
-                  console.debug('   description', description);
-                  // for each association reference set
-                  for (var j = 0; j < scope.associationTargets.length; j++) {
+                var subPromises = [];
 
-                    console.debug('    checking against target', scope.associationTargets[j]);
+                console.debug('   description', description);
+                // for each association reference set
+                for (var j = 0; j < scope.associationTargets.length; j++) {
 
-                    // if this description has this association reference set
-                    if (Object.keys(description.associationTargets).indexOf(scope.associationTargets[j].id) !== -1) {
-                      console.debug('     description has refset', scope.associationTargets[j].id);
+                  console.debug('    checking against target', scope.associationTargets[j]);
 
-                      var targetComponentId = description.associationTargets[scope.associationTargets[j].id][0];
+                  // if this description has this association reference set
+                  if (Object.keys(description.associationTargets).indexOf(scope.associationTargets[j].id) !== -1) {
+                    console.debug('     description has refset', scope.associationTargets[j].id);
 
-                      console.debug('target component id', targetComponentId);
+                    var targetComponentId = description.associationTargets[scope.associationTargets[j].id][0];
 
-                      // if association referenced a concept, process as user-editable
-                      if (snowowlService.isConceptId(targetComponentId)) {
+                    console.debug('target component id', targetComponentId);
 
-                        // if new association targets were supplied
-                        if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
+                    // if association referenced a concept, process as user-editable
+                    if (snowowlService.isConceptId(targetComponentId)) {
 
-                          console.debug('       new association targets supplied', scope.histAssocTargets);
+                      // if new association targets were supplied
+                      if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
 
-                          // cycle over supplied targets
-                          angular.forEach(scope.histAssocTargets.concepts, function (innerConcept) {
+                        console.debug('       new association targets supplied', scope.histAssocTargets);
 
+                        // cycle over supplied targets
+                        angular.forEach(scope.histAssocTargets.concepts, function (innerConcept, index) {
+                          if (!scope.useFirstTarget   || (scope.useFirstTarget && index === 0)) {
                             // construct the parsed table row
-                            var item = description;
+                            var item = angular.copy(description);
 
                             if(item.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
                               item.refsetName = 'REFERS_TO';
@@ -200,102 +179,104 @@ angular.module('singleConceptAuthoringApp')
                               item.refsetName = '';
                               item.newTargetId = '';
                               item.newTargetFsn = '';
-                            }                            
-                          
-                            console.debug('         constructing row', item);
-
-
-                            // add to list if not already present
-                            if (parsedComponents.descriptionsWithConceptTarget.map(function (d) {
-                                return d.id;
-                              }).indexOf(item.id) === -1) {
-                              console.debug('           adding row', item);
-                              parsedComponents.descriptionsWithConceptTarget.push(item);
                             }
-                          });
-                        }
-                        else {
-                          console.debug('         no new targets supplied');
-                          var item = description;
-                          if(scope.reasonId === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
-                            item.inactivationIndicator = scope.reasonId;
-                            item.refsetName = '';                            
-                          }
 
-                          if(item.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
-                            item.refsetName = 'REFERS_TO';                           
-                          } else {
-                            item.refsetName = '';                           
-                          } 
-                          
-                          item.newTargetId = '';
-                          item.newTargetFsn = '';  
-
-                          console.debug('         constructing row', item);
-
-
-                          // note: match against id, not descriptionId
-                          if (parsedComponents.descriptionsWithConceptTarget.map(function (d) {
-                              return d.id;
-                            }).indexOf(item.id) === -1) {
-                            console.debug('           adding row', item);
                             parsedComponents.descriptionsWithConceptTarget.push(item);
-                          } else {
-                            console.debug('not adding row');
-                          }
-                        }
+                          }                          
+                        });
                       }
-
-                      // otherwise, add to the other components list (dump list)
-                      else if (snowowlService.isDescriptionId(targetComponentId)) {
-
-                        console.debug('  found description targeting description', description);
+                      else {
+                        console.debug('         no new targets supplied');
                         var item = description;
+                        if(scope.reasonId === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+                          item.inactivationIndicator = scope.reasonId;
+                          item.refsetName = '';                            
+                        }
+
+                        if(item.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
+                          item.refsetName = 'REFERS_TO';                           
+                        } else {
+                          item.refsetName = '';                           
+                        } 
+
+                        item.newTargetId = '';
+                        item.newTargetFsn = '';
+
+                        parsedComponents.descriptionsWithConceptTarget.push(item);
+                      }
+                    }
+
+                    // otherwise, add to the other components list (dump list)
+                    else if (snowowlService.isDescriptionId(targetComponentId)) {
+                      console.debug('  found description targeting description', description);
+
+                      var buildDesAssoc = function(description, targetComponentId) {
+                        var d = $q.defer();
+                        var item = angular.copy(description);
                         item.refsetName = scope.associationTargets[j].id;
                         item.inactivationIndicator = scope.reasonId;
                         item.previousTargetId = targetComponentId;
                         snowowlService.getDescriptionProperties(targetComponentId, scope.branch).then(function (descriptionTarget) {
                           item.previousTargetTerm = descriptionTarget.term;
                           parsedComponents.descriptionsWithDescriptionTarget.push(item);
-
-                          console.debug('check', parsedComponents, list.length);
-                          if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length === list.length) {
-                            deferred.resolve(parsedComponents);
-                          }
+                          d.resolve();                  
                         });
-
-                      } else {
-                        console.debug('found other target component');
-                        parsedComponents.descriptionsWithDescriptionTarget.push(description);
-                        console.debug('check', parsedComponents, list.length);
-                        if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length === list.length) {
-                          deferred.resolve(parsedComponents);
-                        }
+                        return d.promise;
                       }
+                      subPromises.push(buildDesAssoc(description,targetComponentId));
+                    } else {
+                      console.debug('found other target component');
+                      parsedComponents.descriptionsWithDescriptionTarget.push(description);             
                     }
-
-
                   }
+                }
+                if (subPromises.length !== 0) {
+                  // Resolve all promises
+                  $q.all(subPromises).then(function() {
+                    def.resolve();
+                  });
+                } else {
+                  def.resolve();
+                }
 
-                  console.debug('check', parsedComponents, list.length);
-                  if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === list.length) {
-                    deferred.resolve(parsedComponents);
-                  }
-                });
+              });
+              return def.promise;
+            };
 
+            var buildOtherHistoricalAssoc = function (referencedComponent) {
+              var def = $q.defer();
+              parsedComponents.other.push(referencedComponent);
+              def.resolve();
+              return def.promise;
+            }
+
+            var promises = [];
+            for (var i = list.length - 1; i >= 0; i--) {
+
+              if(list[i].active === false) {
+                promises.push(buildOtherHistoricalAssoc(list[i].referencedComponent));               
+              }
+
+              // check if referenced concept
+              else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
+                promises.push(buildConceptHistoricalAssoc(list[i].referencedComponent.id));
+              }
+
+              // check if referenced description
+              else if (snowowlService.isDescriptionId(list[i].referencedComponent.id)) {
+                promises.push(buildDescriptionHistoricalAssoc(list[i].referencedComponent.id));
               }
 
               // add to other (dump)  list
-              else {
-                parsedComponents.other.push(list[i].referencedComponent);
-                console.debug('check', parsedComponents, list.length);
-                if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === list.length) {
-                  deferred.resolve(parsedComponents);
-                }
+              else {                
+                promises.push(buildOtherHistoricalAssoc(list[i].referencedComponent));                  
               }
 
             }
-            
+            // Resolve all promises
+            $q.all(promises).then(() => {
+              deferred.resolve(parsedComponents);
+            });
             return deferred.promise;
           }
 
@@ -649,10 +630,36 @@ angular.module('singleConceptAuthoringApp')
             var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
               return [value];
             });
-            angular.forEach(scope.affectedConceptAssocs, function (item) {
-              conceptArray.push(item);
-            });
 
+            // Begin Merge associationTargets for concept
+            var tempConceptMap = {};
+            for (var i = 0; i < scope.affectedConceptAssocs.length; i++) {
+              if (tempConceptMap[scope.affectedConceptAssocs[i].conceptId] !== undefined) {
+                var tempConcept = tempConceptMap[scope.affectedConceptAssocs[i].conceptId]
+                for (var j = i; j < scope.affectedConceptAssocs.length; j++) {
+                  if (tempConcept.conceptId ===  scope.affectedConceptAssocs[j].conceptId) {                    
+                    for (var key in scope.affectedConceptAssocs[j].associationTargets) {
+                      if (tempConcept.associationTargets.hasOwnProperty(key)){                        
+                        angular.forEach(scope.affectedConceptAssocs[j].associationTargets[key], function(item) {
+                          tempConcept.associationTargets[key].push(item);
+                        });
+                      } else {
+                        tempConcept.associationTargets[key] = scope.affectedConceptAssocs[j].associationTargets[key];
+                      }
+                    }
+                  }
+                }
+              } else {
+                tempConceptMap[scope.affectedConceptAssocs[i].conceptId] = scope.affectedConceptAssocs[i];
+              }              
+            }
+            // End Merge associationTargets
+
+            if (Object.keys(tempConceptMap).length !== 0) {
+              angular.forEach(Object.keys(tempConceptMap), function(key) {
+                conceptArray.push(tempConceptMap[key])
+              });
+            }            
 
             //
             // prepare descriptions from affected description historical associations
@@ -682,7 +689,7 @@ angular.module('singleConceptAuthoringApp')
               conceptArray = conceptArray.concat(descConcepts);
               console.debug('concepts', conceptArray);
 
-
+              var tempDescConceptMap = {};
               angular.forEach(descriptionArray, function (d) {
                 console.debug('checking description', d.id, d);
                 angular.forEach(conceptArray, function (c) {
@@ -697,7 +704,18 @@ angular.module('singleConceptAuthoringApp')
                           cd.inactivationIndicator = d.inactivationIndicator;
                           delete cd.associationTargets;
                         } else {
-                          cd.associationTargets = d.associationTargets;
+                          if (tempDescConceptMap[d.id + '-' + d.conceptId] !== undefined) {
+                            for (var key in d.associationTargets) {
+                              if (cd.associationTargets.hasOwnProperty(key)){                        
+                                angular.forEach(d.associationTargets[key], function(item) {
+                                  cd.associationTargets[key].push(item);
+                                });
+                              } 
+                            }                           
+                          } else {
+                            cd.associationTargets = d.associationTargets;
+                            tempDescConceptMap[d.id + '-' + d.conceptId] = true;
+                          }
                         }                        
                       }
                     });
@@ -941,15 +959,47 @@ angular.module('singleConceptAuthoringApp')
           function inactivateAttributeRelationship(concept, rel) {
             console.log('attributes');
             if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
-              angular.forEach(scope.histAssocTargets.concepts, function (innerConcept) {
-                var newRel = angular.copy(rel);
-                newRel.relationshipId = null;
-                newRel.effectiveTime = null;
-                newRel.released = false;
-                newRel.target.conceptId = innerConcept.conceptId;
-                newRel.target.fsn = innerConcept.fsn;
-                concept.relationships.push(newRel);
-                rel.active = 0;
+              angular.forEach(scope.histAssocTargets.concepts, function (innerConcept, index) {
+                if (!scope.useFirstTarget 
+                  || (scope.useFirstTarget && index === 0)) {
+                  var newRel = angular.copy(rel);
+                  newRel.relationshipId = null;
+                  newRel.effectiveTime = null;
+                  newRel.released = false;
+                  newRel.target.conceptId = innerConcept.conceptId;
+                  newRel.target.fsn = innerConcept.fsn;
+                  
+                  if (metadataService.isIsaRelationship(newRel.type.conceptId)) {
+                    // check source and new target of incoming IS A relationship are the same or not
+                    let flag = false;    
+                    angular.forEach(concept.relationships, function (otherRel) {                      
+                      if (otherRel.active
+                        && otherRel.relationshipId
+                        && otherRel.characteristicType === 'STATED_RELATIONSHIP'
+                        && metadataService.isIsaRelationship(otherRel.type.conceptId)
+                        && newRel.characteristicType === 'STATED_RELATIONSHIP'
+                        && newRel.type.conceptId === otherRel.type.conceptId
+                        && newRel.target.conceptId === otherRel.target.conceptId
+                        && newRel.groupId === otherRel.groupId) {
+                        flag = true;
+                      }
+                   });                  
+
+                    if (flag && scope.newTargetConceptParents.length > 0) {
+                      for (let index = 0; index < scope.newTargetConceptParents.length; index++) {
+                        var copyiedRel = angular.copy(newRel);
+                        copyiedRel.target.conceptId = scope.newTargetConceptParents[index].concept.conceptId;
+                        copyiedRel.target.fsn = scope.newTargetConceptParents[index].concept.fsn;
+                        concept.relationships.push(copyiedRel);
+                      }
+                    } else {
+                      concept.relationships.push(newRel);
+                    }                  
+                  } else {
+                    concept.relationships.push(newRel);
+                  }
+                  rel.active = 0;
+                }                
               });
             }
             else {
@@ -1187,6 +1237,7 @@ angular.module('singleConceptAuthoringApp')
             scope.histAssocTargets.concepts = [];
             scope.histAssocTargets.descriptions = [];
             scope.deletion = inactivationService.getDeletion();
+            scope.useFirstTarget = inactivationService.isUseFirstTarget();
 
             console.debug('scope.assocs', scope.assocs);
             console.debug('reason id', scope.reasonId);
