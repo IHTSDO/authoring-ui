@@ -118,8 +118,8 @@ angular.module('singleConceptAuthoringApp')
         } else {
           response.items = response.items.filter(function (el) {
             if (inactivationIndication) {
-              if(($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId))) {
-                return ($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId));
+              if(($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId)) && !isConceptExistingInAssociations(el.concept.conceptId)) {
+                return ($scope.conceptId !== el.concept.conceptId) && !(descendants.includes(el.concept.conceptId)) && !isConceptExistingInAssociations(el.concept.conceptId);
               } else {
                 response.total--;
               }
@@ -139,6 +139,18 @@ angular.module('singleConceptAuthoringApp')
         return response.items;
       });
     };
+
+    function isConceptExistingInAssociations (conceptId) {
+      if ($scope.associations && $scope.associations.length !== 0) {
+        for (var i = 0; i < $scope.associations.length; i++) {
+          if ($scope.associations[i].concept 
+              && $scope.associations[i].concept.concept.conceptId === conceptId) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
@@ -264,12 +276,7 @@ angular.module('singleConceptAuthoringApp')
 //          }
 
           // add the association type/target
-          else {
-
-            if ($scope.componentType === 'Concept' && $scope.associationTargets.length > 0 
-                && $scope.useFirstTargetSelection && i !==0) {
-              break
-            }
+          else {            
 
             if(!association.type || association.type === null){
                 association.type = {id: ' '}
@@ -291,10 +298,11 @@ angular.module('singleConceptAuthoringApp')
         let results = {};
         results.reason = $scope.inactivationReason;
         results.associationTarget = associationTarget;
-          if($scope.deletion)
-          {
-              results.deletion = true;
-          }
+        results.useFirstTarget = $scope.componentType === 'Concept' ? $scope.useFirstTargetSelection : false;
+        if($scope.deletion)
+        {
+            results.deletion = true;
+        }
 
         $modalInstance.close(results);
       }

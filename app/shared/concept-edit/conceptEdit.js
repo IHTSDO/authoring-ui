@@ -1462,7 +1462,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // set the concept in the inactivation service for listener update and retrieval
               // NOTE: Also broadcasts a route change to edit.js from the service
-              inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
+              inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget, false, results.useFirstTarget);
               $rootScope.$broadcast('conceptEdit.inactivateConcept');
             });
           });
