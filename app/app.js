@@ -291,7 +291,7 @@ angular
     // grunt not serving the config properties file
 
     // begin polling the sca endpoint at 10s intervals
-    scaService.startPolling(10000);
+    //scaService.startPolling(10000);
 
     ///////////////////////////////////////////
     // Cache local data
