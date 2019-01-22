@@ -440,19 +440,6 @@ angular.module('singleConceptAuthoringApp')
         return false;
       }
 
-      function isAllRequestsPendingClarification() {
-        if (crsRequestStatuses.length === 0) {
-          return false;
-        }
-
-        for (var i= 0; i < crsRequestStatuses.length; i++) {
-          if (crsRequestStatuses[i].status !== 'CLARIFICATION_NEEDED') {
-            return false;
-          }
-        }
-        return true;
-      }
-
       function getCrsRequest(crsId) {
         for (var i = 0; i < currentTaskConcepts.length; i++) {
           if (currentTaskConcepts[i].crsId === crsId) {
@@ -615,8 +602,7 @@ angular.module('singleConceptAuthoringApp')
         rejectCrsConcept: rejectCrsConcept,
         deleteCrsConcept: deleteCrsConcept,
         requestClarification: requestClarification,
-        hasRequestPendingClarification: hasRequestPendingClarification,
-        isAllRequestsPendingClarification: isAllRequestsPendingClarification
+        hasRequestPendingClarification: hasRequestPendingClarification
       };
     }
   )

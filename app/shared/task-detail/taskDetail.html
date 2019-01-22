@@ -89,11 +89,8 @@
               ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || promoting || automatePromotionStatus === 'Rebasing' || automatePromotionStatus === 'Classifying' || automatePromotionStatus === 'Promoting' || hasRequestPendingClarification() || role === 'UNDEFINED'"
               class="btn btn-default blue darken-1 promote" ng-click="promote()"> <span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">Promote This Task to the Project</span> </button>
       <button class="btn btn-default purple darken-1 auto-promote" 
-              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || automatePromotionStatus === 'Rebasing' || automatePromotionStatus === 'Classifying' || automatePromotionStatus === 'Promoting' || automatePromotionStatus === 'Queued' || isAutomatePromotionRunning || hasRequestPendingClarification() || role === 'UNDEFINED'"
+              ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || automatePromotionStatus === 'Rebasing' || automatePromotionStatus === 'Classifying' || automatePromotionStatus === 'Promoting' || automatePromotionStatus === 'Queued' || isAutomatePromotionRunning() || hasRequestPendingClarification() || role === 'UNDEFINED'"
               ng-click="proceedAutomatePromotion()"> <span class="md md-archive purple darken-2 iconbase"></span> <span class="button-link">Begin Promotion Automation</span> </button>
-      <button ng-disabled="task.status === 'Promoted' || isAllRequestsPendingClarification() || role === 'UNDEFINED'" 
-              ng-if="isCrsTask" 
-              class="btn btn-default pink1 review" ng-click="requestClarification()"> <span class="md md-mode-edit pink darken-2 iconbase"></span> <span class="button-link">CRS Pending Clarification</span> </button>     
     </div>
   </div>
 </div>
