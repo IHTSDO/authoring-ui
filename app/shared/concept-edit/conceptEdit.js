@@ -189,7 +189,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
-        scope.axiomSupport =  $rootScope.axiomSupport;
+        scope.isAxiomSupport =  function() {
+          if (scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
+            return true;
+          }
+          return false;
+        };
 
         scope.enterListener = function(event){
             event = event.event
@@ -496,7 +501,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
         scope.isOptionalAttribute = templateService.isOptionalAttribute;
-
+        scope.isExtensionSet = metadataService.isExtensionSet;
         //
         // Functionality for stashing and reapplying template, intended for use after cleanConcept invocations
         //
