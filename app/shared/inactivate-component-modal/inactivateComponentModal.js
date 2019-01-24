@@ -31,6 +31,12 @@ angular.module('singleConceptAuthoringApp')
            $scope.addAssociation(0);
         }
 
+        if ($scope.componentType === 'Concept'
+            && $scope.inactivationReason.id !== 'AMBIGUOUS'
+            && $scope.associations.length > 1) {
+           $scope.associations = [$scope.associations[0]];
+        }
+
         //Association type will be automatically populated if there is only one option
         for (let i = 0; i < $scope.associations.length; i++) {
           // extract association for convenience
