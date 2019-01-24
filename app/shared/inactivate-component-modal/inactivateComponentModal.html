@@ -84,7 +84,7 @@
                         typeahead-editable="false" typeahead-min-length="3"
                         placeholder="Type to select an associated concept..."></textarea>
               </div>
-              <div class="col-md-1" ng-if="(componentType === 'Concept' && inactivationReason.id === 'AMBIGUOUS')| (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
+              <div class="col-md-1" ng-if="(componentType === 'Concept' && inactivationReason.id === 'AMBIGUOUS') || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
                       class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case"> <span>Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
