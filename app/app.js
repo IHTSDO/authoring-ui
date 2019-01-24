@@ -185,14 +185,6 @@ angular
         snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
-        if(!endpoints.axiomDisabled){
-            console.log("false")
-            $rootScope.axiomSupport = true;
-        }
-        else{
-            console.log("true")
-            $rootScope.axiomSupport = false;
-        }
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
@@ -291,7 +283,7 @@ angular
       function (error) {
         notificationService.sendError('Fatal error: ' + error);
       });
-    
+
   })
   .controller('AppCtrl', ['$scope', 'rootScope', '$location', function AppCtrl($scope, $rootScope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
