@@ -3689,13 +3689,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             }
           }
+          var symanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
+          var symanticTag = null;
+          if (description.type === 'FSN') {
+            symanticTag = symanticTagTattern.exec(description.term)[1];
+          }
 
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
-              autoSave();
-          }, function (error) {
-            notificationService.sendWarning('Automations failed: ' + error);
+          if (symanticTag 
+            && (symanticTag === 'medicinal product'
+               || symanticTag === 'medicinal product form'
+               || symanticTag === 'clinical drug'
+               || symanticTag === 'substance')) {
+            // just save data
             autoSave();
-          });
+          } else {
+            componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+              autoSave();
+            }, function (error) {
+              notificationService.sendWarning('Automations failed: ' + error);
+              autoSave();
+            });
+          }
         };
 
 // function to update relationship and autoSave if indicated
