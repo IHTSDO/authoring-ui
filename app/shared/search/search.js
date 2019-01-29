@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if(!metadataService.isExtensionSet())
+        if(!metadataService.isTemplatesEnabled())
             {
                 if ($scope.searchMode === 'Switch to ECL') {
                   $scope.searchMode = 'Switch to Template';
