@@ -31,10 +31,14 @@ angular.module('singleConceptAuthoringApp')
            $scope.addAssociation(0);
         }
 
-        if ($scope.componentType === 'Concept'
-            && $scope.inactivationReason.id !== 'AMBIGUOUS'
+        if ($scope.componentType === 'Concept') {
+          if ($scope.inactivationReason.id !== 'AMBIGUOUS'
             && $scope.associations.length > 1) {
-           $scope.associations = [$scope.associations[0]];
+            $scope.associations = [$scope.associations[0]];
+            $scope.useFirstTargetSelection = false;
+          } else {
+            $scope.useFirstTargetSelection = true;
+          }           
         }
 
         //Association type will be automatically populated if there is only one option

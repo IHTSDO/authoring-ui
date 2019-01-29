@@ -94,7 +94,7 @@
           </div>
         </div>
     
-        <div class="col-sm-12 m-t-10" ng-if="componentType === 'Concept' && associationTargets.length > 0">
+        <div class="col-sm-12 m-t-10" ng-if="componentType === 'Concept' && associationTargets.length > 0 && inactivationReason.id === 'AMBIGUOUS'">
           <div class="checkbox download-checkbox">
             <input type="checkbox" ng-model="useFirstTargetSelection" ng-change="updateCheckboxSelection()"/>
             <span style="top: 0px;left: 25px; position: absolute;">Use First Target</span>         
