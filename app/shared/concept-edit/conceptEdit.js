@@ -704,6 +704,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 //on load, check if traceability has been pashed from Feedback, then find the differences with concept project
         scope.innerComponentStyle = {};
+        scope.inactiveDescriptions = {};
+
+        scope.isInactiveDescriptionModified = function (descriptionId) {
+          return scope.inactiveDescriptions.hasOwnProperty(descriptionId);
+        };
 
         if (scope.isFeedback) {
            lookupInnerComponentStyle();
@@ -735,12 +740,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                               return des.descriptionId === componentChange.componentId;
                             })[0];
 
-                            var mainDescription = response.descriptions.filter( function (des) {
+                            var projectDescription = response.descriptions.filter( function (des) {
                               return des.descriptionId === componentChange.componentId;
                             })[0];
 
-                            if(mainDescription && taskDescription) {
-                              highlightComponent(componentChange,mainDescription,taskDescription);
+                            if(projectDescription && taskDescription) {
+                              highlightComponent(componentChange,projectDescription,taskDescription);
+                            }
+
+                            if ((projectDescription.inactivationIndicator !== taskDescription.inactivationIndicator
+                                || checkAssociationTargetsChanged(projectDescription.associationTargets, taskDescription.associationTargets))
+                                && !projectDescription.active 
+                                && !taskDescription.active) {
+                              scope.inactiveDescriptions[projectDescription.descriptionId] = projectDescription;
                             }
                           }
                         }
@@ -792,6 +804,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         }
 
+        function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
+          for (var key in associationTarget1) {
+            if (associationTarget2.hasOwnProperty(key)) {
+              var items1 =  associationTarget1[key];
+              var items2 =  associationTarget2[key];
+              if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
+                return true;
+              }
+            } else {
+              return true;
+            }
+          }
+          return false;
+        }
+        
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;

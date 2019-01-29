@@ -53,6 +53,29 @@
           </div>
         </div>
       </div>
+    </div>    
+  </div>
+  <div ng-if="!description.active && isInactiveDescriptionModified(description.descriptionId)" class="pop-edit description-more row">
+    <div class="module pull-left m-t-20">
+      <label class="control-label">Previous Inactivation Reason</label>
+      <span class="fields row" ng-if="inactiveDescriptions[description.descriptionId].inactivationIndicator">{{formatComponentMoreText(inactiveDescriptions[description.descriptionId].inactivationIndicator)}}</span>
     </div>
+    <div class="col-md-12 no-padding pull-left m-t-20">
+      <label class="control-label">Previous Association Targets</label>
+      <div ng-show="!inactiveDescriptions[description.descriptionId].associationTargets">None</div>
+      <div ng-repeat="(key, value) in inactiveDescriptions[description.descriptionId].associationTargets" class="p-b-10">
+        <div class="no-gutter col-md-12 no-padding">
+          <div class="col-md-4">
+            {{formatComponentMoreText(key)}}
+          </div>
+          <div class="col-md-8">
+            <div class="row  p-b-5" ng-repeat="target in value">
+              <div class="col-md-4">{{target}}</div>
+              <div class="col-md-8">{{getTerm(target)}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>       
   </div>
 </div>
