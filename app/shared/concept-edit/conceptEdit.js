@@ -4110,6 +4110,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        scope.copyDescriptionTerm = function(e) {
+          var elem = angular.element(e.currentTarget)[0];
+          if (elem.selectionStart !== undefined 
+              && elem.selectionEnd !== undefined) {
+            var startPos = elem.selectionStart;
+            var endPos = elem.selectionEnd;
+            var selectedText = elem.value.substring(startPos, endPos); 
+            scope.copyToClipboard(selectedText); 
+            elem.focus();
+            elem.setSelectionRange(startPos, endPos);          
+          }
+        };
+
 //////////////////////////////////////////////
 // MRCM functions
 //////////////////////////////////////////////

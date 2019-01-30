@@ -342,6 +342,7 @@
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-model="description.term"
@@ -353,6 +354,7 @@
 
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-model="description.term"
@@ -366,6 +368,7 @@
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control  msd-elastic no-border-bottom desc" type="text"
@@ -375,15 +378,13 @@
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="4096"
                       ng-change="updateDescription(description)"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control msd-elastic no-border-bottom">
             </textarea>
-
-
-
           </div>
 
           <!-- TypeId -->
