@@ -71,7 +71,13 @@ angular.module('singleConceptAuthoringApp')
 
           // double-click functionality
           else {
-            scope.setRootConcept(node);
+            $rootScope.$broadcast('viewTaxonomy', {
+              concept: {
+                conceptId: node.conceptId,
+                fsn: node.fsn,
+                preferredSynonym: node.preferredSynonym
+              }
+            });
             node.clickCt = 0;
           }
         };
