@@ -2999,7 +2999,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.dropAxiomRelationshipType = function (relationship, data, type) {
+        scope.dropAxiomRelationshipType = function (relationship, data, axiom) {
+            console.log(axiom);
 
           if(data.concept) {
             data.id = data.concept.conceptId;
@@ -3015,7 +3016,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (metadataService.isMrcmEnabled()) {
 
             // check attribute allowed against stored array
-            if (constraintService.isAttributeAllowedForArray(data.id, scope.allowedAttributes)) {
+            if (constraintService.isAttributeAllowedForArray(data.id, axiom.allowedAttributes)) {
 
               // if target already specified, validate it
               if (relationship.target.conceptId) {
@@ -3029,7 +3030,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.type.conceptId = data.id;
               relationship.type.fsn = data.name;
 
-              scope.computeAxioms(type);
+              scope.computeAxioms(axiom.type);
               autoSave();
             } else {
               scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid attribute.'];
@@ -3037,7 +3038,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
-            scope.computeAxioms(type);
+            scope.computeAxioms(axiom.type);
             autoSave();
           }
         };
@@ -3220,7 +3221,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if (constraintService.isAttributeAllowedForArray(source.type.fsn, scope.allowedAttributes)) {
+          if (constraintService.isAttributeAllowedForArray(source.type.fsn, axiom.allowedAttributes)) {
 
             constraintService.isValueAllowedForType(source.type.conceptId, source.target.conceptId, scope.branch).then(function () {
               // copy relationship object and replace target relationship
@@ -3411,7 +3412,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // strip identifying information from each relationship and push
           // to relationships with new group id
           angular.forEach(relGroup, function (rel) {
-            if (constraintService.isAttributeAllowedForArray(rel.type.fsn, scope.allowedAttributes)) {
+            if (constraintService.isAttributeAllowedForArray(rel.type.fsn, axiom.allowedAttributes)) {
 
               constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {
                   // copy relationship object and replace target relationship
@@ -4141,6 +4142,36 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // compute the role groups
           scope.computeRelationshipGroups();
+        }, true);
+        
+        scope.$watch(scope.concept.additionalAxioms, function (newValue, oldValue) {
+          angular.forEach(scope.concept.additionalAxioms, function(axiom){
+              if (!scope.isStatic) {
+                constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
+                  axiom.allowedAttributes = attributes;
+                }, function (error) {
+                  notificationService.sendError('Error getting allowable domain attributes: ' + error);
+                });
+              }
+          })
+          
+          // compute the role groups
+          scope.computeAxioms('additional');
+        }, true);
+        
+        scope.$watch(scope.concept.gciAxioms, function (newValue, oldValue) {
+          angular.forEach(scope.concept.additionalAxioms, function(axiom){
+              if (!scope.isStatic) {
+                constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
+                  axiom.allowedAttributes = attributes;
+                }, function (error) {
+                  notificationService.sendError('Error getting allowable domain attributes: ' + error);
+                });
+              }
+          })
+          
+          // compute the role groups
+          scope.computeAxioms('gci');
         }, true);
 
 

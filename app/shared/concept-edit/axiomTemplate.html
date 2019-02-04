@@ -88,7 +88,7 @@
                  drag-enter-class="sca-drag-target"
                  drag-hover-class="sca-drag-hover"
                  drop-channel="completeConcept"
-                 ui-on-drop="dropAxiomRelationshipType(relationship, $data, axiom.type)"
+                 ui-on-drop="dropAxiomRelationshipType(relationship, $data, axiom)"
                  drop-validate="!relationship.effectiveTime && !isStatic">
 
                 <textarea id="axiom-relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
