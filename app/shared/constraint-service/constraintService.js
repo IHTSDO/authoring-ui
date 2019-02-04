@@ -75,6 +75,29 @@ angular.module('singleConceptAuthoringApp')
         }
         return deferred.promise;
       }
+       
+      function getDomainAttributesForAxiom(axiom, branch) {
+        var deferred = $q.defer();
+        if (!axiom || !branch) {
+          deferred.reject('Arguments not supplied');
+        } else {
+          // construct comma-separated list of ids
+          var idList = '';
+          angular.forEach(axiom.relationships, function (relationship) {
+            if (relationship.active === true && relationship.type.conceptId === '116680003' && relationship.target.conceptId && relationship.characteristicType !== 'INFERRED_RELATIONSHIP') {
+              idList += relationship.target.conceptId + ',';
+            }
+          });
+          idList = idList.substring(0, idList.length - 1);
+
+          snowowlService.getDomainAttributes(branch, idList).then(function (attrs) {
+            deferred.resolve(attrs.items);
+          }, function (error) {
+            deferred.reject(error.message);
+          });
+        }
+        return deferred.promise;
+      }
 
       function getConceptsForValueTypeaheadHelper(values) {
         var newValues = values ? values : [];
@@ -130,6 +153,7 @@ angular.module('singleConceptAuthoringApp')
       return {
         // typeahead and value restrictions
         getDomainAttributes: getDomainAttributes,
+        getDomainAttributesForAxiom: getDomainAttributesForAxiom,
         getConceptsForValueTypeahead: getConceptsForValueTypeahead,
 
         // utility functions
