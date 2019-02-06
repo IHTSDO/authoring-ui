@@ -10,6 +10,8 @@ angular.module('singleConceptAuthoringApp')
 
       var currentTaskConcepts = null;
 
+      var crsRequestStatuses = [];
+
       function getJsonAttachmentsForTask() {
         var deferred = $q.defer();
 
@@ -315,10 +317,11 @@ angular.module('singleConceptAuthoringApp')
               // if already initialized, simply return
               if (concepts) {
                 currentTaskConcepts = concepts;
+                getBulkCrsRequestsStatus();
                 deferred.resolve(concepts);
               } else {
                 initializeCrsTask().then(function () {
-
+                  getBulkCrsRequestsStatus();
                   deferred.resolve(currentTaskConcepts);
                 }, function () {
                   // NOTE: Must resolve to prevent blocking in edit.js
@@ -358,6 +361,92 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         return false;
+      }      
+
+      function requestClarification(list) {       
+        var def = $q.defer();
+        if (!list) {
+          def.reject('No CRS id set');
+        }
+        var apiEndpoint = '../ihtsdo-crs/';
+        var udpateCrsStatus = function(crsId) {
+          var deferred = $q.defer(); 
+          $http.put(apiEndpoint + 'api/request/' + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Classification by Authoring User"}).then(function () { 
+            deferred.resolve();            
+          });
+          return deferred.promise; 
+        };
+        
+        var promises = [];
+        for (var i = 0; i < list.length; i++) {               
+          promises.push(udpateCrsStatus(list[i]));
+        }
+        // on resolution of all promises
+        $q.all(promises).then(function (responses) {
+          getBulkCrsRequestsStatus();          
+          notificationService.sendMessage("Pending classification successfully.", 5000);
+          def.resolve();
+        });
+        
+        return def.promise;
+      }
+
+      function getBulkCrsRequestsStatus() {
+        if (!currentTaskConcepts) {
+          return;
+        }
+        var apiEndpoint = '../ihtsdo-crs/';
+        var list = [];
+        angular.forEach(currentTaskConcepts, function(crsRequest) {
+          if (list.indexOf(crsRequest.crsId) === -1) {
+            list.push(crsRequest.crsId);            
+          }
+        });
+
+        var getCrsStatus = function(crsId) {
+          var deferred = $q.defer(); 
+          $http.get(apiEndpoint + 'api/request/' + crsId + '/status').then(function (response) { 
+            deferred.resolve({'crsId' : crsId, 'status' : response.data});            
+          }, function(error) {
+            console.error('Error while getting status of CRS request. Error message: '+ error.data.error.message);
+          });
+          return deferred.promise; 
+        };
+        
+        var promises = [];
+        for (var i = 0; i < list.length; i++) {               
+          promises.push(getCrsStatus(list[i]));
+        }
+        // on resolution of all promises
+        $q.all(promises).then(function (responses) {
+          crsRequestStatuses = responses;
+        });
+       
+      }
+
+      function getCrsRequestsStatus() {
+        return crsRequestStatuses;       
+      }
+
+      function hasRequestPendingClarification() {
+        if (crsRequestStatuses.length === 0) {
+          return false;
+        }
+        for (var i= 0; i < crsRequestStatuses.length; i++) {
+          if (crsRequestStatuses[i].status === 'CLARIFICATION_NEEDED') {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function getCrsRequest(crsId) {
+        for (var i = 0; i < currentTaskConcepts.length; i++) {
+          if (currentTaskConcepts[i].crsId === crsId) {
+            return currentTaskConcepts[i];
+          }
+        }
+        return null;
       }
 
       function getCrsConcept(id) {
@@ -502,14 +591,18 @@ angular.module('singleConceptAuthoringApp')
         requiresCreation: requiresCreation,
         getCrsConcept: getCrsConcept,
         getCrsConcepts: getCrsConcepts,
+        getCrsRequest: getCrsRequest,
         getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
         getCrsTaskComment: getCrsTaskComment,
         getRequestUrl: getRequestUrl,
+        getCrsRequestsStatus: getCrsRequestsStatus,
 
         crsFilter: crsFilter,
         rejectCrsConcept: rejectCrsConcept,
-        deleteCrsConcept: deleteCrsConcept
+        deleteCrsConcept: deleteCrsConcept,
+        requestClarification: requestClarification,
+        hasRequestPendingClarification: hasRequestPendingClarification
       };
     }
   )

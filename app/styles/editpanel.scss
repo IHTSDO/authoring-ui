@@ -733,7 +733,8 @@ button.fsn-title-button {
     background-color: #4527a0;
     color: #fff
 }
-.pink1 {
+.pink1,
+.pink1.btn-default:focus {
     background-color: #e91e63;
     color: #fff;
 }
@@ -1397,4 +1398,18 @@ button-link .bluehl .grey.darken-3 {
 .owl-axiom-expression .btn.copy-to-clipboard:active {
     box-shadow: none;
     color: #fff;
+}
+.pending-clarification-modaL thead input[type=checkbox] {
+    min-width: 5px;
+    width: 15px;
+    position: absolute;
+    margin: 0px;
+    top: 30px;
+    left: 37px;
+    min-height: 10px;
+    height: 13px;
+}
+.pending-clarification-modaL .modal-body .table > tbody > tr > td {
+    padding-top: 0px;
+    padding-bottom: 0px;
 }

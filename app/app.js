@@ -179,14 +179,6 @@ angular
         console.log(response);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
-        if(!endpoints.axiomDisabled){
-            console.log("false")
-            $rootScope.axiomSupport = true;
-        }
-        else{
-            console.log("true")
-            $rootScope.axiomSupport = false;
-        }
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
@@ -196,6 +188,9 @@ angular
 
         // get the account details
         accountService.getAccount(accountUrl).then(function (account) {
+
+          // start connecting websocket
+          scaService.connectWebsocket(account.login);
 
           // get the user preferences (once logged in status confirmed)
           accountService.getUserPreferences().then(function (preferences) {
@@ -217,6 +212,41 @@ angular
 
           })
         });
+
+        ///////////////////////////////////////////
+        // Cache local data
+        ///////////////////////////////////////////
+        scaService.getProjects().then(function (response) {
+          metadataService.setProjects(response);
+        });
+
+        cisService.getAllNamespaces().then(function (response) {
+          if(response.length > 0) {
+            metadataService.setNamespaces(response);
+          }
+        });
+
+        hotkeys.bindTo($rootScope)
+            .add({
+              combo: 'alt+h',
+              description: 'Go to Home - My Tasks',
+              callback: function() {$location.url('home');}
+            })
+            .add({
+              combo: 'alt+b',
+              description: 'Open TS Browser',
+              callback: function() {window.open('/browser', '_blank');}
+            })
+            .add({
+              combo: 'alt+p',
+              description: 'Go to Projects',
+              callback: function() {$location.url('projects');}
+            })
+            .add({
+              combo: 'alt+w',
+              description: 'Go to Review Tasks',
+              callback: function() {$location.url('review-tasks');}
+            })
 
 
         // add required endpoints to route provider
@@ -247,83 +277,6 @@ angular
       function (error) {
         notificationService.sendError('Fatal error: ' + error);
       });
-
-    // TODO Move these into the configuration success block once fully wired
-    // Moved outside to prevent irritating issue on dev where projects and polling fail to instantiate due to
-    // grunt not serving the config properties file
-
-    // begin polling the sca endpoint at 10s intervals
-    scaService.startPolling(10000);
-
-    ///////////////////////////////////////////
-    // Cache local data
-    ///////////////////////////////////////////
-    scaService.getProjects().then(function (response) {
-      metadataService.setProjects(response);
-
-      var projectKeys = [];
-      var promises = [];                    
-      promises.push(scaService.getTasks());
-      promises.push(scaService.getReviewTasks());     
-        
-      // on resolution of all promises
-      $q.all(promises).then(function (responses) {                
-          for (var i = 0; i < responses.length; i++) {
-            angular.forEach(responses[i], function (task) {
-              if (projectKeys.indexOf(task.projectKey) === -1) {
-                projectKeys.push(task.projectKey);
-              }
-            });
-          }
-
-          var myProjects = [];
-          angular.forEach(projectKeys, function(projectKey) {
-            angular.forEach(response, function(project) {
-                if(project.key === projectKey)
-                {
-                    myProjects.push(projectKey);
-                }
-            });
-          });
-          
-          if (myProjects.length > 0) {            
-            metadataService.setMyProjects(myProjects);
-          }
-      });
-    });
-
-    cisService.getAllNamespaces().then(function (response) {
-      if(response.length > 0) {
-        metadataService.setNamespaces(response);
-      }
-    });
-
-    hotkeys.bindTo($rootScope)
-        .add({
-          combo: 'alt+h',
-          description: 'Go to Home - My Tasks',
-          callback: function() {$location.url('home');}
-        })
-        .add({
-          combo: 'alt+b',
-          description: 'Open TS Browser',
-          callback: function() {window.open('/browser', '_blank');}
-        })
-        .add({
-          combo: 'alt+p',
-          description: 'Go to Projects',
-          callback: function() {$location.url('projects');}
-        })
-        .add({
-          combo: 'alt+w',
-          description: 'Go to Review Tasks',
-          callback: function() {$location.url('review-tasks');}
-        })
-
-
-    ///////////////////////////////////////////
-    // Instantiate basic metadata in SnowOwl //
-    ///////////////////////////////////////////
 
   })
   .controller('AppCtrl', ['$scope', 'rootScope', '$location', function AppCtrl($scope, $rootScope, $location) {

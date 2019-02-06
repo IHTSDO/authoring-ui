@@ -220,7 +220,9 @@ angular.module('singleConceptAuthoringApp')
       }
         
       function isTransform(){
-          if(snowowlService.isSctid(batchConcepts[0].conceptId)){
+          if(batchConcepts 
+            && batchConcepts.length !== 0 
+            && snowowlService.isSctid(batchConcepts[0].conceptId)){
               return true;
           }
           else{

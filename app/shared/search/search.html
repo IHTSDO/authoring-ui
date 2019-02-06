@@ -172,7 +172,7 @@
   <div class="row no-padding" ng-if="results.length > 0">
 
 
-    <div class="col-md-10" ng-class="{'m-t-negative' : isExtension && !isEscgMode, 'm-t-10' : !isExtension || isEscgMode}">
+    <div class="col-md-10" ng-class="{'m-t-negative' : isExtension && !isEscgMode && !templateMode, 'm-t-10' : !isExtension || isEscgMode || templateMode}">
       <h5 class="dark-centured-text total-text"><span>{{searchTotal}}</span> concepts found</h5>
     </div>
   </div>

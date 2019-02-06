@@ -1073,11 +1073,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (clonedConcept.additionalAxioms && clonedConcept.additionalAxioms.length > 0) {
           for (let index = 0; index < clonedConcept.additionalAxioms.length; index++) {
             clonedConcept.additionalAxioms[index].axiomId = null;
+            clonedConcept.additionalAxioms[index].released = false;
           }
         }
         if (clonedConcept.gciAxioms && clonedConcept.gciAxioms.length > 0) {
           for (let index = 0; index < clonedConcept.gciAxioms.length; index++) {
             clonedConcept.gciAxioms[index].axiomId = null;
+            clonedConcept.gciAxioms[index].released = false;
           }
         }
         clonedConcept.conceptId = null;
@@ -1192,7 +1194,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.$broadcast('registerMouseScrollEvent', {id: concept.conceptId});
         }, 1500);
       } else {
-        templateService.createTemplateConcept(templateService.getSelectedTemplate(), null).then(function (concept) {
+        templateService.createTemplateConcept(templateService.getSelectedTemplate(), null, null, $scope.branch).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
 
