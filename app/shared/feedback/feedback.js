@@ -1577,7 +1577,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getConceptsForTypeahead = function (searchStr) {
             return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
-
+              let response = response.items;
               // remove duplicates
               for (var i = 0; i < response.length; i++) {
                 for (var j = response.length - 1; j > i; j--) {
