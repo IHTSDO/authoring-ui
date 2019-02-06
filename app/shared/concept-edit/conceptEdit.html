@@ -199,9 +199,9 @@
                           ng-class="[{'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"
                           ng-click="collapse(concept)"></i></span>
               </div>
-              <ul ng-if="(axiomSupport && role === 'AUTHOR') || !isStatic || role === 'REVIEWER'">
-                <li ng-click="addAdditionalAxiom()" ng-if="axiomSupport && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Additional Axiom</li>
-                <li ng-click="addGCIAxiom()" ng-if="axiomSupport && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
+              <ul ng-if=" role === 'AUTHOR' || !isStatic || role === 'REVIEWER'">
+                <li ng-click="addAdditionalAxiom()" ng-if="isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Additional Axiom</li>
+                <li ng-click="addGCIAxiom()" ng-if="isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
@@ -342,6 +342,7 @@
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-model="description.term"
@@ -353,6 +354,7 @@
 
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-model="description.term"
@@ -366,6 +368,7 @@
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control  msd-elastic no-border-bottom desc" type="text"
@@ -375,15 +378,13 @@
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="4096"
                       ng-change="updateDescription(description)"
+                      ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control msd-elastic no-border-bottom">
             </textarea>
-
-
-
           </div>
 
           <!-- TypeId -->
@@ -640,15 +641,15 @@
                   <span>Primitive</span>
                 </div>
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
 
-                  <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
+                  <button ng-if="!template && !concept.template" type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Add New Relationship</span>
                   </button>
 
                   <button type="button" ng-click="removeRelationship(relationship)"
-                          ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
+                          ng-if="!relationship.released && ((!template && !concept.template) || (template && (!relationshipInLogicalModel(relationship, template) || isOptionalAttribute(relationship))))"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Remove Relationship</span>
                   </button>
@@ -714,12 +715,12 @@
     </div>
 
     <!-- rows: Additional axioms -->
-    <div ng-if="axiomSupport" ng-hide="showInferredRels" ng-repeat="axiom in concept.additionalAxioms">
+    <div ng-if="isAxiomSupport()" ng-hide="showInferredRels" ng-repeat="axiom in concept.additionalAxioms" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
 
     <!-- rows: General Concept Inclusion axioms -->
-    <div ng-if="axiomSupport" ng-hide="showInferredRels" ng-repeat="axiom in concept.gciAxioms">
+    <div ng-if="isAxiomSupport()" ng-hide="showInferredRels" ng-repeat="axiom in concept.gciAxioms" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
     <div class="clearfix"></div>

@@ -11,7 +11,8 @@ angular.module('singleConceptAuthoringApp')
       task : null,
       concept : null,
       reasonId : null,
-      assocMembers : null
+      assocMembers : null,
+      useFirstTarget : false
     };
 
 
@@ -26,13 +27,14 @@ angular.module('singleConceptAuthoringApp')
       return parameters.concept !== null &&  parameters.concept !== undefined;
     }
 
-    function setParameters(branch, concept, reasonId, assocRefsetMembers, deletion) {
+    function setParameters(branch, concept, reasonId, assocRefsetMembers, deletion, useFirstTarget) {
         parameters = {};
         parameters.concept = concept;
         parameters.branch = branch;
         parameters.reasonId = reasonId;
         parameters.assocMembers = assocRefsetMembers;
         parameters.deletion = false;
+        parameters.useFirstTarget = useFirstTarget;
         if(deletion)
         {
             parameters.deletion = deletion;
@@ -54,7 +56,9 @@ angular.module('singleConceptAuthoringApp')
     function getAssocs() {
       return parameters.assocMembers;
     }
-
+    function isUseFirstTarget() {
+      return parameters.useFirstTarget;
+    }
 
     //
     // Actions
@@ -96,7 +100,8 @@ angular.module('singleConceptAuthoringApp')
       getDeletion: getDeletion,
       getAssocs: getAssocs,
       inactivateConcept: inactivateConcept,
-      cancelInactivation: cancelInactivation
+      cancelInactivation: cancelInactivation,
+      isUseFirstTarget: isUseFirstTarget
     };
 
   }])

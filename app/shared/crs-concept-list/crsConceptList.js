@@ -44,6 +44,28 @@ angular.module('singleConceptAuthoringApp')
           
         };
 
+        scope.isPendingForClarification = function(item) {
+          let crsRequestStatuses = crsService.getCrsRequestsStatus();
+          if (crsRequestStatuses && crsRequestStatuses.length !== 0) {
+            for (var i = 0; i < crsRequestStatuses.length; i++) {
+              if (crsRequestStatuses[i].crsId === item.crsId 
+                  && crsRequestStatuses[i].status === 'CLARIFICATION_NEEDED')
+                return true;
+            }
+          }
+
+          return false;
+        };
+
+        scope.pendingRequest = function(item) {          
+          modalService.confirm('Do you really want to change this CRS request to Pending Classification?').then(function () {
+            let ids = [];
+            ids.push(item.crsId);
+            notificationService.sendMessage('Updating CRS request status to Pending Clarification...');
+            crsService.requestClarification(ids);
+          });
+        };
+
         function initialize() {
           scope.crsConcepts = scope.getCrsConcepts();
         }

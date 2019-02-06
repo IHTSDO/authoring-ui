@@ -195,7 +195,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if(!metadataService.isExtensionSet())
+        if(!metadataService.isTemplatesEnabled())
             {
                 if ($scope.searchMode === 'Switch to ECL') {
                   $scope.searchMode = 'Switch to Template';
@@ -1097,7 +1097,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         batchEditingService.setCurrentTemplate(template);
 
         let targetSlotMap = getTargetSlotMap(conceptObj);
-        templateService.createTemplateConcept(template, targetSlotMap).then(function (concept) {
+        templateService.createTemplateConcept(template, targetSlotMap, null, $scope.branch).then(function (concept) {
           batchEditingService.addBatchConcept(concept);
           console.debug('batch concepts', batchEditingService.getBatchConcepts());
           notificationService.sendMessage('Successfully added batch concept', 3000);
@@ -1135,7 +1135,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         angular.forEach($scope.results, function (conceptObj) {
           console.debug('adding from object', conceptObj);
           let targetSlotMap = getTargetSlotMap(conceptObj.concept);
-          conceptPromises.push(templateService.createTemplateConcept(template, targetSlotMap));
+          conceptPromises.push(templateService.createTemplateConcept(template, targetSlotMap, null, $scope.branch));
         });
 
         $q.all(conceptPromises).then(function (concepts) {

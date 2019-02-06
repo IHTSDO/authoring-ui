@@ -196,7 +196,7 @@ angular.module('singleConceptAuthoringApp')
                   relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
                   relationship.target.conceptId = data.id;
                   relationship.target.fsn = data.name;
-                  templateService.updateTargetSlot(concept, scope.templateOptions.selectedTemplate, relationship).then(function () {
+                  templateService.updateTargetSlot(scope.branch, concept, scope.templateOptions.selectedTemplate, relationship).then(function () {
                     scope.batchTableParams.reload();
                   })
                 }, function (error) {
@@ -213,7 +213,7 @@ angular.module('singleConceptAuthoringApp')
               if (r.targetSlot && r.targetSlot.slotName === slotName) {
                 r.target.conceptId = data.id;
                 r.target.fsn = data.fsn.term;
-                templateService.updateTargetSlot(concept, concept.template, r).then(function () {
+                templateService.updateTargetSlot(scope.branch, concept, concept.template, r).then(function () {
                   batchEditingService.updateBatchConcept(concept).then(function () {
                     scope.batchTableParams.reload();
                   })
@@ -243,7 +243,7 @@ angular.module('singleConceptAuthoringApp')
             var promises = [];
 
             for (var i = 0; i < batchSize; i++) {
-              promises.push(templateService.createTemplateConcept(template));
+              promises.push(templateService.createTemplateConcept(template, null, null, scope.branch));
             }
 
             $q.all(promises).then(function (concepts) {
@@ -770,7 +770,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             snowowlService.bulkValidateConcepts(scope.branch, concepts).then(function(responses){
               console.log("validation finish time : " + (new Date()));
-
+              var conceptErrors = [];
               angular.forEach(responses.data, function(item) {
                 var validation = {
                   hasWarnings: false,
@@ -790,8 +790,12 @@ angular.module('singleConceptAuthoringApp')
                       }
                       validation.errors[item.componentId].push(item.message);
                       scope.validConcepts[i].validation = validation;
-                      scope.validConcepts[i].tableAction = '';
-                      $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+                      scope.validConcepts[i].tableAction = '';   
+
+                      if (conceptErrors.indexOf(item.conceptId) === -1) {
+                        conceptErrors.push(item.conceptId);
+                        $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+                      }
                       break;
                     }
                   }

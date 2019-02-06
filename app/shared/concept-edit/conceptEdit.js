@@ -189,7 +189,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
-        scope.axiomSupport =  $rootScope.axiomSupport;
+        scope.isAxiomSupport =  function() {
+          if (scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
+            return true;
+          }
+          return false;
+        };
 
         scope.enterListener = function(event){
             event = event.event
@@ -495,7 +500,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.relationshipHasTargetSlot = templateService.relationshipHasTargetSlot;
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
-
+        scope.isOptionalAttribute = templateService.isOptionalAttribute;
+        scope.isExtensionSet = metadataService.isExtensionSet;
         //
         // Functionality for stashing and reapplying template, intended for use after cleanConcept invocations
         //
@@ -509,7 +515,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.applyTemplate = function (template) {
-            templateService.applyTemplateToExistingConcept(scope.concept, template).then(function(concept){
+            templateService.applyTemplateToExistingConcept(scope.concept, template, scope.branch).then(function(concept){
                 $timeout(function () {
                     scope.template = template;
                     scope.concept = concept;
@@ -698,6 +704,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 //on load, check if traceability has been pashed from Feedback, then find the differences with concept project
         scope.innerComponentStyle = {};
+        scope.inactiveDescriptions = {};
+
+        scope.isInactiveDescriptionModified = function (descriptionId) {
+          return scope.inactiveDescriptions.hasOwnProperty(descriptionId);
+        };
 
         if (scope.isFeedback) {
            lookupInnerComponentStyle();
@@ -729,12 +740,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                               return des.descriptionId === componentChange.componentId;
                             })[0];
 
-                            var mainDescription = response.descriptions.filter( function (des) {
+                            var projectDescription = response.descriptions.filter( function (des) {
                               return des.descriptionId === componentChange.componentId;
                             })[0];
 
-                            if(mainDescription && taskDescription) {
-                              highlightComponent(componentChange,mainDescription,taskDescription);
+                            if(projectDescription && taskDescription) {
+                              highlightComponent(componentChange,projectDescription,taskDescription);
+                            }
+
+                            if ((projectDescription.inactivationIndicator !== taskDescription.inactivationIndicator
+                                || checkAssociationTargetsChanged(projectDescription.associationTargets, taskDescription.associationTargets))
+                                && !projectDescription.active 
+                                && !taskDescription.active) {
+                              scope.inactiveDescriptions[projectDescription.descriptionId] = projectDescription;
                             }
                           }
                         }
@@ -786,6 +804,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         }
 
+        function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
+          for (var key in associationTarget1) {
+            if (associationTarget2.hasOwnProperty(key)) {
+              var items1 =  associationTarget1[key];
+              var items2 =  associationTarget2[key];
+              if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
+                return true;
+              }
+            } else {
+              return true;
+            }
+          }
+          return false;
+        }
+        
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
@@ -1461,7 +1494,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // set the concept in the inactivation service for listener update and retrieval
               // NOTE: Also broadcasts a route change to edit.js from the service
-              inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
+              inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget, false, results.useFirstTarget);
               $rootScope.$broadcast('conceptEdit.inactivateConcept');
             });
           });
@@ -2595,8 +2628,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             console.error('Error removing relationship; relationship not found');
           }
-          scope.computeRelationshipGroups();
-
+          if(scope.template || scope.concept.template) {
+            templateService.replaceLexicalValues(scope.concept, scope.template ? scope.template : scope.concept.template, scope.branch).then(function(concept) {
+              scope.concept = concept;
+              scope.computeRelationshipGroups();
+            });
+          } else {
+            scope.computeRelationshipGroups();
+          }
         };
 
         scope.removeAxiomRelationship = function (relationship, axiom) {
@@ -3660,12 +3699,45 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.updateConceptReference({concept: scope.concept});
           }
 
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
-              autoSave();
-          }, function (error) {
-            notificationService.sendWarning('Automations failed: ' + error);
+          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
+            if (description.lang === 'en') {
+              // strip any non-us dialect
+              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+                if (!metadataService.isUsDialect(dialectId)) {
+                  delete description.acceptabilityMap[dialectId];
+                }
+              });
+            } else {
+              // strip us dialect if any
+              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+                if (metadataService.isUsDialect(dialectId)) {
+                  delete description.acceptabilityMap[dialectId];
+                }
+              });
+            }
+          }
+          var symanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
+          var symanticTag = null;
+          if (description.type === 'FSN') {
+            symanticTag = symanticTagTattern.exec(description.term)[1];
+          }
+
+          if (symanticTag 
+            && (symanticTag === 'medicinal product'
+               || symanticTag === 'medicinal product form'
+               || symanticTag === 'clinical drug'
+               || symanticTag === 'substance'
+               || symanticTag === 'product')) {
+            // just save data
             autoSave();
-          });
+          } else {
+            componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+              autoSave();
+            }, function (error) {
+              notificationService.sendWarning('Automations failed: ' + error);
+              autoSave();
+            });
+          }
         };
 
 // function to update relationship and autoSave if indicated
@@ -3683,7 +3755,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.validation = {};
 
 
-            templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
+            templateService.updateTargetSlot(scope.branch, scope.concept, scope.template ? scope.template : scope.concept.template, relationship).then(function () {
               scope.computeRelationshipGroups();
               sortRelationships();
 
@@ -3878,8 +3950,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.revertToVersion = function () {
-          modalService.confirm('The concept will be reverted to the version that was present when the task was created. Do you want to proceed?').then(function () {
-            notificationService.sendMessage('Reverting concept to version...');
+          modalService.confirm('The concept will be reverted to the previously published version. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Reverting concept to the previously published version...');
             var codeSystemShortName = '';
             getCodeSystemShortName().then(function (response) {
               codeSystemShortName = response;
@@ -4035,6 +4107,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }, function (error) {
               notificationService.sendMessage('Error reverting concept');
             });
+          }
+        };
+
+        scope.copyDescriptionTerm = function(e) {
+          var elem = angular.element(e.currentTarget)[0];
+          if (elem.selectionStart !== undefined 
+              && elem.selectionEnd !== undefined) {
+            var startPos = elem.selectionStart;
+            var endPos = elem.selectionEnd;
+            var selectedText = elem.value.substring(startPos, endPos); 
+            scope.copyToClipboard(selectedText); 
+            elem.focus();
+            elem.setSelectionRange(startPos, endPos);          
           }
         };
 

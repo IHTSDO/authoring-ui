@@ -13,7 +13,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.taskBranch = null;
       $scope.promoting = false;
       $scope.automatePromotionStatus = "";
-      $scope.automatePromotionErrorMsg = "";
+      $scope.automatePromotionErrorMsg = "";    
+      $scope.hasRequestPendingClarification = crsService.hasRequestPendingClarification;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)

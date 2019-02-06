@@ -214,7 +214,7 @@ angular.module('singleConceptAuthoringApp')
           'definitionStatus': 'PRIMITIVE',
           'effectiveTime': null,
           'active': true,
-          'released': true,
+          'released': false,
           'moduleId': moduleId,
           'relationships': []       
         };

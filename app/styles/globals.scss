@@ -303,10 +303,11 @@ td select {
         position: absolute; 
         right: 0px;
         top: 8px;
+    }   
+    .btn.btn-default {
+        color: #474747;
     }
-    .btn:active {
-        color: #666
-    }
+
 }
 .dashboard-sidebar button {
     width: 100%;
@@ -494,6 +495,15 @@ h4.timeline-title::-webkit-scrollbar-corner{
 .cfp-hotkeys-close {    
     top: 67px;
     right: 14px;    
+}
+.network-connection-warning {   
+    text-align: center; 
+    position: absolute;
+    right: 0px;
+    left: 0px; 
+    bottom: 0px;
+    color: #ffab40;
+    display: none;
 }
 .icon-spin {
     animation: 1.5s linear 0s normal none infinite spin;

@@ -473,7 +473,8 @@ h4.timeline-title {
     color: #7e6ecd;
     background-color: transparent;
 }
-.sca-dark .pink1 {
+.sca-dark .pink1,
+.sca-dark .pink1.btn-default:focus {
     color: #e94281;
     background-color: transparent;
 }
@@ -1228,6 +1229,7 @@ background-color: #262e39;}
     color: #bdbdbd;
     background-color: #424249;
 }
-.sca-dark .sca-scheduled-rebase .btn {
+.sca-dark .sca-scheduled-rebase .btn.btn-default {
     border: none;
+    color: #fff;
 }

@@ -97,15 +97,10 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 fd.append("tsvFile", files[0]);
                 templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
                     $("#batchFileUpload").val("");
-                    angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
+                    angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj, $scope.branch));
                     });
                     $q.all(conceptPromises).then(function (concepts) {
-                      var internationalDialectAutomationPromies = [];
                       angular.forEach(concepts, function(concept){
-                        internationalDialectAutomationPromies.push(componentAuthoringUtil.runInternationalDialectAutomationForConcept(concept, false));
-                      });
-                      $q.all(internationalDialectAutomationPromies).then(function (concepts) {
-                        angular.forEach(concepts, function(concept){
                           //if any concepts have had descriptions added through automation, ensure that they have uuid's
                           angular.forEach(concept.descriptions, function (description) {
                             if(!description.descriptionId){
@@ -125,7 +120,6 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                             $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
                           }
                         });
-                      });
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
                     })
