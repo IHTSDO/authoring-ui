@@ -255,26 +255,34 @@ angular.module('singleConceptAuthoringApp')
               if (match) {
                 var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
                 requiredLanguageRefsets.forEach(function(lang) {
-                  if(!languages.includes(Object.keys(lang)[0])){
-                      languages.push(Object.keys(lang)[0]);
+                  let languageKey = null;
+                  let languageValue = null;
+                  for (var key in lang) {
+                      if (key.length === 2){
+                          languageKey = key;
+                          languageValue = lang[key];
+                      }
+                  }
+                  if(!languages.includes(languageKey)){
+                      languages.push(languageKey);
                   }
                   if(lang.dialectName){
-                      dialects[lang[Object.keys(lang)[0]]] = lang.dialectName;
+                      dialects[languageValue] = lang.dialectName;
                   }
                   else{
-                    dialects[lang[Object.keys(lang)[0]]] = Object.keys(lang)[0];
+                    dialects[languageValue] = languageKey;
                   }
 
-                  if(lang.default === "true" && !defaultLanguages.includes(Object.keys(lang)[0])){
-                      defaultLanguages.push(Object.keys(lang)[0]);
+                  if(lang.default === "true" && !defaultLanguages.includes(languageKey)){
+                      defaultLanguages.push(languageKey);
                   }
                   if(lang.default !== null && lang.default !== undefined){
                       //set dialect default for langauge refset value autogeneration
-                      dialectDefaults[lang[Object.keys(lang)[0]]] = lang.default;
+                      dialectDefaults[languageValue] = lang.default;
                   }
                   if(lang.readOnly !== null && lang.readOnly !== undefined){
                       //set dialect default for langauge refset value autogeneration 
-                      readOnlyDialects[lang[Object.keys(lang)[0]]] = lang.readOnly;
+                      readOnlyDialects[languageValue] = lang.readOnly;
                   }
                 });
 
@@ -287,11 +295,15 @@ angular.module('singleConceptAuthoringApp')
                     }
                 }
                 else if(Object.keys(dialects).length > 1){
-                    console.log('here');
                     requiredLanguageRefsets.forEach(function(lang) {
+                        let languageValue = null;
+                        for (var key in lang) {
+                              if (key.length === 2){
+                                  languageValue = lang[key];
+                              }
+                          }
                         if(lang.default && lang.default !== null && lang.default !== undefined && lang.default === "true")
                             {
-                                console.log('here');
                                 defaultLanguageRefsetId = lang[Object.keys(lang)[0]];
                             }
                       });
