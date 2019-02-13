@@ -715,7 +715,7 @@
     </div>
 
     <!-- rows: Additional axioms -->
-    <div ng-if="isAxiomSupport()" ng-hide="showInferredRels" ng-repeat="axiom in concept.additionalAxioms" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
+    <div ng-if="isAxiomSupport()" ng-hide="showInferredRels" ng-repeat="axiom in concept.classAxioms" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
 

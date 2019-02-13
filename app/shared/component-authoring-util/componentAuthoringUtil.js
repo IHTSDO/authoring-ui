@@ -1041,9 +1041,9 @@ function getFsnDescriptionForConcept(concept) {
         }
 
         // check Additional Axiom
-        if (concept.additionalAxioms) {
-           for (var l = 0; l < concept.additionalAxioms.length; l++) {
-            errors = errors.concat(checkAxiomComplete(concept.additionalAxioms[l], 'additional'));
+        if (concept.classAxioms) {
+           for (var l = 0; l < concept.classAxioms.length; l++) {
+            errors = errors.concat(checkAxiomComplete(concept.classAxioms[l], 'additional'));
           }
         }       
 

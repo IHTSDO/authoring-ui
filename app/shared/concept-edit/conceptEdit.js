@@ -1538,8 +1538,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           let hasUnpublishedAdditionalAxioms = false;
-          if (scope.concept.additionalAxioms && scope.concept.additionalAxioms.length > 0) {
-            scope.concept.additionalAxioms.forEach(function (item) {
+          if (scope.concept.classAxioms && scope.concept.classAxioms.length > 0) {
+            scope.concept.classAxioms.forEach(function (item) {
               if (!item.released) {
                 hasUnpublishedAdditionalAxioms = true;
                 item.relationships.forEach(function (relationship) {
@@ -2136,14 +2136,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           modalService.confirm(msg).then(function () {
               var index = -1;
               if (type === axiomType.ADDITIONAL) {
-                for (var i = scope.concept.additionalAxioms.length - 1; i >= 0; i--) {
-                  if (axiom.axiomId === scope.concept.additionalAxioms[i].axiomId) {
+                for (var i = scope.concept.classAxioms.length - 1; i >= 0; i--) {
+                  if (axiom.axiomId === scope.concept.classAxioms[i].axiomId) {
                     index = i;
                     break;
                   }
                 }
                 if (index >= 0) {
-                  scope.concept.additionalAxioms.splice(index, 1);
+                  scope.concept.classAxioms.splice(index, 1);
                   scope.computeAxioms(type);
                   autoSave();
                 }
@@ -2517,7 +2517,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           if (type === axiomType.ADDITIONAL) {
-            angular.forEach(scope.concept.additionalAxioms, function (axiom) {
+            angular.forEach(scope.concept.classAxioms, function (axiom) {
               axiom['relationshipGroups'] = [];
               axiom.title = 'Additional Axiom';
               axiom.type = axiomType.ADDITIONAL;
@@ -2682,11 +2682,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
 
-          if(!scope.concept.hasOwnProperty('additionalAxioms')){
-            scope.concept.additionalAxioms = [];
+          if(!scope.concept.hasOwnProperty('classAxioms')){
+            scope.concept.classAxioms = [];
           }
 
-          scope.concept.additionalAxioms.push(axiom);
+          scope.concept.classAxioms.push(axiom);
           scope.computeAxioms(axiomType.ADDITIONAL);
           autoSave();
         };
@@ -3183,13 +3183,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           let axiom = angular.copy(source);
           axiom.axiomId = null; 
           if (axiom.type === axiomType.ADDITIONAL) {
-            if(!scope.concept.hasOwnProperty('additionalAxioms')){
-              scope.concept.additionalAxioms = [];
+            if(!scope.concept.hasOwnProperty('classAxioms')){
+              scope.concept.classAxioms = [];
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
             });           
-            scope.concept.additionalAxioms.push(axiom);
+            scope.concept.classAxioms.push(axiom);
             scope.computeAxioms(axiomType.ADDITIONAL);
           } else {
             if(!scope.concept.hasOwnProperty('gciAxioms')){
@@ -3940,8 +3940,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               conceptFSN: function() {
                 return scope.concept.fsn;
               },
-              additionalAxioms: function () {
-                return scope.concept.additionalAxioms;
+              classAxioms: function () {
+                return scope.concept.classAxioms;
               },
               gciAxioms: function () {
                 return scope.concept.gciAxioms;
@@ -4144,8 +4144,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
         }, true);
         
-        scope.$watch(scope.concept.additionalAxioms, function (newValue, oldValue) {
-          angular.forEach(scope.concept.additionalAxioms, function(axiom){
+        scope.$watch(scope.concept.classAxioms, function (newValue, oldValue) {
+          angular.forEach(scope.concept.classAxioms, function(axiom){
               if (!scope.isStatic) {
                 constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
                   axiom.allowedAttributes = attributes;
@@ -4160,7 +4160,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
         
         scope.$watch(scope.concept.gciAxioms, function (newValue, oldValue) {
-          angular.forEach(scope.concept.additionalAxioms, function(axiom){
+          angular.forEach(scope.concept.classAxioms, function(axiom){
               if (!scope.isStatic) {
                 constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
                   axiom.allowedAttributes = attributes;
