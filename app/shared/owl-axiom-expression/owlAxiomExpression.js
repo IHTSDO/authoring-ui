@@ -1,10 +1,10 @@
 angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
-  .controller('owlAxiomExpressionModalCtrl', function ($scope, $modalInstance, branch, conceptId, conceptFSN, additionalAxioms, gciAxioms, snowowlService, metadataService, notificationService, $window) {   
+  .controller('owlAxiomExpressionModalCtrl', function ($scope, $modalInstance, branch, conceptId, conceptFSN, classAxioms, gciAxioms, snowowlService, metadataService, notificationService, $window) {   
     
     $scope.conceptFSN = conceptFSN;
     $scope.conceptId = conceptId;
     $scope.branch = branch;
-    $scope.additionalAxioms = additionalAxioms;
+    $scope.classAxioms = classAxioms;
     $scope.gciAxioms = gciAxioms;
     $scope.owlAxiomExpression = {}; 
     $scope.loading = true;
@@ -108,10 +108,10 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
       let result = 'Owl Axiom Expression for ' + $scope.conceptFSN + ' | ' + $scope.conceptId;
       result = result + '\n\n';
 
-      angular.forEach($scope.additionalAxioms, function(additionalAxiom){
-        result = result + 'Additional Axiom \n';
-        result = result + 'Owl Axiom Expression: ' + $scope.owlAxiomExpression[additionalAxiom.axiomId] + '\n';
-        result = result +  $scope.formatOwlAxiomExpression($scope.owlAxiomExpression[additionalAxiom.axiomId]);
+      angular.forEach($scope.classAxioms, function(classAxiom){
+        result = result + 'Class Axiom \n';
+        result = result + 'Owl Axiom Expression: ' + $scope.owlAxiomExpression[classAxiom.axiomId] + '\n';
+        result = result +  $scope.formatOwlAxiomExpression($scope.owlAxiomExpression[classAxiom.axiomId]);
         result = result + '\n\n';
       });
       
@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
     $scope.getOtherExpressions = function() {
       var others= [];
       var ids = [];
-      angular.forEach($scope.additionalAxioms, function(aixom){
+      angular.forEach($scope.classAxioms, function(aixom){
         ids.push(aixom.axiomId);
       });
       angular.forEach($scope.gciAxioms, function(aixom){
@@ -163,9 +163,9 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
       conceptMap[609096000] = 'Role group (attribute)';
       conceptMap[116680003] = 'Is a (attribute)';
       
-      if ($scope.additionalAxioms && $scope.additionalAxioms.length !== 0) {
-        angular.forEach($scope.additionalAxioms, function(additionalAxiom){
-          angular.forEach(additionalAxiom.relationships, function(relationship){
+      if ($scope.classAxioms && $scope.classAxioms.length !== 0) {
+        angular.forEach($scope.classAxioms, function(classAxiom){
+          angular.forEach(classAxiom.relationships, function(relationship){
             conceptMap[relationship.type.conceptId] = relationship.type.fsn;
             conceptMap[relationship.target.conceptId] = relationship.target.fsn; 
           });         

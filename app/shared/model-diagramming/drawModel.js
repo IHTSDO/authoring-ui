@@ -98,7 +98,7 @@ angular.module('singleConceptAuthoringApp')
                     });
                 axioms.push(axiomToPush);
             });
-            $.each(concept.additionalAxioms, function (i, axiom) {
+            $.each(concept.classAxioms, function (i, axiom) {
                 var axiomToPush = {
                     relationships : [],
                     type : 'add'
@@ -247,7 +247,7 @@ angular.module('singleConceptAuthoringApp')
           });
         
           if(scope.view === 'stated'){
-              $.each(concept.additionalAxioms, function (i, axiom) {
+              $.each(concept.classAxioms, function (i, axiom) {
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {

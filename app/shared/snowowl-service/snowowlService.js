@@ -20,8 +20,8 @@ angular.module('singleConceptAuthoringApp')
         if (typeof concept.relationships == "object") {
           normaliseSnowstormRelationships(concept.relationships);
         }
-        if (typeof concept.additionalAxioms == "object") {
-          normaliseSnowstormAxioms(concept.additionalAxioms);
+        if (typeof concept.classAxioms == "object") {
+          normaliseSnowstormAxioms(concept.classAxioms);
         }
         if (typeof concept.gciAxioms == "object") {
           normaliseSnowstormAxioms(concept.gciAxioms);
@@ -298,7 +298,7 @@ angular.module('singleConceptAuthoringApp')
         var allowableProperties = [
           'fsn', 'released', 'conceptId', 'definitionStatus', 'active', 'moduleId',
           'isLeafInferred', 'effectiveTime', 'descriptions',
-          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets', 'additionalAxioms', 'gciAxioms'];
+          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets', 'classAxioms', 'gciAxioms'];
 
         // if a locally assigned UUID, strip
         if (!isSctid(concept.conceptId) && !keepTempIds) {
@@ -323,8 +323,8 @@ angular.module('singleConceptAuthoringApp')
 
         });
 
-        if (concept.additionalAxioms) {
-          angular.forEach(concept.additionalAxioms, function (axiom) {
+        if (concept.classAxioms) {
+          angular.forEach(concept.classAxioms, function (axiom) {
             cleanAxiom(axiom);
           });
         }
