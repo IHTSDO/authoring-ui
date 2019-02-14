@@ -61,7 +61,8 @@
 
         <div class="col-md-11 no-padding left-of-edit {{relationship.characteristicType}}" drop-channel="axiomRelationshipObj"
              ui-on-drop="dropAxiomRelationship(relationship, $data, axiom)" drag-enter-class="sca-drag-target"
-             drag-hover-class="sca-drag-hover">
+             drag-hover-class="sca-drag-hover"
+             drop-validate="!isLockedModule(axiom.moduleId) && !isStatic">
 
           <div>                 
 
@@ -89,7 +90,7 @@
                  drag-hover-class="sca-drag-hover"
                  drop-channel="completeConcept"
                  ui-on-drop="dropAxiomRelationshipType(relationship, $data, axiom)"
-                 drop-validate="!relationship.effectiveTime && !isStatic">
+                 drop-validate="!isLockedModule(axiom.moduleId) && !isStatic">
 
                 <textarea id="axiom-relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                           custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
@@ -119,7 +120,7 @@
             <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
                  drag-hover-class="sca-drag-hover"
                  drop-channel="completeConcept" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type)"
-                 drop-validate="!relationship.effectiveTime && !isStatic"
+                 drop-validate="!isLockedModule(axiom.moduleId) && !isStatic"
                  ng-class="getTargetSlotStyle(relationship)">
 
               <textarea id="axiom-relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}" 
