@@ -96,7 +96,7 @@
                           custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
                           ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || isBatch || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
                           class="resizable-text form-control msd-elastic no-border-bottom rel"
-                          typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
+                          typeahead="suggestion as suggestion.fsn.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
                           typeahead-focus-first="false"
                           typeahead-loading="typeTypeaheadLoading"
                           typeahead-wait-ms="700"
