@@ -1070,10 +1070,10 @@ angular.module('singleConceptAuthoringApp.edit', [
             clonedConcept.relationships.splice(j, 1);
           }
         }
-        if (clonedConcept.additionalAxioms && clonedConcept.additionalAxioms.length > 0) {
-          for (let index = 0; index < clonedConcept.additionalAxioms.length; index++) {
-            clonedConcept.additionalAxioms[index].axiomId = null;
-            clonedConcept.additionalAxioms[index].released = false;
+        if (clonedConcept.classAxioms && clonedConcept.classAxioms.length > 0) {
+          for (let index = 0; index < clonedConcept.classAxioms.length; index++) {
+            clonedConcept.classAxioms[index].axiomId = null;
+            clonedConcept.classAxioms[index].released = false;
           }
         }
         if (clonedConcept.gciAxioms && clonedConcept.gciAxioms.length > 0) {
