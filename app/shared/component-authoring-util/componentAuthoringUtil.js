@@ -177,6 +177,7 @@ angular.module('singleConceptAuthoringApp')
           'conceptId': snowowlService.createGuid(),
           'descriptions': [],
           'relationships': [],
+          'classAxioms':[],
           'fsn': null,
           'definitionStatus': 'PRIMITIVE',
           'active': true,
@@ -202,7 +203,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
         // add IsA relationship
-        concept.relationships.push(getNewIsaRelationship(moduleId));
+        concept.classAxioms.push(getNewAxiom());
 
         return concept;
       }
@@ -997,6 +998,18 @@ function getFsnDescriptionForConcept(concept) {
         return errors;
       };
 
+      function checkClassAxiomRelationships(concept){
+          if(concept.classAxioms.length === 0){
+              return true
+          }
+          angular.forEach(concept.classAxioms, function(axiom){
+              if(axiom.relationships.length === 0){
+                  return true
+              }
+          });
+          return false
+      };
+
       function checkConceptComplete(concept) {
         var errors = [];
 
@@ -1004,8 +1017,8 @@ function getFsnDescriptionForConcept(concept) {
           errors.push('Concept must have at least one description');
 
         }
-        if (!concept.relationships || concept.relationships.length === 0) {
-          errors.push('Concept must have at least one relationship');
+        if (!concept.relationships || concept.relationships.length === 0 && checkClassAxiomRelationships(concept)) {
+          errors.push('Concept must have at least one axiom');
 
         }
         if (!concept.definitionStatus) {
