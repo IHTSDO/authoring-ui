@@ -1004,7 +1004,8 @@ angular.module('singleConceptAuthoringApp')
             definitionStatus: data.definitionStatus,
             fsn: data.fsn ? data.fsn.term : data.fsn,
             preferredSynonym: data.pt ? data.pt.term : data.pt,
-            moduleId: data.moduleId
+            moduleId: data.moduleId,
+            term: data.pt ? data.pt.term : data.pt
           }
         };
       }
@@ -1051,8 +1052,18 @@ angular.module('singleConceptAuthoringApp')
         }
 
         let isAsychronousRequest = false;
+
+        // if the user is searching with a refsetId
+        if(termFilter.substr(8, 1) === '-' && termFilter.substr(13, 1) === '-'){
+            doRefsetSearch(branch, termFilter).then(function (response) {
+                  deferred.resolve(response);
+              }, function (error) {
+                deferred.reject(error);
+              });
+        }
+
         // if the user is searching with some form of numerical ID
-        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
+        else if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
 
           // if user is searching with a conceptID
           if(conceptIdList || termFilter.substr(-2, 1) === '0') {
@@ -1190,10 +1201,26 @@ angular.module('singleConceptAuthoringApp')
 
                 results.push(obj);
               });
-
               response.data.items = results;
               deferred.resolve(response.data ? response.data : {items: [], total: 0});
             }
+
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+        return deferred.promise;
+      }
+
+      function doRefsetSearch (branch, axiomId) {
+        let deferred = $q.defer();
+
+        $http.get(apiEndpoint + branch + '/members/' + axiomId).then(function (response) {
+              let results = [];
+              let obj = browserStructureConversion(response.data.referencedComponent);
+              results.push(obj);
+              response.data.items = results;
+              deferred.resolve(response.data.items ? response.data.items : {items: [], total: 0});
 
           }, function (error) {
             deferred.reject(error);

@@ -240,7 +240,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         // temp array for tracking duplicate ids
         let tempIds = [];
-
+        console.log($scope.storedResults);
         // cycle over all results
         for (let i = 0; i < $scope.storedResults.length; i++) {
 
@@ -597,7 +597,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         else{
 
         snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter).then(function (results) {
-
+          console.log(results);
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
           }
