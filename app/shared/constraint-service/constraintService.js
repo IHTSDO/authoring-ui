@@ -84,7 +84,7 @@ angular.module('singleConceptAuthoringApp')
           // construct comma-separated list of ids
           var idList = '';
           angular.forEach(axiom.relationships, function (relationship) {
-            if (relationship.active === true && relationship.type.conceptId === '116680003' && relationship.target.conceptId && relationship.characteristicType !== 'INFERRED_RELATIONSHIP') {
+            if (relationship.type.conceptId === '116680003' && relationship.target.conceptId) {
               idList += relationship.target.conceptId + ',';
             }
           });
