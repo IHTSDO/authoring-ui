@@ -1217,9 +1217,11 @@ angular.module('singleConceptAuthoringApp')
 
         $http.get(apiEndpoint + branch + '/members/' + axiomId).then(function (response) {
               let results = [];
-              let obj = browserStructureConversion(response.data.referencedComponent);
-              results.push(obj);
-              response.data.items = results;
+              if(response.data.refsetId === '733073007'){
+                  let obj = browserStructureConversion(response.data.referencedComponent);
+                  results.push(obj);
+                  response.data.items = results;
+              }
               deferred.resolve(response.data.items ? response.data.items : {items: [], total: 0});
 
           }, function (error) {
