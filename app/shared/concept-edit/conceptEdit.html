@@ -534,7 +534,7 @@
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent"
-                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
+                        ng-disabled="true"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span ng-if="isStatic">Active/Inactive</span>
