@@ -1511,7 +1511,7 @@ angular.module('singleConceptAuthoringApp')
           return null;
         }
 
-        return $http.get('snowowl/admin/codesystems/' + codeSystemShortName + '/versions').then(function (response) {
+        return $http.get(apiEndpoint + '/codesystems/' + codeSystemShortName + '/versions').then(function (response) {
           return response;
         }, function (error) {
           return null;
