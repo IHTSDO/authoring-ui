@@ -31,6 +31,12 @@
               ng-disabled="isLockedModule(concept.moduleId)">
         <span>Delete Axiom</span>
       </button>
+      <button type="button"
+                  ng-class="[{green : axiom.active}, {red: !axiom.active}]"
+                  ng-click="toggleAxiomActive(axiom)"
+                  ng-if="axiom.released"
+                  ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
+                  class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case">
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'FULLY_DEFINED'"
               ng-disabled="isStatic || isLockedModule(concept.moduleId) || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
               class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right"
