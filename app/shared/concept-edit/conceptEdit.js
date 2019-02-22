@@ -2923,6 +2923,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   relationship.target.released = response.released;
 
                   scope.computeAxioms(type);
+                  refreshAttributeTypesForAxiom(axiom);
                   autoSave();
                 });
               }, function (error) {
@@ -3249,6 +3250,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 axiom.relationships[targetIndex] = copy;
               }
 
+              refreshAttributeTypesForAxiom(axiom);
               scope.computeAxioms(axiom.type);
               autoSave();
             }, function () {
@@ -3427,6 +3429,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   copy.sourceId = scope.concept.conceptId;
 
                   axiom.relationships.push(copy);
+                  refreshAttributeTypesForAxiom(axiom);
                   if (++relsProcessed === relGroup.length) {
                     autoSave();
                     scope.computeAxioms(axiom.type);
@@ -3810,7 +3813,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship) {
             return;
           }
-
+          refreshAttributeTypesForAxiom(axiom);
           scope.computeAxioms(type);
           autoSave();
         };
@@ -4338,6 +4341,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.active= item.active;
                 relationship.target.released = item.released;
 
+                refreshAttributeTypesForAxiom(axiom);
                 scope.computeAxioms(axiom.type);
                 autoSave();
               }, function () {
@@ -4353,6 +4357,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.active= item.active;
             relationship.target.released = item.released;
 
+            refreshAttributeTypesForAxiom(axiom);
             scope.computeAxioms(axiom.type);
             autoSave();
           }
