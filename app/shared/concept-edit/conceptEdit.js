@@ -2612,13 +2612,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             axiom.relationships.splice(index + 1, 0, relationship);
           }
-          if (!scope.isStatic) {
-            constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
-              axiom.allowedAttributes = attributes;
-            }, function (error) {
-              notificationService.sendError('Error getting allowable domain attributes: ' + error);
-            });
-          }
+          refreshAttributeTypesForAxiom(axiom);
 
           scope.computeAxioms(axiom.type);
           autoSave();
@@ -2659,13 +2653,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete isaRel.moduleId;
 
               isaRel.sourceId = scope.concept.conceptId;
-              if (!scope.isStatic) {
-                constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
-                  axiom.allowedAttributes = attributes;
-                }, function (error) {
-                  notificationService.sendError('Error getting allowable domain attributes: ' + error);
-                });
-              }
+              refreshAttributeTypesForAxiom(axiom);
 
               axiom.relationships.push(isaRel);
             }
@@ -4142,16 +4130,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // MRCM functions
 //////////////////////////////////////////////
           
+        function refreshAttributeTypesForAxiom(axiom){
+            if (!scope.isStatic) {
+                    constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
+                    axiom.allowedAttributes = attributes;
+                }, function (error) {
+                    notificationService.sendError('Error getting allowable domain attributes: ' + error);
+                });
+            }
+        }
+        
         //Watch classAxiom relationships for changes and update allowable attributes
         angular.forEach(scope.concept.classAxioms, function(axiom){
             scope.$watch(axiom.relationships, function (newValue, oldValue) {
-                if (!scope.isStatic) {
-                        constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
-                        axiom.allowedAttributes = attributes;
-                    }, function (error) {
-                        notificationService.sendError('Error getting allowable domain attributes: ' + error);
-                    });
-                }
+                refreshAttributeTypesForAxiom(axiom);
                 scope.computeAxioms('additional');
             }, true);
         });
@@ -4159,13 +4151,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //Watch gciAxiom relationships for changes and update allowable attributes          
         angular.forEach(scope.concept.gciAxioms, function(axiom){
             scope.$watch(axiom.relationships, function (newValue, oldValue) {
-                if (!scope.isStatic) {
-                        constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
-                        axiom.allowedAttributes = attributes;
-                    }, function (error) {
-                        notificationService.sendError('Error getting allowable domain attributes: ' + error);
-                    });
-                }
+                refreshAttributeTypesForAxiom(axiom);
                 scope.computeAxioms('gci');
             }, true);
         });
