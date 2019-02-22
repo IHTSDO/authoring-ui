@@ -2128,37 +2128,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.removeAxiom = function (axiom, type) {
           var msg = '';
-          if(type === axiomType.ADDITIONAL) {
+          if(scope.concept.classAxioms.length < 2 && type === axiomType.ADDITIONAL) {
+            msg = 'You may not remove the last additional Axiom';
+          } 
+          else if(scope.concept.classAxioms.length >= 2 && type === axiomType.ADDITIONAL) {
             msg = 'Do you want to remove this Additional Axiom ?';
-          } else if(type === axiomType.GCI) {
+          }
+          else if(type === axiomType.GCI) {
             msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
           }
           modalService.confirm(msg).then(function () {
-              var index = -1;
-              if (type === axiomType.ADDITIONAL) {
-                for (var i = scope.concept.classAxioms.length - 1; i >= 0; i--) {
-                  if (axiom.axiomId === scope.concept.classAxioms[i].axiomId) {
-                    index = i;
-                    break;
+              if(scope.concept.classAxioms.length >= 2 || type === axiomType.GCI){
+                  var index = -1;
+                  if (type === axiomType.ADDITIONAL) {
+                    for (var i = scope.concept.classAxioms.length - 1; i >= 0; i--) {
+                      if (axiom.axiomId === scope.concept.classAxioms[i].axiomId) {
+                        index = i;
+                        break;
+                      }
+                    }
+                    if (index >= 0) {
+                      scope.concept.classAxioms.splice(index, 1);
+                      scope.computeAxioms(type);
+                      autoSave();
+                    }
+                  } else if (type === axiomType.GCI) {
+                    for (var i = scope.concept.gciAxioms.length - 1; i >= 0; i--) {
+                      if (axiom.axiomId === scope.concept.gciAxioms[i].axiomId) {
+                        index = i;
+                        break;
+                      }
+                    }
+                    if (index >= 0) {
+                      scope.concept.gciAxioms.splice(index, 1);
+                      scope.computeAxioms(type);
+                      autoSave();
+                    }
                   }
-                }
-                if (index >= 0) {
-                  scope.concept.classAxioms.splice(index, 1);
-                  scope.computeAxioms(type);
-                  autoSave();
-                }
-              } else if (type === axiomType.GCI) {
-                for (var i = scope.concept.gciAxioms.length - 1; i >= 0; i--) {
-                  if (axiom.axiomId === scope.concept.gciAxioms[i].axiomId) {
-                    index = i;
-                    break;
-                  }
-                }
-                if (index >= 0) {
-                  scope.concept.gciAxioms.splice(index, 1);
-                  scope.computeAxioms(type);
-                  autoSave();
-                }
               }
 
             }, function () {
