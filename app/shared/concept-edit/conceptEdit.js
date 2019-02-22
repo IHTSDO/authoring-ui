@@ -2669,6 +2669,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeAxioms(axiom.type);
           autoSave();
         };
+          
+        scope.toggleAxiomActive = function (axiom) {
+          if (scope.concept.active === true) {
+            axiom.active = !axiom.active;
+            axiom.effectiveTime = null;
+            componentAuthoringUtil.applyMinimumFields(scope.concept);
+            autoSave();
+          }
+          else {
+            scope.warnings = ['You must activate the concept before its components.'];
+          }
+        }
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
