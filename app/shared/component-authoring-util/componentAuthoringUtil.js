@@ -992,7 +992,7 @@ function getFsnDescriptionForConcept(concept) {
         });
         
         if (!hasIsARelationship) {
-          errors.push((type === 'gci'? 'General Concept Inclusion' : 'Additional Axiom') + ' must have at least one IS A relationship');
+          errors.push((type === 'gci'? 'General Concept Inclusion' : 'Axiom') + ' must have at least one IS A relationship');
         }
 
         return errors;
