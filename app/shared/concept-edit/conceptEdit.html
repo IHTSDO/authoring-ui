@@ -200,8 +200,8 @@
                           ng-click="collapse(concept)"></i></span>
               </div>
               <ul ng-if=" role === 'AUTHOR' || !isStatic || role === 'REVIEWER'">
-                <li ng-click="addAdditionalAxiom()" ng-if="!isLockedModule(concept.moduleId) && isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Additional Axiom</li>
-                <li ng-click="addGCIAxiom()" ng-if="!isLockedModule(concept.moduleId) && isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
+                <li ng-click="addAdditionalAxiom()" ng-if="!isLockedModule(concept.moduleId) && isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
+                <li ng-click="addGCIAxiom()" ng-if="!isLockedModule(concept.moduleId) && isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>

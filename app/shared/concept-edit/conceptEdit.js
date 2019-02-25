@@ -2132,7 +2132,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             msg = 'You may not remove the last additional Axiom';
           } 
           else if(scope.concept.classAxioms.length >= 2 && type === axiomType.ADDITIONAL) {
-            msg = 'Do you want to remove this Additional Axiom ?';
+            msg = 'Do you want to remove this Axiom ?';
           }
           else if(type === axiomType.GCI) {
             msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
@@ -2525,7 +2525,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (type === axiomType.ADDITIONAL) {
             angular.forEach(scope.concept.classAxioms, function (axiom) {
               axiom['relationshipGroups'] = [];
-              axiom.title = 'Additional Axiom';
+              axiom.title = 'Axiom';
               axiom.type = axiomType.ADDITIONAL;
               angular.forEach(axiom.relationships, function (rel) {
                 // if map does not have this group id, add blank array
