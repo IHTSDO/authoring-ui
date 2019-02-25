@@ -99,10 +99,10 @@
                  drop-validate="!isLockedModule(axiom.moduleId) && !isStatic">
 
                 <textarea id="axiom-relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                          custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.fsn"
+                          custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.pt"
                           ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || isBatch || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
                           class="resizable-text form-control msd-elastic no-border-bottom rel"
-                          typeahead="suggestion as suggestion.fsn.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
+                          typeahead="suggestion as suggestion.pt.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
                           typeahead-focus-first="false"
                           typeahead-loading="typeTypeaheadLoading"
                           typeahead-wait-ms="700"
