@@ -58,7 +58,6 @@
   </div>
 </div>
   <div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">
-      <div ng-if="showRelationshipGroup(relationshipGroup)">
         <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
 
     <div ng-repeat="relationship in relationshipGroup"
@@ -195,6 +194,15 @@
           </button>
         </div>
       </div>
+    </div>
+  <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template">
+    <div class="col-md-11"></div>
+        <div class="col-md-1">
+            <button
+            class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right pull-right"
+            ng-click="addAxiomRelationshipGroup(axiom)"><span>Add Group</span>
+          </button>
+        </div>
     </div>
   </div>
 </div>
