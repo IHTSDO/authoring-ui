@@ -2535,6 +2535,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
+                
               });
             });
           }

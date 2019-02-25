@@ -57,8 +57,11 @@
     </div>
   </div>
 </div>
+  <div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">
+      <div ng-if="showRelationshipGroup(relationshipGroup)">
+        <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
 
-    <div ng-repeat="relationship in axiom.relationships"
+    <div ng-repeat="relationship in relationshipGroup"
          ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
          class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">           
 
@@ -193,3 +196,5 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
