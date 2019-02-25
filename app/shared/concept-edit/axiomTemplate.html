@@ -58,7 +58,7 @@
   </div>
 </div>
   <div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">
-        <div class="role_group_divider_top_{{(groupId%2==0)?'even':'odd'}} "></div>
+        <div class="axiom-group-top"></div>
 
     <div ng-repeat="relationship in relationshipGroup"
          ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
@@ -195,7 +195,7 @@
         </div>
       </div>
     </div>
-  <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template">
+  <div class="row p-l-10 axiom-group-top" ng-if="$last && !isStatic && !template && !concept.template">
     <div class="col-md-11"></div>
         <div class="col-md-1">
             <button
