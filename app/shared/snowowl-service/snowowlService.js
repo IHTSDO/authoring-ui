@@ -1830,6 +1830,16 @@ angular.module('singleConceptAuthoringApp')
             relationship.relationshipId = createGuid();
           }
         });
+        angular.forEach(concept.classAxioms, function (axiom) {
+          if (!axiom.axiomId) {
+            axiom.axiomId = createGuid();
+          }
+        });
+        angular.forEach(concept.gciAxioms, function (axiom) {
+          if (!axiom.axiomId) {
+            axiom.axiomId = createGuid();
+          }
+        });
 
         // Clone concept and remove property "display" in relationship if any
         // This is used for preventing any update on the cloned concept while the original one could be changed concurrently
