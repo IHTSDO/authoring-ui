@@ -2708,6 +2708,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           scope.concept.classAxioms.push(axiom);
+          refreshAttributeTypesForAxiom(axiom)
           scope.computeAxioms(axiomType.ADDITIONAL);
           autoSave();
         };
@@ -2724,6 +2725,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           scope.concept.gciAxioms.push(axiom);
+          refreshAttributeTypesForAxiom(axiom)
           scope.computeAxioms(axiomType.GCI);
           autoSave();
         };
