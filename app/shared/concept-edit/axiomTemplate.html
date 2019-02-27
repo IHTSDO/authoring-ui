@@ -79,18 +79,7 @@
               ui-draggable="true" drag="relationship" drag-channel="axiomRelationshipObj"
               drag-image="getDragImageForRelationship(relationship)">
               <span>Drag This Row</span>
-            </button>                
-
-            <!-- relationship group -->
-            <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-              <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || isBatch || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
-                        ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
-                        ng-change="updateAxiomRelationship(relationship, axiom.type)"
-                        class="form-control rg no-border-bottom"
-                        type="text" placeholder="#" ui-on-drop="dropNullOp()">
-              </textarea>
-              <span>Role Group</span>
-            </div>
+            </button>                \
 
             <!-- attribute type' -->
             <div class="pull-left is_a is_a_bg"
