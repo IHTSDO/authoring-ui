@@ -58,7 +58,7 @@
   </div>
 </div>
   <div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">
-        <div class="axiom-group-top"></div>
+        <div ng-if="groupId !== 0" class="axiom-group-top"></div>
 
     <div ng-repeat="relationship in relationshipGroup"
          ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
@@ -79,7 +79,7 @@
               ui-draggable="true" drag="relationship" drag-channel="axiomRelationshipObj"
               drag-image="getDragImageForRelationship(relationship)">
               <span>Drag This Row</span>
-            </button>                \
+            </button>                
 
             <!-- attribute type' -->
             <div class="pull-left is_a is_a_bg"
