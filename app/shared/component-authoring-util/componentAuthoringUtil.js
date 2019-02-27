@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp')
           },
           'type': {
             'conceptId': '116680003',
-            'fsn': 'Is a (attribute)'
+            'pt': 'Is a'
           }
         };
       }
