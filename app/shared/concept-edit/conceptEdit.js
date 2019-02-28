@@ -2943,6 +2943,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   relationship.target.active= response.active;
                   relationship.target.released = response.released;
 
+                  scope.isModified = true;
                   scope.computeAxioms(type);
                   refreshAttributeTypesForAxiom(axiom);
                   autoSave();
@@ -3053,6 +3054,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               relationship.type.conceptId = data.id;
               relationship.type.fsn = data.name;
+              scope.isModified = true;
 
               scope.computeAxioms(axiom.type);
               autoSave();
