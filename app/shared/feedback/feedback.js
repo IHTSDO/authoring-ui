@@ -753,8 +753,61 @@ angular.module('singleConceptAuthoringApp')
 
           // the scope variable containing the map of concept -> [style map]
           scope.styles = {};
+        
+          scope.getCaseSignificanceDisplayText = function (description) {
+            switch (description.caseSignificance) {
+              case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
+                return 'cI';
+              case 'CASE_INSENSITIVE':
+                return 'ci';
+              case 'ENTIRE_TERM_CASE_SENSITIVE':
+                return 'CS';
+              default:
+                return '??';
+            }
+          };
 
-          function highlightComponent(conceptId, componentId) {
+          function highlightComponent(conceptId, componentId, mainDescription, taskDescription) {
+            if (!scope.innerComponentStyle) {
+              scope.innerComponentStyle = {};
+            }
+            if(mainDescription !== null && taskDescription !== null && mainDescription !== undefined && taskDescription !== undefined){
+                if (taskDescription.type !== mainDescription.type) {
+                      scope.innerComponentStyle[componentId + '-type'] = {
+                        message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type,
+                        style: 'triangle-redhl'
+                      };
+                    }
+                    if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
+                      scope.innerComponentStyle[componentId + '-caseSignificance'] = {
+                        message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
+                        style: 'triangle-redhl'
+                      };
+                    }
+                    var componentDialects = Object.keys(taskDescription.acceptabilityMap);
+                    componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+                angular.forEach(componentDialects, function (dialectId) {
+                    if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
+                      scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
+                        message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
+                        style: 'triangle-redhl'
+                      };
+                    }
+                    if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
+                      scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
+                        message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable',
+                        style: 'triangle-redhl'
+                      };
+                    }
+                    if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
+                      && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
+                      scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
+                        message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
+                        style: 'triangle-redhl'
+                      };
+                    }
+                });
+            }
             if (!scope.styles) {
               scope.styles = {};
             }
@@ -908,7 +961,7 @@ angular.module('singleConceptAuthoringApp')
                     || description.lang !== originalDescription.lang
                     || description.term !== originalDescription.term
                     || description.type !== originalDescription.type){
-                      highlightComponent(currentConcept.conceptId, description.descriptionId);
+                      highlightComponent(currentConcept.conceptId, description.descriptionId, originalDescription, description);
                     }
                   } 
               });
