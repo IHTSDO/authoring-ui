@@ -869,9 +869,12 @@ angular.module('singleConceptAuthoringApp')
           scope.runComparison = function(conceptId, branch, currentConcept){
             var deferred = $q.defer();
             snowowlService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (response) {
-              console.log(response);
-              scope.viewedConcepts.push(currentConcept);
-              deferred.resolve(currentConcept);
+              scope.compareDescriptions(currentConcept, response).then(function () {
+                scope.compareAxioms(currentConcept, response).then(function () {
+                  scope.viewedConcepts.push(currentConcept);
+                  deferred.resolve(currentConcept);
+                })
+              });
             }, 
             function (error) {
               scope.styles[currentConcept.conceptId] = {isNew: true};
@@ -888,6 +891,93 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           };
+            
+          scope.compareDescriptions = function(currentConcept, originalConcept){
+            var deferred = $q.defer();
+            let originalIds = [];
+            let newIds = [];
+            angular.forEach(originalConcept.descriptions, function(description){
+              originalIds.push(description.descriptionId);
+            });
+            angular.forEach(currentConcept.descriptions, function(description){
+              newIds.push(description.descriptionId);
+              angular.forEach(originalConcept.descriptions, function(originalDescription){
+                  if(description.descriptionId === originalDescription.descriptionId){
+                    if(description.active !== originalDescription.active
+                    || description.caseSignificance !== originalDescription.caseSignificance
+                    || description.lang !== originalDescription.lang
+                    || description.term !== originalDescription.term
+                    || description.type !== originalDescription.type){
+                      highlightComponent(currentConcept.conceptId, description.descriptionId);
+                    }
+                  } 
+              });
+            });
+            //description is new
+            angular.forEach(newIds, function(id){
+              if(!originalIds.includes(id)){
+                highlightComponent(currentConcept.conceptId, id);
+              }
+            });
+            deferred.resolve();
+            return deferred.promise;
+          };
+            
+          scope.compareAxioms = function(currentConcept, originalConcept){
+            var deferred = $q.defer();
+            let originalIds = [];
+            let newIds = [];
+            angular.forEach(originalConcept.classAxioms, function(axiom){
+              originalIds.push(axiom.axiomId);
+            });
+            angular.forEach(originalConcept.gciAxioms, function(axiom){
+              originalIds.push(axiom.axiomId);
+            });
+            angular.forEach(currentConcept.classAxioms, function(axiom){
+              newIds.push(axiom.axiomId);
+              angular.forEach(originalConcept.classAxioms, function(originalAxiom){
+                if(axiom.axiomId === originalAxiom.axiomId){
+                  if(axiom.active !== originalAxiom.active
+                    || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                      highlightComponent(currentConcept.conceptId, description.axiomId);
+                  }
+                } 
+              });
+            });
+            angular.forEach(currentConcept.gciAxioms, function(axiom){
+              newIds.push(axiom.axiomId);
+              angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
+                if(axiom.axiomId === originalAxiom.axiomId){
+                  if(axiom.active !== originalAxiom.active
+                    || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                      highlightComponent(currentConcept.conceptId, description.axiomId);
+                  }
+                } 
+              });
+            });
+            //description is new
+            angular.forEach(newIds, function(id){
+              if(!originalIds.includes(id)){
+                highlightComponent(currentConcept.conceptId, id);
+              }
+            });
+            deferred.resolve();
+            return deferred.promise;
+          };
+            
+          function isEquivalent(a, b) {
+            // Create arrays of property names
+            var aProps = Object.getOwnPropertyNames(a);
+            var bProps = Object.getOwnPropertyNames(b);
+            for (var i = 0; i < aProps.length; i++) {
+              var propName = aProps[i];
+                // Check all first level property values
+              if (a[propName] !== b[propName]) {
+                return false;
+              }
+            }
+            return true;
+          }
 
           // function to add a concept to viewed list from tables
           scope.addToEdit = function (item) {
