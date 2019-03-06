@@ -896,6 +896,25 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
+        
+      // Helper call to retrieve a concept with all elements at a point in time
+      // Puts all elements in save-ready format
+      function getFullConceptAtDate(conceptId, branch, acceptLanguageValue, date) {
+
+        var deferred = $q.defer();
+        var config = {};
+        if (acceptLanguageValue) {
+          config.headers = {'Accept-Language': acceptLanguageValue};
+        }
+
+        $http.get(apiEndpoint + 'browser/' + branch + '@' + date + '/concepts/' + conceptId, config).then(function (response) {
+          normaliseSnowstormConcept(response.data);
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
 
       /////////////////////////////////////
       // Static metadata methods
@@ -1447,7 +1466,8 @@ angular.module('singleConceptAuthoringApp')
 
       // Get traceability log for branch
       // GET /traceability-service/activities?onBranch=
-      function getTraceabilityForBranch(branch, conceptId, activityType) {
+      function getTraceabilityForBranch(branch, conceptId, activityType, brief) {
+        console.log(brief);
         var deferred = $q.defer();
         var params = 'size=50000';
         if(branch) {
@@ -1458,6 +1478,9 @@ angular.module('singleConceptAuthoringApp')
         }
         if(activityType) {
           params += '&activityType=' + activityType;
+        }
+        if(brief){
+          params += '&brief=true'
         }
 
         $http.get('/traceability-service/activities?' + params).then(function (response) {
@@ -1966,6 +1989,7 @@ angular.module('singleConceptAuthoringApp')
         getConceptDescendants: getConceptDescendants,
         getRelationshipDisplayNames: getRelationshipDisplayNames,
         getFullConcept: getFullConcept,
+        getFullConceptAtDate: getFullConceptAtDate,
         updateDescription: updateDescription,
         startClassificationForTask: startClassificationForTask,
         getClassificationForTask: getClassificationForTask,
