@@ -845,13 +845,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.allowedAttributes = [];
 
         scope.toggleHideInactive = function () {
-          console.log('CONCEPT: ', scope.concept);
           scope.hideInactive = !scope.hideInactive;
+          scope.computeRelationshipGroups();
         };
 
         scope.showInferredRels = false;
         scope.toggleInferredRelationships = function () {
-           scope.showInferredRels = ! scope.showInferredRels;
+           scope.showInferredRels = !scope.showInferredRels;
            scope.computeRelationshipGroups();
         };
 
