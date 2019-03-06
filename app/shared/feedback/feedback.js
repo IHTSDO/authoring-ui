@@ -665,9 +665,6 @@ angular.module('singleConceptAuthoringApp')
           function loadNextConcept(elementPos) {
             if (elementPos < scope.conceptsToReviewViewed.length) {
               var nextConcept = scope.conceptsToReviewViewed[elementPos];
-              if (!scope.isDeletedConcept(nextConcept)) {
-                scope.selectConcept(nextConcept);
-              }
             }
           }
 
@@ -708,18 +705,6 @@ angular.module('singleConceptAuthoringApp')
                 item.selected = isChecked;
               });
             }
-          };
-
-          scope.isDeletedConcept = function(concept) {
-            for (var i = 0; i < concept.componentChanges.length; i++) {
-              var change = concept.componentChanges[i];
-              if (change.componentType === 'CONCEPT'
-                && change.changeType === 'DELETE'
-                && !concept.term) {
-                return true;
-              }
-            }
-            return false;
           };
 
           scope.viewedConcepts = [];
@@ -860,36 +845,41 @@ angular.module('singleConceptAuthoringApp')
 
             // get the full concept for this branch (before version)
             snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
-
-              scope.viewedConcepts.push(response);
-
-              // Sort concepts
-              if(sorting) {
-                scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
-              }
-
-              // Re-bind shortcut
-              $timeout(function () {
-                hotkeys.bindTo(scope)
-                  .add({
-                    combo: 'alt+q',
-                    description: 'Close all concepts',
-                    callback: function() {
-                      closeAllConcepts();
-                    }
-                  });
-              }, 1000);
-
-
-              deferred.resolve(response);
-
-              // after a slight delay, broadcast a draw event
-              $timeout(function () {
-                $rootScope.$broadcast('comparativeModelDraw');
-              }, 500);
+              scope.runComparison(conceptId, scope.branch, response).then(function (response) {
+                if(sorting) {
+                  scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
+                }
+                // Re-bind shortcut
+                $timeout(function () {
+                  hotkeys.bindTo(scope)
+                    .add({
+                      combo: 'alt+q',
+                      description: 'Close all concepts',
+                      callback: function() {
+                        closeAllConcepts();
+                      }
+                    });
+                }, 1000);
+                  deferred.resolve(response);
+                })
             });
             return deferred.promise;
           }
+            
+          scope.runComparison = function(conceptId, branch, currentConcept){
+            var deferred = $q.defer();
+            snowowlService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (response) {
+              console.log(response);
+              scope.viewedConcepts.push(currentConcept);
+              deferred.resolve(currentConcept);
+            }, 
+            function (error) {
+              scope.styles[currentConcept.conceptId] = {isNew: true};
+              scope.viewedConcepts.push(currentConcept);
+              deferred.resolve(currentConcept);
+            });
+            return deferred.promise;
+          };
 
           scope.getSNF = function (id) {
             var deferred = $q.defer();
@@ -927,7 +917,6 @@ angular.module('singleConceptAuthoringApp')
             }
           };
           scope.viewConceptInTaxonomy = function (concept) {
-            console.log(concept);
             $rootScope.$broadcast('viewTaxonomy', {
               concept: {
                 conceptId: concept.conceptId,
@@ -1007,10 +996,8 @@ angular.module('singleConceptAuthoringApp')
             var sortingDirection = scope.conceptsToReviewTableParams.sorting().term;
             let idList = [];
             for (var i = 0; i < conceptsToAdd.length; i++) {
-              if (!scope.isDeletedConcept(conceptsToAdd[i])) {
                 conceptsToAdd[i].viewed = true;
                 idList.push(conceptsToAdd[i].conceptId);
-              }
             }
 
             snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
@@ -1493,9 +1480,6 @@ angular.module('singleConceptAuthoringApp')
             if(disabledAction) {
               return;
             }
-            if(scope.isDeletedConcept(concept)) {
-              notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
-            } else {
               scope.simultaneousFeedbackAdded = false;
               if (actions && actions.length > 0) {
                 if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
@@ -1506,7 +1490,6 @@ angular.module('singleConceptAuthoringApp')
                 scope.addToEdit(concept);
                 scope.viewConceptInTaxonomy(concept);
               }
-            }
           };
 
           scope.selectNextConcept = function() {
@@ -1879,7 +1862,7 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              snowowlService.getTraceabilityForBranch(scope.task.branchPath).then(function (traceability) {
+              snowowlService.getTraceabilityForBranch(scope.task.branchPath, false, false, true).then(function (traceability) {
                 var review = {};
                 if (traceability) {
                   console.log(traceability);
@@ -1898,9 +1881,7 @@ angular.module('singleConceptAuthoringApp')
 
                         if (review.concepts.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0 && concept.componentChanges.filter(function (obj) {
-                            return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                          }).length !== 0) {
+                          }).length === 0) {
                           concept.conceptId = concept.conceptId.toString();
                           concept.lastUpdatedTime = change.commitDate;
                           review.concepts.push(concept);
@@ -1909,17 +1890,13 @@ angular.module('singleConceptAuthoringApp')
                         }
                         else if (review.conceptsClassified.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0 && concept.componentChanges.filter(function (obj) {
-                            return obj.componentSubType === 'INFERRED_RELATIONSHIP';
-                          }).length !== 0) {
+                          }).length === 0) {
                           concept.conceptId = concept.conceptId.toString();
                           concept.lastUpdatedTime = change.commitDate;
                           review.conceptsClassified.push(concept);
                           idList.push(concept.conceptId);
                         }
-                        else if (concept.componentChanges.filter(function (obj) {
-                            return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                          }).length !== 0) {
+                        else {
                           var updateConcept = review.concepts.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
                           })[0];

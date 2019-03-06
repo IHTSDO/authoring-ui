@@ -1289,7 +1289,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // get latest review
     $scope.getLatestReview = function () {
-      snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
+      snowowlService.getTraceabilityForBranch($scope.branch, false, false, true).then(function (traceability) {
         var review = {};
 
         review.traceability = traceability;
@@ -1301,9 +1301,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             angular.forEach(change.conceptChanges, function (concept) {
               if (review.concepts.filter(function (obj) {
                   return obj.conceptId === concept.conceptId.toString();
-                }).length === 0 && concept.componentChanges.filter(function (obj) {
-                  return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                }).length !== 0) {
+                }).length === 0) {
 
                 concept.conceptId = concept.conceptId.toString();
                 concept.lastUpdatedTime = change.commitDate;
@@ -1312,17 +1310,13 @@ angular.module('singleConceptAuthoringApp.edit', [
               }
               else if (review.conceptsClassified.filter(function (obj) {
                   return obj.conceptId === concept.conceptId.toString();
-                }).length === 0 && concept.componentChanges.filter(function (obj) {
-                  return obj.componentSubType === 'INFERRED_RELATIONSHIP';
-                }).length !== 0) {
+                }).length === 0) {
                 concept.conceptId = concept.conceptId.toString();
                 concept.lastUpdatedTime = change.commitDate;
                 review.conceptsClassified.push(concept);
                 idList.push(concept.conceptId);
               }
-              else if (concept.componentChanges.filter(function (obj) {
-                  return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                }).length !== 0) {
+              else{
                 var updateConcept = review.concepts.filter(function (obj) {
                   return obj.conceptId === concept.conceptId.toString();
                 })[0];
