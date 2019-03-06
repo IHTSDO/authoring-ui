@@ -152,6 +152,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // styling for concept elements, as array [id0 : {message, style,
         // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
         componentStyles: '=',
+          
+        innerComponentStyle: '=',
 
         // Any additional fields you would like adding to the concept model (not
         // required) e.g. All fields are added as text fields to the form and if
@@ -703,7 +705,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
 //on load, check if traceability has been pashed from Feedback, then find the differences with concept project
-        scope.innerComponentStyle = {};
         scope.inactiveDescriptions = {};
 
         scope.isInactiveDescriptionModified = function (descriptionId) {
@@ -715,54 +716,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         function lookupInnerComponentStyle (){
-          scope.innerComponentStyle = {};
-
-          if(scope.traceabilities.totalElements > 0) {
-            snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
-              var checkList = [];
-              angular.forEach(scope.traceabilities.content, function (content) {
-                if(content.activityType === 'CONTENT_CHANGE') {
-                  angular.forEach(content.conceptChanges, function (traceability) {
-                    if(traceability.conceptId === scope.concept.conceptId) {
-                      angular.forEach(traceability.componentChanges, function (componentChange) {
-                        if (componentChange.componentType === 'DESCRIPTION'
-                            || (componentChange.componentType === 'RELATIONSHIP' && componentChange.componentSubType === 'STATED_RELATIONSHIP')) {
-                          scope.innerComponentStyle[componentChange.componentId] = {
-                            message: null,
-                            style: 'tealhl'
-                          };
-                        }
-                        if (componentChange.componentType === 'DESCRIPTION') {
-                          if (checkList.indexOf(componentChange.componentId) == -1) {
-                            checkList.push(componentChange.componentId);
-
-                            var taskDescription = scope.concept.descriptions.filter( function (des) {
-                              return des.descriptionId === componentChange.componentId;
-                            })[0];
-
-                            var projectDescription = response.descriptions.filter( function (des) {
-                              return des.descriptionId === componentChange.componentId;
-                            })[0];
-
-                            if(projectDescription && taskDescription) {
-                              highlightComponent(componentChange,projectDescription,taskDescription);
-                            }
-
-                            if ((projectDescription.inactivationIndicator !== taskDescription.inactivationIndicator
-                                || checkAssociationTargetsChanged(projectDescription.associationTargets, taskDescription.associationTargets))
-                                && !projectDescription.active
-                                && !taskDescription.active) {
-                              scope.inactiveDescriptions[projectDescription.descriptionId] = projectDescription;
-                            }
-                          }
-                        }
-                      });
-                    }
-                  });
-                }
-              });
-            });
-          }
 
         }
 
