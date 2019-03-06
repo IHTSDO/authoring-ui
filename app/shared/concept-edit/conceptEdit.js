@@ -213,7 +213,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         };
-          
+
         scope.checkReadOnlyDialect = function(dialectId){
             let readOnly = metadataService.getReadOnlyDialectsForModuleId(scope.concept.moduleId);
             if(readOnly[dialectId] === 'true'){
@@ -255,7 +255,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               combo: 'alt+x',
               description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
               callback: function() {scope.removeConcept(scope.concept)}
-            })          
+            })
           hotkeys.bindTo(scope)
           .add({
             combo: 'alt+t',
@@ -288,8 +288,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             .add({
               combo: 'alt+a',
               description: 'Approve concept: ' + scope.concept.fsn,
-              callback: function() {                
-                scope.approveAndLoadNext();                
+              callback: function() {
+                scope.approveAndLoadNext();
               }
             });
           }
@@ -318,13 +318,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.role = null;
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
-          if (task) {            
+          if (task) {
             accountService.getRoleForTask(task).then(function (role) {
               scope.role = role;
             });
             if (scope.role === 'UNDEFINED') {
               notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
-            }                       
+            }
           }
         });
 
@@ -715,8 +715,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         function lookupInnerComponentStyle (){
-          scope.innerComponentStyle = {};        
-          
+          scope.innerComponentStyle = {};
+
           if(scope.traceabilities.totalElements > 0) {
             snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
               var checkList = [];
@@ -750,7 +750,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                             if ((projectDescription.inactivationIndicator !== taskDescription.inactivationIndicator
                                 || checkAssociationTargetsChanged(projectDescription.associationTargets, taskDescription.associationTargets))
-                                && !projectDescription.active 
+                                && !projectDescription.active
                                 && !taskDescription.active) {
                               scope.inactiveDescriptions[projectDescription.descriptionId] = projectDescription;
                             }
@@ -763,7 +763,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             });
           }
-         
+
         }
 
         function highlightComponent(componentChange,mainDescription,taskDescription) {
@@ -818,14 +818,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           return false;
         }
-        
+
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
 
             // id required, used in drawModel.js
             $('#image-' + concept.conceptId).css('display', 'inline-block');
-            $('#project-taxonomy-' + concept.conceptId).css('display', 'inline-block');            
+            $('#project-taxonomy-' + concept.conceptId).css('display', 'inline-block');
             var zoomElm = $('#image-' + concept.conceptId).parent().parent().find('.zoom')[0];
             $(zoomElm).css('display', 'inline-block');
           }
@@ -845,6 +845,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.allowedAttributes = [];
 
         scope.toggleHideInactive = function () {
+          console.log('CONCEPT: ', scope.concept);
           scope.hideInactive = !scope.hideInactive;
         };
 
@@ -968,7 +969,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         if (scope.loadValidation === 'true' || scope.loadValidation === true) {
           scope.validateConcept();
         }
-        
+
         /**
          * Helper function to save or update concept after validation
          * @param concept
@@ -1423,7 +1424,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // Check unpublished changes for concept
               if(scope.concept.released === true && hasUnpublishedChanges()) {
-                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];                             
+                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
                 return;
               }
 
@@ -1545,18 +1546,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 item.relationships.forEach(function (relationship) {
                   if (!relationship.released) {
                     relationship.templateStyle = 'redhl';
-                  }                  
+                  }
                 });
               } else {
                 item.relationships.forEach(function (relationship) {
                   if (!relationship.released) {
                     hasUnpublishedAdditionalAxioms = true;
                     relationship.templateStyle = 'redhl';
-                  }                  
+                  }
                 });
               }
             });
-          }          
+          }
 
           let hasUnpublishedGCIs = false;
           if (scope.concept.gciAxioms && scope.concept.gciAxioms.length > 0) {
@@ -1566,14 +1567,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 item.relationships.forEach(function (relationship) {
                   if (!relationship.released) {
                     relationship.templateStyle = 'redhl';
-                  }                  
+                  }
                 });
               } else {
                 item.relationships.forEach(function (relationship) {
                   if (!relationship.released) {
                     hasUnpublishedGCIs = true;
                     relationship.templateStyle = 'redhl';
-                  }                  
+                  }
                 });
               }
             });
@@ -2130,7 +2131,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var msg = '';
           if(scope.concept.classAxioms.length < 2 && type === axiomType.ADDITIONAL) {
             msg = 'You may not remove the last additional Axiom';
-          } 
+          }
           else if(scope.concept.classAxioms.length >= 2 && type === axiomType.ADDITIONAL) {
             msg = 'Do you want to remove this Axiom ?';
           }
@@ -2206,7 +2207,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (!metadataService.isUsDialect(dialectId)) {
                     delete description.acceptabilityMap[dialectId];
                   }
-                });                
+                });
               } else {
 
                 // Strip out US, GB dialects
@@ -2535,7 +2536,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
-                
+
               });
             });
           }
@@ -2670,7 +2671,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeAxioms(axiom.type);
           autoSave();
         };
-          
+
         scope.toggleAxiomActive = function (axiom) {
           if (scope.concept.active === true) {
             axiom.active = !axiom.active;
@@ -2699,7 +2700,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.addAdditionalAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
           if (!snowowlService.isSctid(scope.concept.conceptId)) {
-            axiom.axiomId = null; 
+            axiom.axiomId = null;
           }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
 
@@ -2716,7 +2717,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.addGCIAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
           if (!snowowlService.isSctid(scope.concept.conceptId)) {
-            axiom.axiomId = null; 
+            axiom.axiomId = null;
           }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
 
@@ -3031,7 +3032,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             data.id = data.concept.conceptId;
             data.name = data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym;
           }
-          
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -3190,13 +3191,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
         };
-        
+
         scope.dropAxiom = function (source) {
           if (!source) {
             console.error('Cannot drop axiom, source not specified');
             return;
           }
-         
+
           // check if target is static
           if (scope.isStatic) {
             console.error('Scope is static, cannot drop');
@@ -3207,14 +3208,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           let axiom = angular.copy(source);
-          axiom.axiomId = null; 
+          axiom.axiomId = null;
           if (axiom.type === axiomType.ADDITIONAL) {
             if(!scope.concept.hasOwnProperty('classAxioms')){
               scope.concept.classAxioms = [];
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
-            });           
+            });
             scope.concept.classAxioms.push(axiom);
             scope.computeAxioms(axiomType.ADDITIONAL);
           } else {
@@ -3223,7 +3224,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
-            });           
+            });
             scope.concept.gciAxioms.push(axiom);
             scope.computeAxioms(axiomType.GCI);
           }
@@ -3751,7 +3752,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             symanticTag = symanticTagTattern.exec(description.term)[1];
           }
 
-          if (symanticTag 
+          if (symanticTag
             && (symanticTag === 'medicinal product'
                || symanticTag === 'medicinal product form'
                || symanticTag === 'clinical drug'
@@ -3953,7 +3954,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.computeRelationshipGroups();
           }
         };
-        
+
         scope.downloadOWLAxiom = function () {
           $modal.open({
             templateUrl: 'shared/owl-axiom-expression/owlAxiomExpression.html',
@@ -4009,7 +4010,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     });
                     return deferred.promise;
                   };
-                  
+
                   var getProjectConceptFn = function () {
                     var deferred = $q.defer();
                     var arr = scope.branch.split("/");
@@ -4037,8 +4038,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       scope.isModified = false;
                       scope.saveConcept();
                     }
-                  });                
-                } else {               
+                  });
+                } else {
                   notificationService.sendError('Failed to get versions');
                 }
               });
@@ -4046,12 +4047,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, function () {
             // do nothing
           });
-          
+
         };
 
         function getCodeSystemShortName() {
           var deferred = $q.defer();
-          
+
           if (!metadataService.isExtensionSet()) {
             deferred.resolve('SNOMEDCT');
           } else {
@@ -4081,7 +4082,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 } else {
                   result.items = [];
                   deferred.resolve(result);
-                }              
+                }
               }
             });
           }
@@ -4141,21 +4142,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.copyDescriptionTerm = function(e) {
           var elem = angular.element(e.currentTarget)[0];
-          if (elem.selectionStart !== undefined 
+          if (elem.selectionStart !== undefined
               && elem.selectionEnd !== undefined) {
             var startPos = elem.selectionStart;
             var endPos = elem.selectionEnd;
-            var selectedText = elem.value.substring(startPos, endPos); 
-            scope.copyToClipboard(selectedText); 
+            var selectedText = elem.value.substring(startPos, endPos);
+            scope.copyToClipboard(selectedText);
             elem.focus();
-            elem.setSelectionRange(startPos, endPos);          
+            elem.setSelectionRange(startPos, endPos);
           }
         };
 
 //////////////////////////////////////////////
 // MRCM functions
 //////////////////////////////////////////////
-          
+
         function refreshAttributeTypesForAxiom(axiom){
             if (!scope.isStatic) {
                     constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
@@ -4165,7 +4166,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
             }
         }
-        
+
         //Watch classAxiom relationships for changes and update allowable attributes
         angular.forEach(scope.concept.classAxioms, function(axiom){
             scope.$watch(axiom.relationships, function (newValue, oldValue) {
@@ -4174,7 +4175,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }, true);
         });
 
-        //Watch gciAxiom relationships for changes and update allowable attributes          
+        //Watch gciAxiom relationships for changes and update allowable attributes
         angular.forEach(scope.concept.gciAxioms, function(axiom){
             scope.$watch(axiom.relationships, function (newValue, oldValue) {
                 refreshAttributeTypesForAxiom(axiom);
@@ -4336,7 +4337,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         }
 
-        scope.consolidateRelationship = function (relationship) {          
+        scope.consolidateRelationship = function (relationship) {
           if(relationship) {
             if (relationship.target && !relationship.target.fsn) {
               relationship.target = {};
@@ -4461,7 +4462,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         $timeout(function () {
            $rootScope.$broadcast('elastic:adjust');
         }, 0);
-        
+
 // sets the popover direction (left, bottom, right) based on current
 // position of root element
         scope.setPopoverDirection = function ($event) {
@@ -4735,14 +4736,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.openConceptTarget = function (rel){
           if (!rel || !rel.target || !rel.target.conceptId) {
             return;
-          }     
+          }
           $rootScope.$broadcast('editConcept', {conceptId: rel.target.conceptId, fsn: rel.target.fsn, noSwitchView: true});
         };
 
         scope.openAttributeConcept = function (rel){
           if (!rel || !rel.target || !rel.target.conceptId) {
             return;
-          }     
+          }
           $rootScope.$broadcast('editConcept', {conceptId: rel.type.conceptId, fsn: rel.type.fsn, noSwitchView: true});
         };
 

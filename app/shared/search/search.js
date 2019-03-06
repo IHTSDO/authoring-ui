@@ -109,7 +109,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.search();
         }
       };
-        
+
       $scope.getTemplateSuggestions = function (text) {
             return $scope.templates.filter(template => template.name.toLowerCase().indexOf(text.toLowerCase()) > -1);
           };
@@ -186,7 +186,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.newSearch();
         // $scope.processResults();
       };
-        
+
       $scope.toggleSearchMode = function () {
         $scope.escgExpr = '';
         $scope.searchStr = '';
@@ -226,7 +226,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.templateMode = false;
             }
         }
-        
+
         $scope.newSearch();
       };
 
@@ -393,12 +393,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             result = true;
           }
         });
-        
+
         $scope.downloadButtonActive = result;
       };
 
       $scope.downloadResultFilter = function() {
-        
+
         $scope.selectedResultsList = [];
 
         if(!$scope.downloadAllResults) {
@@ -408,7 +408,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.selectedResultsList.push(item.concept.conceptId);
             }
           });
-          
+
           $scope.downloadSearchResults($scope.selectedResultsList);
         }
 
@@ -556,7 +556,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         let fsnSearchFlag = !metadataService.isExtensionSet() ||
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
-          
+
         if($scope.userOptions.template){
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
@@ -590,9 +590,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                     $scope.loadPerformed = false;
                     $scope.searchStatus = 'No results';
                 }
-                
+
             })
-            
+
         }
         else{
 
@@ -992,9 +992,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // do nothing
         });
       };
-        
+
       $scope.openTransformModal = function () {
-        let transformConcepts = [];        
+        let transformConcepts = [];
         let openModel = function(concepts) {
           let modalInstance = $modal.open({
             templateUrl: 'shared/transform/transformModal.html',
@@ -1016,19 +1016,19 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             console.log(response);
             batchEditingService.addBatchConcepts(response).then(function(){
                 notificationService.sendMessage('Successfully added batch concepts', 3000);
-                $rootScope.$broadcast('batchConcept.change');              
+                $rootScope.$broadcast('batchConcept.change');
                 $rootScope.$broadcast('swapToBatch');
               });
           }, function () {
             // do nothing
           });
         };
-        
+
         if(!$scope.downloadAllResults) {
           $scope.results.filter(function(item) {
             if(item.selected) {
               transformConcepts.push(item.concept.conceptId);
-            }            
+            }
           });
           openModel(transformConcepts);
         }
@@ -1047,12 +1047,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
 
           snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, 0, 10000, false, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, $scope.batchIdList).then(function (response) {
-            
+
             angular.forEach(response.items, function (item) {
               transformConcepts.push(item.concept.conceptId);
-            });           
+            });
             openModel(transformConcepts);
-          });            
+          });
         }
       };
 
