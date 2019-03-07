@@ -779,7 +779,7 @@ angular.module('singleConceptAuthoringApp')
             return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
           };
 
-          function highlightComponent(conceptId, componentId, mainDescription, taskDescription) {
+          function highlightComponent(conceptId, componentId, mainDescription, taskDescription, removed) {
             if (!scope.innerComponentStyle) {
               scope.innerComponentStyle = {};
             }
@@ -833,8 +833,12 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // if component id specified, add style field
-            if (componentId) {
+            if (componentId && !removed) {
               scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
+            }
+              
+            else if (componentId && removed) {
+              scope.styles[conceptId][componentId] = {message: null, style: 'redhl'};
             }
 
             // otherwise, add to concept style directly
@@ -966,6 +970,7 @@ angular.module('singleConceptAuthoringApp')
             });
             angular.forEach(currentConcept.descriptions, function(description){
               newIds.push(description.descriptionId);
+              //description is not new but has changed
               angular.forEach(originalConcept.descriptions, function(originalDescription){
                   if(description.descriptionId === originalDescription.descriptionId){
                     if(description.active !== originalDescription.active
@@ -1002,14 +1007,17 @@ angular.module('singleConceptAuthoringApp')
             });
             angular.forEach(currentConcept.classAxioms, function(axiom){
               newIds.push(axiom.axiomId);
-              angular.forEach(originalConcept.classAxioms, function(originalAxiom){
-                if(axiom.axiomId === originalAxiom.axiomId){
-                  if(axiom.active !== originalAxiom.active
-                    || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                      highlightComponent(currentConcept.conceptId, description.axiomId);
+                angular.forEach(originalConcept.classAxioms, function(originalAxiom){
+                  if(axiom.axiomId === originalAxiom.axiomId){
+                    scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
+                    originalAxiom = modifiedAxiom;
+                    if(axiom.active !== originalAxiom.active
+                          || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                            highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
+                      }
+                    });
                   }
-                } 
-              });
+                });
             });
             angular.forEach(currentConcept.gciAxioms, function(axiom){
               newIds.push(axiom.axiomId);
@@ -1017,12 +1025,11 @@ angular.module('singleConceptAuthoringApp')
                 if(axiom.axiomId === originalAxiom.axiomId){
                   if(axiom.active !== originalAxiom.active
                     || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                      highlightComponent(currentConcept.conceptId, description.axiomId);
+                      highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
                   }
                 } 
               });
             });
-            //description is new
             angular.forEach(newIds, function(id){
               if(!originalIds.includes(id)){
                 highlightComponent(currentConcept.conceptId, id);
@@ -1031,6 +1038,43 @@ angular.module('singleConceptAuthoringApp')
             deferred.resolve();
             return deferred.promise;
           };
+            
+          scope.compareAxiomRelationships = function(axiom, originalAxiom){
+            var deferred = $q.defer();
+            angular.forEach(axiom.relationships, function(newRelationship){
+              angular.forEach(originalAxiom.relationships, function(originalRelationship){
+                if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+                  newRelationship.found = true;
+                }
+              });
+              if(!newRelationship.found){
+                newRelationship.relationshipId = snowowlService.createGuid();
+                highlightComponent(newRelationship.sourceId, newRelationship.relationshipId);
+              }
+            });
+              
+            angular.forEach(axiom.relationships, function(newRelationship){
+              if(newRelationship.found){
+               delete newRelationship.found;
+              }
+            });
+              
+            angular.forEach(originalAxiom.relationships, function(originalRelationship){
+              angular.forEach(axiom.relationships, function(newRelationship){
+                if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+                  originalRelationship.found = true;
+                }
+              });
+              if(!originalRelationship.found){
+                originalRelationship.relationshipId = snowowlService.createGuid();
+                originalRelationship.active = false;
+                axiom.relationships.push(originalRelationship);
+                highlightComponent(originalRelationship.sourceId, originalRelationship.relationshipId, null, null, true);
+              }
+            });
+            deferred.resolve(axiom);
+            return deferred.promise;
+          }
             
           function isEquivalent(a, b) {
             // Create arrays of property names
