@@ -1857,13 +1857,11 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getConceptsForReview = function (idList, review, feedbackList) {
             var deferred = $q.defer();
-            snowowlService.bulkGetConcept(idList, scope.branch).then(function (response) {
-              angular.forEach(response.items, function (concept) {
+            snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+              angular.forEach(response, function (concept) {
                 angular.forEach(review.concepts, function (reviewConcept) {
-                  if (concept.id === reviewConcept.conceptId) {
-                    if (concept.fsn) {
-                      reviewConcept.term = concept.fsn.term;
-                    }
+                  if (concept.conceptId === reviewConcept.conceptId) {
+                    reviewConcept.term = concept.fsn;
                     angular.forEach(feedbackList, function (feedback) {
                       if (reviewConcept.conceptId === feedback.id) {
                         reviewConcept.messages = feedback.messages;
@@ -1873,8 +1871,8 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 angular.forEach(review.conceptsClassified, function (reviewConcept) {
-                  if (concept.id === reviewConcept.conceptId) {
-                    reviewConcept.term = concept.fsn.term;
+                  if (concept.conceptId === reviewConcept.conceptId) {
+                    reviewConcept.term = concept.fsn;
                     angular.forEach(feedbackList, function (feedback) {
                       if (reviewConcept.conceptId === feedback.id) {
                         reviewConcept.messages = feedback.messages;
