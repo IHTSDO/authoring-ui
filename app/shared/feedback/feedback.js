@@ -794,32 +794,42 @@ angular.module('singleConceptAuthoringApp')
               }
               return false;
           };
-
+            
+          //called on concept load after comparison to add components, concepts and axioms to styles list
           function highlightComponent(conceptId, componentId, mainDescription, taskDescription, removed) {
             if (!scope.innerComponentStyle) {
               scope.innerComponentStyle = {};
             }
             if(mainDescription !== null && taskDescription !== null && mainDescription !== undefined && taskDescription !== undefined){
+                
+                //detects changes to description type and displays change in tooltip
                 if (taskDescription.type !== mainDescription.type) {
-                      scope.innerComponentStyle[componentId + '-type'] = {
-                        message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type,
-                        style: 'triangle-redhl'
-                      };
-                    }
-                    if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
-                      scope.innerComponentStyle[componentId + '-caseSignificance'] = {
-                        message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
-                        style: 'triangle-redhl'
-                      };
-                    }
-                    if ((mainDescription.inactivationIndicator !== taskDescription.inactivationIndicator
-                                || checkAssociationTargetsChanged(mainDescription.associationTargets, taskDescription.associationTargets))
-                                && !mainDescription.active 
-                                && !taskDescription.active) {
-                      scope.inactiveDescriptions[mainDescription.descriptionId] = mainDescription;
-                    }
-                    var componentDialects = Object.keys(taskDescription.acceptabilityMap);
-                    componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+                  scope.innerComponentStyle[componentId + '-type'] = {
+                    message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type,
+                    style: 'triangle-redhl'
+                  };
+                }
+                
+                //detects changes to case significance and displays change in tooltip
+                if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
+                  scope.innerComponentStyle[componentId + '-caseSignificance'] = {
+                    message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
+                    style: 'triangle-redhl'
+                  };
+                }
+                
+                //detects changes to inactivation indicator and historical associations and displays change in description more
+                if ((mainDescription.inactivationIndicator !== taskDescription.inactivationIndicator
+                            || checkAssociationTargetsChanged(mainDescription.associationTargets, taskDescription.associationTargets))
+                            && !mainDescription.active 
+                            && !taskDescription.active) {
+                  scope.inactiveDescriptions[mainDescription.descriptionId] = mainDescription;
+                }
+                
+                //Detects changes to acceptability and displays change in tooltip
+                var componentDialects = Object.keys(taskDescription.acceptabilityMap);
+                componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
+                
                 angular.forEach(componentDialects, function (dialectId) {
                     if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
                       scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
@@ -870,51 +880,6 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function highlightFromTraceability(traceability) {
-
-            if (!traceability) {
-              return;
-            }
-
-            angular.forEach(traceability.content, function (change) {
-              if (change.activityType === 'CONTENT_CHANGE') {
-
-                angular.forEach(change.conceptChanges, function (concept) {
-
-                  // cycle over component changes and apply highlighting
-                  angular.forEach(concept.componentChanges, function (componentChange) {
-
-
-                    switch (componentChange.componentType) {
-                      case 'DESCRIPTION':
-                        highlightComponent(concept.conceptId, componentChange.componentId);
-                        break;
-                      case 'RELATIONSHIP':
-                        if (componentChange.componentSubType === 'STATED_RELATIONSHIP') {
-                          highlightComponent(concept.conceptId, componentChange.componentId);
-                        }
-                        break;
-                      case 'OWLAXIOM':                       
-                        highlightComponent(concept.conceptId, componentChange.componentId);                        
-                        break;
-                      case 'CONCEPT':
-                        //console.debug('Concept', concept.conceptId, componentChange.componentType, componentChange.changeType)
-                        if (componentChange.changeType === 'CREATE') {
-                          scope.styles[concept.conceptId] = {isNew: true};
-                        } else {
-
-                          highlightComponent(concept.conceptId, null);
-
-                        }
-                        break;
-                      default:
-                      // do nothing
-                    }
-                  });
-                });
-              }
-            });
-
-
           }
 
 
@@ -934,7 +899,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // get the full concept for this branch (before version)
+            // get the full concept for this branch (current version)
             snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
               scope.runComparison(conceptId, scope.branch, response).then(function (response) {
                 if(sorting) {
@@ -957,9 +922,16 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
             
+          //function to compare the current version of a concept with the version that existed at the time of branch creation
+          //and highlight any changes
           scope.runComparison = function(conceptId, branch, currentConcept){
             var deferred = $q.defer();
             snowowlService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (response) {
+              //check concept conditions first
+              if(currentConcept.active !== response.active
+                 || currentConcept.definitionStatus !== response.definitionStatus){
+                  highlightComponent(currentConcept.conceptId);
+              }
               scope.compareDescriptions(currentConcept, response).then(function () {
                 scope.compareAxioms(currentConcept, response).then(function () {
                   scope.viewedConcepts.push(currentConcept);
@@ -967,6 +939,7 @@ angular.module('singleConceptAuthoringApp')
                 })
               });
             }, 
+            //if the concept is not found in the before version then it has been created within the lifecycle of the task
             function (error) {
               scope.styles[currentConcept.conceptId] = {isNew: true};
               scope.viewedConcepts.push(currentConcept);
@@ -987,6 +960,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             let originalIds = [];
             let newIds = [];
+            //build list of before and after ids for simpler iteration
             angular.forEach(originalConcept.descriptions, function(description){
               originalIds.push(description.descriptionId);
             });
@@ -1021,6 +995,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             let originalIds = [];
             let newIds = [];
+            //build list of before and after ids for simpler iteration
             angular.forEach(originalConcept.classAxioms, function(axiom){
               originalIds.push(axiom.axiomId);
             });
@@ -1055,6 +1030,7 @@ angular.module('singleConceptAuthoringApp')
                 } 
               });
             });
+            //axiom is new
             angular.forEach(newIds, function(id){
               if(!originalIds.includes(id)){
                 highlightComponent(currentConcept.conceptId, id);
