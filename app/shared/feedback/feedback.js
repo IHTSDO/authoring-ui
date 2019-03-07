@@ -74,6 +74,7 @@ angular.module('singleConceptAuthoringApp')
           scope.limitConceptsLoading = 10;
           scope.projectKey = $routeParams.projectKey;
           scope.taskKey = $routeParams.taskKey;
+          scope.inactiveDescriptions = {};
           var users = [];
 
           function getUsers(start, end) {
@@ -778,6 +779,21 @@ angular.module('singleConceptAuthoringApp')
             }
             return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
           };
+            
+          function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
+              for (var key in associationTarget1) {
+                if (associationTarget2.hasOwnProperty(key)) {
+                  var items1 =  associationTarget1[key];
+                  var items2 =  associationTarget2[key];
+                  if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
+                   return true;
+                  }
+                } else {
+                  return true;
+                }  
+              }
+              return false;
+          };
 
           function highlightComponent(conceptId, componentId, mainDescription, taskDescription, removed) {
             if (!scope.innerComponentStyle) {
@@ -795,6 +811,12 @@ angular.module('singleConceptAuthoringApp')
                         message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
                         style: 'triangle-redhl'
                       };
+                    }
+                    if ((mainDescription.inactivationIndicator !== taskDescription.inactivationIndicator
+                                || checkAssociationTargetsChanged(mainDescription.associationTargets, taskDescription.associationTargets))
+                                && !mainDescription.active 
+                                && !taskDescription.active) {
+                      scope.inactiveDescriptions[mainDescription.descriptionId] = mainDescription;
                     }
                     var componentDialects = Object.keys(taskDescription.acceptabilityMap);
                     componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
