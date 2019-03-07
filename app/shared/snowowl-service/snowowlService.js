@@ -977,6 +977,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var queryString = '';
         $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk-load', body).then(function (response) {
+          normaliseSnowstormConcepts(response.data)
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
