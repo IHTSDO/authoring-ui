@@ -222,7 +222,6 @@ angular.module('singleConceptAuthoringApp')
         
         var isARel = getNewIsaRelationship(moduleId);
         // Remove unused properties
-        delete isARel.active;
         delete isARel.characteristicType;
         delete isARel.effectiveTime;
         delete isARel.modifier;
