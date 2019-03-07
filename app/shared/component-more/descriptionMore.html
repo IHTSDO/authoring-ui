@@ -59,6 +59,8 @@
     <div class="module pull-left m-t-20">
       <label class="control-label">Previous Inactivation Reason</label>
       <span class="fields row" ng-if="inactiveDescriptions[description.descriptionId].inactivationIndicator">{{formatComponentMoreText(inactiveDescriptions[description.descriptionId].inactivationIndicator)}}</span>
+      <span class="fields row"
+            ng-if="!inactiveDescriptions[description.descriptionId].inactivationIndicator">Reason not stated</span>
     </div>
     <div class="col-md-12 no-padding pull-left m-t-20">
       <label class="control-label">Previous Association Targets</label>
