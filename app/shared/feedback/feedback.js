@@ -1010,8 +1010,8 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(originalConcept.classAxioms, function(originalAxiom){
                   if(axiom.axiomId === originalAxiom.axiomId){
                     scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
-                    originalAxiom = modifiedAxiom;
-                    if(axiom.active !== originalAxiom.active
+                      originalAxiom = modifiedAxiom;
+                      if(axiom.active !== originalAxiom.active
                           || axiom.definitionStatus !== originalAxiom.definitionStatus){
                             highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
                       }
@@ -1023,10 +1023,13 @@ angular.module('singleConceptAuthoringApp')
               newIds.push(axiom.axiomId);
               angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
                 if(axiom.axiomId === originalAxiom.axiomId){
-                  if(axiom.active !== originalAxiom.active
-                    || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                      highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
-                  }
+                  scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
+                    originalAxiom = modifiedAxiom;
+                    if(axiom.active !== originalAxiom.active
+                      || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                        highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
+                    }
+                  });
                 } 
               });
             });

@@ -2554,7 +2554,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
 
            // Remove unused properties
-          delete relationship.active;
           delete relationship.characteristicType;
           delete relationship.effectiveTime;
           delete relationship.modifier;
@@ -3277,7 +3276,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var rel = componentAuthoringUtil.getNewAttributeRelationship();
 
           // Remove unused properties
-          delete rel.active;
           delete rel.characteristicType;
           delete rel.effectiveTime;
           delete rel.modifier;
