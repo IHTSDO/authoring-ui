@@ -154,6 +154,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         componentStyles: '=',
           
         innerComponentStyle: '=',
+          
+        inactiveDescriptions: '=',
 
         // Any additional fields you would like adding to the concept model (not
         // required) e.g. All fields are added as text fields to the form and if
@@ -705,7 +707,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
 //on load, check if traceability has been pashed from Feedback, then find the differences with concept project
-        scope.inactiveDescriptions = {};
 
         scope.isInactiveDescriptionModified = function (descriptionId) {
           return scope.inactiveDescriptions.hasOwnProperty(descriptionId);
@@ -755,21 +756,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               };
             }
           });
-        }
-
-        function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
-          for (var key in associationTarget1) {
-            if (associationTarget2.hasOwnProperty(key)) {
-              var items1 =  associationTarget1[key];
-              var items2 =  associationTarget2[key];
-              if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
-                return true;
-              }
-            } else {
-              return true;
-            }
-          }
-          return false;
         }
 
         scope.collapse = function (concept) {
