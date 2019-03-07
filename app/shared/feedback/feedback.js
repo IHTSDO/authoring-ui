@@ -766,6 +766,18 @@ angular.module('singleConceptAuthoringApp')
                 return '??';
             }
           };
+            
+          scope.getAcceptabilityTooltipText = function (description, dialectId) {
+            if (!description || !dialectId) {
+              return null;
+            }
+
+            // if no acceptability map specified, return 'N' for Not Acceptable
+            if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
+              return 'Not Acceptable';
+            }
+            return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
+          };
 
           function highlightComponent(conceptId, componentId, mainDescription, taskDescription) {
             if (!scope.innerComponentStyle) {
@@ -960,7 +972,9 @@ angular.module('singleConceptAuthoringApp')
                     || description.caseSignificance !== originalDescription.caseSignificance
                     || description.lang !== originalDescription.lang
                     || description.term !== originalDescription.term
-                    || description.type !== originalDescription.type){
+                    || description.type !== originalDescription.type
+                    || description.inactivationIndicator !== originalDescription.inactivationIndicator
+                    || !isEquivalent(description.acceptabilityMap, originalDescription.acceptabilityMap)){
                       highlightComponent(currentConcept.conceptId, description.descriptionId, originalDescription, description);
                     }
                   } 
