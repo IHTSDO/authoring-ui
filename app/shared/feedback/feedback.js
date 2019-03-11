@@ -796,7 +796,7 @@ angular.module('singleConceptAuthoringApp')
           };
             
           //called on concept load after comparison to add components, concepts and axioms to styles list
-          function highlightComponent(conceptId, componentId, mainDescription, taskDescription, removed) {
+          function highlightComponent(conceptId, componentId, mainDescription, taskDescription, removed, axiom) {
             if (!scope.innerComponentStyle) {
               scope.innerComponentStyle = {};
             }
@@ -865,12 +865,16 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // if component id specified, add style field
-            if (componentId && !removed) {
+            if (componentId && !removed && !axiom) {
               scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
             }
               
-            else if (componentId && removed) {
+            else if (componentId && removed && !axiom) {
               scope.styles[conceptId][componentId] = {message: null, style: 'redhl'};
+            }
+              
+            else if (componentId && axiom) {
+              scope.styles[conceptId][componentId] = {message: null, style: 'tealhl', new: true};
             }
 
             // otherwise, add to concept style directly
@@ -1007,10 +1011,10 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(originalConcept.classAxioms, function(originalAxiom){
                   if(axiom.axiomId === originalAxiom.axiomId){
                     scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
-                      originalAxiom = modifiedAxiom;
+                      axiom = modifiedAxiom;
                       if(axiom.active !== originalAxiom.active
                           || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                            highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
+                            highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
                       }
                     });
                   }
@@ -1024,7 +1028,7 @@ angular.module('singleConceptAuthoringApp')
                     originalAxiom = modifiedAxiom;
                     if(axiom.active !== originalAxiom.active
                       || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                        highlightComponent(currentConcept.conceptId, originalAxiom.axiomId);
+                        highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
                     }
                   });
                 } 
