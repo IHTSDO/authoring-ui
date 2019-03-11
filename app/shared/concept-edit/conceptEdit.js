@@ -4481,7 +4481,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var key = id + (field ? '-' + field : '');
 
             if (scope.componentStyles.hasOwnProperty(key)) {
-              return scope.componentStyles[key].style;
+              if(scope.componentStyles[key].new && component && component.axiomId){
+                  return defaultStyle
+              }
+              else {
+                  return scope.componentStyles[key].style;
+              }
             } else if (scope.innerComponentStyle.hasOwnProperty(key)) {
               return scope.innerComponentStyle[key].style;
             } else {
