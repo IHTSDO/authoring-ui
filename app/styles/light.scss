@@ -31,7 +31,7 @@
     background-color: #e0e0e0;
 }
 .sca-light .edits-row.color_even {
-    background-color: #fafafa;
+    background-color: white;
 }
 .sca-light .edits-row.color_odd {
     background-color: #eee;
@@ -285,7 +285,7 @@
 .sca-light .task-details .review.btn-default:hover,
 .sca-light .task-details .promote.btn-default:hover,
 .sca-light .task-details .auto-promote.btn-default:hover{
-    background-color: transparent;   
+    background-color: transparent;
 }
 .sca-light .task-details .editingtask.btn-default[disabled],
 .sca-light .task-details .classify.btn-default[disabled],
@@ -299,7 +299,7 @@
 .sca-light .task-details .review.btn-default[disabled] span,
 .sca-light .task-details .promote.btn-default[disabled] span,
 .sca-light .task-details .auto-promote.btn-default[disabled] span {
-   background-color: #fff; 
+   background-color: #fff;
    color: #737373;
 }
 .sca-light .task-details .classify.btn-default:hover{
@@ -350,9 +350,9 @@
     color: #474747;
     background-color: transparent;
 }
-.sca-light .editing-form button.concept-edit-button.green:focus, 
+.sca-light .editing-form button.concept-edit-button.green:focus,
 .sca-light .editing-form button.concept-edit-button.green:active,
-.sca-light .editing-form button.concept-edit-button.red:focus, 
+.sca-light .editing-form button.concept-edit-button.red:focus,
 .sca-light .editing-form button.concept-edit-button.red:active {
     background: transparent;
 }
@@ -910,7 +910,7 @@
 }
 .sca-light .classification-report.empty-report .classification-btn .btn-default[disabled]{
     background-color: transparent;
-    border: none;   
+    border: none;
 }
 .sca-light .classification-report.empty-report .classification-btn .btn-default[disabled] span {
     color: #737373 ;
@@ -1041,7 +1041,7 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
   color: #fff;
 }
 .sca-light .btn-transparent {
-  background-color: transparent;  
+  background-color: transparent;
 }
 .sca-light .small-buttons.amber {
     color: #ffc107;
@@ -1056,11 +1056,11 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     color: #666;
     background-color: transparent;
 }
-.sca-light .concept-title ul.dashboard-link-list li ul li[disabled] {    
+.sca-light .concept-title ul.dashboard-link-list li ul li[disabled] {
     background-color: #d1d1d1;
     color: #474747;
 }
-.sca-light .concept-headers .small-buttons.btn-default[disabled], 
+.sca-light .concept-headers .small-buttons.btn-default[disabled],
 .sca-light .concept-headers .small-buttons.btn-default[disabled]:hover {
     color: #d1d1d1;
 }
