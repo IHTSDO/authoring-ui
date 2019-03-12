@@ -2756,6 +2756,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             name: relationship.type.fsn
           };
         };
+          
+        scope.getConceptIdNameTripleFromAttributeType = function (relationship) {
+          return {
+            id: relationship.type.conceptId,
+            fsn: relationship.type.fsn,
+            pt: relationship.type.pt
+          };
+        };
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
@@ -2967,11 +2975,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationshipType = function (relationship, data, axiom) {
-            console.log(axiom);
+            console.log(data);
 
           if(data.concept) {
             data.id = data.concept.conceptId;
-            data.name = data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym;
+            data.pt = data.concept.preferredSynonym;
+            data.fsn = data.concept.fsn;
           }
 
           // cancel if static
@@ -2990,12 +2999,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
-                  scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + data.name + '.'];
+                  scope.warnings = ['MRCM validation error: ' + relationship.target.pt + ' is not a valid target for attribute type ' + data.name + '.'];
                 });
               }
 
               relationship.type.conceptId = data.id;
-              relationship.type.fsn = data.name;
+              relationship.type.pt = data.pt;
+              relationship.type.fsn = data.fsn;
               scope.isModified = true;
 
               scope.computeAxioms(axiom.type);
@@ -3005,7 +3015,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           } else {
             relationship.type.conceptId = data.id;
-            relationship.type.fsn = data.name;
+            relationship.type.pt = data.pt;
+            relationship.type.fsn = data.fsn;
             scope.computeAxioms(axiom.type);
             autoSave();
           }
