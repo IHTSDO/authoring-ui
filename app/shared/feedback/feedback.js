@@ -1025,7 +1025,7 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
                 if(axiom.axiomId === originalAxiom.axiomId){
                   scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
-                    originalAxiom = modifiedAxiom;
+                    axiom = modifiedAxiom;
                     if(axiom.active !== originalAxiom.active
                       || axiom.definitionStatus !== originalAxiom.definitionStatus){
                         highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
