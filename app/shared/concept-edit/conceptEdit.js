@@ -3834,6 +3834,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
+          let definedAxiom = false;
+          angular.forEach(scope.concept.classAxioms, function(axiom){
+              if(axiom.definitionStatus === 'FULLY_DEFINED'){
+                  definedAxiom = true;
+              }
+          });
+          if(definedAxiom){
+              scope.concept.definitionStatus = 'FULLY_DEFINED';
+          }
+          else{
+              scope.concept.definitionStatus = 'PRIMITIVE';
+          }
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
