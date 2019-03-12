@@ -2069,17 +2069,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.removeAxiom = function (axiom, type) {
           var msg = '';
           if(scope.concept.classAxioms.length < 2 && type === axiomType.ADDITIONAL) {
-            msg = 'You may not remove the last additional Axiom';
+            msg = 'You may not remove the last axiom. Please go back to editing.';
+            modalService.message(msg);
           }
-          else if(scope.concept.classAxioms.length >= 2 && type === axiomType.ADDITIONAL) {
-            msg = 'Do you want to remove this Axiom ?';
-          }
-          else if(type === axiomType.GCI) {
-            msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
-          }
-          modalService.confirm(msg).then(function () {
+          else{
+            if(scope.concept.classAxioms.length >= 2 && type === axiomType.ADDITIONAL) {
+              msg = 'Do you want to remove this Axiom ?';
+            }
+            else if(type === axiomType.GCI) {
+              msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
+            }
+            modalService.confirm(msg).then(function () {
               if(scope.concept.classAxioms.length >= 2 || type === axiomType.GCI){
-                  var index = -1;
+                var index = -1;
                   if (type === axiomType.ADDITIONAL) {
                     for (var i = scope.concept.classAxioms.length - 1; i >= 0; i--) {
                       if (axiom.axiomId === scope.concept.classAxioms[i].axiomId) {
@@ -2105,12 +2107,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       autoSave();
                     }
                   }
-              }
+                }
 
-            }, function () {
-              // do nothing
-            }
-          );
+              }, function () {
+                // do nothing
+              }
+            );
+          }
         };
 
         /**
