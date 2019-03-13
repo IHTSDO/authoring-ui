@@ -58,10 +58,10 @@
   </div>
 </div>
   <div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">
-    <div ng-if="showRelationshipGroup(relationshipGroup)">
+    <div ng-if="showAxiomRelationshipGroup(relationshipGroup)">
         <div ng-if="groupId !== 0" class="axiom-group-top"></div>
 
-        <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
+        <div ng-repeat="relationship in relationshipGroup | filter:filterAxiomRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
              class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">
 

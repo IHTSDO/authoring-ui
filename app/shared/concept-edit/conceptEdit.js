@@ -2419,8 +2419,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.filterRelationships = function (rel) {
           return !scope.hideInactive || rel.active;
         };
+          
+        scope.filterAxiomRelationships = function (rel) {
+          return !scope.hideInactive || rel.active;
+        };
 
         scope.showRelationshipGroup = function (relGroup) {
+
+          if (!scope.hideInactive && scope.showInferredRels) {
+            return true;
+          }
+          var activeRels = relGroup.filter(function (item) {
+            return item.active;
+          });
+          return activeRels.length > 0;
+        };
+          
+        scope.showAxiomRelationshipGroup = function (relGroup) {
 
           if (!scope.hideInactive) {
             return true;
