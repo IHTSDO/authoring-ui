@@ -892,6 +892,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.validation = {};
             deferred.reject();
           });
+          console.log(scope.concept);
 
           return deferred.promise;
         };
@@ -1142,6 +1143,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if (scope.validation && scope.validation.hasErrors) {
                 notificationService.sendError('Fix errors before continuing');
+                scope.computeAxioms(axiomType.ADDITIONAL);
+                scope.computeAxioms(axiomType.GCI);
                 scope.reapplyTemplate();
               } else {
                 scope.saving = false;
@@ -1154,6 +1157,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else if (scope.validation && scope.validation.hasErrors) {
               notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
               scope.saving = false;
+              scope.computeAxioms(axiomType.ADDITIONAL);
+              scope.computeAxioms(axiomType.GCI);
               scope.reapplyTemplate();
 
               $rootScope.$broadcast('conceptEdit.validation', {
@@ -1212,6 +1217,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                   scope.saving = false;
                   scope.reapplyTemplate();
+                  scope.computeAxioms(axiomType.ADDITIONAL);
+                  scope.computeAxioms(axiomType.GCI);
                   scope.focusHandler(true, false);
                 });
               }, 500);
