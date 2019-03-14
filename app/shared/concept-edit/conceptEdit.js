@@ -2630,7 +2630,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.toggleAxiomActive = function (axiom) {
           if (scope.concept.active === true) {
-            if(axiom.released === true && !axiom.effectiveTime && axiom.active === true || axiom.effectiveTime === null || axiom.effectiveTime === undefined) {
+            if(axiom.released === true && axiom.active === true && !axiom.effectiveTime || axiom.released === true && axiom.active === true && axiom.effectiveTime === null) {
               scope.errors = ['This axiom has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
               return;
             }
