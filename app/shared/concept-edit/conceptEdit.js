@@ -2630,10 +2630,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.toggleAxiomActive = function (axiom) {
           if (scope.concept.active === true) {
-            axiom.active = !axiom.active;
-            axiom.effectiveTime = null;
-            componentAuthoringUtil.applyMinimumFields(scope.concept);
-            autoSave();
+            if(axiom.released === true && !axiom.effectiveTime && axiom.active === true || axiom.effectiveTime === null || axiom.effectiveTime === undefined) {
+              scope.errors = ['This axiom has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
+              return;
+            }
+            else{
+              axiom.active = !axiom.active;
+              axiom.effectiveTime = null;
+              componentAuthoringUtil.applyMinimumFields(scope.concept);
+              autoSave();
+            }
           }
           else {
             scope.warnings = ['You must activate the concept before its components.'];
@@ -3955,6 +3961,71 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             }
           });
+        };
+          
+        scope.revertAxiom = function (axiom) {
+          modalService.confirm('The axiom will be reverted to the previously published version. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Reverting axiom to the previously published version...');
+            var codeSystemShortName = '';
+            getCodeSystemShortName().then(function (response) {
+              codeSystemShortName = response;
+              getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
+                if (response.items.length > 0) {
+                  var version = response.items[response.items.length - 1].version;
+                  var versionBranch = null;
+                  if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
+                    versionBranch = 'MAIN/' + version;
+                  } else {
+                    var arr = scope.branch.split("/");
+                    versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
+                  }
+                  snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (versionedConcept) {
+                    if(axiom.type === 'additional'){
+                        angular.forEach(versionedConcept.classAxioms, function(versionedAxiom){
+                            if(axiom.axiomId === versionedAxiom.axiomId){
+                                angular.forEach(scope.concept.classAxioms, function(unversionedAxiom){
+                                  if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
+                                    unversionedAxiom.relationships = versionedAxiom.relationships;
+                                    unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
+                                    unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
+                                    unversionedAxiom.active = versionedAxiom.active;
+                                    unversionedAxiom.moduleId = versionedAxiom.moduleId;
+                                    scope.saveConcept();
+                                    return
+                                  }
+                                })
+                            }
+                        })
+                    }
+                    else{
+                      angular.forEach(versionedConcept.gciAxioms, function(versionedAxiom){
+                        if(axiom.axiomId === versionedAxiom.axiomId){
+                          angular.forEach(scope.concept.gciAxioms, function(unversionedAxiom){
+                            if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
+                              unversionedAxiom.relationships = versionedAxiom.relationships;
+                              unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
+                              unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
+                              unversionedAxiom.active = versionedAxiom.active;
+                              unversionedAxiom.moduleId = versionedAxiom.moduleId;
+                              scope.saveConcept();
+                              return
+                            }
+                          })
+                        }
+                      })
+                    }
+                  }, function (error) {
+                    notificationService.sendError('Failed to get versioned axiom');
+                  });
+                } else {
+                  notificationService.sendError('Failed to get versions');
+                }
+              });
+            });
+          }, function () {
+            // do nothing
+          });
+
         };
 
         scope.revertToVersion = function () {

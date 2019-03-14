@@ -25,6 +25,12 @@
   <div class="col-md-2 no-margin edits concept-title  pull-right no-padding" ng-disabled="saving" ng-class="{'disabled': saving}">
     <div class=" p-t-3 p-r-5 pull-right ">
       <button type="button"
+                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
+                  ng-click="revertAxiom(axiom)"
+                  ng-if="!isStatic && role === 'AUTHOR' && axiom.active === true && axiom.released === true && !axiom.effectiveTime">
+            <span>Revert Axiom</span>
+          </button>
+      <button type="button"
               ng-click="removeAxiom(axiom,axiom.type)"
               class="btn-default red small-buttons tooltips-bottom small-size-tooltip offset-tooltip-right tooltips-light normal-case editbuttons fa-sca fa-minus axiom-staus-buttons"
               ng-if="!isStatic && !axiom.released && ((concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008') || (concept.moduleId === '900000000000207008' && axiom.moduleId !== '900000000000207008' && isExtensionSet()))"
