@@ -190,6 +190,19 @@
               </button>
             </div>
           </div>
+          <div class="row">
+                <div class="validation red" ng-repeat="error in validation.errors[relationship.id]"><strong>Convention
+                  Error:</strong>
+                  <div ng-bind-html="error"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="validation orange darken-1"
+                     ng-repeat="warning in validation.warnings[relationship.id]">
+                  <strong>Convention Warning:</strong>
+                  <div ng-bind="warning"></div>
+                </div>
+          </div>
         </div>
       <div ng-if="$last && groupId !== 0" class="row axiom-group-top"></div>
       <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template">

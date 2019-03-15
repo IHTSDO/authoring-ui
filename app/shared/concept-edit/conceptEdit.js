@@ -2493,6 +2493,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               axiom.title = 'Axiom';
               axiom.type = axiomType.ADDITIONAL;
               angular.forEach(axiom.relationships, function (rel) {
+                rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
+                console.log(rel.id);
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
@@ -2511,6 +2513,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               axiom.title = 'General Concept Inclusion';
               axiom.type = axiomType.GCI;
               angular.forEach(axiom.relationships, function (rel) {
+                rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
