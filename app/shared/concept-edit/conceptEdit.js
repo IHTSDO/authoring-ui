@@ -152,9 +152,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // styling for concept elements, as array [id0 : {message, style,
         // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
         componentStyles: '=',
-          
+
         innerComponentStyle: '=',
-          
+
         inactiveDescriptions: '=',
 
         // Any additional fields you would like adding to the concept model (not
@@ -2426,7 +2426,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.filterRelationships = function (rel) {
           return !scope.hideInactive || rel.active;
         };
-          
+
         scope.filterAxiomRelationships = function (rel) {
           return !scope.hideInactive || rel.active;
         };
@@ -2441,7 +2441,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           return activeRels.length > 0;
         };
-          
+
         scope.showAxiomRelationshipGroup = function (relGroup) {
 
           if (!scope.hideInactive) {
@@ -2503,6 +2503,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
 
+                // sorts axioms based on their pt
+                axiom.relationshipGroups[parseInt(rel.groupId)].sort((a,b) => (a.type.pt > b.type.pt) ? 1 : -1);
               });
             });
           }
@@ -2521,6 +2523,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
+
+                // sorts axioms based on their pt
+                axiom.relationshipGroups[parseInt(rel.groupId)].sort((a,b) => (a.type.pt > b.type.pt) ? 1 : -1);
               });
             });
           }
@@ -2787,7 +2792,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             name: relationship.type.fsn
           };
         };
-          
+
         scope.getConceptIdNameTripleFromAttributeType = function (relationship) {
           return {
             id: relationship.type.conceptId,
@@ -3972,7 +3977,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
         };
-          
+
         scope.revertAxiom = function (axiom) {
           modalService.confirm('The axiom will be reverted to the previously published version. Do you want to proceed?').then(function () {
             notificationService.sendMessage('Reverting axiom to the previously published version...');
