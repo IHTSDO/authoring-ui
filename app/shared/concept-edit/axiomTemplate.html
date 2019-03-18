@@ -114,7 +114,8 @@
                        ui-draggable="true"
                        drag="getConceptIdNameTripleFromAttributeType(relationship)"
                        drag-channel="completeConcept"
-                       drag-image="getDragImageForConcept(relationship.type.fsn)">
+                       drag-image="getDragImageForConcept(relationship.type.fsn)"
+                       ng-dblclick="openAttributeConcept(relationship)">
                     <span>Drag this component</span>
                   </div>
 
@@ -142,7 +143,8 @@
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                        drag-channel="completeConcept"
-                       drag-image="getDragImageForConcept(relationship.target.fsn)">
+                       drag-image="getDragImageForConcept(relationship.target.fsn)"
+                       ng-dblclick="openConceptTarget(relationship)">
                     <span>Drag This Component</span>
                   </div>
                 </div>
