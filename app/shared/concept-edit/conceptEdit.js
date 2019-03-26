@@ -3699,7 +3699,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.updateConceptReference({concept: scope.concept});
           }
 
-          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
+          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId() !== 'en') {
             if (description.lang === 'en') {
               // strip any non-us dialect
               angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
