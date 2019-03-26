@@ -510,7 +510,8 @@
 
             <div class="col-md-11 no-padding left-of-edit {{relationship.characteristicType}}" drop-channel="relationshipObj"
                  ui-on-drop="dropRelationship(relationship, $data)" drag-enter-class="sca-drag-target"
-                 drag-hover-class="sca-drag-hover">
+                 drag-hover-class="sca-drag-hover"
+                 drop-validate="!isLockedModule(concept.moduleId) && !isStatic">
 
               <div class="">
                 <button
