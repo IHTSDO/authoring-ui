@@ -214,7 +214,7 @@ angular.module('singleConceptAuthoringApp.project', [
                               }                        
                             });
                             if (msg.length > 0) {
-                              notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
+                              notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
                             }
                           }
                         });
@@ -274,7 +274,7 @@ angular.module('singleConceptAuthoringApp.project', [
                                   }                        
                                 });
                                 if (msg.length > 0) {
-                                  notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
+                                  notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
                                 }
                               }
                             });
