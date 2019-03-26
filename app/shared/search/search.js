@@ -526,7 +526,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
 
           else {
-            acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+            if($scope.userOptions.selectedDialect === usModel.dialectId){
+              acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+            }
+            else{
+              acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+            }
           }
         }
 
