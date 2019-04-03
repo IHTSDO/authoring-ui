@@ -14,6 +14,16 @@ angular.module('singleConceptAuthoringApp')
           normaliseSnowstormConcept(concept);
         });
       }
+        
+      function normaliseSnowstormMergeReviewConcepts(mergeReview, mergeReviewId){
+        angular.forEach(mergeReview, function(review){
+          normaliseSnowstormConcept(review.autoMergedConcept);
+          normaliseSnowstormConcept(review.sourceConcept);
+          normaliseSnowstormConcept(review.targetConcept);
+        })
+        mergeReview.id = mergeReviewId;
+        return mergeReview
+      }
 
       function normaliseSnowstormConcept(concept) {
         normaliseSnowstormTerms(concept);
@@ -1719,19 +1729,19 @@ angular.module('singleConceptAuthoringApp')
        * Returns null if review does not exist or is not current
        */
       function getMergeReviewDetails(mergeReviewId) {
-        return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
           if (response && response.data && response.data.status === 'CURRENT') {
-            return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
-              var mergeReview = response2.data;
-              mergeReview.id = mergeReviewId; // re-append id for convenience
-              return mergeReview;
+            $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
+              deferred.resolve(normaliseSnowstormMergeReviewConcepts(response2.data, mergeReviewId));
             }, function (error) {
-              return null;
+              deferred.reject(null);
             });
           }
         }, function (error) {
-          return null;
+          deferred.reject(null);
         });
+        return deferred.promise;
       }
 
       /**

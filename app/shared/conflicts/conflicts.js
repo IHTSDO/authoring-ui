@@ -679,7 +679,7 @@ angular.module('singleConceptAuthoringApp')
             if (mergeReviewId) {
 
               snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
-
+                  console.log(mergeReview);
                 // Previous review is current and has concepts,
                 // initialize from this review
                 if (mergeReview && mergeReview.length > 0) {
