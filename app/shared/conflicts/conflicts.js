@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('singleConceptAuthoringApp')
 
   .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window', '$location', 'metadataService',
@@ -215,6 +213,26 @@ angular.module('singleConceptAuthoringApp')
            * single concept triple
            * @param merge
            */
+            
+          function mapAxiomRelationships(axiom, mappedComponents, type, axiomId){
+              angular.forEach(axiom.relationships, function (relationship) {
+                relationship.id = axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                if (!mappedComponents.hasOwnProperty(relationship.id)) {
+                  mappedComponents[relationship.id] = {};
+                }
+                if(type === 'source'){
+                    mappedComponents[relationship.id].source = relationship;
+                }
+                else if(type === 'target'){
+                    mappedComponents[relationship.id].target = relationship;
+                }
+                else if(type === 'merged'){
+                    mappedComponents[relationship.id].merged = relationship;
+                }
+              });
+              return mappedComponents
+          }
+            
           function mapComponents(merge) {
 
             // initialize the mapped components array
@@ -263,6 +281,58 @@ angular.module('singleConceptAuthoringApp')
               }
               mappedComponents[relationship.relationshipId].merged = relationship;
             });
+              
+            //classAxiom Parsing
+              
+            angular.forEach(merge.sourceConcept.classAxioms, function (axiom) {
+              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                mappedComponents[axiom.axiomId] = {};
+              }
+              mappedComponents[axiom.axiomId].source = axiom;
+              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
+            });
+              
+            angular.forEach(merge.targetConcept.classAxioms, function (axiom) {
+              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                mappedComponents[axiom.axiomId] = {};
+              }
+              mappedComponents[axiom.axiomId].target = axiom;
+              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
+            });
+              
+            angular.forEach(merge.autoMergedConcept.classAxioms, function (axiom) {
+              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                mappedComponents[axiom.axiomId] = {};
+              }
+              mappedComponents[axiom.axiomId].merged = axiom;
+              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
+            });
+              
+            //gciAxiom Parsing  
+              
+            angular.forEach(merge.sourceConcept.gciAxioms, function (axiom) {
+              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                mappedComponents[axiom.axiomId] = {};
+              }
+              mappedComponents[axiom.axiomId].source = axiom;
+              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
+            });
+              
+            angular.forEach(merge.targetConcept.gciAxioms, function (axiom) {
+              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                mappedComponents[axiom.axiomId] = {};
+              }
+              mappedComponents[axiom.axiomId].target = axiom;
+               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
+            });
+              
+            angular.forEach(merge.autoMergedConcept.gciAxioms, function (axiom) {
+              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                mappedComponents[axiom.axiomId] = {};
+              }
+              mappedComponents[axiom.axiomId].merged = axiom;
+              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
+            });
 
             return mappedComponents;
           }
@@ -283,6 +353,7 @@ angular.module('singleConceptAuthoringApp')
 
             // map the components for convenience
             var mappedComponents = mapComponents(merge);
+            console.log(mappedComponents);
 
             // cycle over each discovered componentId and check
             // equality/presence
@@ -435,6 +506,23 @@ angular.module('singleConceptAuthoringApp')
               scope.hideSidebar = false;
             }
           });
+            
+          function deDuplicateConflict(conflict){
+              var deferred = $q.defer();
+              angular.forEach(conflict.autoMergedConcept.classAxioms, function(axiom){
+                  angular.forEach(conflict.autoMergedConcept.classAxioms, function(secondAxiom){
+                    if(axiom.axiomId === secondAxiom.axiomId){
+                        angular.forEach(axiom.relationships, function(relationship){
+                            angular.forEach(axiom.relationships, function(relationship){
+                                
+                            })
+                        })
+                    }
+                  });
+              });
+              deferred.resolve(conflict);
+              return deferred.promise;
+          }
 
           function initializeMergeReview(review) {
 
@@ -466,10 +554,13 @@ angular.module('singleConceptAuthoringApp')
             scope.conflicts = review;
 
             angular.forEach(scope.conflicts, function (conflict) {
-              conflict.fsn = conflict.sourceConcept.fsn;
-              conflict.conceptId = conflict.sourceConcept.conceptId;
-              conflict.styles = highlightChanges(conflict);
-              checkForInactiveMergedElements(conflict);
+              deDuplicateConflict(conflict).then(function (deDupedConflict){
+                conflict = deDupedConflict;
+                conflict.fsn = conflict.sourceConcept.fsn;
+                conflict.conceptId = conflict.sourceConcept.conceptId;
+                conflict.styles = highlightChanges(conflict);
+                checkForInactiveMergedElements(conflict);
+              });
             });
 
             // get previously accepted merges, if they exist, and apply to
