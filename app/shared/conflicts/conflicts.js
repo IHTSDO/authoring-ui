@@ -794,6 +794,21 @@ angular.module('singleConceptAuthoringApp')
                   });
                 }
 
+              }, function(error){
+                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+
+                    // DIVERGED, but no merges to resolve
+                    if (!newReview || newReview.length === 0) {
+                      rebase();
+                    }
+
+                    // DIVERGED, with merges to resolve
+                    else {
+                      initializeMergeReview(newReview);
+                    }
+                  }, function (error) {
+                    notificationService.sendError('Error generating merge review');
+                  });
               });
             }
 
