@@ -4614,7 +4614,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               else {
                   return scope.componentStyles[key].style;
               }
-            } else if (scope.innerComponentStyle.hasOwnProperty(key)) {
+            } else if (scope.innerComponentStyle && scope.innerComponentStyle.hasOwnProperty(key)) {
               return scope.innerComponentStyle[key].style;
             } else {
               return defaultStyle;

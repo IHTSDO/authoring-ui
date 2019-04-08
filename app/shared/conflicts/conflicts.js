@@ -216,18 +216,17 @@ angular.module('singleConceptAuthoringApp')
             
           function mapAxiomRelationships(axiom, mappedComponents, type, axiomId){
               angular.forEach(axiom.relationships, function (relationship) {
-                relationship.id = axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
-                if (!mappedComponents.hasOwnProperty(relationship.id)) {
-                  mappedComponents[relationship.id] = {};
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
                 }
                 if(type === 'source'){
-                    mappedComponents[relationship.id].source = relationship;
+                    mappedComponents[relationship.relationshipId].source = relationship;
                 }
                 else if(type === 'target'){
-                    mappedComponents[relationship.id].target = relationship;
+                    mappedComponents[relationship.relationshipId].target = relationship;
                 }
                 else if(type === 'merged'){
-                    mappedComponents[relationship.id].merged = relationship;
+                    mappedComponents[relationship.relationshipId].merged = relationship;
                 }
               });
               return mappedComponents
@@ -288,7 +287,7 @@ angular.module('singleConceptAuthoringApp')
               if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
                 mappedComponents[axiom.axiomId] = {};
               }
-              mappedComponents[axiom.axiomId].source = axiom;
+              //mappedComponents[axiom.axiomId].source = axiom;
               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
             });
               
@@ -296,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
               if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
                 mappedComponents[axiom.axiomId] = {};
               }
-              mappedComponents[axiom.axiomId].target = axiom;
+              //mappedComponents[axiom.axiomId].target = axiom;
               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
             });
               
@@ -304,7 +303,7 @@ angular.module('singleConceptAuthoringApp')
               if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
                 mappedComponents[axiom.axiomId] = {};
               }
-              mappedComponents[axiom.axiomId].merged = axiom;
+              //mappedComponents[axiom.axiomId].merged = axiom;
               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
             });
               
@@ -314,7 +313,7 @@ angular.module('singleConceptAuthoringApp')
               if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
                 mappedComponents[axiom.axiomId] = {};
               }
-              mappedComponents[axiom.axiomId].source = axiom;
+              //mappedComponents[axiom.axiomId].source = axiom;
               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
             });
               
@@ -322,7 +321,7 @@ angular.module('singleConceptAuthoringApp')
               if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
                 mappedComponents[axiom.axiomId] = {};
               }
-              mappedComponents[axiom.axiomId].target = axiom;
+              //mappedComponents[axiom.axiomId].target = axiom;
                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
             });
               
@@ -330,7 +329,7 @@ angular.module('singleConceptAuthoringApp')
               if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
                 mappedComponents[axiom.axiomId] = {};
               }
-              mappedComponents[axiom.axiomId].merged = axiom;
+              //mappedComponents[axiom.axiomId].merged = axiom;
               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
             });
 
@@ -509,19 +508,65 @@ angular.module('singleConceptAuthoringApp')
             
           function deDuplicateConflict(conflict){
               var deferred = $q.defer();
-              angular.forEach(conflict.autoMergedConcept.classAxioms, function(axiom){
-                  angular.forEach(conflict.autoMergedConcept.classAxioms, function(secondAxiom){
+              conflict.autoMergedConcept.classAxioms = [];
+              conflict.autoMergedConcept.gciAxioms = [];
+              angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
+                  let newAxiom = {};
+                  angular.copy(axiom, newAxiom);
+                  angular.forEach(conflict.targetConcept.classAxioms, function(secondAxiom){
                     if(axiom.axiomId === secondAxiom.axiomId){
-                        angular.forEach(axiom.relationships, function(relationship){
-                            angular.forEach(axiom.relationships, function(relationship){
-                                
+                        angular.forEach(secondAxiom.relationships, function(relationship){
+                            let relationshipFound = false;
+                            angular.forEach(newAxiom.relationships, function(newAxiomRelationship){
+                                if(newAxiomRelationship.id === relationship.relationshipId){
+                                    relationshipFound = true;
+                                }
                             })
+                            console.log(relationshipFound);
+                            if(!relationshipFound){
+                                newAxiom.relationships.push(relationship);
+                            }
                         })
                     }
                   });
+                  conflict.autoMergedConcept.classAxioms.push(newAxiom);
               });
               deferred.resolve(conflict);
               return deferred.promise;
+          }
+            
+          function assignAxiomPartIds(conflict){
+              angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+              angular.forEach(conflict.sourceConcept.gciAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+              angular.forEach(conflict.targetConcept.classAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+              angular.forEach(conflict.targetConcept.gciAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+              angular.forEach(conflict.autoMergedConcept.classAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+              angular.forEach(conflict.autoMergedConcept.gciAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+              
           }
 
           function initializeMergeReview(review) {
@@ -554,6 +599,7 @@ angular.module('singleConceptAuthoringApp')
             scope.conflicts = review;
 
             angular.forEach(scope.conflicts, function (conflict) {
+              assignAxiomPartIds(conflict);
               deDuplicateConflict(conflict).then(function (deDupedConflict){
                 conflict = deDupedConflict;
                 conflict.fsn = conflict.sourceConcept.fsn;
