@@ -1279,7 +1279,7 @@ angular.module('singleConceptAuthoringApp')
 
             // ensure that children have been retrieved
             snowowlService.getStatedConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
-              scope.inactivationConceptChildren = children;
+              scope.inactivationConceptChildren = children.items;
               notificationService.sendMessage('Retrieving inbound relationships...');
               getAffectedObjectIds().then(function () {
                 notificationService.sendMessage('Retrieving affected associations...');
