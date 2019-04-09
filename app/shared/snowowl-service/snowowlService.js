@@ -1675,7 +1675,7 @@ angular.module('singleConceptAuthoringApp')
             // if review is ready, get the details
             if (response && response.data && response.data.status === 'CURRENT') {
               $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response) {
-                deferred.resolve(response.data);
+                deferred.resolve(normaliseSnowstormMergeReviewConcepts(response.data, mergeReviewId));
               }, function (error) {
                 deferred.reject('Could not retrieve details of reported current review');
               });
