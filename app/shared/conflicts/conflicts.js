@@ -518,11 +518,10 @@ angular.module('singleConceptAuthoringApp')
                         angular.forEach(secondAxiom.relationships, function(relationship){
                             let relationshipFound = false;
                             angular.forEach(newAxiom.relationships, function(newAxiomRelationship){
-                                if(newAxiomRelationship.id === relationship.relationshipId){
+                                if(newAxiomRelationship.relationshipId === relationship.relationshipId){
                                     relationshipFound = true;
                                 }
                             })
-                            console.log(relationshipFound);
                             if(!relationshipFound){
                                 newAxiom.relationships.push(relationship);
                             }
