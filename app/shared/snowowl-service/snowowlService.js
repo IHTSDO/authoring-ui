@@ -606,14 +606,15 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve stated children of a concept
       // GET /{path}/concepts/{conceptId}/children?form=stated
       function getStatedConceptChildren(conceptId, branch) {
-        // TODO Need to apply MS/extension parameters here eventually?
-        return $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId + '/children?form=stated').then(function (response) {
-          normaliseSnowstormConcepts(response.data);
-          return response.data;
-        }, function (error) {
-          // TODO Handle error
-        });
-
+        let deferred = $q.defer();
+        let params = {};
+        params.statedEclFilter = '<< ' + conceptId;
+        doSearch(branch, params, null, null).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error);
+          });
+        return deferred.promise;
       }
 
 

@@ -1488,19 +1488,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (scope.concept.classAxioms && scope.concept.classAxioms.length > 0) {
             scope.concept.classAxioms.forEach(function (item) {
               if (!item.released) {
-                hasUnpublishedAdditionalAxioms = true;
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
+//                hasUnpublishedAdditionalAxioms = true;
+//                item.relationships.forEach(function (relationship) {
+//                  if (!relationship.released) {
+//                    relationship.templateStyle = 'redhl';
+//                  }
+//                });
               } else {
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    hasUnpublishedAdditionalAxioms = true;
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
+//                item.relationships.forEach(function (relationship) {
+//                  if (!relationship.released) {
+//                    hasUnpublishedAdditionalAxioms = true;
+//                    relationship.templateStyle = 'redhl';
+//                  }
+//                });
               }
             });
           }
@@ -1510,18 +1510,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.gciAxioms.forEach(function (item) {
               if (!item.released) {
                 hasUnpublishedGCIs = true;
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
+//                item.relationships.forEach(function (relationship) {
+//                  if (!relationship.released) {
+//                    relationship.templateStyle = 'redhl';
+//                  }
+//                });
               } else {
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    hasUnpublishedGCIs = true;
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
+//                item.relationships.forEach(function (relationship) {
+//                  if (!relationship.released) {
+//                    hasUnpublishedGCIs = true;
+//                    relationship.templateStyle = 'redhl';
+//                  }
+//                });
               }
             });
           }
