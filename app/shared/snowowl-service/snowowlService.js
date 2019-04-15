@@ -469,8 +469,8 @@ angular.module('singleConceptAuthoringApp')
           headers: {'Content-Type': 'application/json; charset=UTF-8'}
         }).then(function (response) {
           return response;
-        }, function (error) {
-          console.error('Saving classification failed', error);
+        }, function (response) {
+          console.error('Saving classification failed', response);
           return response;
         });
       }
