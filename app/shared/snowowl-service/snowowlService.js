@@ -471,7 +471,7 @@ angular.module('singleConceptAuthoringApp')
           return response;
         }, function (error) {
           console.error('Saving classification failed', error);
-          return null;
+          return response;
         });
       }
 

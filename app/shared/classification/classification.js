@@ -184,8 +184,10 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
-            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
-              if (!data) {
+            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (response) {
+              if (response.status == 400) {
+                notificationService.sendWarning('Report Stale, please re-classify and save.');
+              } else if ((response.status + "").substr(0, 1) != "2") {
                 notificationService.sendError('Saving classification aborted', 0);
               } else {
 
