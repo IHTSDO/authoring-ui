@@ -15,8 +15,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     };
 })
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService, savedListService,$timeout) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'terminologyServerService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, terminologyServerService, templateService, batchEditingService, modalService, savedListService,$timeout) {
 
       let usModel = {
         moduleId: '731000124108',
@@ -457,7 +457,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
+        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
           let fileName = 'searchResults_' + $routeParams.taskKey;
 
           $scope.dlcDialog(data.data, fileName);
@@ -561,7 +561,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
                 if(results.data.length > 0){
-                    snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data, $scope.searchAfter).then(function (results) {
+                    terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data, $scope.searchAfter).then(function (results) {
                         if (!results) {
                             notificationService.sendError('Unexpected error searching for concepts', 10000);
                           }
@@ -596,7 +596,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
         else{
 
-        snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter).then(function (results) {
+        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter).then(function (results) {
           console.log(results);
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -722,7 +722,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.userOptions.selectedDialect === usModel.dialectId ||
             $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue).then(function (results) {
+          terminologyServerService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue).then(function (results) {
             return results;
           }, function (error) {
             $scope.searchStatus = 'Error performing search: ' + error;
@@ -733,7 +733,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.searchStatus += ': ' + error.data.message;
             }
           }).then(function(results) {
-            snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, !fsnSearchFlag).then(function (concepts) {
+            terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, !fsnSearchFlag).then(function (concepts) {
 
               if (!concepts) {
                 notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -764,7 +764,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           let escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
 
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag, acceptLanguageValue).then(function (results) {
+          terminologyServerService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize, $scope.synonymFlag, acceptLanguageValue).then(function (results) {
             // set load more parameters
             let concepts = results.items;
             $scope.searchTotal = addCommas(results.total);
@@ -772,7 +772,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
 
 
-            // convert to snowowl description search conceptObj
+            // convert to terminology server description search conceptObj
             let conceptObjs = [];
             if($scope.synonymFlag){
               angular.forEach(concepts, function (c) {
@@ -1046,7 +1046,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             break;
           }
 
-          snowowlService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, 0, 10000, false, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, $scope.batchIdList).then(function (response) {
+          terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, 0, 10000, false, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, $scope.batchIdList).then(function (response) {
 
             angular.forEach(response.items, function (item) {
               transformConcepts.push(item.concept.conceptId);

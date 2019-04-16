@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles all functionality surrounding CRS tickets
  */
-  .factory('cisService', function ($http, $rootScope, $q, scaService, metadataService, snowowlService, $timeout, notificationService) {
+  .factory('cisService', function ($http, $rootScope, $q, scaService, metadataService, terminologyServerService, $timeout, notificationService) {
 
       var currentTask;
 

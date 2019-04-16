@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -76,7 +76,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response.status === 'CONFLICTS') {
                 var merge = JSON.parse(response.message);
-                snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                   if (response && response.items && response.items.length > 0) {
                     var msg = '';
                     var conflictCount = 0;
@@ -126,7 +126,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   if (response.status === 'CONFLICTS') {
                     var merge = JSON.parse(response.message);
-                    snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                    terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                       if (response && response.items && response.items.length > 0) {
                         var msg = '';
                         var conflictCount = 0;
@@ -424,7 +424,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.checkForLock = function () {
 
-        snowowlService.getBranch($scope.branch).then(function (response) {
+        terminologyServerService.getBranch($scope.branch).then(function (response) {
 
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
@@ -438,7 +438,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             }, 10000);
            }
           else {
-            snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            terminologyServerService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response && response.length > 0) {
                 var item = response[response.length -1];
                 if (item.status === 'SCHEDULED' || item.status === 'RUNNING') {
@@ -564,7 +564,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.viewConflicts = function () {
-        snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
+        terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
           if (!response.metadata || response.metadata && !response.metadata.lock) {
             $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/conflicts');
           }
@@ -613,7 +613,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $rootScope.branchLocked = true;
           }
 
-          snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
+          terminologyServerService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });
 
           // get role for task

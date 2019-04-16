@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebarEdit', [])
 
-  .controller('sidebarEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService', 'savedListService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService, savedListService) {
+  .controller('sidebarEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'terminologyServerService', 'metadataService', 'savedListService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, terminologyServerService, metadataService, savedListService) {
 
       // on load, switch to Task Detail tab
         if($routeParams.mode === 'batch'){

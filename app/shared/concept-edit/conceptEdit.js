@@ -114,7 +114,7 @@ angular.module('singleConceptAuthoringApp')
   };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, terminologyServerService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -500,7 +500,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // utility function pass-thrus
         scope.templateInitialized = false;
-        scope.isSctid = snowowlService.isSctid;
+        scope.isSctid = terminologyServerService.isSctid;
         scope.relationshipHasTargetSlot = templateService.relationshipHasTargetSlot;
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
@@ -675,7 +675,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
 
                 // check for new concept with non-SCTID conceptId -- ignore blank id concepts
-                else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
+                else if (scope.concept.conceptId && !terminologyServerService.isSctid(scope.concept.conceptId)) {
 
                   // if template attached to this concept, use that
                   if (scope.concept.template) {
@@ -825,7 +825,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.removeConcept = function (concept) {
 
-          if (!snowowlService.isSctid(concept.conceptId)) {
+          if (!terminologyServerService.isSctid(concept.conceptId)) {
             modalService.confirm('This concept is unsaved; removing it will destroy your work.  Continue?').then(function () {
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
               $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -857,7 +857,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           var deferred = $q.defer();
 
-          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
             var results = {
               hasWarnings: false,
@@ -939,16 +939,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // NOTE: Needed for CRS integration
             var originalConceptId = scope.concept.conceptId;
 
-            // clean the concept for snowowl-ready save
-            snowowlService.cleanConcept(scope.concept);
+            // clean the concept for terminology server-ready save
+            terminologyServerService.cleanConcept(scope.concept);
 
 
             var saveFn = null;
 
             if (!scope.concept.conceptId || crsService.requiresCreation(scope.concept.conceptId)) {
-              saveFn = snowowlService.createConcept;
+              saveFn = terminologyServerService.createConcept;
             } else {
-              saveFn = snowowlService.updateConcept;
+              saveFn = terminologyServerService.updateConcept;
             }
 
 
@@ -956,12 +956,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // need to delete SCTIDs without effective time on descriptions and relationships
             // otherwise the values revert to termserver version
 //            angular.forEach(scope.concept.descriptions, function (description) {
-//              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
+//              if (terminologyServerService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
 //                delete description.descriptionId;
 //              }
 //            });
 //            angular.forEach(scope.concept.relationships, function (relationship) {
-//              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
+//              if (terminologyServerService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
 //                delete relationship.relationshipId;
 //              }
 //            });
@@ -979,7 +979,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // NOTE: Still unsure exactly why create is triggering a full re-render
                   // does not appear to be trackBy or similar issue in ng-repeat....
                   // NOTE: Currently used for re-validation and prevention of spurious modified UI States on load
-                  if (saveFn == snowowlService.createConcept) {
+                  if (saveFn == terminologyServerService.createConcept) {
                     response.catchExpectedRender = true;
                   }
 
@@ -1113,7 +1113,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean concept of any locally added information
           // store original concept id for CRS integration
           var originalConcept = angular.copy(scope.concept);
-          snowowlService.cleanConcept(scope.concept);
+          terminologyServerService.cleanConcept(scope.concept);
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
           scope.saving = true;
@@ -1291,7 +1291,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // if not an SCTID, simply remove the concept instead of deleting it
-          if (!snowowlService.isConceptId(concept.conceptId)) {
+          if (!terminologyServerService.isConceptId(concept.conceptId)) {
             scope.removeConcept(concept);
             return;
           }
@@ -1340,7 +1340,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (deletion) {
               scope.deletingConeceptError = false;
               if (isAttributeConcept(scope.concept.fsn)) {
-                snowowlService.searchConcepts(scope.branch,'', '*: ' + scope.concept.conceptId + ' =*', 0, 50, false).then(function (results) {
+                terminologyServerService.searchConcepts(scope.branch,'', '*: ' + scope.concept.conceptId + ' =*', 0, 50, false).then(function (results) {
                   if (results.total > 0) {
                     scope.deletingConeceptError = true;
                   } else {
@@ -1376,7 +1376,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               scope.inactivatingConceptError = false;
               if (isAttributeConcept(conceptCopy.fsn)) {
-                snowowlService.searchConcepts(scope.branch,'', '*: ' + conceptCopy.conceptId + ' =*', 0, 50, false).then(function (results) {
+                terminologyServerService.searchConcepts(scope.branch,'', '*: ' + conceptCopy.conceptId + ' =*', 0, 50, false).then(function (results) {
                   if (results.total > 0) {
                     scope.inactivatingConceptError = true;
                   } else {
@@ -1395,7 +1395,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget);
             if (results.deletion && !results.associationTarget) {
               notificationService.sendMessage('Deleting Concept...');
-              snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+              terminologyServerService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
                 if (response.status === 409) {
                   notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
                 }
@@ -1423,7 +1423,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         function inactivateConcept (conceptCopy) {
           // validate the concept
-          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
+          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
             // check for errors -- NOTE: Currently unused, but errors are
             // printed to log if detected
             var errors = validationResults.filter(
@@ -2217,7 +2217,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (results.reason.id) {
 
                   // persist the inactivation reason
-//                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
+//                  terminologyServerService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
                   description.active = false;
                   description.inactivationIndicator = results.reason.id;
 
@@ -2249,7 +2249,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             //if (results.reason.id) {
 
 //            // persist the inactivation reason
-//            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
+//            terminologyServerService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
             item.active = false;
             item.inactivationIndicator = results.reason.id;
             if(typeof results.associationTarget !== 'undefined') {
@@ -2269,7 +2269,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
-            snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+            terminologyServerService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
               // if reason is selected, deactivate all descriptions and
               // relationships
@@ -2676,7 +2676,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addAdditionalAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
-          if (!snowowlService.isSctid(scope.concept.conceptId)) {
+          if (!terminologyServerService.isSctid(scope.concept.conceptId)) {
             axiom.axiomId = null;
           }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
@@ -2693,7 +2693,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addGCIAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
-          if (!snowowlService.isSctid(scope.concept.conceptId)) {
+          if (!terminologyServerService.isSctid(scope.concept.conceptId)) {
             axiom.axiomId = null;
           }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
@@ -2836,7 +2836,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if(!metadataService.isExtensionSet()
                 && relationship.type.conceptId === '116680003') {// Is a (attribute)
-                snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
                   if (relationship.moduleId !== response.moduleId) {
                     resetModuleId(response.moduleId);
                   }
@@ -2862,7 +2862,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 if(!metadataService.isExtensionSet()
                   && relationship.type.conceptId === '116680003') {// Is a (attribute)
-                  snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                  terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
                     if (relationship.moduleId !== response.moduleId) {
                       resetModuleId(response.moduleId);
                     }
@@ -2887,7 +2887,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             if(!metadataService.isExtensionSet()
               && relationship.type.conceptId === '116680003') {// Is a (attribute)
-              snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+              terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
                 if (relationship.moduleId !== response.moduleId) {
                   resetModuleId(response.moduleId);
                 }
@@ -2920,7 +2920,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (relationship.type.conceptId) {
 
               constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
-                snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+                terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
                   relationship.target.conceptId = response.conceptId;
                   relationship.target.fsn = response.fsn;
                   relationship.target.definitionStatus = response.definitionStatus;
@@ -2945,7 +2945,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise simply allow drop
           else {
-            snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
               relationship.target.conceptId = response.conceptId;
               relationship.target.fsn = response.fsn;
               relationship.target.definitionStatus = response.definitionStatus;
@@ -3079,7 +3079,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clear the effective time
           copy.effectiveTime = null;
           copy.descriptionId = null;
-          copy.conceptId = null; // re-added by snowowl
+          copy.conceptId = null; // re-added by terminology server
 
           //remove release flag if any
           if(copy.released) {
@@ -3501,12 +3501,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return componentTerms[componentId];
           } else {
             componentTerms[componentId] = 'Retrieving term...';
-            if (snowowlService.isConceptId(componentId)) {
-              snowowlService.getFullConcept(componentId, scope.branch).then(function (response) {
+            if (terminologyServerService.isConceptId(componentId)) {
+              terminologyServerService.getFullConcept(componentId, scope.branch).then(function (response) {
                 componentTerms[componentId] = response.fsn;
               });
-            } else if (snowowlService.isDescriptionId(componentId)) {
-              snowowlService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
+            } else if (terminologyServerService.isDescriptionId(componentId)) {
+              terminologyServerService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
                 componentTerms[componentId] = response.term;
               })
             }
@@ -3994,7 +3994,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     var arr = scope.branch.split("/");
                     versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
                   }
-                  snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (versionedConcept) {
+                  terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (versionedConcept) {
                     if(axiom.type === 'additional'){
                         angular.forEach(versionedConcept.classAxioms, function(versionedAxiom){
                             if(axiom.axiomId === versionedAxiom.axiomId){
@@ -4066,7 +4066,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   var getVersionedConceptFn = function () {
                     var deferred = $q.defer();
-                    snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
+                    terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
                       result.versionedConcept = response;
                       deferred.resolve();
                     }, function (error) {
@@ -4079,7 +4079,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     var deferred = $q.defer();
                     var arr = scope.branch.split("/");
                     var branch = arr.slice(0,arr.length - 1).join("/");
-                    snowowlService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
+                    terminologyServerService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
                       result.projectConcept = response;
                       deferred.resolve();
                     }, function (error) {
@@ -4123,7 +4123,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             //var branch = 'MAIN/2018-01-31/SNOMEDCT-DK/TESTDK1/TESTDK1-34';
             var arr = scope.branch.split("/");
             var branch = arr.slice(0,arr.length - 2).join("/");
-            snowowlService.getBranch(branch).then(function (response) {
+            terminologyServerService.getBranch(branch).then(function (response) {
               deferred.resolve(response.metadata.codeSystemShortName);
             });
           }
@@ -4135,7 +4135,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var result = {};
           result.isNewBranch = false;
           var allCodeSystemVersion = function (codeSystem) {
-            snowowlService.getAllCodeSystemVersionsByShortName(codeSystem).then(function (response) {
+            terminologyServerService.getAllCodeSystemVersionsByShortName(codeSystem).then(function (response) {
               if (response.data.items && response.data.items.length > 0) {
                 result.items = response.data.items;
                 deferred.resolve(result);
@@ -4170,7 +4170,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           } else {
             notificationService.sendMessage('Reverting concept...');
-            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
               notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
 
               // set concept to response
@@ -4669,7 +4669,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var conceptId = scope.concept.conceptId + '';
           var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
           if (!metadataService.isExtensionSet()
-                  && snowowlService.isSctid(scope.concept.conceptId)
+                  && terminologyServerService.isSctid(scope.concept.conceptId)
                   && scope.concept.active
                   && !scope.concept.effectiveTime
                   && !scope.concept.released
@@ -4731,7 +4731,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, re-retrieve the concept
           else {
-            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
+            terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
               scope.concept = concept;
               scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);

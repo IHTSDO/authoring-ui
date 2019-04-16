@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebarEdit')
 
-  .controller('feedbackEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService', 'layoutHandler',
-    function feedbackEditCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService, layoutHandler) {     
+  .controller('feedbackEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'terminologyServerService', 'metadataService', 'layoutHandler',
+    function feedbackEditCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, terminologyServerService, metadataService, layoutHandler) {
          // on load, switch to Task Detail tab
         if($routeParams.mode === 'batch'){
             $scope.actionTab = 5;

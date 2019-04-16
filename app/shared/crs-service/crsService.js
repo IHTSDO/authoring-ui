@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles all functionality surrounding CRS tickets
  */
-  .factory('crsService', function ($http, $rootScope, $q, scaService, metadataService, snowowlService, $timeout, notificationService) {
+  .factory('crsService', function ($http, $rootScope, $q, scaService, metadataService, terminologyServerService, $timeout, notificationService) {
 
       var currentTask;
 
@@ -127,7 +127,7 @@ angular.module('singleConceptAuthoringApp')
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
         else if (!crsRequest.conceptId) {
           var copy = angular.copy(crsRequest);
-          copy.conceptId = snowowlService.createGuid();
+          copy.conceptId = terminologyServerService.createGuid();
           deferred.resolve(copy);
         }
 
@@ -146,7 +146,7 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, get the concept as it exists on this branch
         else {
-          snowowlService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
+          terminologyServerService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
 
               // apply the CRS request to the latest version of the concept
               updateConceptFromCrsRequest(concept, crsRequest);
@@ -479,7 +479,7 @@ angular.module('singleConceptAuthoringApp')
 
 //
 // Save a concept against the stored id
-// NOTE: crsId required because snowowl may assign a new id
+// NOTE: crsId required because terminology server may assign a new id
 //
       function saveCrsConcept(crsId, concept, warning) {
         for (var i = 0; i < currentTaskConcepts.length; i++) {
@@ -532,7 +532,7 @@ angular.module('singleConceptAuthoringApp')
           // retrieve traceability to determine concept changes
           var changedConceptIds = [];
 
-          snowowlService.getTraceabilityForBranch(currentTask.branchPath).then(function (traceability) {
+          terminologyServerService.getTraceabilityForBranch(currentTask.branchPath).then(function (traceability) {
 
             if (traceability) {
               angular.forEach(traceability.content, function (change) {

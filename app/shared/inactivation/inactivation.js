@@ -2,8 +2,8 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal', '$route', 'modalService',
-    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal, $route, modalService) {
+  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal', '$route', 'modalService',
+    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $modal, $route, modalService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
             var buildConceptHistoricalAssoc = function(conceptId) {
               var def = $q.defer();
               // retrieve the referenced concept
-              snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
+              terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (concept) {
 
                 // check against the available association target types
                 for (var j = 0; j < scope.associationTargets.length; j++) {
@@ -139,7 +139,7 @@ angular.module('singleConceptAuthoringApp')
 
             var buildDescriptionHistoricalAssoc = function(descriptionId) {
               var def = $q.defer();
-              snowowlService.getDescriptionProperties(descriptionId, scope.branch).then(function (description) {
+              terminologyServerService.getDescriptionProperties(descriptionId, scope.branch).then(function (description) {
 
                 var subPromises = [];
 
@@ -158,7 +158,7 @@ angular.module('singleConceptAuthoringApp')
                     console.debug('target component id', targetComponentId);
 
                     // if association referenced a concept, process as user-editable
-                    if (snowowlService.isConceptId(targetComponentId)) {
+                    if (terminologyServerService.isConceptId(targetComponentId)) {
 
                       // if new association targets were supplied
                       if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
@@ -207,7 +207,7 @@ angular.module('singleConceptAuthoringApp')
                     }
 
                     // otherwise, add to the other components list (dump list)
-                    else if (snowowlService.isDescriptionId(targetComponentId)) {
+                    else if (terminologyServerService.isDescriptionId(targetComponentId)) {
                       console.debug('  found description targeting description', description);
 
                       var buildDesAssoc = function(description, targetComponentId) {
@@ -216,7 +216,7 @@ angular.module('singleConceptAuthoringApp')
                         item.refsetName = scope.associationTargets[j].id;
                         item.inactivationIndicator = scope.reasonId;
                         item.previousTargetId = targetComponentId;
-                        snowowlService.getDescriptionProperties(targetComponentId, scope.branch).then(function (descriptionTarget) {
+                        terminologyServerService.getDescriptionProperties(targetComponentId, scope.branch).then(function (descriptionTarget) {
                           item.previousTargetTerm = descriptionTarget.term;
                           parsedComponents.descriptionsWithDescriptionTarget.push(item);
                           d.resolve();                  
@@ -258,12 +258,12 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // check if referenced concept
-              else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
+              else if (terminologyServerService.isConceptId(list[i].referencedComponent.id)) {
                 promises.push(buildConceptHistoricalAssoc(list[i].referencedComponent.id));
               }
 
               // check if referenced description
-              else if (snowowlService.isDescriptionId(list[i].referencedComponent.id)) {
+              else if (terminologyServerService.isDescriptionId(list[i].referencedComponent.id)) {
                 promises.push(buildDescriptionHistoricalAssoc(list[i].referencedComponent.id));
               }
 
@@ -554,7 +554,7 @@ angular.module('singleConceptAuthoringApp')
           scope.viewAssociationConcept = function (conceptId) {
             scope.isStatic = true;
             scope.editedConcept = null;
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
               scope.editedConcept = response;
             });
           };
@@ -607,7 +607,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(array);
             } else {
               var idList = ids;
-                snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+                terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
                     if (ids.length === 1 && response.length > 0) {
                       array.push(response[0]);
                     } else {
@@ -761,7 +761,7 @@ angular.module('singleConceptAuthoringApp')
                         rel.relationshipId = null;
                       }
                     });
-                    snowowlService.cleanConcept(concept);
+                    terminologyServerService.cleanConcept(concept);
                   });
 
 
@@ -770,11 +770,11 @@ angular.module('singleConceptAuthoringApp')
                     scope.inactivationConcept.associationTargets = scope.assocs;
                     scope.inactivationConcept.active = false;
                                         
-                    snowowlService.cleanConcept(scope.inactivationConcept);
+                    terminologyServerService.cleanConcept(scope.inactivationConcept);
                     
                     conceptArray.push(scope.inactivationConcept);
                     console.log(conceptArray);
-                    snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                    terminologyServerService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                       notificationService.sendMessage('Inactivation Complete');
 
                       // broadcast event to any listeners (currently task detail, crs concept list,
@@ -789,8 +789,8 @@ angular.module('singleConceptAuthoringApp')
                     });
                   }
                   else {
-                    snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                      snowowlService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
+                    terminologyServerService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                      terminologyServerService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
                         if (response.status === 409) {
                           notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
                           $route.reload();
@@ -854,7 +854,7 @@ angular.module('singleConceptAuthoringApp')
           function getAffectedObjectIds() {
             console.log('Getting affected object ids');
             var deferred = $q.defer();
-            snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0).then(function (response) {
+            terminologyServerService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0).then(function (response) {
               scope.affectedRelationshipIds = [];
 
               angular.forEach(response.items, function (item) {
@@ -890,7 +890,7 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
                 idList.push(conceptId);
               });
-              snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+              terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
                   angular.forEach(response, function (concept) {
                         scope.affectedConcepts[concept.conceptId] = concept;
                       
@@ -906,7 +906,7 @@ angular.module('singleConceptAuthoringApp')
 
           function getAffectedAssociations() {
             var deferred = $q.defer();
-            snowowlService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
 
               scope.affectedConceptAssocs = [];
               scope.affectedDescToConceptAssocs = [];
@@ -1080,7 +1080,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.getTargetConceptSuggestions = function (text) {
-            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, text, 0, 10).then(function (response) {
+            return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, text, 0, 10).then(function (response) {
               // Try to remove any duplicated concepts
              let n = 0;
               while (n < response.length) {
@@ -1251,7 +1251,7 @@ angular.module('singleConceptAuthoringApp')
                 var concept = {};
                 concept.assocName = key;
                 concept.conceptId = id;
-                snowowlService.getConceptDescriptions(id, scope.branch).then(function (response) {
+                terminologyServerService.getConceptDescriptions(id, scope.branch).then(function (response) {
                   angular.forEach(response, function (desc) {
                     if (desc.typeId === '900000000000003001' && desc.active === true) {
                       concept.fsn = desc.term;
@@ -1278,7 +1278,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             // ensure that children have been retrieved
-            snowowlService.getStatedConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
+            terminologyServerService.getStatedConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
               scope.inactivationConceptChildren = children.items;
               notificationService.sendMessage('Retrieving inbound relationships...');
               getAffectedObjectIds().then(function () {

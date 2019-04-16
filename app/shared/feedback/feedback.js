@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys) {
       return {
         restrict: 'A',
         transclude: false,
@@ -904,7 +904,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // get the full concept for this branch (current version)
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
               scope.runComparison(conceptId, scope.branch, response).then(function (response) {
                 if(sorting) {
                   scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
@@ -930,7 +930,7 @@ angular.module('singleConceptAuthoringApp')
           //and highlight any changes
           scope.runComparison = function(conceptId, branch, currentConcept){
             var deferred = $q.defer();
-            snowowlService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (response) {
+            terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (response) {
               //check concept conditions first
               if(currentConcept.active !== response.active
                  || currentConcept.definitionStatus !== response.definitionStatus){
@@ -954,7 +954,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getSNF = function (id) {
             var deferred = $q.defer();
-            snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
+            terminologyServerService.getConceptSNF(id, scope.branch).then(function (response) {
               deferred.resolve(response);
             });
             return deferred.promise;
@@ -1053,7 +1053,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
               if(!newRelationship.found){
-                newRelationship.relationshipId = snowowlService.createGuid();
+                newRelationship.relationshipId = terminologyServerService.createGuid();
                 highlightComponent(newRelationship.sourceId, newRelationship.relationshipId);
               }
             });
@@ -1071,7 +1071,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
               if(!originalRelationship.found){
-                originalRelationship.relationshipId = snowowlService.createGuid();
+                originalRelationship.relationshipId = terminologyServerService.createGuid();
                 originalRelationship.active = false;
                 axiom.relationships.push(originalRelationship);
                 highlightComponent(originalRelationship.sourceId, originalRelationship.relationshipId, null, null, true);
@@ -1740,7 +1740,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.getConceptsForTypeahead = function (searchStr) {
-            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+            return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
               response = response.items;
               // remove duplicates
               for (var i = 0; i < response.length; i++) {
@@ -1836,7 +1836,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getConceptsForReview = function (idList, review, feedbackList) {
             var deferred = $q.defer();
-            snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+            terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
               angular.forEach(response, function (concept) {
                 angular.forEach(review.concepts, function (reviewConcept) {
                   if (concept.conceptId === reviewConcept.conceptId) {
@@ -2041,7 +2041,7 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              snowowlService.getTraceabilityForBranch(scope.task.branchPath, false, false, true).then(function (traceability) {
+              terminologyServerService.getTraceabilityForBranch(scope.task.branchPath, false, false, true).then(function (traceability) {
                 var review = {};
                 if (traceability) {
                   console.log(traceability);

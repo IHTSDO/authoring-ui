@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
-  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter', '$route','componentAuthoringUtil',
-    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter, $route, componentAuthoringUtil) {
+  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'terminologyServerService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter', '$route','componentAuthoringUtil',
+    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, terminologyServerService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter, $route, componentAuthoringUtil) {
 
          $scope.templateOptions = {
             availableTemplates : [],
@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                           //if any concepts have had descriptions added through automation, ensure that they have uuid's
                           angular.forEach(concept.descriptions, function (description) {
                             if(!description.descriptionId){
-                                description.descriptionId = snowowlService.createGuid();
+                                description.descriptionId = terminologyServerService.createGuid();
                             }
                           });
                         })

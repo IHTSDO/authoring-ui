@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil, $interval) {
+  .service('templateService', function ($http, $rootScope, $q, scaService, terminologyServerService, componentAuthoringUtil, $interval) {
 
     var apiEndpoint = '../template-service/';
 
@@ -84,12 +84,12 @@ angular.module('singleConceptAuthoringApp')
                                                   delete rel.type.definitionStatus;
                                               }
                                               if(!rel.relationshipId){
-                                                  rel.relationshipId = snowowlService.createGuid();
+                                                  rel.relationshipId = terminologyServerService.createGuid();
                                               }
                                           });
                                           angular.forEach(result.descriptions, function(rel){
                                               if(!rel.descriptionId){
-                                                  rel.descriptionId = snowowlService.createGuid();
+                                                  rel.descriptionId = terminologyServerService.createGuid();
                                               }
                                           });
                                       });
@@ -110,12 +110,12 @@ angular.module('singleConceptAuthoringApp')
                                                   delete rel.type.definitionStatus;
                                               }
                                               if(!rel.relationshipId){
-                                                  rel.relationshipId = snowowlService.createGuid();
+                                                  rel.relationshipId = terminologyServerService.createGuid();
                                               }
                                           });
                                           angular.forEach(result.descriptions, function(rel){
                                               if(!rel.descriptionId){
-                                                  rel.descriptionId = snowowlService.createGuid();
+                                                  rel.descriptionId = terminologyServerService.createGuid();
                                               }
                                           });
                                       });
@@ -247,7 +247,7 @@ angular.module('singleConceptAuthoringApp')
               if (conceptIds.length > 0) {
 
                 // bulk call for concept ids
-                snowowlService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (concepts) {
+                terminologyServerService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (concepts) {
                   angular.forEach(concepts.items, function (concept) {
                     angular.forEach(relationships, function(rel){
                         if(concept.id === rel.target.conceptId){
@@ -272,12 +272,12 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(concept);
       } else {
         var copiedConcept = angular.copy(concept);
-        snowowlService.cleanConcept(copiedConcept);
+        terminologyServerService.cleanConcept(copiedConcept);
         copiedConcept.descriptions = [];
         transformConceptToTemplate(branch, template, copiedConcept).then(function(response) {
           concept.descriptions = angular.copy(response.descriptions);
           angular.forEach(concept.descriptions, function(d) {
-            if (!d.released && snowowlService.isSctid(d.descriptionId)) {
+            if (!d.released && terminologyServerService.isSctid(d.descriptionId)) {
               delete d.descriptionId;
             }
           }); 
@@ -329,7 +329,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       if (conceptIds.length > 0) {
-        snowowlService.bulkRetrieveFullConcept(conceptIds, currentTask.branchPath).then(function (response) {
+        terminologyServerService.bulkRetrieveFullConcept(conceptIds, currentTask.branchPath).then(function (response) {
           deferred.resolve(response);
         }, function (error) {
           deferred.reject(error);
@@ -418,7 +418,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         // get FSNs for relationship types and targets
-        snowowlService.bulkGetConcept(conceptIds, 'MAIN').then(function (concepts) {
+        terminologyServerService.bulkGetConcept(conceptIds, 'MAIN').then(function (concepts) {
             angular.forEach(concepts.items, function (c) {
               idConceptMap[c.id] = c;
             });
@@ -483,7 +483,7 @@ angular.module('singleConceptAuthoringApp')
           componentAuthoringUtil.setDefaultFields(tc);
 
           // apply temporary UUIDs and template variables/flags
-          tc.conceptId = snowowlService.createGuid();
+          tc.conceptId = terminologyServerService.createGuid();
           tc.template = template;
           tc.templateComplete = false;
 
@@ -508,10 +508,10 @@ angular.module('singleConceptAuthoringApp')
 
           // assign sctids
           angular.forEach(tc.descriptions, function (d) {
-            d.descriptionId = snowowlService.createGuid();
+            d.descriptionId = terminologyServerService.createGuid();
           });
           angular.forEach(tc.relationships, function (r) {
-            r.relationshipId = snowowlService.createGuid();
+            r.relationshipId = terminologyServerService.createGuid();
           });
 
           // replace logical values
@@ -527,7 +527,7 @@ angular.module('singleConceptAuthoringApp')
                           }
                       });
                       angular.forEach(tc.relationships, function (r) {
-                        r.relationshipId = snowowlService.createGuid();
+                        r.relationshipId = terminologyServerService.createGuid();
                           if(template.conceptOutline.moduleId !== undefined)
                           {
                               r.moduleId = template.conceptOutline.moduleId;
@@ -594,7 +594,7 @@ angular.module('singleConceptAuthoringApp')
             conceptCopy.template = template;
             componentAuthoringUtil.setDefaultFields(template);
             angular.forEach(conceptCopy.relationships, function (r) {
-                r.relationshipId = snowowlService.isSctid(r.relationshipId) ? r.relationshipId : snowowlService.createGuid();
+                r.relationshipId = terminologyServerService.isSctid(r.relationshipId) ? r.relationshipId : terminologyServerService.createGuid();
             });
             angular.forEach(template.conceptOutline.relationships, function (rt) {
 
@@ -669,7 +669,7 @@ angular.module('singleConceptAuthoringApp')
               if (!matchFound) {
                 
                 var newDesc = angular.copy(dt);
-                newDesc.descriptionId = snowowlService.createGuid();
+                newDesc.descriptionId = terminologyServerService.createGuid();
                 newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
                 newDesc.template = dt;
                 newDesc.templateMessages = [];
@@ -705,10 +705,10 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             angular.forEach(conceptCopy.descriptions, function (d) {
-                d.descriptionId = snowowlService.isSctid(d.descriptionId) ? d.descriptionId : snowowlService.createGuid();
+                d.descriptionId = terminologyServerService.isSctid(d.descriptionId) ? d.descriptionId : terminologyServerService.createGuid();
             });
             angular.forEach(conceptCopy.relationships, function (r) {
-                r.relationshipId = snowowlService.isSctid(r.relationshipId) ? r.relationshipId : snowowlService.createGuid();
+                r.relationshipId = terminologyServerService.isSctid(r.relationshipId) ? r.relationshipId : terminologyServerService.createGuid();
             });
 
             componentAuthoringUtil.setDefaultFields(conceptCopy);
@@ -739,7 +739,7 @@ angular.module('singleConceptAuthoringApp')
       // reset all template variables
       concept.templateMessages = [];
       if (!concept.conceptId) {
-        concept.conceptId = snowowlService.createGuid();
+        concept.conceptId = terminologyServerService.createGuid();
       }
       concept.template = template;
       angular.forEach(concept.descriptions, function (d) {
@@ -747,7 +747,7 @@ angular.module('singleConceptAuthoringApp')
         d.templateStyle = null;
         d.templateMessages = [];
         if (!d.descriptionId) {
-          d.descriptionId = snowowlService.createGuid();
+          d.descriptionId = terminologyServerService.createGuid();
         }
       });
       angular.forEach(concept.relationships, function (r) {
@@ -755,7 +755,7 @@ angular.module('singleConceptAuthoringApp')
         r.templateStyle = null;
         r.templateMessages = [];
         if (!r.relationshipId) {
-          r.relationshipId = snowowlService.createGuid();
+          r.relationshipId = terminologyServerService.createGuid();
         }
       });
 
@@ -892,7 +892,7 @@ angular.module('singleConceptAuthoringApp')
 
           if (!matchFound && applyValues) {
             var newDesc = angular.copy(dt);
-            newDesc.descriptionId = snowowlService.createGuid();
+            newDesc.descriptionId = terminologyServerService.createGuid();
             newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
             if (applyStyles) {
               newDesc.templateStyle = 'bluehl lighten-2';

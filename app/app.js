@@ -123,7 +123,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
 
     console.log('Running application');
 
@@ -182,7 +182,7 @@ angular
         if (features.network && features.network.connection.minimum) {
           window.minNetworkConnection = features.network.connection.minimum;
         }
-        snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
+        terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
