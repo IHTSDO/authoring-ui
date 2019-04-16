@@ -14,9 +14,21 @@ angular.module('singleConceptAuthoringApp')
           normaliseSnowstormConcept(concept);
         });
       }
-        
-      function normaliseSnowstormMergeReviewConcepts(mergeReview, mergeReviewId){
+
+      function normaliseSnowstormMergeReviewConcepts(mergeReview, mergeReviewId, promise){
         angular.forEach(mergeReview, function(review){
+          if (!review.sourceConcept) {
+            var concept = review.targetConcept;
+            promise.reject("Concept " + concept.conceptId + " | " + concept.fsn + " has been updated on this branch " +
+              "but deleted on the parent branch. Please contact technical support to get help resolving this.");
+            return;
+          }
+          if (!review.targetConcept) {
+            var concept = review.sourceConcept;
+            promise.reject("Concept " + concept.conceptId + " | " + concept.fsn + " has been updated on the parent branch " +
+              "but deleted on this branch. Please contact technical support to get help resolving this");
+		    return;
+          }
           normaliseSnowstormConcept(review.autoMergedConcept);
           normaliseSnowstormConcept(review.sourceConcept);
           normaliseSnowstormConcept(review.targetConcept);
@@ -1675,7 +1687,7 @@ angular.module('singleConceptAuthoringApp')
             // if review is ready, get the details
             if (response && response.data && response.data.status === 'CURRENT') {
               $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response) {
-                deferred.resolve(normaliseSnowstormMergeReviewConcepts(response.data, mergeReviewId));
+                deferred.resolve(normaliseSnowstormMergeReviewConcepts(response.data, mergeReviewId, deferred));
               }, function (error) {
                 deferred.reject('Could not retrieve details of reported current review');
               });
@@ -1734,7 +1746,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
           if (response && response.data && response.data.status === 'CURRENT') {
             $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
-              deferred.resolve(normaliseSnowstormMergeReviewConcepts(response2.data, mergeReviewId));
+              deferred.resolve(normaliseSnowstormMergeReviewConcepts(response2.data, mergeReviewId, deferred));
             }, function (error) {
               deferred.reject(null);
             });

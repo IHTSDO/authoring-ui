@@ -835,7 +835,11 @@ angular.module('singleConceptAuthoringApp')
                       // null op but calls backend
                     }
                   }, function (error) {
-                    notificationService.sendError('Error generating merge review');
+                    if (error) {
+                      notificationService.sendError('Conflicts: ' + error);
+                    } else {
+                      notificationService.sendError('Error generating merge review.');
+                    }
                   });
                 }
 
@@ -852,7 +856,11 @@ angular.module('singleConceptAuthoringApp')
                       initializeMergeReview(newReview);
                     }
                   }, function (error) {
-                    notificationService.sendError('Error generating merge review');
+                    if (error) {
+                      notificationService.sendError('Conflicts: ' + error);
+                    } else {
+                      notificationService.sendError('Error generating merge review.');
+                    }
                   });
               });
             }
@@ -872,7 +880,11 @@ angular.module('singleConceptAuthoringApp')
                   initializeMergeReview(newReview);
                 }
               }, function (error) {
-                notificationService.sendError('Error generating merge review');
+				if (error) {
+				  notificationService.sendError('Conflicts: ' + error);
+				} else {
+				  notificationService.sendError('Error generating merge review.');
+				}
               });
             }
           }
