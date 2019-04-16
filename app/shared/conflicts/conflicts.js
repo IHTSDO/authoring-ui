@@ -588,6 +588,23 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('ERROR: Merge review generation failed.');
             }
 
+            // Check for deleted concepts
+            angular.forEach(review, function (conceptReview) {
+              if (!conceptReview.sourceConcept) {
+                var concept = conceptReview.targetConcept;
+                notificationService.sendError("Concept " + concept.conceptId + " | " + concept.fsn + " has been updated on this branch " +
+                  "but deleted on the parent branch. Please contact technical support to get help resolving this.");
+                return;
+              }
+              if (!conceptReview.targetConcept) {
+                var concept = conceptReview.sourceConcept;
+                notificationService.sendError("Concept " + concept.conceptId + " | " + concept.fsn + " has been updated on the parent branch " +
+                  "but deleted on this branch. Please contact technical support to get help resolving this");
+                return;
+              }
+            });
+
+
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
 
