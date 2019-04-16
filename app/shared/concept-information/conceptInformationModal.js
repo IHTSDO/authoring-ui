@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
-  .controller('conceptInformationModalCtrl', function ($scope, $rootScope, $modalInstance, scaService, snowowlService, conceptId, branch, ngTableParams, $filter, $q) {
+  .controller('conceptInformationModalCtrl', function ($scope, $rootScope, $modalInstance, scaService, terminologyServerService, conceptId, branch, ngTableParams, $filter, $q) {
 
     $scope.conceptId = conceptId;
     $scope.branch = branch;
@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
     function initialize() {
       // get full concept if not retrieved
-      snowowlService.getFullConcept($scope.conceptId, $scope.branch).then(function (concept) {
+      terminologyServerService.getFullConcept($scope.conceptId, $scope.branch).then(function (concept) {
         $scope.fullConcept = concept;
         $scope.taxonomyConcept = {};
         $scope.taxonomyConcept.conceptId = concept.conceptId;
@@ -131,14 +131,14 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
       });
 
       // get children if not retrieved
-      snowowlService.getConceptChildren($scope.conceptId, $scope.branch).then(function (children) {
+      terminologyServerService.getConceptChildren($scope.conceptId, $scope.branch).then(function (children) {
         $scope.children = children;
         if ($scope.fullConcept && $scope.children && $scope.parents) {
           $scope.loadComplete = true;
         }
       });
 
-      snowowlService.getConceptParents($scope.conceptId, $scope.branch).then(function (parents) {
+      terminologyServerService.getConceptParents($scope.conceptId, $scope.branch).then(function (parents) {
         $scope.parents = parents;
         if ($scope.fullConcept && $scope.children && $scope.parents) {
           $scope.loadComplete = true;
@@ -151,7 +151,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     }
     
     function getRelationshipsInbound() {
-      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit, true).then(function (response) {
+      terminologyServerService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit, true).then(function (response) {
         // initialize the arrays
         $scope.inboundRelationships = [];
     
@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     }
 
     function getAffectedAssociations() {    
-      snowowlService.getMembersByTargetComponent($scope.conceptId, $scope.branch).then(function (response) {
+      terminologyServerService.getMembersByTargetComponent($scope.conceptId, $scope.branch).then(function (response) {
         $scope.affectedConceptAssocs = [];
         $scope.affectedDescToConceptAssocs = [];      
         $scope.affectedOtherAssocs = [];
@@ -221,8 +221,8 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
           }
         }
         // check if referenced concept
-        else if (snowowlService.isConceptId(association.referencedComponent.id)) {
-          snowowlService.getFullConcept(association.referencedComponent.id, $scope.branch).then(function (concept) {
+        else if (terminologyServerService.isConceptId(association.referencedComponent.id)) {
+          terminologyServerService.getFullConcept(association.referencedComponent.id, $scope.branch).then(function (concept) {
             var item = concept;          
             if (parsedComponents.concepts.map(function (c) {
                 return c.conceptId
@@ -236,7 +236,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
           });
         }
         // check if referenced description
-        else if (snowowlService.isDescriptionId(association.referencedComponent.id)) {         
+        else if (terminologyServerService.isDescriptionId(association.referencedComponent.id)) {
           parsedComponents.descriptionsWithConceptTarget.push(association.referencedComponent);
           if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length  + parsedComponents.other.length === list.length) {
             deferred.resolve(parsedComponents);

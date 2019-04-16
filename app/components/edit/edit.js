@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys, modalService) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, terminologyServerService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys, modalService) {
 
     // Close all concepts listener
     $scope.$on('closeAllOpenningConcepts', function (event, data) {
@@ -251,7 +251,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     function redirectToConflicts() {
-      snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $scope.projectKey).then(function (response) {
+      terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + $scope.projectKey).then(function (response) {
         if (!response.metadata || response.metadata && !response.metadata.lock) {
           $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
         }
@@ -572,7 +572,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.getConceptsForReview = function (idList, review, feedbackList) {
       var deferred = $q.defer();
-      snowowlService.bulkRetrieveFullConcept(idList, $scope.branch).then(function (response) {
+      terminologyServerService.bulkRetrieveFullConcept(idList, $scope.branch).then(function (response) {
         angular.forEach(response, function (concept) {
           angular.forEach(review.concepts, function (reviewConcept) {
             if (concept.conceptId === reviewConcept.conceptId) {
@@ -646,7 +646,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conceptUpdateFunction = function (project, task, concept) {
 
       var deferred = $q.defer();
-      snowowlService.updateConcept(project, task, concept).then(function (response) {
+      terminologyServerService.updateConcept(project, task, concept).then(function (response) {
         deferred.resolve(response);
       });
       return deferred.promise;
@@ -673,7 +673,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         } else {
 
           // get the concept and add it to the stack
-          snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
+          terminologyServerService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
             $scope.conceptLoading = false;
             if (!response) {
               return;
@@ -781,7 +781,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // if unsaved concept, push
-      else if (conceptId === 'unsaved' || !snowowlService.isSctid(conceptId)) {
+      else if (conceptId === 'unsaved' || !terminologyServerService.isSctid(conceptId)) {
         $scope.concepts.push({conceptId: conceptId});
         $scope.$broadcast('editingConcepts', {concepts :  $scope.concepts});
 
@@ -827,7 +827,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (concept) {
+      terminologyServerService.getFullConcept(conceptId, $scope.targetBranch).then(function (concept) {
         $scope.concepts.push(concept);
         notificationService.sendMessage('Concept ' + concept.fsn + ' successfully added to edit list', 5000, null);
 
@@ -970,7 +970,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 
       // get the concept and add it to the stack
-      snowowlService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
+      terminologyServerService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
 
         // check if original concept already exists, if not add it
         var conceptExists = false;
@@ -1287,7 +1287,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // get latest review
     $scope.getLatestReview = function () {
-      snowowlService.getTraceabilityForBranch($scope.branch, false, false, true).then(function (traceability) {
+      terminologyServerService.getTraceabilityForBranch($scope.branch, false, false, true).then(function (traceability) {
         var review = {};
 
         review.traceability = traceability;
@@ -1406,7 +1406,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.getSNF = function (id) {
       var deferred = $q.defer();
-      snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
+      terminologyServerService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
       });
       return deferred.promise;
@@ -1674,12 +1674,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var deferred = $q.defer();
 
-      snowowlService.getBranch(branchPath).then(function (response) {
+      terminologyServerService.getBranch(branchPath).then(function (response) {
         // if not found, create branch
         if (response.status === 404) {
           console.log('Creating branch for new task');
           notificationService.sendWarning('Task initializing');
-          snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          terminologyServerService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             notificationService.sendWarning('Task initialization complete', 3000);
             $rootScope.$broadcast('reloadTaxonomy');
             $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -1761,7 +1761,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.getConceptsForTypeahead = function (searchStr) {
-            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+            return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
 
               // remove duplicates
               for (var i = 0; i < response.length; i++) {
@@ -2058,7 +2058,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
 
               // get the extension default module concept
-              snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
+              terminologyServerService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
 
                 // set the name for display
                 $scope.project.metadata.defaultModuleName = extConcept.fsn;
@@ -2133,7 +2133,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function loadSelfGroupedAttribute() {
       // retrieve all self-grouped attribute domain members
-      snowowlService.getMrcmAttributeDomainMembers($scope.task.branchPath).then(function (response) {
+      terminologyServerService.getMrcmAttributeDomainMembers($scope.task.branchPath).then(function (response) {
         var selfGroupedAttributes = [];
         if (response.items) {
           selfGroupedAttributes = response.items.filter(function(attribute) {

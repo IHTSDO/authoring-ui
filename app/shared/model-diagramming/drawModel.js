@@ -5,7 +5,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .directive('drawModel', function (snowowlService,metadataService) {
+  .directive('drawModel', function (terminologyServerService,metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -292,7 +292,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
             sctClass = "sct-defined-concept";
           }
-          var rect1 = drawSctBox(svg, x, y, concept.fsn, snowowlService.isSctid(concept.conceptId) ? concept.conceptId : null, sctClass);
+          var rect1 = drawSctBox(svg, x, y, concept.fsn, terminologyServerService.isSctid(concept.conceptId) ? concept.conceptId : null, sctClass);
           x = x + 90;
           y = y + rect1.getBBox().height + 40;
           var circle1;

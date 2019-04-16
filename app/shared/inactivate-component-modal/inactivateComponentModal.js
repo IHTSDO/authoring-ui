@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService) {
+  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, terminologyServerService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService) {
 
     // the selected tab
     $scope.actionTab = 1;
@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.error = 'List of inactivation reasons was not specified';
     }
     $scope.getConceptsForTypeahead = function (searchStr,inactivationIndication) {
-      return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+      return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
         let i = 0;
         while (i < response.length) {
           let j = i + 1;
@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
-      return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
+      return terminologyServerService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
         let descendants = [];
 
         if($scope.descendants) {
@@ -345,7 +345,7 @@ angular.module('singleConceptAuthoringApp')
     if ($scope.conceptId && $scope.branch) {
 
       // limit the number of descendants retrieved to prevent overload
-      snowowlService.searchAllConcepts($scope.branch, '', '<' + $scope.conceptId, 0, 50, null, true, true).then(function (response) {
+      terminologyServerService.searchAllConcepts($scope.branch, '', '<' + $scope.conceptId, 0, 50, null, true, true).then(function (response) {
         $scope.descendants = response;
         $rootScope.descendants = response;
         $scope.descendantsLoading = false;
@@ -372,7 +372,7 @@ angular.module('singleConceptAuthoringApp')
       let deferred = $q.defer();
 
       // get the concept relationships again (all)
-      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
+      terminologyServerService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
 
         $scope.inboundRelationshipsLoading = true;
 

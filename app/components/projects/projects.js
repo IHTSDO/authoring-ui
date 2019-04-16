@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
   })
 
-  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q, notificationService, hotkeys, localStorageService) {
+  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, $timeout, $q, notificationService, hotkeys, localStorageService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;

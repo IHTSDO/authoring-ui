@@ -1,7 +1,10 @@
 'use strict';
 
+//
+// This generic service can be used with either Snow Owl or Snowstorm terminology servers.
+//
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', '$rootScope',
+  .service('terminologyServerService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', '$rootScope',
     function ($http, $q, $timeout, notificationService, metadataService, $rootScope) {
       let apiEndpoint = null;
 
@@ -84,7 +87,7 @@ angular.module('singleConceptAuthoringApp')
 
 
       /////////////////////////////////////
-      // Snowowl Concept Retrieval Methods
+      // Terminology Server Concept Retrieval Methods
       /////////////////////////////////////
 
       // Create New Concept
@@ -340,7 +343,7 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(concept.relationships, function (relationship) {
           cleanRelationship(relationship, keepTempIds);
 
-          // snowowl require source id set
+          // Terminology Server require source id set
           relationship.sourceId = concept.conceptId;
 
         });
@@ -1550,7 +1553,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       ////////////////////////////////
-      // Snow Owl Administrative Services
+      // Terminology Server Administrative Services
       ////////////////////////////////
       function getAllCodeSystemVersionsByShortName (codeSystemShortName) {
         if(!codeSystemShortName) {
@@ -2057,7 +2060,7 @@ angular.module('singleConceptAuthoringApp')
         setBranchPreventPromotion: setBranchPreventPromotion,
         getLastPromotionTime: getLastPromotionTime,
 
-        // Snow Owl Administrative Services
+        // Terminology Server Administrative Services
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
 
         // merge-review functionality

@@ -1,7 +1,7 @@
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window', '$location', 'metadataService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window, $location, metadataService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'terminologyServerService', 'notificationService', '$q', '$window', '$location', 'metadataService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, terminologyServerService, notificationService, $q, $window, $location, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -124,7 +124,7 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('Please resolve convention errors prior to accepting concept merge.');
             } else {
 
-              snowowlService.cleanConcept(data.concept);
+              terminologyServerService.cleanConcept(data.concept);
 
               notificationService.sendMessage('Accepting merged version for concept ' + data.concept.conceptId);
               scope.conceptUpdateFunction($routeParams.projectKey, $routeParams.taskKey, data.concept).then(function (response) {
@@ -200,7 +200,7 @@ angular.module('singleConceptAuthoringApp')
           scope.conceptUpdateFunction = function (project, task, concept) {
             var deferred = $q.defer();
             console.log(concept);
-            snowowlService.storeConceptAgainstMergeReview(scope.id, concept.conceptId, concept).then(function (response) {
+            terminologyServerService.storeConceptAgainstMergeReview(scope.id, concept.conceptId, concept).then(function (response) {
               deferred.resolve(response);
             }, function (error) {
               deferred.reject(error);
@@ -447,7 +447,7 @@ angular.module('singleConceptAuthoringApp')
           scope.startMergeReviewPoll = function () {
             console.log('Starting viewed merge polling');
             viewedMergePoll = $interval(function () {
-              snowowlService.getMergeReview(scope.id).then(function (response) {
+              terminologyServerService.getMergeReview(scope.id).then(function (response) {
                 if (response.status !== 'CURRENT') {
                   viewedMergePoll = $interval.cancel(viewedMergePoll);
                   scope.badStateDetected = true;
@@ -668,7 +668,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.rebaseRunning = true;
                   scope.conflicts = [];
                   var merge = JSON.parse(response.message);
-                  snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                  terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                     if (response && response.items && response.items.length > 0) {
                       var msg = '';
                       var conflictCount = 0;
@@ -738,7 +738,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.rebaseRunning = true;
                   scope.conflicts = [];
                   var merge = JSON.parse(response.message);
-                  snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                  terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                     if (response && response.items && response.items.length > 0) {
                       var msg = '';
                       var conflictCount = 0;
@@ -814,7 +814,7 @@ angular.module('singleConceptAuthoringApp')
             // if ui-state has merge review id from previous visit
             if (mergeReviewId) {
 
-              snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
+              terminologyServerService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
                   console.log(mergeReview);
                 // Previous review is current and has concepts,
                 // initialize from this review
@@ -825,7 +825,7 @@ angular.module('singleConceptAuthoringApp')
                 // Previous review is not current, generate new review
                 // and initialize from new review
                 else {
-                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+                  terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
@@ -844,7 +844,7 @@ angular.module('singleConceptAuthoringApp')
                 }
 
               }, function(error){
-                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+                  terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                     // DIVERGED, but no merges to resolve
                     if (!newReview || newReview.length === 0) {
@@ -868,7 +868,7 @@ angular.module('singleConceptAuthoringApp')
             // if no review or review not current, generate new merge
             // review
             else {
-              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+              terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                 // DIVERGED, but no merges to resolve
                 if (!newReview || newReview.length === 0) {
@@ -899,7 +899,7 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Applying merged changes....');
 
-            snowowlService.mergeAndApply(scope.id).then(function (response) {
+            terminologyServerService.mergeAndApply(scope.id).then(function (response) {
               notificationService.sendMessage('Merges successfully applied', 5000);
 
               // ensure bad state is not triggered
@@ -991,7 +991,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
                   scope.sourceBranch = metadataService.getBranchRoot();
                 }
-                snowowlService.getBranch(scope.targetBranch).then(function(response) {
+                terminologyServerService.getBranch(scope.targetBranch).then(function(response) {
                   if (response && response.state && response.state === 'BEHIND') {
                     rebase();
                   } else {

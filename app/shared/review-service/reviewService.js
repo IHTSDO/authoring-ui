@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles IMS authentication, user roles, and user settings
  */
-  .factory('reviewService', function ($http, $rootScope, $q, scaService, snowowlService) {
+  .factory('reviewService', function ($http, $rootScope, $q, scaService, terminologyServerService) {
 
     //
     // Helper function to mark the task for review
@@ -70,7 +70,7 @@ angular.module('singleConceptAuthoringApp')
     function checkTraceability(task, results) {
       var deferred = $q.defer();
       // first, check if traceability returns changes on this task
-      snowowlService.getTraceabilityForBranch(task.branchPath).then(function (traceability) {
+      terminologyServerService.getTraceabilityForBranch(task.branchPath).then(function (traceability) {
 
         // first check -- does traceability exist?
         if (traceability && traceability.numberOfElements > 0) {
@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp')
 
       }, function (error) {
         // RESOLVE -- assume no changed content, and not an error
-        // TODO Revisit this, snowowl service should really resolve on 404s instead of rejecting
+        // TODO Revisit this, terminology server service should really resolve on 404s instead of rejecting
         deferred.resolve();
       });
       return deferred.promise;
@@ -103,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(conceptIds, function (conceptId) {
 
           // only check for unsaved content on SCTID-marked content
-          if (snowowlService.isSctid(conceptId)) {
+          if (terminologyServerService.isSctid(conceptId)) {
             scaService.getModifiedConceptForTask(task.projectKey, task.key, conceptId).then(function (concept) {
 
               // Account for case where new concepts are marked 'current' in UI State

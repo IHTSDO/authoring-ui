@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('promotionService', ['scaService', 'snowowlService', '$q', 'crsService', function (scaService, snowowlService, $q, crsService) {
+  .service('promotionService', ['scaService', 'terminologyServerService', '$q', 'crsService', function (scaService, terminologyServerService, $q, crsService) {
 
     /**
      * Checks if a branch is eligible for promotion
@@ -82,8 +82,8 @@ angular.module('singleConceptAuthoringApp')
 
 
           // get the branch details
-          snowowlService.getBranch(branch).then(function (branchStatus) {
-            snowowlService.getTraceabilityForBranch(branch).then(function (activities) {
+          terminologyServerService.getBranch(branch).then(function (branchStatus) {
+            terminologyServerService.getTraceabilityForBranch(branch).then(function (activities) {
               if (!branchStatus) {
                 flags.push({
                   checkTitle: 'Could Not Retrieve Branch Details',

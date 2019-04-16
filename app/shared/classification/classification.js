@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval','$q',
-    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, snowowlService, scaService, notificationService, $timeout, $interval, $q) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'terminologyServerService', 'scaService', 'notificationService', '$timeout', '$interval','$q',
+    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, terminologyServerService, scaService, notificationService, $timeout, $interval, $q) {
       return {
         restrict: 'A',
         transclude: false,
@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
             };
 
             // get the full concept for this branch (before version)
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
 
               conceptModelObj.fsn = response.fsn;
 
@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
 
               // get the model preview (after version)
               if (scope.classificationContainer.status !== 'SAVED') {
-                snowowlService.getModelPreview(scope.classificationContainer.id, scope.branch, conceptId).then(function (secondResponse) {
+                terminologyServerService.getModelPreview(scope.classificationContainer.id, scope.branch, conceptId).then(function (secondResponse) {
                   conceptModelObj.conceptAfter = secondResponse;
 
                   scope.viewedConcepts.push(conceptModelObj);
@@ -184,7 +184,7 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
-            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (response) {
+            terminologyServerService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (response) {
               if (response.status == 400) {
                 notificationService.sendWarning('Report Stale, please re-classify and save.');
               } else if ((response.status + "").substr(0, 1) != "2") {
@@ -240,7 +240,7 @@ angular.module('singleConceptAuthoringApp')
 
             savingClassificationPoll = $interval(function () {
               if ($routeParams.taskKey) {
-                snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
+                terminologyServerService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
 
                   // update the status
                   scope.classificationContainer.status = response.status;
@@ -287,7 +287,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               } else {
-                snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
+                terminologyServerService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
                   if (response.status === 'SAVED') {
 
                     notificationService.sendMessage('Classification saved', 5000);
@@ -365,7 +365,7 @@ angular.module('singleConceptAuthoringApp')
           scope.downloadClassification = function () {
 
             // set limit to 1 million to ensure all results downloaded
-            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
+            terminologyServerService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
               var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
@@ -384,7 +384,7 @@ angular.module('singleConceptAuthoringApp')
             scope.statusText = 'Loading...';
             scope.relationshipChanges = null;
             // get relationship changes
-            snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch, limit).then(function (relationshipChanges) {
+            terminologyServerService.getRelationshipChanges(scope.classificationContainer.id, scope.branch, limit).then(function (relationshipChanges) {
 
               scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
 
@@ -432,7 +432,7 @@ angular.module('singleConceptAuthoringApp')
               idList.push(sourceId);
             });
 
-            snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+            terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
               var relationships = [];
               angular.forEach(response, function (concept) {
                 angular.forEach(concept.relationships, function (rel) {
@@ -510,7 +510,7 @@ angular.module('singleConceptAuthoringApp')
                      $('.classification').removeClass('active');
                      $('.equivalency').addClass('active');
                 }(jQuery));
-              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
+              terminologyServerService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
                 var equivalentConceptsArray = [];
                 equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
                 scope.equivalentConcepts = [];

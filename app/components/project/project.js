@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -68,7 +68,7 @@ angular.module('singleConceptAuthoringApp.project', [
           }
 
           // last promotion time
-          snowowlService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
+          terminologyServerService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
             if (promotionTime) {
               let date = new Date(promotionTime);
               $scope.project.lastPromotion = date.toUTCString();
@@ -85,7 +85,7 @@ angular.module('singleConceptAuthoringApp.project', [
           metadataService.checkViewExclusionPermission($routeParams.projectKey);
 
           if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
-            snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.project.branchPath, null).then(function(response) {
+            terminologyServerService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.project.branchPath, null).then(function(response) {
               metadataService.setModuleName(response.conceptId, response.fsn);
             });
           }
@@ -163,7 +163,7 @@ angular.module('singleConceptAuthoringApp.project', [
         $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
       };
       $scope.mergeAndRebase = function (task) {
-        snowowlService.getBranch($scope.branch).then(function (response) {
+        terminologyServerService.getBranch($scope.branch).then(function (response) {
           if (!response.metadata || response.metadata && !response.metadata.lock) {
             $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
           }
@@ -190,15 +190,15 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
-            snowowlService.getBranch($scope.branch).then(function (response) {
+            terminologyServerService.getBranch($scope.branch).then(function (response) {
               if (!response.metadata || response.metadata && !response.metadata.lock) {
-                snowowlService.getBranch(metadataService.getBranchRoot()).then(function (response) {
+                terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                   if (!response.metadata || response.metadata && !response.metadata.lock) {
                     notificationService.sendMessage('Promoting project...');
                     scaService.promoteProject($routeParams.projectKey).then(function (response) {
                       if (response.status === 'CONFLICTS') {
                         var merge = JSON.parse(response.message);
-                        snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                        terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                           if (response && response.items && response.items.length > 0) {
                             var msg = '';
                             var conflictCount = 0;
@@ -250,15 +250,15 @@ angular.module('singleConceptAuthoringApp.project', [
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                snowowlService.getBranch($scope.branch).then(function (response) {
+                terminologyServerService.getBranch($scope.branch).then(function (response) {
                   if (!response.metadata || response.metadata && !response.metadata.lock) {
-                    snowowlService.getBranch(metadataService.getBranchRoot()).then(function (response) {
+                    terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                       if (!response.metadata || response.metadata && !response.metadata.lock) {
                         notificationService.sendMessage('Promoting project...');
                         scaService.promoteProject($routeParams.projectKey).then(function (response) {
                           if (response.status === 'CONFLICTS') {
                             var merge = JSON.parse(response.message);
-                            snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
+                            terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
                               if (response && response.items && response.items.length > 0) {
                                 var msg = '';
                                 var conflictCount = 0;
@@ -432,7 +432,7 @@ angular.module('singleConceptAuthoringApp.project', [
             var viewedMergePoll = null;
 
             viewedMergePoll = $interval(function () {
-              snowowlService.getMergeReview(mergeReviewId).then(function (response) {
+              terminologyServerService.getMergeReview(mergeReviewId).then(function (response) {
                 if (response.status === 'PENDING' || response.status === 'CURRENT') {
                   $rootScope.rebaseRunning = true;
                 } else {

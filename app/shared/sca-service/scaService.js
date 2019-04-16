@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'snowowlService', '$timeout',
-    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, snowowlService, $timeout) {
+  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'terminologyServerService', '$timeout',
+    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, terminologyServerService, $timeout) {
 
       // TODO Wire this to endpoint service, endpoint config
       var apiEndpoint = '../authoring-services/';
@@ -732,7 +732,7 @@ angular.module('singleConceptAuthoringApp')
         ///////////////////////////////////////////////
 
         // NOTE:  Task and project classification retrieval is done through
-        // snowowlService
+        // terminologyServerService
 
         // Initiate classification for a task
         // POST /projects/{projectKey}/tasks/{taskKey}/classification
@@ -1373,7 +1373,7 @@ angular.module('singleConceptAuthoringApp')
 
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
-                      snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
+                      terminologyServerService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
@@ -1397,7 +1397,7 @@ angular.module('singleConceptAuthoringApp')
                       $rootScope.$broadcast('reloadTask');
                       $rootScope.$broadcast('reloadClassification');
                     } else if (newNotification.project) {
-                      snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
+                      terminologyServerService.getClassificationsForProject(newNotification.project).then(function (classifications) {
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);

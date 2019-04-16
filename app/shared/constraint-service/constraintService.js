@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('constraintService', ['$http', '$rootScope', '$q', 'snowowlService', 'metadataService', 'templateService',
-    function ($http, $rootScope, $q, snowowlService, metadataService, templateService) {
+  .service('constraintService', ['$http', '$rootScope', '$q', 'terminologyServerService', 'metadataService', 'templateService',
+    function ($http, $rootScope, $q, terminologyServerService, metadataService, templateService) {
 
 
       // Search str matches fsn or id of provided attributes
@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp')
           });
           idList = idList.substring(0, idList.length - 1);
 
-          snowowlService.getDomainAttributes(branch, idList).then(function (attrs) {
+          terminologyServerService.getDomainAttributes(branch, idList).then(function (attrs) {
             deferred.resolve(attrs.items);
           }, function (error) {
             deferred.reject(error.message);
@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
           });
           idList = idList.substring(0, idList.length - 1);
 
-          snowowlService.getDomainAttributes(branch, idList).then(function (attrs) {
+          terminologyServerService.getDomainAttributes(branch, idList).then(function (attrs) {
             deferred.resolve(attrs.items);
           }, function (error) {
             deferred.reject(error.message);
@@ -126,7 +126,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if expression specified, perform direct retrieval
         if (escgExpr) {
-          snowowlService.getAttributeValuesFromEcl(branch, termFilter, escgExpr).then(function (response) {
+          terminologyServerService.getAttributeValuesFromEcl(branch, termFilter, escgExpr).then(function (response) {
             var concepts = getConceptsForValueTypeaheadHelper(response);
             deferred.resolve(concepts);
           }, function (error) {
@@ -136,7 +136,7 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, use default MRCM rules
         else {
-          snowowlService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
+          terminologyServerService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
               var concepts = getConceptsForValueTypeaheadHelper(response);
               deferred.resolve(concepts);
             },

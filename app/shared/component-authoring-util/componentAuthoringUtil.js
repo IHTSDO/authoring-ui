@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('componentAuthoringUtil', function (metadataService, snowowlService, $q, scaService) {
+  .service('componentAuthoringUtil', function (metadataService, terminologyServerService, $q, scaService) {
 
       /////////////////////////////////////
       // calls to return JSON objects
@@ -174,7 +174,7 @@ angular.module('singleConceptAuthoringApp')
       function getNewConcept() {
         var moduleId = metadataService.getCurrentModuleId();
         var concept = {
-          'conceptId': snowowlService.createGuid(),
+          'conceptId': terminologyServerService.createGuid(),
           'descriptions': [],
           'relationships': [],
           'classAxioms':[],
@@ -211,7 +211,7 @@ angular.module('singleConceptAuthoringApp')
       function getNewAxiom() {
         var moduleId = metadataService.getCurrentModuleId();
         var axiom = {
-          'axiomId': snowowlService.createGuid(),
+          'axiomId': terminologyServerService.createGuid(),
           'definitionStatus': 'PRIMITIVE',
           'effectiveTime': null,
           'active': true,

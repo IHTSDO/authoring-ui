@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp')
       },
       templateUrl: 'shared/model-diagramming/drawModelSca.html',
 
-      link: function (scope, element, attrs, linkCtrl, snowowlService) {
+      link: function (scope, element, attrs, linkCtrl, terminologyServerService) {
 
 
         // convert string to boolean value
