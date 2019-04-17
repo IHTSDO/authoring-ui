@@ -1844,6 +1844,27 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      /**
+       * Branch integrity check - if available on this terminology server
+       */
+      function branchIntegrityCheck(branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/integrity-check').then(function () {}, function(error) {
+          if (error.status == 400) {
+            // Endpoint exists, we can POST and expect a good response.
+            $http.post(apiEndpoint + branch + '/integrity-check').then(function (response) {
+              deferred.resolve(response.data);
+            }, function(error) {
+              deferred.reject(error.message);
+            });
+          } else {
+            // Integrity check is not implemented on this terminology server.
+            deferred.resolve(null);
+          }
+        });
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////////////
       // Concept Validation
       ////////////////////////////////////////////////////
@@ -2064,6 +2085,7 @@ angular.module('singleConceptAuthoringApp')
         generateMergeReview: generateMergeReview,
         storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
         mergeAndApply: mergeAndApply,
+        branchIntegrityCheck: branchIntegrityCheck,
 
         // validation
         validateConcept: validateConcept,
