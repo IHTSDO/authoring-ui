@@ -674,13 +674,24 @@ angular.module('singleConceptAuthoringApp')
             if ($routeParams.taskKey) {
               scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 if (response.status === 'Rebase Complete') {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
 
-                  // switch to edit view on success
-                  exitConflictsView();
+                  // Run branch integrity check
+                  var branch = metadataService.getBranch();
+                  terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
+                    if (response && response.empty == false) {
+                      notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
+                    } else {
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = true;
+                      scope.warning = false;
+                      scope.fiveOFour = false;
+
+                      // switch to edit view on success
+                      exitConflictsView();
+                    }
+                  }, function(error) {
+                    notificationService.sendError('Branch integrity check failed. ' + error);
+                  });
                 } else if (response.status === 'CONFLICTS') {
                   scope.rebaseRunning = true;
                   scope.conflicts = [];
