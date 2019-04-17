@@ -696,25 +696,8 @@ angular.module('singleConceptAuthoringApp')
                   scope.rebaseRunning = true;
                   scope.conflicts = [];
                   var merge = JSON.parse(response.message);
-                  terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
-                    if (response && response.items && response.items.length > 0) {
-                      var msg = '';
-                      var conflictCount = 0;
-                      angular.forEach(response.items, function (item) {
-                        if (item.id == merge.id) {
-                          angular.forEach(item.conflicts, function (conflict) {
-                            if (msg.length > 0) {
-                              msg = msg + ' \n';
-                            }
-                            msg += conflict.message;
-                            conflictCount++;
-                          });
-                        }                        
-                      });
-                      if (msg.length > 0) {
-                        notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
-                      }
-                    }
+                  terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
+                    notificationService.sendError(conflictMessage);
                   });
                 } else {
                   notificationService.sendError('Error pulling changes from project: ' + response.message);
@@ -766,25 +749,8 @@ angular.module('singleConceptAuthoringApp')
                   scope.rebaseRunning = true;
                   scope.conflicts = [];
                   var merge = JSON.parse(response.message);
-                  terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
-                    if (response && response.items && response.items.length > 0) {
-                      var msg = '';
-                      var conflictCount = 0;
-                      angular.forEach(response.items, function (item) {
-                        if (item.id == merge.id) {
-                          angular.forEach(item.conflicts, function (conflict) {
-                            if (msg.length > 0) {
-                              msg = msg + ' \n';
-                            }
-                            msg += conflict.message;
-                            conflictCount++;
-                          });
-                        }                        
-                      });
-                      if (msg.length > 0) {
-                        notificationService.sendError('Confilcts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
-                      }
-                    }
+                  terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
+                    notificationService.sendError(conflictMessage);
                   });
                 } else {
                   notificationService.sendError('Error pulling changes from mainline content: ' + response.message);

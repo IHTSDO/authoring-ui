@@ -1995,13 +1995,33 @@ angular.module('singleConceptAuthoringApp')
           apiEndpoint = url;
       }
 
-      function searchMerge (source, target, status) {
-        return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
-          var mergeReview = response.data;
-          return mergeReview;
-        }, function (error) {
-          return null;
-        });
+      function fetchConflictMessage(merge) {
+        var generalMessage = 'There are content conflicts. Please contact technical support. ';
+        if (merge.apiError && merge.apiError.additionalInfo && merge.apiError.additionalInfo.integrityIssues) {
+          // Snowstorm gives us this.
+          var deferred = $q.defer();
+          deferred.resolve(generalMessage + JSON.stringify(merge.apiError.additionalInfo.integrityIssues));
+          return deferred.promise;
+        } else {
+          return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
+            if (response && response.data && response.data.items && response.data.items.length > 0) {
+              var msg = '';
+              angular.forEach(response.data.items, function (item) {
+                if (item.id == merge.id) {
+                  angular.forEach(item.conflicts, function (conflict) {
+                    if (msg.length > 0) {
+                      msg = msg + ' \n';
+                    }
+                    msg += conflict.message;
+                  });
+                }
+              });
+              return generalMessage + msg;
+            }
+          }, function (error) {
+            return null;
+          });
+        }
       }
       ////////////////////////////////////////////
       // Method Visibility
@@ -2086,6 +2106,7 @@ angular.module('singleConceptAuthoringApp')
         storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
         mergeAndApply: mergeAndApply,
         branchIntegrityCheck: branchIntegrityCheck,
+        fetchConflictMessage: fetchConflictMessage,
 
         // validation
         validateConcept: validateConcept,
