@@ -572,6 +572,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          $rootScope.classificationRunning = $scope.task.latestClassificationJson.status === 'SCHEDULED' || $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
           $scope.ontologyLock = $rootScope.classificationRunning;
           if ($scope.task.status !== 'Promoted') {
             $scope.checkAutomatePromotionStatus(true);
