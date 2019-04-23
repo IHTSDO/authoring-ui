@@ -906,7 +906,7 @@ angular.module('singleConceptAuthoringApp')
 
           function getAffectedAssociations() {
             var deferred = $q.defer();
-            terminologyServerService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getHistoricalAssociationMembers(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
 
               scope.affectedConceptAssocs = [];
               scope.affectedDescToConceptAssocs = [];
