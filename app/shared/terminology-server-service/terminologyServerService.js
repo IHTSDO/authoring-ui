@@ -822,9 +822,16 @@ angular.module('singleConceptAuthoringApp')
 
       // Retrieve historical association references to a concept
       // GET /{path}/concepts/{conceptId}/members
-      function getMembersByTargetComponent(conceptId, branch) {
+      function getHistoricalAssociationMembers(conceptId, branch) {
+        // Fetch members from any reference set which is a descendant of 900000000000522004 |Historical association reference set (foundation metadata concept)|.
+        return getMembersByTargetComponent(conceptId, branch, '<900000000000522004');
+      }
+
+      // Retrieve members which have a targetComponent of a concept
+      // GET /{path}/concepts/{conceptId}/members
+      function getMembersByTargetComponent(conceptId, branch, referenceSet) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+        $http.get(apiEndpoint + branch + '/members?referenceSet=' + referenceSet + '&targetComponent=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
           if (response.data.total === 0) {
             deferred.resolve([]);
           } else {
@@ -2076,6 +2083,7 @@ angular.module('singleConceptAuthoringApp')
         searchConcepts: searchConcepts,
         searchAllConcepts: searchAllConcepts,
         getReview: getReview,
+        getHistoricalAssociationMembers: getHistoricalAssociationMembers,
         getMembersByTargetComponent: getMembersByTargetComponent,
         getMembersByReferencedComponent:getMembersByReferencedComponent,
 

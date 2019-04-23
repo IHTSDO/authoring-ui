@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     }
 
     function getAffectedAssociations() {    
-      terminologyServerService.getMembersByTargetComponent($scope.conceptId, $scope.branch).then(function (response) {
+      terminologyServerService.getHistoricalAssociationMembers($scope.conceptId, $scope.branch).then(function (response) {
         $scope.affectedConceptAssocs = [];
         $scope.affectedDescToConceptAssocs = [];      
         $scope.affectedOtherAssocs = [];
