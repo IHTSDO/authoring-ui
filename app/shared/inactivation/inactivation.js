@@ -1078,32 +1078,21 @@ angular.module('singleConceptAuthoringApp')
 
             return assocs;
           };
+            
+          scope.getTargetConceptSuggestions = function (searchStr) {
+            return terminologyServerService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response){
 
-          scope.getTargetConceptSuggestions = function (text) {
-            return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, text, 0, 10).then(function (response) {
-              // Try to remove any duplicated concepts
-             let n = 0;
-              while (n < response.length) {
-                let m = n + 1;
-                while (m < response.length){
-                  if (response[m].concept.conceptId === response[n].concept.conceptId
-                       && response[m].concept.active === response[n].concept.active) {
-                    response.splice(m, 1);
-                  } else {
-                    m++;
+              // remove duplicates
+              for (var i = 0; i < response.items.length; i++) {
+                for (var j = response.items.length - 1; j > i; j--) {
+                  if (response.items[j].concept.conceptId === response.items[i].concept.conceptId) {
+                    response.splice(j, 1);
+                    j--;
                   }
                 }
-                n++;
               }
-              for (var i = response.length - 1; i >= 0; i--) {
-                if (response[i].concept.active === false) {
-                  response.splice(i, 1);
-                }
-                else if (response[i].concept.conceptId === scope.inactivationConcept.conceptId) {
-                  response.splice(i, 1);
-                }
-              }
-              return response;
+
+              return response.items;
             });
           };
 
