@@ -933,9 +933,7 @@ angular.module('singleConceptAuthoringApp')
 
           // inactivate a relationship and add new relationships for children
           function inactivateRelationship(concept, rel, axiom) {
-
             angular.forEach(scope.inactivationConceptParents, function (parent) {
-
               var newRel = angular.copy(rel);
               newRel.relationshipId = null;
               newRel.effectiveTime = null;
@@ -952,7 +950,6 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function inactivateAttributeRelationship(concept, rel, axiom) {
-            console.log('attributes');
             if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
               angular.forEach(scope.histAssocTargets.concepts, function (innerConcept, index) {
                 if (!scope.useFirstTarget 
@@ -968,15 +965,14 @@ angular.module('singleConceptAuthoringApp')
                   if (metadataService.isIsaRelationship(newRel.type.conceptId)) {
                     // check source and new target of incoming IS A relationship are the same or not
                     let flag = false;    
-                    angular.forEach(concept.relationships, function (otherRel) {                      
-                      if (otherRel.active
-                        && otherRel.relationshipId
-                        && otherRel.characteristicType === 'STATED_RELATIONSHIP'
+                    angular.forEach(axiom.relationships, function (otherRel) {                      
+                      if (otherRel.characteristicType === 'STATED_RELATIONSHIP'
                         && metadataService.isIsaRelationship(otherRel.type.conceptId)
                         && newRel.characteristicType === 'STATED_RELATIONSHIP'
                         && newRel.type.conceptId === otherRel.type.conceptId
                         && newRel.target.conceptId === otherRel.target.conceptId
                         && newRel.groupId === otherRel.groupId) {
+                          console.log('match"');
                         flag = true;
                       }
                    });                  
@@ -1000,7 +996,6 @@ angular.module('singleConceptAuthoringApp')
               });
             }
             else {
-              console.log('not assocs');
               var newRel = angular.copy(rel);
               newRel.new = true;
               newRel.relationshipId = null;
@@ -1027,7 +1022,7 @@ angular.module('singleConceptAuthoringApp')
                         if (rel.target.id === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0) {
                           inactivateRelationship(concept, rel, axiom);
                         }
-                        else if (rel.target.id === scope.inactivationConcept.conceptId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                        else if (rel.target.id === scope.inactivationConcept.conceptId) {
                           inactivateAttributeRelationship(concept, rel, axiom);
                         }
                       });
