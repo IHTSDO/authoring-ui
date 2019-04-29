@@ -331,14 +331,16 @@ angular.module('singleConceptAuthoringApp')
               if (!scope.tabOneAccepted) {
                 for (var conceptId in scope.affectedConcepts) {
                   if (scope.affectedConcepts[conceptId]) {
-                    angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-                      // add all relationships with no effective time
-                      if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
-                        if (rel.accepted !== true) {
-                          rel.accepted = true;
-                          rowsAccepted++;
-                        }
-                      }
+                    angular.forEach(scope.affectedConcepts[conceptId].classAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                            if (rel.accepted !== true) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          }
+                      });
                     });
                   }
                 }
@@ -346,14 +348,16 @@ angular.module('singleConceptAuthoringApp')
               else {
                 for (var conceptId in scope.affectedConcepts) {
                   if (scope.affectedConcepts[conceptId]) {
-                    angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-                      // add all relationships with no effective time
-                      if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
-                        if (rel.accepted !== false) {
-                          rel.accepted = false;
-                          rowsAccepted--;
-                        }
-                      }
+                    angular.forEach(scope.affectedConcepts[conceptId].classAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                            if (rel.accepted !== false) {
+                              rel.accepted = false;
+                              rowsAccepted--;
+                            }
+                          }
+                      });
                     });
                   }
                 }
@@ -364,15 +368,16 @@ angular.module('singleConceptAuthoringApp')
               if (!scope.tabTwoAccepted) {
                 for (var conceptId in scope.affectedConcepts) {
                   if (scope.affectedConcepts[conceptId]) {
-                    angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-
-                      // add all relationships with no effective time
-                      if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
-                        if (rel.accepted !== true) {
-                          rel.accepted = true;
-                          rowsAccepted++;
-                        }
-                      }
+                   angular.forEach(scope.affectedConcepts[conceptId].classAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                            if (rel.accepted !== true) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          }
+                      });
                     });
                   }
                 }
@@ -380,15 +385,16 @@ angular.module('singleConceptAuthoringApp')
               else {
                 for (var conceptId in scope.affectedConcepts) {
                   if (scope.affectedConcepts[conceptId]) {
-                    angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-
-                      // add all relationships with no effective time
-                      if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
-                        if (rel.accepted !== false) {
-                          rel.accepted = false;
-                          rowsAccepted--;
-                        }
-                      }
+                    angular.forEach(scope.affectedConcepts[conceptId].classAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                            if (rel.accepted !== true) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          }
+                      });
                     });
                   }
                 }
