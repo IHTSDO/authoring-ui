@@ -258,18 +258,20 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // check if referenced concept
-              else if (terminologyServerService.isConceptId(list[i].referencedComponent.id)) {
+              else if (terminologyServerService.isConceptId(list[i].referencedComponent) && terminologyServerService.isConceptId(list[i].referencedComponent.id)) {
                 promises.push(buildConceptHistoricalAssoc(list[i].referencedComponent.id));
               }
 
               // check if referenced description
-              else if (terminologyServerService.isDescriptionId(list[i].referencedComponent.id)) {
+              else if (terminologyServerService.isDescriptionId(list[i].referencedComponent) && terminologyServerService.isDescriptionId(list[i].referencedComponent.id)) {
                 promises.push(buildDescriptionHistoricalAssoc(list[i].referencedComponent.id));
               }
 
               // add to other (dump)  list
-              else {                
-                promises.push(buildOtherHistoricalAssoc(list[i].referencedComponent));                  
+              else {       
+                if(buildOtherHistoricalAssoc(list[i].referencedComponent)){
+                   promises.push(buildOtherHistoricalAssoc(list[i].referencedComponent));  
+                }        
               }
 
             }
@@ -574,11 +576,13 @@ angular.module('singleConceptAuthoringApp')
           scope.removeRelationship = function (relationship) {
             console.debug('remove relationship', relationship);
             var concept = scope.affectedConcepts[relationship.sourceId];
-            for (var i = concept.relationships.length - 1; i >= 0; i--) {
-              if (concept.relationships[i].target.conceptId === relationship.target.conceptId && concept.relationships[i].type.conceptId === relationship.type.conceptId) {
-                concept.relationships.splice(i, 1);
-              }
-            }
+            angular.forEach(concept.classAxioms, function(axiom){
+                for (var i = axiom.relationships.length - 1; i >= 0; i--) {
+                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId) {
+                    axiom.relationships.splice(i, 1);
+                  }
+                }
+            })
 
             if (scope.editedConcept && scope.editedConcept.conceptId === relationship.sourceId) {
               scope.editConcept(relationship.sourceId);
@@ -949,10 +953,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.new = true;
               axiom.relationships.push(newRel);
             });
-
-
-            // set the original relationship to inactive
-            rel.active = 0;
+            scope.removeRelationship(rel);
           }
 
           function inactivateAttributeRelationship(concept, rel, axiom) {
@@ -983,7 +984,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                    });                  
 
-                    if (flag && scope.newTargetConceptParents.length > 0) {
+                    if (flag && scope.newTargetConceptParents && scope.newTargetConceptParents.length > 0) {
                       for (let index = 0; index < scope.newTargetConceptParents.length; index++) {
                         var copyiedRel = angular.copy(newRel);
                         copyiedRel.target.conceptId = scope.newTargetConceptParents[index].concept.conceptId;
@@ -997,7 +998,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     axiom.relationships.push(newRel);
                   }
-                  rel.active = 0;
+                  scope.removeRelationship(rel);
                 }                
               });
             }
@@ -1010,7 +1011,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.target.conceptId = '';
               newRel.target.fsn = '';
               axiom.relationships.push(newRel);
-              rel.active = 0;
+              scope.removeRelationship(rel);
             }
           }
 
