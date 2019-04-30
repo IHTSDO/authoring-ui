@@ -979,17 +979,17 @@ angular.module('singleConceptAuthoringApp')
                         && newRel.type.conceptId === otherRel.type.conceptId
                         && newRel.target.conceptId === otherRel.target.conceptId
                         && newRel.groupId === otherRel.groupId) {
-                          console.log('match"');
+                          console.log('match');
                         flag = true;
                       }
                    });                  
 
-                    if (flag && scope.newTargetConceptParents && scope.newTargetConceptParents.length > 0) {
-                      for (let index = 0; index < scope.newTargetConceptParents.length; index++) {
+                    if (flag && scope.inactivationConceptParents && scope.inactivationConceptParents.length > 0) {
+                      for (let index = 0; index < scope.inactivationConceptParents.length; index++) {
                         var copyiedRel = angular.copy(newRel);
-                        copyiedRel.target.conceptId = scope.newTargetConceptParents[index].concept.conceptId;
-                        copyiedRel.target.fsn = scope.newTargetConceptParents[index].concept.fsn;
-                        copyiedRel.new = true;
+                          console.log(scope.inactivationConceptParents[index]);
+                        copyiedRel.target.conceptId = scope.inactivationConceptParents[index].conceptId;
+                        copyiedRel.target.fsn = scope.inactivationConceptParents[index].fsn;
                         axiom.relationships.push(copyiedRel);
                       }
                     } else {
@@ -1025,6 +1025,7 @@ angular.module('singleConceptAuthoringApp')
                 var concept = scope.affectedConcepts[key];
                 if (concept && concept.classAxioms) {
                   angular.forEach(concept.classAxioms, function (axiom) {
+                      console.log(axiom);
                       angular.forEach(axiom.relationships, function (rel) {
                         if (rel.target.id === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0) {
                           inactivateRelationship(concept, rel, axiom);
@@ -1033,6 +1034,7 @@ angular.module('singleConceptAuthoringApp')
                           inactivateAttributeRelationship(concept, rel, axiom);
                         }
                       });
+                      console.log(axiom);
                   });
                 }
               }
