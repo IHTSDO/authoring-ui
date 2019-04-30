@@ -54,7 +54,12 @@
                                                             data-toggle="tab"> Attributes Affected
             ({{attrRelsTableParams.total()}})
           </a></li>
-          <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
+          <li role="presentation" class="classification"><a ng-click="actionTab=3"
+                                                            aria-controls="home" role="tab"
+                                                            data-toggle="tab"> GCI Relationships Affected
+            ({{gciRelsTableParams.total()}})
+          </a></li>
+          <li role="presentation" class="redundant"><a ng-click="actionTab=4" aria-controls="home" role="tab"
                                                        data-toggle="tab">Historical Associations Affected
             ({{assocsConceptTableParams.total() + assocsDescToConceptTableParams.total()}})</a>
           </li>
@@ -194,6 +199,62 @@
 
       </div>
       <div ng-show="actionTab==3" class="table-responsive white">
+        <table
+          ng-table="gciRelsTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="rel in $data">
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
+            </td>
+            <td data-title="'RG'" sortable="'groupId'">{{rel.groupId}}</td>
+            <td data-title="'Attribute'" sortable="'typeFsn'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
+                <span>Relationship type</span>
+              </div>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'target'">
+              <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropAssociationTarget(rel, $data)">
+                <textarea type="text" class="form-control inactivation-value" ng-model="rel.target.fsn"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setRelTargetConcept(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3"></textarea>
+              </div>
+            </td>
+            <td>
+              <button type="button"
+                      class="btn btn-round btn-default blue"
+                      ng-click="editConcept(rel.sourceId)"
+                      title="View/Edit Concept">
+                <div class="md md-edit"></div>
+              </button>
+            </td>
+            <td>
+              <a class="btn btn-round btn-default base approve-button"
+                 ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                 ng-click="toggleRowAccepted(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+
+              </a>
+            </td>
+            <td>
+              <button ng-disabled="rel.accepted || finalizing" class="btn btn-round btn-default red base"
+                      ng-click="removeRelationship(rel)">
+                <div
+                  class="md fa-sca fa-minus "></div>
+
+              </button>
+            </td>
+          </tr>
+        </table>
+
+      </div>
+      <div ng-show="actionTab==4" class="table-responsive white">
         <div ng-show="affectedConceptAssocs.length > 0" ng-if="!deletion">
 
           <table

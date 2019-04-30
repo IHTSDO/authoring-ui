@@ -328,6 +328,47 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+            
+          scope.gciRelsTableParams = new NgTableParams({
+              page: 1,
+              count: 10
+            },
+            {
+              filterDelay: 50,
+
+              // initial display text, overwritten in getData
+              total: '-',
+              getData: function ($defer, params) {
+                var data = [];
+                // recompute the affected relationships from ids or blank ids
+                for (var conceptId in scope.affectedConcepts) {
+                  if (scope.affectedConcepts[conceptId]) {
+                    angular.forEach(scope.affectedConcepts[conceptId].gciAxioms, function (axiom) {
+                        angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new) {
+                            rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
+                            rel.typeFsn = rel.type.fsn;
+                            data.push(rel);
+                          }
+                        });
+                    });
+                  }
+                }
+
+                params.total(data.length);
+
+                if (scope.tableFilter) {
+                  data = data.filter(relationshipFilter);
+                }
+
+                data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+
+                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+
+              }
+            }
+          );
 
           scope.acceptAll = function () {
             if (scope.actionTab === 1) {
@@ -455,7 +496,6 @@ angular.module('singleConceptAuthoringApp')
                   if (scope.affectedConcepts[conceptId]) {
                     angular.forEach(scope.affectedConcepts[conceptId].classAxioms, function (axiom) {
                         angular.forEach(axiom.relationships, function (rel) {
-                            console.log(rel.new);
                           // add all relationships with no effective time
                           if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
                             rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
@@ -468,7 +508,6 @@ angular.module('singleConceptAuthoringApp')
                 }
 
                 params.total(data.length);
-                  console.log(data);
                 if (scope.tableFilter) {
                   data = data.filter(relationshipFilter);
                 }
@@ -543,6 +582,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('reloading tables');
             scope.isaRelsTableParams.reload();
             scope.attrRelsTableParams.reload();
+            scope.gciRelsTableParams.reload();
             scope.assocsConceptTableParams.reload();
             scope.assocsDescToConceptTableParams.reload();
             scope.assocsDescToDescTableParams.reload();
@@ -578,6 +618,13 @@ angular.module('singleConceptAuthoringApp')
             console.debug('remove relationship', relationship);
             var concept = scope.affectedConcepts[relationship.sourceId];
             angular.forEach(concept.classAxioms, function(axiom){
+                for (var i = axiom.relationships.length - 1; i >= 0; i--) {
+                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId) {
+                    axiom.relationships.splice(i, 1);
+                  }
+                }
+            })
+            angular.forEach(concept.gciAxioms, function(axiom){
                 for (var i = axiom.relationships.length - 1; i >= 0; i--) {
                   if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId) {
                     axiom.relationships.splice(i, 1);
@@ -1026,7 +1073,6 @@ angular.module('singleConceptAuthoringApp')
                 var concept = scope.affectedConcepts[key];
                 if (concept && concept.classAxioms) {
                   angular.forEach(concept.classAxioms, function (axiom) {
-                      console.log(axiom);
                       angular.forEach(axiom.relationships, function (rel) {
                         if (rel.target.id === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
                           inactivateRelationship(concept, rel, axiom);
@@ -1035,7 +1081,16 @@ angular.module('singleConceptAuthoringApp')
                           inactivateAttributeRelationship(concept, rel, axiom);
                         }
                       });
-                      console.log(axiom);
+                  });
+                  angular.forEach(concept.gciAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                        if (rel.target.id === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
+                          inactivateRelationship(concept, rel, axiom);
+                        }
+                        else if (rel.target.id === scope.inactivationConcept.conceptId && !rel.new) {
+                          inactivateAttributeRelationship(concept, rel, axiom);
+                        }
+                      });
                   });
                 }
               }
@@ -1070,7 +1125,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.isComplete = function () {
-            return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.assocsConceptTableParams.total() + scope.assocsDescToConceptTableParams.total();
+            return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.gciRelsTableParams.total() + scope.assocsConceptTableParams.total() + scope.assocsDescToConceptTableParams.total();
           };
 
           //
