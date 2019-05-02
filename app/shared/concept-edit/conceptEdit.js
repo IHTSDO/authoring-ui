@@ -1306,30 +1306,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
-            scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
+            scope.warnings = ['Please remove any axiom relationships you would not like to create along with the concept, and/or fill the new Is A and click save.'];
             if (!scope.concept.relationships) {
-
-              scope.concept.relationships = [];
-              scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
+              scope.concept.classAxioms = [];
+              scope.addAdditionalAxiom();
               autoSave();
               scope.computeRelationshipGroups();
             }
             else {
               var stated = false;
+              scope.concept.classAxioms = [];
+              scope.addAdditionalAxiom();
+                
               angular.forEach(scope.concept.relationships, function (relationship) {
                 if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
                   stated = true;
+                  if(relationship.effectiveTime === scope.concept.effectiveTime){
+                      let copy = angular.copy(relationship);
+                      delete copy.relationshipId;
+                      copy.active = true;
+                      scope.concept.classAxioms[0].relationships.push(copy);
+                  }
                 }
               });
-              if (stated === false) {
-                scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
-                autoSave();
-                scope.computeRelationshipGroups();
-              }
+              autoSave();
+              scope.computeRelationshipGroups();
             }
 
             scope.concept.active = true;
-            scope.hideInactive = false;
 
             scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
 
