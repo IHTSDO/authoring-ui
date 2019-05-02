@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles all functionality surrounding CRS tickets
  */
-  .factory('crsService', function ($http, $rootScope, $q, scaService, metadataService, terminologyServerService, $timeout, notificationService) {
+  .factory('crsService', function ($http, $rootScope, $q, scaService, metadataService, terminologyServerService, $timeout, notificationService, componentAuthoringUtil) {
 
       var currentTask;
 
@@ -98,16 +98,21 @@ angular.module('singleConceptAuthoringApp')
 
         // apply definition of changes to relationships
         angular.forEach(crsConcept.relationships, function (crsRelationship) {
-          var rel = getRelationshipForId(concept, crsRelationship.relationshipId);
+          let found = false;
+          angular.forEach(concept.classAxioms, function(axiom){
+              angular.forEach(axiom.relationships, function (axiomRel){
+                if(axiomRel.type.conceptId === crsRelationship.type.conceptId &&
+                   axiomRel.target.conceptId === crsRelationship.target.conceptId &&
+                   axiomRel.groupId === crsRelationship.groupId){
+                    found = true;
+                    axiomRel.definitionOfChanges = crsRelationship.definitionOfChanges;
+                }
+              });
+          })
 
-          // if new (no id), add to the concept
-          if (rel === null) {
-            concept.relationships.push(angular.copy(crsRelationship));
-          }
-
-          // otherwise, append the definition of changes to the retrieved concept
-          else {
-            rel.definitionOfChanges = crsRelationship.definitionOfChanges;
+          // if not found, add to the concept
+          if (!found) {
+            concept.classAxioms[0].relationships.push(angular.copy(crsRelationship));
           }
         });
       }
@@ -128,6 +133,14 @@ angular.module('singleConceptAuthoringApp')
         else if (!crsRequest.conceptId) {
           var copy = angular.copy(crsRequest);
           copy.conceptId = terminologyServerService.createGuid();
+          copy.classAxioms = [];
+          copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
+          copy.classAxioms[0].relationships = angular.copy(copy.relationships);
+          angular.forEach(copy.classAxioms[0].relationships, function (rel){
+              rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
+          })
+          delete copy.relationships;
+          console.log(copy);
           deferred.resolve(copy);
         }
 
