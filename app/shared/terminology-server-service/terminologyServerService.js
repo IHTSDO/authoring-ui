@@ -998,10 +998,15 @@ angular.module('singleConceptAuthoringApp')
 
       //Function to bulk get full concepts via POST
       function bulkRetrieveFullConcept(conceptIdList, branch, expandPt) {
-          var body = {
-              "conceptIds":conceptIdList
-          }
         var deferred = $q.defer();
+        // Return empty array if no concepts requested
+        if (conceptIdList.length === 0) {
+          deferred.resolve([]);
+          return deferred.promise;
+        }
+        var body = {
+            "conceptIds":conceptIdList
+        }
         var queryString = '';
         $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk-load', body).then(function (response) {
           normaliseSnowstormConcepts(response.data)
