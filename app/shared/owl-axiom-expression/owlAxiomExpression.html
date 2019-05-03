@@ -11,7 +11,7 @@
       <div ng-repeat="classAxiom in classAxioms">
         <h4>Axiom</h4>
         <div class="row col-xs-12 no-padding">
-          Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[classAxioms.axiomId]}}</label>
+          Owl Axiom Expression: <label class="control-label">{{owlAxiomExpression[classAxiom.axiomId]}}</label>
         </div>
         <div class="row col-xs-12 no-padding">
           <div>
@@ -20,7 +20,7 @@
                   ng-click="copyToClipboard(owlAxiomExpression[classAxiom.axiomId])"><span>Copy To Clipboard</span>
             </button>
           </div>
-          <pre>{{formatOwlAxiomExpression(owlAxiomExpression[classAxiom.axiomId])}}</pre>
+          <pre>1{{formatOwlAxiomExpression(owlAxiomExpression[classAxiom.axiomId])}}</pre>
         </div>
       </div>
 
@@ -36,7 +36,7 @@
                   ng-click="copyToClipboard(owlAxiomExpression[gciAxiom.axiomId])"><span>Copy To Clipboard</span>
             </button>
           </div>
-          <pre>{{formatOwlAxiomExpression(owlAxiomExpression[gciAxiom.axiomId])}}</pre>
+          <pre>2{{formatOwlAxiomExpression(owlAxiomExpression[gciAxiom.axiomId])}}</pre>
         </div>
       </div>
 
@@ -52,7 +52,7 @@
                   ng-click="copyToClipboard(owlAxiomExpression[key])"><span>Copy To Clipboard</span>
             </button>
           </div>
-          <pre>{{formatOwlAxiomExpression(owlAxiomExpression[key])}}</pre>
+          <pre>3{{formatOwlAxiomExpression(owlAxiomExpression[key])}}</pre>
         </div>
       </div>
     </div>

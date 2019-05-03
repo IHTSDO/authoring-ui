@@ -195,7 +195,7 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
             if (item.additionalFields 
                 && Object.keys(item.additionalFields).length > 0
                 && item.additionalFields.hasOwnProperty('owlExpression')) {
-              $scope.owlAxiomExpression[item.id] = item.additionalFields['owlExpression'];
+              $scope.owlAxiomExpression[item.memberId] = item.additionalFields['owlExpression'];
             }
           });
         }
