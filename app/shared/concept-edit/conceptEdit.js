@@ -2903,7 +2903,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.dropAxiomRelationshipTarget = function (relationship, data, type) {
+        scope.dropAxiomRelationshipTarget = function (relationship, data, type, axiom) {
 
           if(data.concept) {
             data.id = data.concept.conceptId;
