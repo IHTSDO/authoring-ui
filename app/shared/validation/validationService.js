@@ -83,6 +83,9 @@ angular.module('singleConceptAuthoringApp')
         };
 
         // if no assertions for this uuid, create container
+        if (!validationFailureExclusions) {
+          validationFailureExclusions = new Array();
+        }
         if (!validationFailureExclusions[conceptId]) {
           validationFailureExclusions[conceptId] = new Array();
         }
