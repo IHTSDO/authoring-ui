@@ -1996,6 +1996,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       notificationService.sendMessage('Loading task details...');
+        
+      //Check whether user has permission to see whitelist
+      metadataService.checkViewExclusionPermission($routeParams.projectKey);
 
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
