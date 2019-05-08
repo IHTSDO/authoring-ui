@@ -685,6 +685,8 @@ angular.module('singleConceptAuthoringApp')
     }
       
     function checkViewExclusionPermission(projectKey) {
+      console.log(projectKey);
+      console.log(myProjects);
       if (extensionMetadata !== null) {
         if (myProjects.length > 0) {
           if (myProjects.indexOf(projectKey) === -1) {
