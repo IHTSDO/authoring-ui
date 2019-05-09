@@ -842,6 +842,22 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
+        
+      // Retrieve members where the type is GCI and the provided conceptId is referenced
+      // GET /{path}/members
+      function getGciExpressionsFromTarget(conceptId, branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/members?owlExpression.conceptId=' + conceptId + '&owlExpression.gci=true&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+          if (response.data.total === 0) {
+            deferred.resolve([]);
+          } else {
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
 
       // GET /{path}/concepts/{conceptId}/members
       function getMembersByReferencedComponent(conceptId, branch) {
@@ -2091,6 +2107,7 @@ angular.module('singleConceptAuthoringApp')
         getHistoricalAssociationMembers: getHistoricalAssociationMembers,
         getMembersByTargetComponent: getMembersByTargetComponent,
         getMembersByReferencedComponent:getMembersByReferencedComponent,
+        getGciExpressionsFromTarget: getGciExpressionsFromTarget,
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,
