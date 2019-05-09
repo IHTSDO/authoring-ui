@@ -945,14 +945,19 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
                 idList.push(conceptId);
               });
-              terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
-                  angular.forEach(response, function (concept) {
-                        scope.affectedConcepts[concept.conceptId] = concept;
-                  if (response.length === ++conceptsRetrieved) {
-                            deferred.resolve();
-                        }
+              if(idList.length > 0){
+                  terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
+                      angular.forEach(response, function (concept) {
+                            scope.affectedConcepts[concept.conceptId] = concept;
+                      if (response.length === ++conceptsRetrieved) {
+                                deferred.resolve();
+                            }
+                      });
                   });
-              });
+              }
+              else{
+                  deferred.resolve(null);
+              }
               return deferred.promise;
           }
 
