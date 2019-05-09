@@ -920,6 +920,7 @@ angular.module('singleConceptAuthoringApp')
             terminologyServerService.searchConcepts(scope.branch,'', '*: *' + ' = ' + scope.inactivationConcept.conceptId, 0, 1000, false).then(function (response) {
               scope.affectedRelationshipIds = [];
               angular.forEach(response.items, function (item) {
+                scope.affectedConceptIds.push(item.conceptId);
                 scope.affectedConcepts[item.conceptId] = {};
               });
               terminologyServerService.searchConcepts(scope.branch,'', '<! '+ scope.inactivationConcept.conceptId, 0, 1000, false).then(function (children){
@@ -992,6 +993,23 @@ angular.module('singleConceptAuthoringApp')
 
             });
             return deferred.promise;
+          }
+            
+          function getAffectedGcis(){
+              var deferred = $q.defer();
+              terminologyServerService.getGciExpressionsFromTarget(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
+                  if (response.items && response.items.length > 0) {
+                    angular.forEach(response.items, function (item) {
+                      scope.affectedConceptIds.push(item.referencedComponentId);
+                      scope.affectedConcepts[item.referencedComponentId] = {};
+                    });
+                    deferred.resolve();
+                  }
+                  else {
+                    deferred.resolve()
+                  }
+              });
+              return deferred.promise;
           }
 
           // inactivate a relationship and add new relationships for children
@@ -1356,14 +1374,17 @@ angular.module('singleConceptAuthoringApp')
               getAffectedObjectIds().then(function () {
                 notificationService.sendMessage('Retrieving affected associations...');
                 getAffectedAssociations().then(function () {
-                  notificationService.sendMessage('Initializing affected concepts...')
-                  getAffectedConcepts().then(function () {
-                    notificationService.sendMessage('Preparing affected relationships...');
-                    prepareAffectedRelationships().then(function () {
-                      notificationService.sendMessage('Inactivation initialization complete', 5000);
-                      scope.reloadTables();
-                      scope.initializing = false;
-                    })
+                  notificationService.sendMessage('Retreiving affected GCIs... ');
+                  getAffectedGcis().then(function () {
+                    notificationService.sendMessage('Initializing affected concepts...')
+                    getAffectedConcepts().then(function () {
+                      notificationService.sendMessage('Preparing affected relationships...');
+                      prepareAffectedRelationships().then(function () {
+                        notificationService.sendMessage('Inactivation initialization complete', 5000);
+                        scope.reloadTables();
+                        scope.initializing = false;
+                      })
+                    });
                   });
                 });
               });
