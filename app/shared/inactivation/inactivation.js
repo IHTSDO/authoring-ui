@@ -30,6 +30,7 @@ angular.module('singleConceptAuthoringApp')
           scope.tabOneAccepted = false;
           scope.tabTwoAccepted = false;
           scope.tabThreeAccepted = false;
+          scope.tabFourAccepted = false;
 
           $(".btn").mouseup(function () {
             $(this).blur();
@@ -447,6 +448,43 @@ angular.module('singleConceptAuthoringApp')
             }
             else if (scope.actionTab === 3) {
               if (!scope.tabThreeAccepted) {
+                for (var conceptId in scope.affectedConcepts) {
+                  if (scope.affectedConcepts[conceptId]) {
+                   angular.forEach(scope.affectedConcepts[conceptId].gciAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                            if (rel.accepted !== true) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          }
+                      });
+                    });
+                  }
+                }
+              }
+              else {
+                for (var conceptId in scope.affectedConcepts) {
+                  if (scope.affectedConcepts[conceptId]) {
+                    angular.forEach(scope.affectedConcepts[conceptId].gciAxioms, function (axiom) {
+                      angular.forEach(axiom.relationships, function (rel) {
+                          // add all relationships with no effective time
+                          if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                            if (rel.accepted !== true) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          }
+                      });
+                    });
+                  }
+                }
+              }
+              scope.tabThreeAccepted = !scope.tabThreeAccepted;
+            }
+            else if (scope.actionTab === 4) {
+              if (!scope.tabFourAccepted) {
                 angular.forEach(scope.affectedConceptAssocs, function (rel) {
                   if (rel.accepted !== true) {
                     rel.accepted = true;
@@ -476,7 +514,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               }
-              scope.tabThreeAccepted = !scope.tabThreeAccepted;
+              scope.tabFourAccepted = !scope.tabFourAccepted;
             }
             scope.reloadTables();
           };
