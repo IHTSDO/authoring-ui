@@ -1979,7 +1979,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // search concepts by branch, filter, and escgExpr
-      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn, acceptLanguageValue) {
+      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn, acceptLanguageValue, stated) {
         var deferred = $q.defer();
         var config = {};
 
@@ -2000,13 +2000,16 @@ angular.module('singleConceptAuthoringApp')
         };
 
         if(syn){
-            params.expand = 'pt()'
+          params.expand = 'pt()'
         }
-        if (termFilter) {
+        if(termFilter) {
           params.termFilter = termFilter;
         }
-        if (escgExpr) {
+        if(escgExpr && !stated){
           params.eclFilter = escgExpr;
+        }
+        if(escgExpr && stated) {
+          params.statedEclFilter = escgExpr;
         }
 
         $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {

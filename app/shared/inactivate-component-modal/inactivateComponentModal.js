@@ -350,7 +350,6 @@ angular.module('singleConceptAuthoringApp')
         $rootScope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
-        console.log(response);
 
         // convert the term into a top-level attribute for ng-table sorting
         angular.forEach($scope.descendants.items, function (descendant) {
@@ -370,61 +369,66 @@ angular.module('singleConceptAuthoringApp')
      */
     function getInboundRelationships(conceptId, branch, startIndex, maxResults) {
       let deferred = $q.defer();
-
       // get the concept relationships again (all)
-      terminologyServerService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
-
+      terminologyServerService.searchConcepts($scope.branch,'', '*: *' + ' = ' + conceptId, 0, 10000, false, false, true).then(function (response) {
         $scope.inboundRelationshipsLoading = true;
-
-        // temporary array for preventing duplicate children
-        let childrenIds = [];
-
         // initialize the arrays
         $scope.inboundRelationships = [];
         $scope.children = [];
-        $scope.inboundRelationshipsTotal = response2.total;
+        $scope.inboundRelationshipsTotal = response.total;
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
-        angular.forEach(response2.items, function (item) {
-
+        angular.forEach(response.items, function (item) {
           if (item.active) {
-            item.sourceFsn = item.source.fsn;
-            item.typeFsn = item.type.fsn;
+            item.sourceFsn = item.fsn.term;
+            item.typeFsn = 'isA (attribute)';
+            item.source = [];
+            item.source.fsn = item.fsn.term;
+            item.concept = [];
+            item.concept.conceptId = item.conceptId;
+            item.characteristicType = 'STATED_RELATIONSHIP';
 
             // push to inbound relationships
             $scope.inboundRelationships.push(item);
-
-            // if a child, and not already added (i.e. prevent STATED/INFERRED
-            // duplication), push to children
-            if (item.type.id === '116680003') {
-              // if already added and this relationship is STATED, replace
-              if (childrenIds.indexOf(item.source.id) !== -1 && item.characteristicType === 'STATED_RELATIONSHIP') {
-                for (let i = 0; i < $scope.children.length; i++) {
-                  if ($scope.children[i].source.id === item.source.id) {
-                    $scope.children[i] = item;
-                  }
-                }
-              }
-              // otherwise if not already present, simply push
-              else if (childrenIds.indexOf(item.source.id) === -1) {
-                childrenIds.push(item.source.id);
-                $scope.children.push(item);
-              }
-
-            }
           }
         });
         $rootScope.children = $scope.children;
-
-        $scope.inboundRelationshipsLoading = false;
-
         $scope.tableParamsChildren.reload();
         $scope.tableParamsInboundRelationships.reload();
 
-        deferred.resolve();
+        terminologyServerService.searchConcepts($scope.branch,'', '<! ' + conceptId, 0, 10000, false, false, true).then(function (response) {
+            // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
+            // make top-level properties
+            angular.forEach(response.items, function (item) {
 
+              if (item.active) {
+                item.sourceFsn = item.fsn.term;
+                item.source = [];
+                item.source.fsn = item.fsn.term;
+                item.typeFsn = 'isA (attribute)';
+                item.concept = [];
+                item.concept.conceptId = item.conceptId;
+                item.characteristicType = 'STATED_RELATIONSHIP';
+
+                // push to inbound relationships
+                $scope.inboundRelationships.push(item);
+                $scope.children.push(item);
+              }
+            });
+            $rootScope.children = $scope.children;
+
+            $scope.inboundRelationshipsLoading = false;
+
+            $scope.tableParamsChildren.reload();
+            $scope.tableParamsInboundRelationships.reload();
+
+            deferred.resolve();
+
+          });
       });
+        
+      
 
       return deferred.promise;
     }
@@ -443,17 +447,15 @@ angular.module('singleConceptAuthoringApp')
     // get the limited number of inbound relationships for display
     if ($scope.componentType === 'Concept') {
       getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function () {
-
         checkStatedChildren();
-
         // detect case where no stated parent-child relationship was found, but
         // more results may exist
-        if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
-
-          getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
-            checkStatedChildren();
-          });
-        }
+//        if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
+//
+//          getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
+//            checkStatedChildren();
+//          });
+//        }
       });
     }
 
