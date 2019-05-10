@@ -158,11 +158,9 @@
                class="table table-full-small">
           <tr ng-repeat="item in $data">
             <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
-            <td data-title="'Type'" sortable="'type.fsn'"> {{item.type.fsn}} </td>
             <td data-title="'FSN'" sortable="'source.fsn'"> {{item.source.fsn}} </td>
           </tr>
         </table>
-        <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
       </div>
 
   </div>
