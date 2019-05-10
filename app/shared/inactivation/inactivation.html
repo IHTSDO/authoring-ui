@@ -34,12 +34,12 @@
   <div class="card m-10 validation-report">
 
     <div class="ng-table-no-results"
-         ng-show="!initializing && affectedConceptIds.length === 0 && affectedConceptAssocs.length === 0 && affectedDescToConceptAssocs.length === 0">
+         ng-show="!initializing && isaRelsTableParams.total() === 0 && attrRelsTableParams.total() === 0 && gciRelsTableParams.total() === 0 && assocsConceptTableParams.total() === 0">
       Inactivation affects no relationships or concepts.
     </div>
 
     <div
-      ng-show="!initializing && (affectedConceptIds.length > 0 || affectedConceptAssocs.length > 0 || affectedDescToConceptAssocs.length > 0)">
+      ng-show="!initializing && (isaRelsTableParams.total() !== 0 || attrRelsTableParams.total() !== 0 || gciRelsTableParams.total() !== 0 || assocsConceptTableParams.total() !== 0)">
 
       <!-- Nav tabs -->
       <div class="row inactivation-report classification-report">
