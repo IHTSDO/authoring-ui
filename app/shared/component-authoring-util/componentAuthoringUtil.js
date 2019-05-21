@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
         return concept;
       }
 
-      function getNewAxiom() {
+      function getNewAxiom(blank) {
         var moduleId = metadataService.getCurrentModuleId();
         var axiom = {
           'axiomId': terminologyServerService.createGuid(),
@@ -219,16 +219,20 @@ angular.module('singleConceptAuthoringApp')
           'moduleId': moduleId,
           'relationships': []       
         };
-        
-        var isARel = getNewIsaRelationship(moduleId);
-        // Remove unused properties
-        delete isARel.characteristicType;
-        delete isARel.effectiveTime;
-        delete isARel.modifier;
-        delete isARel.moduleId;
+          
+        if(!blank){
+            var isARel = getNewIsaRelationship(moduleId);
+            // Remove unused properties
+            delete isARel.characteristicType;
+            delete isARel.effectiveTime;
+            delete isARel.modifier;
+            delete isARel.moduleId;
 
-        // add IsA relationship
-        axiom.relationships.push(isARel);
+            // add IsA relationship
+            axiom.relationships.push(isARel);
+        }
+        
+        
 
         return axiom;
       }

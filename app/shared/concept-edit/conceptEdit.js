@@ -1309,14 +1309,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.warnings = ['Please remove any axiom relationships you would not like to create along with the concept, and/or fill the new Is A and click save.'];
             if (!scope.concept.relationships) {
               scope.concept.classAxioms = [];
-              scope.addAdditionalAxiom();
+              scope.addAdditionalAxiom(false);
               autoSave();
               scope.computeRelationshipGroups();
             }
             else {
               var stated = false;
               scope.concept.classAxioms = [];
-              scope.addAdditionalAxiom();
+              scope.addAdditionalAxiom(true);
                 
               angular.forEach(scope.concept.relationships, function (relationship) {
                 if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
@@ -2678,12 +2678,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.addAdditionalAxiom = function() {
-          var axiom = componentAuthoringUtil.getNewAxiom();
+        scope.addAdditionalAxiom = function(blank) {
+          var axiom = componentAuthoringUtil.getNewAxiom(blank);
           if (!terminologyServerService.isSctid(scope.concept.conceptId)) {
             axiom.axiomId = null;
           }
-          axiom.relationships[0].sourceId = scope.concept.conceptId;
+          if(axiom.relationships.length > 0){
+            axiom.relationships[0].sourceId = scope.concept.conceptId;
+          }
 
           if(!scope.concept.hasOwnProperty('classAxioms')){
             scope.concept.classAxioms = [];
