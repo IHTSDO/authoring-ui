@@ -1212,6 +1212,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.focusHandler(true, false);
                   scope.computeAxioms(axiomType.ADDITIONAL);
                   scope.computeAxioms(axiomType.GCI);
+                  angular.forEach(scope.concept.classAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
+                  angular.forEach(scope.concept.gciAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
                   updateReviewFeedback();
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
@@ -1219,6 +1225,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.reapplyTemplate();
                   scope.computeAxioms(axiomType.ADDITIONAL);
                   scope.computeAxioms(axiomType.GCI);
+                  angular.forEach(scope.concept.classAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
+                  angular.forEach(scope.concept.gciAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
                   scope.focusHandler(true, false);
                 });
               }, 500);
@@ -1243,6 +1255,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.focusHandler(true, false);
               scope.computeAxioms(axiomType.ADDITIONAL);
               scope.computeAxioms(axiomType.GCI);
+              angular.forEach(scope.concept.classAxioms, function(axiom){
+                  refreshAttributeTypesForAxiom(axiom);
+              })
+              angular.forEach(scope.concept.gciAxioms, function(axiom){
+                  refreshAttributeTypesForAxiom(axiom);
+              })
             });
 
           }, function (error) {
@@ -1252,6 +1270,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.focusHandler(true, false);
             scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);
+            angular.forEach(scope.concept.classAxioms, function(axiom){
+                refreshAttributeTypesForAxiom(axiom);
+            })
+            angular.forEach(scope.concept.gciAxioms, function(axiom){
+                refreshAttributeTypesForAxiom(axiom);
+            })
           });
         };
 
