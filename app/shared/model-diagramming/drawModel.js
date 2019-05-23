@@ -101,7 +101,8 @@ angular.module('singleConceptAuthoringApp')
             $.each(concept.classAxioms, function (i, axiom) {
                 var axiomToPush = {
                     relationships : [],
-                    type : 'add'
+                    type : 'add',
+                    definitionStatus : axiom.definitionStatus
                 };
                 $.each(axiom.relationships, function (i, field) {
                         if (field.type.conceptId === '116680003') {
@@ -429,6 +430,9 @@ angular.module('singleConceptAuthoringApp')
               if(axiom.type === "gci"){
                   circle1 = drawSubsumesNode(svg, x, y);
               }
+              else if(axiom.type !== "gci" && axiom.definitionStatus === "FULLY_DEFINED"){
+                  circle1 = drawEquivalentNode(svg, x, y);
+              }
               else{
                   circle1 = drawSubsumedByNode(svg, x, y);
               }
@@ -441,7 +445,6 @@ angular.module('singleConceptAuthoringApp')
               maxX = ((maxX < x) ? x : maxX);
               var axiomRoleNumber = 0;
               $.each(axiom.relationships, function (i, relationship) {
-               console.log('here');
                   if(relationship.type.conceptId === '116680003'){
                       if (relationship.target.definitionStatus === "PRIMITIVE") {
                             sctClass = "sct-primitive-concept";
