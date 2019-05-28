@@ -684,128 +684,61 @@ angular.module('singleConceptAuthoringApp')
           function rebase() {
             console.log('Rebasing ' + (scope.sourceBranch + ' ' + scope.targetBranch));
             scope.rebaseRunning = true;
+            var onSuccess = function(response) {
+              if (response.status === 'Rebase Complete') {
 
-            if ($routeParams.taskKey) {
-              scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                if (response.status === 'Rebase Complete') {
+                // Run branch integrity check
+                var branch = metadataService.getBranch();
+                terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
+                  if (response && response.empty == false) {
+                    notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
+                  } else {
+                    scope.rebaseRunning = false;
+                    scope.rebaseComplete = true;
+                    scope.warning = false;
+                    scope.fiveOFour = false;
 
-                  // Run branch integrity check
-                  var branch = metadataService.getBranch();
-                  terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
-                    if (response && response.empty == false) {
-                      notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
-                      scope.warning = true;
-                    } else {
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = true;
-                      scope.warning = false;
-                      scope.fiveOFour = false;
-
-                      // switch to edit view on success
-                      exitConflictsView();
-                    }
-                  }, function(error) {
-                    notificationService.sendError('Branch integrity check failed. ' + error);
-                  });
-                } else if (response.status === 'CONFLICTS') {
-                  scope.rebaseRunning = true;
-                  scope.conflicts = [];
-                  var merge = JSON.parse(response.message);
-                  terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
-                    notificationService.sendError(conflictMessage);
-                  });
-                } else {
+                    // switch to edit view on success
+                    exitConflictsView();
+                  }
+                }, function(error) {
+                  notificationService.sendError('Branch integrity check failed. ' + error);
+                });
+              } else if (response.status === 'CONFLICTS') {
+                scope.rebaseRunning = true;
+                scope.conflicts = [];
+                var merge = JSON.parse(response.message);
+                terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
+                  notificationService.sendError(conflictMessage);
+                });
+              } else {
+                // NOTE: Do not switch to edit view on warning
+                // TODO Need to revisit this
+                if ($routeParams.taskKey) {
                   notificationService.sendError('Error pulling changes from project: ' + response.message);
-                }
-                /*if (response !== null && response !== 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
-                  exitConflictsView();
-                }
-                else if (response === 1) {
-                  console.log('1');
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = false;
-                  scope.fiveOFour = true;
-                }
-                else {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = true;
-                  $rootScope.canConflict = true;
-                  scope.fiveOFour = false;
-                } */
-
-              }, function (error) {
-                scope.rebaseRunning = false;
-                scope.rebaseComplete = false;
-                scope.warning = true;
-                scope.fiveOFour = false;
-
-                notificationService.sendError('Error pulling changes from project: ' + error);
-              });
-            } else {
-
-              scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                if (response.status === 'Rebase Complete') {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
-                  exitConflictsView();
-                } else if (response.status === 'CONFLICTS') {
-                  scope.rebaseRunning = true;
-                  scope.conflicts = [];
-                  var merge = JSON.parse(response.message);
-                  terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
-                    notificationService.sendError(conflictMessage);
-                  });
                 } else {
                   notificationService.sendError('Error pulling changes from mainline content: ' + response.message);
                 }
+              }
+            }
 
-                /*if (response !== null && response !== 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
+            var onError = function(error) {
+              scope.rebaseRunning = false;
+              scope.rebaseComplete = false;
+              scope.warning = true;
+              scope.fiveOFour = false;
 
-                  // switch to edit view on success
-                  exitConflictsView();
-
-                }
-                else if (response === 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = false;
-                  scope.fiveOFour = true;
-
-                  // NOTE: Do not switch to edit view on error
-
-                }
-                else {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = true;
-                  scope.fiveOFour = false;
-
-                  // NOTE: Do not switch to edit view on warning
-                  // TODO Need to revisit this
-                } */
-              }, function (error) {
-                scope.rebaseRunning = false;
-                scope.rebaseComplete = false;
-                scope.warning = true;
-                scope.fiveOFour = false;
+              if ($routeParams.taskKey) {
+                notificationService.sendError('Error pulling changes from project: ' + error);
+              } else {
                 notificationService.sendError('Error pulling changes from mainline content: ' + error);
-              });
+              }
+            }
+
+            if ($routeParams.taskKey) {
+              scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(onSuccess, onError);
+            } else {
+              scaService.rebaseProject($routeParams.projectKey).then(onSuccess, onError);
             }
           }
 
