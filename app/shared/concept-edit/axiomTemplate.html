@@ -33,18 +33,18 @@
       <button type="button"
               ng-click="removeAxiom(axiom,axiom.type)"
               class="btn-default red small-buttons tooltips-bottom small-size-tooltip offset-tooltip-right tooltips-light normal-case editbuttons fa-sca fa-minus axiom-staus-buttons"
-              ng-if="!isStatic && !axiom.released && ((concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008') || (concept.moduleId === '900000000000207008' && axiom.moduleId !== '900000000000207008' && isExtensionSet()))"
-              ng-disabled="isLockedModule(concept.moduleId)">
+              ng-if="!isStatic && !axiom.released"
+              ng-disabled="isLockedModule(axiom.moduleId)">
         <span>Delete Axiom</span>
       </button>
       <button type="button"
                   ng-class="[{green : axiom.active}, {red: !axiom.active}]"
                   ng-click="toggleAxiomActive(axiom)"
                   ng-if="axiom.released"
-                  ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
+                  ng-disabled="isInactivation  || isLockedModule(axiom.moduleId) && concept.released"
                   class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case m-l-5">
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'FULLY_DEFINED'"
-              ng-disabled="isStatic || isLockedModule(concept.moduleId) || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
+              ng-disabled="isStatic || isLockedModule(axiom.moduleId)"
               class="white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right m-l-5"
               ng-class="[{'fully-defined-btn' : axiom.definitionStatus === 'FULLY_DEFINED'}]"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
@@ -53,7 +53,7 @@
         <span>Fully Defined</span>
       </button>
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'PRIMITIVE'"
-              ng-disabled="isStatic || isLockedModule(concept.moduleId) || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
+              ng-disabled="isStatic || isLockedModule(axiom.moduleId)"
               class="primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right m-l-5"
               ng-class="[{'primitive-btn' : axiom.definitionStatus === 'PRIMITIVE'}]"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
@@ -98,7 +98,7 @@
 
                     <textarea id="axiom-relationship-type-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                               custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.pt"
-                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || isBatch || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
+                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(axiom.moduleId) || isBatch"
                               class="resizable-text form-control msd-elastic no-border-bottom rel"
                               typeahead="suggestion as suggestion.pt.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
                               typeahead-focus-first="false"
@@ -131,7 +131,7 @@
                   <div class="small-size-tooltip tooltips-bottom">
                       <textarea id="axiom-relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
-                                ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && isExtensionSet())"
+                                ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(axiom.moduleId)"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
                                 typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                                 typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -170,13 +170,13 @@
     -->
 
                 <div>
-                  <button ng-if="relationship.active && !isStatic && !template && ((concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && !isExtensionSet()) || (concept.moduleId === '900000000000207008' && axiom.moduleId !== '900000000000207008' && isExtensionSet()))" type="button" ng-click="addAxiomRelationship(groupId, relationship, axiom)"
+                  <button ng-if="relationship.active && !isStatic && !template && !isLockedModule(axiom.moduleId)" type="button" ng-click="addAxiomRelationship(groupId, relationship, axiom)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Add New Relationship</span>
                   </button>
 
                   <button type="button" ng-click="removeAxiomRelationship(relationship, axiom)"
-                          ng-if="relationship.active && !isStatic && !relationship.released && ((concept.moduleId === '900000000000207008' && axiom.moduleId === '900000000000207008' && !isExtensionSet()) || (concept.moduleId === '900000000000207008' && axiom.moduleId !== '900000000000207008' && isExtensionSet()))"
+                          ng-if="relationship.active && !isStatic && !relationship.released && !isLockedModule(axiom.moduleId)"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Remove Relationship</span>
                   </button>
@@ -186,6 +186,7 @@
 
             <div class="col-md-1 no-padding role-group-drag p-t-5 {{relationship.characteristicType}}"
                  drop-channel="axiomRelationshipGroupObj" ui-on-drop="dropAxiomRelationshipGroup($data, axiom)"
+                 drop-validate="!isLockedModule(axiom.moduleId) && !isStatic"
                  drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover">
               <button ng-if="$index === 0"
                       class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right m-t-7"
@@ -210,7 +211,7 @@
           </div>
         </div>
       <div ng-if="$last && groupId !== 0" class="row axiom-group-top"></div>
-      <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template">
+      <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template && !isLockedModule(axiom.moduleId)">
         <div class="col-md-9 col-s-8 col-xs-6"></div>
             <div class="col-md-3 col-s-4 col-xs-6 no-padding no-margin">
                 <button class="btn-default role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right pull-right"
