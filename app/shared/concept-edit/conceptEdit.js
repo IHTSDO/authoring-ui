@@ -1868,18 +1868,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // replace descriptions
           scope.concept.descriptions = newArray;
         }
-
-        function sortRelationships() {
-
-          if (!scope.concept || !scope.concept.relationships) {
-            return;
-          }
-
-          var isaRels = scope.concept.relationships.filter(function (rel) {
+          
+        function sortRelationshipArray(relationships){
+          let isaRels = relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
           });
 
-          var attrRels = scope.concept.relationships.filter(function (rel) {
+          let attrRels = relationships.filter(function (rel) {
             return rel.type.conceptId !== '116680003';
           });
 
@@ -1920,7 +1915,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
           attrRels  = $filter('orderBy')(attrRels, 'display')
-          scope.concept.relationships = isaRels.concat(attrRels);
+          relationships = isaRels.concat(attrRels);
+        }
+
+        function sortRelationships() {
+
+          if (!scope.concept || !scope.concept.relationships && !scope.concept.classAxioms && !scope.concept.gciAxioms) {
+            return;
+          }
+          
+          angular.forEach(scope.concept.classAxioms, function (axiom){
+              sortRelationshipArray(axiom.relationships);
+          })
+          angular.forEach(scope.concept.gciAxioms, function (axiom){
+              sortRelationshipArray(axiom.relationships);
+          })
+          
+          sortRelationshipArray(scope.concept.relationships);
         }
 
 // on load, sort descriptions && relationships
