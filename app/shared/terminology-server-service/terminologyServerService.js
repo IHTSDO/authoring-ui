@@ -1669,7 +1669,7 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////////////////////////////
 
       function getDomainAttributes(branch, parentIds) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn()&limit=50').then(function (response) {
+        return $http.get(apiEndpoint + 'mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=pt()&limit=50').then(function (response) {
           return response.data ? response.data : [];
         }, function (error) {
           return null;
