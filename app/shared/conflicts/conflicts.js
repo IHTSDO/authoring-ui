@@ -681,7 +681,7 @@ angular.module('singleConceptAuthoringApp')
             scope.startMergeReviewPoll();
           }
 
-          function rebase() {
+          function rebase(mergeReviewId) {
             console.log('Rebasing ' + (scope.sourceBranch + ' ' + scope.targetBranch));
             scope.rebaseRunning = true;
             var onSuccess = function(response) {
@@ -735,11 +735,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            if ($routeParams.taskKey) {
-              scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(onSuccess, onError);
-            } else {
-              scaService.rebaseProject($routeParams.projectKey).then(onSuccess, onError);
-            }
+            terminologyServerService.synchronousMerge(scope.sourceBranch, scope.targetBranch, mergeReviewId).then(onSuccess, onError);
           }
 
           /* ON LOAD PROCESS
@@ -772,9 +768,7 @@ angular.module('singleConceptAuthoringApp')
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      rebase(); // TODO Consider how we want to handle this
-                      // scenario -- this rebase effectively is a
-                      // null op but calls backend
+                      rebase(newReview.id);
                     }
                   }, function (error) {
                     if (error) {
