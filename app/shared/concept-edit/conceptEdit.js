@@ -193,6 +193,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
+        scope.createAttributeTypePts = function(){
+            angular.forEach(scope.concept.classAxioms, function(axiom){
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.type.pt = relationship.type.fsn.substr(0, relationship.type.fsn.lastIndexOf('(')).trim();
+                });
+            });
+            angular.forEach(scope.concept.gciAxioms, function(axiom){
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.type.pt = relationship.type.fsn.substr(0, relationship.type.fsn.lastIndexOf('(')).trim();
+                });
+            });
+        }
+          
+        scope.$watch(scope.concept, function(){
+            scope.createAttributeTypePts();
+        })
+        
         scope.isAxiomSupport =  function() {
           if (scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
             return true;
@@ -1082,6 +1099,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (scope.isBatch) {
             scope.saving = true;
             scope.saveFunction().then(function(response){
+              scope.createAttributeTypePts();
               scope.saving = false;
               if (!response.validation.hasErrors && !response.validation.hasWarnings) {
                 notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
@@ -1157,6 +1175,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else if (scope.validation && scope.validation.hasErrors) {
               notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
               scope.saving = false;
+              scope.createAttributeTypePts();
               scope.computeAxioms(axiomType.ADDITIONAL);
               scope.computeAxioms(axiomType.GCI);
               scope.reapplyTemplate();
@@ -1208,6 +1227,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scope.focusHandler(true, false);
                   }
                   scope.saving = false;
+                  scope.createAttributeTypePts();
                   scope.reapplyTemplate();
                   scope.focusHandler(true, false);
                   scope.computeAxioms(axiomType.ADDITIONAL);
@@ -1265,17 +1285,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           }, function (error) {
             notificationService.sendError('Fatal error: Could not validate concept');
+            console.log(scope.concept);
             scope.reapplyTemplate();
             scope.saving = false;
             scope.focusHandler(true, false);
             scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);
             angular.forEach(scope.concept.classAxioms, function(axiom){
-                refreshAttributeTypesForAxiom(axiom);
-            })
+              refreshAttributeTypesForAxiom(axiom);
+            });
             angular.forEach(scope.concept.gciAxioms, function(axiom){
-                refreshAttributeTypesForAxiom(axiom);
-            })
+              refreshAttributeTypesForAxiom(axiom);
+            });
+            scope.createAttributeTypePts();
           });
         };
 
