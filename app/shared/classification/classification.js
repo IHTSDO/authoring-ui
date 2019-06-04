@@ -516,11 +516,11 @@ angular.module('singleConceptAuthoringApp')
                 scope.equivalentConcepts = [];
                 angular.forEach(equivalentConcepts, function (item) {
                   if (item.equivalentConcepts.length === 2) {
-                    scope.equivalentConcepts.push(item.equivalentConcepts);
+                    scope.equivalentConcepts.push(item.equivalentConcepts.items);
                   }
                   else {
-                    var key = item.equivalentConcepts[0];
-                    angular.forEach(item.equivalentConcepts, function (equivalence) {
+                    var key = item.equivalentConcepts.items[0];
+                    angular.forEach(item.equivalentConcepts.items, function (equivalence) {
                       if (equivalence !== key) {
                         var newEq = [];
                         newEq.push(key);
