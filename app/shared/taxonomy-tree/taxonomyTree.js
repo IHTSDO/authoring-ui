@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp')
               concept: {
                 conceptId: node.conceptId,
                 fsn: node.fsn,
-                preferredSynonym: node.preferredSynonym
+                preferredSynonym: node.preferredSynonym.term
               }
             });
             node.clickCt = 0;
@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(children, function (child) {
                 child.isCollapsed = true;
                 if (!child.fsn) {
-                  child.fsn = child.preferredSynonym;
+                  child.fsn = child.preferredSynonym.term;
                 }
               });
 
@@ -149,7 +149,7 @@ angular.module('singleConceptAuthoringApp')
                 parent.isCollapsed = true;
                 parent.focusParent = true;
                 if (!parent.fsn) {
-                  parent.fsn = parent.preferredSynonym;
+                  parent.fsn = parent.preferredSynonym.term;
                 }
                 scope.array.push(parent);
               });
@@ -346,7 +346,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getTerm = function (node) {          
           if ((node.preferredSynonym && scope.defaultLanguage && scope.defaultLanguage !== '900000000000509007-fsn')
             ||(!scope.defaultLanguage && scope.synonymFlag)) {
-            return node.preferredSynonym;         
+            return node.preferredSynonym.term;         
           } else {
             return node.fsn; 
           }          
