@@ -951,6 +951,13 @@ angular.module('singleConceptAuthoringApp')
       // Helper call to retrieve a concept with all elements at a point in time
       // Puts all elements in save-ready format
       function getFullConceptAtDate(conceptId, branch, acceptLanguageValue, date) {
+        let param = null;
+        if(apiEndpoint.includes('snowowl')){
+            param = '^';
+        }
+        else{
+            param = '@' + date;
+        }
 
         var deferred = $q.defer();
         var config = {};
@@ -958,7 +965,7 @@ angular.module('singleConceptAuthoringApp')
           config.headers = {'Accept-Language': acceptLanguageValue};
         }
 
-        $http.get(apiEndpoint + 'browser/' + branch + '@' + date + '/concepts/' + conceptId, config).then(function (response) {
+        $http.get(apiEndpoint + 'browser/' + branch + param + '/concepts/' + conceptId, config).then(function (response) {
           normaliseSnowstormConcept(response.data);
           deferred.resolve(response.data);
         }, function (error) {
