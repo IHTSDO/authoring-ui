@@ -14,7 +14,7 @@
   </div>
   <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="rootConcept">
     <div class="col-md-11 no-padding" >
-      <h4 class="p-l-5">{{rootConcept.preferredSynonym ? rootConcept.preferredSynonym : rootConcept.fsn}}</h4>
+      <h4 class="p-l-5">{{rootConcept.preferredSynonym.term ? rootConcept.preferredSynonym.term : rootConcept.fsn}}</h4>
     </div>
     <div class="col-md-1 no-padding">
       <button class="btn btn-default md md-close light-button transparent" title="Return to SNOMEDCT hieararchy view" ng-click="clearConcept()"></button>
@@ -26,7 +26,7 @@
 
   <div class="row m-l-10 m-t-15 taxonomy-list" ng-if="secondRootConcept">
     <div class="col-md-11 no-padding" >
-      <h4 class="p-l-5">{{secondRootConcept.preferredSynonym ? secondRootConcept.preferredSynonym : secondRootConcept.fsn}}</h4>
+      <h4 class="p-l-5">{{secondRootConcept.preferredSynonym.term ? secondRootConcept.preferredSynonym.term : secondRootConcept.fsn}}</h4>
     </div>
     <div class="col-md-1 no-padding">
       <button class="btn btn-default md md-close light-button transparent" title="Close second Taxonomy" ng-click="closeTaxonomy()"></button>
