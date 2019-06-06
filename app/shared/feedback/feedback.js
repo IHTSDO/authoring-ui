@@ -1010,7 +1010,7 @@ angular.module('singleConceptAuthoringApp')
               newIds.push(axiom.axiomId);
                 angular.forEach(originalConcept.classAxioms, function(originalAxiom){
                   if(axiom.axiomId === originalAxiom.axiomId){
-                    scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
+                    scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept).then(function (modifiedAxiom) {
                       axiom = modifiedAxiom;
                       if(axiom.active !== originalAxiom.active
                           || axiom.definitionStatus !== originalAxiom.definitionStatus){
@@ -1024,7 +1024,7 @@ angular.module('singleConceptAuthoringApp')
               newIds.push(axiom.axiomId);
               angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
                 if(axiom.axiomId === originalAxiom.axiomId){
-                  scope.compareAxiomRelationships(axiom, originalAxiom).then(function (modifiedAxiom) {
+                  scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept).then(function (modifiedAxiom) {
                     axiom = modifiedAxiom;
                     if(axiom.active !== originalAxiom.active
                       || axiom.definitionStatus !== originalAxiom.definitionStatus){
@@ -1044,7 +1044,7 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           };
             
-          scope.compareAxiomRelationships = function(axiom, originalAxiom){
+          scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept){
             var deferred = $q.defer();
             angular.forEach(axiom.relationships, function(newRelationship){
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
@@ -1054,7 +1054,7 @@ angular.module('singleConceptAuthoringApp')
               });
               if(!newRelationship.found){
                 newRelationship.relationshipId = terminologyServerService.createGuid();
-                highlightComponent(newRelationship.sourceId, newRelationship.relationshipId);
+                highlightComponent(currentConcept.conceptId, newRelationship.relationshipId);
               }
             });
               
@@ -1074,7 +1074,7 @@ angular.module('singleConceptAuthoringApp')
                 originalRelationship.relationshipId = terminologyServerService.createGuid();
                 originalRelationship.active = false;
                 axiom.relationships.push(originalRelationship);
-                highlightComponent(originalRelationship.sourceId, originalRelationship.relationshipId, null, null, true);
+                highlightComponent(currentConcept.conceptId, originalRelationship.relationshipId, null, null, true);
               }
             });
             deferred.resolve(axiom);
