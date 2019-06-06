@@ -32,14 +32,14 @@
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
-        <td header-title="'Click to sort'" data-title="'Concept'" sortable="'leftConceptLabel'"> {{result[0].pt.term}} </td>
+        <td header-title="'Click to sort'" data-title="'Concept'" sortable="'leftConceptLabel'"> {{result[0].fsn.term}} </td>
         <td><button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
                   tooltip=""
                   title="Edit"><span class="md md-edit "
                                      ng-click="editEquivalentConcept(result[0].id)"></span>
           <div class="ripple-wrapper"></div>
           </button></td>
-        <td header-title="'Click to sort'" data-title="'Equivalence'" sortable="'rightConceptLabel'"> {{result[1].pt.term}} </td>
+        <td header-title="'Click to sort'" data-title="'Equivalence'" sortable="'rightConceptLabel'"> {{result[1].fsn.term}} </td>
         <td><button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit "
