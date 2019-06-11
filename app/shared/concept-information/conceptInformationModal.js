@@ -64,14 +64,14 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
                 return item.characteristicType === params.$params.filter.characteristicType;
               });
             }
-            if(params.$params.filter.typeFsn) {
+            if(params.$params.filter.typeFsn) {// filter.typeFsn is actually an id
               results = results.filter(function (item) {
-                return item.typeFsn.id === params.$params.filter.typeFsn;
+                return item.type.id === params.$params.filter.typeFsn;
               });
             }
             if(params.$params.filter.sourceFsn) {
               results = results.filter(function (item) {
-                return item.sourceFsn.term.toLowerCase().indexOf(params.$params.filter.sourceFsn) > -1;
+                return item.source.fsn.toLowerCase().indexOf(params.$params.filter.sourceFsn) > -1;
               });
             }
             
@@ -162,12 +162,9 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
         // make top-level properties
         angular.forEach(response.items, function (item) {
           if (item.active) {
-            item.sourceFsn = item.source.fsn;
-            item.typeFsn = item.type.fsn;
-
-            if (tempList.indexOf(item.typeFsn.id) === -1) {
-              tempList.push(item.typeFsn.id);
-              $scope.filterTypeTerms.push({id: item.typeFsn.id, term: item.typeFsn.term});
+            if (tempList.indexOf(item.type.id) === -1) {
+              tempList.push(item.type.id);
+              $scope.filterTypeTerms.push({id: item.type.id, term: item.type.fsn});
             }
 
             // push to inbound relationships
