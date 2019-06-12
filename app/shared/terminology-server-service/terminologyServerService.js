@@ -1597,8 +1597,17 @@ angular.module('singleConceptAuthoringApp')
           console.error('Error retrieving versions: code system is not defined');
           return null;
         }
-
-        return $http.get(apiEndpoint + '/codesystems/' + codeSystemShortName + '/versions').then(function (response) {
+          
+        let url = '';
+        
+        if(apiEndpoint.includes('snowowl')){
+            url = 'snowowl/admin/codesystems/';
+        }
+        else{
+            url = apiEndpoint + '/codesystems/';
+        }
+          
+        return $http.get(url + codeSystemShortName + '/versions').then(function (response) {
           return response;
         }, function (error) {
           return null;
