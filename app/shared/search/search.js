@@ -61,8 +61,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         template: '',
         model: 'logical'
       };
-        
-      $scope.dialectSelection = null;
 
       $scope.favorites = {items: []};
       $scope.$watch(function () {
@@ -455,7 +453,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             break;
         }
 
-        let fsnSearchFlag = $scope.isExtension ||
+        let fsnSearchFlag = !metadataService.isExtensionSet() ||
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
@@ -482,16 +480,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       }
 
       $scope.newSearch = function (appendResults) {
-        
-        if($scope.dialectSelection != null && $scope.isExtension){
-            $scope.userOptions.selectedDialect = $scope.dialectSelection;
-        }
-          
+          console.log('new search');
         if(!appendResults){
             $scope.searchAfter = null;
         }
 
-        if ($scope.isExtension && $scope.userOptions.selectedDialect) {
+        if ($scope.userOptions.selectedDialect) {
           scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
         }
 
@@ -554,12 +548,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // TODO Later this will be toggle-able between extension synonym and fsn
         // For now, just assume always want the extension-language synonym if available
         // set as scope variable for expected future toggle
-        $scope.synonymFlag = $scope.isExtension;
+        $scope.synonymFlag = metadataService.isExtensionSet();
 
         // Allows for a template based escgExpr value to be assigned, currently template based searching is not in use
         // var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
 
-        let fsnSearchFlag = !$scope.isExtension ||
+        let fsnSearchFlag = !metadataService.isExtensionSet() ||
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
@@ -588,12 +582,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                             $scope.loadMoreEnabled = results.length === $scope.resultsSize;
                             $scope.storedResults = appendResults ? $scope.storedResults.concat(results) : results;
                           }
-                          $scope.userOptions.selectedDialect = '';
+
                           $scope.processResults();
                     });
                 }
                 else{
-                    $scope.userOptions.selectedDialect = '';
                     $scope.loadPerformed = false;
                     $scope.searchStatus = 'No results';
                 }
@@ -626,11 +619,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.loadMoreEnabled = results.length === $scope.resultsSize;
             $scope.storedResults = appendResults ? $scope.storedResults.concat(results) : results;
           }
-          $scope.userOptions.selectedDialect = '';
+
           $scope.processResults();
 
         }, function (error) {
-          $scope.userOptions.selectedDialect = '';
           $scope.searchStatus = 'Error performing search: ' + error;
           if (error.statusText) {
             $scope.searchStatus += ': ' + error.statusText;
@@ -722,11 +714,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // TODO Later this will be toggle-able between extension synonym and fsn
           // For now, just assume always want the extension-language synonym if available
           // set as scope variable for expected future toggle
-          $scope.synonymFlag = $scope.isExtension
+          $scope.synonymFlag = metadataService.isExtensionSet();
 
           $scope.searchTotal = null;
 
-          let fsnSearchFlag = $scope.isExtension ||
+          let fsnSearchFlag = !metadataService.isExtensionSet() ||
             $scope.userOptions.selectedDialect === usModel.dialectId ||
             $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
@@ -767,7 +759,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           });
         } else {
 
-          $scope.synonymFlag = $scope.isExtension;
+          $scope.synonymFlag = metadataService.isExtensionSet();
           console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions);
 
           let escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
@@ -1213,16 +1205,16 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               let strArray = data.defaultLanguage.split('-');
               if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
                 if(strArray.length === 2) {
-                  $scope.dialectSelection = data.defaultLanguage;
+                  $scope.userOptions.selectedDialect = data.defaultLanguage;
                 }
                 else if (strArray[0] === usModel.dialectId) {
-                  $scope.dialectSelection= strArray[0] + fsnSuffix;
+                  $scope.userOptions.selectedDialect = strArray[0] + fsnSuffix;
                 }
                 else {
                   // do nothing
                 }
               } else {
-                $scope.dialectSelection = strArray[0];
+                $scope.userOptions.selectedDialect = strArray[0];
               }
             }
           });
