@@ -3283,6 +3283,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationship = function (target, source, axiom) {
+            
+          console.log(source);
+            console.log(target);
+            
 
           if (!target || !source) {
             console.error('Cannot drop relationship, either source or target not specified');
