@@ -183,10 +183,6 @@ angular.module('singleConceptAuthoringApp')
         var allowableRelationshipProperties = [
           'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
         ];
-          
-        if(relationship.type.pt){
-            delete relationship.type.pt;
-        }
 
         // if a locally assigned UUID, strip
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
@@ -271,10 +267,6 @@ angular.module('singleConceptAuthoringApp')
         var allowableRelationshipProperties = [
           'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
         ];
-          
-        if(relationship.type.pt){
-            delete relationship.type.pt;
-        }
 
         // if a locally assigned UUID, strip
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1 && !keepTempIds) {
