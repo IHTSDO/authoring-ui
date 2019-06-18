@@ -1402,6 +1402,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             }
             else {
+              let carriedWarning = '';
               // mimic actual inactivation
               var conceptCopy = angular.copy(scope.concept);
               conceptCopy.isLeafInferred = true;
@@ -1420,8 +1421,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // Check unpublished changes for concept
               if(scope.concept.released === true && hasUnpublishedChanges()) {
-                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
-                return;
+                  notificationService.sendWarning('Concept has unpublished changes - these will be reverted automatically during inactivation', 5000);
               }
 
               scope.inactivatingConceptError = false;
