@@ -60,6 +60,8 @@ angular.module('singleConceptAuthoringApp')
             }
             if (typeof relationship.type == "object") {
               normaliseSnowstormTerms(relationship.type);
+              relationship.type.pt = relationship.type.fsn.substr(0, relationship.type.fsn.lastIndexOf('(')).trim();
+              console.log(relationship);
             }
             if (typeof relationship.target == "object") {
               normaliseSnowstormTerms(relationship.target);
