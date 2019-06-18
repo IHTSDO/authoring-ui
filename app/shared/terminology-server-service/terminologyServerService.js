@@ -280,6 +280,39 @@ angular.module('singleConceptAuthoringApp')
             delete relationship[key];
           }
         }
+        if(relationship.type){
+            cleanRelationshipType(relationship.type);
+        }
+        if(relationship.target){
+            cleanRelationshipType(relationship.target);
+        }
+      }
+        
+      function cleanRelationshipType(relationship) {
+
+        var allowableRelationshipProperties = [
+          'conceptId', 'fsn', 'pt', 'active', 'definitionStatus', 'effectiveTime', 'moduleId', 'released'
+        ];
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
+        }
+        if(typeof relationship.pt == "object"){
+            relationship.pt = relationship.pt.term;
+        }
+      }
+        
+      function cleanRelationshipTarget(relationship) {
+
+        var allowableRelationshipProperties = [
+          'conceptId', 'fsn', 'pt'
+        ];
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
+        }
       }
 
       function cleanDescription(description, keepTempIds) {
