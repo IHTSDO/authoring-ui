@@ -1661,6 +1661,9 @@ angular.module('singleConceptAuthoringApp')
             if(disabledAction) {
               return;
             }
+            if(!concept.term) {
+              notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
+            } else {
               scope.simultaneousFeedbackAdded = false;
               if (actions && actions.length > 0) {
                 if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
@@ -1671,6 +1674,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.addToEdit(concept);
                 scope.viewConceptInTaxonomy(concept);
               }
+            }
           };
 
           scope.selectNextConcept = function() {
