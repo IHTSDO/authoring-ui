@@ -1249,7 +1249,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               else {
                 scope.concept = originalConcept;
                 scope.isModified = true;
-                notificationService.sendError('Error saving concept: ' + error.statusText);
+                notificationService.sendError('Error saving concept: ' + error.data.message);
                 scope.focusHandler(true, false);
               }
               scope.reapplyTemplate();
