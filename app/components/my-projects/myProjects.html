@@ -33,6 +33,7 @@
                            {indicator_green : project.latestClassificationJson.status === 'COMPLETED' && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
                             {indicator_green : project.latestClassificationJson.status === 'SAVED' && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
                           {indicator_blue : project.latestClassificationJson.status === 'RUNNING'},
+                          {indicator_blue : project.latestClassificationJson.status === 'SCHEDULED'},
                           {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE' || project.latestClassificationJson.status === 'FAILED' && project.latestClassificationJson.status !== 'STALE'},
                             {indicator_grey : project.latestClassificationJson.status === 'STALE'},
                            ]"
