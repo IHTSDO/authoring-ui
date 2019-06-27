@@ -1374,7 +1374,8 @@ angular.module('singleConceptAuthoringApp')
 
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
-                      terminologyServerService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
+                      terminologyServerService.getClassificationsForBranchRoot(newNotification.branchRoot).then(function (classifications) {
+                        console.log(newNotification);
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
@@ -1398,7 +1399,8 @@ angular.module('singleConceptAuthoringApp')
                       $rootScope.$broadcast('reloadTask');
                       $rootScope.$broadcast('reloadClassification');
                     } else if (newNotification.project) {
-                      terminologyServerService.getClassificationsForProject(newNotification.project).then(function (classifications) {
+                      terminologyServerService.getClassificationsForBranchRoot(newNotification.branchRoot).then(function (classifications) {
+                        console.log(newNotification);
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);

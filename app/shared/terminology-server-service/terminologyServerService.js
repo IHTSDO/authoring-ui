@@ -452,6 +452,13 @@ angular.module('singleConceptAuthoringApp')
           return response.data.items;
         });
       }
+        
+      // get all classification results for a branchroot
+      function getClassificationsForBranchRoot(branchroot) {
+        return $http.get(apiEndpoint + branchroot + '/classifications').then(function (response) {
+          return response.data.items;
+        });
+      }
 
       // get all classification results for a project or task based on specific branch path
       function getClassifications(branchPath) {
@@ -2139,6 +2146,7 @@ angular.module('singleConceptAuthoringApp')
         getClassificationForTask: getClassificationForTask,
         getClassificationForProject: getClassificationForProject,
         getClassificationsForTask: getClassificationsForTask,
+        getClassificationsForBranchRoot: getClassificationsForBranchRoot,
         getClassifications: getClassifications,
         getClassificationsForProject: getClassificationsForProject,
         getEquivalentConcepts: getEquivalentConcepts,
