@@ -1113,7 +1113,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean concept of any locally added information
           // store original concept id for CRS integration
           var originalConcept = angular.copy(scope.concept);
+          console.log(originalConcept);
           terminologyServerService.cleanConcept(scope.concept);
+          console.log(scope.concept);
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
           scope.saving = true;
@@ -4311,6 +4313,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
+          relationship.type.pt = item.pt.term;
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
                 scope.updateRelationship(relationship, false);
@@ -4343,6 +4346,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
+          relationship.type.pt = item.pt.term;
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
                 scope.computeAxioms(type);
