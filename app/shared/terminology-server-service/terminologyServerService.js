@@ -1077,7 +1077,12 @@ angular.module('singleConceptAuthoringApp')
           normaliseSnowstormConcepts(response.data)
           deferred.resolve(response.data);
         }, function (error) {
-          deferred.reject(error);
+          if(error.data.status === 404){
+              deferred.resolve([]);
+          }
+          else{
+            deferred.reject(error);
+          }
         });
         return deferred.promise;
       }
