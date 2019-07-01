@@ -415,7 +415,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               // get Inferred not previously stated
-              scope.getInferredNotPreviouslyStated(scope.relationshipChanges,sourceIds);
+              getInferredNotPreviouslyStated(scope.relationshipChanges);
 
               scope.setStatusText();
             }, function (error) {
@@ -424,43 +424,13 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {
-            var requestPromise = [];
-            var idList = [];
-
-            angular.forEach(sourceIds, function (sourceId) {
-              idList.push(sourceId);
+          function getInferredNotPreviouslyStated (relationshipChanges) {
+            scope.inferredNotPreviouslyStated = [];
+            angular.forEach(relationshipChanges.items, function (relationshipChange) {              
+              if(relationshipChange.changeNature === 'INFERRED' && relationshipChange.inferredNotStated) {
+                scope.inferredNotPreviouslyStated.push(relationshipChange);
+              }
             });
-
-            terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
-              var relationships = [];
-              angular.forEach(response, function (concept) {
-                angular.forEach(concept.relationships, function (rel) {
-                  if(rel.characteristicType === "STATED_RELATIONSHIP") {
-                    relationships.push(rel);
-                  }
-                });
-              });
-
-              scope.inferredNotPreviouslyStated = [];
-                angular.forEach(relationshipChanges.items, function (relationshipChange) {
-                  var itemFound = false;
-                  for(var i = 0; i < relationships.length; i++){
-                    var rel = relationships[i];
-
-                    if(relationshipChange.typeId === rel.type.conceptId
-                      && relationshipChange.destinationId === rel.target.conceptId) {
-
-                      itemFound = true;
-                      break;
-                    }
-                  }
-
-                  if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
-                    scope.inferredNotPreviouslyStated.push(relationshipChange);
-                  }
-                });
-              });
           };
 
           scope.role = null;
