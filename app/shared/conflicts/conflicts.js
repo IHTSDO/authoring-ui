@@ -680,6 +680,7 @@ angular.module('singleConceptAuthoringApp')
                   terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
                     if (response && response.empty == false) {
                       notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
+                      scope.warning = true;
                     } else {
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = true;
