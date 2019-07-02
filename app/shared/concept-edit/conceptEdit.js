@@ -1918,6 +1918,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           attrRels  = $filter('orderBy')(attrRels, 'display')
           relationships = isaRels.concat(attrRels);
+
+          return relationships;
         }
 
         function sortRelationships() {
@@ -2535,7 +2537,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               axiom.type = axiomType.ADDITIONAL;
               angular.forEach(axiom.relationships, function (rel) {
                 rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
-                console.log(rel.id);
+
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
@@ -2544,8 +2546,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
 
-                // sorts axioms based on their pt
-                axiom.relationshipGroups[parseInt(rel.groupId)].sort((a,b) => (a.type.pt > b.type.pt) ? 1 : -1);
+                // sorts axioms
+                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);                
               });
             });
           }
@@ -2565,8 +2567,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
 
-                // sorts axioms based on their pt
-                axiom.relationshipGroups[parseInt(rel.groupId)].sort((a,b) => (a.type.pt > b.type.pt) ? 1 : -1);
+                // sorts axioms
+                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);
               });
             });
           }
