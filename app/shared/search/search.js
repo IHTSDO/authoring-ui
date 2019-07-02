@@ -1185,41 +1185,53 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         });
       };
       // on extension metadata set
-      $scope.$on('setExtensionMetadata', function (event, data) {
-        $scope.isExtension = metadataService.isExtensionSet();
-
-        if ($scope.isExtension) {
-          if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
-            $scope.dialects = usModuleFilterModel;
-          } else {
-            $scope.dialects = metadataService.getAllDialects();
-
-            // Remove 'en-gb' if any
-            if ($scope.dialects.hasOwnProperty(gbDialectId)) {
-              delete $scope.dialects[gbDialectId];
-            }
-          }
-
-          scaService.getSelectedLanguegeForUser().then(function (data){
-            if (data && Object.keys(data).length > 0 && data.hasOwnProperty('defaultLanguage')) {
-              let strArray = data.defaultLanguage.split('-');
-              if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
-                if(strArray.length === 2) {
-                  $scope.userOptions.selectedDialect = data.defaultLanguage;
-                }
-                else if (strArray[0] === usModel.dialectId) {
-                  $scope.userOptions.selectedDialect = strArray[0] + fsnSuffix;
-                }
-                else {
-                  // do nothing
-                }
-              } else {
-                $scope.userOptions.selectedDialect = strArray[0];
-              }
-            }
-          });
+        if($rootScope.extensionMetadataSet){
+            console.log('already set');
+            setupExtensionSearch();
         }
-      });
+        else{
+            $rootScope.$watch('extensionMetadataSet', function () {
+                console.log('set from watcher');
+                setupExtensionSearch();
+            }, true);
+        }
+        
+        function setupExtensionSearch() {
+            $scope.isExtension = metadataService.isExtensionSet();
+
+            if ($scope.isExtension) {
+              if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
+                $scope.dialects = usModuleFilterModel;
+              } else {
+                $scope.dialects = metadataService.getAllDialects();
+
+                // Remove 'en-gb' if any
+                if ($scope.dialects.hasOwnProperty(gbDialectId)) {
+                  delete $scope.dialects[gbDialectId];
+                }
+              }
+
+              scaService.getSelectedLanguegeForUser().then(function (data){
+                if (data && Object.keys(data).length > 0 && data.hasOwnProperty('defaultLanguage')) {
+                  let strArray = data.defaultLanguage.split('-');
+                  if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
+                    if(strArray.length === 2) {
+                      $scope.userOptions.selectedDialect = data.defaultLanguage;
+                    }
+                    else if (strArray[0] === usModel.dialectId) {
+                      $scope.userOptions.selectedDialect = strArray[0] + fsnSuffix;
+                    }
+                    else {
+                      // do nothing
+                    }
+                  } else {
+                    $scope.userOptions.selectedDialect = strArray[0];
+                  }
+                }
+              });
+            }
+        }
+        
 
     }
   ])
