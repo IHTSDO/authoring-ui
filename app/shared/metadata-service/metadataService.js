@@ -30,6 +30,8 @@ angular.module('singleConceptAuthoringApp')
     var isaRelationshipId = '116680003';
 
     var snomedCtRootId = '138875005';
+      
+    $rootScope.extensionMetadataSet = false;
 
     function getSnomedCtRootId() {
       return snomedCtRootId;
@@ -372,6 +374,7 @@ angular.module('singleConceptAuthoringApp')
               }
           }
         }
+        $rootScope.extensionMetadataSet = true;
         $rootScope.$broadcast('setExtensionMetadata');
 
       };
