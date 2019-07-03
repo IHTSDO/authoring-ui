@@ -201,7 +201,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // or "be loading from Feedback view". Currently, we have 2 diffenent sitebars.
     // DO NOT USE FOR OTHER PURPOSES
     /////////////////////////////////////////////////////////////////////////////////////////////
-    $rootScope.displayMainSidebar = true;
+    $rootScope.showSidebarEdit = true;
 
     //////////////////////////////
     // Infinite Scroll
@@ -406,7 +406,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.setView = function (name) {
 
-
       // do nothing if no name supplied
       if (!name) {
         return;
@@ -416,6 +415,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
+      $scope.thisView = name;
+
       switch (name) {
         case 'validation':
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -423,21 +424,21 @@ angular.module('singleConceptAuthoringApp.edit', [
           //  view starts with no concepts
           $scope.concepts = [];
           $scope.canCreateConcept = false;
-          $rootScope.displayMainSidebar = false;
+          $rootScope.showSidebarEdit = false;
           break;
         case 'inactivation':
           $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'inactivation';
           $scope.concepts = [];
           $scope.canCreateConcept = false;
-          $rootScope.displayMainSidebar = true;
+          $rootScope.showSidebarEdit = true;
           break;
         case 'feedback':
           $scope.feedbackContainer = {};
           $scope.getLatestReview();
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'feedback';
-          $rootScope.displayMainSidebar = false; // Feedback page has its own sitebar
+          $rootScope.showSidebarEdit = false; // Feedback page has its own sitebar
 
           //  view starts with no concepts
           //$scope.concepts = [];
@@ -448,13 +449,13 @@ angular.module('singleConceptAuthoringApp.edit', [
           $routeParams.mode = 'classification';
           $scope.getClassificationEditPanel();
           $scope.canCreateConcept = false;
-          $rootScope.displayMainSidebar = false;
+          $rootScope.showSidebarEdit = false;
           break;
         case 'conflicts':
           $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           $routeParams.mode = 'conflicts';
           $scope.canCreateConcept = false;
-          $rootScope.displayMainSidebar = false;
+          $rootScope.showSidebarEdit = false;
 
           //  view starts with no concepts
           $scope.concepts = [];
@@ -463,7 +464,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
-          $rootScope.displayMainSidebar = true;
+          $rootScope.showSidebarEdit = true;
 
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
@@ -471,10 +472,15 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
           break;
         case 'edit-no-sidebar':
+          if ($routeParams.mode === 'feedback')
+          {
+            return;
+          }
+
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
-          $rootScope.displayMainSidebar = false;
+          $rootScope.showSidebarEdit = false;
 
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
@@ -485,7 +491,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
-          $rootScope.displayMainSidebar = true;
+          $rootScope.showSidebarEdit = true;
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -495,7 +501,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Batch Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'batch';
           $scope.canCreateConcept = false;
-          $rootScope.displayMainSidebar = true;
+          $rootScope.showSidebarEdit = true;
           break;
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
@@ -503,22 +509,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
       }
 
-      /*       // if first view set, retrieve persisted layout state and apply
-       if (!$rootScope.layout) {
-       scaService.getUiStateForUser('page-layouts').then(function (response) {
-       $rootScope.layout = response;
-       setLayout();
-       });
-       }
-       */
-      // otherwise simply apply layout settings
-
-      // set this and last views
-      $scope.lastView = $scope.thisView;
-      $scope.thisView = name;
-
       // Clear data
       projectTaxonomyList = [];
+
+      $scope.mode = $routeParams.mode;
 
       // set layout based on view
       setLayout();
@@ -542,7 +536,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // view saving
     $scope.thisView = null;
-    $scope.lastView = null;
 
     // control variables
     $scope.canRebase = false;
@@ -988,9 +981,8 @@ angular.module('singleConceptAuthoringApp.edit', [
               $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
               $routeParams.mode = 'edit';
               $scope.canCreateConcept = true;
-              $rootScope.displayMainSidebar = true;
+              $rootScope.showSidebarEdit = true;
               // set this and last views
-              $scope.lastView = $scope.thisView;
               $scope.thisView = 'edit-default';
               // set layout based on view
               setLayout();
@@ -1112,9 +1104,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
-          $rootScope.displayMainSidebar = true;
+          $rootScope.showSidebarEdit = true;
           // set this and last views
-          $scope.lastView = $scope.thisView;
           $scope.thisView = 'edit-default';
           // set layout based on view
           setLayout();
@@ -1589,7 +1580,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       if($scope.thisView === 'feedback'){
         $rootScope.$broadcast('viewReview', {});
        } else {
-        $rootScope.displayMainSidebar = false;
+        $rootScope.showSidebarEdit = false;
         $scope.setView('feedback');
        }
     };
@@ -1801,7 +1792,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $rootScope.$broadcast('viewReview', {});
       } else {
         $scope.setView('feedback');
-        $rootScope.displayMainSidebar=false;
+        $rootScope.showSidebarEdit=false;
       }
     };
 

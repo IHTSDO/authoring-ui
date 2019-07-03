@@ -18,12 +18,11 @@
   </script>
 
   <!-- sidebar -->
-  <div
-    ng-include src="'shared/sidebar-edit/feedbackEdit.html'" ng-show="!$root.displayMainSidebar" ng-if="role"></div>
+  <div ng-include src="'shared/sidebar-edit/feedbackEdit.html'" ng-show="!$root.showSidebarEdit" ng-if="role && view !== 'edit-no-sidebar'"></div>
 
  
   <!-- Report, feedback editor, and concept feedback -->
-  <div class="no-padding pull-right white no-gutter" ng-class="getLayoutWidths('modelsAndConcepts')">
+  <div class="no-padding pull-right white no-gutter" ng-class="(view === 'edit-no-sidebar') ? ['col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'] : getLayoutWidths('modelsAndConcepts')">
     <div class="col-md-12 feedback-header-main">
 
       <!-- Title section -->
@@ -142,7 +141,7 @@
   </div>
 
   <!-- Taxonomy, models, and concepts -->
-  <div class="no-padding pull-right"  ng-class="getLayoutWidths('modelsAndConcepts')">
+  <div class="no-padding pull-right"  ng-class="(view === 'edit-no-sidebar') ? ['col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'] : getLayoutWidths('modelsAndConcepts')">
     <div ng-if="viewedConcepts.length > 0 && !simultaneousFeedbackAdded">
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts track by concept.conceptId" ng-class="[{'first' : $first}]">
         <div ng-class="getLayoutWidths('models')">

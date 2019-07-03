@@ -50,7 +50,10 @@ angular.module('singleConceptAuthoringApp')
           editable: '&',
 
           // branch this report is good for
-          branch: '='
+          branch: '=',
+
+          // view mode, for example : no sidebar
+          view: '='
         },
         templateUrl: 'shared/feedback/feedback.html',
 
