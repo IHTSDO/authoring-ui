@@ -955,15 +955,30 @@ angular.module('singleConceptAuthoringApp')
           function getAffectedObjectIds() {
             console.log('Getting affected object ids');
             var deferred = $q.defer();
-            terminologyServerService.searchConcepts(scope.branch,'', '*: *' + ' = ' + scope.inactivationConcept.conceptId, 0, 1000, false).then(function (response) {
+            terminologyServerService.searchConcepts(scope.branch,'', '*: *' + ' = ' + scope.inactivationConcept.conceptId, 0, 1000, false, '', true).then(function (response) {
               scope.affectedRelationshipIds = [];
               angular.forEach(response.items, function (item) {
-                scope.affectedConceptIds.push(item.conceptId);
-                scope.affectedConcepts[item.conceptId] = {};
+                if(item.conceptId){
+                    scope.affectedConceptIds.push(item.conceptId);
+                    scope.affectedConcepts[item.conceptId] = {};
+                }
+                else{
+                    scope.affectedConceptIds.push(item.id);
+                    scope.affectedConcepts[item.id] = {};
+                }
+                
+                
               });
-              terminologyServerService.searchConcepts(scope.branch,'', '<! '+ scope.inactivationConcept.conceptId, 0, 1000, false).then(function (children){
+                
+              terminologyServerService.searchConcepts(scope.branch,'', '<! '+ scope.inactivationConcept.conceptId, 0, 1000, false, '', true).then(function (children){
                 angular.forEach(children.items, function (item) {
-                  scope.affectedConcepts[item.conceptId] = {};
+                  if(item.conceptId){
+                        scope.affectedConcepts[item.conceptId] = {};
+                    }
+                    else{
+                        scope.affectedConcepts[item.id] = {};
+                    }
+                  
                 });
                 deferred.resolve();
               });
@@ -1135,20 +1150,20 @@ angular.module('singleConceptAuthoringApp')
                 if (concept && concept.classAxioms) {
                   angular.forEach(concept.classAxioms, function (axiom) {
                       angular.forEach(axiom.relationships, function (rel) {
-                        if (rel.target.id === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
+                        if (rel.target.conceptId === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
                           inactivateRelationship(concept, rel, axiom);
                         }
-                        else if (rel.target.id === scope.inactivationConcept.conceptId && !rel.new) {
+                        else if (rel.target.conceptId === scope.inactivationConcept.conceptId && !rel.new) {
                           inactivateAttributeRelationship(concept, rel, axiom);
                         }
                       });
                   });
                   angular.forEach(concept.gciAxioms, function (axiom) {
                       angular.forEach(axiom.relationships, function (rel) {
-                        if (rel.target.id === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
+                        if (rel.target.conceptId === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
                           inactivateRelationship(concept, rel, axiom);
                         }
-                        else if (rel.target.id === scope.inactivationConcept.conceptId && !rel.new) {
+                        else if (rel.target.conceptId === scope.inactivationConcept.conceptId && !rel.new) {
                           inactivateAttributeRelationship(concept, rel, axiom);
                         }
                       });
