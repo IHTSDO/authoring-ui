@@ -669,8 +669,15 @@ angular.module('singleConceptAuthoringApp')
           function loadNextConcept(elementPos) {
             if (elementPos < scope.conceptsToReviewViewed.length) {
               var nextConcept = scope.conceptsToReviewViewed[elementPos];
+              if (!scope.isDeletedConcept(nextConcept)) {
+                scope.selectConcept(nextConcept);
+              }
             }
           }
+
+          scope.isDeletedConcept = function(concept) {
+            return !concept.term;
+          };
 
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
@@ -1205,10 +1212,12 @@ angular.module('singleConceptAuthoringApp')
             var sortingDirection = scope.conceptsToReviewTableParams.sorting().term;
             let idList = [];
             for (var i = 0; i < conceptsToAdd.length; i++) {
+              if (!scope.isDeletedConcept(conceptsToAdd[i])) {  
                 conceptsToAdd[i].viewed = true;
                 addToEditHelper(conceptsToAdd[i].conceptId).then(function (response) {
                   notificationService.sendMessage('Concept: ' + response.conceptId + ' loaded', 5000);
                 });
+              }
             }
           };
 
@@ -1664,7 +1673,7 @@ angular.module('singleConceptAuthoringApp')
             if(disabledAction) {
               return;
             }
-            if(!concept.term) {
+            if(scope.isDeletedConcept(concept)) {
               notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
             } else {
               scope.simultaneousFeedbackAdded = false;
