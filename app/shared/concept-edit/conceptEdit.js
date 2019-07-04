@@ -1514,20 +1514,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
 
-          let hasUnpublishedAdditionalAxioms = false;
+          let hasUnpublishedClassAxioms = false;
           if (scope.concept.classAxioms && scope.concept.classAxioms.length > 0) {
-            scope.concept.classAxioms.forEach(function (item) {
-              if (!item.released) {
-                hasUnpublishedAdditionalAxioms = true;
-                item.relationships.forEach(function (relationship) {
+            scope.concept.classAxioms.forEach(function (axiom) {
+              hasUnpublishedClassAxioms = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
+              if (hasUnpublishedClassAxioms) {
+                axiom.relationships.forEach(function (relationship) {
                   if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
-              } else {
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    hasUnpublishedAdditionalAxioms = true;
                     relationship.templateStyle = 'redhl';
                   }
                 });
@@ -1538,17 +1531,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           let hasUnpublishedGCIs = false;
           if (scope.concept.gciAxioms && scope.concept.gciAxioms.length > 0) {
             scope.concept.gciAxioms.forEach(function (item) {
-              if (!item.released) {
-                hasUnpublishedGCIs = true;
-                item.relationships.forEach(function (relationship) {
+              hasUnpublishedGCIs = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
+              if (hasUnpublishedGCIs) {
+                axiom.relationships.forEach(function (relationship) {
                   if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
-              } else {
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    hasUnpublishedGCIs = true;
                     relationship.templateStyle = 'redhl';
                   }
                 });
@@ -1556,7 +1542,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
 
-          return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedAdditionalAxioms || hasUnpublishedGCIs;
+          return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedClassAxioms || hasUnpublishedGCIs;
         }
 
         /**
