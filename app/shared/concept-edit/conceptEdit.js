@@ -1340,21 +1340,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.computeRelationshipGroups();
             }
             else {
-              var stated = false;
-              scope.concept.classAxioms = [];
-              scope.addAdditionalAxiom(true);
-                
-              angular.forEach(scope.concept.relationships, function (relationship) {
-                if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
-                  stated = true;
-                  if(relationship.effectiveTime === scope.concept.effectiveTime){
-                      let copy = angular.copy(relationship);
-                      delete copy.relationshipId;
-                      copy.active = true;
-                      scope.concept.classAxioms[0].relationships.push(copy);
+              if (scope.concept.effectiveTime) {
+                scope.concept.classAxioms = [];
+                scope.addAdditionalAxiom(true);
+                angular.forEach(scope.concept.relationships, function (relationship) {
+                  if (relationship.characteristicType === 'STATED_RELATIONSHIP') {                  
+                    if(relationship.effectiveTime === scope.concept.effectiveTime){
+                        let copy = angular.copy(relationship);
+                        delete copy.relationshipId;
+                        copy.active = true;
+                        scope.concept.classAxioms[0].relationships.push(copy);
+                    }
                   }
-                }
-              });
+                });
+              }
+              else {
+                angular.forEach(scope.concept.classAxioms, function (axiom) {
+                  axiom.active = true;
+                  angular.forEach(axiom.relationships, function (relationship) {
+                    relationship.active = true;
+                  });
+                });
+              }
+
               autoSave();
               scope.computeRelationshipGroups();
             }
