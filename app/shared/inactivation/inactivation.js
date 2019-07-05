@@ -260,12 +260,12 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // check if referenced concept
-              else if (terminologyServerService.isConceptId(list[i].referencedComponent) && terminologyServerService.isConceptId(list[i].referencedComponent.id)) {
+              else if (terminologyServerService.isConceptId(list[i].referencedComponentId) && terminologyServerService.isConceptId(list[i].referencedComponent.id)) {
                 promises.push(buildConceptHistoricalAssoc(list[i].referencedComponent.id));
               }
 
               // check if referenced description
-              else if (terminologyServerService.isDescriptionId(list[i].referencedComponent) && terminologyServerService.isDescriptionId(list[i].referencedComponent.id)) {
+              else if (terminologyServerService.isDescriptionId(list[i].referencedComponentId) && terminologyServerService.isDescriptionId(list[i].referencedComponent.id)) {
                 promises.push(buildDescriptionHistoricalAssoc(list[i].referencedComponent.id));
               }
 
