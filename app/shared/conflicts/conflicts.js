@@ -238,100 +238,101 @@ angular.module('singleConceptAuthoringApp')
             var mappedComponents = {};
 
             // map descriptions for source, target, and autoMerge
-            angular.forEach(merge.sourceConcept.descriptions, function (description) {
-              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
-                mappedComponents[description.descriptionId] = {};
-              }
-              mappedComponents[description.descriptionId].source = description;
-            });
+            if (merge.sourceConcept) {
+              angular.forEach(merge.sourceConcept.descriptions, function (description) {
+                if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                  mappedComponents[description.descriptionId] = {};
+                }
+                mappedComponents[description.descriptionId].source = description;
+              });
 
-            angular.forEach(merge.targetConcept.descriptions, function (description) {
-              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
-                mappedComponents[description.descriptionId] = {};
-              }
-              mappedComponents[description.descriptionId].target = description;
-            });
+              angular.forEach(merge.sourceConcept.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                mappedComponents[relationship.relationshipId].source = relationship;
+              });
 
-            angular.forEach(merge.autoMergedConcept.descriptions, function (description) {
-              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
-                mappedComponents[description.descriptionId] = {};
-              }
-              mappedComponents[description.descriptionId].merged = description;
-            });
+              angular.forEach(merge.sourceConcept.classAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].source = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
+              });
 
-            // map relationships for source, target, and autoMerge
-            angular.forEach(merge.sourceConcept.relationships, function (relationship) {
-              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
-                mappedComponents[relationship.relationshipId] = {};
-              }
-              mappedComponents[relationship.relationshipId].source = relationship;
-            });
+              angular.forEach(merge.sourceConcept.gciAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].source = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
+              });
+            }
+            
+            if (merge.targetConcept) {
+              angular.forEach(merge.targetConcept.descriptions, function (description) {
+                if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                  mappedComponents[description.descriptionId] = {};
+                }
+                mappedComponents[description.descriptionId].target = description;
+              });
 
-            angular.forEach(merge.targetConcept.relationships, function (relationship) {
-              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
-                mappedComponents[relationship.relationshipId] = {};
-              }
-              mappedComponents[relationship.relationshipId].target = relationship;
-            });
+              angular.forEach(merge.targetConcept.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                mappedComponents[relationship.relationshipId].target = relationship;
+              });
 
-            angular.forEach(merge.autoMergedConcept.relationships, function (relationship) {
-              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
-                mappedComponents[relationship.relationshipId] = {};
-              }
-              mappedComponents[relationship.relationshipId].merged = relationship;
-            });
-              
-            //classAxiom Parsing
-              
-            angular.forEach(merge.sourceConcept.classAxioms, function (axiom) {
-              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
-                mappedComponents[axiom.axiomId] = {};
-              }
-              //mappedComponents[axiom.axiomId].source = axiom;
-              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
-            });
-              
-            angular.forEach(merge.targetConcept.classAxioms, function (axiom) {
-              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
-                mappedComponents[axiom.axiomId] = {};
-              }
-              //mappedComponents[axiom.axiomId].target = axiom;
-              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
-            });
-              
-            angular.forEach(merge.autoMergedConcept.classAxioms, function (axiom) {
-              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
-                mappedComponents[axiom.axiomId] = {};
-              }
-              //mappedComponents[axiom.axiomId].merged = axiom;
-              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
-            });
-              
-            //gciAxiom Parsing  
-              
-            angular.forEach(merge.sourceConcept.gciAxioms, function (axiom) {
-              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
-                mappedComponents[axiom.axiomId] = {};
-              }
-              //mappedComponents[axiom.axiomId].source = axiom;
-              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
-            });
-              
-            angular.forEach(merge.targetConcept.gciAxioms, function (axiom) {
-              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
-                mappedComponents[axiom.axiomId] = {};
-              }
-              //mappedComponents[axiom.axiomId].target = axiom;
-               mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
-            });
-              
-            angular.forEach(merge.autoMergedConcept.gciAxioms, function (axiom) {
-              if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
-                mappedComponents[axiom.axiomId] = {};
-              }
-              //mappedComponents[axiom.axiomId].merged = axiom;
-              mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
-            });
+              angular.forEach(merge.targetConcept.classAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].target = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
+              });
+
+              angular.forEach(merge.targetConcept.gciAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].target = axiom;
+                 mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
+              });
+            }
+            
+            if (merge.autoMergedConcept) {
+              angular.forEach(merge.autoMergedConcept.descriptions, function (description) {
+                if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                  mappedComponents[description.descriptionId] = {};
+                }
+                mappedComponents[description.descriptionId].merged = description;
+              });
+
+              angular.forEach(merge.autoMergedConcept.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                mappedComponents[relationship.relationshipId].merged = relationship;
+              });
+
+              angular.forEach(merge.autoMergedConcept.classAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].merged = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
+              });
+
+              angular.forEach(merge.autoMergedConcept.gciAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].merged = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
+              });
+            }
 
             return mappedComponents;
           }
@@ -411,7 +412,11 @@ angular.module('singleConceptAuthoringApp')
 
           }
 
-          function hasInactiveMergedElements(concept, styles) {
+          function hasInactiveMergedElements(concept, styles) {            
+            if (!concept) {
+              return false;
+            }
+
             var fields = (concept.descriptions.concat(concept.relationships)).filter(function (element) {
               if (!element.active && (styles.hasOwnProperty(element.descriptionId) || styles.hasOwnProperty(element.relationshipId))) {
                 return true;
@@ -510,7 +515,9 @@ angular.module('singleConceptAuthoringApp')
               var deferred = $q.defer();
               conflict.autoMergedConcept.classAxioms = [];
               conflict.autoMergedConcept.gciAxioms = [];
-              angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
+              
+              if(conflict.sourceConcept) {
+                angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
                   let newAxiom = {};
                   angular.copy(axiom, newAxiom);
                   angular.forEach(conflict.targetConcept.classAxioms, function(secondAxiom){
@@ -530,42 +537,49 @@ angular.module('singleConceptAuthoringApp')
                   });
                   conflict.autoMergedConcept.classAxioms.push(newAxiom);
               });
+              }              
               deferred.resolve(conflict);
+
               return deferred.promise;
           }
             
           function assignAxiomPartIds(conflict){
+            if(conflict.sourceConcept) {
               angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
-                  angular.forEach(axiom.relationships, function(relationship){
-                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
-                  })
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                })
               });
               angular.forEach(conflict.sourceConcept.gciAxioms, function(axiom){
                   angular.forEach(axiom.relationships, function(relationship){
                       relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
                   })
               });
+            }
+            if(conflict.targetConcept) {
               angular.forEach(conflict.targetConcept.classAxioms, function(axiom){
-                  angular.forEach(axiom.relationships, function(relationship){
-                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
-                  })
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                })
               });
               angular.forEach(conflict.targetConcept.gciAxioms, function(axiom){
                   angular.forEach(axiom.relationships, function(relationship){
                       relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
                   })
               });
+            }  
+            if(conflict.autoMergedConcept) {
               angular.forEach(conflict.autoMergedConcept.classAxioms, function(axiom){
-                  angular.forEach(axiom.relationships, function(relationship){
-                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
-                  })
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                })
               });
               angular.forEach(conflict.autoMergedConcept.gciAxioms, function(axiom){
                   angular.forEach(axiom.relationships, function(relationship){
                       relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
                   })
               });
-              
+            } 
           }
 
           function initializeMergeReview(review) {
@@ -618,8 +632,8 @@ angular.module('singleConceptAuthoringApp')
               assignAxiomPartIds(conflict);
               deDuplicateConflict(conflict).then(function (deDupedConflict){
                 conflict = deDupedConflict;
-                conflict.fsn = conflict.sourceConcept.fsn;
-                conflict.conceptId = conflict.sourceConcept.conceptId;
+                conflict.fsn = conflict.sourceConcept ? conflict.sourceConcept.fsn : conflict.targetConcept.fsn;
+                conflict.conceptId = conflict.sourceConcept ? conflict.targetConcept.conceptId : conflict.targetConcept.conceptId;
                 conflict.styles = highlightChanges(conflict);
                 checkForInactiveMergedElements(conflict);
               });
