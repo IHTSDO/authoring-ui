@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl)
       {
         scope.isAxiomSupport =  function() {
-          if (scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
+          if (scope.concept && scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
             return true;
           }
           return false;
@@ -1138,6 +1138,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 concept: scope.concept,
                 validationResults: scope.validation
               });
+
+              if (Object.keys(scope.validation.errors).length > 0) {
+                scope.saving = false;
+                scope.concept = originalConcept
+              }
             }
 
             // special case -- inactivation:  simply broadcast concept
