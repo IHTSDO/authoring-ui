@@ -404,7 +404,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 
-    $scope.setView = function (name) {
+    $scope.setView = function (name, skipLoadingEditPanelConcepts) {
 
       // do nothing if no name supplied
       if (!name) {
@@ -467,7 +467,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.showSidebarEdit = true;
 
           // if a task, load edit panel concepts
-          if ($scope.taskKey) {
+          if ($scope.taskKey && !skipLoadingEditPanelConcepts) {
             $scope.loadEditPanelConcepts();
           }
           break;
@@ -483,7 +483,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.showSidebarEdit = false;
 
           // if a task, load edit panel concepts
-          if ($scope.taskKey) {
+          if ($scope.taskKey && !skipLoadingEditPanelConcepts) {
             $scope.loadEditPanelConcepts();
           }
           break;
@@ -493,7 +493,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.canCreateConcept = true;
           $rootScope.showSidebarEdit = true;
           // if a task, load edit panel concepts
-          if ($scope.taskKey) {
+          if ($scope.taskKey && !skipLoadingEditPanelConcepts) {
             $scope.loadEditPanelConcepts();
           }
           break;
@@ -956,11 +956,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       $scope.conceptLoading = true;
-
-      var concept = {'id': null, 'branch': $scope.targetBranch};
-
       notificationService.sendMessage('Cloning concept...');
-
 
       // get the concept and add it to the stack
       terminologyServerService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
@@ -969,21 +965,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         var conceptExists = false;
         for (var i = 0; i < $scope.concepts.length; i++) {
 
-
           // cancel if unsaved work exists (track-by id problems)
           if (!$scope.concepts[i].conceptId) {
             notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
-
             $scope.conceptLoading = false;
+
             if ($scope.thisView !== 'edit-default') {
-              $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-              $routeParams.mode = 'edit';
-              $scope.canCreateConcept = true;
-              $rootScope.showSidebarEdit = true;
-              // set this and last views
-              $scope.thisView = 'edit-default';
-              // set layout based on view
-              setLayout();
+              $scope.setView('edit-default', true);
             }
 
             return;
@@ -1012,26 +1000,27 @@ angular.module('singleConceptAuthoringApp.edit', [
           description.descriptionId = null;
           description.released = false;
 
-          if (isExtension
-              || (description.moduleId !== internationalMetadata.modules[1].id  && description.moduleId !==internationalMetadata.modules[2].id)) {
+          if (!isCoreModule(isExtension, internationalMetadata, description.moduleId)) {
             description.moduleId = metadataService.getCurrentModuleId();
           }
 
           delete description.conceptId;
 
+          // Add hashkey that is used for closing popover
           if(!description.$$hashKey) {
             description.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
           }
+
           if (description.active === false) {
             clonedConcept.descriptions.splice(k, 1);
           }
 
           // Remove en-gb description if Extension is enable
-          if (isExtension &&
-            description.acceptabilityMap.hasOwnProperty("900000000000508004")) {
+          if (isExtension && description.acceptabilityMap.hasOwnProperty("900000000000508004")) {
             if(Object.keys(description.acceptabilityMap).length === 1) {
               clonedConcept.descriptions.splice(k, 1);
-            } else {
+            } 
+            else {
               delete description.acceptabilityMap['900000000000508004'];
             }
           }
@@ -1042,71 +1031,90 @@ angular.module('singleConceptAuthoringApp.edit', [
           relationship.sourceId = null;
           relationship.effectiveTime = null;
           relationship.released = false;
-          if (isExtension
-              || (relationship.moduleId !== internationalMetadata.modules[1].id  && relationship.moduleId !==internationalMetadata.modules[2].id)) {
+          
+          if (!isCoreModule(isExtension, internationalMetadata, relationship.moduleId)) {
             relationship.moduleId = metadataService.getCurrentModuleId();
           }
+
           delete relationship.relationshipId;
           delete relationship.target.effectiveTime;
           delete relationship.target.moduleId;
           delete relationship.target.active;
           delete relationship.target.definitionStatus;
 
+          // Add hashkey that is used for closing popover
           if(!relationship.$$hashKey) {
             relationship.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
           }
 
+          // Set module Id if it's not a core module
           if (relationship.active === false || relationship.characteristicType !== 'STATED_RELATIONSHIP') {
             clonedConcept.relationships.splice(j, 1);
           }
         }
         if (clonedConcept.classAxioms && clonedConcept.classAxioms.length > 0) {
           for (let index = 0; index < clonedConcept.classAxioms.length; index++) {
-            clonedConcept.classAxioms[index].axiomId = null;
-            clonedConcept.classAxioms[index].released = false;
+            var axiom = clonedConcept.classAxioms[index];
+            axiom.axiomId = null;
+            axiom.released = false;
+            axiom.effectiveTime = null;
+
+            // Add hashkey that is used for closing popover
+            if(!axiom.$$hashKey) {
+              axiom.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
+            }
+            
+            // Set module Id if it's not a core module
+            if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
+              axiom.moduleId = metadataService.getCurrentModuleId();
+            }
           }
         }
         if (clonedConcept.gciAxioms && clonedConcept.gciAxioms.length > 0) {
           for (let index = 0; index < clonedConcept.gciAxioms.length; index++) {
-            clonedConcept.gciAxioms[index].axiomId = null;
-            clonedConcept.gciAxioms[index].released = false;
+            var axiom = clonedConcept.gciAxioms[index];
+            axiom.axiomId = null;
+            axiom.released = false;
+            axiom.effectiveTime = null;
+
+            // Add hashkey that is used for closing popover
+            if(!axiom.$$hashKey) {
+              axiom.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
+            }
+
+            // Set module Id if it's not a core module
+            if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
+              axiom.moduleId = metadataService.getCurrentModuleId();
+            }
           }
         }
-        clonedConcept.conceptId = null;
-        if (isExtension
-            || (clonedConcept.moduleId !== internationalMetadata.modules[1].id  && clonedConcept.moduleId !==internationalMetadata.modules[2].id)) {
-          clonedConcept.moduleId = metadataService.getCurrentModuleId();
-        }
 
+        clonedConcept.conceptId = null;
         clonedConcept.fsn = null;
         clonedConcept.released = false;
 
-        var successMsg = 'Concept ' + response.fsn + ' successfully cloned';
+        if (!isCoreModule(isExtension, internationalMetadata, clonedConcept.moduleId)) {
+          clonedConcept.moduleId = metadataService.getCurrentModuleId();
+        }
 
-        // add a cloned tag to differentiate the clonedConcept
-
-        delete clonedConcept.isLeafInferred;
-        delete clonedConcept.effectiveTime;
-        delete clonedConcept.preferredSynonym;
-
+        // Add hashkey that is used for closing popover
         if(!clonedConcept.$$hashKey) {
           clonedConcept.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
         }
 
+        delete clonedConcept.isLeafInferred;
+        delete clonedConcept.effectiveTime;
+        delete clonedConcept.preferredSynonym;        
+
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
         $scope.conceptLoading = false;
+
+        var successMsg = 'Concept ' + response.fsn + ' successfully cloned';
         notificationService.sendMessage(successMsg, 5000);
 
-       if ($scope.thisView !== 'edit-default') {
-          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          $routeParams.mode = 'edit';
-          $scope.canCreateConcept = true;
-          $rootScope.showSidebarEdit = true;
-          // set this and last views
-          $scope.thisView = 'edit-default';
-          // set layout based on view
-          setLayout();
+        if ($scope.thisView !== 'edit-default') {
+          $scope.setView('edit-default',true);
         }
 
         $scope.updateEditListUiState();
@@ -1116,6 +1124,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
+    function isCoreModule (isExtension, internationalMetadata, moduleId) {
+      return !isExtension && !moduleId !== internationalMetadata.modules[1].id  && !moduleId !==internationalMetadata.modules[2].id;
+    }
 
 // watch for removal request from concept-edit
     $scope.$on('stopEditing', function (event, data) {
