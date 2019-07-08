@@ -1113,11 +1113,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean concept of any locally added information
           // store original concept id for CRS integration
           var originalConcept = angular.copy(scope.concept);
-          console.log(originalConcept);
           terminologyServerService.cleanConcept(scope.concept);
-          console.log(scope.concept);
-
-          var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
+         
           scope.saving = true;
 
           // special case -- don't want save notifications in merge view, all
@@ -1127,8 +1124,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else if (scope.isInactivation) {
             // do nothing
           } else {
-            notificationService.sendMessage(saveMessage);
+            notificationService.sendMessage(scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
           }
+          
           // validate concept first
           scope.validateConcept().then(function () {
 
