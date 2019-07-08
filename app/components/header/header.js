@@ -203,7 +203,8 @@ angular.module('singleConceptAuthoringApp')
           accountService.getUserPreferences().then(function (response) {
               scope.userPreferences = response;
               if(window.location.href.indexOf("task/") > -1) {
-                  window.open('/browser/?branch=' + $rootScope.currentTask.branchPath, '_blank');
+                  console.log($rootScope.currentTask);
+                  window.open('/browser/?edition=' + $rootScope.currentTask.branchPath.substring(0, $rootScope.currentTask.branchPath.lastIndexOf('/')) + '&release=' + $rootScope.currentTask.key, '_blank');
                 }
               else if(window.location.href.indexOf("project/") > -1) {
                   window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
