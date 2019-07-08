@@ -1126,7 +1126,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             notificationService.sendMessage(scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
           }
-          
+
           // validate concept first
           scope.validateConcept().then(function () {
 
@@ -1525,37 +1525,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
 
-          let hasUnpublishedClassAxioms = false;
-          if (scope.concept.classAxioms && scope.concept.classAxioms.length > 0) {
-            scope.concept.classAxioms.forEach(function (axiom) {
-              hasUnpublishedClassAxioms = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
-              if (hasUnpublishedClassAxioms) {
-                axiom.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
-              }
-            });
-          }
+          let hasUnpublishedClassAxioms = hasUnpublishedAxiomChanges(scope.concept.classAxioms);          
 
-          let hasUnpublishedGCIs = false;
-          if (scope.concept.gciAxioms && scope.concept.gciAxioms.length > 0) {
-            scope.concept.gciAxioms.forEach(function (item) {
-              hasUnpublishedGCIs = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
-              if (hasUnpublishedGCIs) {
-                axiom.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }
-                });
-              }
-            });
-          }
+          let hasUnpublishedGCIs = hasUnpublishedAxiomChanges(scope.concept.gciAxioms);          
 
           return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedClassAxioms || hasUnpublishedGCIs;
         }
 
+        function hasUnpublishedAxiomChanges (axioms) {
+          let hasUnpublishedChanges = false;
+          if (axioms && axioms.length > 0) {
+            axioms.forEach(function (axiom) {
+              hasUnpublishedChanges = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
+              if (hasUnpublishedClassAxioms) {
+                axiom.relationships.forEach(function (relationship) {
+                  relationship.templateStyle = 'redhl';                  
+                });
+              }
+            });
+          }
+
+          return hasUnpublishedChanges;
+        }
         /**
          * Function to mark concept as approval and load next concept in editor
          */
