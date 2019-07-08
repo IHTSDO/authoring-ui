@@ -207,10 +207,10 @@ angular.module('singleConceptAuthoringApp')
                   window.open('/browser/?edition=' + $rootScope.currentTask.branchPath.substring(0, $rootScope.currentTask.branchPath.lastIndexOf('/')) + '&release=' + $rootScope.currentTask.key, '_blank');
                 }
               else if(window.location.href.indexOf("project/") > -1) {
-                  window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
+                  window.open('/browser/?edition=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
                 }
               else if(scope.userPreferences && scope.userPreferences.branchPath){
-                  window.open('/browser/?branch=' + scope.userPreferences.branchPath, '_blank');
+                  window.open('/browser/?edition=' + scope.userPreferences.branchPath, '_blank');
                 }
               else{
                   window.open('/browser', '_blank');
