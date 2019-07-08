@@ -1537,7 +1537,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (axioms && axioms.length > 0) {
             axioms.forEach(function (axiom) {
               hasUnpublishedChanges = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
-              if (hasUnpublishedClassAxioms) {
+              if (hasUnpublishedChanges) {
                 axiom.relationships.forEach(function (relationship) {
                   relationship.templateStyle = 'redhl';                  
                 });
