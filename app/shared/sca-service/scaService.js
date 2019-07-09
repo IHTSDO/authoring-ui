@@ -1232,7 +1232,16 @@ angular.module('singleConceptAuthoringApp')
                   var message = result.message.substring(1, result.message.length -1);
                   message = "{" + message + "}";
                   message = JSON.parse(message);
-                  notificationService.sendError('Error rebasing Task: ' + message.apiError.message);
+                  var displayMessage = '';
+                  if(message.apiError.additionalInfo.conflicts){
+                      angular.forEach(message.apiError.additionalInfo.conflicts, function(conflict){
+                          displayMessage = displayMessage + conflict.message + "; ";
+                      })
+                  }
+                  else{
+                      displayMessage = message.apiError.message;
+                  }
+                  notificationService.sendError('Error rebasing Task: ' + displayMessage);
               }
               deferred.resolve(result);
             }, function (error) {
