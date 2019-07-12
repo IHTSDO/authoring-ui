@@ -1177,7 +1177,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if the user is searching with a refsetId
         if(termFilter.substr(8, 1) === '-' && termFilter.substr(13, 1) === '-'){
-            doRefsetSearch(branch, termFilter).then(function (response) {
+            doRefsetSearch(branch, params, config, termFilter).then(function (response) {
                   deferred.resolve(response);
               }, function (error) {
                 deferred.reject(error);
@@ -1334,18 +1334,17 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function doRefsetSearch (branch, axiomId) {
+      function doRefsetSearch (branch, params, config, axiomId) {
         let deferred = $q.defer();
 
         $http.get(apiEndpoint + branch + '/members/' + axiomId).then(function (response) {
               let results = [];
               if(response.data.refsetId === '733073007'){
-                  let obj = browserStructureConversion(response.data.referencedComponent);
-                  results.push(obj);
-                  response.data.items = results;
+                  params.conceptIds = [response.data.referencedComponentId];
+                  doSearch(branch, params, config, false).then(function (concept){
+                      deferred.resolve(concept);
+                  });
               }
-              deferred.resolve(response.data.items ? response.data.items : {items: [], total: 0});
-
           }, function (error) {
             deferred.reject(error);
           });
