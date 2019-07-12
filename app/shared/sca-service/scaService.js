@@ -1228,7 +1228,7 @@ angular.module('singleConceptAuthoringApp')
           var deferred = $q.defer();
           $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {            
             pollForGetTaskRebaseStatus(projectKey, taskKey, 1000).then(function (result) {
-              if(result.status = 'CONFLICTS'){
+              if(result.status === 'CONFLICTS'){
                   var message = result.message.substring(1, result.message.length -1);
                   message = "{" + message + "}";
                   message = JSON.parse(message);
