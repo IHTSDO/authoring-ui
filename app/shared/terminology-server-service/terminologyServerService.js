@@ -1831,12 +1831,16 @@ angular.module('singleConceptAuthoringApp')
       function getMergeReviewDetails(mergeReviewId) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+          console.log(response);
           if (response && response.data && response.data.status === 'CURRENT') {
             $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
               deferred.resolve(normaliseSnowstormMergeReviewConcepts(response2.data, mergeReviewId));
             }, function (error) {
               deferred.reject(null);
             });
+          }
+          else{
+              deferred.resolve(null);
           }
         }, function (error) {
           deferred.reject(null);
