@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'terminologyServerService', 'scaService', 'notificationService', '$timeout', '$interval','$q',
-    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, terminologyServerService, scaService, notificationService, $timeout, $interval, $q) {
+  .directive('classification', ['$rootScope', '$filter', '$routeParams', 'accountService', 'terminologyServerService', 'scaService', 'notificationService', '$timeout', '$interval','componentHighlightUtil',
+    function ($rootScope, $filter, $routeParams, accountService, terminologyServerService, scaService, notificationService, $timeout, $interval, componentHighlightUtil) {
       return {
         restrict: 'A',
         transclude: false,
@@ -35,6 +35,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.itemLimit = 1000;
 
+          scope.styles = {};
 
           // function to get formatted summary tex
           scope.setStatusText = function () {
@@ -105,6 +106,12 @@ angular.module('singleConceptAuthoringApp')
 
             // get the full concept for this branch (before version)
             terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
+              
+              componentHighlightUtil.runComparison(conceptId, scope.branch, response).then(function(result){
+                if (result && result.styles && result.styles.hasOwnProperty(conceptId)) {
+                  scope.styles[conceptId] = result.styles[conceptId];
+                }
+              });
 
               conceptModelObj.fsn = response.fsn;
 
@@ -139,27 +146,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-          };
-
-          var resizeClassificationSvg = function (concept, id) {
-            var elem = document.getElementById('#' + concept.conceptId);
-            var parentElem = document.getElementById('drawModel' + concept.conceptId);
-
-            if (!elem || !parentElem) {
-              return;
-            }
-
-            // set the height and width
-            var width = parentElem.offsetWidth - 30;
-            var height = $('#editPanel-' + id).find('.editHeightSelector').height() + 41;
-            if (width < 0) {
-              return;
-            }
-            console.log(elem);
-
-            elem.setAttribute('width', width);
-            elem.setAttribute('height', height);
-          };
+          };                    
 
           // creates element for dialog download of classification data
           scope.dlcDialog = (function (data, fileName) {
@@ -596,16 +583,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-          };
-
-          /////////////////////////////////////////
-          // Concept Edit/Display Functions
-          /////////////////////////////////////////
-          scope.$on('viewClassificationConcept', function (event, data) {
-            var conceptId = data.conceptId;
-          });
-
+          };          
         }
-
       };
     }]);
