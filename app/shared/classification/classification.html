@@ -117,7 +117,7 @@
       <div ng-repeat="conceptPair in viewedConcepts">
         <div class="row no-padding  grey darken-3 no-gutter">
           <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true"
-               autosave="false"></div>
+               autosave="false" component-styles="styles[conceptPair.conceptBefore.conceptId]"></div>
         </div>
         <div class="row grey darken-3">
           <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"
