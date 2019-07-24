@@ -90,11 +90,13 @@ angular.module('singleConceptAuthoringApp')
                 axiomToPush.relationships = [];
                 axiomToPush.type = 'gci';
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         if (field.type.conceptId === '116680003') {
                           axiomToPush.relationships.push(field);
                         } else {
                           axiomToPush.relationships.push(field);
                         }
+                      }
                     });
                 axioms.push(axiomToPush);
             });
@@ -105,11 +107,13 @@ angular.module('singleConceptAuthoringApp')
                     definitionStatus : axiom.definitionStatus
                 };
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         if (field.type.conceptId === '116680003') {
                           axiomToPush.relationships.push(field);
                         } else {
                           axiomToPush.relationships.push(field);
                         }
+                      }
                     });
                 axioms.push(axiomToPush);
             });
@@ -252,16 +256,20 @@ angular.module('singleConceptAuthoringApp')
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         height = height + 55;
                         width = width + 110;
+                      }
                     });
              });
              $.each(concept.gciAxioms, function (i, axiom) {
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         height = height + 55;
                         width = width + 110;
+                      }
                     });
             });
           }
