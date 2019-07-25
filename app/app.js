@@ -201,6 +201,9 @@ angular
           // get the user preferences (once logged in status confirmed)
           accountService.getUserPreferences().then(function (preferences) {
 
+            if (preferences && preferences.minNetworkConnection) {
+              window.minNetworkConnection = preferences.minNetworkConnection;
+            }
             // apply the user preferences
             // NOTE: Missing values or not logged in leads to defaults
             accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
