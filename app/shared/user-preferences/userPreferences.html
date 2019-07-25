@@ -7,16 +7,32 @@
     <div class="col-md-12">
       <form class="form-floating">
         <div class="form-group">
-          <label for="colourSchemeSelect">Colour Scheme</label>
-          <select id="colourSchemeSelect" name="select-colour-scheme" class="form-control"
-                ng-model="userPreferences.colourScheme"
-                ng-change="clearMessages()">
-            <option value="sca-colours">Colours</option>
-            <option value="sca-light">Light</option>
-            <option value="sca-dark">Dark</option>
-          </select>
-        <br>
-          
+          <div class="row">
+            <div class="col-md-5 no-padding">
+                <label for="colourSchemeSelect">Colour Scheme</label>
+                <select id="colourSchemeSelect" name="select-colour-scheme" class="form-control"
+                      ng-model="userPreferences.colourScheme"
+                      ng-change="clearMessages()">
+                  <option value="sca-colours">Colours</option>
+                  <option value="sca-light">Light</option>
+                  <option value="sca-dark">Dark</option>
+                </select>
+            </div>
+            <div class="col-md-1 no-padding"></div>
+            <div class="col-md-6 no-padding">
+              <div class="row">                  
+                  <div class="col-md-10 col-sm-11 no-padding">
+                    <label for="networkConnectionSpeed">Min. Network Connection</label>
+                    <input type="number" min="0" id="networkConnectionSpeed"  name="select-colour-scheme" class="form-control"
+                        ng-model="userPreferences.minNetworkConnection"
+                        ng-change="clearMessages()">
+                    </input>                   
+                  </div>
+                  <div class="col-md-1 col-sm-1 no-padding m-t-10"><br/>(MB)</div>                  
+              </div>
+            </div>
+        </div>
+        <br>          
         <label for="browserViewSelect">TS Browser Default</label>
         <select id="browserViewSelect" name="select-browser-view" class="form-control"
                 ng-options="project.key as project.title for project in projects | orderBy: 'title'"
@@ -50,19 +66,11 @@
           </div>
           <div ng-if="!layout.name"> Customizable layout not yet implemented for this view. </div>
         </div>
-
-</form>
-      </div>
-    
-
-
-
-
-  <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
-  <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
-</div>
-
-
+      </form>
+    </div>    
+    <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
+    <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
+  </div>
 
   <div class="modal-footer">
     <div class="col-md-4">
@@ -78,20 +86,12 @@
             ng-click="close()">Cancel </button>
     </div>
   </div>
-  <style type="text/css">
- .about { margin-top: 20px; margin-bottom: 0; border-top: 1px solid silver; text-align: left; font-size: 0.9em;}
- .about dl {margin-bottom: 0; padding-bottom: 0;}
- .about dl dt {clear: both; float: left; padding-right: 1em;}
- .about dl dd p {margin: 0;}
- .about dl dd dl {font-size: 0.9em; margin-left: 3em;}
-</style>
-
-<div class="about col-md-12">
-<h4>About</h4>
-<div>
-      <ul>
-        <li ng-repeat="(key, value) in versions">{{key}} : {{value}}</li>
-      </ul>
-</div>
-</div>
+  <div class="about col-md-12">
+    <h4>About</h4>
+    <div>
+          <ul>
+            <li ng-repeat="(key, value) in versions">{{key}} : {{value}}</li>
+          </ul>
+    </div>
   </div>
+</div>
