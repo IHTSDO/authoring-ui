@@ -12,6 +12,10 @@ angular.module('singleConceptAuthoringApp')
 
       var crsRequestStatuses = [];
 
+      var crsEndpoint = null;
+
+      var usCrsEndpoint = null;
+
       function getJsonAttachmentsForTask() {
         var deferred = $q.defer();
 
@@ -26,25 +30,9 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
-
-
-      //
-      // TODO Move this into endpoint config
-      //
-      function getRequestUrl(issueId) {
-          var prefix = '';
-          console.log(currentTask.branchPath);
-        if(currentTask.branchPath.indexOf('-US') !== -1)
-            { 
-                prefix = 'us-'
-            }
-        if ($rootScope.development) {
-          return 'https://dev-' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
-        } else if ($rootScope.uat) {
-          return 'https://uat-' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
-        } else {
-          return 'https://' + prefix + 'request.ihtsdotools.org/#/requests/view/' + issueId;
-        }
+    
+      function getRequestUrl() {        
+        return (currentTask.branchPath.indexOf('-US') !== -1) ? this.usCrsEndpoint : this.crsEndpoint;        
       }
 
       //
@@ -191,7 +179,7 @@ angular.module('singleConceptAuthoringApp')
             preferredSynonym: preparedConcept.preferredSynonym,
 
             // the request url
-            requestUrl: getRequestUrl(attachment.issueKey),
+            requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
 
             // the ticket ids
             crsId: attachment.issueKey,
@@ -240,7 +228,7 @@ angular.module('singleConceptAuthoringApp')
 // Reject a CRS concept by Authoring user
       function rejectCrsConcept(issueKey, scaId, crsId) {        
         var deferred = $q.defer();        
-        var apiEndpoint = '../ihtsdo-crs/';
+        var apiEndpoint = getRequestUrl() + 'ihtsdo-crs/api/request/';
 
         scaService.removeIssueLink(issueKey, scaId).then(function (response) {
           if (response == null || response.status !== 200) {
@@ -248,8 +236,8 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          $http.put(apiEndpoint + 'api/request/' + crsId + '/status?status=ACCEPTED', {"reason":"Rejected by Authoring User"}).then(function () {            
-            $http.put(apiEndpoint + 'api/request/unassignAuthoringTask?requestId=' + crsId).then(function () {
+          $http.put(apiEndpoint + crsId + '/status?status=ACCEPTED', {"reason":"Rejected by Authoring User"}).then(function () {            
+            $http.put(apiEndpoint + 'unassignAuthoringTask?requestId=' + crsId).then(function () {
               angular.forEach(currentTaskConcepts, function(item, index){
                 if(item.crsId === crsId){
                   currentTaskConcepts.splice(index, 1);
@@ -381,10 +369,10 @@ angular.module('singleConceptAuthoringApp')
         if (!list) {
           def.reject('No CRS id set');
         }
-        var apiEndpoint = '../ihtsdo-crs/';
+        var apiEndpoint = getRequestUrl() + 'ihtsdo-crs/api/request/';
         var udpateCrsStatus = function(crsId) {
           var deferred = $q.defer(); 
-          $http.put(apiEndpoint + 'api/request/' + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Classification by Authoring User"}).then(function () { 
+          $http.put(apiEndpoint + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Classification by Authoring User"}).then(function () { 
             deferred.resolve();            
           });
           return deferred.promise; 
@@ -408,7 +396,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return;
         }
-        var apiEndpoint = '../ihtsdo-crs/';
+        var apiEndpoint = getRequestUrl() + 'ihtsdo-crs/api/request/';;
         var list = [];
         angular.forEach(currentTaskConcepts, function(crsRequest) {
           if (list.indexOf(crsRequest.crsId) === -1) {
@@ -418,7 +406,7 @@ angular.module('singleConceptAuthoringApp')
 
         var getCrsStatus = function(crsId) {
           var deferred = $q.defer(); 
-          $http.get(apiEndpoint + 'api/request/' + crsId + '/status').then(function (response) { 
+          $http.get(apiEndpoint + crsId + '/status').then(function (response) { 
             deferred.resolve({'crsId' : crsId, 'status' : response.data});            
           }, function(error) {
             console.error('Error while getting status of CRS request. Error message: '+ error.data.error.message);
@@ -595,6 +583,13 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function setCrsEndpoint(crsEndpoint) {
+        this.crsEndpoint = crsEndpoint;
+      }
+
+      function setUSCrsEndpoint(crsEndpoint, usCrsEndpoint) {
+        this. usCrsEndpoint = usCrsEndpoint;
+      }
 //
 // Function exposure
 //
@@ -608,14 +603,15 @@ angular.module('singleConceptAuthoringApp')
         getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
         getCrsTaskComment: getCrsTaskComment,
-        getRequestUrl: getRequestUrl,
         getCrsRequestsStatus: getCrsRequestsStatus,
 
         crsFilter: crsFilter,
         rejectCrsConcept: rejectCrsConcept,
         deleteCrsConcept: deleteCrsConcept,
         requestClarification: requestClarification,
-        hasRequestPendingClarification: hasRequestPendingClarification
+        hasRequestPendingClarification: hasRequestPendingClarification,
+        setCrsEndpoint: setCrsEndpoint,
+        setUSCrsEndpoint: setUSCrsEndpoint
       };
     }
   )
