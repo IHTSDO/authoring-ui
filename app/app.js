@@ -123,7 +123,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService, crsService) {
 
     console.log('Running application');
 
@@ -183,6 +183,8 @@ angular
           window.minNetworkConnection = features.network.connection.minimum;
         }
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
+        crsService.setCrsEndpoint(endpoints['crsEndpoint']);
+        crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
