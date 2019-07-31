@@ -2004,7 +2004,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
-
+      
+      // reset metadata when switching between tasks
+      metadataService.setExtensionMetadata(null);
+      
       // initialize the task and project
       $q.all([loadTask(), loadProject()]).then(function () {
 

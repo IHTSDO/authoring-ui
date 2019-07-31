@@ -222,6 +222,7 @@ angular.module('singleConceptAuthoringApp')
       // only set extension metadata if defaultModuleId is present
       if (!metadata || !metadata.hasOwnProperty('defaultModuleId')) {
         extensionMetadata = null;
+        $rootScope.extensionMetadataSet = false;
       } else {
 
         // temporary variables used in parsing metadata
@@ -370,10 +371,10 @@ angular.module('singleConceptAuthoringApp')
                   descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component', display: []});
               }
           }
-        }
-        $rootScope.extensionMetadataSet = true;
-        $rootScope.$broadcast('setExtensionMetadata');
 
+          $rootScope.extensionMetadataSet = true;
+          $rootScope.$broadcast('setExtensionMetadata');
+        }
       };
 
     // Set the branch metadata from project or task
@@ -557,7 +558,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getExtensionAcceptLanguageValueByDialectId (dialectId) {
-      if (extensionMetadata) {
+      if (extensionMetadata && extensionMetadata.dialects[dialectId]) {
         var languageNames = extensionMetadata.dialects[dialectId].split('-');     
         return (languageNames.length > 1 ? languageNames[1] : languageNames[0]) + '-' + (extensionMetadata.shortname ? extensionMetadata.shortname.toUpperCase() : 'XX') + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';        
       }
