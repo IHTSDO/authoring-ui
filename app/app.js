@@ -198,34 +198,13 @@ angular
         accountService.getAccount(accountUrl).then(function (account) {
 
           // start connecting websocket
-          scaService.connectWebsocket(account.login);
-
-          // get the user preferences (once logged in status confirmed)
-          accountService.getUserPreferences().then(function (preferences) {
-
-            // apply the user preferences
-            // NOTE: Missing values or not logged in leads to defaults
-            accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
-
-              // check for modification by application routine
-              if (appliedPreferences !== preferences) {
-                accountService.saveUserPreferences(appliedPreferences);
-              }
-            })
-          });
+          scaService.connectWebsocket(account.login);         
 
         }, function (error) {
           // apply default preferences
           accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
 
           })
-        });
-          
-        ///////////////////////////////////////////
-        // Cache local data
-        ///////////////////////////////////////////
-        scaService.getProjects().then(function (response) {
-          metadataService.setProjects(response);
         });
 
         cisService.getAllNamespaces().then(function (response) {
@@ -261,6 +240,20 @@ angular
         ///////////////////////////////////////////
         scaService.getProjects().then(function (response) {
           metadataService.setProjects(response);
+          // get the user preferences (once logged in status confirmed)
+          accountService.getUserPreferences().then(function (preferences) {
+
+            // apply the user preferences
+            // NOTE: Missing values or not logged in leads to defaults
+            accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+              // check for modification by application routine
+              if (appliedPreferences !== preferences) {
+                accountService.saveUserPreferences(appliedPreferences);
+              }
+            })
+          });
+          
           var projectKeys = [];
           var promises = [];                    
           promises.push(scaService.getTasks());
