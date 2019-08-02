@@ -169,13 +169,16 @@ angular.module('singleConceptAuthoringApp')
 
     function isValidBranchPath (branch) {
       let projects = metadataService.getProjects();
-      for (let i = 0; i < projects.length; i++) {
-        if (projects[i].branchPath === branch) {
-          return true;
-        }
+      if (projects.length > 0) {
+        for (let i = 0; i < projects.length; i++) {
+          if (projects[i].branchPath === branch) {
+            return true;
+          }
+        }  
+        return false;
       }
-
-      return false;
+      
+      return true;
     }
 
     return {
