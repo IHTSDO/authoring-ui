@@ -3754,22 +3754,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
-            if (description.lang === 'en') {
-              // strip any non-us dialect
-              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                if (!metadataService.isUsDialect(dialectId)) {
-                  delete description.acceptabilityMap[dialectId];
-                }
-              });
-            } else {
-              // strip us dialect if any
-              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                if (metadataService.isUsDialect(dialectId)) {
-                  delete description.acceptabilityMap[dialectId];
-                }
-              });
-            }
+            angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+              // strip any dialects that are not belong to language
+              if (scope.getDialectsForDescription(description)[dialectId].indexOf(description.lang) === -1) {
+                delete description.acceptabilityMap[dialectId];
+              }
+            });
           }
+
           var symanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
           var symanticTag = null;
           if (description.type === 'FSN') {
