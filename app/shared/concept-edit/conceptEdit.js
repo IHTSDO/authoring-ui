@@ -3753,7 +3753,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.updateConceptReference({concept: scope.concept});
           }
             
-          //ascertain if description is the only active description in the given language
           let numberOfDescsInLang = 0;
           angular.forEach(scope.concept.descriptions, function(desc){
               if(desc.lang === description.lang && desc.active){
@@ -3762,25 +3761,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
-            angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-              // strip any dialects that are not belong to language
-              if (scope.getDialectsForDescription(description)[dialectId].indexOf(description.lang) === -1) {
-                delete description.acceptabilityMap[dialectId];
-              }
-            });
             angular.forEach(scope.getDialectsForDescription(description), function (dialect) {
               if(dialect.includes(description.lang)){
                 //set to acceptable in dialects matching the language, or preferred if only description in that language
                 if(numberOfDescsInLang > 1){
                   angular.forEach(scope.getDialectIdsForDescription(description, false), function (dialectId) {
-                    description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
+                    if(description.lang != 'en'){
+                         description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
+                    }
                   });
                 }
                 else if (numberOfDescsInLang === 1){
                   angular.forEach(scope.getDialectIdsForDescription(description, false), function (dialectId) {
-                    description.acceptabilityMap[dialectId] = 'PREFERRED';
+                    if(description.lang != 'en'){
+                         description.acceptabilityMap[dialectId] = 'PREFERRED';
+                    }
                   });
                 }  
+              }
+            });
+          }
+            
+          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
+            angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+              // strip any dialects that are not belong to language
+              if (scope.getDialectsForDescription(description)[dialectId].indexOf(description.lang) === -1) {
+                delete description.acceptabilityMap[dialectId];
               }
             });
           }
