@@ -255,6 +255,7 @@ angular.module('singleConceptAuthoringApp')
               if (match) {
                 var requiredLanguageRefsets = metadata['requiredLanguageRefsets'];
                 requiredLanguageRefsets.forEach(function(lang) {
+                  console.log(lang);
                   let languageKey = null;
                   let languageValue = null;
                   for (var key in lang) {
@@ -304,7 +305,13 @@ angular.module('singleConceptAuthoringApp')
                           }
                         if(lang.default && lang.default !== null && lang.default !== undefined && lang.default === "true")
                             {
-                                defaultLanguageRefsetId = lang[Object.keys(lang)[0]];
+                                for (var key in lang) {
+                                      if (key.length === 2){
+                                          if(lang[key] != '900000000000509007'){
+                                              defaultLanguageRefsetId = lang[key];
+                                          }
+                                      }
+                                  }
                             }
                       });
                 }
