@@ -40,9 +40,9 @@
                           class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                     <div class="md md-notifications "></div>
                     <span> <div class="message_classification_{{project.latestClassificationJson.status}}"><div
-                      ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> - equivalent relationships were found </div><div
-                      ng-if="project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> - redundant inferred relationships were found </div><div
-                      ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> - redundant inferred relationships and equivalency errors were found </div> </div></span>
+                      ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> equivalent relationships were found </div><div
+                      ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> redundant inferred relationships were found </div><div
+                      ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> redundant inferred relationships and equivalency errors were found </div> </div></span>
                   </button>
                 </a></td>
               <td data-title="'Validation Results'" sortable="'validationStatus'"><a ng-href="#/project/{{project.key}}">

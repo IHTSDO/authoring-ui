@@ -64,32 +64,28 @@
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'assignee.displayName'"
                   filter="{ 'author': 'text' }"> {{task.assignee.displayName}} </td>
               <td header-title="'Click to sort'" data-title="'Classification'"
-                  sortable="'latestClassificationJson.status'"><a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                <button ng-show="task.latestClassificationJson"
+                  sortable="'latestClassificationJson.status'">
+                  <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
+                    <button ng-show="task.latestClassificationJson"
                           type="button"
                           ng-class="[
-                          {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
-                           {indicator_green : task.latestClassificationJson.status === 'COMPLETED' && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
-                            {indicator_green : task.latestClassificationJson.status === 'SAVED' && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
+                          {indicator_green : task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
+                           {indicator_green : task.latestClassificationJson.status === 'COMPLETED' && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
+                            {indicator_green : task.latestClassificationJson.status === 'SAVED' && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
                           {indicator_blue : task.latestClassificationJson.status === 'RUNNING'},
                           {indicator_blue : task.latestClassificationJson.status === 'SCHEDULED'},
                           {indicator_red : task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE' || task.latestClassificationJson.status === 'FAILED' && task.latestClassificationJson.status !== 'STALE'},
                             {indicator_grey : task.latestClassificationJson.status === 'STALE'},
-                           {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
                            ]"
                           class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                <div class="md md-notifications "></div>
-                <span>
-                <div class="message_classification_{{task.latestClassificationJson.status}}">
-                  <div
-                      ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div>
-                  <div
-                      ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div>
-                  <div
-                      ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div>
-                </div>
-                </span> </button>
-                </a></td>
+                    <div class="md md-notifications "></div>
+                    <span> <div class="message_classification_{{task.latestClassificationJson.status}}"><div
+                      ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.status !== 'STALE'"> equivalent relationships were found </div><div
+                      ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'"> redundant inferred relationships were found </div><div
+                      ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE'"> redundant inferred relationships and equivalency errors were found </div> </div></span>
+                  </button>
+                </a>
+              </td>
               <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'"><a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                 <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' &&
                   task.latestValidationStatus !== 'Failed-to-retrieve'"
