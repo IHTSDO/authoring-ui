@@ -197,6 +197,10 @@ angular
         // get the account details
         accountService.getAccount(accountUrl).then(function (account) {
 
+          if(!(account.roles.includes('ROLE_ihtsdo-sca-author'))) {
+            window.location.href = decodeURIComponent(imsUrl + 'login');
+          }
+
           // start connecting websocket
           scaService.connectWebsocket(account.login);
         }, function (error) {
@@ -256,14 +260,14 @@ angular
               }
             })
           });
-          
+
           var projectKeys = [];
-          var promises = [];                    
+          var promises = [];
           promises.push(scaService.getTasks());
-          promises.push(scaService.getReviewTasks());     
+          promises.push(scaService.getReviewTasks());
 
           // on resolution of all promises
-          $q.all(promises).then(function (responses) {                
+          $q.all(promises).then(function (responses) {
               for (var i = 0; i < responses.length; i++) {
                 angular.forEach(responses[i], function (task) {
                   if (projectKeys.indexOf(task.projectKey) === -1) {
@@ -282,7 +286,7 @@ angular
                 });
               });
 
-              if (myProjects.length > 0) {        
+              if (myProjects.length > 0) {
                 console.log('setting projects');
                 metadataService.setMyProjects(myProjects);
               }
