@@ -668,7 +668,17 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(concept.classAxioms, function(axiom){
                 for (var i = axiom.relationships.length - 1; i >= 0; i--) {
                   if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId) {
-                    axiom.relationships.splice(i, 1);
+                    let statedParents = axiom.relationships.filter(function (el) {
+                      return el.type.conceptId === '116680003' && el.characteristicType === 'STATED_RELATIONSHIP';
+                    });
+
+                    if (statedParents.length !== 1){
+                      axiom.relationships.splice(i, 1);
+                    }
+                    else {
+                      notificationService.sendError('Cannot remove relationship - This concept has only one stated parent', 10000);
+                      return;
+                    }
                   }
                 }
             })
