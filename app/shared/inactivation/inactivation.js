@@ -2,8 +2,8 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal', '$route', 'modalService',
-    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $modal, $route, modalService) {
+  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$route', 'modalService',
+    function ($rootScope, $filter, $q, NgTableParams, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $route, modalService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -106,14 +106,24 @@ angular.module('singleConceptAuthoringApp')
                       angular.forEach(scope.histAssocTargets.concepts, function (innerConcept, index) {
                         if (!scope.useFirstTarget   || (scope.useFirstTarget && index === 0)) {
                           var item = angular.copy(concept);
+                          item.refsetName = innerConcept.assocName;
                           if (!scope.deletion) {
                             if (!concept.active && concept.inactivationIndicator) {
                               item.oldInactivationIndicator = concept.inactivationIndicator;
                             }
                             item.inactivationIndicator = scope.reasonId;
-                          }                          
-
-                          item.refsetName = innerConcept.assocName;                          
+                          }
+                          else {
+                            if (concept.inactivationIndicator) {
+                              var associations = scope.getAssociationsForReason(concept.inactivationIndicator);
+                              if(associations.length == 1) {
+                                item.refsetName = associations[0].id;
+                              } else {
+                                item.refsetName = '';
+                              }
+                            }
+                          }                         
+                          
                           item.newTargetId = innerConcept.conceptId;
                           item.newTargetFsn = innerConcept.fsn; 
 
