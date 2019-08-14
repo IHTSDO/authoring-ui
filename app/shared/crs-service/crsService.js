@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp')
       }
     
       function getRequestUrl() {        
-        return (currentTask.branchPath.indexOf('-US') !== -1) ? this.usCrsEndpoint : this.crsEndpoint;        
+        return (currentTask.branchPath.indexOf('-US') !== -1) ? usCrsEndpoint : crsEndpoint;        
       }
 
       //
