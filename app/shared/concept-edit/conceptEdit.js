@@ -1402,13 +1402,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.active = false;
               });
 
-              // special case:  do not allow inactivation of fully defined
-              // concepts
-              if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
-                scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
-                return;
-              }
-
               // Check unpublished changes for concept
               if(scope.concept.released === true && hasUnpublishedChanges()) {
                 scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
