@@ -583,12 +583,12 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function setCrsEndpoint(crsEndpoint) {
-        this.crsEndpoint = crsEndpoint;
+      function setCrsEndpoint(endpoint) {
+        this.crsEndpoint = endpoint;
       }
 
-      function setUSCrsEndpoint(crsEndpoint, usCrsEndpoint) {
-        this. usCrsEndpoint = usCrsEndpoint;
+      function setUSCrsEndpoint(endpoint) {
+        this.usCrsEndpoint = endpoint;
       }
 //
 // Function exposure
