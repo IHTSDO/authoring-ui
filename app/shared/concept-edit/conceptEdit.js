@@ -1922,8 +1922,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(scope.concept.gciAxioms, function (axiom){
               sortRelationshipArray(axiom.relationships);
           })
-          
-          sortRelationshipArray(scope.concept.relationships);
+          if(scope.concept.relationships){
+              sortRelationshipArray(scope.concept.relationships);
+          }
         }
 
 // on load, sort descriptions && relationships
