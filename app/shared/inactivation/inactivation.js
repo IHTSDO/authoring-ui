@@ -870,6 +870,11 @@ angular.module('singleConceptAuthoringApp')
                     scope.inactivationConcept.inactivationIndicator = scope.reasonId;
                     scope.inactivationConcept.associationTargets = scope.assocs;
                     scope.inactivationConcept.active = false;
+                    scope.inactivationConcept.definitionStatus = 'PRIMITIVE';
+
+                    scope.inactivationConcept.classAxioms.forEach(function(axiom){
+                      axiom.definitionStatus = 'PRIMITIVE';
+                    });
                                         
                     terminologyServerService.cleanConcept(scope.inactivationConcept);
                     
