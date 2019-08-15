@@ -35,22 +35,6 @@ angular.module('singleConceptAuthoringApp')
         return (currentTask.branchPath.indexOf('-US') !== -1) ? usCrsEndpoint : crsEndpoint;        
       }
 
-      //
-      // Helper retrieval functions
-      //
-
-      function getRelationshipForId(concept, id) {
-        if (!id) {
-          return null;
-        }
-        for (var i = 0; i < concept.relationships.length; i++) {
-          if (concept.relationships[i].relationshipId === id) {
-            return concept.relationships[i];
-          }
-        }
-        return null;
-      }
-
       function getDescriptionForId(concept, id) {
         if (!id) {
           return null;
@@ -208,15 +192,6 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-
-//
-// Clear the CRS Concept list for a task
-//
-// TODO Wire this to "reset" button if desired later
-      function clearCrsConceptsUiState(task) {
-        scaService.deleteUiStateForTask(task.projectKey, task.key, 'crs-concepts');
-      }
-
 
 //
 // Stores the CRS Concept list in UI State
@@ -584,11 +559,11 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function setCrsEndpoint(endpoint) {
-        this.crsEndpoint = endpoint;
+        crsEndpoint = endpoint;
       }
 
       function setUSCrsEndpoint(endpoint) {
-        this.usCrsEndpoint = endpoint;
+        usCrsEndpoint = endpoint;
       }
 //
 // Function exposure
