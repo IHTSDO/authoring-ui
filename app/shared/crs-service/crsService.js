@@ -70,22 +70,27 @@ angular.module('singleConceptAuthoringApp')
 
         // apply definition of changes to relationships
         angular.forEach(crsConcept.relationships, function (crsRelationship) {
-          let found = false;
-          angular.forEach(concept.classAxioms, function(axiom){
-              angular.forEach(axiom.relationships, function (axiomRel){
-                if(axiomRel.type.conceptId === crsRelationship.type.conceptId &&
-                   axiomRel.target.conceptId === crsRelationship.target.conceptId &&
-                   axiomRel.groupId === crsRelationship.groupId){
-                    found = true;
-                    axiomRel.definitionOfChanges = crsRelationship.definitionOfChanges;
-                }
-              });
-          })
-
-          // if not found, add to the concept
-          if (!found) {
-            concept.classAxioms[0].relationships.push(angular.copy(crsRelationship));
-          }
+          if (crsRelationship.characteristicType === 'STATED_RELATIONSHIP') {
+            let found = false;
+            angular.forEach(concept.classAxioms, function(axiom){
+                angular.forEach(axiom.relationships, function (axiomRel){
+                  if(axiomRel.type.conceptId === crsRelationship.type.conceptId &&
+                     axiomRel.target.conceptId === crsRelationship.target.conceptId &&
+                     axiomRel.groupId === crsRelationship.groupId){
+                      found = true;
+                      axiomRel.definitionOfChanges = crsRelationship.definitionOfChanges;
+                  }
+                });
+            })
+  
+            // if not found, add to the concept
+            if (!found && crsRelationship.active && crsRelationship.characteristicType === 'STATED_RELATIONSHIP') {
+              var copiedConcept = angular.copy(crsRelationship);
+              let fsn = copiedConcept.type.fsn;
+              copiedConcept.type.pt = fsn.substr(0, fsn.lastIndexOf('(') - 1).trim();
+              concept.classAxioms[0].relationships.push(copiedConcept);              
+            }
+          }          
         });
       }
 
@@ -251,6 +256,9 @@ angular.module('singleConceptAuthoringApp')
 
                 // save the initialized state into the UI State
                 saveCrsConceptsUiState();
+
+                $rootScope.$broadcast('initialiseCrsConceptsComplete');
+
                 // resolve
                 deferred.resolve(currentTaskConcepts);
               }

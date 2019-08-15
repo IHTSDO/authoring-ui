@@ -76,6 +76,10 @@ angular.module('singleConceptAuthoringApp')
           scope.deleteConcept(data.concept);
         });
 
+        scope.$on('initialiseCrsConceptsComplete', function (event, data) {
+          initialize();
+        });
+
         scope.deleteConcept = function(concept) {
           crsService.deleteCrsConcept(concept.conceptId);
           scope.crsConcepts = scope.getCrsConcepts();
