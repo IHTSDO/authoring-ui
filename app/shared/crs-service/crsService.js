@@ -84,7 +84,7 @@ angular.module('singleConceptAuthoringApp')
             })
   
             // if not found, add to the concept
-            if (!found && crsRelationship.active && crsRelationship.characteristicType === 'STATED_RELATIONSHIP') {
+            if (!found && crsRelationship.active) {
               var copiedConcept = angular.copy(crsRelationship);
               let fsn = copiedConcept.type.fsn;
               copiedConcept.type.pt = fsn.substr(0, fsn.lastIndexOf('(') - 1).trim();
