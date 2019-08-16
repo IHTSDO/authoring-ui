@@ -71,10 +71,19 @@
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
              class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">
 
-          <div class="row" ng-if="relationship.definitionOfChanges">
-            <div class="change_request_container {{relationship.definitionOfChanges.changeType}}">
-              <div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}"></div>
-              <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
+          <div ng-show="relationship.definitionOfChanges" class="">
+            <div class="row">
+              <div class="change_request_container {{relationship.definitionOfChanges.changeType}}">
+                <div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}"></div>
+                <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
+            </div>
+            <div class="row"
+                  ng-repeat="(key, val) in crsFilter(relationship.definitionOfChanges)"
+                  ng-show="!relationship.hideCrsDetails">
+              <div class="col-md-12" ng-show="val">
+                {{key}}:{{val}}
+              </div>  
+            </div>
           </div>
           
           <div class="row darken-3 edits-row color_{{(relationship.groupId%2==0)?'even':'odd'}} "
