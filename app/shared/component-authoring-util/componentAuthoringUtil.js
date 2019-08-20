@@ -1002,6 +1002,7 @@ function getFsnDescriptionForConcept(concept) {
       };
 
       function checkClassAxiomRelationships(concept){
+          console.log(concept);
           if(concept.classAxioms.length === 0){
               return true
           }
@@ -1020,7 +1021,7 @@ function getFsnDescriptionForConcept(concept) {
           errors.push('Concept must have at least one description');
 
         }
-        if (!concept.relationships || concept.relationships.length === 0 && checkClassAxiomRelationships(concept)) {
+        if (!concept.relationships && checkClassAxiomRelationships(concept) || concept.relationships && concept.relationships.length === 0 && checkClassAxiomRelationships(concept)) {
           errors.push('Concept must have at least one axiom');
 
         }
@@ -1052,8 +1053,10 @@ function getFsnDescriptionForConcept(concept) {
         }
 
         // check relationships
-        for (var j = 0; j < concept.relationships.length; j++) {
-          errors = errors.concat(checkRelationshipComplete(concept.relationships[j]));
+        if(concept.relationships){
+            for (var j = 0; j < concept.relationships.length; j++) {
+              errors = errors.concat(checkRelationshipComplete(concept.relationships[j]));
+            }   
         }
 
         // check Additional Axiom
