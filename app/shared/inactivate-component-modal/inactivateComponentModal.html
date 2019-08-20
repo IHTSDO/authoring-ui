@@ -104,15 +104,15 @@
        </div>
         <div ng-if="deletion">
           <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading"> Checking inbound relationships... </div>
-          <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsTotal === 0"> No inbound relationships found - Concept may be deleted. </div>
-          <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0"> Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items. </div>
+          <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsTotal === 0 && affectedAssociationsTotal === 0"> No inbound relationships found - Concept may be deleted. </div>
+          <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && (inboundRelationshipsTotal !== 0 || affectedAssociationsTotal !== 0)"> Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items. </div>
           <div class="row p-t-10" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <label> Concept</label>
             </div>
           </div>
           <div class="row" ng-repeat="association in associations">
-          <div class="row" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
+          <div class="row" ng-show="!inboundRelationshipsLoading && (inboundRelationshipsTotal !== 0 || affectedAssociationsTotal !== 0)">
             <div class="col-md-6">
               <textarea type="text" class="form-control"
                         ng-model="association.concept"
@@ -190,13 +190,13 @@
                   class="btn btn-default col-md-12  cancel-action-btn  no-padding"
                   ng-click="cancel()"> Cancel Deletion </button>
       </div>
-      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
+      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0 && affectedAssociationsTotal === 0">
         <button type="button"
 
                   class="btn btn-default col-md-12 p-10 complete-action-btn no-padding"
                   ng-click="delete()"> Confirm Deletion </button>
       </div>
-      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
+      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0 || affectedAssociationsTotal !== 0">
         <button type="button"
 
                   class="btn btn-default col-md-12 p-10 complete-action-btn no-padding"
