@@ -459,6 +459,12 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    if ($scope.deletion) {
+      terminologyServerService.getHistoricalAssociationMembers($scope.conceptId, $scope.branch).then(function (response) {
+        $scope.affectedAssociationsTotal = response.total;
+      });
+    }
+
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
