@@ -1114,7 +1114,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // store original concept id for CRS integration
           var originalConcept = angular.copy(scope.concept);
           terminologyServerService.cleanConcept(scope.concept);
-         
+
           scope.saving = true;
 
           // special case -- don't want save notifications in merge view, all
@@ -1338,16 +1338,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.warnings = ['Please remove any axiom relationships you would not like to create along with the concept, and/or fill the new Is A and click save.'];
             if (!scope.concept.relationships) {
               scope.concept.classAxioms = [];
-              scope.addAdditionalAxiom(false);
+              // scope.addAdditionalAxiom(false);
               autoSave();
               scope.computeRelationshipGroups();
             }
             else {
+              scope.concept.classAxioms = [];
               if (scope.concept.effectiveTime) {
-                scope.concept.classAxioms = [];
-                scope.addAdditionalAxiom(true);
+
+                if(scope.concept.relationships.length === 0) {
+                  scope.addAdditionalAxiom(false);
+                }
+                else {
+                  scope.addAdditionalAxiom(true);
+                }
+
                 angular.forEach(scope.concept.relationships, function (relationship) {
-                  if (relationship.characteristicType === 'STATED_RELATIONSHIP') {                  
+                  if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
                     if(relationship.effectiveTime === scope.concept.effectiveTime){
                         let copy = angular.copy(relationship);
                         delete copy.relationshipId;
@@ -1518,9 +1525,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
 
-          let hasUnpublishedClassAxioms = hasUnpublishedAxiomChanges(scope.concept.classAxioms);          
+          let hasUnpublishedClassAxioms = hasUnpublishedAxiomChanges(scope.concept.classAxioms);
 
-          let hasUnpublishedGCIs = hasUnpublishedAxiomChanges(scope.concept.gciAxioms);          
+          let hasUnpublishedGCIs = hasUnpublishedAxiomChanges(scope.concept.gciAxioms);
 
           return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedClassAxioms || hasUnpublishedGCIs;
         }
@@ -1532,7 +1539,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               hasUnpublishedChanges = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
               if (hasUnpublishedChanges) {
                 axiom.relationships.forEach(function (relationship) {
-                  relationship.templateStyle = 'redhl';                  
+                  relationship.templateStyle = 'redhl';
                 });
               }
             });
@@ -1851,7 +1858,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // replace descriptions
           scope.concept.descriptions = newArray;
         }
-          
+
         function sortRelationshipArray(relationships){
           let isaRels = relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
@@ -1908,7 +1915,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.concept || !scope.concept.relationships && !scope.concept.classAxioms && !scope.concept.gciAxioms) {
             return;
           }
-          
+
           angular.forEach(scope.concept.classAxioms, function (axiom){
               sortRelationshipArray(axiom.relationships);
           })
@@ -2529,7 +2536,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
 
                 // sorts axioms
-                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);                
+                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);
               });
             });
           }
@@ -3247,10 +3254,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationship = function (target, source, axiom) {
-            
+
           console.log(source);
             console.log(target);
-            
+
 
           if (!target || !source) {
             console.error('Cannot drop relationship, either source or target not specified');
