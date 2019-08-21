@@ -98,6 +98,7 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve the full concept representation of a CRS concept from branch
       //
       function prepareCrsConcept(crsRequest) {
+        console.log('prepare');
 
         var deferred = $q.defer();
 
@@ -108,6 +109,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
         else if (!crsRequest.conceptId) {
+          console.log('no id');
           var copy = angular.copy(crsRequest);
           copy.conceptId = terminologyServerService.createGuid();
           copy.classAxioms = [];
@@ -117,25 +119,34 @@ angular.module('singleConceptAuthoringApp')
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
           })
           delete copy.relationships;
-          console.log(copy);
           deferred.resolve(copy);
         }
 
         // otherwise, if NEW_CONCEPT specified, simply return the request
         else if (crsRequest.definitionOfChanges && crsRequest.definitionOfChanges.changeType === 'NEW_CONCEPT') {
-
+          console.log('new');
           var copy = angular.copy(crsRequest);
 
           //  if id provided, trim any erroneous whitespace
           if (copy.conceptId) {
             copy.conceptId = copy.conceptId.trim();
           }
+          
+          //parse axioms from relationships
+          copy.classAxioms = [];
+          copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
+          copy.classAxioms[0].relationships = angular.copy(copy.relationships);
+          angular.forEach(copy.classAxioms[0].relationships, function (rel){
+              rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
+          })
+          delete copy.relationships;
 
           deferred.resolve(angular.copy(copy));
         }
 
         // otherwise, get the concept as it exists on this branch
         else {
+          console.log('exists');
           terminologyServerService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
 
               // apply the CRS request to the latest version of the concept
