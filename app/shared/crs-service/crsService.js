@@ -109,7 +109,6 @@ angular.module('singleConceptAuthoringApp')
 
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
         else if (!crsRequest.conceptId) {
-          console.log('no id');
           var copy = angular.copy(crsRequest);
           copy.conceptId = terminologyServerService.createGuid();
           copy.classAxioms = [];
@@ -124,7 +123,6 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, if NEW_CONCEPT specified, simply return the request
         else if (crsRequest.definitionOfChanges && crsRequest.definitionOfChanges.changeType === 'NEW_CONCEPT') {
-          console.log('new');
           var copy = angular.copy(crsRequest);
 
           //  if id provided, trim any erroneous whitespace
@@ -146,7 +144,6 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, get the concept as it exists on this branch
         else {
-          console.log('exists');
           terminologyServerService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
 
               // apply the CRS request to the latest version of the concept
