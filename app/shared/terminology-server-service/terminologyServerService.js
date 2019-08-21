@@ -698,13 +698,14 @@ angular.module('singleConceptAuthoringApp')
         }
         // construct the properties object
         var propertiesObj = {
+          'conceptId': conceptId,
           'commitComment': 'Inactivation',
           'inactivationIndicator': inactivationIndicator,
           'active': false,
           'associationTargets': associationTargets
         };
 
-        $http.post(apiEndpoint + branch + '/concepts/' + conceptId + '/updates', propertiesObj).then(function (response) {
+        $http.put(apiEndpoint + branch + '/concepts/' + conceptId, propertiesObj).then(function (response) {
           deferred.resolve(true);
         }, function (error) {
           deferred.reject(error.statusMessage);
