@@ -34,6 +34,10 @@ angular.module('singleConceptAuthoringApp')
       function getRequestUrl() {        
         return (currentTask.branchPath.indexOf('-US') !== -1) ? usCrsEndpoint : crsEndpoint;        
       }
+    
+      function getModuleId() {        
+        return (currentTask.branchPath.indexOf('-US') !== -1) ? "731000124108" : "900000000000207008";        
+      }
 
       function getDescriptionForId(concept, id) {
         if (!id) {
@@ -98,7 +102,6 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve the full concept representation of a CRS concept from branch
       //
       function prepareCrsConcept(crsRequest) {
-        console.log('prepare');
 
         var deferred = $q.defer();
 
@@ -113,7 +116,9 @@ angular.module('singleConceptAuthoringApp')
           copy.conceptId = terminologyServerService.createGuid();
           copy.classAxioms = [];
           copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
+          copy.classAxioms[0].definitionStatus = copy.definitionStatus;
           copy.classAxioms[0].relationships = angular.copy(copy.relationships);
+          copy.classAxioms[0].moduleId = getModuleId();
           angular.forEach(copy.classAxioms[0].relationships, function (rel){
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
           })
@@ -133,6 +138,7 @@ angular.module('singleConceptAuthoringApp')
           //parse axioms from relationships
           copy.classAxioms = [];
           copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
+          copy.classAxioms[0].moduleId = getModuleId();
           copy.classAxioms[0].relationships = angular.copy(copy.relationships);
           angular.forEach(copy.classAxioms[0].relationships, function (rel){
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
