@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
 // Reject a CRS concept by Authoring user
       function rejectCrsConcept(issueKey, scaId, crsId) {        
         var deferred = $q.defer();        
-        var apiEndpoint = getRequestUrl() + 'ihtsdo-crs/api/request/';
+        var apiEndpoint = '../ihtsdo-crs/api/request/';
 
         scaService.removeIssueLink(issueKey, scaId).then(function (response) {
           if (response == null || response.status !== 200) {
@@ -352,7 +352,7 @@ angular.module('singleConceptAuthoringApp')
         if (!list) {
           def.reject('No CRS id set');
         }
-        var apiEndpoint = getRequestUrl() + 'ihtsdo-crs/api/request/';
+        var apiEndpoint = '../ihtsdo-crs/api/request/';
         var udpateCrsStatus = function(crsId) {
           var deferred = $q.defer(); 
           $http.put(apiEndpoint + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Classification by Authoring User"}).then(function () { 
@@ -379,7 +379,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return;
         }
-        var apiEndpoint = getRequestUrl() + 'ihtsdo-crs/api/request/';;
+        var apiEndpoint = '../ihtsdo-crs/api/request/';
         var list = [];
         angular.forEach(currentTaskConcepts, function(crsRequest) {
           if (list.indexOf(crsRequest.crsId) === -1) {
