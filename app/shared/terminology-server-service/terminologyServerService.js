@@ -705,7 +705,7 @@ angular.module('singleConceptAuthoringApp')
           'associationTargets': associationTargets
         };
 
-        $http.put(apiEndpoint + branch + '/concepts/' + conceptId, propertiesObj).then(function (response) {
+        $http.put(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, propertiesObj).then(function (response) {
           deferred.resolve(true);
         }, function (error) {
           deferred.reject(error.statusMessage);
