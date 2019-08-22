@@ -18,6 +18,7 @@ angular.module('singleConceptAuthoringApp')
         scope.loadingCompleted = false;
         scope.projectConceptFound = false;
         scope.projectBranch = null;
+        scope.selectedLanguage = scope.$root.selectedLanguage ? scope.$root.selectedLanguage : null;
 
         scope.closeTaxonomy = function () {
           scope.projectConcept = null;
