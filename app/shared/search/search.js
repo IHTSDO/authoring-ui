@@ -1212,20 +1212,24 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               }
 
               scaService.getSelectedLanguegeForUser().then(function (data){
+                //set defaut dialect 'FSN in US'
+                if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
+                  $scope.userOptions.selectedDialect = usModel.dialectId + fsnSuffix;
+                }
+                else {
+                  $scope.userOptions.selectedDialect = usModel.dialectId;
+                }            
+
                 if (data && Object.keys(data).length > 0 && data.hasOwnProperty('defaultLanguage')) {
                   let strArray = data.defaultLanguage.split('-');
                   if (metadataService.getCurrentModuleId() === usModel.moduleId) { // US module
-                    if(strArray.length === 2) {
+                    if(strArray.length === 2 && strArray[0] === usModel.dialectId) {
                       $scope.userOptions.selectedDialect = data.defaultLanguage;
-                    }
-                    else if (strArray[0] === usModel.dialectId) {
-                      $scope.userOptions.selectedDialect = strArray[0] + fsnSuffix;
-                    }
-                    else {
-                      // do nothing
-                    }
+                    }                
                   } else {
-                    $scope.userOptions.selectedDialect = strArray[0];
+                    if ($scope.dialects.hasOwnProperty(strArray[0])) {
+                      $scope.userOptions.selectedDialect = strArray[0];
+                    }
                   }
                 }
               });
