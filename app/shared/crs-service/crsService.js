@@ -155,6 +155,7 @@ angular.module('singleConceptAuthoringApp')
           copy.classAxioms = [];
           copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
           copy.classAxioms[0].moduleId = getModuleId();
+          copy.classAxioms[0].definitionStatus = copy.definitionStatus;
           copy.classAxioms[0].relationships = angular.copy(copy.relationships);
           angular.forEach(copy.classAxioms[0].relationships, function (rel){
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
