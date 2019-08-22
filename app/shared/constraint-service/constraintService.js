@@ -128,6 +128,11 @@ angular.module('singleConceptAuthoringApp')
         if (escgExpr) {
           terminologyServerService.getAttributeValuesFromEcl(branch, termFilter, escgExpr).then(function (response) {
             var concepts = getConceptsForValueTypeaheadHelper(response);
+            //Filter out for the inactive concepts
+            concepts = concepts.filter(function(concept){
+              return concept.active;
+            });
+            
             deferred.resolve(concepts);
           }, function (error) {
             deferred.reject(error.message);
@@ -138,6 +143,11 @@ angular.module('singleConceptAuthoringApp')
         else {
           terminologyServerService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
               var concepts = getConceptsForValueTypeaheadHelper(response);
+              //Filter out for the inactive concepts
+              concepts = concepts.filter(function(concept){
+                return concept.active;
+              });
+
               deferred.resolve(concepts);
             },
             function (error) {
