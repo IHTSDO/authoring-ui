@@ -96,6 +96,22 @@ angular.module('singleConceptAuthoringApp')
             }
           }          
         });
+
+        concept.definitionStatus = crsConcept.definitionStatus;
+        let fullyDefinedDefinitionFound = false;
+        concept.classAxioms.forEach(function(item, index) {
+          if (crsConcept.definitionStatus === 'PRIMITIVE') {
+            item.definitionStatus = 'PRIMITIVE';
+          } 
+          else {
+            if (!fullyDefinedDefinitionFound && item.definitionStatus === 'FULLY_DEFINED') {
+              fullyDefinedDefinitionFound = true;              
+            }
+          }
+        });
+        if (!fullyDefinedDefinitionFound && crsConcept.definitionStatus === 'FULLY_DEFINED') {
+          concept.classAxioms[0].definitionStatus = crsConcept.definitionStatus;
+        }        
       }
 
       //
