@@ -114,6 +114,9 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
           $scope.languages = internatinalFilter;
           $scope.selectedLanguage = usFSN; // Set FSN in US by default
         }
+
+        //Keep language in rootscope to re-use in project taxonony
+        $rootScope.selectedLanguage = $scope.selectedLanguage;
       }      
 
       // on extension metadata set
