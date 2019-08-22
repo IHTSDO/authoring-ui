@@ -4729,7 +4729,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getExtensionNamespace = function () {
           var conceptId = scope.concept.conceptId + '';
           var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
-          if (terminologyServerService.isSctid(scope.concept.conceptId)
+          if (!metadataService.isExtensionSet()
+                  && terminologyServerService.isSctid(scope.concept.conceptId)
                   && scope.concept.active
                   && !scope.concept.effectiveTime
                   && !scope.concept.released
