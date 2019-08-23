@@ -2509,6 +2509,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // push this relationship onto group-mapped array
               scope.relationshipGroups[parseInt(rel.groupId)].push(rel);
+
+              // sort inferred relations
+              scope.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(scope.relationshipGroups[parseInt(rel.groupId)]);
             }
           });
         };
