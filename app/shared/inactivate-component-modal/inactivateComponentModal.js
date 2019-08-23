@@ -402,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
             // make top-level properties
             angular.forEach(response.items, function (item) {
 
-              if (item.active) {
+              if (item.active && $scope.inboundRelationships) {
                 item.sourceFsn = item.fsn.term;
                 item.source = [];
                 item.source.fsn = item.fsn.term;
@@ -411,8 +411,16 @@ angular.module('singleConceptAuthoringApp')
                 item.concept.conceptId = item.conceptId;
                 item.characteristicType = 'STATED_RELATIONSHIP';
 
+                var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
+                  return item.sourceFsn === inboundRelationship.sourceFsn;
+                }).length !== 0;
+                
                 // push to inbound relationships
-                $scope.inboundRelationships.push(item);
+                if (!found)
+                {
+                  $scope.inboundRelationships.push(item);
+                }
+                
                 $scope.children.push(item);
               }
             });
