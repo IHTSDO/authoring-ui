@@ -1091,8 +1091,8 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // inactivate a relationship and add new relationships for children
-          function inactivateRelationship(concept, rel, axiom) {
-            angular.forEach(scope.inactivationConceptParents, function (parent) {
+          function inactivateRelationship(rel, axiom, newTargets) {
+            angular.forEach(newTargets, function (parent) {
               var newRel = angular.copy(rel);
               newRel.relationshipId = null;
               newRel.effectiveTime = null;
@@ -1105,9 +1105,9 @@ angular.module('singleConceptAuthoringApp')
             scope.removeRelationship(rel);
           }
 
-          function inactivateAttributeRelationship(concept, rel, axiom) {
-            if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
-              angular.forEach(scope.histAssocTargets.concepts, function (innerConcept, index) {
+          function inactivateAttributeRelationship(rel, axiom, newTargets) {
+            if (newTargets && newTargets.length > 0) {
+              angular.forEach(newTargets, function (innerConcept, index) {
                 if (!scope.useFirstTarget 
                   || (scope.useFirstTarget && index === 0)) {
                   var newRel = angular.copy(rel);
@@ -1175,21 +1175,35 @@ angular.module('singleConceptAuthoringApp')
                 if (concept && concept.classAxioms) {
                   angular.forEach(concept.classAxioms, function (axiom) {
                       angular.forEach(axiom.relationships, function (rel) {
-                        if (rel.target.conceptId === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
-                          inactivateRelationship(concept, rel, axiom);
-                        }
-                        else if (rel.target.conceptId === scope.inactivationConcept.conceptId && !rel.new) {
-                          inactivateAttributeRelationship(concept, rel, axiom);
+                        if (rel.target.conceptId === scope.inactivationConcept.conceptId && !rel.new) {
+                          if (scope.histAssocTargets.concepts.length === 0) {
+                            if (metadataService.isIsaRelationship(rel.type.conceptId)) {
+                              inactivateRelationship(rel,axiom,scope.inactivationConceptParents);
+                            }
+                            else {
+                              inactivateAttributeRelationship(rel,axiom,scope.inactivationConceptParents);
+                            }
+                          }                          
+                          else {
+                            inactivateAttributeRelationship(rel,axiom,scope.histAssocTargets.concepts);
+                          }
                         }
                       });
                   });
                   angular.forEach(concept.gciAxioms, function (axiom) {
                       angular.forEach(axiom.relationships, function (rel) {
-                        if (rel.target.conceptId === scope.inactivationConcept.conceptId && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0 && !rel.new) {
-                          inactivateRelationship(concept, rel, axiom);
-                        }
-                        else if (rel.target.conceptId === scope.inactivationConcept.conceptId && !rel.new) {
-                          inactivateAttributeRelationship(concept, rel, axiom);
+                        if (rel.target.conceptId === scope.inactivationConcept.conceptId && !rel.new) {
+                          if (scope.histAssocTargets.concepts.length === 0) {
+                            if (metadataService.isIsaRelationship(rel.type.conceptId)) {
+                              inactivateRelationship(rel,axiom,scope.inactivationConceptParents);
+                            }
+                            else {
+                              inactivateAttributeRelationship(rel,axiom,scope.inactivationConceptParents);
+                            }
+                          }                          
+                          else {
+                            inactivateAttributeRelationship(rel,axiom,scope.histAssocTargets.concepts);
+                          }
                         }
                       });
                   });
