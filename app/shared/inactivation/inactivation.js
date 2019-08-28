@@ -662,29 +662,29 @@ angular.module('singleConceptAuthoringApp')
           };
 
 
-          scope.removeRelationship = function (relationship) {
+          scope.removeRelationship = function (relationship, axiomId) {
             console.debug('remove relationship', relationship);
             var concept = scope.affectedConcepts[relationship.sourceId];
             angular.forEach(concept.classAxioms, function(axiom){
                 for (var i = axiom.relationships.length - 1; i >= 0; i--) {
-                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId) {
+                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId && axiomId === axiom.axiomId) {
                     let statedParents = axiom.relationships.filter(function (el) {
                       return el.type.conceptId === '116680003' && el.characteristicType === 'STATED_RELATIONSHIP';
                     });
 
-                    if (statedParents.length !== 1){
-                      axiom.relationships.splice(i, 1);
-                    }
-                    else {
+                    if (relationship.type.conceptId === '116680003' && relationship.characteristicType === 'STATED_RELATIONSHIP' && statedParents.length === 1) {
                       notificationService.sendError('Cannot remove relationship - This concept has only one stated parent', 10000);
                       return;
+                    } 
+                    else {
+                      axiom.relationships.splice(i, 1);
                     }
                   }
                 }
             })
             angular.forEach(concept.gciAxioms, function(axiom){
                 for (var i = axiom.relationships.length - 1; i >= 0; i--) {
-                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId) {
+                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId && axiomId === axiom.axiomId) {
                     axiom.relationships.splice(i, 1);
                   }
                 }
@@ -1102,7 +1102,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.new = true;
               axiom.relationships.push(newRel);
             });
-            scope.removeRelationship(rel);
+            scope.removeRelationship(rel,axiom.axiomId);
           }
 
           function inactivateAttributeRelationship(rel, axiom, newTargets) {
@@ -1147,7 +1147,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     axiom.relationships.push(newRel);
                   }
-                  scope.removeRelationship(rel);
+                  scope.removeRelationship(rel,axiom.axiomId);
                 }                
               });
             }
@@ -1160,7 +1160,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.target.conceptId = '';
               newRel.target.fsn = '';
               axiom.relationships.push(newRel);
-              scope.removeRelationship(rel);
+              scope.removeRelationship(rel,axiom.axiomId);
             }
           }
 
