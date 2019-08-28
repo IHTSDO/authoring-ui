@@ -193,7 +193,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if(!metadataService.isTemplatesEnabled())
+        /*if(!metadataService.isTemplatesEnabled())
             {
                 if ($scope.searchMode === 'Switch to ECL') {
                   $scope.searchMode = 'Switch to Template';
@@ -213,7 +213,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.templateMode = false;
                 }
             }
-        else{
+        else{*/
             if ($scope.searchMode === 'Switch to ECL') {
               $scope.searchMode = 'Switch to Text';
               $scope.isEscgMode = true;
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.isEscgMode = false;
               $scope.templateMode = false;
             }
-        }
+        /*}*/
 
         $scope.newSearch();
       };
