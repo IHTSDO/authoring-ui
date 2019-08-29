@@ -202,7 +202,7 @@ angular
           }
 
           // start connecting websocket
-          scaService.connectWebsocket(account.login);
+          scaService.connectWebsocket();
         }, function (error) {
           // apply default preferences
           accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
