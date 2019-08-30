@@ -286,14 +286,8 @@ angular.module('singleConceptAuthoringApp')
           }, 1000);
           console.log('STOMP: Reconecting in 1 seconds');
       };
-
-      var stompSuccessCallback = function() {
-        if (reconnectedOnFailed) {
-          $window.location.reload();
-          return;
-        }
         
-        stompClient.subscribe('/topic/user/' + $rootScope.accountDetails.login + '/notifications', function (message) {
+      var subscriptionHandler = function(message) {
             
           var newNotification = JSON.parse(message.body)
           var msg = null;
@@ -518,7 +512,14 @@ angular.module('singleConceptAuthoringApp')
             console.error('Unknown notification type received', newNotification);
             notificationService.sendError('Unknown notification received', 10000, null);
           }
-        }, {id : 'sca-subscription-id-' + $rootScope.accountDetails.login});
+      }
+
+      var stompSuccessCallback = function() {
+//        if (reconnectedOnFailed) {
+//          $window.location.reload();
+//          return;
+//        }
+        stompClient.subscribe('/topic/user/' + $rootScope.accountDetails.login + '/notifications', subscriptionHandler, {id : 'sca-subscription-id-' + $rootScope.accountDetails.login});
       }
 
       function stompConnect() {          
