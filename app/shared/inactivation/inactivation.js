@@ -275,8 +275,8 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // check if referenced description
-              else if (terminologyServerService.isDescriptionId(list[i].referencedComponentId) && terminologyServerService.isDescriptionId(list[i].referencedComponent.id)) {
-                promises.push(buildDescriptionHistoricalAssoc(list[i].referencedComponent.id));
+              else if (terminologyServerService.isDescriptionId(list[i].referencedComponentId)) {
+                promises.push(buildDescriptionHistoricalAssoc(list[i].referencedComponentId));
               }
 
               // add to other (dump)  list

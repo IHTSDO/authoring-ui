@@ -369,13 +369,14 @@ angular.module('singleConceptAuthoringApp')
      */
     function getInboundRelationships(conceptId, branch, startIndex, maxResults) {
       let deferred = $q.defer();
+      $scope.inboundRelationshipsLoading = true;
       // get the concept relationships again (all)
       terminologyServerService.searchConcepts($scope.branch,'', '*: *' + ' = ' + conceptId, 0, 10000, false, false, true).then(function (response) {
-        $scope.inboundRelationshipsLoading = true;
+       
         // initialize the arrays
         $scope.inboundRelationships = [];
         $scope.children = [];
-        $scope.inboundRelationshipsTotal = response.total;
+        $scope.inboundRelationshipsTotal = 0;
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
@@ -391,18 +392,20 @@ angular.module('singleConceptAuthoringApp')
 
             // push to inbound relationships
             $scope.inboundRelationships.push(item);
+            $scope.inboundRelationshipsTotal++;
           }
         });
         $rootScope.children = $scope.children;
         $scope.tableParamsChildren.reload();
         $scope.tableParamsInboundRelationships.reload();
 
+        // Children
         terminologyServerService.searchConcepts($scope.branch,'', '<! ' + conceptId, 0, 10000, false, false, true).then(function (response) {
             // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
             // make top-level properties
             angular.forEach(response.items, function (item) {
 
-              if (item.active && $scope.inboundRelationships) {
+              if (item.active) {
                 item.sourceFsn = item.fsn.term;
                 item.source = [];
                 item.source.fsn = item.fsn.term;
@@ -419,28 +422,112 @@ angular.module('singleConceptAuthoringApp')
                 if (!found)
                 {
                   $scope.inboundRelationships.push(item);
+                  $scope.inboundRelationshipsTotal++;
                 }
                 
                 $scope.children.push(item);
               }
             });
             $rootScope.children = $scope.children;
-
-            $scope.inboundRelationshipsLoading = false;
-
             $scope.tableParamsChildren.reload();
-            $scope.tableParamsInboundRelationships.reload();
 
-            deferred.resolve();
-
+            if ($scope.deletion) {
+              // Historical associations
+              getHistoricalAssociations().then(function(affectedAssociations) {
+                $scope.inboundRelationships = $scope.inboundRelationships.concat(affectedAssociations);
+                $scope.inboundRelationshipsTotal += affectedAssociations.length;
+                $scope.inboundRelationshipsLoading = false;              
+                $scope.tableParamsInboundRelationships.reload();    
+              })
+            }
+            else {
+              $scope.inboundRelationshipsLoading = false;              
+              $scope.tableParamsInboundRelationships.reload();
+            }
           });
       });
-        
-      
 
       return deferred.promise;
     }
 
+    function getHistoricalAssociations() {
+      let deferred = $q.defer();
+      var affectedAssociations = [];  
+      terminologyServerService.getHistoricalAssociationMembers($scope.conceptId, $scope.branch).then(function (response) {
+        let affectedAssociationsTotal = Array.isArray(response) ? response.length : response.total;
+        var affectedDescriptionIds = [];
+        if (affectedAssociationsTotal !== 0) {                
+          angular.forEach(response.items, function (item) {
+            if (item.active) {
+              // Historical concepts found
+              if (item.referencedComponent) {
+                item.sourceFsn = item.referencedComponent.fsn.term;
+                item.source = [];
+                item.source.fsn = item.referencedComponent.fsn.term;                    
+                item.characteristicType = 'STATED_RELATIONSHIP';
+    
+                var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
+                  return item.sourceFsn === inboundRelationship.sourceFsn;
+                }).length !== 0;
+
+                // push to inbound relationships
+                if (!found)
+                {
+                  affectedAssociations.push(item);
+                }
+              }
+              else {
+                affectedDescriptionIds.push(item.referencedComponentId);
+              }                    
+            }
+          });
+        }              
+
+        // Historical associations found
+        if (affectedDescriptionIds.length > 0) {
+          var count = 0;
+          for (var i = 0; i < affectedDescriptionIds.length; i++) {
+            terminologyServerService.getDescriptionProperties(affectedDescriptionIds[i], $scope.branch).then(function (description) {
+              var conceptIds = [];
+              conceptIds.push(description.conceptId);                      
+              count++;
+              if (count === affectedDescriptionIds.length) {
+                // bulk call for concept ids
+                terminologyServerService.bulkGetConcept(conceptIds, $scope.branch).then(function (response) {
+                  angular.forEach(response.items, function (concept) {
+                    var item = {};
+                    item.sourceFsn = concept.fsn.term;
+                    item.source = [];
+                    item.source.fsn = concept.fsn.term;                    
+                    item.characteristicType = 'STATED_RELATIONSHIP';
+        
+                    var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
+                        return item.sourceFsn === inboundRelationship.sourceFsn;
+                      }).length !== 0 
+                      && $scope.affectedAssociations.filter(function(inboundRelationship) {
+                        return item.sourceFsn === inboundRelationship.sourceFsn;
+                      }).length !== 0;                    
+                    
+                    // push to inbound relationships
+                    if (!found)
+                    {
+                      affectedAssociations.push(item);                      
+                    }
+                  });
+                     
+                  deferred.resolve(affectedAssociations);
+                });                      
+              }
+            });
+          }                
+        }
+        else {          
+          deferred.resolve(affectedAssociations);
+        }                             
+      });
+
+      return deferred.promise;
+    }
     // check for existence of stated IsA relationships
     $scope.statedChildrenFound = null;
     function checkStatedChildren() {
@@ -466,13 +553,6 @@ angular.module('singleConceptAuthoringApp')
 //        }
       });
     }
-
-    if ($scope.deletion) {
-      terminologyServerService.getHistoricalAssociationMembers($scope.conceptId, $scope.branch).then(function (response) {
-        $scope.affectedAssociationsTotal = response.total;
-      });
-    }
-
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
