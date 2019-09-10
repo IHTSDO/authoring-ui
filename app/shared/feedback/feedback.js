@@ -940,7 +940,7 @@ angular.module('singleConceptAuthoringApp')
           //and highlight any changes
           scope.runComparison = function(conceptId, branch, currentConcept){
             var deferred = $q.defer();
-            terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (response) {
+            terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '^').then(function (response) {
               //check concept conditions first
               if(currentConcept.active !== response.active
                  || currentConcept.definitionStatus !== response.definitionStatus){
