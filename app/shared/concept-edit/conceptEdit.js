@@ -712,14 +712,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return scope.inactiveDescriptions.hasOwnProperty(descriptionId);
         };
 
-        if (scope.isFeedback) {
-           lookupInnerComponentStyle();
-        }
-
-        function lookupInnerComponentStyle (){
-
-        }
-
         function highlightComponent(componentChange,mainDescription,taskDescription) {
           if (taskDescription.type !== mainDescription.type) {
             scope.innerComponentStyle[componentChange.componentId + '-type'] = {
@@ -856,8 +848,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete scope.concept.requiresValidation;
           }
           var deferred = $q.defer();
-
-          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+          var copiedConcept = angular.copy(scope.concept);
+          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, copiedConcept).then(function (validationResults) {
 
             var results = {
               hasWarnings: false,
@@ -1024,10 +1016,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   scope.computeRelationshipGroups();
 
-                  if (scope.isFeedback) {
-                     lookupInnerComponentStyle();
-                  }
-
+                  
                   // broadcast event to any listeners (currently task detail, crs concept list,
                   // conflict/feedback resolved lists)
                   $rootScope.$broadcast('conceptEdit.conceptChange', {
