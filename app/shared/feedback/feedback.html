@@ -149,8 +149,11 @@
         <div project-taxonomy concept="concept" branch="branch" view="'inferred'" ng-if="isProjectTaxonomyVisisble(concept)"></div>
         </div>
         <div ng-class="getLayoutWidths('concepts')">
-          <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]" inner-component-style="innerComponentStyle" inactive-descriptions="inactiveDescriptions"
-               autosave="role !== 'AUTHOR'" feedback-view="true" allow-approval="checkApprovalPermission(concept)" id="conceptId-{{concept.conceptId}}" load-validation="{{role === 'REVIEWER'}}" project-taxonomy-visible="true" traceabilities="feedbackContainer.review.traceability"></div>
+          <div id="conceptId-{{concept.conceptId}}" concept-edit concept="concept" branch="branch" 
+              static="role !== 'AUTHOR'" autosave="{{role === 'AUTHOR'}}" load-validation="{{role === 'REVIEWER'}}" 
+              component-styles="styles[concept.conceptId]" inner-component-style="innerComponentStyle" inactive-descriptions="inactiveDescriptions"
+              feedback-view="true" project-taxonomy-visible="true" 
+              allow-approval="checkApprovalPermission(concept)" traceabilities="feedbackContainer.review.traceability"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter">
