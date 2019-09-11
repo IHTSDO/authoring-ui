@@ -1083,6 +1083,7 @@ angular.module('singleConceptAuthoringApp')
               if(!originalRelationship.found){
                 originalRelationship.relationshipId = terminologyServerService.createGuid();
                 originalRelationship.active = false;
+                originalRelationship.deleted = true;
                 axiom.relationships.push(originalRelationship);
                 highlightComponent(currentConcept.conceptId, originalRelationship.relationshipId, null, null, true);
               }

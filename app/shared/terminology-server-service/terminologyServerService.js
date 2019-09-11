@@ -376,6 +376,21 @@ angular.module('singleConceptAuthoringApp')
           relationship.sourceId = concept.conceptId;
 
         });
+          
+        angular.forEach(concept.classAxioms, function(axiom){
+            for (var i = axiom.relationships.length - 1; i >= 0; i--) {
+                if (axiom.relationships[i].deleted) {
+                    axiom.relationships.splice(i, 1);
+                }
+            }
+        });
+        angular.forEach(concept.gciAxioms, function(axiom){
+            for (var i = axiom.relationships.length - 1; i >= 0; i--) {
+                if (axiom.relationships[i].deleted) {
+                    axiom.relationships.splice(i, 1);
+                }
+            }
+        });
 
         if (concept.classAxioms) {
           angular.forEach(concept.classAxioms, function (axiom) {
