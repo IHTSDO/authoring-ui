@@ -1525,11 +1525,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           let hasUnpublishedChanges = false;
           if (axioms && axioms.length > 0) {
             axioms.forEach(function (axiom) {
-              hasUnpublishedChanges = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
-              if (hasUnpublishedChanges) {
+              var flag = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
+              if (flag) {
                 axiom.relationships.forEach(function (relationship) {
                   relationship.templateStyle = 'redhl';
                 });
+                hasUnpublishedChanges = true;
               }
             });
           }
