@@ -1,4 +1,4 @@
-<div class="row grey darken-4 p-t-5" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
+<div class="row grey darken-4 p-t-5" ng-class="getComponentStyle(axiom.axiomId, null, '', axiom) + ' ' + getComponentStyle(axiom.axiomId, null, '', null)">
   <div class="col-md-1 no-padding pull-left">
     <button
         class="btn-default md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
@@ -17,7 +17,7 @@
   </div>
 
   <div class="col-md-6 no-padding">
-    <div class="grey darken-4 p-t-7">
+    <div class="darken-4 p-t-7">
       <span class="fsn">{{axiom.title}}</span>
     </div>
   </div>
