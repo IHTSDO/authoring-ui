@@ -1057,10 +1057,12 @@ angular.module('singleConceptAuthoringApp')
           scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept){
             var deferred = $q.defer();
             angular.forEach(axiom.relationships, function(newRelationship){
-              delete newRelationship.active
+              var newClone = angular.copy(newRelationship);
+              delete newClone.active
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
-                delete originalRelationship.active
-                if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+                var originalClone = angular.copy(originalRelationship);
+                delete originalClone.active
+                if(JSON.stringify(newClone) === JSON.stringify(originalClone)){
                   newRelationship.found = true;
                 }
               });
@@ -1077,8 +1079,12 @@ angular.module('singleConceptAuthoringApp')
             });
               
             angular.forEach(originalAxiom.relationships, function(originalRelationship){
+              var originalClone = angular.copy(originalRelationship);
+              delete originalClone.active
               angular.forEach(axiom.relationships, function(newRelationship){
-                if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+                var newClone = angular.copy(newRelationship);
+                delete newClone.active
+                if(JSON.stringify(newClone) === JSON.stringify(originalClone)){
                   originalRelationship.found = true;
                 }
               });
