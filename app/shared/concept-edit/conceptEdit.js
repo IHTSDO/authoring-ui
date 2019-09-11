@@ -1527,9 +1527,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             axioms.forEach(function (axiom) {
               var flag = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
               if (flag) {
-                axiom.relationships.forEach(function (relationship) {
-                  relationship.templateStyle = 'redhl';
-                });
+                axiom.templateStyle = 'redhl';
                 hasUnpublishedChanges = true;
               }
             });
