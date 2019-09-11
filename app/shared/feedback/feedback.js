@@ -1057,7 +1057,9 @@ angular.module('singleConceptAuthoringApp')
           scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept){
             var deferred = $q.defer();
             angular.forEach(axiom.relationships, function(newRelationship){
+              delete newRelationship.active
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
+                delete originalRelationship.active
                 if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
                   newRelationship.found = true;
                 }
