@@ -1531,9 +1531,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             axioms.forEach(function (axiom) {
               hasUnpublishedChanges = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
               if (hasUnpublishedChanges) {
-                axiom.relationships.forEach(function (relationship) {
-                  relationship.templateStyle = 'redhl';                  
-                });
+                axiom.templateStyle = 'redhl';
+//                scope.styles = {};
+//                scope.styles[scope.concept.conceptId] = {};
+//                scope.styles[scope.concept.conceptId][axiom.axiomId] = {message: null, style: 'redhl', new: true};
               }
             });
           }
