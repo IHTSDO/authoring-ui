@@ -1067,8 +1067,25 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
               if(!newRelationship.found && !params.matchedGroups.includes(newRelationship.groupId)){
-                newRelationship.relationshipId = terminologyServerService.createGuid();
-                highlightComponent(currentConcept.conceptId, newRelationship.relationshipId);
+                if(params.partialMatches){
+                    angular.forEach(originalAxiom.relationships, function(originalRelationship){
+                        if(params.partialMatches.includes(newRelationship.groupId)){
+                          let newRelClone = angular.copy(newRelationship);
+                          delete newRelClone.groupId
+                          
+                          let oldRelClone = angular.copy(originalRelationship);
+                          delete oldRelClone.groupId
+                          
+                          if(JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
+                              newRelationship.found = true;
+                          }
+                        }
+                      });
+                }
+                if(!newRelationship.found){
+                    newRelationship.relationshipId = terminologyServerService.createGuid();
+                    highlightComponent(currentConcept.conceptId, newRelationship.relationshipId);
+                }
               }
             });
               
@@ -1103,6 +1120,8 @@ angular.module('singleConceptAuthoringApp')
             let matchedGroups = [];
             let params= {};
             let originalMatchedGroups = [];
+            let partialMatches = [];
+              
             angular.forEach(axiom.relationships, function(newRelationship){
                 if(newRelationship.groupId !== 0){
                     if(!newGroups[newRelationship.groupId]){
@@ -1146,6 +1165,29 @@ angular.module('singleConceptAuthoringApp')
                     }
                 });
             });
+            
+            //check for partial matches
+            angular.forEach(newGroups, function(newGroup){
+                let groupId = '';
+                angular.forEach(newGroup, function(relationship){
+                    if(!matchedGroups.includes(relationship.groupId) && relationship.groupId !== 0){
+                        groupId = relationship.groupId;
+                        let newClone = angular.copy(relationship);
+                        delete newClone.groupId
+                        angular.forEach(oldGroups, function(oldGroup){
+                                angular.forEach(oldGroup, function(relationship){
+                                    if(!originalMatchedGroups.includes(relationship.groupId) && relationship.groupId !== 0){
+                                        let oldClone = angular.copy(relationship);
+                                        delete oldClone.groupId
+                                        if(JSON.stringify(newClone) === JSON.stringify(oldClone)){
+                                            partialMatches.push(groupId);
+                                        }
+                                    }
+                                })
+                        });
+                    }
+                })
+            });
               
             let size = 0;
             for (var key in oldGroups) {
@@ -1154,6 +1196,8 @@ angular.module('singleConceptAuthoringApp')
             if(size === matchedGroups.length){
                 params.onlyNew = true;
             }
+            console.log(partialMatches);
+            params.partialMatches = partialMatches;
             params.matchedGroups = matchedGroups;
             params.originalMatchedGroups = originalMatchedGroups;
               
