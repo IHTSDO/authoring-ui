@@ -1020,8 +1020,8 @@ angular.module('singleConceptAuthoringApp')
               newIds.push(axiom.axiomId);
                 angular.forEach(originalConcept.classAxioms, function(originalAxiom){
                   if(axiom.axiomId === originalAxiom.axiomId){
-                    scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (matchedGroups) {
-                        scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, matchedGroups).then(function (modifiedAxiom) {
+                    scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
+                        scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
                           axiom = modifiedAxiom;
                           if(axiom.active !== originalAxiom.active
                               || axiom.definitionStatus !== originalAxiom.definitionStatus){
@@ -1056,8 +1056,8 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           };
             
-          scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept, matchedGroups){
-              console.log(matchedGroups);
+          scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept, params){
+                console.log(params);
             var deferred = $q.defer();
             angular.forEach(axiom.relationships, function(newRelationship){
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
@@ -1065,7 +1065,7 @@ angular.module('singleConceptAuthoringApp')
                   newRelationship.found = true;
                 }
               });
-              if(!newRelationship.found && !matchedGroups.includes(newRelationship.groupId)){
+              if(!newRelationship.found && !params.matchedGroups.includes(newRelationship.groupId)){
                 newRelationship.relationshipId = terminologyServerService.createGuid();
                 highlightComponent(currentConcept.conceptId, newRelationship.relationshipId);
               }
@@ -1083,7 +1083,7 @@ angular.module('singleConceptAuthoringApp')
                   originalRelationship.found = true;
                 }
               });
-              if(!originalRelationship.found && !matchedGroups.includes(originalRelationship.groupId)){
+              if(!originalRelationship.found && !params.matchedGroups.includes(originalRelationship.groupId) && !params.onlyNew){
                 originalRelationship.relationshipId = terminologyServerService.createGuid();
                 originalRelationship.active = false;
                 originalRelationship.deleted = true;
@@ -1097,21 +1097,27 @@ angular.module('singleConceptAuthoringApp')
           
           scope.compareAxiomRelationshipGroups = function(axiom, originalAxiom, currentConcept){
             var deferred = $q.defer();
-            let newGroups = [];
-            let oldGroups = [];
+            let newGroups = {};
+            let oldGroups = {};
             let matchedGroups = [];
+            let params= {};
             angular.forEach(axiom.relationships, function(newRelationship){
-                if(!newGroups[newRelationship.groupId]){
-                    newGroups[newRelationship.groupId] = [];
+                if(newRelationship.groupId !== 0){
+                    if(!newGroups[newRelationship.groupId]){
+                        newGroups[newRelationship.groupId] = [];
+                    }
+                    newGroups[newRelationship.groupId].push(newRelationship);
                 }
-                newGroups[newRelationship.groupId].push(newRelationship);
+                
             });
               
             angular.forEach(originalAxiom.relationships, function(originalRelationship){
-                if(!oldGroups[originalRelationship.groupId]){
-                    oldGroups[originalRelationship.groupId] = [];
+                if(originalRelationship.groupId !== 0){
+                    if(!oldGroups[originalRelationship.groupId]){
+                        oldGroups[originalRelationship.groupId] = [];
+                    }
+                    oldGroups[originalRelationship.groupId].push(originalRelationship);
                 }
-                oldGroups[originalRelationship.groupId].push(originalRelationship);
             });
               
             angular.forEach(newGroups, function(newGroup){
@@ -1136,7 +1142,16 @@ angular.module('singleConceptAuthoringApp')
                 });
             });
               
-            deferred.resolve(matchedGroups);
+            let size = 0;
+            for (var key in oldGroups) {
+                if (oldGroups.hasOwnProperty(key)) size++;
+            }
+            if(size === matchedGroups.length){
+                params.onlyNew = true;
+            }
+            params.matchedGroups = matchedGroups;
+              
+            deferred.resolve(params);
             return deferred.promise;
           }
             
