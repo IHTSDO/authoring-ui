@@ -1059,11 +1059,10 @@ angular.module('singleConceptAuthoringApp')
           };
             
           scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept, params){
-                console.log(params);
             var deferred = $q.defer();
             angular.forEach(axiom.relationships, function(newRelationship){
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
-                if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+                if(!params.originalMatchedGroups.includes(originalRelationship.groupId) && JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
                   newRelationship.found = true;
                 }
               });
@@ -1103,6 +1102,7 @@ angular.module('singleConceptAuthoringApp')
             let oldGroups = {};
             let matchedGroups = [];
             let params= {};
+            let originalMatchedGroups = [];
             angular.forEach(axiom.relationships, function(newRelationship){
                 if(newRelationship.groupId !== 0){
                     if(!newGroups[newRelationship.groupId]){
@@ -1132,14 +1132,17 @@ angular.module('singleConceptAuthoringApp')
                     newGroupString = newGroupString + JSON.stringify(newClone)
                 })
                 angular.forEach(oldGroups, function(oldGroup){
+                    let oldGroupId = '';
                     let oldGroupString = '';
                     angular.forEach(oldGroup, function(relationship){
+                        oldGroupId = relationship.groupId;
                         let oldClone = angular.copy(relationship);
                         delete oldClone.groupId
                         oldGroupString = oldGroupString + JSON.stringify(oldClone)
                     })
                     if(newGroupString === oldGroupString && groupId !== 0){
                         matchedGroups.push(groupId);
+                        originalMatchedGroups.push(oldGroupId);
                     }
                 });
             });
@@ -1152,6 +1155,7 @@ angular.module('singleConceptAuthoringApp')
                 params.onlyNew = true;
             }
             params.matchedGroups = matchedGroups;
+            params.originalMatchedGroups = originalMatchedGroups;
               
             deferred.resolve(params);
             return deferred.promise;
