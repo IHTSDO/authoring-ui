@@ -1036,12 +1036,14 @@ angular.module('singleConceptAuthoringApp')
               newIds.push(axiom.axiomId);
               angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
                 if(axiom.axiomId === originalAxiom.axiomId){
-                  scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept).then(function (modifiedAxiom) {
-                    axiom = modifiedAxiom;
-                    if(axiom.active !== originalAxiom.active
-                      || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                        highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
-                    }
+                  scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
+                      scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept).then(function (modifiedAxiom) {
+                        axiom = modifiedAxiom;
+                        if(axiom.active !== originalAxiom.active
+                          || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                            highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
+                        }
+                      });
                   });
                 } 
               });
