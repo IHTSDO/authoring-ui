@@ -1289,7 +1289,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // get latest review
     $scope.getLatestReview = function () {
-      terminologyServerService.getTraceabilityForBranch($scope.branch, false, false, true).then(function (traceability) {
+      terminologyServerService.getTraceabilityForBranch($scope.branch, false, false).then(function (traceability) {
         var review = {};
 
         review.traceability = traceability;
@@ -1298,35 +1298,43 @@ angular.module('singleConceptAuthoringApp.edit', [
         var idList = [];
         angular.forEach(traceability.content, function (change) {
           if (change.activityType === 'CONTENT_CHANGE') {
-            angular.forEach(change.conceptChanges, function (concept) {
-              if (review.concepts.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                }).length === 0) {
+              angular.forEach(change.conceptChanges, function (concept) {
 
-                concept.conceptId = concept.conceptId.toString();
-                concept.lastUpdatedTime = change.commitDate;
-                review.concepts.push(concept);
-                idList.push(concept.conceptId);
-              }
-              else if (review.conceptsClassified.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                }).length === 0) {
-                concept.conceptId = concept.conceptId.toString();
-                concept.lastUpdatedTime = change.commitDate;
-                review.conceptsClassified.push(concept);
-                idList.push(concept.conceptId);
-              }
-              else{
-                var updateConcept = review.concepts.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                })[0];
-                angular.forEach(concept.componentChanges, function (componentChange) {
-                  updateConcept.componentChanges.push(componentChange);
-                });
-                updateConcept.lastUpdatedTime = change.commitDate;
-              }
-            });
-          }
+
+                if (review.concepts.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0 && concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  concept.lastUpdatedTime = change.commitDate;
+                  review.concepts.push(concept);
+                  console.log(concept.conceptId);
+                  idList.push(concept.conceptId);
+                }
+                else if (review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0 && concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType === 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  concept.lastUpdatedTime = change.commitDate;
+                  review.conceptsClassified.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else if (concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  var updateConcept = review.concepts.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  })[0];
+                  angular.forEach(concept.componentChanges, function (componentChange) {
+                    updateConcept.componentChanges.push(componentChange);
+                  });
+                  updateConcept.lastUpdatedTime = change.commitDate;
+                }
+              });
+            }
           else if (change.activityType === 'CLASSIFICATION_SAVE') {
             angular.forEach(change.conceptChanges, function (concept) {
               if (review.conceptsClassified.filter(function (obj) {

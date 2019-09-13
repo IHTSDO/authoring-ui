@@ -2176,7 +2176,7 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              terminologyServerService.getTraceabilityForBranch(scope.task.branchPath, false, false, false).then(function (traceability) {
+              terminologyServerService.getTraceabilityForBranch(scope.task.branchPath, false, false).then(function (traceability) {
                 var review = {};
                 if (traceability) {
                   console.log(traceability);
