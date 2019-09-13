@@ -1202,7 +1202,6 @@ angular.module('singleConceptAuthoringApp')
             if(size === matchedGroups.length){
                 params.onlyNew = true;
             }
-            console.log(partialMatches);
             params.partialMatches = partialMatches;
             params.matchedGroups = matchedGroups;
             params.originalMatchedGroups = originalMatchedGroups;
@@ -2177,7 +2176,7 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              terminologyServerService.getTraceabilityForBranch(scope.task.branchPath, false, false, true).then(function (traceability) {
+              terminologyServerService.getTraceabilityForBranch(scope.task.branchPath, false, false, false).then(function (traceability) {
                 var review = {};
                 if (traceability) {
                   console.log(traceability);
@@ -2196,7 +2195,9 @@ angular.module('singleConceptAuthoringApp')
 
                         if (review.concepts.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0) {
+                          }).length === 0 && concept.componentChanges.filter(function (obj) {
+                            return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                          }).length !== 0) {
                           concept.conceptId = concept.conceptId.toString();
                           concept.lastUpdatedTime = change.commitDate;
                           review.concepts.push(concept);
@@ -2205,13 +2206,17 @@ angular.module('singleConceptAuthoringApp')
                         }
                         else if (review.conceptsClassified.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0) {
+                          }).length === 0 && concept.componentChanges.filter(function (obj) {
+                            return obj.componentSubType === 'INFERRED_RELATIONSHIP';
+                          }).length !== 0) {
                           concept.conceptId = concept.conceptId.toString();
                           concept.lastUpdatedTime = change.commitDate;
                           review.conceptsClassified.push(concept);
                           idList.push(concept.conceptId);
                         }
-                        else {
+                        else if (concept.componentChanges.filter(function (obj) {
+                            return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                          }).length !== 0) {
                           var updateConcept = review.concepts.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
                           })[0];
