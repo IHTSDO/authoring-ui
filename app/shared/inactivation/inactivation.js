@@ -667,7 +667,7 @@ angular.module('singleConceptAuthoringApp')
             var concept = scope.affectedConcepts[relationship.sourceId];
             angular.forEach(concept.classAxioms, function(axiom){
                 for (var i = axiom.relationships.length - 1; i >= 0; i--) {
-                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId && axiomId === axiom.axiomId) {
+                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId && (typeof axiomId === "undefined" || axiomId === axiom.axiomId)) {
                     let statedParents = axiom.relationships.filter(function (el) {
                       return el.type.conceptId === '116680003' && el.characteristicType === 'STATED_RELATIONSHIP';
                     });
@@ -684,7 +684,7 @@ angular.module('singleConceptAuthoringApp')
             })
             angular.forEach(concept.gciAxioms, function(axiom){
                 for (var i = axiom.relationships.length - 1; i >= 0; i--) {
-                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId && axiomId === axiom.axiomId) {
+                  if (axiom.relationships[i].target.conceptId === relationship.target.conceptId && axiom.relationships[i].type.conceptId === relationship.type.conceptId && (typeof axiomId === "undefined" || axiomId === axiom.axiomId)) {
                     axiom.relationships.splice(i, 1);
                   }
                 }
@@ -1101,8 +1101,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.target.fsn = parent.fsn;
               newRel.new = true;
               axiom.relationships.push(newRel);
-            });
-            scope.removeRelationship(rel,axiom.axiomId);
+            });            
           }
 
           function inactivateAttributeRelationship(rel, axiom, newTargets) {
@@ -1146,8 +1145,7 @@ angular.module('singleConceptAuthoringApp')
                     }                  
                   } else {
                     axiom.relationships.push(newRel);
-                  }
-                  scope.removeRelationship(rel,axiom.axiomId);
+                  }                  
                 }                
               });
             }
@@ -1159,8 +1157,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.released = false;
               newRel.target.conceptId = '';
               newRel.target.fsn = '';
-              axiom.relationships.push(newRel);
-              scope.removeRelationship(rel,axiom.axiomId);
+              axiom.relationships.push(newRel);              
             }
           }
 
@@ -1168,7 +1165,7 @@ angular.module('singleConceptAuthoringApp')
           function prepareAffectedRelationships() {
 
             var deferred = $q.defer();
-
+            var relationshipsToRemove = {};
             for (var key in scope.affectedConcepts) {
               if (scope.affectedConcepts.hasOwnProperty(key)) {
                 var concept = scope.affectedConcepts[key];
@@ -1187,6 +1184,10 @@ angular.module('singleConceptAuthoringApp')
                           else {
                             inactivateAttributeRelationship(rel,axiom,scope.histAssocTargets.concepts);
                           }
+
+                          var relationships = relationshipsToRemove.hasOwnProperty(axiom.axiomId) ? relationshipsToRemove[axiom.axiomId] : [];
+                          relationships.push(rel);
+                          relationshipsToRemove[axiom.axiomId] = relationships;                          
                         }
                       });
                   });
@@ -1204,12 +1205,24 @@ angular.module('singleConceptAuthoringApp')
                           else {
                             inactivateAttributeRelationship(rel,axiom,scope.histAssocTargets.concepts);
                           }
+                          var relationships = relationshipsToRemove.hasOwnProperty(axiom.axiomId) ? relationshipsToRemove[axiom.axiomId] : [];
+                          relationships.push(rel);
+                          relationshipsToRemove[axiom.axiomId] = relationships;
                         }
                       });
                   });
                 }
               }
             }
+            
+            if (Object.keys(relationshipsToRemove).length !== 0) {
+              angular.forEach(Object.keys(relationshipsToRemove), function (key) {
+                angular.forEach(relationshipsToRemove[key], function (rel) {
+                  scope.removeRelationship(rel,key);
+                });
+              });
+            }
+
             deferred.resolve();
             return deferred.promise;
           }
