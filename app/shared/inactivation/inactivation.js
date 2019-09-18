@@ -2,8 +2,8 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$route', 'modalService',
-    function ($rootScope, $filter, $q, NgTableParams, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $route, modalService) {
+  .directive('inactivation', ['$rootScope', '$filter', '$q', '$routeParams', 'ngTableParams', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$route', 'modalService','scaService',
+    function ($rootScope, $filter, $q, $routeParams, NgTableParams, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $route, modalService, scaService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -903,13 +903,16 @@ angular.module('singleConceptAuthoringApp')
                     terminologyServerService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                       notificationService.sendMessage('Inactivation Complete');
 
-                      // broadcast event to any listeners (currently task detail, crs concept list,
-                      // conflict/feedback resolved lists)
-                      $rootScope.$broadcast('conceptEdit.conceptChange', {                    
-                        concept: scope.inactivationConcept                 
+                      // remove ui-state for inactive concept if any
+                      scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'concept-' + scope.inactivationConcept.conceptId).then(function(){
+                        // broadcast event to any listeners (currently task detail, crs concept list,
+                        // conflict/feedback resolved lists)
+                        $rootScope.$broadcast('conceptEdit.conceptChange', {                    
+                          concept: scope.inactivationConcept                 
+                        });
+                        
+                        $route.reload();
                       });
-                      
-                      $route.reload();
                     }, function (error) {
                       notificationService.sendError('Error inactivating concept: ' + error);
                     });
