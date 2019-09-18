@@ -63,7 +63,7 @@
             <li ng-if="classificationRunning">
               Classification Running
             </li>
-            <li ng-if="task.latestClassificationJson.status !== 'RUNNING' && !classificationRunning && role === 'AUTHOR'" ng-click="classify()"
+            <li ng-if="!classificationRunning && role === 'AUTHOR'" ng-click="classify()"
                 ng-disabled="task.status === 'Promoted' || classificationRunning || role === 'REVIEWER' || branchLocked">
               Start New Classification
             </li>
