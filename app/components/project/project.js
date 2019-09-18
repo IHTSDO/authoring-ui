@@ -9,7 +9,15 @@ angular.module('singleConceptAuthoringApp.project', [
     $routeProvider
       .when('/project/:projectKey', {
         controller: 'ProjectCtrl',
-        templateUrl: 'components/project/project.html'
+        templateUrl: 'components/project/project.html',
+        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+            var defer = $q.defer();
+            terminologyServerService.getEndpoint().then(function(){
+              defer.resolve();
+            });                        
+            return defer.promise;
+          }
+        ]
       });
   })
 

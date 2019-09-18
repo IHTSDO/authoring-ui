@@ -2125,6 +2125,24 @@ angular.module('singleConceptAuthoringApp')
           apiEndpoint = url;
       }
 
+      function getEndpoint() {
+        var defer = $q.defer();        
+        if (!apiEndpoint) {                  
+          setTimeout(function waitForTerminologyServerURL() {                              
+            if (!apiEndpoint) {                      
+              setTimeout(waitForTerminologyServerURL, 100);            } 
+            else {                  
+              defer.resolve(apiEndpoint);
+            }
+          }, 100);
+        }
+        else {              
+          defer.resolve(apiEndpoint);
+        }
+        
+        return defer.promise;
+      }
+
       function fetchConflictMessage(merge) {
         var generalMessage = 'There are content conflicts. Please contact technical support. ';
         if (merge.apiError && merge.apiError.additionalInfo && merge.apiError.additionalInfo.integrityIssues) {
@@ -2253,7 +2271,8 @@ angular.module('singleConceptAuthoringApp')
         cleanConcept: cleanConcept,
         cleanDescription: cleanDescription,
         cleanRelationship: cleanRelationship,
-        setEndpoint: setEndpoint
+        setEndpoint: setEndpoint,
+        getEndpoint: getEndpoint
       };
     }
 

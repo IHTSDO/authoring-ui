@@ -11,7 +11,14 @@ angular.module('singleConceptAuthoringApp.projectMerge', [
       .when('/projects/project/:projectKey/conflicts', {
         controller: 'ProjectMergeCtrl',
         templateUrl: 'components/project-merge/projectMerge.html',
-        resolve: {}
+        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+            var defer = $q.defer();
+            terminologyServerService.getEndpoint().then(function(){
+              defer.resolve();
+            });                        
+            return defer.promise;
+          }
+        ]
       });
   })
 
