@@ -45,7 +45,7 @@
 
           <ul class="button-sub-nav">
 
-            <li ng-if="!task.latestClassificationJson">
+            <li ng-if="!task.latestClassificationJson && !classificationRunning">
               No Classification Run
             </li>
             <li ng-if="task.latestClassificationJson.status === 'STALE'" ng-click="viewClassificationFromSidebar()">
@@ -60,11 +60,11 @@
             <li ng-if="task.latestClassificationJson.status === 'FAILED'">
               Classification Failed
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'RUNNING'">
+            <li ng-if="classificationRunning">
               Classification Running
             </li>
-            <li ng-if="task.latestClassificationJson.status !== 'RUNNING' && role === 'AUTHOR'" ng-click="classify()"
-                ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
+            <li ng-if="task.latestClassificationJson.status !== 'RUNNING' && !classificationRunning && role === 'AUTHOR'" ng-click="classify()"
+                ng-disabled="task.status === 'Promoted' || classificationRunning || role === 'REVIEWER' || branchLocked">
               Start New Classification
             </li>
           </ul>
