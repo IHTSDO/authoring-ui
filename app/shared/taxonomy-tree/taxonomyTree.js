@@ -346,7 +346,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getTerm = function (node) {          
           if ((node.preferredSynonym && scope.defaultLanguage && scope.defaultLanguage !== '900000000000509007-fsn')
             ||(!scope.defaultLanguage && scope.synonymFlag)) {
-            return node.preferredSynonym.term;         
+            return (typeof node.preferredSynonym === 'object' ? node.preferredSynonym.term : node.preferredSynonym);         
           } else {
             return node.fsn; 
           }          
