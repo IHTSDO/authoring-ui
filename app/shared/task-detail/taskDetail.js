@@ -10,7 +10,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // the project and task branch objects
       $scope.projectBranch = null;
-      $scope.taskBranch = null;
       $scope.promoting = false;
       $scope.automatePromotionStatus = "";
       $scope.automatePromotionErrorMsg = "";    
@@ -393,11 +392,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         terminologyServerService.getBranch($scope.branch).then(function (response) {
 
           // if lock found, set rootscope variable and continue polling
-          if (response.metadata && response.metadata.lock) {
-            if(response.metadata.lock.context.description === 'classifying the ontology')
-                {
-                    $scope.ontologyLock = true;
-                }
+          if (response.metadata && response.metadata.lock) {            
             $rootScope.branchLocked = true;
             $timeout(function () {
               $scope.checkForLock();
@@ -409,14 +404,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 var item = response[response.length -1];
                 if (item.status === 'SCHEDULED' || item.status === 'RUNNING') {
                   $rootScope.branchLocked = true;
+                  $rootScope.classificationRunning = true;
                   $timeout(function () {
                     $scope.checkForLock();
                   }, 10000);
                 } else {
                   $rootScope.branchLocked = false;
+                  $rootScope.classificationRunning = false;
                 }
               } else {
                 $rootScope.branchLocked = false;
+                $rootScope.classificationRunning = false;
               }
             });
 
@@ -566,23 +564,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       function initialize() {
 
-        // clear the branch variables (but not the task to avoid display re-initialization)
-        $scope.taskBranch = null;
-
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.task = response;
-          $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'SCHEDULED' || $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING');
-          $scope.ontologyLock = $rootScope.classificationRunning;
+          $scope.task = response;          
           if ($scope.task.status !== 'Promoted') {
             $scope.checkAutomatePromotionStatus(true);
           } else {
             $rootScope.branchLocked = true;
           }
-
-          terminologyServerService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
-          });
-
+          
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
