@@ -10,7 +10,15 @@ angular.module('singleConceptAuthoringApp.home', [
         $routeProvider
             .when('/home', {
                 controller: 'HomeCtrl',
-                templateUrl: 'components/home/home.html'
+                templateUrl: 'components/home/home.html',
+                resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+                    var defer = $q.defer();
+                    terminologyServerService.getEndpoint().then(function(){
+                      defer.resolve();
+                    });                        
+                    return defer.promise;
+                  }
+                ]
             });
     })
 

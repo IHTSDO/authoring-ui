@@ -10,7 +10,15 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
     $routeProvider
       .when('/review-tasks', {
         controller: 'ReviewTasksCtrl',
-        templateUrl: 'components/review-tasks/reviewTasks.html'
+        templateUrl: 'components/review-tasks/reviewTasks.html',
+        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+            var defer = $q.defer();
+            terminologyServerService.getEndpoint().then(function(){
+              defer.resolve();
+            });                        
+            return defer.promise;
+          }
+        ]
       });
   })
 
