@@ -409,18 +409,19 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     $scope.checkForLock();
                   }, 10000);
                 } else {
+                  if ($rootScope.classificationRunning) {
+                    $rootScope.$broadcast('reloadTask');
+                  }
                   $rootScope.branchLocked = false;
                   $rootScope.classificationRunning = false;
                 }
               } else {
                 $rootScope.branchLocked = false;
-                $rootScope.classificationRunning = false;
               }
             });
 
           }
         });
-
       };
 
       $scope.isAutomatePromotionRunning = function (){
@@ -432,7 +433,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         return false;
       }
 
-      $scope.checkAutomatePromotionStatus = function (isInitialInvoke) {
+      $scope.checkAutomatePromotionStatus = function (isInitialPageLoad) {
         $scope.automatePromotionErrorMsg = '';
         promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           if (response && $scope.task.status !== 'Promoted') {
@@ -475,7 +476,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
                 $rootScope.automatedPromotionInQueued = false;
-                if(!isInitialInvoke) {
+                if(!isInitialPageLoad) {
                   $rootScope.$broadcast('reloadTask');
                 }
                 $timeout(function () {
@@ -492,7 +493,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;
                 $rootScope.automatedPromotionInQueued = false;
                 $rootScope.branchLocked = true;
-                if (!isInitialInvoke) {
+                if (!isInitialPageLoad) {
                   $rootScope.$broadcast('reloadTask');
                 }
                 break;
@@ -500,7 +501,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.automatedPromotionInQueued = false;
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
-                if (!isInitialInvoke) {
+                if (!isInitialPageLoad) {
                   $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
                   notificationService.clear();
                 }
@@ -521,7 +522,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           } else {
             $scope.automatePromotionStatus = '';
           }
-          if(isInitialInvoke && $scope.automatePromotionStatus === '') {
+          if(isInitialPageLoad && $scope.automatePromotionStatus === '') {
             $scope.checkForLock();
           }
         });

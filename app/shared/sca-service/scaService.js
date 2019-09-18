@@ -396,12 +396,8 @@ angular.module('singleConceptAuthoringApp')
                       }
 
                       notificationService.sendMessage(msg, 0, url);
-
                     }
                   });
-
-                  $rootScope.$broadcast('reloadTask');
-                  $rootScope.$broadcast('reloadClassification');
                 } else if (newNotification.project) {
                   terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
                     console.log(newNotification);
