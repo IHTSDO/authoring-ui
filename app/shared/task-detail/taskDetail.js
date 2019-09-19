@@ -452,11 +452,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               case 'Rebased with conflicts':
                 scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   $scope.task = response;
-                  if ($scope.task.branchState !== 'FORWARD'
-                    && $scope.task.branchState !== 'UP_TO_DATE') {
+                  if ($scope.task.branchState !== 'FORWARD' && $scope.task.branchState !== 'UP_TO_DATE') {
                     $rootScope.branchLocked = false;
-                $rootScope.automatedPromotionInQueued = false;
-                $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
+                    $rootScope.automatedPromotionInQueued = false;
+                    $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
                   }
                 });
                 break;
@@ -467,19 +466,26 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Classified with results':
+                if(isInitialPageLoad && $rootScope.classificationRunning) {
+                  $scope.automatePromotionStatus = '';
+                  break;
+                }
+
+                $rootScope.classificationRunning = false;
+                $rootScope.branchLocked = false;
+                $rootScope.automatedPromotionInQueued = false;
+
                 if(!isInitialPageLoad) {
                   $rootScope.$broadcast('reloadTask');
+                  break;
                 }
+
                 if ($scope.task.latestClassificationJson.status === 'SAVED' || new Date($scope.task.latestClassificationJson.completionDate) > new Date(response.completeDate)) {
                   $scope.automatePromotionStatus = '';
                   break;
                 }
-                $rootScope.classificationRunning = false;
-                $rootScope.branchLocked = false;
-                $rootScope.automatedPromotionInQueued = false;                
-                $timeout(function () {
-                  $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';
-                }, 2000);
+
+                $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';               
                 break;
               case 'Promoting':
                 $rootScope.classificationRunning = false;
