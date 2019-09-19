@@ -1331,10 +1331,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               autoSave();
               scope.computeRelationshipGroups();
             }
-            else {
-              scope.concept.classAxioms = [];
+            else {              
               if (scope.concept.effectiveTime) {
-
+                scope.concept.classAxioms = [];
+                
                 if(scope.concept.relationships.length === 0) {
                   scope.addAdditionalAxiom(false);
                 }
