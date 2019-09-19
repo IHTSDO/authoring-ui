@@ -48,16 +48,16 @@
             <li ng-if="!task.latestClassificationJson && !classificationRunning">
               No Classification Run
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'STALE'" ng-click="viewClassificationFromSidebar()">
+            <li ng-if="task.latestClassificationJson.status === 'STALE' && !classificationRunning" ng-click="viewClassificationFromSidebar()">
               View Stale Classification (completed {{task.latestClassificationJson.completionDate | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}})
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'SAVED'" ng-click="viewClassificationFromSidebar()">
+            <li ng-if="task.latestClassificationJson.status === 'SAVED' && !classificationRunning" ng-click="viewClassificationFromSidebar()">
               View Classification (saved {{task.latestClassificationJson.saveDate | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}})
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'COMPLETED'" ng-click="viewClassificationFromSidebar()">
+            <li ng-if="task.latestClassificationJson.status === 'COMPLETED' && !classificationRunning" ng-click="viewClassificationFromSidebar()">
               View Classification (completed {{task.latestClassificationJson.completionDate | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}})
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'FAILED'">
+            <li ng-if="task.latestClassificationJson.status === 'FAILED' && !classificationRunning">
               Classification Failed
             </li>
             <li ng-if="classificationRunning">

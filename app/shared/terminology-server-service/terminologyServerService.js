@@ -1623,7 +1623,7 @@ angular.module('singleConceptAuthoringApp')
         }
         var params = 'page=0&size=1&sort=commitDate%2Cdesc&sourceBranch=' + encodeURIComponent(branchRoot);
         return $http.get('/traceability-service/activities/promotions?' + params).then(function (response) {
-          return response.data.content[0].commitDate;
+          return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
         }, function (error) {
           return null;
         });
