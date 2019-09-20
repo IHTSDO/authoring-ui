@@ -848,9 +848,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete scope.concept.requiresValidation;
           }
           var deferred = $q.defer();
+          
+          // send a copied concept to validation, the original one could some other properties that need to retain, they will be cleaned up when running validation
+          // (i.e some properties are used for highlighting)
           var copiedConcept = angular.copy(scope.concept);
+          
           terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, copiedConcept).then(function (validationResults) {
-
+            
+            // merge back new concept to original one, the new concept may have some new ids (conceptId, descriptionId, axiomId) which are automatical generated during validation
+            // Rule : later properties overwrite earlier properties with the same name.
+            scope.concept = {...scope.concept, ...copiedConcept};
+            
             var results = {
               hasWarnings: false,
               hasErrors: false,
@@ -884,8 +892,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.validation = {};
             deferred.reject();
           });
-          console.log(scope.concept);
-
+          
           return deferred.promise;
         };
 
