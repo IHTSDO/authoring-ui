@@ -1009,6 +1009,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             let originalIds = [];
             let newIds = [];
+            let deletedIds = [];
             //build list of before and after ids for simpler iteration
             angular.forEach(originalConcept.classAxioms, function(axiom){
               originalIds.push(axiom.axiomId);
@@ -1020,33 +1021,63 @@ angular.module('singleConceptAuthoringApp')
               newIds.push(axiom.axiomId);
                 angular.forEach(originalConcept.classAxioms, function(originalAxiom){
                   if(axiom.axiomId === originalAxiom.axiomId){
+                    originalAxiom.found = true;
                     scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
                         scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
                           axiom = modifiedAxiom;
                           if(axiom.active !== originalAxiom.active
-                              || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                          || axiom.definitionStatus !== originalAxiom.definitionStatus){
                                 highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
+                          }
+                          if(originalAxiom.active && !axiom.active){
+                                highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, true);
                           }
                         });
                     });
                   }
+                });
+                angular.forEach(originalConcept.classAxioms, function(originalAxiom){
+                    if(!originalAxiom.found){
+                        originalAxiom.axiomId = terminologyServerService.createGuid();
+                        originalAxiom.active = false;
+                        originalAxiom.deleted = true;
+                        currentConcept.classAxioms.push(originalAxiom);
+                        highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
+                    }
+                    delete originalAxiom.found
                 });
             });
             angular.forEach(currentConcept.gciAxioms, function(axiom){
               newIds.push(axiom.axiomId);
               angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
                 if(axiom.axiomId === originalAxiom.axiomId){
+                  originalAxiom.found = true;
                   scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
-                      scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept).then(function (modifiedAxiom) {
+                      scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
                         axiom = modifiedAxiom;
+                        console.log(axiom.active);
+                        console.log(originalAxiom.active);
                         if(axiom.active !== originalAxiom.active
                           || axiom.definitionStatus !== originalAxiom.definitionStatus){
                             highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
+                        }
+                        if(originalAxiom.active && !axiom.active){
+                            highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, true);
                         }
                       });
                   });
                 } 
               });
+              angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
+                    if(!originalAxiom.found){
+                        originalAxiom.axiomId = terminologyServerService.createGuid();
+                        originalAxiom.active = false;
+                        originalAxiom.deleted = true;
+                        currentConcept.classAxioms.push(originalAxiom);
+                        highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
+                    }
+                    delete originalAxiom.found
+                });
             });
             //axiom is new
             angular.forEach(newIds, function(id){
