@@ -1193,7 +1193,7 @@ angular.module('singleConceptAuthoringApp')
             for (var key in oldGroups) {
                 if (oldGroups.hasOwnProperty(key)) size++;
             }
-            if(size === matchedGroups.length){
+            if(size === matchedGroups.length && size !== 0){
                 params.onlyNew = true;
             }
             params.partialMatches = partialMatches;
