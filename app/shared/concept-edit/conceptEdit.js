@@ -843,22 +843,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
 // function to validate concept and display any errors or warnings
-        scope.validateConcept = function () {
-          if (scope.concept.requiresValidation) {
-            delete scope.concept.requiresValidation;
+        scope.validateConcept = function (concept) {
+          if (concept.requiresValidation) {
+            delete concept.requiresValidation;
           }
           var deferred = $q.defer();
-          
-          // send a copied concept to validation, the original one could some other properties that need to retain, they will be cleaned up when running validation
-          // (i.e some properties are used for highlighting)
-          var copiedConcept = angular.copy(scope.concept);
-          
-          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, copiedConcept).then(function (validationResults) {
-            
-            // merge back new concept to original one, the new concept may have some new ids (conceptId, descriptionId, axiomId) which are automatical generated during validation
-            // Rule : later properties overwrite earlier properties with the same name.
-            scope.concept = {...scope.concept, ...copiedConcept};
-            
+          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (validationResults) {
             var results = {
               hasWarnings: false,
               hasErrors: false,
@@ -899,14 +889,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // on load, check for expected render flag applied in saveHelper
         if (scope.concept.catchExpectedRender) {
           delete scope.concept.catchExpectedRender;
-          scope.validateConcept().then(function () {
+          scope.validateConcept(scope.concept).then(function () {
             scope.reapplyTemplate();
           });
         }
 
 // on load, load validation report for REVIEWER
         if (scope.loadValidation === 'true' || scope.loadValidation === true) {
-          scope.validateConcept();
+          var copiedConcept = angular.copy(scope.concept);
+          scope.validateConcept(copiedConcept);
         }
 
         /**
@@ -1124,7 +1115,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // validate concept first
-          scope.validateConcept().then(function () {
+          scope.validateConcept(scope.concept).then(function () {
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
@@ -1184,7 +1175,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // brief timeout to alleviate timing issues, may no longer be needed
               $timeout(function () {
                 // perform a second validation to catch any convention warnings introduced by termserver
-                scope.validateConcept().then(function (results) {
+                scope.validateConcept(scope.concept).then(function (results) {
                   if (scope.validation.hasErrors) {
                     notificationService.sendError('Concept saved, but modifications introduced by server led to convention errors. Please review');
                     $rootScope.$broadcast('conceptEdit.validation', {
