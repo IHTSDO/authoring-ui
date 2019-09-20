@@ -1036,17 +1036,18 @@ angular.module('singleConceptAuthoringApp')
                     });
                   }
                 });
-                angular.forEach(originalConcept.classAxioms, function(originalAxiom){
-                    if(!originalAxiom.found){
-                        originalAxiom.axiomId = terminologyServerService.createGuid();
-                        originalAxiom.active = false;
-                        originalAxiom.deleted = true;
-                        currentConcept.classAxioms.push(originalAxiom);
-                        highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
-                    }
-                    delete originalAxiom.found
-                });
             });
+              
+            angular.forEach(originalConcept.classAxioms, function(originalAxiom){
+                if(originalAxiom.found !== true){
+                    originalAxiom.active = false;
+                    originalAxiom.deleted = true;
+                    currentConcept.classAxioms.push(originalAxiom);
+                    highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
+                }
+                delete originalAxiom.found
+            });
+              
             angular.forEach(currentConcept.gciAxioms, function(axiom){
               newIds.push(axiom.axiomId);
               angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
@@ -1055,8 +1056,6 @@ angular.module('singleConceptAuthoringApp')
                   scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
                       scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
                         axiom = modifiedAxiom;
-                        console.log(axiom.active);
-                        console.log(originalAxiom.active);
                         if(axiom.active !== originalAxiom.active
                           || axiom.definitionStatus !== originalAxiom.definitionStatus){
                             highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
@@ -1068,17 +1067,18 @@ angular.module('singleConceptAuthoringApp')
                   });
                 } 
               });
-              angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
-                    if(!originalAxiom.found){
-                        originalAxiom.axiomId = terminologyServerService.createGuid();
-                        originalAxiom.active = false;
-                        originalAxiom.deleted = true;
-                        currentConcept.classAxioms.push(originalAxiom);
-                        highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
-                    }
-                    delete originalAxiom.found
-                });
             });
+              
+            angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
+                if(originalAxiom.found !== true){
+                    originalAxiom.active = false;
+                    originalAxiom.deleted = true;
+                    currentConcept.gciAxioms.push(originalAxiom);
+                    highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
+                }
+                delete originalAxiom.found
+            });
+              
             //axiom is new
             angular.forEach(newIds, function(id){
               if(!originalIds.includes(id)){
