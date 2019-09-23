@@ -4,8 +4,8 @@
 // This generic service can be used with either Snow Owl or Snowstorm terminology servers.
 //
 angular.module('singleConceptAuthoringApp')
-  .service('terminologyServerService', ['$http', '$q', '$timeout', '$interval', 'notificationService', 'metadataService', '$rootScope',
-    function ($http, $q, $timeout, $interval, notificationService, metadataService, $rootScope) {
+  .service('terminologyServerService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', '$rootScope',
+    function ($http, $q, $timeout, notificationService, metadataService, $rootScope) {
       let apiEndpoint = null;
 
       /////////////////////////////////////
@@ -1916,40 +1916,18 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
-      function synchronousMerge(sourceBranch, targetBranch, mergeReviewId) {
-        var deferred = $q.defer();
-
+      function rebaseBranches(parentBranch, childBranch, id) {
         return $http.post(apiEndpoint + 'merges', {
-          source: sourceBranch,
-          target: targetBranch,
-          reviewId: mergeReviewId
+          source: parentBranch,
+          target: childBranch,
+          reviewId: id
         }).then(function (response) {
-          // Extract the merge id from the location header
+          // extract the merge-review id from the location header
           var locHeader = response.headers('Location');
           var mergeId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
-          pollUntilStatusComplete(apiEndpoint + 'merges/' + mergeId, ['SCHEDULED', 'IN_PROGRESS']).then(function(merge) {
-              deferred.resolve(merge);
-            }, function(merge) {
-              deferred.reject(merge);
-            });
+
+          return {locHeader: locHeader};
         });
-
-        deferred.promise;
-      }
-
-      function pollUntilStatusComplete(url, runningStatuses) {
-        var statusPoll = null;
-        function stopStatusPolling() {
-          if (statusPoll) {
-            console.log('Stopping status polling of ' + url);
-            $interval.cancel(statusPoll);
-          }
-        }
-
-        $interval(function () {
-
-        }, 1000)
-
       }
 
       /**
@@ -2283,7 +2261,6 @@ angular.module('singleConceptAuthoringApp')
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
         getLastPromotionTime: getLastPromotionTime,
-        synchronousMerge: synchronousMerge,
 
         // Terminology Server Administrative Services
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
