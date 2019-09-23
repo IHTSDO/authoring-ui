@@ -378,18 +378,21 @@ angular.module('singleConceptAuthoringApp')
         });
           
         //Loop through and remove any axioms that have been added during feedback axiom comparions
-          
-        for (var i = concept.classAxioms.length - 1; i >= 0; i--) {
+        if(concept.classAxioms){
+            for (var i = concept.classAxioms.length - 1; i >= 0; i--) {
                 if (concept.classAxioms[i].deleted) {
                     concept.classAxioms.splice(i, 1);
                 }
             }
-          
-        for (var i = concept.gciAxioms.length - 1; i >= 0; i--) {
+        }
+        
+        if(concept.gciAxioms){
+            for (var i = concept.gciAxioms.length - 1; i >= 0; i--) {
                 if (concept.gciAxioms[i].deleted) {
                     concept.gciAxioms.splice(i, 1);
                 }
             }
+        }
           
         //Loop through and remove any axiom relationships that have been added during feedback axiom comparions
           
