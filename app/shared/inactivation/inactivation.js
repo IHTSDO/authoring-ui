@@ -463,7 +463,7 @@ angular.module('singleConceptAuthoringApp')
                    angular.forEach(scope.affectedConcepts[conceptId].gciAxioms, function (axiom) {
                       angular.forEach(axiom.relationships, function (rel) {
                           // add all relationships with no effective time
-                          if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                          if (rel.new) {
                             if (rel.accepted !== true) {
                               rel.accepted = true;
                               rowsAccepted++;
@@ -480,7 +480,7 @@ angular.module('singleConceptAuthoringApp')
                     angular.forEach(scope.affectedConcepts[conceptId].gciAxioms, function (axiom) {
                       angular.forEach(axiom.relationships, function (rel) {
                           // add all relationships with no effective time
-                          if (rel.new && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                          if (rel.new) {
                             if (rel.accepted !== true) {
                               rel.accepted = true;
                               rowsAccepted++;
