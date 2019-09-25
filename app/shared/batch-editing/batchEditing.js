@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('batchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'modalService', 'componentAuthoringUtil', 'templateService', 'batchEditingService', 'scaService', 'snowowlService', 'constraintService', 'notificationService', 'metadataService', '$modal',
-    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, modalService, componentAuthoringUtil, templateService, batchEditingService, scaService, snowowlService, constraintService, notificationService, metadataService, $modal) {
+  .directive('batchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'modalService', 'componentAuthoringUtil', 'templateService', 'batchEditingService', 'scaService', 'terminologyServerService', 'constraintService', 'notificationService', 'metadataService', '$modal',
+    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, modalService, componentAuthoringUtil, templateService, batchEditingService, scaService, terminologyServerService, constraintService, notificationService, metadataService, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -33,14 +33,14 @@ angular.module('singleConceptAuthoringApp')
           //
           // Utility functions from services
           //
-          scope.isSctid = snowowlService.isSctid;
+          scope.isSctid = terminologyServerService.isSctid;
 
           //
           // NgTable functions
           //
 
           function applyNgTableSortingParams(concept) {
-            concept.sctid = snowowlService.isSctid(concept.conceptId) ? concept.conceptId : '';
+            concept.sctid = terminologyServerService.isSctid(concept.conceptId) ? concept.conceptId : '';
             concept.fsn = componentAuthoringUtil.getFsnForConcept(concept);
             angular.forEach(concept.relationships, function (r) {
               if (r.targetSlot && r.targetSlot.slotName) {
@@ -295,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
               }).length === 0) {
               if(scope.transform){
                   notificationService.sendMessage('Loading concept...', 10000, null);
-                  snowowlService.getFullConcept(concept.conceptId, scope.branch).then(function(beforeConcept){
+                  terminologyServerService.getFullConcept(concept.conceptId, scope.branch).then(function(beforeConcept){
                         let project = scope.task.branchPath;
                         scope.beforeConcept = beforeConcept;
                         scope.parentBranch = project.substr(0, project.lastIndexOf("\/"));
@@ -380,7 +380,7 @@ angular.module('singleConceptAuthoringApp')
               concept.errorMsg = 'Incomplete';
             } else {
 
-              snowowlService.validateConcept(scope.task.projectKey,
+              terminologyServerService.validateConcept(scope.task.projectKey,
                 scope.task.key,
                 conceptCopy,
                 true // retain temporary ids
@@ -569,7 +569,7 @@ angular.module('singleConceptAuthoringApp')
               var originalConceptId = concept.conceptId;
 
               // clean concept -- keep ids
-              snowowlService.cleanConcept(concept, true);
+              terminologyServerService.cleanConcept(concept, true);
 
               originalConcept.tableAction = 'Validating...';
 
@@ -598,7 +598,7 @@ angular.module('singleConceptAuthoringApp')
                   originalConcept.tableAction = 'Saving...';
 
                   // clean concept again, this time stripping temp ids
-                  snowowlService.cleanConcept(concept, false);
+                  terminologyServerService.cleanConcept(concept, false);
 
                   // In order to ensure proper term-server behavior,
                   // need to delete SCTIDs without effective time on descriptions and relationships
@@ -615,9 +615,9 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   if (!concept.conceptId) {
-                    saveFn = snowowlService.createConcept;
+                    saveFn = terminologyServerService.createConcept;
                   } else {
-                    saveFn = snowowlService.updateConcept;
+                    saveFn = terminologyServerService.updateConcept;
                   }
                   saveFn(
                     scope.task.projectKey,
@@ -714,7 +714,7 @@ angular.module('singleConceptAuthoringApp')
               scope.validConcepts[i].tableAction = 'Validating...';
               scope.validConcepts[i].validation = null;
               var copiedConcept = angular.copy(scope.validConcepts[i]);
-              snowowlService.cleanConcept(copiedConcept, true);
+              terminologyServerService.cleanConcept(copiedConcept, true);
               copiedValidConcepts.push(copiedConcept);
             }
             scope.template = scope.validConcepts[0].template;
@@ -725,13 +725,13 @@ angular.module('singleConceptAuthoringApp')
                 for (var i = 0; i < scope.validConcepts.length; i++) {  
                   scope.validConcepts[i].tableAction = 'Saving...';
                   var copiedConcept = angular.copy(scope.validConcepts[i]);
-                  snowowlService.cleanConcept(copiedConcept, false);
+                  terminologyServerService.cleanConcept(copiedConcept, false);
                   clonedConcepts.push(copiedConcept);           
                 } 
                 console.log(clonedConcepts);
                  // bulk save concepts
-                snowowlService.bulkUpdateConcept(scope.branch,clonedConcepts,true).then(function(response){
-                  snowowlService.bulkRetrieveFullConcept(response.conceptIds,scope.branch).then(function(concepts){
+                terminologyServerService.bulkUpdateConcept(scope.branch,clonedConcepts,true).then(function(response){
+                  terminologyServerService.bulkRetrieveFullConcept(response.conceptIds,scope.branch).then(function(concepts){
                     console.log("bulk save finish time : " + (new Date()));
                     // Save all warning concepts one-by-one
                     if ( scope.warningConcepts.length > 0) {
@@ -768,7 +768,7 @@ angular.module('singleConceptAuthoringApp')
 
           function bulkValidateConcepts (concepts) {
             var deferred = $q.defer();
-            snowowlService.bulkValidateConcepts(scope.branch, concepts).then(function(responses){
+            terminologyServerService.bulkValidateConcepts(scope.branch, concepts).then(function(responses){
               console.log("validation finish time : " + (new Date()));
               var conceptErrors = [];
               angular.forEach(responses.data, function(item) {

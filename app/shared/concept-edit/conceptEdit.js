@@ -114,7 +114,7 @@ angular.module('singleConceptAuthoringApp')
   };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, terminologyServerService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -153,6 +153,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
         componentStyles: '=',
 
+        innerComponentStyle: '=',
+
+        inactiveDescriptions: '=',
+
         // Any additional fields you would like adding to the concept model (not
         // required) e.g. All fields are added as text fields to the form and if
         // fields are specified then concept cleanup is disabled {
@@ -190,7 +194,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl)
       {
         scope.isAxiomSupport =  function() {
-          if (scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
+          if (scope.concept && scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
             return true;
           }
           return false;
@@ -213,7 +217,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         };
-          
+
         scope.checkReadOnlyDialect = function(dialectId){
             let readOnly = metadataService.getReadOnlyDialectsForModuleId(scope.concept.moduleId);
             if(readOnly[dialectId] === 'true'){
@@ -255,7 +259,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               combo: 'alt+x',
               description: 'Remove current concept from edit panel: ' + scope.concept.fsn,
               callback: function() {scope.removeConcept(scope.concept)}
-            })          
+            })
           hotkeys.bindTo(scope)
           .add({
             combo: 'alt+t',
@@ -288,8 +292,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             .add({
               combo: 'alt+a',
               description: 'Approve concept: ' + scope.concept.fsn,
-              callback: function() {                
-                scope.approveAndLoadNext();                
+              callback: function() {
+                scope.approveAndLoadNext();
               }
             });
           }
@@ -318,13 +322,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.role = null;
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
-          if (task) {            
+          if (task) {
             accountService.getRoleForTask(task).then(function (role) {
               scope.role = role;
             });
             if (scope.role === 'UNDEFINED') {
               notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
-            }                       
+            }
           }
         });
 
@@ -496,7 +500,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // utility function pass-thrus
         scope.templateInitialized = false;
-        scope.isSctid = snowowlService.isSctid;
+        scope.isSctid = terminologyServerService.isSctid;
         scope.relationshipHasTargetSlot = templateService.relationshipHasTargetSlot;
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
@@ -671,7 +675,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
 
                 // check for new concept with non-SCTID conceptId -- ignore blank id concepts
-                else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
+                else if (scope.concept.conceptId && !terminologyServerService.isSctid(scope.concept.conceptId)) {
 
                   // if template attached to this concept, use that
                   if (scope.concept.template) {
@@ -703,68 +707,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
 //on load, check if traceability has been pashed from Feedback, then find the differences with concept project
-        scope.innerComponentStyle = {};
-        scope.inactiveDescriptions = {};
 
         scope.isInactiveDescriptionModified = function (descriptionId) {
           return scope.inactiveDescriptions.hasOwnProperty(descriptionId);
         };
-
-        if (scope.isFeedback) {
-           lookupInnerComponentStyle();
-        }
-
-        function lookupInnerComponentStyle (){
-          scope.innerComponentStyle = {};        
-          
-          if(scope.traceabilities.totalElements > 0) {
-            snowowlService.getFullConcept(scope.concept.conceptId,scope.branch.substring(0,scope.branch.lastIndexOf('/'))).then(function(response) {
-              var checkList = [];
-              angular.forEach(scope.traceabilities.content, function (content) {
-                if(content.activityType === 'CONTENT_CHANGE') {
-                  angular.forEach(content.conceptChanges, function (traceability) {
-                    if(traceability.conceptId === scope.concept.conceptId) {
-                      angular.forEach(traceability.componentChanges, function (componentChange) {
-                        if (componentChange.componentType === 'DESCRIPTION'
-                            || (componentChange.componentType === 'RELATIONSHIP' && componentChange.componentSubType === 'STATED_RELATIONSHIP')) {
-                          scope.innerComponentStyle[componentChange.componentId] = {
-                            message: null,
-                            style: 'tealhl'
-                          };
-                        }
-                        if (componentChange.componentType === 'DESCRIPTION') {
-                          if (checkList.indexOf(componentChange.componentId) == -1) {
-                            checkList.push(componentChange.componentId);
-
-                            var taskDescription = scope.concept.descriptions.filter( function (des) {
-                              return des.descriptionId === componentChange.componentId;
-                            })[0];
-
-                            var projectDescription = response.descriptions.filter( function (des) {
-                              return des.descriptionId === componentChange.componentId;
-                            })[0];
-
-                            if(projectDescription && taskDescription) {
-                              highlightComponent(componentChange,projectDescription,taskDescription);
-                            }
-
-                            if ((projectDescription.inactivationIndicator !== taskDescription.inactivationIndicator
-                                || checkAssociationTargetsChanged(projectDescription.associationTargets, taskDescription.associationTargets))
-                                && !projectDescription.active 
-                                && !taskDescription.active) {
-                              scope.inactiveDescriptions[projectDescription.descriptionId] = projectDescription;
-                            }
-                          }
-                        }
-                      });
-                    }
-                  });
-                }
-              });
-            });
-          }
-         
-        }
 
         function highlightComponent(componentChange,mainDescription,taskDescription) {
           if (taskDescription.type !== mainDescription.type) {
@@ -804,28 +750,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         }
 
-        function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
-          for (var key in associationTarget1) {
-            if (associationTarget2.hasOwnProperty(key)) {
-              var items1 =  associationTarget1[key];
-              var items2 =  associationTarget2[key];
-              if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
-                return true;
-              }
-            } else {
-              return true;
-            }
-          }
-          return false;
-        }
-        
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
 
             // id required, used in drawModel.js
             $('#image-' + concept.conceptId).css('display', 'inline-block');
-            $('#project-taxonomy-' + concept.conceptId).css('display', 'inline-block');            
+            $('#project-taxonomy-' + concept.conceptId).css('display', 'inline-block');
             var zoomElm = $('#image-' + concept.conceptId).parent().parent().find('.zoom')[0];
             $(zoomElm).css('display', 'inline-block');
           }
@@ -846,11 +777,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.toggleHideInactive = function () {
           scope.hideInactive = !scope.hideInactive;
+          scope.computeRelationshipGroups();
         };
 
         scope.showInferredRels = false;
         scope.toggleInferredRelationships = function () {
-           scope.showInferredRels = ! scope.showInferredRels;
+           scope.showInferredRels = !scope.showInferredRels;
            scope.computeRelationshipGroups();
         };
 
@@ -885,7 +817,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.removeConcept = function (concept) {
 
-          if (!snowowlService.isSctid(concept.conceptId)) {
+          if (!terminologyServerService.isSctid(concept.conceptId)) {
             modalService.confirm('This concept is unsaved; removing it will destroy your work.  Continue?').then(function () {
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
               $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -911,14 +843,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
 // function to validate concept and display any errors or warnings
-        scope.validateConcept = function () {
-          if (scope.concept.requiresValidation) {
-            delete scope.concept.requiresValidation;
+        scope.validateConcept = function (concept) {
+          if (concept.requiresValidation) {
+            delete concept.requiresValidation;
           }
           var deferred = $q.defer();
-
-          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
-
+          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (validationResults) {
             var results = {
               hasWarnings: false,
               hasErrors: false,
@@ -952,23 +882,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.validation = {};
             deferred.reject();
           });
-
+          
           return deferred.promise;
         };
 
 // on load, check for expected render flag applied in saveHelper
         if (scope.concept.catchExpectedRender) {
           delete scope.concept.catchExpectedRender;
-          scope.validateConcept().then(function () {
+          scope.validateConcept(scope.concept).then(function () {
             scope.reapplyTemplate();
           });
         }
 
 // on load, load validation report for REVIEWER
         if (scope.loadValidation === 'true' || scope.loadValidation === true) {
-          scope.validateConcept();
+          var copiedConcept = angular.copy(scope.concept);
+          scope.validateConcept(copiedConcept);
         }
-        
+
         /**
          * Helper function to save or update concept after validation
          * @param concept
@@ -998,16 +929,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // NOTE: Needed for CRS integration
             var originalConceptId = scope.concept.conceptId;
 
-            // clean the concept for snowowl-ready save
-            snowowlService.cleanConcept(scope.concept);
+            // clean the concept for terminology server-ready save
+            terminologyServerService.cleanConcept(scope.concept);
 
 
             var saveFn = null;
 
             if (!scope.concept.conceptId || crsService.requiresCreation(scope.concept.conceptId)) {
-              saveFn = snowowlService.createConcept;
+              saveFn = terminologyServerService.createConcept;
             } else {
-              saveFn = snowowlService.updateConcept;
+              saveFn = terminologyServerService.updateConcept;
             }
 
 
@@ -1015,12 +946,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // need to delete SCTIDs without effective time on descriptions and relationships
             // otherwise the values revert to termserver version
 //            angular.forEach(scope.concept.descriptions, function (description) {
-//              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
+//              if (terminologyServerService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
 //                delete description.descriptionId;
 //              }
 //            });
 //            angular.forEach(scope.concept.relationships, function (relationship) {
-//              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
+//              if (terminologyServerService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
 //                delete relationship.relationshipId;
 //              }
 //            });
@@ -1038,7 +969,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // NOTE: Still unsure exactly why create is triggering a full re-render
                   // does not appear to be trackBy or similar issue in ng-repeat....
                   // NOTE: Currently used for re-validation and prevention of spurious modified UI States on load
-                  if (saveFn == snowowlService.createConcept) {
+                  if (saveFn == terminologyServerService.createConcept) {
                     response.catchExpectedRender = true;
                   }
 
@@ -1083,10 +1014,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   scope.computeRelationshipGroups();
 
-                  if (scope.isFeedback) {
-                     lookupInnerComponentStyle();
-                  }
-
+                  
                   // broadcast event to any listeners (currently task detail, crs concept list,
                   // conflict/feedback resolved lists)
                   $rootScope.$broadcast('conceptEdit.conceptChange', {
@@ -1172,9 +1100,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean concept of any locally added information
           // store original concept id for CRS integration
           var originalConcept = angular.copy(scope.concept);
-          snowowlService.cleanConcept(scope.concept);
+          terminologyServerService.cleanConcept(scope.concept);
 
-          var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
           scope.saving = true;
 
           // special case -- don't want save notifications in merge view, all
@@ -1184,10 +1111,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else if (scope.isInactivation) {
             // do nothing
           } else {
-            notificationService.sendMessage(saveMessage);
+            notificationService.sendMessage(scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
           }
+
           // validate concept first
-          scope.validateConcept().then(function () {
+          scope.validateConcept(scope.concept).then(function () {
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
@@ -1195,6 +1123,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 concept: scope.concept,
                 validationResults: scope.validation
               });
+
+              if (Object.keys(scope.validation.errors).length > 0) {
+                scope.saving = false;
+                scope.concept = originalConcept
+              }
             }
 
             // special case -- inactivation:  simply broadcast concept
@@ -1202,6 +1135,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if (scope.validation && scope.validation.hasErrors) {
                 notificationService.sendError('Fix errors before continuing');
+                scope.computeAxioms(axiomType.ADDITIONAL);
+                scope.computeAxioms(axiomType.GCI);
                 scope.reapplyTemplate();
               } else {
                 scope.saving = false;
@@ -1214,6 +1149,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else if (scope.validation && scope.validation.hasErrors) {
               notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
               scope.saving = false;
+              scope.computeAxioms(axiomType.ADDITIONAL);
+              scope.computeAxioms(axiomType.GCI);
               scope.reapplyTemplate();
 
               $rootScope.$broadcast('conceptEdit.validation', {
@@ -1238,7 +1175,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // brief timeout to alleviate timing issues, may no longer be needed
               $timeout(function () {
                 // perform a second validation to catch any convention warnings introduced by termserver
-                scope.validateConcept().then(function (results) {
+                scope.validateConcept(scope.concept).then(function (results) {
                   if (scope.validation.hasErrors) {
                     notificationService.sendError('Concept saved, but modifications introduced by server led to convention errors. Please review');
                     $rootScope.$broadcast('conceptEdit.validation', {
@@ -1267,11 +1204,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.focusHandler(true, false);
                   scope.computeAxioms(axiomType.ADDITIONAL);
                   scope.computeAxioms(axiomType.GCI);
+                  angular.forEach(scope.concept.classAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
+                  angular.forEach(scope.concept.gciAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
                   updateReviewFeedback();
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                   scope.saving = false;
                   scope.reapplyTemplate();
+                  scope.computeAxioms(axiomType.ADDITIONAL);
+                  scope.computeAxioms(axiomType.GCI);
+                  angular.forEach(scope.concept.classAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
+                  angular.forEach(scope.concept.gciAxioms, function(axiom){
+                      refreshAttributeTypesForAxiom(axiom);
+                  })
                   scope.focusHandler(true, false);
                 });
               }, 500);
@@ -1288,7 +1239,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               else {
                 scope.concept = originalConcept;
                 scope.isModified = true;
-                notificationService.sendError('Error saving concept: ' + error.statusText);
+                notificationService.sendError('Error saving concept: ' + error.data.message);
                 scope.focusHandler(true, false);
               }
               scope.reapplyTemplate();
@@ -1296,6 +1247,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.focusHandler(true, false);
               scope.computeAxioms(axiomType.ADDITIONAL);
               scope.computeAxioms(axiomType.GCI);
+              angular.forEach(scope.concept.classAxioms, function(axiom){
+                  refreshAttributeTypesForAxiom(axiom);
+              })
+              angular.forEach(scope.concept.gciAxioms, function(axiom){
+                  refreshAttributeTypesForAxiom(axiom);
+              })
             });
 
           }, function (error) {
@@ -1305,6 +1262,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.focusHandler(true, false);
             scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);
+            angular.forEach(scope.concept.classAxioms, function(axiom){
+                refreshAttributeTypesForAxiom(axiom);
+            })
+            angular.forEach(scope.concept.gciAxioms, function(axiom){
+                refreshAttributeTypesForAxiom(axiom);
+            })
           });
         };
 
@@ -1344,7 +1307,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // if not an SCTID, simply remove the concept instead of deleting it
-          if (!snowowlService.isConceptId(concept.conceptId)) {
+          if (!terminologyServerService.isConceptId(concept.conceptId)) {
             scope.removeConcept(concept);
             return;
           }
@@ -1359,30 +1322,49 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
-            scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
+            scope.warnings = ['Please remove any axiom relationships you would not like to create along with the concept, and/or fill the new Is A and click save.'];
             if (!scope.concept.relationships) {
-
-              scope.concept.relationships = [];
-              scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
+              scope.concept.classAxioms = [];
+              // scope.addAdditionalAxiom(false);
               autoSave();
               scope.computeRelationshipGroups();
             }
-            else {
-              var stated = false;
-              angular.forEach(scope.concept.relationships, function (relationship) {
-                if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
-                  stated = true;
+            else {              
+              if (scope.concept.effectiveTime) {
+                scope.concept.classAxioms = [];
+                
+                if(scope.concept.relationships.length === 0) {
+                  scope.addAdditionalAxiom(false);
                 }
-              });
-              if (stated === false) {
-                scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
-                autoSave();
-                scope.computeRelationshipGroups();
+                else {
+                  scope.addAdditionalAxiom(true);
+                }
+
+                angular.forEach(scope.concept.relationships, function (relationship) {
+                  if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
+                    if(relationship.effectiveTime === scope.concept.effectiveTime){
+                        let copy = angular.copy(relationship);
+                        delete copy.relationshipId;
+                        copy.active = true;
+                        scope.concept.classAxioms[0].relationships.push(copy);
+                    }
+                  }
+                });
               }
+              else {
+                angular.forEach(scope.concept.classAxioms, function (axiom) {
+                  axiom.active = true;
+                  angular.forEach(axiom.relationships, function (relationship) {
+                    relationship.active = true;
+                  });
+                });
+              }
+
+              autoSave();
+              scope.computeRelationshipGroups();
             }
 
             scope.concept.active = true;
-            scope.hideInactive = false;
 
             scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
 
@@ -1393,7 +1375,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (deletion) {
               scope.deletingConeceptError = false;
               if (isAttributeConcept(scope.concept.fsn)) {
-                snowowlService.searchConcepts(scope.branch,'', '*: ' + scope.concept.conceptId + ' =*', 0, 50, false).then(function (results) {
+                terminologyServerService.searchConcepts(scope.branch,'', '*: ' + scope.concept.conceptId + ' =*', 0, 50, false).then(function (results) {
                   if (results.total > 0) {
                     scope.deletingConeceptError = true;
                   } else {
@@ -1414,22 +1396,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.active = false;
               });
 
-              // special case:  do not allow inactivation of fully defined
-              // concepts
-              if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
-                scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
-                return;
-              }
-
               // Check unpublished changes for concept
               if(scope.concept.released === true && hasUnpublishedChanges()) {
-                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];                             
+                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
                 return;
               }
 
               scope.inactivatingConceptError = false;
               if (isAttributeConcept(conceptCopy.fsn)) {
-                snowowlService.searchConcepts(scope.branch,'', '*: ' + conceptCopy.conceptId + ' =*', 0, 50, false).then(function (results) {
+                terminologyServerService.searchConcepts(scope.branch,'', '*: ' + conceptCopy.conceptId + ' =*', 0, 50, false).then(function (results) {
                   if (results.total > 0) {
                     scope.inactivatingConceptError = true;
                   } else {
@@ -1448,7 +1423,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget);
             if (results.deletion && !results.associationTarget) {
               notificationService.sendMessage('Deleting Concept...');
-              snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+              terminologyServerService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
                 if (response.status === 409) {
                   notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
                 }
@@ -1476,7 +1451,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         function inactivateConcept (conceptCopy) {
           // validate the concept
-          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
+          terminologyServerService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
             // check for errors -- NOTE: Currently unused, but errors are
             // printed to log if detected
             var errors = validationResults.filter(
@@ -1537,51 +1512,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
 
-          let hasUnpublishedAdditionalAxioms = false;
-          if (scope.concept.classAxioms && scope.concept.classAxioms.length > 0) {
-            scope.concept.classAxioms.forEach(function (item) {
-              if (!item.released) {
-                hasUnpublishedAdditionalAxioms = true;
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }                  
-                });
-              } else {
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    hasUnpublishedAdditionalAxioms = true;
-                    relationship.templateStyle = 'redhl';
-                  }                  
-                });
-              }
-            });
-          }          
+          let hasUnpublishedClassAxioms = hasUnpublishedAxiomChanges(scope.concept.classAxioms);
 
-          let hasUnpublishedGCIs = false;
-          if (scope.concept.gciAxioms && scope.concept.gciAxioms.length > 0) {
-            scope.concept.gciAxioms.forEach(function (item) {
-              if (!item.released) {
-                hasUnpublishedGCIs = true;
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    relationship.templateStyle = 'redhl';
-                  }                  
-                });
-              } else {
-                item.relationships.forEach(function (relationship) {
-                  if (!relationship.released) {
-                    hasUnpublishedGCIs = true;
-                    relationship.templateStyle = 'redhl';
-                  }                  
-                });
+          let hasUnpublishedGCIs = hasUnpublishedAxiomChanges(scope.concept.gciAxioms);
+
+          return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedClassAxioms || hasUnpublishedGCIs;
+        }
+
+        function hasUnpublishedAxiomChanges (axioms) {
+          let hasUnpublishedChanges = false;
+          if (axioms && axioms.length > 0) {
+            axioms.forEach(function (axiom) {
+              var flag = axiom.released === true && axiom.active === true && (!axiom.effectiveTime || axiom.effectiveTime === null);
+              if (flag) {
+                axiom.templateStyle = 'redhl';
+                hasUnpublishedChanges = true;
               }
             });
           }
 
-          return hasUnpublishedDescriptions || hasUnpublishedRelationships || hasUnpublishedAdditionalAxioms || hasUnpublishedGCIs;
+          return hasUnpublishedChanges;
         }
-
         /**
          * Function to mark concept as approval and load next concept in editor
          */
@@ -1894,17 +1845,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.concept.descriptions = newArray;
         }
 
-        function sortRelationships() {
-
-          if (!scope.concept || !scope.concept.relationships) {
-            return;
-          }
-
-          var isaRels = scope.concept.relationships.filter(function (rel) {
+        function sortRelationshipArray(relationships){
+          let isaRels = relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
           });
 
-          var attrRels = scope.concept.relationships.filter(function (rel) {
+          let attrRels = relationships.filter(function (rel) {
             return rel.type.conceptId !== '116680003';
           });
 
@@ -1945,7 +1891,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
           attrRels  = $filter('orderBy')(attrRels, 'display')
-          scope.concept.relationships = isaRels.concat(attrRels);
+          relationships = isaRels.concat(attrRels);
+
+          return relationships;
+        }
+
+        function sortRelationships() {
+
+          if (!scope.concept || !scope.concept.relationships && !scope.concept.classAxioms && !scope.concept.gciAxioms) {
+            return;
+          }
+
+          angular.forEach(scope.concept.classAxioms, function (axiom){
+              sortRelationshipArray(axiom.relationships);
+          })
+          angular.forEach(scope.concept.gciAxioms, function (axiom){
+              sortRelationshipArray(axiom.relationships);
+          })
+          if(scope.concept.relationships){
+              sortRelationshipArray(scope.concept.relationships);
+          }
         }
 
 // on load, sort descriptions && relationships
@@ -2128,43 +2093,52 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.removeAxiom = function (axiom, type) {
           var msg = '';
-          if(type === axiomType.ADDITIONAL) {
-            msg = 'Do you want to remove this Additional Axiom ?';
-          } else if(type === axiomType.GCI) {
-            msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
+          if(scope.concept.classAxioms.length < 2 && type === axiomType.ADDITIONAL) {
+            msg = 'You may not remove the last axiom. Please go back to editing.';
+            modalService.message(msg);
           }
-          modalService.confirm(msg).then(function () {
-              var index = -1;
-              if (type === axiomType.ADDITIONAL) {
-                for (var i = scope.concept.classAxioms.length - 1; i >= 0; i--) {
-                  if (axiom.axiomId === scope.concept.classAxioms[i].axiomId) {
-                    index = i;
-                    break;
-                  }
-                }
-                if (index >= 0) {
-                  scope.concept.classAxioms.splice(index, 1);
-                  scope.computeAxioms(type);
-                  autoSave();
-                }
-              } else if (type === axiomType.GCI) {
-                for (var i = scope.concept.gciAxioms.length - 1; i >= 0; i--) {
-                  if (axiom.axiomId === scope.concept.gciAxioms[i].axiomId) {
-                    index = i;
-                    break;
-                  }
-                }
-                if (index >= 0) {
-                  scope.concept.gciAxioms.splice(index, 1);
-                  scope.computeAxioms(type);
-                  autoSave();
-                }
-              }
-
-            }, function () {
-              // do nothing
+          else{
+            if(scope.concept.classAxioms.length >= 2 && type === axiomType.ADDITIONAL) {
+              msg = 'Do you want to remove this Axiom ?';
             }
-          );
+            else if(type === axiomType.GCI) {
+              msg = 'Do you want to remove this General Concept Inclusion Axiom ?';
+            }
+            modalService.confirm(msg).then(function () {
+              if(scope.concept.classAxioms.length >= 2 || type === axiomType.GCI){
+                var index = -1;
+                  if (type === axiomType.ADDITIONAL) {
+                    for (var i = scope.concept.classAxioms.length - 1; i >= 0; i--) {
+                      if (axiom.axiomId === scope.concept.classAxioms[i].axiomId) {
+                        index = i;
+                        break;
+                      }
+                    }
+                    if (index >= 0) {
+                      scope.concept.classAxioms.splice(index, 1);
+                      scope.computeAxioms(type);
+                      autoSave();
+                    }
+                  } else if (type === axiomType.GCI) {
+                    for (var i = scope.concept.gciAxioms.length - 1; i >= 0; i--) {
+                      if (axiom.axiomId === scope.concept.gciAxioms[i].axiomId) {
+                        index = i;
+                        break;
+                      }
+                    }
+                    if (index >= 0) {
+                      scope.concept.gciAxioms.splice(index, 1);
+                      scope.computeAxioms(type);
+                      autoSave();
+                    }
+                  }
+                }
+
+              }, function () {
+                // do nothing
+              }
+            );
+          }
         };
 
         /**
@@ -2200,7 +2174,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (!metadataService.isUsDialect(dialectId)) {
                     delete description.acceptabilityMap[dialectId];
                   }
-                });                
+                });
               } else {
 
                 // Strip out US, GB dialects
@@ -2261,7 +2235,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (results.reason.id) {
 
                   // persist the inactivation reason
-//                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
+//                  terminologyServerService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
                   description.active = false;
                   description.inactivationIndicator = results.reason.id;
 
@@ -2293,7 +2267,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             //if (results.reason.id) {
 
 //            // persist the inactivation reason
-//            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
+//            terminologyServerService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
             item.active = false;
             item.inactivationIndicator = results.reason.id;
             if(typeof results.associationTarget !== 'undefined') {
@@ -2313,7 +2287,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
-            snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+            terminologyServerService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
               // if reason is selected, deactivate all descriptions and
               // relationships
@@ -2471,7 +2445,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return !scope.hideInactive || rel.active;
         };
 
+        scope.filterAxiomRelationships = function (rel) {
+          return !scope.hideInactive || rel.active;
+        };
+
         scope.showRelationshipGroup = function (relGroup) {
+
+          if (!scope.hideInactive && scope.showInferredRels) {
+            return true;
+          }
+          var activeRels = relGroup.filter(function (item) {
+            return item.active;
+          });
+          return activeRels.length > 0;
+        };
+
+        scope.showAxiomRelationshipGroup = function (relGroup) {
 
           if (!scope.hideInactive) {
             return true;
@@ -2494,7 +2483,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           angular.forEach(scope.concept.relationships, function (rel) {
             let flag = false;
-            if ((scope.showInferredRels &&  rel.characteristicType === 'INFERRED_RELATIONSHIP')
+            if ((scope.showInferredRels &&  rel.characteristicType === 'INFERRED_RELATIONSHIP' && rel.active)
               || (!scope.showInferredRels && rel.characteristicType === 'STATED_RELATIONSHIP')) {
               flag = true;
             }
@@ -2506,6 +2495,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // push this relationship onto group-mapped array
               scope.relationshipGroups[parseInt(rel.groupId)].push(rel);
+
+              // sort inferred relations
+              scope.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(scope.relationshipGroups[parseInt(rel.groupId)]);
             }
           });
         };
@@ -2519,9 +2511,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (type === axiomType.ADDITIONAL) {
             angular.forEach(scope.concept.classAxioms, function (axiom) {
               axiom['relationshipGroups'] = [];
-              axiom.title = 'Additional Axiom';
+              axiom.title = 'Axiom';
               axiom.type = axiomType.ADDITIONAL;
               angular.forEach(axiom.relationships, function (rel) {
+                rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
+
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
@@ -2529,6 +2523,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
+
+                // sorts axioms
+                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);
               });
             });
           }
@@ -2539,6 +2536,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               axiom.title = 'General Concept Inclusion';
               axiom.type = axiomType.GCI;
               angular.forEach(axiom.relationships, function (rel) {
+                rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
                 // if map does not have this group id, add blank array
                 if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
                   axiom.relationshipGroups[parseInt(rel.groupId)] = [];
@@ -2546,6 +2544,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // push this relationship onto group-mapped array
                 axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
+
+                // sorts axioms
+                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);
               });
             });
           }
@@ -2593,7 +2594,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
 
            // Remove unused properties
-          delete relationship.active;
           delete relationship.characteristicType;
           delete relationship.effectiveTime;
           delete relationship.modifier;
@@ -2612,6 +2612,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             axiom.relationships.splice(index + 1, 0, relationship);
           }
+          refreshAttributeTypesForAxiom(axiom);
 
           scope.computeAxioms(axiom.type);
           autoSave();
@@ -2652,6 +2653,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete isaRel.moduleId;
 
               isaRel.sourceId = scope.concept.conceptId;
+              refreshAttributeTypesForAxiom(axiom);
 
               axiom.relationships.push(isaRel);
             }
@@ -2661,6 +2663,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeAxioms(axiom.type);
           autoSave();
         };
+
+        scope.toggleAxiomActive = function (axiom) {
+          if (scope.concept.active === true) {
+            if(axiom.released === true && axiom.active === true && !axiom.effectiveTime || axiom.released === true && axiom.active === true && axiom.effectiveTime === null) {
+              scope.errors = ['This axiom has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
+              return;
+            }
+            else{
+              axiom.active = !axiom.active;
+              axiom.effectiveTime = null;
+              componentAuthoringUtil.applyMinimumFields(scope.concept);
+              autoSave();
+            }
+          }
+          else {
+            scope.warnings = ['You must activate the concept before its components.'];
+          }
+        }
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
@@ -2675,26 +2695,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.addAdditionalAxiom = function() {
-          var axiom = componentAuthoringUtil.getNewAxiom();
-          if (!snowowlService.isSctid(scope.concept.conceptId)) {
-            axiom.axiomId = null; 
+        scope.addAdditionalAxiom = function(blank) {
+          var axiom = componentAuthoringUtil.getNewAxiom(blank);
+          if (!terminologyServerService.isSctid(scope.concept.conceptId)) {
+            axiom.axiomId = null;
           }
-          axiom.relationships[0].sourceId = scope.concept.conceptId;
+          if(axiom.relationships.length > 0){
+            axiom.relationships[0].sourceId = scope.concept.conceptId;
+          }
 
           if(!scope.concept.hasOwnProperty('classAxioms')){
             scope.concept.classAxioms = [];
           }
 
           scope.concept.classAxioms.push(axiom);
+          refreshAttributeTypesForAxiom(axiom)
           scope.computeAxioms(axiomType.ADDITIONAL);
           autoSave();
         };
 
         scope.addGCIAxiom = function() {
           var axiom = componentAuthoringUtil.getNewAxiom();
-          if (!snowowlService.isSctid(scope.concept.conceptId)) {
-            axiom.axiomId = null; 
+          if (!terminologyServerService.isSctid(scope.concept.conceptId)) {
+            axiom.axiomId = null;
           }
           axiom.relationships[0].sourceId = scope.concept.conceptId;
 
@@ -2703,6 +2726,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           scope.concept.gciAxioms.push(axiom);
+          refreshAttributeTypesForAxiom(axiom)
           scope.computeAxioms(axiomType.GCI);
           autoSave();
         };
@@ -2792,6 +2816,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           };
         };
 
+        scope.getConceptIdNameTripleFromAttributeType = function (relationship) {
+          return {
+            id: relationship.type.conceptId,
+            fsn: relationship.type.fsn,
+            pt: relationship.type.pt
+          };
+        };
+
         scope.dropRelationshipTarget = function (relationship, data) {
 
           if(data.concept) {
@@ -2827,7 +2859,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if(!metadataService.isExtensionSet()
                 && relationship.type.conceptId === '116680003') {// Is a (attribute)
-                snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
                   if (relationship.moduleId !== response.moduleId) {
                     resetModuleId(response.moduleId);
                   }
@@ -2853,7 +2885,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 if(!metadataService.isExtensionSet()
                   && relationship.type.conceptId === '116680003') {// Is a (attribute)
-                  snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+                  terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
                     if (relationship.moduleId !== response.moduleId) {
                       resetModuleId(response.moduleId);
                     }
@@ -2878,7 +2910,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             if(!metadataService.isExtensionSet()
               && relationship.type.conceptId === '116680003') {// Is a (attribute)
-              snowowlService.getFullConcept(data.id, scope.branch).then(function(response) {
+              terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
                 if (relationship.moduleId !== response.moduleId) {
                   resetModuleId(response.moduleId);
                 }
@@ -2890,7 +2922,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.dropAxiomRelationshipTarget = function (relationship, data, type) {
+        scope.dropAxiomRelationshipTarget = function (relationship, data, type, axiom) {
 
           if(data.concept) {
             data.id = data.concept.conceptId;
@@ -2911,7 +2943,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (relationship.type.conceptId) {
 
               constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
-                snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+                terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
                   relationship.target.conceptId = response.conceptId;
                   relationship.target.fsn = response.fsn;
                   relationship.target.definitionStatus = response.definitionStatus;
@@ -2920,7 +2952,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   relationship.target.active= response.active;
                   relationship.target.released = response.released;
 
+                  scope.isModified = true;
                   scope.computeAxioms(type);
+                  refreshAttributeTypesForAxiom(axiom);
                   autoSave();
                 });
               }, function (error) {
@@ -2934,7 +2968,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise simply allow drop
           else {
-            snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
               relationship.target.conceptId = response.conceptId;
               relationship.target.fsn = response.fsn;
               relationship.target.definitionStatus = response.definitionStatus;
@@ -3000,13 +3034,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationshipType = function (relationship, data, axiom) {
-            console.log(axiom);
+            console.log(data);
 
           if(data.concept) {
             data.id = data.concept.conceptId;
-            data.name = data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym;
+            data.pt = data.concept.preferredSynonym;
+            data.fsn = data.concept.fsn;
           }
-          
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -3023,12 +3058,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
-                  scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + data.name + '.'];
+                  scope.warnings = ['MRCM validation error: ' + relationship.target.pt + ' is not a valid target for attribute type ' + data.name + '.'];
                 });
               }
 
               relationship.type.conceptId = data.id;
-              relationship.type.fsn = data.name;
+              relationship.type.pt = data.pt;
+              relationship.type.fsn = data.fsn;
+              scope.isModified = true;
 
               scope.computeAxioms(axiom.type);
               autoSave();
@@ -3037,7 +3074,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           } else {
             relationship.type.conceptId = data.id;
-            relationship.type.fsn = data.name;
+            relationship.type.pt = data.pt;
+            relationship.type.fsn = data.fsn;
             scope.computeAxioms(axiom.type);
             autoSave();
           }
@@ -3064,7 +3102,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clear the effective time
           copy.effectiveTime = null;
           copy.descriptionId = null;
-          copy.conceptId = null; // re-added by snowowl
+          copy.conceptId = null; // re-added by terminology server
 
           //remove release flag if any
           if(copy.released) {
@@ -3164,13 +3202,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
         };
-        
+
         scope.dropAxiom = function (source) {
           if (!source) {
             console.error('Cannot drop axiom, source not specified');
             return;
           }
-         
+
           // check if target is static
           if (scope.isStatic) {
             console.error('Scope is static, cannot drop');
@@ -3181,14 +3219,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           let axiom = angular.copy(source);
-          axiom.axiomId = null; 
+          axiom.axiomId = null;
           if (axiom.type === axiomType.ADDITIONAL) {
             if(!scope.concept.hasOwnProperty('classAxioms')){
               scope.concept.classAxioms = [];
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
-            });           
+            });
             scope.concept.classAxioms.push(axiom);
             scope.computeAxioms(axiomType.ADDITIONAL);
           } else {
@@ -3197,7 +3235,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
-            });           
+            });
             scope.concept.gciAxioms.push(axiom);
             scope.computeAxioms(axiomType.GCI);
           }
@@ -3205,6 +3243,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationship = function (target, source, axiom) {
+
+          console.log(source);
+            console.log(target);
+
 
           if (!target || !source) {
             console.error('Cannot drop relationship, either source or target not specified');
@@ -3247,6 +3289,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 axiom.relationships[targetIndex] = copy;
               }
 
+              refreshAttributeTypesForAxiom(axiom);
               scope.computeAxioms(axiom.type);
               autoSave();
             }, function () {
@@ -3296,7 +3339,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var rel = componentAuthoringUtil.getNewAttributeRelationship();
 
           // Remove unused properties
-          delete rel.active;
           delete rel.characteristicType;
           delete rel.effectiveTime;
           delete rel.modifier;
@@ -3425,6 +3467,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   copy.sourceId = scope.concept.conceptId;
 
                   axiom.relationships.push(copy);
+                  refreshAttributeTypesForAxiom(axiom);
                   if (++relsProcessed === relGroup.length) {
                     autoSave();
                     scope.computeAxioms(axiom.type);
@@ -3485,12 +3528,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return componentTerms[componentId];
           } else {
             componentTerms[componentId] = 'Retrieving term...';
-            if (snowowlService.isConceptId(componentId)) {
-              snowowlService.getFullConcept(componentId, scope.branch).then(function (response) {
+            if (terminologyServerService.isConceptId(componentId)) {
+              terminologyServerService.getFullConcept(componentId, scope.branch).then(function (response) {
                 componentTerms[componentId] = response.fsn;
               });
-            } else if (snowowlService.isDescriptionId(componentId)) {
-              snowowlService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
+            } else if (terminologyServerService.isDescriptionId(componentId)) {
+              terminologyServerService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
                 componentTerms[componentId] = response.term;
               })
             }
@@ -3699,31 +3742,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if(scope.isBatch === true){
             scope.updateConceptReference({concept: scope.concept});
           }
-
-          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId() !== 'en') {
-            if (description.lang === 'en') {
-              // strip any non-us dialect
-              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                if (!metadataService.isUsDialect(dialectId)) {
-                  delete description.acceptabilityMap[dialectId];
-                }
-              });
-            } else {
-              // strip us dialect if any
-              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                if (metadataService.isUsDialect(dialectId)) {
-                  delete description.acceptabilityMap[dialectId];
-                }
-              });
-            }
+            
+          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
+            angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+              // strip any dialects that are not belong to language
+              if (scope.getDialectsForDescription(description)[dialectId].indexOf(description.lang) === -1) {
+                delete description.acceptabilityMap[dialectId];
+              }
+            });
           }
+
           var symanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
           var symanticTag = null;
           if (description.type === 'FSN') {
             symanticTag = symanticTagTattern.exec(description.term)[1];
           }
 
-          if (symanticTag 
+          if (symanticTag
             && (symanticTag === 'medicinal product'
                || symanticTag === 'medicinal product form'
                || symanticTag === 'clinical drug'
@@ -3808,7 +3843,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship) {
             return;
           }
-
+          refreshAttributeTypesForAxiom(axiom);
           scope.computeAxioms(type);
           autoSave();
         };
@@ -3854,6 +3889,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
+          let definedAxiom = false;
+          angular.forEach(scope.concept.classAxioms, function(axiom){
+              if(axiom.definitionStatus === 'FULLY_DEFINED'){
+                  definedAxiom = true;
+              }
+          });
+          if(definedAxiom){
+              scope.concept.definitionStatus = 'FULLY_DEFINED';
+          }
+          else{
+              scope.concept.definitionStatus = 'PRIMITIVE';
+          }
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
@@ -3925,7 +3972,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.computeRelationshipGroups();
           }
         };
-        
+
         scope.downloadOWLAxiom = function () {
           $modal.open({
             templateUrl: 'shared/owl-axiom-expression/owlAxiomExpression.html',
@@ -3948,6 +3995,71 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             }
           });
+        };
+
+        scope.revertAxiom = function (axiom) {
+          modalService.confirm('The axiom will be reverted to the previously published version. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Reverting axiom to the previously published version...');
+            var codeSystemShortName = '';
+            getCodeSystemShortName().then(function (response) {
+              codeSystemShortName = response;
+              getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
+                if (response.items.length > 0) {
+                  var version = response.items[response.items.length - 1].version;
+                  var versionBranch = null;
+                  if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
+                    versionBranch = 'MAIN/' + version;
+                  } else {
+                    var arr = scope.branch.split("/");
+                    versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
+                  }
+                  terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (versionedConcept) {
+                    if(axiom.type === 'additional'){
+                        angular.forEach(versionedConcept.classAxioms, function(versionedAxiom){
+                            if(axiom.axiomId === versionedAxiom.axiomId){
+                                angular.forEach(scope.concept.classAxioms, function(unversionedAxiom){
+                                  if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
+                                    unversionedAxiom.relationships = versionedAxiom.relationships;
+                                    unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
+                                    unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
+                                    unversionedAxiom.active = versionedAxiom.active;
+                                    unversionedAxiom.moduleId = versionedAxiom.moduleId;
+                                    scope.saveConcept();
+                                    return
+                                  }
+                                })
+                            }
+                        })
+                    }
+                    else{
+                      angular.forEach(versionedConcept.gciAxioms, function(versionedAxiom){
+                        if(axiom.axiomId === versionedAxiom.axiomId){
+                          angular.forEach(scope.concept.gciAxioms, function(unversionedAxiom){
+                            if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
+                              unversionedAxiom.relationships = versionedAxiom.relationships;
+                              unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
+                              unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
+                              unversionedAxiom.active = versionedAxiom.active;
+                              unversionedAxiom.moduleId = versionedAxiom.moduleId;
+                              scope.saveConcept();
+                              return
+                            }
+                          })
+                        }
+                      })
+                    }
+                  }, function (error) {
+                    notificationService.sendError('Failed to get versioned axiom');
+                  });
+                } else {
+                  notificationService.sendError('Failed to get versions');
+                }
+              });
+            });
+          }, function () {
+            // do nothing
+          });
+
         };
 
         scope.revertToVersion = function () {
@@ -3973,7 +4085,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   var getVersionedConceptFn = function () {
                     var deferred = $q.defer();
-                    snowowlService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
+                    terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
                       result.versionedConcept = response;
                       deferred.resolve();
                     }, function (error) {
@@ -3981,12 +4093,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     });
                     return deferred.promise;
                   };
-                  
+
                   var getProjectConceptFn = function () {
                     var deferred = $q.defer();
                     var arr = scope.branch.split("/");
                     var branch = arr.slice(0,arr.length - 1).join("/");
-                    snowowlService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
+                    terminologyServerService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
                       result.projectConcept = response;
                       deferred.resolve();
                     }, function (error) {
@@ -4009,8 +4121,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       scope.isModified = false;
                       scope.saveConcept();
                     }
-                  });                
-                } else {               
+                  });
+                } else {
                   notificationService.sendError('Failed to get versions');
                 }
               });
@@ -4018,19 +4130,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, function () {
             // do nothing
           });
-          
+
         };
 
         function getCodeSystemShortName() {
           var deferred = $q.defer();
-          
+
           if (!metadataService.isExtensionSet()) {
             deferred.resolve('SNOMEDCT');
           } else {
             //var branch = 'MAIN/2018-01-31/SNOMEDCT-DK/TESTDK1/TESTDK1-34';
             var arr = scope.branch.split("/");
             var branch = arr.slice(0,arr.length - 2).join("/");
-            snowowlService.getBranch(branch).then(function (response) {
+            terminologyServerService.getBranch(branch).then(function (response) {
               deferred.resolve(response.metadata.codeSystemShortName);
             });
           }
@@ -4042,7 +4154,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var result = {};
           result.isNewBranch = false;
           var allCodeSystemVersion = function (codeSystem) {
-            snowowlService.getAllCodeSystemVersionsByShortName(codeSystem).then(function (response) {
+            terminologyServerService.getAllCodeSystemVersionsByShortName(codeSystem).then(function (response) {
               if (response.data.items && response.data.items.length > 0) {
                 result.items = response.data.items;
                 deferred.resolve(result);
@@ -4053,7 +4165,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 } else {
                   result.items = [];
                   deferred.resolve(result);
-                }              
+                }
               }
             });
           }
@@ -4077,7 +4189,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           } else {
             notificationService.sendMessage('Reverting concept...');
-            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
               notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
 
               // set concept to response
@@ -4113,14 +4225,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.copyDescriptionTerm = function(e) {
           var elem = angular.element(e.currentTarget)[0];
-          if (elem.selectionStart !== undefined 
+          if (elem.selectionStart !== undefined
               && elem.selectionEnd !== undefined) {
             var startPos = elem.selectionStart;
             var endPos = elem.selectionEnd;
-            var selectedText = elem.value.substring(startPos, endPos); 
-            scope.copyToClipboard(selectedText); 
+            var selectedText = elem.value.substring(startPos, endPos);
+            scope.copyToClipboard(selectedText);
             elem.focus();
-            elem.setSelectionRange(startPos, endPos);          
+            elem.setSelectionRange(startPos, endPos);
           }
         };
 
@@ -4128,51 +4240,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // MRCM functions
 //////////////////////////////////////////////
 
-
-        scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
-
-          // recompute the domain attributes from MRCM service
-          if (!scope.isStatic) {
-            constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
-              scope.allowedAttributes = attributes;
-            }, function (error) {
-              notificationService.sendError('Error getting allowable domain attributes: ' + error);
-            });
-          }
-
-          // compute the role groups
-          scope.computeRelationshipGroups();
-        }, true);
-        
-        scope.$watch(scope.concept.classAxioms, function (newValue, oldValue) {
-          angular.forEach(scope.concept.classAxioms, function(axiom){
-              if (!scope.isStatic) {
-                constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
-                  axiom.allowedAttributes = attributes;
+        function refreshAttributeTypesForAxiom(axiom){
+            if (!scope.isStatic) {
+                    constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
+                    axiom.allowedAttributes = attributes;
                 }, function (error) {
-                  notificationService.sendError('Error getting allowable domain attributes: ' + error);
+                    notificationService.sendError('Error getting allowable domain attributes: ' + error);
                 });
-              }
-          })
-          
-          // compute the role groups
-          scope.computeAxioms('additional');
-        }, true);
-        
-        scope.$watch(scope.concept.gciAxioms, function (newValue, oldValue) {
-          angular.forEach(scope.concept.classAxioms, function(axiom){
-              if (!scope.isStatic) {
-                constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
-                  axiom.allowedAttributes = attributes;
-                }, function (error) {
-                  notificationService.sendError('Error getting allowable domain attributes: ' + error);
-                });
-              }
-          })
-          
-          // compute the role groups
-          scope.computeAxioms('gci');
-        }, true);
+            }
+        }
+
+        //Watch classAxiom relationships for changes and update allowable attributes
+        angular.forEach(scope.concept.classAxioms, function(axiom){
+            scope.$watch(axiom.relationships, function (newValue, oldValue) {
+                refreshAttributeTypesForAxiom(axiom);
+                scope.computeAxioms('additional');
+            }, true);
+        });
+
+        //Watch gciAxiom relationships for changes and update allowable attributes
+        angular.forEach(scope.concept.gciAxioms, function(axiom){
+            scope.$watch(axiom.relationships, function (newValue, oldValue) {
+                refreshAttributeTypesForAxiom(axiom);
+                scope.computeAxioms('gci');
+            }, true);
+        });
 
 
 // pass constraint typeahead concept search function directly
@@ -4193,6 +4285,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
+          relationship.type.pt = item.pt.term;
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
                 scope.updateRelationship(relationship, false);
@@ -4225,6 +4318,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
+          relationship.type.pt = item.pt.term;
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
                 scope.computeAxioms(type);
@@ -4328,7 +4422,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         }
 
-        scope.consolidateRelationship = function (relationship) {          
+        scope.consolidateRelationship = function (relationship) {
           if(relationship) {
             if (relationship.target && !relationship.target.fsn) {
               relationship.target = {};
@@ -4356,6 +4450,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.active= item.active;
                 relationship.target.released = item.released;
 
+                refreshAttributeTypesForAxiom(axiom);
                 scope.computeAxioms(axiom.type);
                 autoSave();
               }, function () {
@@ -4371,6 +4466,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.active= item.active;
             relationship.target.released = item.released;
 
+            refreshAttributeTypesForAxiom(axiom);
             scope.computeAxioms(axiom.type);
             autoSave();
           }
@@ -4451,7 +4547,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         $timeout(function () {
            $rootScope.$broadcast('elastic:adjust');
         }, 0);
-        
+
 // sets the popover direction (left, bottom, right) based on current
 // position of root element
         scope.setPopoverDirection = function ($event) {
@@ -4533,8 +4629,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var key = id + (field ? '-' + field : '');
 
             if (scope.componentStyles.hasOwnProperty(key)) {
-              return scope.componentStyles[key].style;
-            } else if (scope.innerComponentStyle.hasOwnProperty(key)) {
+              if(scope.componentStyles[key].new && component && component.axiomId){
+                  return defaultStyle
+              }
+              else {
+                  return scope.componentStyles[key].style;
+              }
+            } else if (scope.innerComponentStyle && scope.innerComponentStyle.hasOwnProperty(key)) {
               return scope.innerComponentStyle[key].style;
             } else {
               return defaultStyle;
@@ -4589,7 +4690,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var conceptId = scope.concept.conceptId + '';
           var partitionIdentifier = conceptId.slice(conceptId.length - 3, conceptId.length - 1)
           if (!metadataService.isExtensionSet()
-                  && snowowlService.isSctid(scope.concept.conceptId)
+                  && terminologyServerService.isSctid(scope.concept.conceptId)
                   && scope.concept.active
                   && !scope.concept.effectiveTime
                   && !scope.concept.released
@@ -4651,7 +4752,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, re-retrieve the concept
           else {
-            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
+            terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
               scope.concept = concept;
               scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);
@@ -4725,14 +4826,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.openConceptTarget = function (rel){
           if (!rel || !rel.target || !rel.target.conceptId) {
             return;
-          }     
+          }
           $rootScope.$broadcast('editConcept', {conceptId: rel.target.conceptId, fsn: rel.target.fsn, noSwitchView: true});
         };
 
         scope.openAttributeConcept = function (rel){
           if (!rel || !rel.target || !rel.target.conceptId) {
             return;
-          }     
+          }
           $rootScope.$broadcast('editConcept', {conceptId: rel.type.conceptId, fsn: rel.type.fsn, noSwitchView: true});
         };
 

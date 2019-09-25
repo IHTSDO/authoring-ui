@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('componentAuthoringUtil', function (metadataService, snowowlService, $q, scaService) {
+  .service('componentAuthoringUtil', function (metadataService, terminologyServerService, $q, scaService) {
 
       /////////////////////////////////////
       // calls to return JSON objects
@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp')
           },
           'type': {
             'conceptId': '116680003',
-            'fsn': 'Is a (attribute)'
+            'pt': 'Is a'
           }
         };
       }
@@ -174,9 +174,10 @@ angular.module('singleConceptAuthoringApp')
       function getNewConcept() {
         var moduleId = metadataService.getCurrentModuleId();
         var concept = {
-          'conceptId': snowowlService.createGuid(),
+          'conceptId': terminologyServerService.createGuid(),
           'descriptions': [],
           'relationships': [],
+          'classAxioms':[],
           'fsn': null,
           'definitionStatus': 'PRIMITIVE',
           'active': true,
@@ -202,15 +203,15 @@ angular.module('singleConceptAuthoringApp')
           }
 
         // add IsA relationship
-        concept.relationships.push(getNewIsaRelationship(moduleId));
+        concept.classAxioms.push(getNewAxiom());
 
         return concept;
       }
 
-      function getNewAxiom() {
+      function getNewAxiom(blank) {
         var moduleId = metadataService.getCurrentModuleId();
         var axiom = {
-          'axiomId': snowowlService.createGuid(),
+          'axiomId': terminologyServerService.createGuid(),
           'definitionStatus': 'PRIMITIVE',
           'effectiveTime': null,
           'active': true,
@@ -218,17 +219,20 @@ angular.module('singleConceptAuthoringApp')
           'moduleId': moduleId,
           'relationships': []       
         };
-        
-        var isARel = getNewIsaRelationship(moduleId);
-        // Remove unused properties
-        delete isARel.active;
-        delete isARel.characteristicType;
-        delete isARel.effectiveTime;
-        delete isARel.modifier;
-        delete isARel.moduleId;
+          
+        if(!blank){
+            var isARel = getNewIsaRelationship(moduleId);
+            // Remove unused properties
+            delete isARel.characteristicType;
+            delete isARel.effectiveTime;
+            delete isARel.modifier;
+            delete isARel.moduleId;
 
-        // add IsA relationship
-        axiom.relationships.push(isARel);
+            // add IsA relationship
+            axiom.relationships.push(isARel);
+        }
+        
+        
 
         return axiom;
       }
@@ -991,10 +995,22 @@ function getFsnDescriptionForConcept(concept) {
         });
         
         if (!hasIsARelationship) {
-          errors.push((type === 'gci'? 'General Concept Inclusion' : 'Additional Axiom') + ' must have at least one IS A relationship');
+          errors.push((type === 'gci'? 'General Concept Inclusion' : 'Axiom') + ' must have at least one IS A relationship');
         }
 
         return errors;
+      };
+
+      function checkClassAxiomRelationships(concept){
+          if(concept.classAxioms.length === 0){
+              return true
+          }
+          angular.forEach(concept.classAxioms, function(axiom){
+              if(axiom.relationships.length === 0){
+                  return true
+              }
+          });
+          return false
       };
 
       function checkConceptComplete(concept) {
@@ -1004,8 +1020,8 @@ function getFsnDescriptionForConcept(concept) {
           errors.push('Concept must have at least one description');
 
         }
-        if (!concept.relationships || concept.relationships.length === 0) {
-          errors.push('Concept must have at least one relationship');
+        if (!concept.relationships || concept.relationships.length === 0 && checkClassAxiomRelationships(concept)) {
+          errors.push('Concept must have at least one axiom');
 
         }
         if (!concept.definitionStatus) {

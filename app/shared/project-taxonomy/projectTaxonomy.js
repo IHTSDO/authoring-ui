@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('projectTaxonomy', function ($rootScope, $q, snowowlService) {
+  .directive('projectTaxonomy', function ($rootScope, $q, terminologyServerService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -46,7 +46,7 @@ angular.module('singleConceptAuthoringApp')
             console.error('Project branch is not definied.');
           }
           
-          snowowlService.getFullConcept(scope.concept.conceptId, scope.projectBranch).then(function (response){
+          terminologyServerService.getFullConcept(scope.concept.conceptId, scope.projectBranch).then(function (response){
             scope.projectConcept = {};
             scope.projectConcept.conceptId = response.conceptId;
             scope.projectConcept.fsn = response.fsn;

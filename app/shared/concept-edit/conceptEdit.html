@@ -50,6 +50,7 @@
                   popover-append-to-body="true">
             <span>More details</span>
           </button>
+<!--
           <div class="template-controls " ng-if="template && !isMerge && !isStatic && !isBatch">
             <ul class="sub-navigation-link-list ">
               <li>
@@ -71,7 +72,7 @@
               class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton attach-template-control">
             <i class="md fa fa-magic"></i><span>Attach Template</span>
           </div>
-
+-->
 
           <div class="copy-to-clipboard" ng-if="isSctid(concept.conceptId) && concept.fsn">
             <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
@@ -160,7 +161,7 @@
                   <span ng-if="showInferredRels"> Switch to stated view </span>
           </button>
           <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
-                  ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+                  ng-disabled="true"
                   class="p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
                   ng-class="[{'fully-defined-btn' : concept.definitionStatus === 'FULLY_DEFINED'}]"
                   ng-click="toggleConceptDefinitionStatus(isStatic)">
@@ -169,7 +170,7 @@
             <span>Fully Defined</span>
           </button>
           <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
-                  ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+                  ng-disabled="true"
                   class="p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
                   ng-class="[{'primitive-btn' : concept.definitionStatus === 'PRIMITIVE'}]"
                   ng-click="toggleConceptDefinitionStatus(isStatic)">
@@ -200,8 +201,8 @@
                           ng-click="collapse(concept)"></i></span>
               </div>
               <ul ng-if=" role === 'AUTHOR' || !isStatic || role === 'REVIEWER'">
-                <li ng-click="addAdditionalAxiom()" ng-if="!isLockedModule(concept.moduleId) && isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Additional Axiom</li>
-                <li ng-click="addGCIAxiom()" ng-if="!isLockedModule(concept.moduleId) && isAxiomSupport() && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
+                <li ng-click="addAdditionalAxiom(false)" ng-if="!isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
+                <li ng-click="addGCIAxiom()" ng-if="!isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
@@ -535,7 +536,7 @@
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent"
-                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template || isBatch || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
+                        ng-disabled="true"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span ng-if="isStatic">Active/Inactive</span>
@@ -641,46 +642,12 @@
                   <div class="badge alert-warning ng-binding pull-left">&nbsp; </div>
                   <span>Primitive</span>
                 </div>
-
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'">
-
-                  <button ng-if="!template && !concept.template" type="button" ng-click="addRelationship(groupId, relationship)"
-                          class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
-                    <span>Add New Relationship</span>
-                  </button>
-
-                  <button type="button" ng-click="removeRelationship(relationship)"
-                          ng-if="!relationship.released && ((!template && !concept.template) || (template && (!relationshipInLogicalModel(relationship, template) || isOptionalAttribute(relationship))))"
-                          class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
-                    <span>Remove Relationship</span>
-                  </button>
-
-
-                </div>
-
               </div>
               <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
                                 <textarea class="resizable-text msd-elastic no-border-bottom" ng-model-options="{updateOn: 'blur'}"
                                           ng-model="field.value" type="text" placeholder="{{field}}">
                                 </textarea>
               </div>
-            </div>
-
-            <div class="col-md-1 no-padding color_{{(relationship.groupId%2==0)?'even':'odd'}} role-group-drag p-t-5 {{relationship.characteristicType}}"
-                 drop-channel="relationshipGroupObj" ui-on-drop="dropRelationshipGroup($data)"
-                 drag-enter-class="sca-relgroup-drag-target" drag-hover-class="sca-relgroup-drag-hover">
-              <button ng-if="$index === 0"
-                      class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right  "
-                      ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
-                      drag-image="getDragImageForRelationshipGroup(relationshipGroup)"
-                      ng-disabled="relationship.characteristicType === 'INFERRED_RELATIONSHIP'">
-                <span>Drag Relationship Group</span>
-              </button>
-
-              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template && !concept.template && relationship.characteristicType !== 'INFERRED_RELATIONSHIP'"
-                      class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
-                      ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
-              </button>
             </div>
           </div>
 
@@ -716,12 +683,12 @@
     </div>
 
     <!-- rows: Additional axioms -->
-    <div ng-if="isAxiomSupport()" ng-hide="showInferredRels" ng-repeat="axiom in concept.classAxioms" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
+    <div ng-if="axiom.active || !hideInactive" ng-hide="showInferredRels" ng-repeat="axiom in concept.classAxioms">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
 
     <!-- rows: General Concept Inclusion axioms -->
-    <div ng-if="isAxiomSupport()" ng-hide="showInferredRels" ng-repeat="axiom in concept.gciAxioms" ng-class="getComponentStyle(axiom.axiomId, null, '', null)">
+    <div ng-if="axiom.active || !hideInactive" ng-hide="showInferredRels" ng-repeat="axiom in concept.gciAxioms">
       <div ng-include="'shared/concept-edit/axiomTemplate.html'"></div>
     </div>
     <div class="clearfix"></div>

@@ -5,8 +5,8 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('batchEditingService', ['scaService', 'snowowlService', '$q', '$timeout','$compile', 'componentAuthoringUtil', 'templateService', 'constraintService',
-    function (scaService, snowowlService, $q, $timeout, $compile, componentAuthoringUtil, templateService, constraintService) {
+  .service('batchEditingService', ['scaService', 'terminologyServerService', '$q', '$timeout','$compile', 'componentAuthoringUtil', 'templateService', 'constraintService',
+    function (scaService, terminologyServerService, $q, $timeout, $compile, componentAuthoringUtil, templateService, constraintService) {
 
       //
       // Service variables
@@ -222,7 +222,7 @@ angular.module('singleConceptAuthoringApp')
       function isTransform(){
           if(batchConcepts 
             && batchConcepts.length !== 0 
-            && snowowlService.isSctid(batchConcepts[0].conceptId)){
+            && terminologyServerService.isSctid(batchConcepts[0].conceptId)){
               return true;
           }
           else{
