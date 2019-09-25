@@ -1,7 +1,10 @@
 'use strict';
 
+//
+// This generic service can be used with either Snow Owl or Snowstorm terminology servers.
+//
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', '$rootScope',
+  .service('terminologyServerService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', '$rootScope',
     function ($http, $q, $timeout, notificationService, metadataService, $rootScope) {
       let apiEndpoint = null;
 
@@ -13,6 +16,22 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(items, function(concept) {
           normaliseSnowstormConcept(concept);
         });
+      }
+
+      function normaliseSnowstormMergeReviewConcepts(mergeReview, mergeReviewId){
+        angular.forEach(mergeReview, function(review){
+          if (review.autoMergedConcept) {
+            normaliseSnowstormConcept(review.autoMergedConcept);
+          }
+          if (review.sourceConcept) {
+            normaliseSnowstormConcept(review.sourceConcept);
+          }
+          if (review.targetConcept) {
+            normaliseSnowstormConcept(review.targetConcept);
+          }
+        })
+        mergeReview.id = mergeReviewId;
+        return mergeReview
       }
 
       function normaliseSnowstormConcept(concept) {
@@ -41,6 +60,8 @@ angular.module('singleConceptAuthoringApp')
             }
             if (typeof relationship.type == "object") {
               normaliseSnowstormTerms(relationship.type);
+              relationship.type.pt = relationship.type.fsn.substr(0, relationship.type.fsn.lastIndexOf('(')).trim();
+              console.log(relationship);
             }
             if (typeof relationship.target == "object") {
               normaliseSnowstormTerms(relationship.target);
@@ -62,7 +83,7 @@ angular.module('singleConceptAuthoringApp')
 
 
       /////////////////////////////////////
-      // Snowowl Concept Retrieval Methods
+      // Terminology Server Concept Retrieval Methods
       /////////////////////////////////////
 
       // Create New Concept
@@ -259,6 +280,39 @@ angular.module('singleConceptAuthoringApp')
             delete relationship[key];
           }
         }
+        if(relationship.type){
+            cleanRelationshipType(relationship.type);
+        }
+        if(relationship.target){
+            cleanRelationshipType(relationship.target);
+        }
+      }
+        
+      function cleanRelationshipType(relationship) {
+
+        var allowableRelationshipProperties = [
+          'conceptId', 'fsn', 'pt', 'active', 'definitionStatus', 'effectiveTime', 'moduleId', 'released'
+        ];
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
+        }
+        if(typeof relationship.pt == "object"){
+            relationship.pt = relationship.pt.term;
+        }
+      }
+        
+      function cleanRelationshipTarget(relationship) {
+
+        var allowableRelationshipProperties = [
+          'conceptId', 'fsn', 'pt'
+        ];
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
+        }
       }
 
       function cleanDescription(description, keepTempIds) {
@@ -318,9 +372,43 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(concept.relationships, function (relationship) {
           cleanRelationship(relationship, keepTempIds);
 
-          // snowowl require source id set
+          // Terminology Server require source id set
           relationship.sourceId = concept.conceptId;
 
+        });
+          
+        //Loop through and remove any axioms that have been added during feedback axiom comparions
+        if(concept.classAxioms){
+            for (var i = concept.classAxioms.length - 1; i >= 0; i--) {
+                if (concept.classAxioms[i].deleted) {
+                    concept.classAxioms.splice(i, 1);
+                }
+            }
+        }
+        
+        if(concept.gciAxioms){
+            for (var i = concept.gciAxioms.length - 1; i >= 0; i--) {
+                if (concept.gciAxioms[i].deleted) {
+                    concept.gciAxioms.splice(i, 1);
+                }
+            }
+        }
+          
+        //Loop through and remove any axiom relationships that have been added during feedback axiom comparions
+          
+        angular.forEach(concept.classAxioms, function(axiom){
+            for (var i = axiom.relationships.length - 1; i >= 0; i--) {
+                if (axiom.relationships[i].deleted) {
+                    axiom.relationships.splice(i, 1);
+                }
+            }
+        });
+        angular.forEach(concept.gciAxioms, function(axiom){
+            for (var i = axiom.relationships.length - 1; i >= 0; i--) {
+                if (axiom.relationships[i].deleted) {
+                    axiom.relationships.splice(i, 1);
+                }
+            }
         });
 
         if (concept.classAxioms) {
@@ -398,6 +486,13 @@ angular.module('singleConceptAuthoringApp')
           return response.data.items;
         });
       }
+        
+      // get all classification results for a branchroot
+      function getClassificationsForBranchRoot(branchroot) {
+        return $http.get(apiEndpoint + branchroot + '/classifications').then(function (response) {
+          return response.data.items;
+        });
+      }
 
       // get all classification results for a project or task based on specific branch path
       function getClassifications(branchPath) {
@@ -448,7 +543,7 @@ angular.module('singleConceptAuthoringApp')
       // get preview of model
       function getModelPreview(classifierId, branch, id) {
         return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function (response) {
-          normaliseSnowstormConcept(response);
+          normaliseSnowstormConcept(response.data);
           return response.data;
         });
       }
@@ -459,9 +554,9 @@ angular.module('singleConceptAuthoringApp')
           headers: {'Content-Type': 'application/json; charset=UTF-8'}
         }).then(function (response) {
           return response;
-        }, function (error) {
-          console.error('Saving classification failed', error);
-          return null;
+        }, function (response) {
+          console.error('Saving classification failed', response);
+          return response;
         });
       }
 
@@ -596,14 +691,15 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve stated children of a concept
       // GET /{path}/concepts/{conceptId}/children?form=stated
       function getStatedConceptChildren(conceptId, branch) {
-        // TODO Need to apply MS/extension parameters here eventually?
-        return $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId + '/children?form=stated').then(function (response) {
-          normaliseSnowstormConcepts(response.data);
-          return response.data;
-        }, function (error) {
-          // TODO Handle error
-        });
-
+        let deferred = $q.defer();
+        let params = {};
+        params.statedEclFilter = '<< ' + conceptId;
+        doSearch(branch, params, null, null).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error);
+          });
+        return deferred.promise;
       }
 
 
@@ -636,13 +732,14 @@ angular.module('singleConceptAuthoringApp')
         }
         // construct the properties object
         var propertiesObj = {
+          'conceptId': conceptId,
           'commitComment': 'Inactivation',
           'inactivationIndicator': inactivationIndicator,
           'active': false,
           'associationTargets': associationTargets
         };
 
-        $http.post(apiEndpoint + branch + '/concepts/' + conceptId + '/updates', propertiesObj).then(function (response) {
+        $http.put(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, propertiesObj).then(function (response) {
           deferred.resolve(true);
         }, function (error) {
           deferred.reject(error.statusMessage);
@@ -802,9 +899,32 @@ angular.module('singleConceptAuthoringApp')
 
       // Retrieve historical association references to a concept
       // GET /{path}/concepts/{conceptId}/members
-      function getMembersByTargetComponent(conceptId, branch) {
+      function getHistoricalAssociationMembers(conceptId, branch) {
+        // Fetch members from any reference set which is a descendant of 900000000000522004 |Historical association reference set (foundation metadata concept)|.
+        return getMembersByTargetComponent(conceptId, branch, '<900000000000522004');
+      }
+
+      // Retrieve members which have a targetComponent of a concept
+      // GET /{path}/concepts/{conceptId}/members
+      function getMembersByTargetComponent(conceptId, branch, referenceSet) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+        $http.get(apiEndpoint + branch + '/members?referenceSet=' + referenceSet + '&targetComponent=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+          if (response.data.total === 0) {
+            deferred.resolve([]);
+          } else {
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+        
+      // Retrieve members where the type is GCI and the provided conceptId is referenced
+      // GET /{path}/members
+      function getGciExpressionsFromTarget(conceptId, branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/members?owlExpression.conceptId=' + conceptId + '&owlExpression.gci=true&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
           if (response.data.total === 0) {
             deferred.resolve([]);
           } else {
@@ -896,6 +1016,32 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
+        
+      // Helper call to retrieve a concept with all elements at a point in time
+      // Puts all elements in save-ready format
+      function getFullConceptAtDate(conceptId, branch, acceptLanguageValue, date) {
+        let param = null;
+        if(apiEndpoint.includes('snowowl')){
+            param = '^';
+        }
+        else{
+            param = '@' + date;
+        }
+
+        var deferred = $q.defer();
+        var config = {};
+        if (acceptLanguageValue) {
+          config.headers = {'Accept-Language': acceptLanguageValue};
+        }
+
+        $http.get(apiEndpoint + 'browser/' + branch + param + '/concepts/' + conceptId, config).then(function (response) {
+          normaliseSnowstormConcept(response.data);
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
 
       /////////////////////////////////////
       // Static metadata methods
@@ -952,15 +1098,26 @@ angular.module('singleConceptAuthoringApp')
 
       //Function to bulk get full concepts via POST
       function bulkRetrieveFullConcept(conceptIdList, branch, expandPt) {
-          var body = {
-              "conceptIds":conceptIdList
-          }
         var deferred = $q.defer();
+        // Return empty array if no concepts requested
+        if (conceptIdList.length === 0) {
+          deferred.resolve([]);
+          return deferred.promise;
+        }
+        var body = {
+            "conceptIds":conceptIdList
+        }
         var queryString = '';
         $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk-load', body).then(function (response) {
+          normaliseSnowstormConcepts(response.data)
           deferred.resolve(response.data);
         }, function (error) {
-          deferred.reject(error);
+          if(error.data.status === 404){
+              deferred.resolve([]);
+          }
+          else{
+            deferred.reject(error);
+          }
         });
         return deferred.promise;
       }
@@ -1000,11 +1157,12 @@ angular.module('singleConceptAuthoringApp')
           active: data.active,
           concept: {
             active: data.active,
-            conceptId: data.fsn ? data.fsn.conceptId : data.pt.conceptId,
+            conceptId: data.id,
             definitionStatus: data.definitionStatus,
             fsn: data.fsn ? data.fsn.term : data.fsn,
             preferredSynonym: data.pt ? data.pt.term : data.pt,
-            moduleId: data.moduleId
+            moduleId: data.moduleId,
+            term: data.pt ? data.pt.term : data.pt
           }
         };
       }
@@ -1051,8 +1209,18 @@ angular.module('singleConceptAuthoringApp')
         }
 
         let isAsychronousRequest = false;
+
+        // if the user is searching with a refsetId
+        if(termFilter.substr(8, 1) === '-' && termFilter.substr(13, 1) === '-'){
+            doRefsetSearch(branch, params, config, termFilter).then(function (response) {
+                  deferred.resolve(response);
+              }, function (error) {
+                deferred.reject(error);
+              });
+        }
+
         // if the user is searching with some form of numerical ID
-        if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
+        else if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
 
           // if user is searching with a conceptID
           if(conceptIdList || termFilter.substr(-2, 1) === '0') {
@@ -1190,11 +1358,28 @@ angular.module('singleConceptAuthoringApp')
 
                 results.push(obj);
               });
-
               response.data.items = results;
               deferred.resolve(response.data ? response.data : {items: [], total: 0});
             }
 
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+        return deferred.promise;
+      }
+
+      function doRefsetSearch (branch, params, config, axiomId) {
+        let deferred = $q.defer();
+
+        $http.get(apiEndpoint + branch + '/members/' + axiomId).then(function (response) {
+              let results = [];
+              if(response.data.refsetId === '733073007'){
+                  params.conceptIds = [response.data.referencedComponentId];
+                  doSearch(branch, params, config, false).then(function (concept){
+                      deferred.resolve(concept);
+                  });
+              }
           }, function (error) {
             deferred.reject(error);
           });
@@ -1418,7 +1603,8 @@ angular.module('singleConceptAuthoringApp')
 
       // Get traceability log for branch
       // GET /traceability-service/activities?onBranch=
-      function getTraceabilityForBranch(branch, conceptId, activityType) {
+      function getTraceabilityForBranch(branch, conceptId, activityType, brief) {
+        console.log(brief);
         var deferred = $q.defer();
         var params = 'size=50000';
         if(branch) {
@@ -1429,6 +1615,9 @@ angular.module('singleConceptAuthoringApp')
         }
         if(activityType) {
           params += '&activityType=' + activityType;
+        }
+        if(brief){
+          params += '&brief=true'
         }
 
         $http.get('/traceability-service/activities?' + params).then(function (response) {
@@ -1453,7 +1642,7 @@ angular.module('singleConceptAuthoringApp')
         }
         var params = 'page=0&size=1&sort=commitDate%2Cdesc&sourceBranch=' + encodeURIComponent(branchRoot);
         return $http.get('/traceability-service/activities/promotions?' + params).then(function (response) {
-          return response.data.content[0].commitDate;
+          return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
         }, function (error) {
           return null;
         });
@@ -1474,15 +1663,24 @@ angular.module('singleConceptAuthoringApp')
       }
 
       ////////////////////////////////
-      // Snow Owl Administrative Services
+      // Terminology Server Administrative Services
       ////////////////////////////////
       function getAllCodeSystemVersionsByShortName (codeSystemShortName) {
         if(!codeSystemShortName) {
           console.error('Error retrieving versions: code system is not defined');
           return null;
         }
-
-        return $http.get('snowowl/admin/codesystems/' + codeSystemShortName + '/versions').then(function (response) {
+          
+        let url = '';
+        
+        if(apiEndpoint.includes('snowowl')){
+            url = 'snowowl/admin/codesystems/';
+        }
+        else{
+            url = apiEndpoint + '/codesystems/';
+        }
+          
+        return $http.get(url + codeSystemShortName + '/versions').then(function (response) {
           return response;
         }, function (error) {
           return null;
@@ -1558,7 +1756,7 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////////////////////////////
 
       function getDomainAttributes(branch, parentIds) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn()&limit=50').then(function (response) {
+        return $http.get(apiEndpoint + 'mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=pt(),fsn()&limit=50').then(function (response) {
           return response.data ? response.data : [];
         }, function (error) {
           return null;
@@ -1566,7 +1764,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getAttributeValues(branch, attributeId, searchStr) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') : '') + '&expand=fsn()&limit=50').then(function (response) {
+        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) : '') + '&expand=fsn()&limit=50').then(function (response) {
           return response.data.items ? response.data.items : [];
         }, function (error) {
           return null;
@@ -1611,7 +1809,7 @@ angular.module('singleConceptAuthoringApp')
             // if review is ready, get the details
             if (response && response.data && response.data.status === 'CURRENT') {
               $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response) {
-                deferred.resolve(response.data);
+                deferred.resolve(normaliseSnowstormMergeReviewConcepts(response.data, mergeReviewId));
               }, function (error) {
                 deferred.reject('Could not retrieve details of reported current review');
               });
@@ -1666,19 +1864,23 @@ angular.module('singleConceptAuthoringApp')
        * Returns null if review does not exist or is not current
        */
       function getMergeReviewDetails(mergeReviewId) {
-        return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+          console.log(response);
           if (response && response.data && response.data.status === 'CURRENT') {
-            return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
-              var mergeReview = response2.data;
-              mergeReview.id = mergeReviewId; // re-append id for convenience
-              return mergeReview;
+            $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
+              deferred.resolve(normaliseSnowstormMergeReviewConcepts(response2.data, mergeReviewId));
             }, function (error) {
-              return null;
+              deferred.reject(null);
             });
           }
+          else{
+              deferred.resolve(null);
+          }
         }, function (error) {
-          return null;
+          deferred.reject(null);
         });
+        return deferred.promise;
       }
 
       /**
@@ -1758,14 +1960,52 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
             return 1;
           }
-          else if (error.status === 409) {
-            notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-            return null;
+          else if (error.status === 409) {            
+            if (error.data && error.data.message) {
+              var errorMsg = error.data.message;
 
+              var errorConflictMsg = '';
+              if (error.data.conflicts) {
+                angular.forEach(error.data.conflicts, function(conflict) {
+                  errorConflictMsg += '\n' + conflict.message;
+                });
+              }
+
+              if (errorConflictMsg.length > 0) {
+                errorMsg = errorMsg + ' : ' + errorConflictMsg;
+              }
+              notificationService.sendError(errorMsg);
+
+              return null;
+            }
+            notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+            
+            return null;
           }
           else {
             notificationService.sendError('Error rebasing Task: ' + mergeReviewId);
             return null;
+          }
+        });
+        return deferred.promise;
+      }
+
+      /**
+       * Branch integrity check - if available on this terminology server
+       */
+      function branchIntegrityCheck(branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/integrity-check').then(function () {}, function(error) {
+          if (error.status == 400) {
+            // Endpoint exists, we can POST and expect a good response.
+            $http.post(apiEndpoint + branch + '/integrity-check').then(function (response) {
+              deferred.resolve(response.data);
+            }, function(error) {
+              deferred.reject(error.message);
+            });
+          } else {
+            // Integrity check is not implemented on this terminology server.
+            deferred.resolve(null);
           }
         });
         return deferred.promise;
@@ -1799,6 +2039,16 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(concept.relationships, function (relationship) {
           if (!relationship.relationshipId) {
             relationship.relationshipId = createGuid();
+          }
+        });
+        angular.forEach(concept.classAxioms, function (axiom) {
+          if (!axiom.axiomId) {
+            axiom.axiomId = createGuid();
+          }
+        });
+        angular.forEach(concept.gciAxioms, function (axiom) {
+          if (!axiom.axiomId) {
+            axiom.axiomId = createGuid();
           }
         });
 
@@ -1847,7 +2097,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // search concepts by branch, filter, and escgExpr
-      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn, acceptLanguageValue) {
+      function searchConcepts(branch, termFilter, escgExpr, offset, limit, syn, acceptLanguageValue, stated) {
         var deferred = $q.defer();
         var config = {};
 
@@ -1868,13 +2118,16 @@ angular.module('singleConceptAuthoringApp')
         };
 
         if(syn){
-            params.expand = 'pt()'
+          params.expand = 'pt()'
         }
-        if (termFilter) {
+        if(termFilter) {
           params.termFilter = termFilter;
         }
-        if (escgExpr) {
+        if(escgExpr && !stated){
           params.eclFilter = escgExpr;
+        }
+        if(escgExpr && stated) {
+          params.statedEclFilter = escgExpr;
         }
 
         $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
@@ -1891,13 +2144,51 @@ angular.module('singleConceptAuthoringApp')
           apiEndpoint = url;
       }
 
-      function searchMerge (source, target, status) {
-        return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
-          var mergeReview = response.data;
-          return mergeReview;
-        }, function (error) {
-          return null;
-        });
+      function getEndpoint() {
+        var defer = $q.defer();        
+        if (!apiEndpoint) {                  
+          setTimeout(function waitForTerminologyServerURL() {                              
+            if (!apiEndpoint) {                      
+              setTimeout(waitForTerminologyServerURL, 100);            } 
+            else {                  
+              defer.resolve(apiEndpoint);
+            }
+          }, 100);
+        }
+        else {              
+          defer.resolve(apiEndpoint);
+        }
+        
+        return defer.promise;
+      }
+
+      function fetchConflictMessage(merge) {
+        var generalMessage = 'There are content conflicts. Please contact technical support. ';
+        if (merge.apiError && merge.apiError.additionalInfo && merge.apiError.additionalInfo.integrityIssues) {
+          // Snowstorm gives us this.
+          var deferred = $q.defer();
+          deferred.resolve(generalMessage + JSON.stringify(merge.apiError.additionalInfo.integrityIssues));
+          return deferred.promise;
+        } else {
+          return $http.get(apiEndpoint + 'merges?' + 'source=' + encodeURIComponent(source) + '&target=' + encodeURIComponent(target) + '&status=' + status).then(function (response) {
+            if (response && response.data && response.data.items && response.data.items.length > 0) {
+              var msg = '';
+              angular.forEach(response.data.items, function (item) {
+                if (item.id == merge.id) {
+                  angular.forEach(item.conflicts, function (conflict) {
+                    if (msg.length > 0) {
+                      msg = msg + ' \n';
+                    }
+                    msg += conflict.message;
+                  });
+                }
+              });
+              return generalMessage + msg;
+            }
+          }, function (error) {
+            return null;
+          });
+        }
       }
       ////////////////////////////////////////////
       // Method Visibility
@@ -1927,11 +2218,13 @@ angular.module('singleConceptAuthoringApp')
         getConceptDescendants: getConceptDescendants,
         getRelationshipDisplayNames: getRelationshipDisplayNames,
         getFullConcept: getFullConcept,
+        getFullConceptAtDate: getFullConceptAtDate,
         updateDescription: updateDescription,
         startClassificationForTask: startClassificationForTask,
         getClassificationForTask: getClassificationForTask,
         getClassificationForProject: getClassificationForProject,
         getClassificationsForTask: getClassificationsForTask,
+        getClassificationsForBranchRoot: getClassificationsForBranchRoot,
         getClassifications: getClassifications,
         getClassificationsForProject: getClassificationsForProject,
         getEquivalentConcepts: getEquivalentConcepts,
@@ -1951,8 +2244,10 @@ angular.module('singleConceptAuthoringApp')
         searchConcepts: searchConcepts,
         searchAllConcepts: searchAllConcepts,
         getReview: getReview,
+        getHistoricalAssociationMembers: getHistoricalAssociationMembers,
         getMembersByTargetComponent: getMembersByTargetComponent,
         getMembersByReferencedComponent:getMembersByReferencedComponent,
+        getGciExpressionsFromTarget: getGciExpressionsFromTarget,
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,
@@ -1970,7 +2265,7 @@ angular.module('singleConceptAuthoringApp')
         setBranchPreventPromotion: setBranchPreventPromotion,
         getLastPromotionTime: getLastPromotionTime,
 
-        // Snow Owl Administrative Services
+        // Terminology Server Administrative Services
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
 
         // merge-review functionality
@@ -1980,6 +2275,8 @@ angular.module('singleConceptAuthoringApp')
         generateMergeReview: generateMergeReview,
         storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
         mergeAndApply: mergeAndApply,
+        branchIntegrityCheck: branchIntegrityCheck,
+        fetchConflictMessage: fetchConflictMessage,
 
         // validation
         validateConcept: validateConcept,
@@ -1993,7 +2290,8 @@ angular.module('singleConceptAuthoringApp')
         cleanConcept: cleanConcept,
         cleanDescription: cleanDescription,
         cleanRelationship: cleanRelationship,
-        setEndpoint: setEndpoint
+        setEndpoint: setEndpoint,
+        getEndpoint: getEndpoint
       };
     }
 

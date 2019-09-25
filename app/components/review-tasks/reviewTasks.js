@@ -10,11 +10,19 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
     $routeProvider
       .when('/review-tasks', {
         controller: 'ReviewTasksCtrl',
-        templateUrl: 'components/review-tasks/reviewTasks.html'
+        templateUrl: 'components/review-tasks/reviewTasks.html',
+        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+            var defer = $q.defer();
+            terminologyServerService.getEndpoint().then(function(){
+              defer.resolve();
+            });                        
+            return defer.promise;
+          }
+        ]
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, localStorageService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -153,11 +161,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         metadataService.setBranchMetadata(task);
 
         // check for project lock
-        snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
+        terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
           if (!response.metadata || response.metadata && !response.metadata.lock) {
 
             // check for task lock
-            snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey + '/' + task.key).then(function (response) {
+            terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey + '/' + task.key).then(function (response) {
               if (!response.metadata || response.metadata && !response.metadata.lock) {
                 $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
               }

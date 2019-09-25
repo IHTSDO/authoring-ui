@@ -203,16 +203,17 @@ angular.module('singleConceptAuthoringApp')
           accountService.getUserPreferences().then(function (response) {
               scope.userPreferences = response;
               if(window.location.href.indexOf("task/") > -1) {
-                  window.open('/browser/?branch=' + $rootScope.currentTask.branchPath, '_blank');
+                  console.log($rootScope.currentTask);
+                  window.open('/browser/?perspective=full&conceptId1=138875005&edition=' + $rootScope.currentTask.branchPath.substring(0, $rootScope.currentTask.branchPath.lastIndexOf('/')) + '&release=' + $rootScope.currentTask.key, '_blank');
                 }
               else if(window.location.href.indexOf("project/") > -1) {
-                  window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
+                  window.open('/browser/?perspective=full&conceptId1=138875005&edition=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
                 }
               else if(scope.userPreferences && scope.userPreferences.branchPath){
-                  window.open('/browser/?branch=' + scope.userPreferences.branchPath, '_blank');
+                  window.open('/browser/?perspective=full&conceptId1=138875005&edition=' + scope.userPreferences.branchPath, '_blank');
                 }
               else{
-                  window.open('/browser', '_blank');
+                  window.open('/browser/?perspective=full&conceptId1=138875005', '_blank');
               }
           });
         };

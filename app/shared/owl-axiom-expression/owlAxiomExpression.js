@@ -1,5 +1,5 @@
 angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
-  .controller('owlAxiomExpressionModalCtrl', function ($scope, $modalInstance, branch, conceptId, conceptFSN, classAxioms, gciAxioms, snowowlService, metadataService, notificationService, $window) {   
+  .controller('owlAxiomExpressionModalCtrl', function ($scope, $modalInstance, branch, conceptId, conceptFSN, classAxioms, gciAxioms, terminologyServerService, metadataService, notificationService, $window) {
     
     $scope.conceptFSN = conceptFSN;
     $scope.conceptId = conceptId;
@@ -189,13 +189,19 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
     }
 
     function getOwlAxiomExpressions () {
-      snowowlService.getMembersByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
+      terminologyServerService.getMembersByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
         if (response.total !== 0) {
           angular.forEach(response.items, function (item) {
             if (item.additionalFields 
                 && Object.keys(item.additionalFields).length > 0
                 && item.additionalFields.hasOwnProperty('owlExpression')) {
-              $scope.owlAxiomExpression[item.id] = item.additionalFields['owlExpression'];
+              if(item.memberId){
+                  $scope.owlAxiomExpression[item.memberId] = item.additionalFields['owlExpression'];
+              }
+              else{
+                  $scope.owlAxiomExpression[item.id] = item.additionalFields['owlExpression'];
+              }
+              
             }
           });
         }
@@ -213,7 +219,7 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
             });                        
           }
           if (conceptIds.length !== 0) {
-              snowowlService.bulkGetConcept(conceptIds, $scope.branch).then(function(response) {
+              terminologyServerService.bulkGetConcept(conceptIds, $scope.branch).then(function(response) {
                 initializeConceptMap(response.items);
                 $scope.loading = false;
               });

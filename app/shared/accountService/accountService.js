@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles IMS authentication, user roles, and user settings
  */
-  .factory('accountService', function ($http, $rootScope, $q, scaService) {
+  .factory('accountService', function ($http, $rootScope, $q, scaService, metadataService) {
 
     var accountDetails = null;
 
@@ -124,6 +124,13 @@ angular.module('singleConceptAuthoringApp')
       $rootScope.globalStyleClasses = globalStyleClasses;
 
       /////////////////////////////////////////////////////
+      // Set Min. Network connection speed 
+      /////////////////////////////////////////////////////
+      if (localPreferences && localPreferences.minNetworkConnection) {
+        window.minNetworkConnection = localPreferences.minNetworkConnection;
+      }
+
+      /////////////////////////////////////////////////////
       // Resolve and Return
       /////////////////////////////////////////////////////
 
@@ -141,6 +148,14 @@ angular.module('singleConceptAuthoringApp')
         if(response !== null && response !== undefined){
             response.appView = "sca-default";
         }
+        
+        if (response.branchPath && !isValidBranchPath(response.branchPath)) {
+          response.branchPath = null;
+          if (response.browserView) {
+            response.browserView = null;
+          }
+        }
+        
         return response;
       }, function(error) {
         return null;
@@ -150,6 +165,20 @@ angular.module('singleConceptAuthoringApp')
       return scaService.saveUiStateForUser('user-preferences', preferences).then(function(response) {
         return response;
       });
+    }
+
+    function isValidBranchPath (branch) {
+      let projects = metadataService.getProjects();
+      if (projects.length > 0) {
+        for (let i = 0; i < projects.length; i++) {
+          if (projects[i].branchPath === branch) {
+            return true;
+          }
+        }  
+        return false;
+      }
+      
+      return true;
     }
 
     return {

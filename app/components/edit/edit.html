@@ -24,7 +24,7 @@
             popover-append-to-body="true"
             type="button"
             id="templateCreateBtn"
-            ng-disabled="task.status === 'Promoted' || !canCreateConcept"
+            disabled
             ng-if="templates.length > 0"
             class="btn btn-default create-template widget-toolbar tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i>
@@ -45,26 +45,26 @@
 
           <ul class="button-sub-nav">
 
-            <li ng-if="!task.latestClassificationJson">
+            <li ng-if="!task.latestClassificationJson && !classificationRunning">
               No Classification Run
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'STALE'" ng-click="viewClassificationFromSidebar()">
+            <li ng-if="task.latestClassificationJson.status === 'STALE' && !classificationRunning" ng-click="viewClassificationFromSidebar()">
               View Stale Classification (completed {{task.latestClassificationJson.completionDate | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}})
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'SAVED'" ng-click="viewClassificationFromSidebar()">
+            <li ng-if="task.latestClassificationJson.status === 'SAVED' && !classificationRunning" ng-click="viewClassificationFromSidebar()">
               View Classification (saved {{task.latestClassificationJson.saveDate | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}})
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'COMPLETED'" ng-click="viewClassificationFromSidebar()">
+            <li ng-if="task.latestClassificationJson.status === 'COMPLETED' && !classificationRunning" ng-click="viewClassificationFromSidebar()">
               View Classification (completed {{task.latestClassificationJson.completionDate | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}})
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'FAILED'">
+            <li ng-if="task.latestClassificationJson.status === 'FAILED' && !classificationRunning">
               Classification Failed
             </li>
-            <li ng-if="task.latestClassificationJson.status === 'RUNNING'">
+            <li ng-if="classificationRunning">
               Classification Running
             </li>
-            <li ng-if="task.latestClassificationJson.status !== 'RUNNING' && role === 'AUTHOR'" ng-click="classify()"
-                ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
+            <li ng-if="!classificationRunning && role === 'AUTHOR'" ng-click="classify()"
+                ng-disabled="task.status === 'Promoted' || classificationRunning || role === 'REVIEWER' || branchLocked">
               Start New Classification
             </li>
           </ul>
@@ -172,6 +172,7 @@
     <!-- Edit View:  No sidebar -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="[{'lighten-2' : thisView === 'edit-no-sidebar'}]"
             class="btn btn-default widget-toolbar blue tooltips-right tooltips-light normal-case white-backgrounnd hide-sidebar-btn"
+            ng-disabled="mode === 'batch'"
             ng-click="setView('edit-no-sidebar')">
       <div class="md md-web "></div>
       <span>Hide the left sidebar</span></button>
@@ -179,6 +180,7 @@
     <!-- Edit View: No model -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="[{'lighten-2' : thisView === 'edit-no-model'}]"
             class="btn btn-default widget-toolbar blue tooltips-right tooltips-light normal-case white-backgrounnd hide-concept-model-btn"
+            ng-disabled="mode === 'feedback' || mode === 'batch'"
             ng-click="setView('edit-no-model')">
       <div class="md md-grid-off"></div>
       <span>Hide all concept models</span></button>
@@ -200,22 +202,21 @@
   </style>
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
-
+      
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
-          ng-show="$root.displayMainSidebar
-                    && thisView !== 'validation'
-                    && thisView !== 'classification'
-                    && thisView !== 'conflicts'"
-          class="editpanel sca-column"></div>
+        ng-show="$root.showSidebarEdit && mode !== 'validation'  && mode !== 'classification' && mode !== 'conflicts' && thisView !== 'edit-no-sidebar'"
+        class="editpanel sca-column">
+    </div>
+  <div class="row no-gutter">  
 
     <!-- Default edit view -->
-    <div ng-if="thisView === 'edit-default'">
+    <div ng-if="thisView === 'edit-default' && mode === 'edit'">
       <div ng-include="'shared/concept-edit/modelsConceptsView.html'"></div>
     </div>
 
     <!-- Edit view with no sidebar -->
-    <div ng-if="thisView === 'edit-no-sidebar'">
+    <div ng-if="thisView === 'edit-no-sidebar' && mode === 'edit'">
 
       <!-- models & concepts-->
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding ">
@@ -274,7 +275,7 @@
     </div>
 
     <!-- Edit view with no model -->
-    <div ng-if="thisView === 'edit-no-model'">
+    <div ng-if="thisView === 'edit-no-model' && mode === 'edit'">
 
       <!-- concepts-->
       <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')"
@@ -305,9 +306,8 @@
       </div>
     </div>
 
-
     <!-- Validation view -->
-    <div ng-if="thisView === 'validation'">
+    <div ng-if="mode === 'validation'">
 
       <!-- validation report -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
@@ -317,7 +317,7 @@
     </div>
 
     <!-- Inactivation view -->
-    <div ng-if="thisView === 'inactivation'">
+    <div ng-if="mode === 'inactivation'">
 
       <div class="row no-padding no-gutter">
 
@@ -336,7 +336,7 @@
 
 
     <!-- Classification view -->
-    <div ng-if="thisView === 'classification'">
+    <div ng-if="mode === 'classification'">
 
       <div class="row no-padding no-gutter">
 
@@ -350,15 +350,15 @@
 
 
     <!-- Review/Feedback view -->
-    <div ng-if="thisView === 'feedback'">
+    <div ng-if="mode === 'feedback'">
       <!-- feedback report -->
       <div>
-        <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
+        <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true" view="thisView"></div>
       </div>
     </div>
 
     <!-- Conflict view -->
-    <div ng-if="thisView === 'conflicts'">
+    <div ng-if="mode === 'conflicts'">
 
       <!-- conflict report -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -368,7 +368,7 @@
 
     </div>
 
-    <div ng-if="thisView === 'batch'" class="batch-editing">
+    <div ng-if="mode === 'batch'" class="batch-editing">
 
       <!-- concepts-->
       <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')">

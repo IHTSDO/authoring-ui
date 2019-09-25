@@ -123,7 +123,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService, crsService) {
 
     console.log('Running application');
 
@@ -182,7 +182,9 @@ angular
         if (features.network && features.network.connection.minimum) {
           window.minNetworkConnection = features.network.connection.minimum;
         }
-        snowowlService.setEndpoint(endpoints.terminologyServerEndpoint);
+        terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
+        crsService.setCrsEndpoint(endpoints['crsEndpoint']);
+        crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
@@ -195,38 +197,17 @@ angular
         // get the account details
         accountService.getAccount(accountUrl).then(function (account) {
 
+          if(!(account.roles.includes('ROLE_ihtsdo-sca-author'))) {
+            window.location.href = decodeURIComponent(imsUrl + 'login');
+          }
+
           // start connecting websocket
-          scaService.connectWebsocket(account.login);
-
-          // get the user preferences (once logged in status confirmed)
-          accountService.getUserPreferences().then(function (preferences) {
-
-            // apply the user preferences
-            // NOTE: Missing values or not logged in leads to defaults
-            accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
-
-              // check for modification by application routine
-              if (appliedPreferences !== preferences) {
-                accountService.saveUserPreferences(appliedPreferences);
-              }
-            })
-          });
-
+          scaService.connectWebsocket();
         }, function (error) {
           // apply default preferences
           accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
 
           })
-        });
-        
-        // begin polling the sca endpoint at 10s intervals          
-        scaService.startPolling(10000);
-  
-        ///////////////////////////////////////////
-        // Cache local data
-        ///////////////////////////////////////////
-        scaService.getProjects().then(function (response) {
-          metadataService.setProjects(response);
         });
 
         cisService.getAllNamespaces().then(function (response) {
@@ -262,13 +243,31 @@ angular
         ///////////////////////////////////////////
         scaService.getProjects().then(function (response) {
           metadataService.setProjects(response);
+          // get the user preferences (once logged in status confirmed)
+          accountService.getUserPreferences().then(function (preferences) {
+
+            if (preferences && preferences.minNetworkConnection) {
+              window.minNetworkConnection = preferences.minNetworkConnection;
+            }
+
+            // apply the user preferences
+            // NOTE: Missing values or not logged in leads to defaults
+            accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+              // check for modification by application routine
+              if (appliedPreferences !== preferences) {
+                accountService.saveUserPreferences(appliedPreferences);
+              }
+            })
+          });
+
           var projectKeys = [];
-          var promises = [];                    
+          var promises = [];
           promises.push(scaService.getTasks());
-          promises.push(scaService.getReviewTasks());     
+          promises.push(scaService.getReviewTasks());
 
           // on resolution of all promises
-          $q.all(promises).then(function (responses) {                
+          $q.all(promises).then(function (responses) {
               for (var i = 0; i < responses.length; i++) {
                 angular.forEach(responses[i], function (task) {
                   if (projectKeys.indexOf(task.projectKey) === -1) {
@@ -287,7 +286,7 @@ angular
                 });
               });
 
-              if (myProjects.length > 0) {        
+              if (myProjects.length > 0) {
                 console.log('setting projects');
                 metadataService.setMyProjects(myProjects);
               }

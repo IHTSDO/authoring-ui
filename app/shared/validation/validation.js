@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'snowowlService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, snowowlService, notificationService, accountService, $timeout, $modal, metadataService) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getSNF = function (id) {
             var deferred = $q.defer();
-            snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
+            terminologyServerService.getConceptSNF(id, scope.branch).then(function (response) {
               deferred.resolve(response);
             });
             return deferred.promise;
@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.conceptUpdateFunction = function (project, task, concept) {
             var deferred = $q.defer();
-            snowowlService.updateConcept(project, task, concept).then(function (response) {
+            terminologyServerService.updateConcept(project, task, concept).then(function (response) {
               deferred.resolve(response);
             });
             return deferred.promise;
@@ -198,7 +198,7 @@ angular.module('singleConceptAuthoringApp')
                 break;
               // description: get description by id, replace with concept id
               case '1':
-                snowowlService.getDescriptionProperties(failure.conceptId, scope.branch).then(function (desc) {
+                terminologyServerService.getDescriptionProperties(failure.conceptId, scope.branch).then(function (desc) {
                   failure.conceptId = desc.conceptId;
                   conceptIds.push(desc.conceptId);
                   deferred.resolve();
@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
                 break;
               // relationship: get relationship by id, replace with source concept id
               case '2':
-                snowowlService.getRelationshipProperties(failure.conceptId, scope.branch).then(function (rel) {
+                terminologyServerService.getRelationshipProperties(failure.conceptId, scope.branch).then(function (rel) {
                   failure.relationshipId = rel.sourceId;
                   conceptIds.push(rel.sourceId);
                   deferred.resolve();
@@ -248,7 +248,7 @@ angular.module('singleConceptAuthoringApp')
               if (conceptIds.length > 0) {
 
                 // bulk call for concept ids
-                snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                terminologyServerService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
                   angular.forEach(concepts.items, function (concept) {
                     scope.idNameMap[concept.id] = concept.fsn.term;
                   });
@@ -283,7 +283,7 @@ angular.module('singleConceptAuthoringApp')
                 // different behavior depending on description vs. relationship
                 switch (matchInfo[1].substring(matchInfo[1].length - 2, matchInfo[1].length - 1)) {
                   case '1':
-                    snowowlService.getDescriptionProperties(matchInfo[1], scope.branch).then(function (description) {
+                    terminologyServerService.getDescriptionProperties(matchInfo[1], scope.branch).then(function (description) {
 
                       // apply the reference
                       failure.referencedComponentId = matchInfo[1];
@@ -327,7 +327,7 @@ angular.module('singleConceptAuthoringApp')
                if (descId && descId[1]) {
                console.debug('  description found: ', descId[1]);
                failure.referencedComponentId = descId[1];
-               snowowlService.getDescriptionProperties(descId[1], scope.branch).then(function (description) {
+               terminologyServerService.getDescriptionProperties(descId[1], scope.branch).then(function (description) {
                failure.detail = failure.detail.replace(/description: id=(\d+)/i, 'Description: ' + description.term);
 
                if (++failuresPrepared === scope.failures.length) {
@@ -544,7 +544,7 @@ angular.module('singleConceptAuthoringApp')
             });
 
             notificationService.sendMessage('Retrieving traceability information ...');
-            snowowlService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
+            terminologyServerService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
 
 
               // if traceability found, extract the user modified concept ids
@@ -640,7 +640,7 @@ angular.module('singleConceptAuthoringApp')
               if (conceptIds.length > 0) {
 
               // bulk call for concept ids
-              snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+              terminologyServerService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
                 var idNameMap = {};
                 angular.forEach(concepts.items, function (concept) {
                   idNameMap[concept.id] = concept.fsn.term;
@@ -776,7 +776,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            snowowlService.getFullConcept(failure.conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(failure.conceptId, scope.branch).then(function (response) {
               if (!scope.viewedConcepts || !Array.isArray(scope.viewedConcepts)) {
                 scope.viewedConcepts = [];
               }
@@ -943,7 +943,7 @@ angular.module('singleConceptAuthoringApp')
             var idConceptMap = {};
             var savedList = [];
             angular.forEach(editList, function (conceptId) {
-              snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+              terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
 
                 // add concept to map for properties retrieval (for task detail)
                 idConceptMap[conceptId] = response.fsn;
