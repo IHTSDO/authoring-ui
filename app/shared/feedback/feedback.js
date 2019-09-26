@@ -2181,10 +2181,6 @@ angular.module('singleConceptAuthoringApp')
              */
             var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEditFromConceptId($1)" style="cursor:pointer">$2</a>');
 
-            // Remove startfragment and endfragment from copy/paste
-            feedbackStr = feedbackStr.replace(/<!--StartFragment-->/g, '');
-            feedbackStr = feedbackStr.replace(/<!--EndFragment-->/g, '');
-
             notificationService.sendMessage('Submitting feedback...', null);
 
             // extract the subject concept ids
