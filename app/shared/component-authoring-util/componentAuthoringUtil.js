@@ -1020,7 +1020,7 @@ function getFsnDescriptionForConcept(concept) {
           errors.push('Concept must have at least one description');
 
         }
-        if (!concept.relationships || concept.relationships.length === 0 && checkClassAxiomRelationships(concept)) {
+        if (checkClassAxiomRelationships(concept)) {
           errors.push('Concept must have at least one axiom');
 
         }
