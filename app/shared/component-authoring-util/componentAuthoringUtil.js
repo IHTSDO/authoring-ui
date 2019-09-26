@@ -1052,8 +1052,10 @@ function getFsnDescriptionForConcept(concept) {
         }
 
         // check relationships
-        for (var j = 0; j < concept.relationships.length; j++) {
-          errors = errors.concat(checkRelationshipComplete(concept.relationships[j]));
+        if(concept.relationships){
+            for (var j = 0; j < concept.relationships.length; j++) {
+              errors = errors.concat(checkRelationshipComplete(concept.relationships[j]));
+            }
         }
 
         // check Additional Axiom
