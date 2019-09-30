@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
 
     var mrcmAttributeDomainMembers = [];
 
-    var selfGroupedAttributes = [];
+    var ungroupedAttributes = [];
       
     var myProjects = [];
 
@@ -648,13 +648,13 @@ angular.module('singleConceptAuthoringApp')
       mrcmAttributeDomainMembers = list;
     }
 
-    function setSelfGroupedAttributes (list) {
-      selfGroupedAttributes = list;
+    function setUngroupedAttributes (list) {
+      ungroupedAttributes = list;
     }
 
-    function isSelfGroupAttribute(id) {
-      for (var i = 0; i < selfGroupedAttributes.length; i++) {
-          var attribute = selfGroupedAttributes[i];
+    function isUngroupedAttribute(id) {
+      for (var i = 0; i < ungroupedAttributes.length; i++) {
+          var attribute = ungroupedAttributes[i];
           if(attribute.referencedComponentId === id) {
             return true;
           }
@@ -777,8 +777,8 @@ angular.module('singleConceptAuthoringApp')
       getNamespaces: getNamespaces,
       getNamespaceById: getNamespaceById,
       setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
-      setSelfGroupedAttributes: setSelfGroupedAttributes,
-      isSelfGroupAttribute: isSelfGroupAttribute
+      setUngroupedAttributes: setUngroupedAttributes,
+      isUngroupedAttribute: isUngroupedAttribute
     };
 
   }])
