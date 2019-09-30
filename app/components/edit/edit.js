@@ -2019,7 +2019,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $q.all([loadTask(), loadProject()]).then(function () {
 
         // load self-grouped attributes
-        loadSelfGroupedAttribute();
+        loadUngroupedAttributes();
 
         // set the task for the template service
         templateService.setTask($scope.task);
@@ -2146,20 +2146,20 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     }
 
-    function loadSelfGroupedAttribute() {
+    function loadUngroupedAttributes() {
       // retrieve all self-grouped attribute domain members
       terminologyServerService.getMrcmAttributeDomainMembers($scope.task.branchPath).then(function (response) {
-        var selfGroupedAttributes = [];
+        var ungroupedAttributes = [];
         if (response.items) {
-          selfGroupedAttributes = response.items.filter(function(attribute) {
+          ungroupedAttributes = response.items.filter(function(attribute) {
             return attribute.additionalFields
                     && attribute.additionalFields.hasOwnProperty('grouped')
-                    && attribute.additionalFields.grouped;
+                    && attribute.additionalFields.grouped !== "1";
           });
         }
 
         // set only self-grouped attributes
-        metadataService.setSelfGroupedAttributes(selfGroupedAttributes);
+        metadataService.setUngroupedAttributes(ungroupedAttributes);
       });
     }
 

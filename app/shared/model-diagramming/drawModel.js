@@ -366,7 +366,7 @@ angular.module('singleConceptAuthoringApp')
                   maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
               }
               else{
-                  if (metadataService.isSelfGroupAttribute(relationship.type.conceptId)) {
+                  if (!metadataService.isUngroupedAttribute(relationship.type.conceptId)) {
                     y = y + 20;                   
                     var circleSelfgroupAttr = drawAttributeGroupNode(svg, x, y);
                     connectElements(svg, circle2, circleSelfgroupAttr, 'center', 'left');
