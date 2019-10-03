@@ -1815,7 +1815,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
+      notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
 
       if ($scope.task.status === 'New') {
         scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
