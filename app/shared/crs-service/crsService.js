@@ -153,7 +153,8 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(copy.classAxioms[0].relationships, function (rel){
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
           });
-
+          delete copy.relationships;
+          
           deferred.resolve(angular.copy(copy));
         }
 
