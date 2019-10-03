@@ -180,23 +180,29 @@ angular.module('singleConceptAuthoringApp')
           scope.startTaskPoll = function () {
             poll = $interval(function () {
               var oldStatus = scope.task.status;
-              scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
-                if (task) {
-                  scope.task = task;
-                  scope.reviewComplete = task.status !== 'In Review';
-                  accountService.getRoleForTask(task).then(function (role) {
-                    scope.role = role;
-                  }, function() {
-                    scope.role = 'UNKNOWN';
-                  });
-                  console.log(oldStatus);
-                  if (oldStatus === 'In Review' && task.status === 'In Progress') {
-                    scope.reloadConceptsToReview('');
-                    scope.reloadConceptsReviewed('');
-                    scope.reloadConceptsClassified('');
+              if ($routeParams.projectKey && $routeParams.taskKey){
+                scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                  if (task) {
+                    scope.task = task;
+                    scope.reviewComplete = task.status !== 'In Review';
+                    accountService.getRoleForTask(task).then(function (role) {
+                      scope.role = role;
+                    }, function() {
+                      scope.role = 'UNKNOWN';
+                    });
+                    if (oldStatus === 'In Review' && task.status === 'In Progress') {
+                      scope.reloadConceptsToReview('');
+                      scope.reloadConceptsReviewed('');
+                      scope.reloadConceptsClassified('');
+                    }
                   }
+                });
+              } 
+              else {
+                if (poll) {
+                  $interval.cancel(poll);
                 }
-              });
+              }             
             }, 10000);
           };
 

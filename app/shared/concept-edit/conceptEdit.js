@@ -628,6 +628,262 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           'ADDITIONAL': 'additional',
           'GCI': 'gci'
         };
+// Reorder descriptions based on type and acceptability
+// Must preserve position of untyped/new descriptions
+        function sortDescriptions() {
+
+
+          if (!scope.concept.descriptions) {
+            return;
+          }
+
+          var newArray = [];
+
+          // get all typed descriptions
+          angular.forEach(scope.concept.descriptions, function (description) {
+            if (description.type) {
+              newArray.push(description);
+            }
+          });
+
+          // sort typed descriptions
+          newArray.sort(function (a, b) {
+
+            // active before inactive
+            if (a.active === false && b.active === true) {
+              return 1;
+            }
+            if (b.active === false && a.active === true) {
+              return -1;
+            }
+
+            // sort based on type
+            if (a.type !== b.type) {
+
+              // check both provided
+              if (!a.type && b.type) {
+                return 1;
+              }
+              if (!b.type && a.type) {
+                return -1;
+              }
+
+              // sort based on type (both provided)
+              var descOrderMap = {
+                'FSN': 0,
+                'SYNONYM': 1,
+                'TEXT_DEFINITION': 2
+              };
+              return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
+            }
+
+            // sort on acceptability map existence
+            if (a.acceptabilityMap && !b.acceptabilityMap) {
+              return -1;
+            }
+            if (!b.acceptabilityMap && a.acceptabilityMap) {
+              return 1;
+            }
+
+            // ensure en-us PREFERRED terms always on top
+            var aHasUsP = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
+            var bHasUsP = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
+
+            if (aHasUsP && !bHasUsP) {
+              return -1;
+            }
+            if (!aHasUsP && bHasUsP) {
+              return 1;
+            }
+
+            // ensure en-us ACCEPTABLE terms on top
+            var aHasUsA = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'ACCEPTABLE' : false;
+            var bHasUsA = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'ACCEPTABLE' : false;
+
+            if (aHasUsA && !bHasUsA) {
+              return -1;
+            }
+            if (!aHasUsA && bHasUsA) {
+              return 1;
+            }
+
+            if (!metadataService.isExtensionSet()) {
+              // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
+              var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
+                  if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
+                    return true;
+                  }
+                }).length > 0;
+              var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
+                  if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
+                    return true;
+                  }
+                }).length > 0;
+
+
+              if (aHasOtherP && !bHasOtherP) {
+                return -1;
+              }
+              if (!aHasOtherP && bHasOtherP) {
+                return 1;
+              }
+            }
+
+            // comparator function for sorting by acceptabilities within a specified dialect
+            var acceptabilityComparator = function (descA, descB, dialect) {
+
+              var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
+              var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
+
+              if (aVal !== bVal) {
+                if (aVal && !bVal) {
+                  return -1;
+                }
+                if (!aVal && bVal) {
+                  return 1;
+                }
+                // check for preferred first
+                if (aVal === 'PREFERRED') {
+                  return -1;
+                }
+                if (bVal === 'PREFERRED') {
+                  return 1;
+                }
+
+                // check for acceptable next
+                if (aVal === 'ACCEPTABLE') {
+                  return -1;
+                }
+                if (bVal === 'ACCEPTABLE') {
+                  return 1;
+                }
+              }
+              return 0;
+            };
+
+            // sort within en-us value first
+            var comp = acceptabilityComparator(a, b, '900000000000509007');
+            if (comp !== 0) {
+              return comp;
+            }
+
+
+            // sort within non en-us values second
+            for (var dialect in scope.dialects) {
+              // sort by extension value if present
+              if (metadataService.isExtensionSet() && metadataService.isExtensionDialect(dialect)) {
+                comp = acceptabilityComparator(a, b, dialect);
+                if (comp !== 0) {
+                  return comp;
+                }
+              }
+
+              // otherwise, sort within whatever other non-en-US dialects are present in turn
+              else if (dialect !== '900000000000509007') {
+
+                comp = acceptabilityComparator(a, b, dialect);
+                if (comp !== 0) {
+                  return comp;
+                }
+              }
+            }
+
+            if (a.term && !b.term) {
+              return -1;
+            }
+            if (!a.term && b.term) {
+              return 1;
+            }
+            if (!a.term && !b.term) {
+              return 0;
+            }
+            // all else being equal, sort on term (case insensitive)
+            return a.term.toLowerCase() < b.term.toLowerCase() ? -1 : 1;
+          });
+
+          // cycle over original descriptions (backward) to reinsert non-typed
+          // descriptions
+          for (var i = 0; i < scope.concept.descriptions.length; i++) {
+            if (!scope.concept.descriptions[i].type) {
+              newArray.splice(i, 0, scope.concept.descriptions[i]);
+            }
+          }
+
+          // replace descriptions
+          scope.concept.descriptions = newArray;
+        }
+
+        function sortRelationships() {
+
+          if (!scope.concept || !scope.concept.relationships && !scope.concept.classAxioms && !scope.concept.gciAxioms) {
+            return;
+          }
+
+          angular.forEach(scope.concept.classAxioms, function (axiom){
+              sortRelationshipArray(axiom.relationships);
+          })
+          angular.forEach(scope.concept.gciAxioms, function (axiom){
+              sortRelationshipArray(axiom.relationships);
+          })
+          if(scope.concept.relationships){
+              sortRelationshipArray(scope.concept.relationships);
+          }
+        }
+
+        function sortRelationshipArray(relationships){
+          let isaRels = relationships.filter(function (rel) {
+            return rel.type.conceptId === '116680003';
+          });
+
+          let attrRels = relationships.filter(function (rel) {
+            return rel.type.conceptId !== '116680003';
+          });
+
+          // remove display flag if it's set, and set relationship type to null if concept id or fsn are not set
+          angular.forEach(attrRels, function(rel){
+              if (rel.display) delete rel.display;
+              if (!rel.type.fsn || !rel.type.conceptId) rel.type.conceptId = null;
+          });
+
+          // re-populate display flag if it exists
+          angular.forEach(attrRels, function(rel){
+              for (var i = 0; i < scope.drugsOrdering.length; i++) {
+                var item = scope.drugsOrdering[i];
+                if (rel.type.conceptId === item.id) rel.display = item.display;
+              }
+          });
+
+          // NOTE: All isaRels should be group 0, but sort by group anyway
+          isaRels.sort(function (a, b) {
+            if (!a.groupId && b.groupId) {
+              return -1;
+            }
+            if (!b.groupId && a.groupId) {
+              return 1;
+            }
+            if (a.groupId === b.groupId) {
+              return a.target.fsn > b.target.fsn;
+            } else {
+              return a.groupId - b.groupId;
+            }
+          });
+
+          attrRels.sort(function (a, b) {
+            if (a.groupId === b.groupId && a.display && b.display) {
+              return a.display > b.display;
+            } else {
+              return a.groupId - b.groupId;
+            }
+          });
+          attrRels  = $filter('orderBy')(attrRels, 'display')
+          relationships = isaRels.concat(attrRels);
+
+          return relationships;
+        }
+
+// on load, sort descriptions && relationships
+        sortDescriptions();
+        sortRelationships();
 
 // on load, check if a modified, unsaved version of this concept
 // exists -- only applies to task level, safety check
@@ -638,11 +894,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (modifiedConcept) {
 
               // replace the displayed content with the modified concept
-              scope.concept = modifiedConcept;
-
-
-              sortDescriptions();
-              sortRelationships();
+              scope.concept = modifiedConcept;            
 
               // reset the concept history to reflect modified change
               resetConceptHistory();
@@ -703,6 +955,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             );
 
+            sortDescriptions();
+            sortRelationships();
           });
         }
 
@@ -1657,265 +1911,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.filterDescriptions = function (d) {
           return !scope.hideInactive || d.active;
-        };
-
-
-// Reorder descriptions based on type and acceptability
-// Must preserve position of untyped/new descriptions
-        function sortDescriptions() {
-
-
-          if (!scope.concept.descriptions) {
-            return;
-          }
-
-          var newArray = [];
-
-          // get all typed descriptions
-          angular.forEach(scope.concept.descriptions, function (description) {
-            if (description.type) {
-              newArray.push(description);
-            }
-          });
-
-          // sort typed descriptions
-          newArray.sort(function (a, b) {
-
-            // active before inactive
-            if (a.active === false && b.active === true) {
-              return 1;
-            }
-            if (b.active === false && a.active === true) {
-              return -1;
-            }
-
-            // sort based on type
-            if (a.type !== b.type) {
-
-              // check both provided
-              if (!a.type && b.type) {
-                return 1;
-              }
-              if (!b.type && a.type) {
-                return -1;
-              }
-
-              // sort based on type (both provided)
-              var descOrderMap = {
-                'FSN': 0,
-                'SYNONYM': 1,
-                'TEXT_DEFINITION': 2
-              };
-              return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
-            }
-
-            // sort on acceptability map existence
-            if (a.acceptabilityMap && !b.acceptabilityMap) {
-              return -1;
-            }
-            if (!b.acceptabilityMap && a.acceptabilityMap) {
-              return 1;
-            }
-
-            // ensure en-us PREFERRED terms always on top
-            var aHasUsP = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
-            var bHasUsP = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
-
-            if (aHasUsP && !bHasUsP) {
-              return -1;
-            }
-            if (!aHasUsP && bHasUsP) {
-              return 1;
-            }
-
-            // ensure en-us ACCEPTABLE terms on top
-            var aHasUsA = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'ACCEPTABLE' : false;
-            var bHasUsA = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'ACCEPTABLE' : false;
-
-            if (aHasUsA && !bHasUsA) {
-              return -1;
-            }
-            if (!aHasUsA && bHasUsA) {
-              return 1;
-            }
-
-            if (!metadataService.isExtensionSet()) {
-              // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
-              var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
-                  if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
-                    return true;
-                  }
-                }).length > 0;
-              var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
-                  if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
-                    return true;
-                  }
-                }).length > 0;
-
-
-              if (aHasOtherP && !bHasOtherP) {
-                return -1;
-              }
-              if (!aHasOtherP && bHasOtherP) {
-                return 1;
-              }
-            }
-
-            // comparator function for sorting by acceptabilities within a specified dialect
-            var acceptabilityComparator = function (descA, descB, dialect) {
-
-              var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
-              var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
-
-              if (aVal !== bVal) {
-                if (aVal && !bVal) {
-                  return -1;
-                }
-                if (!aVal && bVal) {
-                  return 1;
-                }
-                // check for preferred first
-                if (aVal === 'PREFERRED') {
-                  return -1;
-                }
-                if (bVal === 'PREFERRED') {
-                  return 1;
-                }
-
-                // check for acceptable next
-                if (aVal === 'ACCEPTABLE') {
-                  return -1;
-                }
-                if (bVal === 'ACCEPTABLE') {
-                  return 1;
-                }
-              }
-              return 0;
-            };
-
-            // sort within en-us value first
-            var comp = acceptabilityComparator(a, b, '900000000000509007');
-            if (comp !== 0) {
-              return comp;
-            }
-
-
-            // sort within non en-us values second
-            for (var dialect in scope.dialects) {
-              // sort by extension value if present
-              if (metadataService.isExtensionSet() && metadataService.isExtensionDialect(dialect)) {
-                comp = acceptabilityComparator(a, b, dialect);
-                if (comp !== 0) {
-                  return comp;
-                }
-              }
-
-              // otherwise, sort within whatever other non-en-US dialects are present in turn
-              else if (dialect !== '900000000000509007') {
-
-                comp = acceptabilityComparator(a, b, dialect);
-                if (comp !== 0) {
-                  return comp;
-                }
-              }
-            }
-
-            if (a.term && !b.term) {
-              return -1;
-            }
-            if (!a.term && b.term) {
-              return 1;
-            }
-            if (!a.term && !b.term) {
-              return 0;
-            }
-            // all else being equal, sort on term (case insensitive)
-            return a.term.toLowerCase() < b.term.toLowerCase() ? -1 : 1;
-          });
-
-          // cycle over original descriptions (backward) to reinsert non-typed
-          // descriptions
-          for (var i = 0; i < scope.concept.descriptions.length; i++) {
-            if (!scope.concept.descriptions[i].type) {
-              newArray.splice(i, 0, scope.concept.descriptions[i]);
-            }
-          }
-
-          // replace descriptions
-          scope.concept.descriptions = newArray;
-        }
-
-        function sortRelationshipArray(relationships){
-          let isaRels = relationships.filter(function (rel) {
-            return rel.type.conceptId === '116680003';
-          });
-
-          let attrRels = relationships.filter(function (rel) {
-            return rel.type.conceptId !== '116680003';
-          });
-
-          // remove display flag if it's set, and set relationship type to null if concept id or fsn are not set
-          angular.forEach(attrRels, function(rel){
-              if (rel.display) delete rel.display;
-              if (!rel.type.fsn || !rel.type.conceptId) rel.type.conceptId = null;
-          });
-
-          // re-populate display flag if it exists
-          angular.forEach(attrRels, function(rel){
-              for (var i = 0; i < scope.drugsOrdering.length; i++) {
-                var item = scope.drugsOrdering[i];
-                if (rel.type.conceptId === item.id) rel.display = item.display;
-              }
-          });
-
-          // NOTE: All isaRels should be group 0, but sort by group anyway
-          isaRels.sort(function (a, b) {
-            if (!a.groupId && b.groupId) {
-              return -1;
-            }
-            if (!b.groupId && a.groupId) {
-              return 1;
-            }
-            if (a.groupId === b.groupId) {
-              return a.target.fsn > b.target.fsn;
-            } else {
-              return a.groupId - b.groupId;
-            }
-          });
-
-          attrRels.sort(function (a, b) {
-            if (a.groupId === b.groupId && a.display && b.display) {
-              return a.display > b.display;
-            } else {
-              return a.groupId - b.groupId;
-            }
-          });
-          attrRels  = $filter('orderBy')(attrRels, 'display')
-          relationships = isaRels.concat(attrRels);
-
-          return relationships;
-        }
-
-        function sortRelationships() {
-
-          if (!scope.concept || !scope.concept.relationships && !scope.concept.classAxioms && !scope.concept.gciAxioms) {
-            return;
-          }
-
-          angular.forEach(scope.concept.classAxioms, function (axiom){
-              sortRelationshipArray(axiom.relationships);
-          })
-          angular.forEach(scope.concept.gciAxioms, function (axiom){
-              sortRelationshipArray(axiom.relationships);
-          })
-          if(scope.concept.relationships){
-              sortRelationshipArray(scope.concept.relationships);
-          }
-        }
-
-// on load, sort descriptions && relationships
-        sortDescriptions();
-        sortRelationships();
+        };                
 
         function setDefaultModuleId() {
           var moduleId = metadataService.getCurrentModuleId();
@@ -4185,6 +4181,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept = componentAuthoringUtil.getNewConcept(scope.branch);
             scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
             scope.isModified = false;
+            
             scope.computeRelationshipGroups();
 
           } else {
@@ -4754,8 +4751,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
               scope.concept = concept;
+
+              sortDescriptions();
+              sortRelationships();
               scope.computeAxioms(axiomType.ADDITIONAL);
-            scope.computeAxioms(axiomType.GCI);
+              scope.computeAxioms(axiomType.GCI);
             });
           }
         });
