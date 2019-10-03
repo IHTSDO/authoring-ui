@@ -147,6 +147,13 @@ angular.module('singleConceptAuthoringApp')
             copy.conceptId = copy.conceptId.trim();
           }
 
+          copy.classAxioms = [];
+          copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
+          copy.classAxioms[0].relationships = angular.copy(copy.relationships);
+          angular.forEach(copy.classAxioms[0].relationships, function (rel){
+              rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
+          });
+
           deferred.resolve(angular.copy(copy));
         }
 
