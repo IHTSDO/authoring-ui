@@ -955,6 +955,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       }, 500);
     }
 
+    $scope.componentStypes = {};
+    $scope.getComponentStyles = function(concept) {
+      if(concept.$$hashKey && $scope.componentStypes.hasOwnProperty(concept.$$hashKey)){
+        return $scope.componentStypes[concept.$$hashKey];
+      }
+
+      return '';
+    }
 // watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
@@ -1107,6 +1115,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         // Add hashkey that is used for closing popover
         if(!clonedConcept.$$hashKey) {
           clonedConcept.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
+          $scope.componentStypes[clonedConcept.$$hashKey] = {'isNew': true};
         }
 
         delete clonedConcept.isLeafInferred;
