@@ -132,64 +132,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.promoting = false;
         });
       };
+      
       $scope.proceedAutomatePromotion = function () {
         notificationService.sendMessage('Preparing for task promotion automation...');
         $scope.automatePromotionErrorMsg = '';
-        $scope.automatePromotionStatus = '';
+        $scope.automatePromotionStatus = '';       
 
-        /* Check unsaved concepts*/
-        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-          .then(function (uiState) {
-            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-              validateReviewStatus();
+        promotionService.checkPrerequisitesForAutomatedPromotionTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
+
+          // detect whether any user warnings were detected
+          var warningsFound = false;
+          angular.forEach(flags, function (flag) {
+            if (flag.checkWarning) {
+              warningsFound = true;
             }
-            else {
-              var promises = [];
-              for (var i = 0; i < uiState.length; i++) {
-                promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
-              }
-              // on resolution of all promises
-              $q.all(promises).then(function (responses) {
-                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-                if (hasUnsavedConcept) {
-                  notificationService.clear();
-                  modalService.message('There are some unsaved concepts. Please save them before promoting task automation.');
-                } else {
-                  validateReviewStatus();
-                }
-              });
-            }
-          }
-        );
-      };
+          });
 
-      function validateReviewStatus() {
-        var flags = [];
-        /* Check review */
-        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (branchStatus) {
-          ////////////////////////////////////////////////////////////
-          // CHECK:  Has the Task been reviewed?
-          ////////////////////////////////////////////////////////////
-          if (branchStatus.status !== 'In Review' && branchStatus.status !== 'Review Completed') {
-            flags.push({
-              checkTitle: 'No review completed',
-              checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
-              blocksPromotion: false
-            });
-          }
-
-          ////////////////////////////////////////////////////////////
-          // CHECK:  Is the task still in Review?
-          ////////////////////////////////////////////////////////////
-          if (branchStatus.status === 'In Review') {
-            flags.push({
-              checkTitle: 'Task is still in review',
-              checkWarning: 'The task review has not been marked as complete.',
-              blocksPromotion: false
-            });
-          }
-
-          if (flags.length === 0) {
+          // if response contains no flags, simply promote
+          if (!warningsFound) {
             promoteTaskAutomation();
           } else {
             var modalInstance = $modal.open({
@@ -213,11 +173,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               }
             }, function () {
               notificationService.clear();
-            });
+            });            
           }
-
+        }, function (error) {
+          notificationService.sendError('Unexpected error preparing for promotion: ' + error);
+          $scope.promoting = false;
         });
-      }
+      };     
 
       function promoteTaskAutomation() {
         notificationService.sendMessage('Starting automated promotion...');
@@ -506,7 +468,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
                 if (!isInitialPageLoad) {
-                  $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
+                  $scope.automatePromotionErrorMsg =  'Error automate promotion' + (typeof response.message !== 'undefined' ? ': ' + response.message : '');
                   notificationService.clear();
                 }
                 break;
