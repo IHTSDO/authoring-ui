@@ -1832,6 +1832,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.moduleId = concept.moduleId;
           });
 
+          if (scope.concept.classAxioms) {
+            angular.forEach(scope.concept.classAxioms, function (axiom) {
+              axiom.moduleId = concept.moduleId;
+              angular.forEach(axiom.relationships, function(relationship){
+                relationship.moduleId = concept.moduleId;
+              });
+            });
+          }
+          
+          if (scope.concept.gciAxioms) {
+            angular.forEach(scope.concept.gciAxioms, function (axiom) {
+              axiom.moduleId = concept.moduleId;
+              angular.forEach(axiom.relationships, function(relationship){
+                relationship.moduleId = concept.moduleId;
+              });
+            });
+          }
+
           autoSave();
         };
 
