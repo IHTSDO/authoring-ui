@@ -3234,12 +3234,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           let axiom = angular.copy(source);
           axiom.axiomId = null;
+          axiom.active = true;
+          axiom.released = false;
+          delete axiom.effectiveTime;
+          delete axiom.id;
           if (axiom.type === axiomType.ADDITIONAL) {
             if(!scope.concept.hasOwnProperty('classAxioms')){
               scope.concept.classAxioms = [];
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
+              rel.active = true;
+              rel.released = false;
             });
             scope.concept.classAxioms.push(axiom);
             scope.computeAxioms(axiomType.ADDITIONAL);
@@ -3249,6 +3255,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
+              rel.active = true;
+              rel.released = false;
             });
             scope.concept.gciAxioms.push(axiom);
             scope.computeAxioms(axiomType.GCI);
