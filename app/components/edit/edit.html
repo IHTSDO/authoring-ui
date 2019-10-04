@@ -245,6 +245,7 @@
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
                    branch="targetBranch" static="branchLocked || !isOwnTask"
                    ui-state-update-fn="updateEditListUiState()"
+                   component-styles="getComponentStyles(concepts[$index])"
                    project-taxonomy-visible="true"
               >
               </div>
@@ -293,6 +294,7 @@
           <div class="no-gutter grey darken-3 panel-height col-md-12">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
+                 component-styles="getComponentStyles(concepts[$index])"
             >
             </div>
           </div>
