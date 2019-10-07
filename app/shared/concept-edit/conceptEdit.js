@@ -1481,7 +1481,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
               }, 500);
             }, function (error) {
-              if (error.status && error.status === 504) {
+              if (error && error.status === 504) {
 
                 // on timeouts, must save crs concept to ensure termserver retrieval
                 if (crsService.isCrsConcept(originalConcept.conceptId)) {
@@ -4556,20 +4556,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // Component More Details Popover Conditional Direction //
 //////////////////////////////////////////////////////////
 
-// set the initial direction based on load position
-        $timeout(function () {
-          if (document.getElementById('component-' + (scope.concept.conceptId ? scope.concept.conceptId : scope.getHashkey(scope.concept))).getBoundingClientRect().left < 500) {
-            scope.popoverDirection = 'right';
-          } else {
-            scope.popoverDirection = 'left';
-          }
-        }, 250);
-
 // adjust for all textareas covered by Angular Elastic
 // see https://github.com/monospaced/angular-elastic
         $timeout(function () {
            $rootScope.$broadcast('elastic:adjust');
         }, 0);
+
+// set the initial direction based on load position
+        $timeout(function () {          
+          if ($(element)[0].getBoundingClientRect().left < 700) {
+            scope.popoverDirection = 'right-top';            
+          } else {
+            scope.popoverDirection = 'left-top';            
+          }
+        }, 1000);
 
 // sets the popover direction (left, bottom, right) based on current
 // position of root element
