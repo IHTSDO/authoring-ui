@@ -219,6 +219,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.isEscgMode = true;
               $scope.userOptions.statedSelection = 'inferred';
               $scope.templateMode = false;
+              $scope.userOptions.searchType = 1;
+              $scope.searchType = 'Active Only';
             }
             else {
               $scope.searchMode = 'Switch to ECL';
