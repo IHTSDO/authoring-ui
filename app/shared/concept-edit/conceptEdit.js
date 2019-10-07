@@ -1481,7 +1481,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
               }, 500);
             }, function (error) {
-              if (error.status === 504) {
+              if (error.status && error.status === 504) {
 
                 // on timeouts, must save crs concept to ensure termserver retrieval
                 if (crsService.isCrsConcept(originalConcept.conceptId)) {
