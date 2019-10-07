@@ -953,16 +953,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           setTimeout(waitForConceptRender, 500);
         }
       }, 500);
-    }
-
-    $scope.componentStypes = {};
-    $scope.getComponentStyles = function(concept) {
-      if(concept.$$hashKey && $scope.componentStypes.hasOwnProperty(concept.$$hashKey)){
-        return $scope.componentStypes[concept.$$hashKey];
-      }
-
-      return '';
-    }
+    };
+    
 // watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
@@ -977,11 +969,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       terminologyServerService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
 
         // check if original concept already exists, if not add it
-        var conceptExists = false;
+        
         for (var i = 0; i < $scope.concepts.length; i++) {
 
           // cancel if unsaved work exists (track-by id problems)
-          if (!$scope.concepts[i].conceptId) {
+          if (!$scope.concepts[i].conceptId || !terminologyServerService.isSctid($scope.concepts[i].conceptId)) {
             notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
             $scope.conceptLoading = false;
 
@@ -992,13 +984,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             return;
           }
 
-          if ($scope.concepts[i].conceptId === data.conceptId) {
-            conceptExists = true;
-          }
         }
-        if (!conceptExists) {
-          $scope.concepts.push(response);
-        }
+       
 
         // deep copy the object -- note: does not work in IE8, but screw
         // that!
@@ -1114,8 +1101,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // Add hashkey that is used for closing popover
         if(!clonedConcept.$$hashKey) {
-          clonedConcept.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
-          $scope.componentStypes[clonedConcept.$$hashKey] = {'isNew': true};
+          clonedConcept.$$hashKey = 'object:' + Math.floor(Math.random()*10000);          
         }
 
         delete clonedConcept.isLeafInferred;
