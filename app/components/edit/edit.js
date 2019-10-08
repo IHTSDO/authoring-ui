@@ -946,7 +946,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateEditListUiState();
       // set focus on the selected concept
       setTimeout(function waitForConceptRender() {
-        var elm = document.getElementById('height-' + conceptId);
+        var elm = document.getElementById('concept-edit-' + conceptId);
         if (document.body.contains(elm)) {
           $rootScope.$broadcast('enableAutoFocus', {conceptId: conceptId});
         } else {
