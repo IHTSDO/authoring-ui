@@ -685,7 +685,7 @@ angular.module('singleConceptAuthoringApp')
             console.log('Rebasing ' + (scope.sourceBranch + ' ' + scope.targetBranch));
             scope.rebaseRunning = true;
             var onSuccess = function(response) {
-              if (response.status === 'Rebase Complete') {
+              if (response.status === 'COMPLETED') {
 
                 // Run branch integrity check
                 var branch = metadataService.getBranch();
@@ -705,7 +705,7 @@ angular.module('singleConceptAuthoringApp')
                   notificationService.sendError('Branch integrity check failed. ' + error);
                 });
               } else if (response.status === 'CONFLICTS') {
-                scope.rebaseRunning = true;
+                scope.rebaseRunning = false;
                 scope.conflicts = [];
                 var merge = JSON.parse(response.message);
                 terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {

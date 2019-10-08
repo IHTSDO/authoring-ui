@@ -1922,7 +1922,7 @@ angular.module('singleConceptAuthoringApp')
       function synchronousMerge(sourceBranch, targetBranch, mergeReviewId) {
         var deferred = $q.defer();
 
-        return $http.post(apiEndpoint + 'merges', {
+        $http.post(apiEndpoint + 'merges', {
           source: sourceBranch,
           target: targetBranch,
           reviewId: mergeReviewId
@@ -1937,10 +1937,12 @@ angular.module('singleConceptAuthoringApp')
             });
         });
 
-        deferred.promise;
+        return deferred.promise;
       }
 
       function pollUntilStatusComplete(url, runningStatuses) {
+        var deferred = $q.defer();
+
         var statusPoll = null;
         function stopStatusPolling() {
           if (statusPoll) {
@@ -1949,10 +1951,22 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
-        $interval(function () {
+        statusPoll = $interval(function () {
+          $http.get(url).then(function (response) {
+            if (response && response.data){
+              if (runningStatuses.indexOf(response.data.status) === -1){
+                stopStatusPolling();
+                deferred.resolve(response.data);
+              }
+            }
+          }, function(error) {
+            stopStatusPolling();
+            console.error(error);
+            deferred.reject(error);            
+          });
+        }, 2000)
 
-        }, 1000)
-
+        return deferred.promise;
       }
 
       /**
@@ -2045,7 +2059,6 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function validateConcept(projectKey, taskKey, concept, keepTempIds) {
-
 
         cleanConcept(concept, keepTempIds);
 
