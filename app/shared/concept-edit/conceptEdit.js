@@ -4751,7 +4751,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (scope.concept.released) {
               scope.focusHandler(true, false);
             } else if (!scope.isStatic) {
-              var textareaTags = $('#height-' + data.conceptId).find('textarea');
+              var textareaTags = $('#concept-edit-' + data.conceptId).find('textarea');
               textareaTags[0].focus();
               scope.hasFocus = false;
             }
