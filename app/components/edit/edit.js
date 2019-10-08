@@ -1007,11 +1007,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           delete description.conceptId;
-
-          // Add hashkey that is used for closing popover
-          if(!description.$$hashKey) {
-            description.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
-          }
+          
 
           if (description.active === false) {
             clonedConcept.descriptions.splice(k, 1);
@@ -1042,12 +1038,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           delete relationship.target.effectiveTime;
           delete relationship.target.moduleId;
           delete relationship.target.active;
-          delete relationship.target.definitionStatus;
-
-          // Add hashkey that is used for closing popover
-          if(!relationship.$$hashKey) {
-            relationship.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
-          }
+          delete relationship.target.definitionStatus;        
 
           // Set module Id if it's not a core module
           if (relationship.active === false || relationship.characteristicType !== 'STATED_RELATIONSHIP') {
@@ -1059,12 +1050,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             var axiom = clonedConcept.classAxioms[index];
             axiom.axiomId = null;
             axiom.released = false;
-            axiom.effectiveTime = null;
-
-            // Add hashkey that is used for closing popover
-            if(!axiom.$$hashKey) {
-              axiom.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
-            }
+            axiom.effectiveTime = null;          
             
             // Set module Id if it's not a core module
             if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
@@ -1077,12 +1063,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             var axiom = clonedConcept.gciAxioms[index];
             axiom.axiomId = null;
             axiom.released = false;
-            axiom.effectiveTime = null;
-
-            // Add hashkey that is used for closing popover
-            if(!axiom.$$hashKey) {
-              axiom.$$hashKey = 'object:' + Math.floor(Math.random()*10000);
-            }
+            axiom.effectiveTime = null;            
 
             // Set module Id if it's not a core module
             if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
@@ -1097,12 +1078,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         if (!isCoreModule(isExtension, internationalMetadata, clonedConcept.moduleId)) {
           clonedConcept.moduleId = metadataService.getCurrentModuleId();
-        }
-
-        // Add hashkey that is used for closing popover
-        if(!clonedConcept.$$hashKey) {
-          clonedConcept.$$hashKey = 'object:' + Math.floor(Math.random()*10000);          
-        }
+        }     
 
         delete clonedConcept.isLeafInferred;
         delete clonedConcept.effectiveTime;
@@ -1986,13 +1962,16 @@ angular.module('singleConceptAuthoringApp.edit', [
                     else if($(this).find('.batch-template-selector').length != 0){
                         document.getElementById('batchTemplateSelectBtn').click();
                     }
-                    else if(($(this).find('.description-more').length != 0 || $(this).find('.concept-more').length != 0)
+                    else if(($(this).find('.description-more').length != 0 
+                              || $(this).find('.concept-more').length != 0
+                              || $(this).find('.axiom-more').length != 0
+                              || $(this).find('.relationship-more').length != 0)
                            && !$(e.target).hasClass('more-button-width')
                            && $(this).hasClass("in")) {
                       var elm = $(this).find("[component-id]");
                       var componentId = $(elm[0]).attr("component-id");
                       if(componentId) {
-                        document.getElementById('component-' + componentId).click();
+                        document.getElementById(componentId).click();
                       }
                     }
                 });

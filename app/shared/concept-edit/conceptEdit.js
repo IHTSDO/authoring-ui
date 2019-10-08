@@ -193,6 +193,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
+        scope.initializationTimeStamp = (new Date()).getTime();
+        
         scope.isAxiomSupport =  function() {
           if (scope.concept && scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
             return true;
@@ -4574,6 +4576,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // sets the popover direction (left, bottom, right) based on current
 // position of root element
         scope.setPopoverDirection = function ($event) {
+          if ($event.pageX === 0) {
+            return;
+          }
+          
           var direction = 'left';
 
           // morebuttons are the concept edit panel 'more details' popovers (concept, description, attribute)
@@ -4697,16 +4703,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           return '';
         };
-
-        scope.getHashkey = function(obj) {
-          if(!obj.$$hashKey) {
-            return;
-          }
-
-          var hashkey = obj.$$hashKey;
-          return hashkey.split(':')[1];
-        }
-
+        
         scope.extensionNamespace = '';
 
         scope.getExtensionNamespace = function () {

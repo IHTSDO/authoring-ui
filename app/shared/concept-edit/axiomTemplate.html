@@ -6,7 +6,7 @@
         popover-template="'shared/component-more/axiomMore.html'"
         popover-placement="{{popoverDirection}}"
         popover-append-to-body="true"
-        id="component-{{axiom.axiomId ? axiom.axiomId : getHashkey(axiom)}}">
+        id="{{axiom.type}}-axiom-more-{{initializationTimeStamp}}-{{$index}}">
         <span>More details</span>
     </button>
     <button
