@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp')
          }
      };
 })
-.directive('typeahead', function () {
+.directive('typeahead', function ($timeout) {
   return {
     restrict: 'A',
     priority: 1000, // Let's ensure AngularUI Typeahead directive gets initialized first!
@@ -73,9 +73,69 @@ angular.module('singleConceptAuthoringApp')
           scope.$broadcast('TypeaheadActiveChanged', {'key' : evt.which});
         }
       });
+
+      // Bind keyboard events, exclude : Delete and Backspace
+      // If input matches an item of the list exactly, select it automatically.
+      // Use typeahead-select-on-exact-with-ajax="true" along with typeahead directive when the suggestions come from server.
+      // Use typeahead-select-on-exact-no-ajax="true" along with typeahead directive when the suggestions are existing in local.
+      element.bind('keyup', function (evt) {  
+        if (evt.which !== 8 && evt.which !== 46) {
+          
+          var selectFirstItem = function() {
+            var elm = '[id*=option-0]';
+            var opt = angular.element(document.querySelectorAll(elm));
+      
+            //call click handler outside of digest loop
+            $timeout(function() {
+              opt.triggerHandler('click');
+            }, 0);
+          };
+
+          var selectOnExactWithAjax = attrs.typeaheadSelectOnExactWithAjax ? scope.$eval(attrs.typeaheadSelectOnExactWithAjax) : false;
+          var typeaheadMinLength = attrs.typeaheadMinLength ? parseInt(attrs.typeaheadMinLength) : 0;
+          if (selectOnExactWithAjax && element[0].value.length >= typeaheadMinLength) {
+            var count = 0;
+            var maxCount = 20;
+            $timeout(function waitUntilTypeaheadTrigger() {
+              count++;          
+              if (scope[attrs.typeaheadLoading] ) {
+                $timeout(function waitUntilTypeaheadOptionsVisible() {                  
+                  if (!scope[attrs.typeaheadLoading]){
+                    var typeaheadDropdown = $(element).next();
+                    var children = $(typeaheadDropdown).children(); ;
+                    if (children.length === 1){
+                      selectFirstItem();
+                    }              
+                  }
+                  else {
+                    $timeout(waitUntilTypeaheadOptionsVisible, 100);
+                  } 
+              });
+              }
+              else {
+                if (count <= maxCount){
+                  $timeout(waitUntilTypeaheadTrigger,100);
+                }                
+              }                       
+            }, 100);
+          }
+          
+          var selectOnExactNoAjax = attrs.typeaheadSelectOnExactNoAjax ? scope.$eval(attrs.typeaheadSelectOnExactNoAjax) : false;
+          if (selectOnExactNoAjax) {
+            $timeout(function() {
+              var typeaheadDropdown = $(element).next();
+              var children = $(typeaheadDropdown).children(); ;
+              if (children.length === 1){
+                selectFirstItem();
+              }                      
+            }, 1200);
+          }
+        }        
+      });
     }
   };
-}).directive('typeaheadPopup', function () {
+})
+.directive('typeaheadPopup', function () {
   return {
     restrict: 'EA',
     link: function (scope, element, attrs) {
@@ -4321,7 +4381,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, 600);
         };
 
-        scope.setAxiomRelationshipTypeConcept = function (relationship, item, conceptId, relationshipGroupId, itemIndex, type) {
+        scope.setAxiomRelationshipTypeConcept = function (relationship, item, type, relationshipGroupId, parentIndex, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
@@ -4346,15 +4406,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // Trigger blur event after relationship type has been selected
-          var elemID = 'axiom-relationship-type-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
+          var elemID = type +'-axiom-relationship-type-' + scope.initializationTimeStamp + '-' + parentIndex + '-' + relationshipGroupId + '-' + itemIndex;
           var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
             elem[0].blur();
-            var parent = $(elem).closest('.editHeightSelector');
+            var parent = $('#' + elemID).closest('.editHeightSelector');
             if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
                 parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
-          }, 600);
+          }, 1000);
         };
 
         /**
@@ -4442,7 +4502,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, conceptId, relationshipGroupId, itemIndex) {
+        scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, relationshipGroupId, parentIndex, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
@@ -4481,15 +4541,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // Trigger blur event after relationship target has been selected
-          var elemID = 'axiom-relationship-taget-id-' + conceptId + '-' + relationshipGroupId + '-' + itemIndex;
+          var elemID = axiom.type + '-axiom-relationship-target-' + scope.initializationTimeStamp + '-' + parentIndex + '-' + relationshipGroupId + '-' + itemIndex;
           var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
             elem[0].blur();
-            var parent = $(elem).closest('.editHeightSelector');
+            var parent = $('#' + elemID).closest('.editHeightSelector');
             if(parent.find("textarea").filter(function() { return this.value == ""; }).length > 0){
                 parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
-          }, 600);
+          }, 1000);
         };
 
 
