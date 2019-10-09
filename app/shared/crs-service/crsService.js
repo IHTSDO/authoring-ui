@@ -379,7 +379,7 @@ angular.module('singleConceptAuthoringApp')
         var apiEndpoint = '../ihtsdo-crs/api/request/';
         var udpateCrsStatus = function(crsId) {
           var deferred = $q.defer(); 
-          $http.put(apiEndpoint + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Classification by Authoring User"}).then(function () { 
+          $http.put(apiEndpoint + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Clarification by Authoring User"}).then(function () { 
             deferred.resolve();            
           });
           return deferred.promise; 
@@ -392,7 +392,7 @@ angular.module('singleConceptAuthoringApp')
         // on resolution of all promises
         $q.all(promises).then(function (responses) {
           getBulkCrsRequestsStatus();          
-          notificationService.sendMessage("Pending classification successfully.", 5000);
+          notificationService.sendMessage("Pending clarification successfully.", 5000);
           def.resolve();
         });
         
