@@ -456,6 +456,11 @@ button[disabled],
 html input[disabled] {
     cursor: default;
 }
+
+button[disabled] .primitive-buttons{
+    cursor: not-allowed;
+}
+
 button::-moz-focus-inner {
     border: 0;
     padding: 0;
@@ -536,6 +541,9 @@ textarea {
 .primitive-buttons:focus,
 .primitive-buttons:active {
     background-color: transparent;
+}
+.primitive-buttons[disabled]{
+    cursor: not-allowed;
 }
 button.fsn-title-button {
     width: 100%;

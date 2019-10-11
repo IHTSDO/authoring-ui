@@ -1,5 +1,5 @@
-<div class="edits editing-form" component-id="{{relationship.relationshipId ? relationship.relationshipId : getHashkey(relationship)}}">
-  <div class="pop-edit concept-more row">
+<div class="edits editing-form" component-id="relationship-more-{{initializationTimeStamp}}-{{$index}}">
+  <div class="pop-edit relationship-more row">
     <div class="concept-id pull-left">
       <label class="control-label">SCTID</label>
       <span class="fields row" ng-show="isSctid" ng-init="isSctid = isSctid(relationship.relationshipId)"> {{relationship.relationshipId}} </span></div>

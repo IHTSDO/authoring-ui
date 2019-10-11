@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService) {
+  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, terminologyServerService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService) {
 
     // the selected tab
     $scope.actionTab = 1;
@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.error = 'List of inactivation reasons was not specified';
     }
     $scope.getConceptsForTypeahead = function (searchStr,inactivationIndication) {
-      return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+      return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
         let i = 0;
         while (i < response.length) {
           let j = i + 1;
@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
-      return snowowlService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
+      return terminologyServerService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
         let descendants = [];
 
         if($scope.descendants) {
@@ -345,12 +345,11 @@ angular.module('singleConceptAuthoringApp')
     if ($scope.conceptId && $scope.branch) {
 
       // limit the number of descendants retrieved to prevent overload
-      snowowlService.searchAllConcepts($scope.branch, '', '<' + $scope.conceptId, 0, 50, null, true, true).then(function (response) {
+      terminologyServerService.searchAllConcepts($scope.branch, '', '<' + $scope.conceptId, 0, 50, null, true, true).then(function (response) {
         $scope.descendants = response;
         $rootScope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
-        console.log(response);
 
         // convert the term into a top-level attribute for ng-table sorting
         angular.forEach($scope.descendants.items, function (descendant) {
@@ -370,65 +369,165 @@ angular.module('singleConceptAuthoringApp')
      */
     function getInboundRelationships(conceptId, branch, startIndex, maxResults) {
       let deferred = $q.defer();
-
+      $scope.inboundRelationshipsLoading = true;
       // get the concept relationships again (all)
-      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
-
-        $scope.inboundRelationshipsLoading = true;
-
-        // temporary array for preventing duplicate children
-        let childrenIds = [];
-
+      terminologyServerService.searchConcepts($scope.branch,'', '*: *' + ' = ' + conceptId, 0, 10000, false, false, true).then(function (response) {
+       
         // initialize the arrays
         $scope.inboundRelationships = [];
         $scope.children = [];
-        $scope.inboundRelationshipsTotal = response2.total;
+        $scope.inboundRelationshipsTotal = 0;
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
-        angular.forEach(response2.items, function (item) {
-
+        angular.forEach(response.items, function (item) {
           if (item.active) {
-            item.sourceFsn = item.source.fsn;
-            item.typeFsn = item.type.fsn;
+            item.sourceFsn = item.fsn.term;
+            item.typeFsn = 'isA (attribute)';
+            item.source = [];
+            item.source.fsn = item.fsn.term;
+            item.concept = [];
+            item.concept.conceptId = item.conceptId;
+            item.characteristicType = 'STATED_RELATIONSHIP';
 
             // push to inbound relationships
             $scope.inboundRelationships.push(item);
-
-            // if a child, and not already added (i.e. prevent STATED/INFERRED
-            // duplication), push to children
-            if (item.type.id === '116680003') {
-              // if already added and this relationship is STATED, replace
-              if (childrenIds.indexOf(item.source.id) !== -1 && item.characteristicType === 'STATED_RELATIONSHIP') {
-                for (let i = 0; i < $scope.children.length; i++) {
-                  if ($scope.children[i].source.id === item.source.id) {
-                    $scope.children[i] = item;
-                  }
-                }
-              }
-              // otherwise if not already present, simply push
-              else if (childrenIds.indexOf(item.source.id) === -1) {
-                childrenIds.push(item.source.id);
-                $scope.children.push(item);
-              }
-
-            }
+            $scope.inboundRelationshipsTotal++;
           }
         });
         $rootScope.children = $scope.children;
-
-        $scope.inboundRelationshipsLoading = false;
-
         $scope.tableParamsChildren.reload();
         $scope.tableParamsInboundRelationships.reload();
 
-        deferred.resolve();
+        // Children
+        terminologyServerService.searchConcepts($scope.branch,'', '<! ' + conceptId, 0, 10000, false, false, true).then(function (response) {
+            // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
+            // make top-level properties
+            angular.forEach(response.items, function (item) {
 
+              if (item.active) {
+                item.sourceFsn = item.fsn.term;
+                item.source = [];
+                item.source.fsn = item.fsn.term;
+                item.typeFsn = 'isA (attribute)';
+                item.concept = [];
+                item.concept.conceptId = item.conceptId;
+                item.characteristicType = 'STATED_RELATIONSHIP';
+
+                var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
+                  return item.sourceFsn === inboundRelationship.sourceFsn;
+                }).length !== 0;
+                
+                // push to inbound relationships
+                if (!found)
+                {
+                  $scope.inboundRelationships.push(item);
+                  $scope.inboundRelationshipsTotal++;
+                }
+                
+                $scope.children.push(item);
+              }
+            });
+            $rootScope.children = $scope.children;
+            $scope.tableParamsChildren.reload();
+
+            if ($scope.deletion) {
+              // Historical associations
+              getHistoricalAssociations().then(function(affectedAssociations) {
+                $scope.inboundRelationships = $scope.inboundRelationships.concat(affectedAssociations);
+                $scope.inboundRelationshipsTotal += affectedAssociations.length;
+                $scope.inboundRelationshipsLoading = false;              
+                $scope.tableParamsInboundRelationships.reload();    
+              })
+            }
+            else {
+              $scope.inboundRelationshipsLoading = false;              
+              $scope.tableParamsInboundRelationships.reload();
+            }
+          });
       });
 
       return deferred.promise;
     }
 
+    function getHistoricalAssociations() {
+      let deferred = $q.defer();
+      var affectedAssociations = [];  
+      terminologyServerService.getHistoricalAssociationMembers($scope.conceptId, $scope.branch).then(function (response) {
+        let affectedAssociationsTotal = Array.isArray(response) ? response.length : response.total;
+        var affectedDescriptionIds = [];
+        if (affectedAssociationsTotal !== 0) {                
+          angular.forEach(response.items, function (item) {
+            if (item.active) {
+              // Historical concepts found
+              if (item.referencedComponent) {
+                item.sourceFsn = item.referencedComponent.fsn.term;
+                item.source = [];
+                item.source.fsn = item.referencedComponent.fsn.term;                    
+                item.characteristicType = 'STATED_RELATIONSHIP';
+    
+                var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
+                  return item.sourceFsn === inboundRelationship.sourceFsn;
+                }).length !== 0;
+
+                // push to inbound relationships
+                if (!found)
+                {
+                  affectedAssociations.push(item);
+                }
+              }
+              else {
+                affectedDescriptionIds.push(item.referencedComponentId);
+              }                    
+            }
+          });
+        }              
+
+        // Historical associations found
+        if (affectedDescriptionIds.length > 0) {
+          var count = 0;
+          for (var i = 0; i < affectedDescriptionIds.length; i++) {
+            terminologyServerService.getDescriptionProperties(affectedDescriptionIds[i], $scope.branch).then(function (description) {
+              var conceptIds = [];
+              conceptIds.push(description.conceptId);                      
+              count++;
+              if (count === affectedDescriptionIds.length) {
+                // bulk call for concept ids
+                terminologyServerService.bulkGetConcept(conceptIds, $scope.branch).then(function (response) {
+                  angular.forEach(response.items, function (concept) {
+                    var item = {};
+                    item.sourceFsn = concept.fsn.term;
+                    item.source = [];
+                    item.source.fsn = concept.fsn.term;                    
+                    item.characteristicType = 'STATED_RELATIONSHIP';
+        
+                    var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
+                        return item.sourceFsn === inboundRelationship.sourceFsn;
+                      }).length !== 0 
+                      && $scope.affectedAssociations.filter(function(inboundRelationship) {
+                        return item.sourceFsn === inboundRelationship.sourceFsn;
+                      }).length !== 0;                    
+                    
+                    // push to inbound relationships
+                    if (!found)
+                    {
+                      affectedAssociations.push(item);                      
+                    }
+                  });
+                     
+                  deferred.resolve(affectedAssociations);
+                });                      
+              }
+            });
+          }                
+        }
+        else {          
+          deferred.resolve(affectedAssociations);
+        }                             
+      });
+
+      return deferred.promise;
+    }
     // check for existence of stated IsA relationships
     $scope.statedChildrenFound = null;
     function checkStatedChildren() {
@@ -443,20 +542,17 @@ angular.module('singleConceptAuthoringApp')
     // get the limited number of inbound relationships for display
     if ($scope.componentType === 'Concept') {
       getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function () {
-
         checkStatedChildren();
-
         // detect case where no stated parent-child relationship was found, but
         // more results may exist
-        if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
-
-          getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
-            checkStatedChildren();
-          });
-        }
+//        if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
+//
+//          getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
+//            checkStatedChildren();
+//          });
+//        }
       });
     }
-
 
     $scope.cancel = function () {
       $modalInstance.dismiss();

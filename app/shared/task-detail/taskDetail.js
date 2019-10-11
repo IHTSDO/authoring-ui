@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -10,7 +10,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // the project and task branch objects
       $scope.projectBranch = null;
-      $scope.taskBranch = null;
       $scope.promoting = false;
       $scope.automatePromotionStatus = "";
       $scope.automatePromotionErrorMsg = "";    
@@ -22,9 +21,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.classify = function () {
 
-        notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
+        notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
 
-        if ($scope.task.status === 'New') {
+        if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             doClassify();
           });
@@ -76,25 +75,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response.status === 'CONFLICTS') {
                 var merge = JSON.parse(response.message);
-                snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
-                  if (response && response.items && response.items.length > 0) {
-                    var msg = '';
-                    var conflictCount = 0;
-                    angular.forEach(response.items, function (item) {
-                      if (item.id == merge.id) {
-                        angular.forEach(item.conflicts, function (conflict) {
-                          if (msg.length > 0) {
-                            msg = msg + ' \n';
-                          }
-                          msg += conflict.message;
-                          conflictCount++;
-                        });
-                      }                        
-                    });
-                    if (msg.length > 0) {
-                      notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
-                    }
-                  }
+                terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
+                  notificationService.sendError(conflictMessage);
                 });
               } else {
                 $rootScope.$broadcast('reloadTask');
@@ -126,25 +108,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   if (response.status === 'CONFLICTS') {
                     var merge = JSON.parse(response.message);
-                    snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
-                      if (response && response.items && response.items.length > 0) {
-                        var msg = '';
-                        var conflictCount = 0;
-                        angular.forEach(response.items, function (item) {
-                          if (item.id == merge.id) {
-                            angular.forEach(item.conflicts, function (conflict) {
-                              if (msg.length > 0) {
-                                msg = msg + ' \n';
-                              }
-                              msg += conflict.message;
-                              conflictCount++;
-                            });
-                          }                        
-                        });
-                        if (msg.length > 0) {
-                          notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
-                        }
-                      }
+                    terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
+                      notificationService.sendError(conflictMessage);
                     });
                   } else {
                     $rootScope.$broadcast('reloadTask');
@@ -167,64 +132,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.promoting = false;
         });
       };
+      
       $scope.proceedAutomatePromotion = function () {
         notificationService.sendMessage('Preparing for task promotion automation...');
         $scope.automatePromotionErrorMsg = '';
-        $scope.automatePromotionStatus = '';
+        $scope.automatePromotionStatus = '';       
 
-        /* Check unsaved concepts*/
-        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-          .then(function (uiState) {
-            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-              validateReviewStatus();
+        promotionService.checkPrerequisitesForAutomatedPromotionTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
+
+          // detect whether any user warnings were detected
+          var warningsFound = false;
+          angular.forEach(flags, function (flag) {
+            if (flag.checkWarning) {
+              warningsFound = true;
             }
-            else {
-              var promises = [];
-              for (var i = 0; i < uiState.length; i++) {
-                promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, uiState[i]));
-              }
-              // on resolution of all promises
-              $q.all(promises).then(function (responses) {
-                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-                if (hasUnsavedConcept) {
-                  notificationService.clear();
-                  modalService.message('There are some unsaved concepts. Please save them before promoting task automation.');
-                } else {
-                  validateReviewStatus();
-                }
-              });
-            }
-          }
-        );
-      };
+          });
 
-      function validateReviewStatus() {
-        var flags = [];
-        /* Check review */
-        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (branchStatus) {
-          ////////////////////////////////////////////////////////////
-          // CHECK:  Has the Task been reviewed?
-          ////////////////////////////////////////////////////////////
-          if (branchStatus.status !== 'In Review' && branchStatus.status !== 'Review Completed') {
-            flags.push({
-              checkTitle: 'No review completed',
-              checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
-              blocksPromotion: false
-            });
-          }
-
-          ////////////////////////////////////////////////////////////
-          // CHECK:  Is the task still in Review?
-          ////////////////////////////////////////////////////////////
-          if (branchStatus.status === 'In Review') {
-            flags.push({
-              checkTitle: 'Task is still in review',
-              checkWarning: 'The task review has not been marked as complete.',
-              blocksPromotion: false
-            });
-          }
-
-          if (flags.length === 0) {
+          // if response contains no flags, simply promote
+          if (!warningsFound) {
             promoteTaskAutomation();
           } else {
             var modalInstance = $modal.open({
@@ -248,16 +173,18 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               }
             }, function () {
               notificationService.clear();
-            });
+            });            
           }
-
+        }, function (error) {
+          notificationService.sendError('Unexpected error preparing for promotion: ' + error);
+          $scope.promoting = false;
         });
-      }
+      };     
 
       function promoteTaskAutomation() {
         notificationService.sendMessage('Starting automated promotion...');
         promotionService.proceedAutomatePromotion($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-            $scope.checkAutomatePromotionStatus(false);
+            $scope.checkForAutomatedPromotionStatus(false);
           }, function (error) {
             $scope.automatePromotionStatus = '';
           }
@@ -424,30 +351,31 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.checkForLock = function () {
 
-        snowowlService.getBranch($scope.branch).then(function (response) {
+        terminologyServerService.getBranch($scope.branch).then(function (response) {
 
           // if lock found, set rootscope variable and continue polling
-          if (response.metadata && response.metadata.lock) {
-            if(response.metadata.lock.context.description === 'classifying the ontology')
-                {
-                    $scope.ontologyLock = true;
-                }
+          if (response.metadata && response.metadata.lock) {            
             $rootScope.branchLocked = true;
             $timeout(function () {
               $scope.checkForLock();
             }, 10000);
            }
           else {
-            snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            terminologyServerService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response && response.length > 0) {
                 var item = response[response.length -1];
                 if (item.status === 'SCHEDULED' || item.status === 'RUNNING') {
                   $rootScope.branchLocked = true;
+                  $rootScope.classificationRunning = true;
                   $timeout(function () {
                     $scope.checkForLock();
                   }, 10000);
                 } else {
+                  if ($rootScope.classificationRunning) {
+                    $rootScope.$broadcast('reloadTask');
+                  }
                   $rootScope.branchLocked = false;
+                  $rootScope.classificationRunning = false;
                 }
               } else {
                 $rootScope.branchLocked = false;
@@ -456,7 +384,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           }
         });
-
       };
 
       $scope.isAutomatePromotionRunning = function (){
@@ -468,7 +395,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         return false;
       }
 
-      $scope.checkAutomatePromotionStatus = function (isInitialInvoke) {
+      $scope.checkForAutomatedPromotionStatus = function (isInitialPageLoad) {
         $scope.automatePromotionErrorMsg = '';
         promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           if (response && $scope.task.status !== 'Promoted') {
@@ -487,11 +414,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               case 'Rebased with conflicts':
                 scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   $scope.task = response;
-                  if ($scope.task.branchState !== 'FORWARD'
-                    && $scope.task.branchState !== 'UP_TO_DATE') {
+                  if ($scope.task.branchState !== 'FORWARD' && $scope.task.branchState !== 'UP_TO_DATE') {
                     $rootScope.branchLocked = false;
-                $rootScope.automatedPromotionInQueued = false;
-                $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
+                    $rootScope.automatedPromotionInQueued = false;
+                    $scope.automatePromotionErrorMsg = 'Merge conflicts detected during automated promotion. Please rebase task manually, resolve merge conflicts and then restart automation.';
                   }
                 });
                 break;
@@ -502,21 +428,26 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Classified with results':
-                if ($scope.task.latestClassificationJson.status === 'SAVED'
-                    || $scope.task.latestClassificationJson.status === 'RUNNING'
-                    || new Date($scope.task.latestClassificationJson.completionDate) > new Date(response.completeDate)) {
-                   $scope.automatePromotionStatus = '';
+                if(isInitialPageLoad && $rootScope.classificationRunning) {
+                  $scope.automatePromotionStatus = '';
                   break;
                 }
+
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
                 $rootScope.automatedPromotionInQueued = false;
-                if(!isInitialInvoke) {
+
+                if(!isInitialPageLoad) {
                   $rootScope.$broadcast('reloadTask');
+                  break;
                 }
-                $timeout(function () {
-                  $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';
-                }, 2000);
+
+                if ($scope.task.latestClassificationJson.status === 'SAVED' || new Date($scope.task.latestClassificationJson.completionDate) > new Date(response.completeDate)) {
+                  $scope.automatePromotionStatus = '';
+                  break;
+                }
+
+                $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';               
                 break;
               case 'Promoting':
                 $rootScope.classificationRunning = false;
@@ -528,7 +459,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;
                 $rootScope.automatedPromotionInQueued = false;
                 $rootScope.branchLocked = true;
-                if (!isInitialInvoke) {
+                if (!isInitialPageLoad) {
                   $rootScope.$broadcast('reloadTask');
                 }
                 break;
@@ -536,8 +467,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.automatedPromotionInQueued = false;
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
-                if (!isInitialInvoke) {
-                  $scope.automatePromotionErrorMsg =  'Error automate promotion: ' + response.message;
+                if (!isInitialPageLoad) {
+                  $scope.automatePromotionErrorMsg =  'Error automate promotion' + (typeof response.message !== 'undefined' ? ': ' + response.message : '');
                   notificationService.clear();
                 }
                 break;
@@ -551,20 +482,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 || response.status === 'Classifying'
                 || response.status === 'Promoting') {
               $timeout(function () {
-                $scope.checkAutomatePromotionStatus(false);
+                $scope.checkForAutomatedPromotionStatus(false);
               }, 10000);
             }
           } else {
             $scope.automatePromotionStatus = '';
           }
-          if(isInitialInvoke && $scope.automatePromotionStatus === '') {
+          if(isInitialPageLoad && $scope.automatePromotionStatus === '') {
             $scope.checkForLock();
           }
         });
       };
 
       $scope.viewConflicts = function () {
-        snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
+        terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
           if (!response.metadata || response.metadata && !response.metadata.lock) {
             $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/conflicts');
           }
@@ -600,22 +531,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       function initialize() {
 
-        // clear the branch variables (but not the task to avoid display re-initialization)
-        $scope.taskBranch = null;
-
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.task = response;
-          $scope.ontologyLock = $rootScope.classificationRunning;
+          $scope.task = response;          
           if ($scope.task.status !== 'Promoted') {
-            $scope.checkAutomatePromotionStatus(true);
+            $scope.checkForAutomatedPromotionStatus(true);
           } else {
             $rootScope.branchLocked = true;
           }
-
-          snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
-          });
-
+          
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;

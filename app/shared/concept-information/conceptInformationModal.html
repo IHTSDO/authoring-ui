@@ -143,8 +143,8 @@
                    class="table table-full-small" show-filter="true">
               <tr ng-repeat="item in $data">
                 <td data-title="'Characteristic Type'" sortable="'characteristicType'" filter="{ 'characteristicType': 'ng-table/characteristic-type-select.html' }"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
-                <td data-title="'Type'" sortable="'type.fsn.term'" filter="{'typeFsn': 'ng-table/type-term-select.html'}"> {{item.type.fsn.term}} </td>
-                <td data-title="'FSN'" sortable="'source.fsn.term'" filter="{'sourceFsn': 'text'}"> {{item.source.fsn.term}} </td>
+                <td data-title="'Type'" sortable="'type.fsn'" filter="{'typeFsn': 'ng-table/type-term-select.html'}"> {{item.type.fsn}} </td>
+                <td data-title="'FSN'" sortable="'source.fsn'" filter="{'sourceFsn': 'text'}"> {{item.source.fsn}} </td>
               </tr>
             </table>
           </div>

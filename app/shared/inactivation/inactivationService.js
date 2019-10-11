@@ -4,7 +4,7 @@
 // Service for concept inactivation
 //
 angular.module('singleConceptAuthoringApp')
-  .service('inactivationService', ['$http', '$q', '$rootScope', 'scaService', 'snowowlService', 'notificationService', function ($http, $q, $rootScope, scaService, snowowlService, notificationService) {
+  .service('inactivationService', ['$http', '$q', '$rootScope', 'scaService', 'terminologyServerService', 'notificationService', function ($http, $q, $rootScope, scaService, terminologyServerService, notificationService) {
 
     var parameters = {
       project : null,
@@ -71,7 +71,7 @@ angular.module('singleConceptAuthoringApp')
       } else if (!parameters.reasonId) {
         deferred.reject('Inactivation called without setting reason');
       } else {
-        snowowlService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
+        terminologyServerService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
 
           deferred.resolve();
         });

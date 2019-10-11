@@ -7,7 +7,7 @@
     <li><a href="http://www.snomed.org/contact-us/" target="_blank">Contact Us</a></li>
 
   </ul>
-
+<!--  <div class="network-connection-warning" id="networkWarning"><i class="fa fa-exclamation-triangle"></i> &nbsp Your network connection is slow</div>-->
   <button class="btn btn-primary navbar-right" id="myCustomTrigger">Raise an Issue</button>
 
     <div ng-if="collectorUrl">
@@ -15,46 +15,25 @@
             window.ATL_JQ_PAGE_PROPS = {
                 "triggerFunction": function(showCollectorDialog) {
                     jQuery("#myCustomTrigger").click(function(e) {
-                        e.preventDefault();
-                        console.log('click');
+                        e.preventDefault();                      
                         showCollectorDialog();
                     });
                 }
             };
             
-            var networkSpeedArr = [];
-
-            // Store connection speed every 2 minutes, this will stop if the array reaches to 10 items
-            function storeNetworkSpeed() {
-              if (networkSpeedArr.length < 10) {
-                networkSpeedArr.push(navigator.connection.downlink);
-                setTimeout(storeNetworkSpeed,120000);
-              } 
-            }
-
-            setTimeout(storeNetworkSpeed,1000);
-
-            // Monitor connection each 15 second based on the average speed
-            // if current connection is slower 50% than average speed, then the warning message will be displayed
-            function monitorNetworkConnection() {
-              if (networkSpeedArr.length === 10) {
-                var sum = 0;
-                for( var i = 0; i < networkSpeedArr.length; i++ ){
-                    sum += parseFloat( networkSpeedArr[i]);
-                }
-               
-                var averageSpeed = sum/networkSpeedArr.length;
-                var downlink = navigator.connection.downlink;
-                if (downlink && downlink < averageSpeed / 2) {
-                  $("#networkWarning").css("display", "inline");
-                } else {
-                  $("#networkWarning").css("display", "none");
-                }
-              }              
-              setTimeout(monitorNetworkConnection,15000);
-            }
-
-            setTimeout(monitorNetworkConnection,1000);            
+//            const MINIMUM_NETWORK_CONNECTION_SPEED_DEFAULT = 2;
+//            function monitorNetworkConnection() {
+//              var minConnectionSpeed = (window.minNetworkConnection && window.minNetworkConnection !== 0) ? window.minNetworkConnection : MINIMUM_NETWORK_CONNECTION_SPEED_DEFAULT;          
+//              var downlink = navigator.connection.downlink;
+//              if (downlink && downlink < minConnectionSpeed) {
+//                $("#networkWarning").css("display", "inline");
+//              } else {
+//                $("#networkWarning").css("display", "none");
+//              }
+//              setTimeout(monitorNetworkConnection,15000);
+//            }
+//
+//            setTimeout(monitorNetworkConnection,1000);                        
         </script>
     </div>
 </div>

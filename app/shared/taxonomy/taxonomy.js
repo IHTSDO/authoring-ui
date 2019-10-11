@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
-  .controller('taxonomyPanelCtrl', ['$q', '$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'snowowlService',
-    function taxonomyPanelCtrl($q, $scope, $rootScope, $location, $routeParams, metadataService, snowowlService) {
+  .controller('taxonomyPanelCtrl', ['$q', '$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'terminologyServerService',
+    function taxonomyPanelCtrl($q, $scope, $rootScope, $location, $routeParams, metadataService, terminologyServerService) {
 
       $scope.branch = metadataService.getBranch();
 

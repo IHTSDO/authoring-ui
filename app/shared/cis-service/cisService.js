@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles all functionality surrounding CRS tickets
  */
-  .factory('cisService', function ($http, $rootScope, $q, scaService, metadataService, snowowlService, $timeout, notificationService) {
+  .factory('cisService', function ($http, $rootScope, $q, scaService, metadataService, terminologyServerService, $timeout, notificationService) {
 
       var currentTask;
 
@@ -14,13 +14,7 @@ angular.module('singleConceptAuthoringApp')
       // TODO Move this into endpoint config
       //
       function getCisUrl() {       
-        if ($rootScope.development) {
-          return 'https://dev-cis.ihtsdotools.org/api/sct';
-        } else if ($rootScope.uat) {
-          return 'https://uat-cis.ihtsdotools.org/api/sct';
-        } else {
-          return 'https://cis.ihtsdotools.org/api/sct';
-        }
+        return $rootScope.endpoints.cisEndpoint;
       }      
 
       function getAllNamespaces() {
