@@ -317,7 +317,7 @@
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{concept.term? concept.term : 'Deleted concept'}} </span></td>
-            <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'"
+            <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
                 class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                 <button
                   class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
