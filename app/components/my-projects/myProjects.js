@@ -10,11 +10,19 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     $routeProvider
       .when('/my-projects', {
         controller: 'MyProjectsCtrl',
-        templateUrl: 'components/my-projects/myProjects.html'
+        templateUrl: 'components/my-projects/myProjects.html',
+        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+            var defer = $q.defer();
+            terminologyServerService.getEndpoint().then(function(){
+              defer.resolve();
+            });                        
+            return defer.promise;
+          }
+        ]
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService, notificationService, hotkeys, localStorageService) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, metadataService, notificationService, hotkeys, localStorageService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;

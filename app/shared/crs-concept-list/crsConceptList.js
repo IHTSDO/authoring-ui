@@ -58,7 +58,7 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.pendingRequest = function(item) {          
-          modalService.confirm('Do you really want to change this CRS request to Pending Classification?').then(function () {
+          modalService.confirm('Do you really want to change this CRS request to Pending Clarification?').then(function () {
             let ids = [];
             ids.push(item.crsId);
             notificationService.sendMessage('Updating CRS request status to Pending Clarification...');
@@ -74,6 +74,10 @@ angular.module('singleConceptAuthoringApp')
 
         scope.$on('removeItem', function (event, data) {
           scope.deleteConcept(data.concept);
+        });
+
+        scope.$on('initialiseCrsConceptsComplete', function (event, data) {
+          initialize();
         });
 
         scope.deleteConcept = function(concept) {

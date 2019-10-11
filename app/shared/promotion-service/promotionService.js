@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('promotionService', ['scaService', 'snowowlService', '$q', 'crsService', function (scaService, snowowlService, $q, crsService) {
+  .service('promotionService', ['scaService', 'terminologyServerService', '$q', 'crsService', function (scaService, terminologyServerService, $q, crsService) {
 
     /**
      * Checks if a branch is eligible for promotion
@@ -82,8 +82,8 @@ angular.module('singleConceptAuthoringApp')
 
 
           // get the branch details
-          snowowlService.getBranch(branch).then(function (branchStatus) {
-            snowowlService.getTraceabilityForBranch(branch).then(function (activities) {
+          terminologyServerService.getBranch(branch).then(function (branchStatus) {
+            terminologyServerService.getTraceabilityForBranch(branch).then(function (activities) {
               if (!branchStatus) {
                 flags.push({
                   checkTitle: 'Could Not Retrieve Branch Details',
@@ -288,6 +288,90 @@ angular.module('singleConceptAuthoringApp')
       return lastClassificationSaved === lastModifiedTime;
     }
 
+    function checkPrerequisitesForAutomatedPromotionTask(projectKey, taskKey) {
+      var deferred = $q.defer();
+      checkUnsavedConcepts(projectKey, taskKey).then(function(flags){
+        if (flags.length !== 0) {
+          deferred.resolve(flags);
+        }
+        else {
+          scaService.getTaskForProject(projectKey, taskKey).then(function (task) {
+               
+            if (task.branchState === 'UP_TO_DATE') {
+              deferred.resolve([{
+                checkTitle: 'No Changes To Promote',
+                checkWarning: 'The task is up to date with respect to the project. No changes to promote.',
+                blocksPromotion: true
+              }]);
+            }
+            
+            var flags = [];
+            ////////////////////////////////////////////////////////////
+            // CHECK:  Has the Task been reviewed?
+            ////////////////////////////////////////////////////////////
+            if (task.status !== 'In Review' && task.status !== 'Review Completed') {
+              flags.push({
+                checkTitle: 'No review completed',
+                checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
+                blocksPromotion: false
+              });
+            }
+
+            ////////////////////////////////////////////////////////////
+            // CHECK:  Is the task still in Review?
+            ////////////////////////////////////////////////////////////
+            if (task.status === 'In Review') {
+              flags.push({
+                checkTitle: 'Task is still in review',
+                checkWarning: 'The task review has not been marked as complete.',
+                blocksPromotion: false
+              });
+            }
+            flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);
+            
+            deferred.resolve(flags);
+          }, function (error) {
+            deferred.reject('Could not retrieve task details: ' + error);
+          });
+        }        
+      });     
+
+      return deferred.promise;
+    }
+
+    function checkUnsavedConcepts(projectKey, taskKey) {
+      var deferred = $q.defer();
+      scaService.getUiStateForTask(projectKey, taskKey, 'edit-panel')
+        .then(function (uiState) {
+          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+            deferred.resolve([]);
+          }
+          else {
+            var promises = [];
+            for (var i = 0; i < uiState.length; i++) {
+              promises.push(scaService.getModifiedConceptForTask(projectKey, taskKey, uiState[i]));
+            }
+            // on resolution of all promises
+            $q.all(promises).then(function (responses) {
+              var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
+              if (hasUnsavedConcept) {                
+                deferred.resolve([{
+                  checkTitle: 'Unsaved concepts found',
+                  checkWarning: 'There are some unsaved concepts. Please save them before promoting task automation.',
+                  blocksPromotion: true
+                }]);                
+              }
+              else {
+                deferred.resolve([]);
+              }
+            });
+          }
+        }
+      );
+
+      return deferred.promise;
+    }
+
     function checkPrerequisitesForTask(projectKey, taskKey) {
       var deferred = $q.defer();
 
@@ -443,6 +527,7 @@ angular.module('singleConceptAuthoringApp')
     return {
 
       checkPrerequisitesForTask: checkPrerequisitesForTask,
+      checkPrerequisitesForAutomatedPromotionTask: checkPrerequisitesForAutomatedPromotionTask,
       checkPrerequisitesForProject: checkPrerequisitesForProject,
 
       promoteTask: promoteTask,

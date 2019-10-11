@@ -5,7 +5,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .directive('drawModel', function (snowowlService,metadataService) {
+  .directive('drawModel', function (terminologyServerService,metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -90,25 +90,30 @@ angular.module('singleConceptAuthoringApp')
                 axiomToPush.relationships = [];
                 axiomToPush.type = 'gci';
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         if (field.type.conceptId === '116680003') {
                           axiomToPush.relationships.push(field);
                         } else {
                           axiomToPush.relationships.push(field);
                         }
+                      }
                     });
                 axioms.push(axiomToPush);
             });
-            $.each(concept.additionalAxioms, function (i, axiom) {
+            $.each(concept.classAxioms, function (i, axiom) {
                 var axiomToPush = {
                     relationships : [],
-                    type : 'add'
+                    type : 'add',
+                    definitionStatus : axiom.definitionStatus
                 };
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         if (field.type.conceptId === '116680003') {
                           axiomToPush.relationships.push(field);
                         } else {
                           axiomToPush.relationships.push(field);
                         }
+                      }
                     });
                 axioms.push(axiomToPush);
             });
@@ -247,20 +252,24 @@ angular.module('singleConceptAuthoringApp')
           });
         
           if(scope.view === 'stated'){
-              $.each(concept.additionalAxioms, function (i, axiom) {
+              $.each(concept.classAxioms, function (i, axiom) {
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         height = height + 55;
                         width = width + 110;
+                      }
                     });
              });
              $.each(concept.gciAxioms, function (i, axiom) {
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {
+                      if (field.active) {
                         height = height + 55;
                         width = width + 110;
+                      }
                     });
             });
           }
@@ -292,7 +301,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
             sctClass = "sct-defined-concept";
           }
-          var rect1 = drawSctBox(svg, x, y, concept.fsn, snowowlService.isSctid(concept.conceptId) ? concept.conceptId : null, sctClass);
+          var rect1 = drawSctBox(svg, x, y, concept.fsn, terminologyServerService.isSctid(concept.conceptId) ? concept.conceptId : null, sctClass);
           x = x + 90;
           y = y + rect1.getBBox().height + 40;
           var circle1;
@@ -357,7 +366,7 @@ angular.module('singleConceptAuthoringApp')
                   maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
               }
               else{
-                  if (metadataService.isSelfGroupAttribute(relationship.type.conceptId)) {
+                  if (!metadataService.isUngroupedAttribute(relationship.type.conceptId)) {
                     y = y + 20;                   
                     var circleSelfgroupAttr = drawAttributeGroupNode(svg, x, y);
                     connectElements(svg, circle2, circleSelfgroupAttr, 'center', 'left');
@@ -429,6 +438,9 @@ angular.module('singleConceptAuthoringApp')
               if(axiom.type === "gci"){
                   circle1 = drawSubsumesNode(svg, x, y);
               }
+              else if(axiom.type !== "gci" && axiom.definitionStatus === "FULLY_DEFINED"){
+                  circle1 = drawEquivalentNode(svg, x, y);
+              }
               else{
                   circle1 = drawSubsumedByNode(svg, x, y);
               }
@@ -441,7 +453,6 @@ angular.module('singleConceptAuthoringApp')
               maxX = ((maxX < x) ? x : maxX);
               var axiomRoleNumber = 0;
               $.each(axiom.relationships, function (i, relationship) {
-               console.log('here');
                   if(relationship.type.conceptId === '116680003'){
                       if (relationship.target.definitionStatus === "PRIMITIVE") {
                             sctClass = "sct-primitive-concept";

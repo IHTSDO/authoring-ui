@@ -37,6 +37,12 @@ html {
     margin-righ: 2px;
 }
 
+.about { margin-top: 20px; margin-bottom: 0; border-top: 1px solid silver; text-align: left; font-size: 0.9em;}
+.about dl {margin-bottom: 0; padding-bottom: 0;}
+.about dl dt {clear: both; float: left; padding-right: 1em;}
+.about dl dd p {margin: 0;}
+.about dl dd dl {font-size: 0.9em; margin-left: 3em;}
+#userPreferencesModal .has-feedback .form-control {padding: 0}
 
 .project-subtitle {
     font-family: Roboto, sans-serif ;

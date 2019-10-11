@@ -123,7 +123,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService, crsService) {
 
     console.log('Running application');
 
@@ -172,11 +172,19 @@ angular
 
 
     // get endpoint information and set route provider options
-    configService.getEndpoints().then(
+    configService.getConfigurations().then(
       // Success block -- config properties retrieved
       function (response) {
-        var endpoints = response;
-        console.log(response);
+        var endpoints = response.endpoints;
+        var features = response.features
+        $rootScope.endpoints = endpoints;
+
+        if (features.network && features.network.connection.minimum) {
+          window.minNetworkConnection = features.network.connection.minimum;
+        }
+        terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
+        crsService.setCrsEndpoint(endpoints['crsEndpoint']);
+        crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
@@ -189,11 +197,58 @@ angular
         // get the account details
         accountService.getAccount(accountUrl).then(function (account) {
 
-          // start connecting websocket
-          scaService.connectWebsocket(account.login);
+          if(!(account.roles.includes('ROLE_ihtsdo-sca-author'))) {
+            window.location.href = decodeURIComponent(imsUrl + 'login');
+          }
 
+          // start connecting websocket
+          scaService.connectWebsocket();
+        }, function (error) {
+          // apply default preferences
+          accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+          })
+        });
+
+        cisService.getAllNamespaces().then(function (response) {
+          if(response.length > 0) {
+            metadataService.setNamespaces(response);
+          }
+        });
+
+        hotkeys.bindTo($rootScope)
+            .add({
+              combo: 'alt+h',
+              description: 'Go to Home - My Tasks',
+              callback: function() {$location.url('home');}
+            })
+            .add({
+              combo: 'alt+b',
+              description: 'Open TS Browser',
+              callback: function() {window.open('/browser', '_blank');}
+            })
+            .add({
+              combo: 'alt+p',
+              description: 'Go to Projects',
+              callback: function() {$location.url('projects');}
+            })
+            .add({
+              combo: 'alt+w',
+              description: 'Go to Review Tasks',
+              callback: function() {$location.url('review-tasks');}
+            })
+
+        ///////////////////////////////////////////
+        // Cache local data
+        ///////////////////////////////////////////
+        scaService.getProjects().then(function (response) {
+          metadataService.setProjects(response);
           // get the user preferences (once logged in status confirmed)
           accountService.getUserPreferences().then(function (preferences) {
+
+            if (preferences && preferences.minNetworkConnection) {
+              window.minNetworkConnection = preferences.minNetworkConnection;
+            }
 
             // apply the user preferences
             // NOTE: Missing values or not logged in leads to defaults
@@ -206,18 +261,36 @@ angular
             })
           });
 
-        }, function (error) {
-          // apply default preferences
-          accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+          var projectKeys = [];
+          var promises = [];
+          promises.push(scaService.getTasks());
+          promises.push(scaService.getReviewTasks());
 
-          })
-        });
+          // on resolution of all promises
+          $q.all(promises).then(function (responses) {
+              for (var i = 0; i < responses.length; i++) {
+                angular.forEach(responses[i], function (task) {
+                  if (projectKeys.indexOf(task.projectKey) === -1) {
+                    projectKeys.push(task.projectKey);
+                  }
+                });
+              }
 
-        ///////////////////////////////////////////
-        // Cache local data
-        ///////////////////////////////////////////
-        scaService.getProjects().then(function (response) {
-          metadataService.setProjects(response);
+              var myProjects = [];
+              angular.forEach(projectKeys, function(projectKey) {
+                angular.forEach(response, function(project) {
+                    if(project.key === projectKey)
+                    {
+                        myProjects.push(projectKey);
+                    }
+                });
+              });
+
+              if (myProjects.length > 0) {
+                console.log('setting projects');
+                metadataService.setMyProjects(myProjects);
+              }
+          });
         });
 
         cisService.getAllNamespaces().then(function (response) {

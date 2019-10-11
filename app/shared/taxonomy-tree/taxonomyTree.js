@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService, $filter, $timeout, metadataService) {
+  .directive('taxonomyTree', function ($rootScope, $q, $modal, terminologyServerService, $filter, $timeout, metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp')
               concept: {
                 conceptId: node.conceptId,
                 fsn: node.fsn,
-                preferredSynonym: node.preferredSynonym
+                preferredSynonym: node.preferredSynonym.term
               }
             });
             node.clickCt = 0;
@@ -107,7 +107,7 @@ angular.module('singleConceptAuthoringApp')
 
           var conceptId = node.conceptId;
 
-          snowowlService.getConceptChildren(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
+          terminologyServerService.getConceptChildren(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
 
               if (!children || children.length === 0) {
                 console.error('Could not retrieve children for node', node);
@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(children, function (child) {
                 child.isCollapsed = true;
                 if (!child.fsn) {
-                  child.fsn = child.preferredSynonym;
+                  child.fsn = child.preferredSynonym.term;
                 }
               });
 
@@ -137,7 +137,7 @@ angular.module('singleConceptAuthoringApp')
           var deferred = $q.defer();
           var conceptId = node.conceptId;
 
-          snowowlService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
+          terminologyServerService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
               scope.array = [];
               if (!parents) {
                 console.error('Could not retrieve parents for node', node);
@@ -149,7 +149,7 @@ angular.module('singleConceptAuthoringApp')
                 parent.isCollapsed = true;
                 parent.focusParent = true;
                 if (!parent.fsn) {
-                  parent.fsn = parent.preferredSynonym;
+                  parent.fsn = parent.preferredSynonym.term;
                 }
                 scope.array.push(parent);
               });
@@ -242,7 +242,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             // get all parents
-            snowowlService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
+            terminologyServerService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
               parentsCache[node.conceptId] = parents;
               deferred.resolve(parents);
             });
@@ -346,7 +346,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getTerm = function (node) {          
           if ((node.preferredSynonym && scope.defaultLanguage && scope.defaultLanguage !== '900000000000509007-fsn')
             ||(!scope.defaultLanguage && scope.synonymFlag)) {
-            return node.preferredSynonym;         
+            return (typeof node.preferredSynonym === 'object' ? node.preferredSynonym.term : node.preferredSynonym);         
           } else {
             return node.fsn; 
           }          
@@ -407,7 +407,7 @@ angular.module('singleConceptAuthoringApp')
 
               // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return leaf status)
               else {
-                snowowlService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
+                terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
                   scope.concept = response;
                   scope.constructRootTrees(scope.concept);
                 });
@@ -424,7 +424,7 @@ angular.module('singleConceptAuthoringApp')
 
               // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
               else {
-                snowowlService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
+                terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
                   scope.getAndSetChildren(response);
                   scope.getAndSetParents(response, false).then(function (array) {
                     scope.terminologyTree = array;
@@ -439,7 +439,7 @@ angular.module('singleConceptAuthoringApp')
           // if concept id not specified, use root
           else {
 
-            snowowlService.getFullConcept(metadataService.getSnomedCtRootId(), scope.branch, scope.acceptLanguageValue).then(function (parent) {
+            terminologyServerService.getFullConcept(metadataService.getSnomedCtRootId(), scope.branch, scope.acceptLanguageValue).then(function (parent) {
 
               // get the children
               scope.getAndSetChildren(parent);

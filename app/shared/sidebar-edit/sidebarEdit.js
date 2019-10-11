@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebarEdit', [])
 
-  .controller('sidebarEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService', 'metadataService', 'savedListService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService, metadataService, savedListService) {
+  .controller('sidebarEditCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'terminologyServerService', 'metadataService', 'savedListService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, terminologyServerService, metadataService, savedListService) {
 
       // on load, switch to Task Detail tab
         if($routeParams.mode === 'batch'){
@@ -21,27 +21,27 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
       };
       $scope.$on('viewTaxonomy', function(event, data) {
         $scope.actionTab = 1;
-        $rootScope.displayMainSidebar = true;
+        $rootScope.showSidebarEdit = true;
       });
       $scope.$on('viewSearch', function(event, data) {
         $scope.actionTab = 2;
-        $rootScope.displayMainSidebar = true;
+        $rootScope.showSidebarEdit = true;
       });
         $scope.$on('viewList', function(event, data) {
         $scope.actionTab = 3;
-        $rootScope.displayMainSidebar = true;
+        $rootScope.showSidebarEdit = true;
       });
         $scope.$on('viewReview', function(event, data) {
         $scope.actionTab = 6;
-        $rootScope.displayMainSidebar = false;
+        $rootScope.showSidebarEdit = false;
       });
         $scope.$on('viewBatch', function(event, data) {
         $scope.actionTab = 5;
-        $rootScope.displayMainSidebar = true;
+        $rootScope.showSidebarEdit = true;
       });
         $scope.$on('viewInfo', function(event, data) {
         $scope.actionTab = 4;
-        $rootScope.displayMainSidebar = true;
+        $rootScope.showSidebarEdit = true;
       });
 
       $scope.savedList = {items: []};

@@ -5,8 +5,6 @@ angular.module('singleConceptAuthoringApp.search', [])
 
     $scope.branch = metadataService.getBranch();
     var options = {
-      serverUrl: "/snowowl",
-      edition: "snomed-ct/v2/browser",
       release: $scope.branch,
       selectedView: "inferred",
       displayChildren: false,

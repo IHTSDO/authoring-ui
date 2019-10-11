@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval','$q',
-    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, snowowlService, scaService, notificationService, $timeout, $interval, $q) {
+  .directive('classification', ['$rootScope', '$filter', '$routeParams', 'accountService', 'terminologyServerService', 'scaService', 'notificationService', '$timeout', '$interval','componentHighlightUtil',
+    function ($rootScope, $filter, $routeParams, accountService, terminologyServerService, scaService, notificationService, $timeout, $interval, componentHighlightUtil) {
       return {
         restrict: 'A',
         transclude: false,
@@ -35,6 +35,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.itemLimit = 1000;
 
+          scope.styles = {};
 
           // function to get formatted summary tex
           scope.setStatusText = function () {
@@ -104,7 +105,13 @@ angular.module('singleConceptAuthoringApp')
             };
 
             // get the full concept for this branch (before version)
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+            terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
+              
+              componentHighlightUtil.runComparison(conceptId, scope.branch, response).then(function(result){
+                if (result && result.styles && result.styles.hasOwnProperty(conceptId)) {
+                  scope.styles[conceptId] = result.styles[conceptId];
+                }
+              });
 
               conceptModelObj.fsn = response.fsn;
 
@@ -113,7 +120,7 @@ angular.module('singleConceptAuthoringApp')
 
               // get the model preview (after version)
               if (scope.classificationContainer.status !== 'SAVED') {
-                snowowlService.getModelPreview(scope.classificationContainer.id, scope.branch, conceptId).then(function (secondResponse) {
+                terminologyServerService.getModelPreview(scope.classificationContainer.id, scope.branch, conceptId).then(function (secondResponse) {
                   conceptModelObj.conceptAfter = secondResponse;
 
                   scope.viewedConcepts.push(conceptModelObj);
@@ -139,27 +146,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-          };
-
-          var resizeClassificationSvg = function (concept, id) {
-            var elem = document.getElementById('#' + concept.conceptId);
-            var parentElem = document.getElementById('drawModel' + concept.conceptId);
-
-            if (!elem || !parentElem) {
-              return;
-            }
-
-            // set the height and width
-            var width = parentElem.offsetWidth - 30;
-            var height = $('#editPanel-' + id).find('.editHeightSelector').height() + 41;
-            if (width < 0) {
-              return;
-            }
-            console.log(elem);
-
-            elem.setAttribute('width', width);
-            elem.setAttribute('height', height);
-          };
+          };                    
 
           // creates element for dialog download of classification data
           scope.dlcDialog = (function (data, fileName) {
@@ -184,8 +171,10 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
-            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
-              if (!data) {
+            terminologyServerService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (response) {
+              if (response.status == 400) {
+                notificationService.sendWarning('Report Stale, please re-classify and save.');
+              } else if ((response.status + "").substr(0, 1) != "2") {
                 notificationService.sendError('Saving classification aborted', 0);
               } else {
 
@@ -238,7 +227,7 @@ angular.module('singleConceptAuthoringApp')
 
             savingClassificationPoll = $interval(function () {
               if ($routeParams.taskKey) {
-                snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
+                terminologyServerService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
 
                   // update the status
                   scope.classificationContainer.status = response.status;
@@ -285,7 +274,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               } else {
-                snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
+                terminologyServerService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
                   if (response.status === 'SAVED') {
 
                     notificationService.sendMessage('Classification saved', 5000);
@@ -363,7 +352,7 @@ angular.module('singleConceptAuthoringApp')
           scope.downloadClassification = function () {
 
             // set limit to 1 million to ensure all results downloaded
-            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
+            terminologyServerService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
               var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
@@ -382,7 +371,7 @@ angular.module('singleConceptAuthoringApp')
             scope.statusText = 'Loading...';
             scope.relationshipChanges = null;
             // get relationship changes
-            snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch, limit).then(function (relationshipChanges) {
+            terminologyServerService.getRelationshipChanges(scope.classificationContainer.id, scope.branch, limit).then(function (relationshipChanges) {
 
               scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
 
@@ -413,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               // get Inferred not previously stated
-              scope.getInferredNotPreviouslyStated(scope.relationshipChanges,sourceIds);
+              getInferredNotPreviouslyStated(scope.relationshipChanges);
 
               scope.setStatusText();
             }, function (error) {
@@ -422,43 +411,13 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {
-            var requestPromise = [];
-            var idList = [];
-
-            angular.forEach(sourceIds, function (sourceId) {
-              idList.push(sourceId);
+          function getInferredNotPreviouslyStated (relationshipChanges) {
+            scope.inferredNotPreviouslyStated = [];
+            angular.forEach(relationshipChanges.items, function (relationshipChange) {              
+              if(relationshipChange.changeNature === 'INFERRED' && relationshipChange.inferredNotStated) {
+                scope.inferredNotPreviouslyStated.push(relationshipChange);
+              }
             });
-
-            snowowlService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
-              var relationships = [];
-              angular.forEach(response, function (concept) {
-                angular.forEach(concept.relationships, function (rel) {
-                  if(rel.characteristicType === "STATED_RELATIONSHIP") {
-                    relationships.push(rel);
-                  }
-                });
-              });
-
-              scope.inferredNotPreviouslyStated = [];
-                angular.forEach(relationshipChanges.items, function (relationshipChange) {
-                  var itemFound = false;
-                  for(var i = 0; i < relationships.length; i++){
-                    var rel = relationships[i];
-
-                    if(relationshipChange.typeId === rel.type.conceptId
-                      && relationshipChange.destinationId === rel.target.conceptId) {
-
-                      itemFound = true;
-                      break;
-                    }
-                  }
-
-                  if(!itemFound && relationshipChange.changeNature === 'INFERRED') {
-                    scope.inferredNotPreviouslyStated.push(relationshipChange);
-                  }
-                });
-              });
           };
 
           scope.role = null;
@@ -508,17 +467,17 @@ angular.module('singleConceptAuthoringApp')
                      $('.classification').removeClass('active');
                      $('.equivalency').addClass('active');
                 }(jQuery));
-              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
+              terminologyServerService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
                 var equivalentConceptsArray = [];
                 equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
                 scope.equivalentConcepts = [];
                 angular.forEach(equivalentConcepts, function (item) {
                   if (item.equivalentConcepts.length === 2) {
-                    scope.equivalentConcepts.push(item.equivalentConcepts);
+                    scope.equivalentConcepts.push(item.equivalentConcepts.items);
                   }
                   else {
-                    var key = item.equivalentConcepts[0];
-                    angular.forEach(item.equivalentConcepts, function (equivalence) {
+                    var key = item.equivalentConcepts.items[0];
+                    angular.forEach(item.equivalentConcepts.items, function (equivalence) {
                       if (equivalence !== key) {
                         var newEq = [];
                         newEq.push(key);
@@ -624,16 +583,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-          };
-
-          /////////////////////////////////////////
-          // Concept Edit/Display Functions
-          /////////////////////////////////////////
-          scope.$on('viewClassificationConcept', function (event, data) {
-            var conceptId = data.conceptId;
-          });
-
+          };          
         }
-
       };
     }]);

@@ -18,12 +18,11 @@
   </script>
 
   <!-- sidebar -->
-  <div
-    ng-include src="'shared/sidebar-edit/feedbackEdit.html'" ng-show="!$root.displayMainSidebar" ng-if="role"></div>
+  <div ng-include src="'shared/sidebar-edit/feedbackEdit.html'" ng-show="!$root.showSidebarEdit" ng-if="role && view !== 'edit-no-sidebar'"></div>
 
  
   <!-- Report, feedback editor, and concept feedback -->
-  <div class="no-padding pull-right white no-gutter" ng-class="getLayoutWidths('modelsAndConcepts')">
+  <div class="no-padding pull-right white no-gutter" ng-class="(view === 'edit-no-sidebar') ? ['col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'] : getLayoutWidths('modelsAndConcepts')">
     <div class="col-md-12 feedback-header-main">
 
       <!-- Title section -->
@@ -142,7 +141,7 @@
   </div>
 
   <!-- Taxonomy, models, and concepts -->
-  <div class="no-padding pull-right"  ng-class="getLayoutWidths('modelsAndConcepts')">
+  <div class="no-padding pull-right"  ng-class="(view === 'edit-no-sidebar') ? ['col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'] : getLayoutWidths('modelsAndConcepts')">
     <div ng-if="viewedConcepts.length > 0 && !simultaneousFeedbackAdded">
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts track by concept.conceptId" ng-class="[{'first' : $first}]">
         <div ng-class="getLayoutWidths('models')">
@@ -150,8 +149,11 @@
         <div project-taxonomy concept="concept" branch="branch" view="'inferred'" ng-if="isProjectTaxonomyVisisble(concept)"></div>
         </div>
         <div ng-class="getLayoutWidths('concepts')">
-          <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
-               autosave="role !== 'AUTHOR'" feedback-view="true" allow-approval="checkApprovalPermission(concept)" id="conceptId-{{concept.conceptId}}" load-validation="{{role === 'REVIEWER'}}" project-taxonomy-visible="true" traceabilities="feedbackContainer.review.traceability"></div>
+          <div id="conceptId-{{concept.conceptId}}" concept-edit concept="concept" branch="branch" 
+              static="role !== 'AUTHOR'" load-validation="{{role === 'REVIEWER'}}" 
+              component-styles="styles[concept.conceptId]" inner-component-style="innerComponentStyle" inactive-descriptions="inactiveDescriptions"
+              feedback-view="true" project-taxonomy-visible="true" 
+              allow-approval="checkApprovalPermission(concept)" traceabilities="feedbackContainer.review.traceability"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter">

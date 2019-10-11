@@ -33,6 +33,7 @@ angular.module('singleConceptAuthoringApp')
 
     // Commit function to update the stored exclusions
     function updateValidationFailureExclusions() {
+      console.log(validationFailureExclusions);
       var deferred = $q.defer();
       scaService.saveSharedUiStateForTask('validation', 'exclusions', 'failures', validationFailureExclusions).then(function (response) {
         deferred.resolve(response);
@@ -81,8 +82,6 @@ angular.module('singleConceptAuthoringApp')
           timestamp: new Date().getTime(),
           branchRoot: branchRoot
         };
-
-        // if no assertions for this uuid, create container
         if (!validationFailureExclusions[conceptId]) {
           validationFailureExclusions[conceptId] = new Array();
         }

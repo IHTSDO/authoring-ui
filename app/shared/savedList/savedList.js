@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.savedList', [])
 
-  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'snowowlService', '$routeParams','savedListService', function savedListCtrl($scope, $rootScope, $location, $modal, scaService, snowowlService, $routeParams,savedListService) {
+  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'terminologyServerService', '$routeParams','savedListService', function savedListCtrl($scope, $rootScope, $location, $modal, scaService, terminologyServerService, $routeParams,savedListService) {
 
     $scope.favorites = {items: []};
 

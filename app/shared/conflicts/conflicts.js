@@ -1,9 +1,7 @@
-'use strict';
-
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window', '$location', 'metadataService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window, $location, metadataService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'terminologyServerService', 'notificationService', '$q', '$window', '$location', 'metadataService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, terminologyServerService, notificationService, $q, $window, $location, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -126,7 +124,7 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('Please resolve convention errors prior to accepting concept merge.');
             } else {
 
-              snowowlService.cleanConcept(data.concept);
+              terminologyServerService.cleanConcept(data.concept);
 
               notificationService.sendMessage('Accepting merged version for concept ' + data.concept.conceptId);
               scope.conceptUpdateFunction($routeParams.projectKey, $routeParams.taskKey, data.concept).then(function (response) {
@@ -202,7 +200,7 @@ angular.module('singleConceptAuthoringApp')
           scope.conceptUpdateFunction = function (project, task, concept) {
             var deferred = $q.defer();
             console.log(concept);
-            snowowlService.storeConceptAgainstMergeReview(scope.id, concept.conceptId, concept).then(function (response) {
+            terminologyServerService.storeConceptAgainstMergeReview(scope.id, concept.conceptId, concept).then(function (response) {
               deferred.resolve(response);
             }, function (error) {
               deferred.reject(error);
@@ -215,54 +213,126 @@ angular.module('singleConceptAuthoringApp')
            * single concept triple
            * @param merge
            */
+            
+          function mapAxiomRelationships(axiom, mappedComponents, type, axiomId){
+              angular.forEach(axiom.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                if(type === 'source'){
+                    mappedComponents[relationship.relationshipId].source = relationship;
+                }
+                else if(type === 'target'){
+                    mappedComponents[relationship.relationshipId].target = relationship;
+                }
+                else if(type === 'merged'){
+                    mappedComponents[relationship.relationshipId].merged = relationship;
+                }
+              });
+              return mappedComponents
+          }
+            
           function mapComponents(merge) {
 
             // initialize the mapped components array
             var mappedComponents = {};
 
             // map descriptions for source, target, and autoMerge
-            angular.forEach(merge.sourceConcept.descriptions, function (description) {
-              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
-                mappedComponents[description.descriptionId] = {};
-              }
-              mappedComponents[description.descriptionId].source = description;
-            });
+            if (merge.sourceConcept) {
+              angular.forEach(merge.sourceConcept.descriptions, function (description) {
+                if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                  mappedComponents[description.descriptionId] = {};
+                }
+                mappedComponents[description.descriptionId].source = description;
+              });
 
-            angular.forEach(merge.targetConcept.descriptions, function (description) {
-              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
-                mappedComponents[description.descriptionId] = {};
-              }
-              mappedComponents[description.descriptionId].target = description;
-            });
+              angular.forEach(merge.sourceConcept.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                mappedComponents[relationship.relationshipId].source = relationship;
+              });
 
-            angular.forEach(merge.autoMergedConcept.descriptions, function (description) {
-              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
-                mappedComponents[description.descriptionId] = {};
-              }
-              mappedComponents[description.descriptionId].merged = description;
-            });
+              angular.forEach(merge.sourceConcept.classAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].source = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
+              });
 
-            // map relationships for source, target, and autoMerge
-            angular.forEach(merge.sourceConcept.relationships, function (relationship) {
-              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
-                mappedComponents[relationship.relationshipId] = {};
-              }
-              mappedComponents[relationship.relationshipId].source = relationship;
-            });
+              angular.forEach(merge.sourceConcept.gciAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].source = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
+              });
+            }
+            
+            if (merge.targetConcept) {
+              angular.forEach(merge.targetConcept.descriptions, function (description) {
+                if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                  mappedComponents[description.descriptionId] = {};
+                }
+                mappedComponents[description.descriptionId].target = description;
+              });
 
-            angular.forEach(merge.targetConcept.relationships, function (relationship) {
-              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
-                mappedComponents[relationship.relationshipId] = {};
-              }
-              mappedComponents[relationship.relationshipId].target = relationship;
-            });
+              angular.forEach(merge.targetConcept.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                mappedComponents[relationship.relationshipId].target = relationship;
+              });
 
-            angular.forEach(merge.autoMergedConcept.relationships, function (relationship) {
-              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
-                mappedComponents[relationship.relationshipId] = {};
-              }
-              mappedComponents[relationship.relationshipId].merged = relationship;
-            });
+              angular.forEach(merge.targetConcept.classAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].target = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
+              });
+
+              angular.forEach(merge.targetConcept.gciAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].target = axiom;
+                 mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
+              });
+            }
+            
+            if (merge.autoMergedConcept) {
+              angular.forEach(merge.autoMergedConcept.descriptions, function (description) {
+                if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                  mappedComponents[description.descriptionId] = {};
+                }
+                mappedComponents[description.descriptionId].merged = description;
+              });
+
+              angular.forEach(merge.autoMergedConcept.relationships, function (relationship) {
+                if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                  mappedComponents[relationship.relationshipId] = {};
+                }
+                mappedComponents[relationship.relationshipId].merged = relationship;
+              });
+
+              angular.forEach(merge.autoMergedConcept.classAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].merged = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
+              });
+
+              angular.forEach(merge.autoMergedConcept.gciAxioms, function (axiom) {
+                if (!mappedComponents.hasOwnProperty(axiom.axiomId)) {
+                  mappedComponents[axiom.axiomId] = {};
+                }
+                //mappedComponents[axiom.axiomId].merged = axiom;
+                mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
+              });
+            }
 
             return mappedComponents;
           }
@@ -283,6 +353,7 @@ angular.module('singleConceptAuthoringApp')
 
             // map the components for convenience
             var mappedComponents = mapComponents(merge);
+            console.log(mappedComponents);
 
             // cycle over each discovered componentId and check
             // equality/presence
@@ -341,7 +412,11 @@ angular.module('singleConceptAuthoringApp')
 
           }
 
-          function hasInactiveMergedElements(concept, styles) {
+          function hasInactiveMergedElements(concept, styles) {            
+            if (!concept) {
+              return false;
+            }
+
             var fields = (concept.descriptions.concat(concept.relationships)).filter(function (element) {
               if (!element.active && (styles.hasOwnProperty(element.descriptionId) || styles.hasOwnProperty(element.relationshipId))) {
                 return true;
@@ -377,7 +452,7 @@ angular.module('singleConceptAuthoringApp')
           scope.startMergeReviewPoll = function () {
             console.log('Starting viewed merge polling');
             viewedMergePoll = $interval(function () {
-              snowowlService.getMergeReview(scope.id).then(function (response) {
+              terminologyServerService.getMergeReview(scope.id).then(function (response) {
                 if (response.status !== 'CURRENT') {
                   viewedMergePoll = $interval.cancel(viewedMergePoll);
                   scope.badStateDetected = true;
@@ -435,6 +510,77 @@ angular.module('singleConceptAuthoringApp')
               scope.hideSidebar = false;
             }
           });
+            
+          function deDuplicateConflict(conflict){
+              var deferred = $q.defer();
+              conflict.autoMergedConcept.classAxioms = [];
+              conflict.autoMergedConcept.gciAxioms = [];
+              
+              if(conflict.sourceConcept) {
+                angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
+                  let newAxiom = {};
+                  angular.copy(axiom, newAxiom);
+                  angular.forEach(conflict.targetConcept.classAxioms, function(secondAxiom){
+                    if(axiom.axiomId === secondAxiom.axiomId){
+                        angular.forEach(secondAxiom.relationships, function(relationship){
+                            let relationshipFound = false;
+                            angular.forEach(newAxiom.relationships, function(newAxiomRelationship){
+                                if(newAxiomRelationship.relationshipId === relationship.relationshipId){
+                                    relationshipFound = true;
+                                }
+                            })
+                            if(!relationshipFound){
+                                newAxiom.relationships.push(relationship);
+                            }
+                        })
+                    }
+                  });
+                  conflict.autoMergedConcept.classAxioms.push(newAxiom);
+              });
+              }              
+              deferred.resolve(conflict);
+
+              return deferred.promise;
+          }
+            
+          function assignAxiomPartIds(conflict){
+            if(conflict.sourceConcept) {
+              angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                })
+              });
+              angular.forEach(conflict.sourceConcept.gciAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+            }
+            if(conflict.targetConcept) {
+              angular.forEach(conflict.targetConcept.classAxioms, function(axiom){
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                })
+              });
+              angular.forEach(conflict.targetConcept.gciAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+            }  
+            if(conflict.autoMergedConcept) {
+              angular.forEach(conflict.autoMergedConcept.classAxioms, function(axiom){
+                angular.forEach(axiom.relationships, function(relationship){
+                    relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                })
+              });
+              angular.forEach(conflict.autoMergedConcept.gciAxioms, function(axiom){
+                  angular.forEach(axiom.relationships, function(relationship){
+                      relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
+                  })
+              });
+            } 
+          }
 
           function initializeMergeReview(review) {
 
@@ -456,6 +602,23 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('ERROR: Merge review generation failed.');
             }
 
+            // Check for deleted concepts
+            angular.forEach(review, function (conceptReview) {
+              if (!conceptReview.sourceConcept) {
+                var concept = conceptReview.targetConcept;
+                notificationService.sendError("Concept " + concept.conceptId + " | " + concept.fsn + " has been updated on this branch " +
+                  "but deleted on the parent branch. Please contact technical support to get help resolving this.");
+                return;
+              }
+              if (!conceptReview.targetConcept) {
+                var concept = conceptReview.sourceConcept;
+                notificationService.sendError("Concept " + concept.conceptId + " | " + concept.fsn + " has been updated on the parent branch " +
+                  "but deleted on this branch. Please contact technical support to get help resolving this");
+                return;
+              }
+            });
+
+
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
 
@@ -466,10 +629,14 @@ angular.module('singleConceptAuthoringApp')
             scope.conflicts = review;
 
             angular.forEach(scope.conflicts, function (conflict) {
-              conflict.fsn = conflict.sourceConcept.fsn;
-              conflict.conceptId = conflict.sourceConcept.conceptId;
-              conflict.styles = highlightChanges(conflict);
-              checkForInactiveMergedElements(conflict);
+              assignAxiomPartIds(conflict);
+              deDuplicateConflict(conflict).then(function (deDupedConflict){
+                conflict = deDupedConflict;
+                conflict.fsn = conflict.sourceConcept ? conflict.sourceConcept.fsn : conflict.targetConcept.fsn;
+                conflict.conceptId = conflict.sourceConcept ? conflict.targetConcept.conceptId : conflict.targetConcept.conceptId;
+                conflict.styles = highlightChanges(conflict);
+                checkForInactiveMergedElements(conflict);
+              });
             });
 
             // get previously accepted merges, if they exist, and apply to
@@ -514,154 +681,61 @@ angular.module('singleConceptAuthoringApp')
             scope.startMergeReviewPoll();
           }
 
-          function rebase() {
+          function rebase(mergeReviewId) {
             console.log('Rebasing ' + (scope.sourceBranch + ' ' + scope.targetBranch));
             scope.rebaseRunning = true;
+            var onSuccess = function(response) {
+              if (response.status === 'COMPLETED') {
 
-            if ($routeParams.taskKey) {
-              scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                if (response.status === 'Rebase Complete') {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
+                // Run branch integrity check
+                var branch = metadataService.getBranch();
+                terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
+                  if (response && response.empty == false) {
+                    notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
+                  } else {
+                    scope.rebaseRunning = false;
+                    scope.rebaseComplete = true;
+                    scope.warning = false;
+                    scope.fiveOFour = false;
 
-                  // switch to edit view on success
-                  exitConflictsView();
-                } else if (response.status === 'CONFLICTS') {
-                  scope.rebaseRunning = true;
-                  scope.conflicts = [];
-                  var merge = JSON.parse(response.message);
-                  snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
-                    if (response && response.items && response.items.length > 0) {
-                      var msg = '';
-                      var conflictCount = 0;
-                      angular.forEach(response.items, function (item) {
-                        if (item.id == merge.id) {
-                          angular.forEach(item.conflicts, function (conflict) {
-                            if (msg.length > 0) {
-                              msg = msg + ' \n';
-                            }
-                            msg += conflict.message;
-                            conflictCount++;
-                          });
-                        }                        
-                      });
-                      if (msg.length > 0) {
-                        notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
-                      }
-                    }
-                  });
-                } else {
-                  notificationService.sendError('Error pulling changes from project: ' + response.message);
-                }
-                /*if (response !== null && response !== 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
-                  exitConflictsView();
-                }
-                else if (response === 1) {
-                  console.log('1');
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = false;
-                  scope.fiveOFour = true;
-                }
-                else {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = true;
-                  $rootScope.canConflict = true;
-                  scope.fiveOFour = false;
-                } */
-
-              }, function (error) {
+                    // switch to edit view on success
+                    exitConflictsView();
+                  }
+                }, function(error) {
+                  notificationService.sendError('Branch integrity check failed. ' + error);
+                });
+              } else if (response.status === 'CONFLICTS') {
                 scope.rebaseRunning = false;
-                scope.rebaseComplete = false;
-                scope.warning = true;
-                scope.fiveOFour = false;
-
-                notificationService.sendError('Error pulling changes from project: ' + error);
-              });
-            } else {
-
-              scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                if (response.status === 'Rebase Complete') {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
-                  exitConflictsView();
-                } else if (response.status === 'CONFLICTS') {
-                  scope.rebaseRunning = true;
-                  scope.conflicts = [];
-                  var merge = JSON.parse(response.message);
-                  snowowlService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
-                    if (response && response.items && response.items.length > 0) {
-                      var msg = '';
-                      var conflictCount = 0;
-                      angular.forEach(response.items, function (item) {
-                        if (item.id == merge.id) {
-                          angular.forEach(item.conflicts, function (conflict) {
-                            if (msg.length > 0) {
-                              msg = msg + ' \n';
-                            }
-                            msg += conflict.message;
-                            conflictCount++;
-                          });
-                        }                        
-                      });
-                      if (msg.length > 0) {
-                        notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
-                      }
-                    }
-                  });
+                scope.conflicts = [];
+                var merge = JSON.parse(response.message);
+                terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
+                  notificationService.sendError(conflictMessage);
+                });
+              } else {
+                // NOTE: Do not switch to edit view on warning
+                // TODO Need to revisit this
+                if ($routeParams.taskKey) {
+                  notificationService.sendError('Error pulling changes from project: ' + response.message);
                 } else {
                   notificationService.sendError('Error pulling changes from mainline content: ' + response.message);
                 }
-
-                /*if (response !== null && response !== 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
-                  exitConflictsView();
-
-                }
-                else if (response === 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = false;
-                  scope.fiveOFour = true;
-
-                  // NOTE: Do not switch to edit view on error
-
-                }
-                else {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = true;
-                  scope.fiveOFour = false;
-
-                  // NOTE: Do not switch to edit view on warning
-                  // TODO Need to revisit this
-                } */
-              }, function (error) {
-                scope.rebaseRunning = false;
-                scope.rebaseComplete = false;
-                scope.warning = true;
-                scope.fiveOFour = false;
-                notificationService.sendError('Error pulling changes from mainline content: ' + error);
-              });
+              }
             }
+
+            var onError = function(error) {
+              scope.rebaseRunning = false;
+              scope.rebaseComplete = false;
+              scope.warning = true;
+              scope.fiveOFour = false;
+
+              if ($routeParams.taskKey) {
+                notificationService.sendError('Error pulling changes from project: ' + error);
+              } else {
+                notificationService.sendError('Error pulling changes from mainline content: ' + error);
+              }
+            }
+
+            terminologyServerService.synchronousMerge(scope.sourceBranch, scope.targetBranch, mergeReviewId).then(onSuccess, onError);
           }
 
           /* ON LOAD PROCESS
@@ -678,8 +752,8 @@ angular.module('singleConceptAuthoringApp')
             // if ui-state has merge review id from previous visit
             if (mergeReviewId) {
 
-              snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
-
+              terminologyServerService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
+                  console.log(mergeReview);
                 // Previous review is current and has concepts,
                 // initialize from this review
                 if (mergeReview && mergeReview.length > 0) {
@@ -689,27 +763,48 @@ angular.module('singleConceptAuthoringApp')
                 // Previous review is not current, generate new review
                 // and initialize from new review
                 else {
-                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+                  terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      rebase(); // TODO Consider how we want to handle this
-                      // scenario -- this rebase effectively is a
-                      // null op but calls backend
+                      rebase(newReview.id);
                     }
                   }, function (error) {
-                    notificationService.sendError('Error generating merge review');
+                    if (error) {
+                      notificationService.sendError('Conflicts: ' + error);
+                    } else {
+                      notificationService.sendError('Error generating merge review.');
+                    }
                   });
                 }
 
+              }, function(error){
+                  terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+
+                    // DIVERGED, but no merges to resolve
+                    if (!newReview || newReview.length === 0) {
+                      rebase();
+                    }
+
+                    // DIVERGED, with merges to resolve
+                    else {
+                      initializeMergeReview(newReview);
+                    }
+                  }, function (error) {
+                    if (error) {
+                      notificationService.sendError('Conflicts: ' + error);
+                    } else {
+                      notificationService.sendError('Error generating merge review.');
+                    }
+                  });
               });
             }
 
             // if no review or review not current, generate new merge
             // review
             else {
-              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+              terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                 // DIVERGED, but no merges to resolve
                 if (!newReview || newReview.length === 0) {
@@ -721,7 +816,11 @@ angular.module('singleConceptAuthoringApp')
                   initializeMergeReview(newReview);
                 }
               }, function (error) {
-                notificationService.sendError('Error generating merge review');
+				if (error) {
+				  notificationService.sendError('Conflicts: ' + error);
+				} else {
+				  notificationService.sendError('Error generating merge review.');
+				}
               });
             }
           }
@@ -736,7 +835,7 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Applying merged changes....');
 
-            snowowlService.mergeAndApply(scope.id).then(function (response) {
+            terminologyServerService.mergeAndApply(scope.id).then(function (response) {
               notificationService.sendMessage('Merges successfully applied', 5000);
 
               // ensure bad state is not triggered
@@ -828,7 +927,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
                   scope.sourceBranch = metadataService.getBranchRoot();
                 }
-                snowowlService.getBranch(scope.targetBranch).then(function(response) {
+                terminologyServerService.getBranch(scope.targetBranch).then(function(response) {
                   if (response && response.state && response.state === 'BEHIND') {
                     rebase();
                   } else {

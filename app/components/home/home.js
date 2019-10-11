@@ -10,11 +10,19 @@ angular.module('singleConceptAuthoringApp.home', [
         $routeProvider
             .when('/home', {
                 controller: 'HomeCtrl',
-                templateUrl: 'components/home/home.html'
+                templateUrl: 'components/home/home.html',
+                resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+                    var defer = $q.defer();
+                    terminologyServerService.getEndpoint().then(function(){
+                      defer.resolve();
+                    });                        
+                    return defer.promise;
+                  }
+                ]
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -230,7 +238,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         function findAndSetLastModifiedDate (branches, tasks) {
             var deferred = $q.defer();
-            snowowlService.getLastActivityOnBranches(branches).then(function(activities) {
+            terminologyServerService.getLastActivityOnBranches(branches).then(function(activities) {
                 if(activities && activities.length > 0) {
                     var map = {};
                     for (let i =0 ; i < activities.length; i++) {
@@ -283,7 +291,7 @@ angular.module('singleConceptAuthoringApp.home', [
             var projectBranch = task.branchPath.substring(0, task.branchPath.lastIndexOf('/'));
 
             // check for project lock before continuing
-            snowowlService.getBranch(projectBranch).then(function (response) {
+            terminologyServerService.getBranch(projectBranch).then(function (response) {
                 if (!response.metadata || response.metadata && !response.metadata.lock) {
                     scaService.getUiStateForTask(task.projectKey, task.key, 'edit-panel')
                         .then(function (uiState) {
@@ -316,7 +324,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         function redirectToConflicts(branchRoot, projectKey, taskKey) {
           // check for branch lock before continuing
-          snowowlService.getBranch(branchRoot + '/' + projectKey).then(function (response) {
+          terminologyServerService.getBranch(branchRoot + '/' + projectKey).then(function (response) {
             if (!response.metadata || response.metadata && !response.metadata.lock) {
               $location.url('tasks/task/' + projectKey + '/' + taskKey + '/conflicts');
             }

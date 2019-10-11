@@ -3,9 +3,6 @@
 angular.module('singleConceptAuthoringApp')
   .service('metadataService', ['$http', '$rootScope', '$interval', function ($http, $rootScope, $interval) {
 
-    // TODO Wire this to endpoint service, endpoint config
-    var apiEndpoint = '../snowowl/ihtsdo-sca/';
-
     // project cache (still used?)
     var projects = [];
 
@@ -13,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
 
     var mrcmAttributeDomainMembers = [];
 
-    var selfGroupedAttributes = [];
+    var ungroupedAttributes = [];
       
     var myProjects = [];
 
@@ -30,6 +27,8 @@ angular.module('singleConceptAuthoringApp')
     var isaRelationshipId = '116680003';
 
     var snomedCtRootId = '138875005';
+      
+    $rootScope.extensionMetadataSet = false;
 
     function getSnomedCtRootId() {
       return snomedCtRootId;
@@ -143,28 +142,6 @@ angular.module('singleConceptAuthoringApp')
     ];
 
     var drugsModelOrdering = [
-      {id: '116680003', display: 1},
-      {id: '411116001', display: 2},
-      {id: '763032000', display: 3},
-      {id: '127489000', display: 4},
-      {id: '762949000', display: 5},
-      {id: '732943007', display: 6},
-      {id: '732944001', display: 7},
-      {id: '732945000', display: 8},
-      {id: '732946004', display: 9},
-      {id: '732947008', display: 10},
-      {id: '733724008', display: 11},
-      {id: '733725009', display: 12},
-      {id: '733723002', display: 13},
-      {id: '733722007', display: 14},
-      {id: '736476002', display: 15},
-      {id: '736474004', display: 16},
-      {id: '736475003', display: 17},
-      {id: '736473005', display: 18},
-      {id: '736472000', display: 19},
-      {id: '766952006', display: 20},
-      {id: '766954007', display: 21},
-      {id: '766953001', display: 22}
     ];
 
     //
@@ -223,6 +200,7 @@ angular.module('singleConceptAuthoringApp')
       // only set extension metadata if defaultModuleId is present
       if (!metadata || !metadata.hasOwnProperty('defaultModuleId')) {
         extensionMetadata = null;
+        $rootScope.extensionMetadataSet = false;
       } else {
 
         // temporary variables used in parsing metadata
@@ -358,23 +336,23 @@ angular.module('singleConceptAuthoringApp')
             console.log(metadata.languageEdit);
 
         };
-          console.log(extensionMetadata);
-        }
-
-        if(getCurrentModuleId() !== '900000000000207008'){
-          var found = false;
-          for(var i = 0; i < descriptionInactivationReasons.length; i++) {
-              if (descriptionInactivationReasons[i].id == 'DUPLICATE') {
-                  found = true;
-              }
-              if(i === descriptionInactivationReasons.length -1 && !found){
-                  descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component', display: []});
-              }
-          }
-        }
+        console.log(extensionMetadata);
+        $rootScope.extensionMetadataSet = true;
         $rootScope.$broadcast('setExtensionMetadata');
+      }
 
-      };
+      if(getCurrentModuleId() !== '900000000000207008'){
+        var found = false;
+        for(var i = 0; i < descriptionInactivationReasons.length; i++) {
+            if (descriptionInactivationReasons[i].id == 'DUPLICATE') {
+                found = true;
+            }
+            if(i === descriptionInactivationReasons.length -1 && !found){
+                descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component', display: []});
+            }
+        }
+      }
+    };
 
     // Set the branch metadata from project or task
     function setBranchMetadata(branchMetadataObj) {
@@ -557,7 +535,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getExtensionAcceptLanguageValueByDialectId (dialectId) {
-      if (extensionMetadata) {
+      if (extensionMetadata && extensionMetadata.dialects[dialectId]) {
         var languageNames = extensionMetadata.dialects[dialectId].split('-');     
         return (languageNames.length > 1 ? languageNames[1] : languageNames[0]) + '-' + (extensionMetadata.shortname ? extensionMetadata.shortname.toUpperCase() : 'XX') + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';        
       }
@@ -670,13 +648,13 @@ angular.module('singleConceptAuthoringApp')
       mrcmAttributeDomainMembers = list;
     }
 
-    function setSelfGroupedAttributes (list) {
-      selfGroupedAttributes = list;
+    function setUngroupedAttributes (list) {
+      ungroupedAttributes = list;
     }
 
-    function isSelfGroupAttribute(id) {
-      for (var i = 0; i < selfGroupedAttributes.length; i++) {
-          var attribute = selfGroupedAttributes[i];
+    function isUngroupedAttribute(id) {
+      for (var i = 0; i < ungroupedAttributes.length; i++) {
+          var attribute = ungroupedAttributes[i];
           if(attribute.referencedComponentId === id) {
             return true;
           }
@@ -685,6 +663,8 @@ angular.module('singleConceptAuthoringApp')
     }
       
     function checkViewExclusionPermission(projectKey) {
+      console.log(projectKey);
+      console.log(myProjects);
       if (extensionMetadata !== null) {
         if (myProjects.length > 0) {
           if (myProjects.indexOf(projectKey) === -1) {
@@ -797,8 +777,8 @@ angular.module('singleConceptAuthoringApp')
       getNamespaces: getNamespaces,
       getNamespaceById: getNamespaceById,
       setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
-      setSelfGroupedAttributes: setSelfGroupedAttributes,
-      isSelfGroupAttribute: isSelfGroupAttribute
+      setUngroupedAttributes: setUngroupedAttributes,
+      isUngroupedAttribute: isUngroupedAttribute
     };
 
   }])
