@@ -982,6 +982,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.template = template;
                 templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
                   resetConceptHistory();
+                  scope.computeRelationshipGroups();
                 })
 
                 }
@@ -3924,8 +3925,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (scope.autosave === true) {
             scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept);
           }
-
-
         }
 
         /**
@@ -3946,8 +3945,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.concept.definitionStatus = 'PRIMITIVE';
           }
 
+          if (scope.conceptHistoryPtr < scope.conceptHistory.length - 1) {
+            scope.conceptHistory = scope.conceptHistory.slice(0, scope.conceptHistoryPtr + 1);
+          }
+          
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
-          scope.conceptHistoryPtr++;
+          scope.conceptHistoryPtr = scope.conceptHistory.length - 1;
 
           scope.isModified = true;
           if (scope.isInactivation) {
@@ -3970,9 +3973,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function resetConceptHistory() {
           scope.conceptHistory = [JSON.parse(JSON.stringify(scope.concept))];
-          scope.conceptHistoryPtr = 0;
-
-          scope.computeRelationshipGroups();
+          scope.conceptHistoryPtr = 0;          
         }
 
         /**
@@ -3980,26 +3981,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.undo = function () {
           if (scope.conceptHistoryPtr > 0) {
-            var currentConceptHistoryPtr = scope.conceptHistoryPtr;
-
-            // Check if concept has been modified but not saved, then wait for saving it
-            if (!angular.equals(scope.concept,scope.conceptHistory[scope.conceptHistoryPtr])) {
-              setTimeout(function waitForSavingModifiedConcept() {
-                if ((currentConceptHistoryPtr + 1) === scope.conceptHistoryPtr) {
-                  scope.conceptHistoryPtr--;
-                  scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
-                  saveModifiedConcept();
-                  scope.computeRelationshipGroups();
-                } else {
-                  setTimeout(waitForSavingModifiedConcept, 300);
-                }
-              }, 300);
-            } else {
-              scope.conceptHistoryPtr--;
-              scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
-              saveModifiedConcept();
-              scope.computeRelationshipGroups();
-            }
+            restoreConcept(-1);
           }
         };
 
@@ -4008,14 +3990,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.redo = function () {
           if (scope.conceptHistoryPtr < scope.conceptHistory.length - 1) {
-            scope.conceptHistoryPtr++;
-            scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
-
-            saveModifiedConcept();
-
-            scope.computeRelationshipGroups();
+            restoreConcept(+1);
           }
         };
+
+        function restoreConcept(indexDiff) {
+          scope.conceptHistoryPtr += indexDiff;
+          scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
+          saveModifiedConcept();
+          scope.computeRelationshipGroups();
+        }
 
         scope.downloadOWLAxiom = function () {
           $modal.open({
