@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil) {
       return {
         restrict: 'A',
         transclude: false,
@@ -795,113 +795,6 @@ angular.module('singleConceptAuthoringApp')
             }
             return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
           };
-            
-          function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
-              for (var key in associationTarget1) {
-                if (associationTarget2.hasOwnProperty(key)) {
-                  var items1 =  associationTarget1[key];
-                  var items2 =  associationTarget2[key];
-                  if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
-                   return true;
-                  }
-                } else {
-                  return true;
-                }  
-              }
-              return false;
-          };
-            
-          //called on concept load after comparison to add components, concepts and axioms to styles list
-          function highlightComponent(conceptId, componentId, mainDescription, taskDescription, removed, axiom) {
-            if (!scope.innerComponentStyle) {
-              scope.innerComponentStyle = {};
-            }
-            if(mainDescription !== null && taskDescription !== null && mainDescription !== undefined && taskDescription !== undefined){
-                
-                //detects changes to description type and displays change in tooltip
-                if (taskDescription.type !== mainDescription.type) {
-                  scope.innerComponentStyle[componentId + '-type'] = {
-                    message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type,
-                    style: 'triangle-redhl'
-                  };
-                }
-                
-                //detects changes to case significance and displays change in tooltip
-                if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
-                  scope.innerComponentStyle[componentId + '-caseSignificance'] = {
-                    message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
-                    style: 'triangle-redhl'
-                  };
-                }
-                
-                //detects changes to inactivation indicator and historical associations and displays change in description more
-                if ((mainDescription.inactivationIndicator !== taskDescription.inactivationIndicator
-                            || checkAssociationTargetsChanged(mainDescription.associationTargets, taskDescription.associationTargets))
-                            && !mainDescription.active 
-                            && !taskDescription.active) {
-                  scope.inactiveDescriptions[mainDescription.descriptionId] = mainDescription;
-                }
-                
-                //Detects changes to acceptability and displays change in tooltip
-                var componentDialects = Object.keys(taskDescription.acceptabilityMap);
-                componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
-                
-                angular.forEach(componentDialects, function (dialectId) {
-                    if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
-                      scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
-                        message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
-                        style: 'triangle-redhl'
-                      };
-                    }
-                    if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
-                      scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
-                        message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable',
-                        style: 'triangle-redhl'
-                      };
-                    }
-                    if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
-                      && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
-                      scope.innerComponentStyle[componentId + '-acceptability-' + dialectId] = {
-                        message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
-                        style: 'triangle-redhl'
-                      };
-                    }
-                });
-            }
-            if (!scope.styles) {
-              scope.styles = {};
-            }
-            if (!scope.styles[conceptId]) {
-              scope.styles[conceptId] = {};
-            }
-
-            // if a new concept, don't highlight
-            if (scope.styles[conceptId].isNew) {
-              return;
-            }
-
-            // if component id specified, add style field
-            if (componentId && !removed && !axiom) {
-              scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
-            }
-              
-            else if (componentId && removed && !axiom) {
-              scope.styles[conceptId][componentId] = {message: null, style: 'redhl'};
-            }
-              
-            else if (componentId && axiom) {
-              scope.styles[conceptId][componentId] = {message: null, style: 'tealhl', new: true};
-            }
-
-            // otherwise, add to concept style directly
-            else {
-              scope.styles[conceptId].conceptStyle = {message: null, style: 'tealhl'};
-            }
-          }
-
-          function highlightFromTraceability(traceability) {
-          }
-
 
           function addToEditHelper(conceptId,sorting) {
 
@@ -921,10 +814,11 @@ angular.module('singleConceptAuthoringApp')
 
             // get the full concept for this branch (current version)
             terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
-              scope.runComparison(conceptId, scope.branch, response).then(function (response) {
+              componentHighlightUtil.runComparison(conceptId, scope.branch, response).then(function(result){
                 if(sorting) {
                   scope.viewedConcepts = $filter('orderBy')(scope.viewedConcepts, sorting === 'asc' ? '+fsn' : '-fsn');
                 }
+
                 // Re-bind shortcut
                 $timeout(function () {
                   hotkeys.bindTo(scope)
@@ -936,37 +830,16 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                 }, 1000);
-                  deferred.resolve(response);
-                })
+
+                scope.styles[conceptId] = result.styles;                
+                scope.inactiveDescriptions[conceptId] = result.inactiveDescriptions;
+                scope.viewedConcepts.push(result.concept);
+
+                deferred.resolve(result.concept);
+              });              
             });
             return deferred.promise;
           }
-            
-          //function to compare the current version of a concept with the version that existed at the time of branch creation
-          //and highlight any changes
-          scope.runComparison = function(conceptId, branch, currentConcept){
-            var deferred = $q.defer();
-            terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '^').then(function (response) {
-              //check concept conditions first
-              if(currentConcept.active !== response.active
-                 || currentConcept.definitionStatus !== response.definitionStatus){
-                  highlightComponent(currentConcept.conceptId);
-              }
-              scope.compareDescriptions(currentConcept, response).then(function () {
-                scope.compareAxioms(currentConcept, response).then(function () {
-                  scope.viewedConcepts.push(currentConcept);
-                  deferred.resolve(currentConcept);
-                })
-              });
-            }, 
-            //if the concept is not found in the before version then it has been created within the lifecycle of the task
-            function (error) {
-              scope.styles[currentConcept.conceptId] = {isNew: true};
-              scope.viewedConcepts.push(currentConcept);
-              deferred.resolve(currentConcept);
-            });
-            return deferred.promise;
-          };
 
           scope.getSNF = function (id) {
             var deferred = $q.defer();
@@ -975,286 +848,7 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           };
-            
-          scope.compareDescriptions = function(currentConcept, originalConcept){
-            var deferred = $q.defer();
-            let originalIds = [];
-            let newIds = [];
-            //build list of before and after ids for simpler iteration
-            angular.forEach(originalConcept.descriptions, function(description){
-              originalIds.push(description.descriptionId);
-            });
-            angular.forEach(currentConcept.descriptions, function(description){
-              newIds.push(description.descriptionId);
-              //description is not new but has changed
-              angular.forEach(originalConcept.descriptions, function(originalDescription){
-                  if(description.descriptionId === originalDescription.descriptionId){
-                    if(description.active !== originalDescription.active
-                    || description.caseSignificance !== originalDescription.caseSignificance
-                    || description.lang !== originalDescription.lang
-                    || description.term !== originalDescription.term
-                    || description.type !== originalDescription.type
-                    || description.inactivationIndicator !== originalDescription.inactivationIndicator
-                    || !isEquivalent(description.acceptabilityMap, originalDescription.acceptabilityMap)){
-                      highlightComponent(currentConcept.conceptId, description.descriptionId, originalDescription, description);
-                    }
-                  } 
-              });
-            });
-            //description is new
-            angular.forEach(newIds, function(id){
-              if(!originalIds.includes(id)){
-                highlightComponent(currentConcept.conceptId, id);
-              }
-            });
-            deferred.resolve();
-            return deferred.promise;
-          };
-            
-          scope.compareAxioms = function(currentConcept, originalConcept){
-            var deferred = $q.defer();
-            let originalIds = [];
-            let newIds = [];
-            let deletedIds = [];
-            //build list of before and after ids for simpler iteration
-            angular.forEach(originalConcept.classAxioms, function(axiom){
-              originalIds.push(axiom.axiomId);
-            });
-            angular.forEach(originalConcept.gciAxioms, function(axiom){
-              originalIds.push(axiom.axiomId);
-            });
-            angular.forEach(currentConcept.classAxioms, function(axiom){
-              newIds.push(axiom.axiomId);
-                angular.forEach(originalConcept.classAxioms, function(originalAxiom){
-                  if(axiom.axiomId === originalAxiom.axiomId){
-                    originalAxiom.found = true;
-                    scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
-                        scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
-                          axiom = modifiedAxiom;
-                          if(axiom.active !== originalAxiom.active
-                          || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                                highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
-                          }
-                          if(originalAxiom.active && !axiom.active){
-                                highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, true);
-                          }
-                        });
-                    });
-                  }
-                });
-            });
-              
-            angular.forEach(originalConcept.classAxioms, function(originalAxiom){
-                if(originalAxiom.found !== true){
-                    originalAxiom.active = false;
-                    originalAxiom.deleted = true;
-                    currentConcept.classAxioms.push(originalAxiom);
-                    highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
-                }
-                delete originalAxiom.found
-            });
-              
-            angular.forEach(currentConcept.gciAxioms, function(axiom){
-              newIds.push(axiom.axiomId);
-              angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
-                if(axiom.axiomId === originalAxiom.axiomId){
-                  originalAxiom.found = true;
-                  scope.compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
-                      scope.compareAxiomRelationships(axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
-                        axiom = modifiedAxiom;
-                        if(axiom.active !== originalAxiom.active
-                          || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                            highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, null, true);
-                        }
-                        if(originalAxiom.active && !axiom.active){
-                            highlightComponent(currentConcept.conceptId, axiom.axiomId, null, null, true);
-                        }
-                      });
-                  });
-                } 
-              });
-            });
-              
-            angular.forEach(originalConcept.gciAxioms, function(originalAxiom){
-                if(originalAxiom.found !== true){
-                    originalAxiom.active = false;
-                    originalAxiom.deleted = true;
-                    currentConcept.gciAxioms.push(originalAxiom);
-                    highlightComponent(currentConcept.conceptId, originalAxiom.axiomId, null, null, true);
-                }
-                delete originalAxiom.found
-            });
-              
-            //axiom is new
-            angular.forEach(newIds, function(id){
-              if(!originalIds.includes(id)){
-                highlightComponent(currentConcept.conceptId, id);
-              }
-            });
-            deferred.resolve();
-            return deferred.promise;
-          };
-            
-          scope.compareAxiomRelationships = function(axiom, originalAxiom, currentConcept, params){
-            var deferred = $q.defer();
-            angular.forEach(axiom.relationships, function(newRelationship){
-              angular.forEach(originalAxiom.relationships, function(originalRelationship){
-                if(!params.originalMatchedGroups.includes(originalRelationship.groupId) && JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
-                  newRelationship.found = true;
-                }
-              });
-              if(!newRelationship.found && !params.matchedGroups.includes(newRelationship.groupId)){
-                if(params.partialMatches){
-                    angular.forEach(originalAxiom.relationships, function(originalRelationship){
-                        if(params.partialMatches.includes(newRelationship.groupId)){
-                          let newRelClone = angular.copy(newRelationship);
-                          delete newRelClone.groupId
-                          
-                          let oldRelClone = angular.copy(originalRelationship);
-                          delete oldRelClone.groupId
-                          
-                          if(JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
-                              newRelationship.found = true;
-                          }
-                        }
-                      });
-                }
-                if(!newRelationship.found){
-                    newRelationship.relationshipId = terminologyServerService.createGuid();
-                    highlightComponent(currentConcept.conceptId, newRelationship.relationshipId);
-                }
-              }
-            });
-              
-            angular.forEach(axiom.relationships, function(newRelationship){
-              if(newRelationship.found){
-               delete newRelationship.found;
-              }
-            });
-              
-            angular.forEach(originalAxiom.relationships, function(originalRelationship){
-              angular.forEach(axiom.relationships, function(newRelationship){
-                if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
-                  originalRelationship.found = true;
-                }
-              });
-              if(!originalRelationship.found && !params.matchedGroups.includes(originalRelationship.groupId) && !params.onlyNew){
-                originalRelationship.relationshipId = terminologyServerService.createGuid();
-                originalRelationship.active = false;
-                originalRelationship.deleted = true;
-                axiom.relationships.push(originalRelationship);
-                highlightComponent(currentConcept.conceptId, originalRelationship.relationshipId, null, null, true);
-              }
-            });
-            deferred.resolve(axiom);
-            return deferred.promise;
-          }
-          
-          scope.compareAxiomRelationshipGroups = function(axiom, originalAxiom, currentConcept){
-            var deferred = $q.defer();
-            let newGroups = {};
-            let oldGroups = {};
-            let matchedGroups = [];
-            let params= {};
-            let originalMatchedGroups = [];
-            let partialMatches = [];
-              
-            angular.forEach(axiom.relationships, function(newRelationship){
-                if(newRelationship.groupId !== 0){
-                    if(!newGroups[newRelationship.groupId]){
-                        newGroups[newRelationship.groupId] = [];
-                    }
-                    newGroups[newRelationship.groupId].push(newRelationship);
-                }
-                
-            });
-              
-            angular.forEach(originalAxiom.relationships, function(originalRelationship){
-                if(originalRelationship.groupId !== 0){
-                    if(!oldGroups[originalRelationship.groupId]){
-                        oldGroups[originalRelationship.groupId] = [];
-                    }
-                    oldGroups[originalRelationship.groupId].push(originalRelationship);
-                }
-            });
-              
-            angular.forEach(newGroups, function(newGroup){
-                let newGroupString = '';
-                let groupId = '';
-                angular.forEach(newGroup, function(relationship){
-                    groupId = relationship.groupId;
-                    let newClone = angular.copy(relationship);
-                    delete newClone.groupId
-                    newGroupString = newGroupString + JSON.stringify(newClone)
-                })
-                angular.forEach(oldGroups, function(oldGroup){
-                    let oldGroupId = '';
-                    let oldGroupString = '';
-                    angular.forEach(oldGroup, function(relationship){
-                        oldGroupId = relationship.groupId;
-                        let oldClone = angular.copy(relationship);
-                        delete oldClone.groupId
-                        oldGroupString = oldGroupString + JSON.stringify(oldClone)
-                    })
-                    if(newGroupString === oldGroupString && groupId !== 0){
-                        matchedGroups.push(groupId);
-                        originalMatchedGroups.push(oldGroupId);
-                    }
-                });
-            });
-            
-            //check for partial matches
-            angular.forEach(newGroups, function(newGroup){
-                let groupId = '';
-                angular.forEach(newGroup, function(relationship){
-                    if(!matchedGroups.includes(relationship.groupId) && relationship.groupId !== 0){
-                        groupId = relationship.groupId;
-                        let newClone = angular.copy(relationship);
-                        delete newClone.groupId
-                        angular.forEach(oldGroups, function(oldGroup){
-                                angular.forEach(oldGroup, function(relationship){
-                                    if(!originalMatchedGroups.includes(relationship.groupId) && relationship.groupId !== 0){
-                                        let oldClone = angular.copy(relationship);
-                                        delete oldClone.groupId
-                                        if(JSON.stringify(newClone) === JSON.stringify(oldClone)){
-                                            partialMatches.push(groupId);
-                                        }
-                                    }
-                                })
-                        });
-                    }
-                })
-            });
-              
-            let size = 0;
-            for (var key in oldGroups) {
-                if (oldGroups.hasOwnProperty(key)) size++;
-            }
-            if(size === matchedGroups.length && size !== 0){
-                params.onlyNew = true;
-            }
-            params.partialMatches = partialMatches;
-            params.matchedGroups = matchedGroups;
-            params.originalMatchedGroups = originalMatchedGroups;
-              
-            deferred.resolve(params);
-            return deferred.promise;
-          }
-            
-          function isEquivalent(a, b) {
-            // Create arrays of property names
-            var aProps = Object.getOwnPropertyNames(a);
-            var bProps = Object.getOwnPropertyNames(b);
-            for (var i = 0; i < aProps.length; i++) {
-              var propName = aProps[i];
-                // Check all first level property values
-              if (a[propName] !== b[propName]) {
-                return false;
-              }
-            }
-            return true;
-          }
-
+         
           // function to add a concept to viewed list from tables
           scope.addToEdit = function (item) {
             // if viewed, ignore
@@ -1630,9 +1224,6 @@ angular.module('singleConceptAuthoringApp')
               var reviewedListIds = null;
               scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                 reviewedListIds = response;
-
-                // apply highlighting from traceability
-                highlightFromTraceability(scope.feedbackContainer.review.traceability);
 
                 // ensure response is in form of array for indexOf checking
                 // later

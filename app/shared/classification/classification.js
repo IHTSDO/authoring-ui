@@ -108,8 +108,8 @@ angular.module('singleConceptAuthoringApp')
             terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
               
               componentHighlightUtil.runComparison(conceptId, scope.branch, response).then(function(result){
-                if (result && result.styles && result.styles.hasOwnProperty(conceptId)) {
-                  scope.styles[conceptId] = result.styles[conceptId];
+                if (result && result.styles) {
+                  scope.styles[conceptId] = result.styles;
                 }
               });
 
