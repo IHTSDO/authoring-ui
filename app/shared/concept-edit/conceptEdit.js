@@ -211,9 +211,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // styling for concept elements, as array [id0 : {message, style,
         // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
-        componentStyles: '=',
-
-        innerComponentStyle: '=',
+        componentStyles: '=',        
 
         inactiveDescriptions: '=',
 
@@ -1026,45 +1024,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.isInactiveDescriptionModified = function (descriptionId) {
           return scope.inactiveDescriptions.hasOwnProperty(descriptionId);
-        };
-
-        function highlightComponent(componentChange,mainDescription,taskDescription) {
-          if (taskDescription.type !== mainDescription.type) {
-            scope.innerComponentStyle[componentChange.componentId + '-type'] = {
-              message: 'Change from ' + mainDescription.type + ' to ' + taskDescription.type,
-              style: 'triangle-redhl'
-            };
-          }
-          if (taskDescription.caseSignificance !== mainDescription.caseSignificance) {
-            scope.innerComponentStyle[componentChange.componentId + '-caseSignificance'] = {
-              message: 'Change from ' + scope.getCaseSignificanceDisplayText(mainDescription) + ' to ' + scope.getCaseSignificanceDisplayText(taskDescription),
-              style: 'triangle-redhl'
-            };
-          }
-          var componentDialects = Object.keys(taskDescription.acceptabilityMap);
-          componentDialects = componentDialects.concat(Object.keys(mainDescription.acceptabilityMap));
-          angular.forEach(componentDialects, function (dialectId) {
-            if (taskDescription.acceptabilityMap[dialectId] && !mainDescription.acceptabilityMap[dialectId]) {
-              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
-                message: 'Change from Not Acceptable to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
-                style: 'triangle-redhl'
-              };
-            }
-            if (!taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]) {
-              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
-                message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to Not Acceptable',
-                style: 'triangle-redhl'
-              };
-            }
-            if (taskDescription.acceptabilityMap[dialectId] && mainDescription.acceptabilityMap[dialectId]
-              && taskDescription.acceptabilityMap[dialectId] !== mainDescription.acceptabilityMap[dialectId]) {
-              scope.innerComponentStyle[componentChange.componentId + '-acceptability-' + dialectId] = {
-                message: 'Change from ' + scope.getAcceptabilityTooltipText(mainDescription,dialectId) + ' to ' + scope.getAcceptabilityTooltipText(taskDescription,dialectId),
-                style: 'triangle-redhl'
-              };
-            }
-          });
-        }
+        };        
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -4724,9 +4684,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               else {
                   return scope.componentStyles[key].style;
               }
-            } else if (scope.innerComponentStyle && scope.innerComponentStyle.hasOwnProperty(key)) {
-              return scope.innerComponentStyle[key].style;
-            } else {
+            } 
+            else {
               return defaultStyle;
             }
           }

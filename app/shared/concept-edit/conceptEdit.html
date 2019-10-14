@@ -335,9 +335,9 @@
 
             <span class="{{getCaseSignificanceDisplayText(description)}}"></span>
           </button>
-          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-caseSignificance'].style !== ''"
+          <div ng-if="isFeedback && componentStyles[description.descriptionId + '-caseSignificance'].style !== ''"
             class="tooltips-bottom tooltips-light medium-size-tooltip custom-margin"
-            ng-class="innerComponentStyle[description.descriptionId + '-caseSignificance'].style"><span>{{innerComponentStyle[description.descriptionId + '-caseSignificance'].message}}</span></div>
+            ng-class="componentStyles[description.descriptionId + '-caseSignificance'].style"><span>{{componentStyles[description.descriptionId + '-caseSignificance'].message}}</span></div>
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
@@ -396,9 +396,9 @@
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
-          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-type'].style !== ''"
+          <div ng-if="isFeedback && componentStyles[description.descriptionId + '-type'].style !== ''"
                 class="tooltips-bottom offset-tooltip-right xlarge-size-tooltip"
-                ng-class="innerComponentStyle[description.descriptionId + '-type'].style"><span>{{innerComponentStyle[description.descriptionId + '-type'].message}}</span></div>
+                ng-class="componentStyles[description.descriptionId + '-type'].style"><span>{{componentStyles[description.descriptionId + '-type'].message}}</span></div>
           <!-- Dialect / Acceptability -- never alterable for saved FSN -->
           <div>
 
@@ -413,9 +413,9 @@
                     </div>
                     <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>
                   </button>
-                  <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style !== ''"
+                  <div ng-if="isFeedback && componentStyles[description.descriptionId + '-acceptability-' + dialectId].style !== ''"
                     class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip"
-                    ng-class="innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
+                    ng-class="componentStyles[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{componentStyles[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
               </div>
             </div>
           </div>
