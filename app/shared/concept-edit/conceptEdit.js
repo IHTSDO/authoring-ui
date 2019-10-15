@@ -3981,7 +3981,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.undo = function () {
           if (scope.conceptHistoryPtr > 0) {
-            restoreConcept(-1);
+            setTimeout(function () {
+              restoreConcept(-1);
+            }, 1000);                        
           }
         };
 
@@ -3990,7 +3992,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.redo = function () {
           if (scope.conceptHistoryPtr < scope.conceptHistory.length - 1) {
-            restoreConcept(+1);
+            setTimeout(function () {
+              restoreConcept(+1);
+            }, 1000);
           }
         };
 
