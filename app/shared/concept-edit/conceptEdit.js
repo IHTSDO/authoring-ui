@@ -1318,7 +1318,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   updateReviewFeedback();
 
                   // reload the deleted components if any
-                  if(!scope.static && !scope.isFeedback) {
+                  if((!scope.static && !scope.isFeedback) || scope.isMerge) {
                     loadDeletedComponents();
                   }
                 }, function (error) {
@@ -4831,7 +4831,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });         
 
           // on load, load the deleted components if any
-          if(!scope.static && !scope.isFeedback) {
+          if((!scope.static && !scope.isFeedback) || scope.isMerge) {
             loadDeletedComponents();
           }
 
