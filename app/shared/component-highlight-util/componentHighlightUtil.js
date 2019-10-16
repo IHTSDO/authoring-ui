@@ -5,42 +5,60 @@ angular.module('singleConceptAuthoringApp')
     
     //function to compare the current version of a concept with the version that existed at the time of branch creation
     //and highlight any changes
-    function runComparison(conceptId, branch, concept) {
+    function runComparison(conceptId, branch, concept, originalConcept) {
       var deferred = $q.defer();
       
       var styles = {};      
       var inactiveDescriptions = {};
       var currentConcept = angular.copy(concept);
-      terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '^').then(function (response) {
-        //check concept conditions first
-        if(currentConcept.active !== response.active
-            || currentConcept.definitionStatus !== response.definitionStatus){
-            highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId);
-        }
-        compareDescriptions(styles, inactiveDescriptions, currentConcept, response).then(function () {
-          compareAxioms(styles, inactiveDescriptions, currentConcept, response).then(function () {
-            var response = {};
-            response.styles = styles;              
-            response.concept = currentConcept;
-            response.inactiveDescriptions = inactiveDescriptions;
-
-            deferred.resolve(response);
-          })
+      
+      if (originalConcept) {
+        compareConcept(styles, inactiveDescriptions, currentConcept, originalConcept).then(function(response){
+          deferred.resolve(response);
         });
-      }, 
-      //if the concept is not found in the before version then it has been created within the lifecycle of the task
-      function () {
-        styles = {isNew: true};
-        var response = {};
-        response.styles = styles;          
-        response.concept = currentConcept;
-        response.inactiveDescriptions = inactiveDescriptions;
-
-        deferred.resolve(response);
-      });
+      }
+      else {
+        terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '^').then(function (concept) {
+          compareConcept(styles, inactiveDescriptions, currentConcept, concept).then(function(response){
+            deferred.resolve(response);
+          });
+        }, 
+        //if the concept is not found in the before version then it has been created within the lifecycle of the task
+        function () {
+          styles = {isNew: true};
+          var response = {};
+          response.styles = styles;          
+          response.concept = currentConcept;
+          response.inactiveDescriptions = inactiveDescriptions;
+  
+          deferred.resolve(response);
+        });
+      }
+      
       return deferred.promise;
     }
 
+    function compareConcept(styles, inactiveDescriptions, currentConcept, originalConcept) {
+      var deferred = $q.defer();
+      //check concept conditions first
+      if(currentConcept.active !== originalConcept.active
+        || currentConcept.definitionStatus !== originalConcept.definitionStatus){
+        highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId);
+      }
+      compareDescriptions(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
+        compareAxioms(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
+          var response = {};
+          response.styles = styles;              
+          response.concept = currentConcept;
+          response.inactiveDescriptions = inactiveDescriptions;
+
+          deferred.resolve(response);
+        })
+      });
+
+      return deferred.promise;
+    }
+    
     function compareDescriptions(styles, inactiveDescriptions, currentConcept, originalConcept){
       var deferred = $q.defer();
       let originalIds = [];
