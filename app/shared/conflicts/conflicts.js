@@ -536,7 +536,28 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
                   conflict.autoMergedConcept.classAxioms.push(newAxiom);
-              });
+                });
+
+                angular.forEach(conflict.sourceConcept.gciAxioms, function(axiom){
+                  let newAxiom = {};
+                  angular.copy(axiom, newAxiom);
+                  angular.forEach(conflict.targetConcept.gciAxioms, function(secondAxiom){
+                    if(axiom.axiomId === secondAxiom.axiomId){
+                        angular.forEach(secondAxiom.relationships, function(relationship){
+                            let relationshipFound = false;
+                            angular.forEach(newAxiom.relationships, function(newAxiomRelationship){
+                                if(newAxiomRelationship.relationshipId === relationship.relationshipId){
+                                    relationshipFound = true;
+                                }
+                            })
+                            if(!relationshipFound){
+                                newAxiom.relationships.push(relationship);
+                            }
+                        })
+                    }
+                  });
+                  conflict.autoMergedConcept.gciAxioms.push(newAxiom);
+                });
               }              
               deferred.resolve(conflict);
 
