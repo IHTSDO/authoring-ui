@@ -107,23 +107,23 @@ angular.module('singleConceptAuthoringApp')
       });
       angular.forEach(currentConcept.classAxioms, function(axiom){
         newIds.push(axiom.axiomId);
-          angular.forEach(originalConcept.classAxioms, function(originalAxiom){
-            if(axiom.axiomId === originalAxiom.axiomId){
-              originalAxiom.found = true;
-              compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
-                  compareAxiomRelationships(styles, inactiveDescriptions, axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
-                    axiom = modifiedAxiom;
-                    if(axiom.active !== originalAxiom.active
-                    || axiom.definitionStatus !== originalAxiom.definitionStatus){
-                          highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, axiom.axiomId, null, null, null, true);
-                    }
-                    if(originalAxiom.active && !axiom.active){
-                          highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, axiom.axiomId, null, null, true);
-                    }
-                  });
-              });
-            }
-          });
+        angular.forEach(originalConcept.classAxioms, function(originalAxiom){
+          if(axiom.axiomId === originalAxiom.axiomId){
+            originalAxiom.found = true;
+            compareAxiomRelationshipGroups(axiom, originalAxiom, currentConcept).then(function (params) {
+                compareAxiomRelationships(styles, inactiveDescriptions, axiom, originalAxiom, currentConcept, params).then(function (modifiedAxiom) {
+                  axiom = modifiedAxiom;
+                  if(axiom.active !== originalAxiom.active
+                  || axiom.definitionStatus !== originalAxiom.definitionStatus){
+                        highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, axiom.axiomId, null, null, null, true);
+                  }
+                  if(originalAxiom.active && !axiom.active){
+                        highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, axiom.axiomId, null, null, true);
+                  }
+                });
+            });
+          }
+        });
       });
 
       angular.forEach(originalConcept.classAxioms, function(originalAxiom){
@@ -180,8 +180,17 @@ angular.module('singleConceptAuthoringApp')
     function compareAxiomRelationships (styles, inactiveDescriptions, axiom, originalAxiom, currentConcept, params){
       var deferred = $q.defer();
       angular.forEach(axiom.relationships, function(newRelationship){
+        let newRelClone = angular.copy(newRelationship);       
+        delete newRelClone.target.pt;
+        delete newRelClone.target.preferredSynonym;
+        delete newRelClone.relationshipId;
+
         angular.forEach(originalAxiom.relationships, function(originalRelationship){
-          if(!params.originalMatchedGroups.includes(originalRelationship.groupId) && JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+          let oldRelClone = angular.copy(originalRelationship);
+          delete oldRelClone.target.pt;
+          delete oldRelClone.target.preferredSynonym;
+          delete oldRelClone.relationshipId;
+          if(!params.originalMatchedGroups.includes(originalRelationship.groupId) && JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
             newRelationship.found = true;
           }
         });
@@ -189,11 +198,13 @@ angular.module('singleConceptAuthoringApp')
           if(params.partialMatches){
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
                   if(params.partialMatches.includes(newRelationship.groupId)){
-                    let newRelClone = angular.copy(newRelationship);
                     delete newRelClone.groupId
                     
                     let oldRelClone = angular.copy(originalRelationship);
                     delete oldRelClone.groupId
+                    delete oldRelClone.target.pt;
+                    delete oldRelClone.target.preferredSynonym;
+                    delete oldRelClone.relationshipId;
                     
                     if(JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
                         newRelationship.found = true;
@@ -215,12 +226,20 @@ angular.module('singleConceptAuthoringApp')
       });
         
       angular.forEach(originalAxiom.relationships, function(originalRelationship){
+        var cleanedOriginalRelationship = angular.copy(originalRelationship);
+        delete cleanedOriginalRelationship.relationshipId;        
+        delete cleanedOriginalRelationship.target.pt;
+        delete cleanedOriginalRelationship.target.preferredSynonym;
         angular.forEach(axiom.relationships, function(newRelationship){
-          if(JSON.stringify(newRelationship) === JSON.stringify(originalRelationship)){
+          var cleanedNewRelationship = angular.copy(newRelationship);
+          delete cleanedNewRelationship.relationshipId;         
+          delete cleanedNewRelationship.target.pt;
+          delete cleanedNewRelationship.target.preferredSynonym;
+          if(JSON.stringify(cleanedNewRelationship) === JSON.stringify(cleanedOriginalRelationship)){
             originalRelationship.found = true;
           }
         });
-        if(!originalRelationship.found && !params.matchedGroups.includes(originalRelationship.groupId) && !params.onlyNew){
+        if(!originalRelationship.found && !params.matchedGroups.includes(originalRelationship.groupId) && (originalRelationship.groupId === 0 || !params.onlyNew)){
           originalRelationship.relationshipId = terminologyServerService.createGuid();
           originalRelationship.active = false;
           originalRelationship.deleted = true;
@@ -266,7 +285,9 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(newGroup, function(relationship){
               groupId = relationship.groupId;
               let newClone = angular.copy(relationship);
-              delete newClone.groupId
+              delete newClone.groupId;
+              delete newClone.target.pt;
+              delete newClone.target.preferredSynonym;
               newGroupString = newGroupString + JSON.stringify(newClone)
           })
           angular.forEach(oldGroups, function(oldGroup){
@@ -275,7 +296,9 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(oldGroup, function(relationship){
                   oldGroupId = relationship.groupId;
                   let oldClone = angular.copy(relationship);
-                  delete oldClone.groupId
+                  delete oldClone.groupId;
+                  delete oldClone.target.pt;
+                  delete oldClone.target.preferredSynonym;
                   oldGroupString = oldGroupString + JSON.stringify(oldClone)
               })
               if(newGroupString === oldGroupString && groupId !== 0){
@@ -310,7 +333,7 @@ angular.module('singleConceptAuthoringApp')
         
       let size = 0;
       for (var key in oldGroups) {
-          if (oldGroups.hasOwnProperty(key)) size++;
+          if (newGroups.hasOwnProperty(key)) size++;
       }
       if(size === matchedGroups.length && size !== 0){
           params.onlyNew = true;

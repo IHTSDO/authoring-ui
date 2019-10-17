@@ -113,7 +113,7 @@
 
                     <textarea id="{{axiom.type}}-axiom-relationship-type-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
                               custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.pt"
-                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(axiom.moduleId) || isBatch"
+                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(axiom.moduleId) || isBatch || relationship.deleted"
                               class="resizable-text form-control msd-elastic no-border-bottom rel"
                               typeahead="suggestion as suggestion.pt.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
                               typeahead-focus-first="false"
@@ -147,7 +147,7 @@
                   <div class="small-size-tooltip tooltips-bottom">
                       <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
-                                ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(axiom.moduleId)"
+                                ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(axiom.moduleId) || relationship.deleted"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
                                 typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                                 typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
