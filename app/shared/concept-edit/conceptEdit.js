@@ -3936,6 +3936,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       scope.concept = result.versionedConcept ? result.versionedConcept : result.projectConcept;
                       scope.unmodifiedConcept = JSON.parse(JSON.stringify(result.versionedConcept ? result.versionedConcept : result.projectConcept));
                       scope.isModified = false;
+                      scope.componentStyles = {}; // clear highlighting if any
                       scope.saveConcept();
                     }
                   });
