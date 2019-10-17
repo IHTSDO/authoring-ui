@@ -18,7 +18,7 @@ angular.module('singleConceptAuthoringApp')
         });
       }
       else {
-        terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '^').then(function (concept) {
+        terminologyServerService.getFullConceptAtDate(conceptId, branch, null, '-').then(function (concept) {
           compareConcept(styles, inactiveDescriptions, currentConcept, concept).then(function(response){
             deferred.resolve(response);
           });

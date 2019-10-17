@@ -4792,7 +4792,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           };
 
           if (!scope.originalConcept) {
-            terminologyServerService.getFullConceptAtDate(scope.concept.conceptId, scope.branch, null, '^').then(function (response) {
+            terminologyServerService.getFullConceptAtDate(scope.concept.conceptId, scope.branch, null, '-').then(function (response) {
                 scope.originalConcept = response;              
                 addDeletedComponents();              
   
