@@ -1319,7 +1319,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // reload the deleted components if any
                   if((!scope.static && !scope.isFeedback) || scope.isMerge) {
-                    loadInactiveAndDeletedComponents();
+                    loadInactiveAndDeletedComponents(!scope.isMerge);
                   }
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
@@ -4734,7 +4734,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         }
 
-        function loadInactiveAndDeletedComponents() {
+        function loadInactiveAndDeletedComponents(highlightInactiveComponent) {
           var deferred = $q.defer();
 
           var addDeletedComponents = function () {
@@ -4751,11 +4751,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
 
               // highlight for inactive descriptions that have been inactivated in the task's life cycle
-              angular.forEach(scope.concept.descriptions, function(description){
-                if (!description.active && !description.effectiveTime && response.styles.hasOwnProperty(description.descriptionId)) {                  
-                  scope.componentStyles[description.descriptionId] = response.styles[description.descriptionId];
-                }
-              });
+              if (highlightInactiveComponent) {
+                angular.forEach(scope.concept.descriptions, function(description){
+                  if (!description.active && !description.effectiveTime && response.styles.hasOwnProperty(description.descriptionId)) {                  
+                    scope.componentStyles[description.descriptionId] = response.styles[description.descriptionId];
+                  }
+                });
+              }
 
               // highlight for deleted/modified axioms that have been changed in the task's life cycle
               angular.forEach(newConcept.classAxioms, function(axiom){
@@ -4841,7 +4843,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // on load, load the deleted components if any
           if((!scope.static && !scope.isFeedback) || scope.isMerge) {
-            loadInactiveAndDeletedComponents();
+            loadInactiveAndDeletedComponents(!scope.isMerge);
           }
 
           // adjust for all textareas covered by Angular Elastic
