@@ -245,9 +245,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         loadValidation: '@?',
 
         // traceability that will be passed from Feedback
-        traceabilities: '=?',
-
-        highlightChanges: '@?'
+        traceabilities: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -357,12 +355,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.additionalFieldsDeclared = true;
         } else {
           scope.additionalFieldsDeclared = false;
-        }
-
-        if (scope.highlightChanges === 'true' || scope.highlightChanges === true) {
-          scope.highlightChanges = true;
-        } else {
-          scope.highlightChanges = false;
         }
 
         scope.isAxiomSupport =  function() {
@@ -1326,7 +1318,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   updateReviewFeedback();
 
                   // reload the deleted components if any
-                  if(scope.highlightChanges) {
+                  if((!scope.static && !scope.isFeedback) || scope.isMerge) {
                     loadInactiveAndDeletedComponents(!scope.isMerge);
                   }
                 }, function (error) {
@@ -4850,7 +4842,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });         
 
           // on load, load the deleted components if any
-          if(scope.highlightChanges) {
+          if((!scope.static && !scope.isFeedback) || scope.isMerge) {
             loadInactiveAndDeletedComponents(!scope.isMerge);
           }
 
