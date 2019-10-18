@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService','componentHighlightUtil',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService, componentHighlightUtil) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -769,7 +769,8 @@ angular.module('singleConceptAuthoringApp')
             scope.styles[failure.conceptId] = {};
 
             // if failure has a component id, set new styling
-            if (failure.referencedComponentId) {              
+            if (failure.referencedComponentId) {
+              var componentStyling =
               scope.styles[failure.conceptId][failure.referencedComponentId] = {
                 message: failure.detail, style: 'redhl'
               }
@@ -777,14 +778,10 @@ angular.module('singleConceptAuthoringApp')
 
             terminologyServerService.getFullConcept(failure.conceptId, scope.branch).then(function (response) {
               if (!scope.viewedConcepts || !Array.isArray(scope.viewedConcepts)) {
-                scope.viewedConcepts = [];              
+                scope.viewedConcepts = [];
               }
-              
-              componentHighlightUtil.runComparison(failure.conceptId, scope.branch, response).then(function(result){
-                scope.styles[failure.conceptId] = {...scope.styles[failure.conceptId], ...result.styles};
-                scope.viewedConcepts.push(result.concept);
-                deferred.resolve(result.concept);
-              });
+              scope.viewedConcepts.push(response);
+              deferred.resolve(response);
             }, function (error) {
               deferred.reject(); // no error passing, for count purposes only
             });
