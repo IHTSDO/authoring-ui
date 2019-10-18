@@ -126,9 +126,7 @@ angular.module('singleConceptAuthoringApp')
       /////////////////////////////////////////////////////
       // Set Min. Network connection speed 
       /////////////////////////////////////////////////////
-      if (localPreferences && localPreferences.minNetworkConnection) {
-        window.minNetworkConnection = localPreferences.minNetworkConnection;
-      }
+      window.minNetworkConnection = localPreferences.minNetworkConnection;
 
       /////////////////////////////////////////////////////
       // Resolve and Return

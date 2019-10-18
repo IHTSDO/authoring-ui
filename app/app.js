@@ -178,10 +178,7 @@ angular
         var endpoints = response.endpoints;
         var features = response.features
         $rootScope.endpoints = endpoints;
-
-        if (features.network && features.network.connection.minimum) {
-          window.minNetworkConnection = features.network.connection.minimum;
-        }
+       
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         crsService.setCrsEndpoint(endpoints['crsEndpoint']);
         crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);
