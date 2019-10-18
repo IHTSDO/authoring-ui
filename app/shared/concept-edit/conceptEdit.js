@@ -1327,7 +1327,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // reload the deleted components if any
                   if(scope.highlightChanges) {
-                    loadInactiveAndDeletedComponents(!scope.isMerge);
+                    loadDeletedComponents();
                   }
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
@@ -4742,7 +4742,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         }
 
-        function loadInactiveAndDeletedComponents(highlightInactiveComponent) {
+        function loadDeletedComponents() {
           var deferred = $q.defer();
 
           var addDeletedComponents = function () {
@@ -4756,15 +4756,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if (!scope.componentStyles) {
                 scope.componentStyles = {};
-              }
-
-              // highlight for inactive descriptions that have been inactivated in the task's life cycle
-              if (highlightInactiveComponent) {
-                angular.forEach(scope.concept.descriptions, function(description){
-                  if (!description.active && !description.effectiveTime && response.styles.hasOwnProperty(description.descriptionId)) {                  
-                    scope.componentStyles[description.descriptionId] = response.styles[description.descriptionId];
-                  }
-                });
               }
 
               // highlight for deleted/modified axioms that have been changed in the task's life cycle
@@ -4851,7 +4842,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // on load, load the deleted components if any
           if(scope.highlightChanges) {
-            loadInactiveAndDeletedComponents(!scope.isMerge);
+            loadDeletedComponents();
           }
 
           // adjust for all textareas covered by Angular Elastic
