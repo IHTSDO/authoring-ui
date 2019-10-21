@@ -79,6 +79,7 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.inactiveDescriptions = {};
           var users = [];
+          var sendingConceptToReview = false;
 
           function getUsers(start, end) {
             var expand =  'users[' + start + ':' + end + ']';
@@ -687,7 +688,10 @@ angular.module('singleConceptAuthoringApp')
 
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
-
+            if (sendingConceptToReview) return;
+            
+            sendingConceptToReview = true;
+            
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
               scope.task = task;
               if (scope.task.status === 'Review Completed') {
@@ -704,6 +708,7 @@ angular.module('singleConceptAuthoringApp')
               scope.conceptsReviewedTableParams.reload();
               scope.conceptsToReviewTableParams.reload();
               scope.conceptsClassifiedTableParams.reload();
+              sendingConceptToReview = false;
 
               // if stop request not indicated (or not supplied), update ui state
               if (!stopUiStateUpdate) {
@@ -1808,9 +1813,7 @@ angular.module('singleConceptAuthoringApp')
                   console.log(traceability);
                   review.traceability = traceability;
                   review.concepts = [];
-                  review.conceptsClassified = [];
-
-                  highlightFromTraceability(traceability);
+                  review.conceptsClassified = [];                 
 
                   var idList = [];
                   angular.forEach(traceability.content, function (change) {

@@ -137,7 +137,7 @@
 
             </div>
           </div>
-          <tr ng-repeat="concept in conceptsToReviewViewed">
+          <tr ng-repeat="concept in conceptsToReviewViewed track by concept.conceptId">
             <td class="col-checkbox col-md-1 no-padding "
                 header="'ng-table/headers/checkboxToReview.html'"><div class="checkbox">
                 <label class="filled">
