@@ -856,15 +856,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (rel.display) delete rel.display;
               if (!rel.type.fsn || !rel.type.conceptId) rel.type.conceptId = null;
           });
-
-          // re-populate display flag if it exists
-          angular.forEach(attrRels, function(rel){
-              for (var i = 0; i < drugsOrdering.length; i++) {
-                var item = drugsOrdering[i];
-                if (rel.type.conceptId === item.id) rel.display = item.display;
-              }
-          });
-
+       
           // NOTE: All isaRels should be group 0, but sort by group anyway
           isaRels.sort(function (a, b) {
             if (!a.groupId && b.groupId) {
@@ -4764,7 +4756,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (relationship.deleted) {
                     angular.forEach(scope.concept.classAxioms, function(currentAxiom){
                       if (axiom.axiomId === currentAxiom.axiomId) {
-                        currentAxiom.relationships.push(relationship);
+                        var index = -1;
+                        for (var i = 0; i < currentAxiom.relationships.length; i++) {
+                          if (currentAxiom.relationships[i].active                          
+                            && currentAxiom.relationships[i].groupId == relationship.groupId
+                            && (currentAxiom.relationships[i].type.conceptId == relationship.type.conceptId
+                              || currentAxiom.relationships[i].target.conceptId == relationship.target.conceptId)) {
+                              index = i;
+                            }
+                        }
+                        if (index !== -1) {
+                          currentAxiom.relationships.splice(index + 1, 0, relationship);
+                        }
+                        else {
+                          currentAxiom.relationships.push(relationship);
+                        }                       
+                        
                         scope.componentStyles[relationship.relationshipId] = response.styles[relationship.relationshipId];
                       }
                     });

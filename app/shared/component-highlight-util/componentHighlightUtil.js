@@ -243,7 +243,23 @@ angular.module('singleConceptAuthoringApp')
           originalRelationship.relationshipId = terminologyServerService.createGuid();
           originalRelationship.active = false;
           originalRelationship.deleted = true;
-          axiom.relationships.push(originalRelationship);
+          
+          var index = -1;
+          for (var i = 0; i < axiom.relationships.length; i++) {
+            if (axiom.relationships[i].active             
+              && axiom.relationships[i].groupId == originalRelationship.groupId
+              && (axiom.relationships[i].type.conceptId == originalRelationship.type.conceptId
+                || axiom.relationships[i].target.conceptId == originalRelationship.target.conceptId)) {
+                index = i;
+              }
+          }
+          if (index !== -1) {
+            axiom.relationships.splice(index + 1, 0, originalRelationship);
+          }
+          else {
+            axiom.relationships.push(originalRelationship);
+          }
+         
           highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, originalRelationship.relationshipId, null, null, true);
         }
       });
