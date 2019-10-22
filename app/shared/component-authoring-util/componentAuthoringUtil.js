@@ -661,7 +661,15 @@ angular.module('singleConceptAuthoringApp')
 
                   // SYN, en-GB acceptable
                   if (!isTemplateConcept) {
-                    if (hasDialectMatchingWords) {
+                    // check duplicate GB term 
+                    var found = concept.descriptions.filter(function(description) {
+                      return description.term.trim() === termGb.trim() 
+                            && description.acceptabilityMap.hasOwnProperty('900000000000508004')
+                            && description.active
+                            && (description.acceptabilityMap['900000000000508004'] === 'PREFERRED' || description.acceptabilityMap['900000000000508004'] === 'ACCEPTABLE');
+                    }).length !== 0;
+
+                    if (hasDialectMatchingWords && !found) {
                       addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                     }                    
 
