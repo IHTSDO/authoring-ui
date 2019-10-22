@@ -1170,188 +1170,204 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             'errors': {}
           };
 
-          // Handle save action outside this component, applying for Batch import
-          if (scope.isBatch) {
-            scope.saving = true;
-            scope.saveFunction().then(function(response){
-              scope.saving = false;
-              if (!response.validation.hasErrors && !response.validation.hasWarnings) {
-                notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
-              }
-            },function (error) {
-              scope.saving = false;
-            });
-            return;
-          }
-
-          // broadcast event to any listeners (currently task detail, crs concept list,
-          // conflict/feedback resolved lists)
-          $rootScope.$broadcast('conceptEdit.saveConcept', {
-            branch: scope.branch,
-            conceptId: scope.concept.conceptId,
-            previousConceptId: originalConceptId,
-            concept: scope.concept,
-            validation: scope.validation
-          });
-
-          // display error msg if concept not valid but no other
-          // errors/warnings specified
-          var errors = scope.isConceptValid(scope.concept);
-          if (errors && errors.length > 0) {
-            scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
-            return;
-          }
-
-          // clean concept of any locally added information
-          // store original concept id for CRS integration
-          var originalConcept = angular.copy(scope.concept);
-          terminologyServerService.cleanConcept(scope.concept);
-
-          scope.saving = true;
-
-          // special case -- don't want save notifications in merge view, all
-          // handling done in conflicts.js
-          if (scope.merge) {
-            notificationService.sendMessage('Saving accepted merged concept...');
-          } else if (scope.isInactivation) {
-            // do nothing
-          } else {
-            notificationService.sendMessage(scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
-          }
-
-          // validate concept first
-          scope.validateConcept(scope.concept).then(function () {
-
-            // special case -- merge:  display warnings and continue
-            if (scope.merge) {
-              $rootScope.$broadcast('acceptMerge', {
-                concept: scope.concept,
-                validationResults: scope.validation
-              });
-
-              if (Object.keys(scope.validation.errors).length > 0) {
+          var saveConceptFn = function() {
+            // Handle save action outside this component, applying for Batch import
+            if (scope.isBatch) {
+              scope.saving = true;
+              scope.saveFunction().then(function(response){
                 scope.saving = false;
-                scope.concept = originalConcept
-              }
-            }
-
-            // special case -- inactivation:  simply broadcast concept
-            else if (scope.isInactivation) {
-
-              if (scope.validation && scope.validation.hasErrors) {
-                notificationService.sendError('Fix errors before continuing');
-                scope.computeAxioms(axiomType.ADDITIONAL);
-                scope.computeAxioms(axiomType.GCI);
-                scope.reapplyTemplate();
-              } else {
+                if (!response.validation.hasErrors && !response.validation.hasWarnings) {
+                  notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+                }
+              },function (error) {
                 scope.saving = false;
-                scope.isModified = false;
-                $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
-              }
-            }
-
-            // if errors, notify and do not save
-            else if (scope.validation && scope.validation.hasErrors) {
-              notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
-              scope.saving = false;
-              scope.computeAxioms(axiomType.ADDITIONAL);
-              scope.computeAxioms(axiomType.GCI);
-              scope.reapplyTemplate();
-
-              $rootScope.$broadcast('conceptEdit.validation', {
-                branch: scope.branch,
-                conceptId: scope.concept.conceptId,
-                previousConceptId: originalConceptId,
-                concept: scope.concept,
-                validation: scope.validation
               });
-
               return;
             }
 
-            if (originalConcept.conceptId) {
-              scope.concept.conceptId = originalConcept.conceptId;
+            // broadcast event to any listeners (currently task detail, crs concept list,
+            // conflict/feedback resolved lists)
+            $rootScope.$broadcast('conceptEdit.saveConcept', {
+              branch: scope.branch,
+              conceptId: scope.concept.conceptId,
+              previousConceptId: originalConceptId,
+              concept: scope.concept,
+              validation: scope.validation
+            });
+
+            // display error msg if concept not valid but no other
+            // errors/warnings specified
+            var errors = scope.isConceptValid(scope.concept);
+            if (errors && errors.length > 0) {
+              scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+              return;
             }
 
-            // save concept
-            saveHelper().then(function () {
-              scope.hasFocus = false;
-              
-              // brief timeout to alleviate timing issues, may no longer be needed
-              $timeout(function () {
-                // perform a second validation to catch any convention warnings introduced by termserver
-                scope.validateConcept(scope.concept).then(function (results) {
-                  if (scope.validation.hasErrors) {
-                    notificationService.sendError('Concept saved, but modifications introduced by server led to convention errors. Please review');
-                    $rootScope.$broadcast('conceptEdit.validation', {
-                      branch: scope.branch,
-                      conceptId: scope.concept.conceptId,
-                      previousConceptId: originalConceptId,
-                      concept: scope.concept,
-                      validation: scope.validation
-                    });
-                  }
-                  else if (scope.validation.hasWarnings) {
-                    notificationService.sendWarning('Concept saved, but contradictions of conventions were detected. Please review Convention Warnings.');
-                    $rootScope.$broadcast('conceptEdit.validation', {
-                      branch: scope.branch,
-                      conceptId: scope.concept.conceptId,
-                      previousConceptId: originalConceptId,
-                      concept: scope.concept,
-                      validation: scope.validation
-                    });
-                  } else {
-                    notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
-                    scope.focusHandler(true, false);
-                  }
-                  scope.saving = false;
-                  scope.reapplyTemplate();
-                  scope.focusHandler(true, false);
-                  scope.computeAxioms(axiomType.ADDITIONAL);
-                  scope.computeAxioms(axiomType.GCI);
-                  angular.forEach(scope.concept.classAxioms, function(axiom){
-                      refreshAttributeTypesForAxiom(axiom);
-                  })
-                  angular.forEach(scope.concept.gciAxioms, function(axiom){
-                      refreshAttributeTypesForAxiom(axiom);
-                  })
-                  updateReviewFeedback();
+            // clean concept of any locally added information
+            // store original concept id for CRS integration
+            var originalConcept = angular.copy(scope.concept);
+            terminologyServerService.cleanConcept(scope.concept);
 
-                  // reload the deleted components if any
-                  if(scope.highlightChanges) {
-                    loadDeletedComponents();
-                  }
-                }, function (error) {
-                  notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
-                  scope.saving = false;
-                  scope.reapplyTemplate();
-                  scope.computeAxioms(axiomType.ADDITIONAL);
-                  scope.computeAxioms(axiomType.GCI);
-                  angular.forEach(scope.concept.classAxioms, function(axiom){
-                      refreshAttributeTypesForAxiom(axiom);
-                  })
-                  angular.forEach(scope.concept.gciAxioms, function(axiom){
-                      refreshAttributeTypesForAxiom(axiom);
-                  })
-                  scope.focusHandler(true, false);
+            scope.saving = true;
+
+            // special case -- don't want save notifications in merge view, all
+            // handling done in conflicts.js
+            if (scope.merge) {
+              notificationService.sendMessage('Saving accepted merged concept...');
+            } else if (scope.isInactivation) {
+              // do nothing
+            } else {
+              notificationService.sendMessage(scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
+            }
+
+            // validate concept first
+            scope.validateConcept(scope.concept).then(function () {
+
+              // special case -- merge:  display warnings and continue
+              if (scope.merge) {
+                $rootScope.$broadcast('acceptMerge', {
+                  concept: scope.concept,
+                  validationResults: scope.validation
                 });
-              }, 500);
-            }, function (error) {
-              if (error && error.status === 504) {
 
-                // on timeouts, must save crs concept to ensure termserver retrieval
-                if (crsService.isCrsConcept(originalConcept.conceptId)) {
-                  crsService.saveCrsConcept(originalConcept.conceptId, scope.concept, 'Save status uncertain; please verify changes via search');
-                  scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConcept.conceptId);
+                if (Object.keys(scope.validation.errors).length > 0) {
+                  scope.saving = false;
+                  scope.concept = originalConcept
                 }
-                notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
               }
-              else {
-                scope.concept = originalConcept;
-                scope.isModified = true;
-                notificationService.sendError('Error saving concept: ' + error.data.message);
+
+              // special case -- inactivation:  simply broadcast concept
+              else if (scope.isInactivation) {
+
+                if (scope.validation && scope.validation.hasErrors) {
+                  notificationService.sendError('Fix errors before continuing');
+                  scope.computeAxioms(axiomType.ADDITIONAL);
+                  scope.computeAxioms(axiomType.GCI);
+                  scope.reapplyTemplate();
+                } else {
+                  scope.saving = false;
+                  scope.isModified = false;
+                  $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
+                }
+              }
+
+              // if errors, notify and do not save
+              else if (scope.validation && scope.validation.hasErrors) {
+                notificationService.sendError('Contradictions of conventions were detected. Please resolve Convention Errors before saving.');
+                scope.saving = false;
+                scope.computeAxioms(axiomType.ADDITIONAL);
+                scope.computeAxioms(axiomType.GCI);
+                scope.reapplyTemplate();
+
+                $rootScope.$broadcast('conceptEdit.validation', {
+                  branch: scope.branch,
+                  conceptId: scope.concept.conceptId,
+                  previousConceptId: originalConceptId,
+                  concept: scope.concept,
+                  validation: scope.validation
+                });
+
+                return;
+              }
+
+              if (originalConcept.conceptId) {
+                scope.concept.conceptId = originalConcept.conceptId;
+              }
+
+              // save concept
+              saveHelper().then(function () {
+                scope.hasFocus = false;
+                
+                // brief timeout to alleviate timing issues, may no longer be needed
+                $timeout(function () {
+                  // perform a second validation to catch any convention warnings introduced by termserver
+                  scope.validateConcept(scope.concept).then(function (results) {
+                    if (scope.validation.hasErrors) {
+                      notificationService.sendError('Concept saved, but modifications introduced by server led to convention errors. Please review');
+                      $rootScope.$broadcast('conceptEdit.validation', {
+                        branch: scope.branch,
+                        conceptId: scope.concept.conceptId,
+                        previousConceptId: originalConceptId,
+                        concept: scope.concept,
+                        validation: scope.validation
+                      });
+                    }
+                    else if (scope.validation.hasWarnings) {
+                      notificationService.sendWarning('Concept saved, but contradictions of conventions were detected. Please review Convention Warnings.');
+                      $rootScope.$broadcast('conceptEdit.validation', {
+                        branch: scope.branch,
+                        conceptId: scope.concept.conceptId,
+                        previousConceptId: originalConceptId,
+                        concept: scope.concept,
+                        validation: scope.validation
+                      });
+                    } else {
+                      notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+                      scope.focusHandler(true, false);
+                    }
+                    scope.saving = false;
+                    scope.reapplyTemplate();
+                    scope.focusHandler(true, false);
+                    scope.computeAxioms(axiomType.ADDITIONAL);
+                    scope.computeAxioms(axiomType.GCI);
+                    angular.forEach(scope.concept.classAxioms, function(axiom){
+                        refreshAttributeTypesForAxiom(axiom);
+                    })
+                    angular.forEach(scope.concept.gciAxioms, function(axiom){
+                        refreshAttributeTypesForAxiom(axiom);
+                    })
+                    updateReviewFeedback();
+
+                    // reload the deleted components if any
+                    if(scope.highlightChanges) {
+                      loadDeletedComponents();
+                    }
+                  }, function (error) {
+                    notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
+                    scope.saving = false;
+                    scope.reapplyTemplate();
+                    scope.computeAxioms(axiomType.ADDITIONAL);
+                    scope.computeAxioms(axiomType.GCI);
+                    angular.forEach(scope.concept.classAxioms, function(axiom){
+                        refreshAttributeTypesForAxiom(axiom);
+                    })
+                    angular.forEach(scope.concept.gciAxioms, function(axiom){
+                        refreshAttributeTypesForAxiom(axiom);
+                    })
+                    scope.focusHandler(true, false);
+                  });
+                }, 500);
+              }, function (error) {
+                if (error && error.status === 504) {
+
+                  // on timeouts, must save crs concept to ensure termserver retrieval
+                  if (crsService.isCrsConcept(originalConcept.conceptId)) {
+                    crsService.saveCrsConcept(originalConcept.conceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConcept.conceptId);
+                  }
+                  notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
+                }
+                else {
+                  scope.concept = originalConcept;
+                  scope.isModified = true;
+                  notificationService.sendError('Error saving concept: ' + error.data.message);
+                  scope.focusHandler(true, false);
+                }
+                scope.reapplyTemplate();
+                scope.saving = false;
                 scope.focusHandler(true, false);
-              }
+                scope.computeAxioms(axiomType.ADDITIONAL);
+                scope.computeAxioms(axiomType.GCI);
+                angular.forEach(scope.concept.classAxioms, function(axiom){
+                    refreshAttributeTypesForAxiom(axiom);
+                })
+                angular.forEach(scope.concept.gciAxioms, function(axiom){
+                    refreshAttributeTypesForAxiom(axiom);
+                })
+              });
+
+            }, function (error) {
+              notificationService.sendError('Fatal error: Could not validate concept');
               scope.reapplyTemplate();
               scope.saving = false;
               scope.focusHandler(true, false);
@@ -1364,21 +1380,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   refreshAttributeTypesForAxiom(axiom);
               })
             });
+          };
 
-          }, function (error) {
-            notificationService.sendError('Fatal error: Could not validate concept');
-            scope.reapplyTemplate();
-            scope.saving = false;
-            scope.focusHandler(true, false);
-            scope.computeAxioms(axiomType.ADDITIONAL);
-            scope.computeAxioms(axiomType.GCI);
-            angular.forEach(scope.concept.classAxioms, function(axiom){
-                refreshAttributeTypesForAxiom(axiom);
-            })
-            angular.forEach(scope.concept.gciAxioms, function(axiom){
-                refreshAttributeTypesForAxiom(axiom);
-            })
+          var promises = [];
+          angular.forEach(scope.concept.descriptions, function(description) {
+            if (description.active && !description.effectiveTime && !description.released && description.type === 'SYNONYM') {
+              promises.push(componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false));
+            }
           });
+            
+          if (promises.length !== 0) {
+            $q.all(promises).then(function () {
+              saveConceptFn();
+            });
+          }
+          else {
+            saveConceptFn();
+          }          
         };
 
 // Update feedback
@@ -3593,23 +3611,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var symanticTag = null;
           if (description.type === 'FSN') {
             symanticTag = symanticTagTattern.exec(description.term)[1];
-          }
-
-          if (symanticTag
-            && (symanticTag === 'medicinal product'
-               || symanticTag === 'medicinal product form'
-               || symanticTag === 'clinical drug'
-               || symanticTag === 'substance'
-               || symanticTag === 'product')) {
-            // just save data
-            autoSave();
-          } else {
-            componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+            if (symanticTag
+                && (symanticTag === 'medicinal product'
+                 || symanticTag === 'medicinal product form'
+                 || symanticTag === 'clinical drug'
+                 || symanticTag === 'substance'
+                 || symanticTag === 'product')) {
+              // just save data
               autoSave();
-            }, function (error) {
-              notificationService.sendWarning('Automations failed: ' + error);
-              autoSave();
-            });
+            }
+            else {
+              componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+                autoSave();
+              }, function (error) {
+                notificationService.sendWarning('Automations failed: ' + error);
+                autoSave();
+              });
+            }
           }
         };
 
