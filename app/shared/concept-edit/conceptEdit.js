@@ -3308,6 +3308,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.warnings = [];
 
+          var relationshipMap = {};
           // strip identifying information from each relationship and push
           // to relationships with new group id
           angular.forEach(relGroup, function (rel) {
@@ -3323,9 +3324,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // set sourceId from current concept
                   copy.sourceId = scope.concept.conceptId;
 
-                  axiom.relationships.push(copy);
-                  refreshAttributeTypesForAxiom(axiom);
-                  if (++relsProcessed === relGroup.length) {
+                  // retain the position of relationship
+                  relationshipMap[relGroup.indexOf(rel)] = copy;
+                  
+                  if (++relsProcessed === relGroup.length) {                    
+                    const ordered = {};
+                    Object.keys(relationshipMap).sort().forEach(function(key) {
+                      ordered[key] = relationshipMap[key];
+                    });
+                    
+                    for (var key in relationshipMap) {
+                      axiom.relationships.push(relationshipMap[key]);
+                      refreshAttributeTypesForAxiom(axiom);
+                    }
+
                     autoSave();
                     scope.computeAxioms(axiom.type);
                   }
