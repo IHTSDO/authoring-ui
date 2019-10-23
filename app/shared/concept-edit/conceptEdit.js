@@ -3326,13 +3326,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // retain the position of relationship
                   relationshipMap[relGroup.indexOf(rel)] = copy;
+                  const ordered = {};
+                  Object.keys(relationshipMap).sort().forEach(function(key) {
+                    ordered[key] = relationshipMap[key];
+                  });
                   
-                  if (++relsProcessed === relGroup.length) {                    
-                    const ordered = {};
-                    Object.keys(relationshipMap).sort().forEach(function(key) {
-                      ordered[key] = relationshipMap[key];
-                    });
-                    
+                  if (++relsProcessed === relGroup.length) {
                     for (var key in relationshipMap) {
                       axiom.relationships.push(relationshipMap[key]);
                       refreshAttributeTypesForAxiom(axiom);
@@ -3345,12 +3344,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }, function () {
                 scope.warnings.push('MRCM validation error: ' + rel.target.fsn + ' is not valid for attribute type ' + rel.type.fsn);
                 if (++relsProcessed === relGroup.length) {
+                  for (var key in relationshipMap) {
+                    axiom.relationships.push(relationshipMap[key]);
+                    refreshAttributeTypesForAxiom(axiom);
+                  }
+
                   autoSave();
                   scope.computeAxioms(axiom.type);
                 }
               });
             } else {
               if (++relsProcessed === relGroup.length) {
+                for (var key in relationshipMap) {
+                  axiom.relationships.push(relationshipMap[key]);
+                  refreshAttributeTypesForAxiom(axiom);
+                }
+
                 autoSave();
                 scope.computeAxioms(axiom.type);
               }
