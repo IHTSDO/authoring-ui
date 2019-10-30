@@ -314,7 +314,8 @@ angular.module('singleConceptAuthoringApp')
       if (!branch || !destinationTemplate || !conceptToTransform) {
         deferred.reject('Invalid arguments');
       }
-      $http.post(apiEndpoint + branch + '/templates/' + destinationTemplate.name.replace(/\//g, '%252F') + '/transform/concept', conceptToTransform).then(function (response) {        
+      console.log(conceptToTransform);
+      $http.post(apiEndpoint + branch + '/templates/' + encodeURI(destinationTemplate.name) + '/transform/concept', conceptToTransform).then(function (response) {        
         deferred.resolve(response.data);
       }, function (error) {
         deferred.reject('Failed to retrieve template concepts: ' + error.message);
@@ -465,7 +466,7 @@ angular.module('singleConceptAuthoringApp')
             d.term = d.initialTerm;
           });
           tc.classAxioms = [];
-          tc.classAxioms.push(componentAuthoringUtil.getNewAxiom(blank));
+          tc.classAxioms.push(componentAuthoringUtil.getNewAxiom(true));
           angular.forEach(tc.classAxioms, function (a) {
               angular.forEach(a.relationships, function (r) {
                 r.template = angular.copy(r);
@@ -530,8 +531,8 @@ angular.module('singleConceptAuthoringApp')
           replaceLogicalValues(tc).then(function () {
             // replace template values (i.e. to replace display $term-x with x
             replaceLexicalValues(tc, template, branch).then(function () {
-                getConceptNames(tc..classAxioms[0].relationships, currentTask).then(function(rels){
-                    tc..classAxioms[0].relationships = rels;
+                getConceptNames(tc.classAxioms[0].relationships, currentTask).then(function(rels){
+                    tc.classAxioms[0].relationships = rels;
                     angular.forEach(tc.descriptions, function (d) {
                         if(template.conceptOutline.moduleId !== undefined)
                           {
