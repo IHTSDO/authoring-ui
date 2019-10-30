@@ -611,13 +611,33 @@ angular.module('singleConceptAuthoringApp')
             concept.template = template;
             conceptCopy.template = template;
             componentAuthoringUtil.setDefaultFields(template);
-            angular.forEach(conceptCopy.relationships, function (r) {
+            angular.forEach(concept.classAxioms, function (axiom) {
+                angular.forEach(axiom.relationships, function (r) {
+                    r.relationshipId = terminologyServerService.isSctid(r.relationshipId) ? r.relationshipId : terminologyServerService.createGuid();
+                });
+                angular.forEach(template.conceptOutline.relationships, function (rt) {
+                  var matchFound = false;
+                  axiom.matches = 0;
+                  angular.forEach(axiom.relationships, function (r) {
+                      if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
+                          matchFound = true;
+                        }
+                      axiom.matches ++;
+                  });
+                });
+            });
+            
+            concept.classAxioms = $filter('orderBy')(items, 'matches')
+            concept.classAxioms = [concept.classAxioms.slice(-1)[0]];
+            delete concept.gciAxioms;
+                
+            angular.forEach(conceptCopy.classAxioms[0].relationships, function (r) {
                 r.relationshipId = terminologyServerService.isSctid(r.relationshipId) ? r.relationshipId : terminologyServerService.createGuid();
             });
             angular.forEach(template.conceptOutline.relationships, function (rt) {
 
               var matchFound = false;
-              angular.forEach(conceptCopy.relationships, function (r) {
+              angular.forEach(conceptCopy.classAxioms[0].relationships, function (r) {
 
                 // check for target slot
               if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
@@ -629,12 +649,12 @@ angular.module('singleConceptAuthoringApp')
               if (!matchFound) {
                 var newRel = angular.copy(rt);
                 newRel.template = rt;
-                conceptCopy.relationships.push(newRel);
+                conceptCopy.classAxioms[0].relationships.push(newRel);
               }
             });
             for (var i = conceptCopy.relationships.length - 1; i >= 0; i--) {
-                if (conceptCopy.relationships[i].relationshipId !== null && conceptCopy.relationships[i].relationshipId !== undefined && conceptCopy.relationships[i].type !== 'INFERRED' && !conceptCopy.relationships[i].targetSlot) {
-                    conceptCopy.relationships.splice(i, 1);
+                if (conceptCopy.classAxioms[0].relationships[i].relationshipId !== null && conceptCopy.classAxioms[0].relationships[i].relationshipId !== undefined && conceptCopy.classAxioms[0].relationships[i].type !== 'INFERRED' && !conceptCopy.classAxioms[0].relationships[i].targetSlot) {
+                    conceptCopy.classAxioms[0].relationships.splice(i, 1);
                 }
             }
             var nameValueMap;
@@ -725,7 +745,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(conceptCopy.descriptions, function (d) {
                 d.descriptionId = terminologyServerService.isSctid(d.descriptionId) ? d.descriptionId : terminologyServerService.createGuid();
             });
-            angular.forEach(conceptCopy.relationships, function (r) {
+            angular.forEach(conceptCopy.classAxioms[0].relationships, function (r) {
                 r.relationshipId = terminologyServerService.isSctid(r.relationshipId) ? r.relationshipId : terminologyServerService.createGuid();
             });
 
@@ -768,20 +788,22 @@ angular.module('singleConceptAuthoringApp')
           d.descriptionId = terminologyServerService.createGuid();
         }
       });
-      angular.forEach(concept.relationships, function (r) {
-        r.template = null;
-        r.templateStyle = null;
-        r.templateMessages = [];
-        if (!r.relationshipId) {
-          r.relationshipId = terminologyServerService.createGuid();
-        }
+      angular.forEach(concept.classAxioms, function(axiom){
+          angular.forEach(axiom.relationships, function (r) {
+            r.template = null;
+            r.templateStyle = null;
+            r.templateMessages = [];
+            if (!r.relationshipId) {
+              r.relationshipId = terminologyServerService.createGuid();
+            }
+          });
       });
 
       // match relationships
       angular.forEach(template.conceptOutline.relationships, function (rt) {
 
           var matchFound = false;
-          angular.forEach(concept.relationships, function (r) {
+          angular.forEach(concept.classAxioms[0].relationships, function (r) {
 
             // check for target slot
             if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
@@ -822,14 +844,14 @@ angular.module('singleConceptAuthoringApp')
             if (applyMessages) {
               newRel.templateMessages.push({type: 'Message', message: 'Relationship automatically added by template'});
             }
-            concept.relationships.push(newRel);
+            concept.classAxioms[0].relationships.push(newRel);
 
           }
         }
       );
 
 
-      angular.forEach(concept.relationships, function (r) {
+      angular.forEach(concept.classAxioms[0].relationships, function (r) {
         if (r.active && !r.template) {
           if (applyStyles) {
             r.templateStyle = 'redhl';
@@ -950,7 +972,7 @@ angular.module('singleConceptAuthoringApp')
 // apply top-level messages
         if (applyMessages) {
           var msg = {type: 'Message', message: 'Template Concept Valid'};
-          angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
+          angular.forEach(concept.descriptions.concat(concept.classAxioms[0].relationships), function (component) {
             angular.forEach(component.templateMessages, function (tm) {
               // overwrite with highest severity
               if (tm.type === 'Error') {
@@ -995,8 +1017,8 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function isTemplateComplete(concept) {
-      for (var i =0; i < concept.relationships.length; i++) {
-        var relationship = concept.relationships[i];
+      for (var i =0; i < concept.classAxioms[0].relationships.length; i++) {
+        var relationship = concept.classAxioms[0].relationships[i];
         if (relationship.targetSlot && !relationship.target.conceptId) {
           return false;
         }
