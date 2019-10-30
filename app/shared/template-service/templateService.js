@@ -204,8 +204,8 @@ angular.module('singleConceptAuthoringApp')
         deferred.reject('No target slot detected');
       } else {
         // check for linked/referenced slots
-        for (var i = 0; i < concept.relationships.length; i++) {
-          var r = concept.relationships[i];
+        for (var i = 0; i < concept.classAxioms[0].relationships.length; i++) {
+          var r = concept.classAxioms[0].relationships[i];
           if (r.template && r.template.targetSlot && r.template.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
             r.target.conceptId = relationship.target.conceptId;
             r.target.fsn = relationship.target.fsn;
@@ -219,10 +219,12 @@ angular.module('singleConceptAuthoringApp')
     function replaceLogicalValues(concept) {
      var deferred = $q.defer();
       var promises = [];
-      angular.forEach(concept.relationships, function (relationship) {
-        if (relationship.template && relationship.template.targetSlot && relationship.template.targetSlot.slotName) {
-          promises.push(replaceLogicalValuesForRelationship(concept, relationship));
-       }
+      angular.forEach(concept.classAxioms, function(axiom){
+          angular.forEach(axiom.relationships, function (relationship) {
+            if (relationship.template && relationship.template.targetSlot && relationship.template.targetSlot.slotName) {
+              promises.push(replaceLogicalValuesForRelationship(concept, relationship));
+           }
+          });
       });
       $q.all(promises).then(function (relationships) {
         deferred.resolve(concept);
@@ -323,10 +325,12 @@ angular.module('singleConceptAuthoringApp')
     function getTargetSlotConcepts(concept) {
       var deferred = $q.defer();
       var conceptIds = [];
-      angular.forEach(concept.relationships, function (r) {
-        if (r.targetSlot && r.target !== undefined && r.target.conceptId) {
-          conceptIds.push(r.target.conceptId);
-        }
+      angular.forEach(concept.classAxioms, function(axiom){
+          angular.forEach(axiom.relationships, function (r) {
+            if (r.targetSlot && r.target !== undefined && r.target.conceptId) {
+              conceptIds.push(r.target.conceptId);
+            }
+          });
       });
 
       if (conceptIds.length > 0) {
@@ -360,31 +364,33 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(template.lexicalTemplates, function (lt) {
 
           // find the matching relationship target slot by takeFSNFromSlot
-          angular.forEach(concept.relationships, function (r) {
+          angular.forEach(concept.classAxioms, function(axiom){
+              angular.forEach(axiom.relationships, function (r) {
 
-            // if a target slot with specified slot name
-            if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
+                // if a target slot with specified slot name
+                if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
 
-              var targetConcept = targetConcepts.filter(function (c) {
-                return c.conceptId === r.target.conceptId;
-              })[0];
-              var fsn = targetConcept.descriptions.filter(function(description) {
-                return description.active === true && description.term === targetConcept.fsn;
-              })[0];
+                  var targetConcept = targetConcepts.filter(function (c) {
+                    return c.conceptId === r.target.conceptId;
+                  })[0];
+                  var fsn = targetConcept.descriptions.filter(function(description) {
+                    return description.active === true && description.term === targetConcept.fsn;
+                  })[0];
 
-              // determine value based on case signifiance
-              switch (fsn.caseSignificance) {
-                case 'ENTIRE_TERM_CASE_SENSITIVE' : // entire term case sensitive
-                  nameValueMap[lt.name] = fsn.term;
-                  break;
-                case 'CASE_INSENSITIVE': // entire term case insensitive
-                case 'INITIAL_CHARACTER_CASE_INSENSITIVE' : // initial character case insensitive
-                  nameValueMap[lt.name] = fsn.term.substring(0, 1).toLowerCase() + fsn.term.substring(1);
-                  break;
-                default:
-                  nameValueMap[lt.name] = '???';
-              }
-            }
+                  // determine value based on case signifiance
+                  switch (fsn.caseSignificance) {
+                    case 'ENTIRE_TERM_CASE_SENSITIVE' : // entire term case sensitive
+                      nameValueMap[lt.name] = fsn.term;
+                      break;
+                    case 'CASE_INSENSITIVE': // entire term case insensitive
+                    case 'INITIAL_CHARACTER_CASE_INSENSITIVE' : // initial character case insensitive
+                      nameValueMap[lt.name] = fsn.term.substring(0, 1).toLowerCase() + fsn.term.substring(1);
+                      break;
+                    default:
+                      nameValueMap[lt.name] = '???';
+                  }
+                }
+              });
           });
         });
         deferred.resolve(nameValueMap);
@@ -567,9 +573,11 @@ angular.module('singleConceptAuthoringApp')
         delete d.templateStyle;
         delete d.templateMessages;
       });
-      angular.forEach(concept.relationships, function (r) {
-        delete r.templateStyle;
-        delete r.templateMessages;
+      angular.forEach(concept.classAxioms, function (a) {
+          angular.forEach(a.relationships, function (r) {
+            delete r.templateStyle;
+            delete r.templateMessages;
+          });
       });
     }
 
@@ -580,9 +588,11 @@ angular.module('singleConceptAuthoringApp')
       angular.forEach(concept.descriptions, function (d) {
         delete d.template;
       });
-      angular.forEach(concept.relationships, function (r) {
-        delete r.template;
-        delete r.targetSlot;
+      angular.forEach(concept.classAxioms, function (a) {
+          angular.forEach(a.relationships, function (r) {
+            delete r.template;
+            delete r.targetSlot;
+          });
       });
     }
     
