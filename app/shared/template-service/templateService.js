@@ -63,11 +63,12 @@ angular.module('singleConceptAuthoringApp')
                   "conceptsToTransform": concepts,
                   "inactivationReason": reason,
                   "sourceTemplate": source.name,
+                  "destinationTemplate": target.name,
                   "lexicalTransform": lexical,
                   "logicalTransform": logical
                 }
         
-        $http.post(apiEndpoint + branch + '/templates/' + target.name.replace(/\//g, '%252F') + '/transform', body).then(function (response) {
+        $http.post(apiEndpoint + branch + '/templates/transform', body).then(function (response) {
                     let id = response.headers('location');
                     id = id.substring(id.lastIndexOf("/") + 1);
                     let transformStatus = $interval(function () {
