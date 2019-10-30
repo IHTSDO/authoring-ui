@@ -458,14 +458,17 @@ angular.module('singleConceptAuthoringApp')
             d.template = angular.copy(d);
             d.term = d.initialTerm;
           });
-          angular.forEach(tc.relationships, function (r) {
-            r.template = angular.copy(r);
-
-            // if slot map provided, fill in target values
-            if (r.targetSlot && targetSlotMap && targetSlotMap.hasOwnProperty(r.targetSlot.slotName)) {
-              r.target.conceptId = targetSlotMap[r.targetSlot.slotName].conceptId;
-              r.target.fsn = targetSlotMap[r.targetSlot.slotName].fsn;
-            }
+          tc.classAxioms = [];
+          tc.classAxioms.push(componentAuthoringUtil.getNewAxiom(blank));
+          angular.forEach(tc.classAxioms, function (a) {
+              angular.forEach(a.relationships, function (r) {
+                r.template = angular.copy(r);
+                // if slot map provided, fill in target values
+                if (r.targetSlot && targetSlotMap && targetSlotMap.hasOwnProperty(r.targetSlot.slotName)) {
+                  r.target.conceptId = targetSlotMap[r.targetSlot.slotName].conceptId;
+                  r.target.fsn = targetSlotMap[r.targetSlot.slotName].fsn;
+                }
+            });
           });
           if(relAndDescMap && relAndDescMap !== undefined && relAndDescMap !== null){
               angular.forEach(relAndDescMap.descriptions, function (d) {
@@ -501,9 +504,9 @@ angular.module('singleConceptAuthoringApp')
                   tc.moduleId = template.conceptOutline.moduleId;
               }
           if(relAndDescMap !== null && relAndDescMap !== undefined){
-              for(var i = 0; i < tc.relationships.length; i++)
+              for(var i = 0; i < tc.classAxioms[0].relationships.length; i++)
                   {
-                      tc.relationships[i].target = relAndDescMap.relationships[i].target;
+                      tc.classAxioms[0].relationships[i].target = relAndDescMap.relationships[i].target;
                   }
           }
 
@@ -511,28 +514,32 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(tc.descriptions, function (d) {
             d.descriptionId = terminologyServerService.createGuid();
           });
-          angular.forEach(tc.relationships, function (r) {
-            r.relationshipId = terminologyServerService.createGuid();
+          angular.forEach(tc.classAxioms, function (a) {
+              angular.forEach(a.relationships, function (r){
+                  r.relationshipId = terminologyServerService.createGuid();
+              })
           });
 
           // replace logical values
           replaceLogicalValues(tc).then(function () {
             // replace template values (i.e. to replace display $term-x with x
             replaceLexicalValues(tc, template, branch).then(function () {
-                getConceptNames(tc.relationships, currentTask).then(function(rels){
-                    tc.relationships = rels;
+                getConceptNames(tc..classAxioms[0].relationships, currentTask).then(function(rels){
+                    tc..classAxioms[0].relationships = rels;
                     angular.forEach(tc.descriptions, function (d) {
                         if(template.conceptOutline.moduleId !== undefined)
                           {
                               d.moduleId = template.conceptOutline.moduleId;
                           }
                       });
-                      angular.forEach(tc.relationships, function (r) {
-                        r.relationshipId = terminologyServerService.createGuid();
-                          if(template.conceptOutline.moduleId !== undefined)
-                          {
-                              r.moduleId = template.conceptOutline.moduleId;
-                          }
+                      angular.forEach(tc.classAxioms, function (a) {
+                          angular.forEach(tc.relationships, function (r) {
+                            r.relationshipId = terminologyServerService.createGuid();
+                              if(template.conceptOutline.moduleId !== undefined)
+                              {
+                                  r.moduleId = template.conceptOutline.moduleId;
+                              }
+                          });
                       });
                     deferred.resolve(tc);
                 })
