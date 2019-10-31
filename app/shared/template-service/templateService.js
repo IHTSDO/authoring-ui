@@ -77,21 +77,27 @@ angular.module('singleConceptAuthoringApp')
                                   $http.get(apiEndpoint + 'templates/transform/' + id + '/results/').then(function (results) {
                                       angular.forEach(results.data.concepts, function(result){
                                           result.template = target;
-                                          angular.forEach(result.relationships, function(rel){
-                                              if(rel.type.moduleId){
-                                                  delete rel.type.moduleId;
-                                              }
-                                              if(rel.type.definitionStatus){
-                                                  delete rel.type.definitionStatus;
-                                              }
-                                              if(!rel.relationshipId){
-                                                  rel.relationshipId = terminologyServerService.createGuid();
-                                              }
+                                          angular.forEach(result.classAxioms, function(axiom){
+                                              angular.forEach(axiom.relationships, function(rel){
+                                                  if(rel.type.moduleId){
+                                                      delete rel.type.moduleId;
+                                                  }
+                                                  if(rel.type.definitionStatus){
+                                                      delete rel.type.definitionStatus;
+                                                  }
+                                                  if(!rel.relationshipId){
+                                                      rel.relationshipId = terminologyServerService.createGuid();
+                                                  }
+                                                  rel.type.pt = rel.type.pt.term;
+                                                  rel.target.fsn = rel.target.fsn.term;
+                                              });
                                           });
-                                          angular.forEach(result.descriptions, function(rel){
-                                              if(!rel.descriptionId){
-                                                  rel.descriptionId = terminologyServerService.createGuid();
+                                          
+                                          angular.forEach(result.descriptions, function(desc){
+                                              if(!desc.descriptionId){
+                                                  desc.descriptionId = terminologyServerService.createGuid();
                                               }
+                                              
                                           });
                                       });
                                       console.log(results.data.concepts);
@@ -103,20 +109,24 @@ angular.module('singleConceptAuthoringApp')
                                   $http.get(apiEndpoint + 'templates/transform/' + id + '/results/').then(function (results) {
                                       angular.forEach(results.data.concepts, function(result){
                                           result.template = target;
-                                          angular.forEach(result.relationships, function(rel){
-                                              if(rel.type.moduleId){
-                                                  delete rel.type.moduleId;
-                                              }
-                                              if(rel.type.definitionStatus){
-                                                  delete rel.type.definitionStatus;
-                                              }
-                                              if(!rel.relationshipId){
-                                                  rel.relationshipId = terminologyServerService.createGuid();
-                                              }
+                                          angular.forEach(result.classAxioms, function(axiom){
+                                              angular.forEach(result.relationships, function(rel){
+                                                  if(rel.type.moduleId){
+                                                      delete rel.type.moduleId;
+                                                  }
+                                                  if(rel.type.definitionStatus){
+                                                      delete rel.type.definitionStatus;
+                                                  }
+                                                  if(!rel.relationshipId){
+                                                      rel.relationshipId = terminologyServerService.createGuid();
+                                                  }
+                                                  rel.type.pt = rel.type.pt.term;
+                                                  rel.target.fsn = rel.target.fsn.term;
+                                              });
                                           });
-                                          angular.forEach(result.descriptions, function(rel){
-                                              if(!rel.descriptionId){
-                                                  rel.descriptionId = terminologyServerService.createGuid();
+                                          angular.forEach(result.descriptions, function(desc){
+                                              if(!desc.descriptionId){
+                                                  desc.descriptionId = terminologyServerService.createGuid();
                                               }
                                           });
                                       });
