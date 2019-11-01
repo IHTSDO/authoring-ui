@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .service('templateService', function ($http, $rootScope, $q, scaService, terminologyServerService, componentAuthoringUtil, $interval) {
+  .service('templateService', function ($http, $rootScope, $q, scaService, terminologyServerService, componentAuthoringUtil, $interval, $filter) {
 
     var apiEndpoint = '../template-service/';
 
@@ -325,7 +325,7 @@ angular.module('singleConceptAuthoringApp')
         deferred.reject('Invalid arguments');
       }
       console.log(conceptToTransform);
-      $http.post(apiEndpoint + branch + '/templates/' + encodeURI(destinationTemplate.name) + '/transform/concept', conceptToTransform).then(function (response) {        
+      $http.post(apiEndpoint + branch + '/templates/transform/concept?destinationTemplate=' + encodeURI(destinationTemplate.name), conceptToTransform).then(function (response) {        
         deferred.resolve(response.data);
       }, function (error) {
         deferred.reject('Failed to retrieve template concepts: ' + error.message);
