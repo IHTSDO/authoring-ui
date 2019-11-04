@@ -286,7 +286,6 @@ angular.module('singleConceptAuthoringApp')
       } else {
         var copiedConcept = angular.copy(concept);
         terminologyServerService.cleanConcept(copiedConcept);
-        copiedConcept.descriptions = [];
         transformConceptToTemplate(branch, template, copiedConcept).then(function(response) {
           concept.descriptions = angular.copy(response.descriptions);
           angular.forEach(concept.descriptions, function(d) {
@@ -324,7 +323,12 @@ angular.module('singleConceptAuthoringApp')
       if (!branch || !destinationTemplate || !conceptToTransform) {
         deferred.reject('Invalid arguments');
       }
-      console.log(conceptToTransform);
+      angular.forEach(conceptToTransform.classAxioms[0].relationships, function (r) {
+              r.type.fsn = {"term": r.type.fsn};
+              r.target.fsn = {"term": r.target.fsn};
+              r.type.pt = {"term": r.type.pt};
+              r.target.pt = {"term": r.target.pt};
+            });
       $http.post(apiEndpoint + branch + '/templates/transform/concept?destinationTemplate=' + encodeURI(destinationTemplate.name), conceptToTransform).then(function (response) {        
         deferred.resolve(response.data);
       }, function (error) {
@@ -441,16 +445,24 @@ angular.module('singleConceptAuthoringApp')
               idConceptMap[c.id] = c;
             });
             angular.forEach(template.conceptOutline.relationships, function (r) {
-              r.type.fsn = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].fsn.term : null;
-              r.target.fsn = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].fsn.term : null;
+              r.type.fsn = {};
+              r.target.fsn = {};
+              r.type.fsn.term = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].fsn.term : null;
+              r.target.fsn.term = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].fsn.term : null;
               r.target.definitionStatus = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].definitionStatus : null;
             });
             template.initialized = true;
+            template.conceptOutline.classAxioms = [];
+            template.conceptOutline.classAxioms.push(componentAuthoringUtil.getNewAxiom(true));
+            template.conceptOutline.classAxioms[0].relationships = template.relationships;
+            delete template.conceptOutline.relationships;
+            console.log(template.conceptOutline);
             deferred.resolve(template);
           },
           function (error) {
             deferred.reject('Error retrieving FSNs for template concepts: ' + error.message);
           });
+          
       }
       return deferred.promise;
     }
@@ -638,7 +650,7 @@ angular.module('singleConceptAuthoringApp')
                 });
             });
             
-            concept.classAxioms = $filter('orderBy')(items, 'matches')
+            concept.classAxioms = $filter('orderBy')(concept.classAxioms, 'matches')
             concept.classAxioms = [concept.classAxioms.slice(-1)[0]];
             delete concept.gciAxioms;
                 
