@@ -329,6 +329,7 @@ angular.module('singleConceptAuthoringApp')
               r.type.pt = {"term": r.type.pt};
               r.target.pt = {"term": r.target.pt};
             });
+      conceptToTransform.descriptions = [];
       $http.post(apiEndpoint + branch + '/templates/transform/concept?destinationTemplate=' + encodeURI(destinationTemplate.name), conceptToTransform).then(function (response) {        
         deferred.resolve(response.data);
       }, function (error) {
