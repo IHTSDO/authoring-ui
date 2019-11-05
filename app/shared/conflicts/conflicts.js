@@ -789,7 +789,7 @@ angular.module('singleConceptAuthoringApp')
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      rebase(newReview.id);
+                      rebase(); 
                     }
                   }, function (error) {
                     if (error) {
@@ -837,11 +837,11 @@ angular.module('singleConceptAuthoringApp')
                   initializeMergeReview(newReview);
                 }
               }, function (error) {
-				if (error) {
-				  notificationService.sendError('Conflicts: ' + error);
-				} else {
-				  notificationService.sendError('Error generating merge review.');
-				}
+                if (error) {
+                  notificationService.sendError('Conflicts: ' + error);
+                } else {
+                  notificationService.sendError('Error generating merge review.');
+                }
               });
             }
           }
@@ -872,6 +872,13 @@ angular.module('singleConceptAuthoringApp')
               // set flag to indicate that conflicts were resolved and
               // accepted
               scope.rebaseWithMerges = true;
+
+              // remove from UI state
+              if ($routeParams.taskKey) {
+                scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review');
+              } else {
+                scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review');
+              }
 
               // TODO This is currently non-functional -- there are no listeners in conflict mode
               // Instead, re-routing to edit view after slight delay to force task reload
