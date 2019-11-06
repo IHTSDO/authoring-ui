@@ -448,7 +448,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.showSidebarEdit = false; // Feedback page has its own sitebar
 
           //  view starts with no concepts
-          //$scope.concepts = [];
+          if($scope.role === 'REVIEWER') {
+            $scope.concepts = [];
+            $scope.editList = [];
+          }
+          
           $scope.canCreateConcept = false;
           break;
         case 'classification':
@@ -729,7 +733,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      * Adds concept from this branch to the concepts array
      * @param conceptId the SCTID of the concept
      */
-    $scope.addConceptToListFromId = function (conceptId, external) {
+    $scope.addConceptToListFromId = function (conceptId, external, loadFromTermServer) {
 
       if (!conceptId) {
         console.error('Could not add concept to edit list, id required');
@@ -758,7 +762,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         var crsConcept = crsService.getCrsConcept(conceptId);
 
         // if concept exists and is unsaved, use JSON representation
-        if (crsConcept && !crsConcept.saved) {
+        if (crsConcept && !crsConcept.saved && !loadFromTermServer) {
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
           if($scope.concepts.length > $scope.conceptsDisplayed
@@ -921,13 +925,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       if(!data.noSwitchView && ($scope.thisView === 'feedback'
         || $scope.thisView === 'batch'
         || $scope.thisView === 'inactivation')) {
-        $scope.setView('edit-default');
+        $scope.setView('edit-default', $scope.role === 'REVIEWER');
       }
-      processUiStateUpdate(data.conceptId);
+      processUiStateUpdate(data.conceptId, data.loadFromTermServer);
 
     });
 
-    function processUiStateUpdate(conceptId) {
+    function processUiStateUpdate(conceptId, loadFromTermServer) {
       $scope.conceptLoading = true;
 
       // verify that this SCTID does not exist in the edit list
@@ -941,7 +945,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      $scope.addConceptToListFromId(conceptId,true);
+      $scope.addConceptToListFromId(conceptId,true, loadFromTermServer);
       $scope.editList.push(conceptId);
       $scope.updateEditListUiState();
       // set focus on the selected concept

@@ -878,7 +878,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             if (queue.length > 0 || !conceptLoaded) {
               if(!processingConceptId) {
                 processingConceptId = queue.shift();
-                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId, loadFromTermServer: true});
               }
 
               conceptLoaded = false;
@@ -891,7 +891,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               if (conceptLoaded) {
                 if (queue.length > 0) {
                   processingConceptId = queue.shift();
-                  $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+                  $rootScope.$broadcast('editConcept', {conceptId: processingConceptId, loadFromTermServer: true});
                   conceptLoaded = false;
                 }
 
