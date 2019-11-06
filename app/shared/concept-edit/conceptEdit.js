@@ -1453,7 +1453,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.warnings = ['Please remove any axiom relationships you would not like to create along with the concept, and/or fill the new Is A and click save.'];
             if (!scope.concept.relationships) {
               scope.concept.classAxioms = [];
-              // scope.addAdditionalAxiom(false);
+              scope.addAdditionalAxiom(false);
               autoSave();
               scope.computeRelationshipGroups();
             }
@@ -1461,23 +1461,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (scope.concept.effectiveTime) {
                 scope.concept.classAxioms = [];
                 
-                if(scope.concept.relationships.length === 0) {
-                  scope.addAdditionalAxiom(false);
-                }
-                else {
-                  scope.addAdditionalAxiom(true);
-                }
-
+                var statedRels = [];
                 angular.forEach(scope.concept.relationships, function (relationship) {
                   if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
                     if(relationship.effectiveTime === scope.concept.effectiveTime){
                         let copy = angular.copy(relationship);
                         delete copy.relationshipId;
                         copy.active = true;
-                        scope.concept.classAxioms[0].relationships.push(copy);
+                        statedRels.push(copy);                        
                     }
                   }
                 });
+
+                if(statedRels.length === 0) {
+                  scope.addAdditionalAxiom(false);
+                }
+                else {
+                  scope.addAdditionalAxiom(true);
+                  scope.concept.classAxioms[0].relationships = statedRels;
+                }
               }
               else {
                 angular.forEach(scope.concept.classAxioms, function (axiom) {
