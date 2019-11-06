@@ -603,10 +603,12 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.$on('editConcept', function (event, data) {
-            notificationService.sendMessage('Loading concept ' + data.fsn);
-            addToEditHelper(data.conceptId).then(function (response) {
-              notificationService.sendMessage('Concept loaded', 5000);
-            });
+            if (data.noSwitchView) {
+              notificationService.sendMessage('Loading concept ' + (data.fsn ? data.fsn : data.conceptId));
+              addToEditHelper(data.conceptId).then(function (response) {
+                notificationService.sendMessage('Concept loaded', 5000);
+              });
+            }            
           });
 
           function closeAllConcepts () {
