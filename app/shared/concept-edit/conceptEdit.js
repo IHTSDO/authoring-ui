@@ -571,14 +571,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.applyTemplate = function (template) {
             templateService.applyTemplateToExistingConcept(scope.concept, template, scope.branch).then(function(concept){
-                $timeout(function () {
-                    scope.template = template;
-                    scope.concept = concept;
-                    console.log(scope.concept);
-                    scope.computeRelationshipGroups();
-                    sortDescriptions();
-                    sortRelationships();
-                  }, 200);
+              scope.template = template;
+              scope.concept = concept;
+              let conceptId = scope.concept.conceptId; // keep conceptId (restore in timeout) and reset new id to fore UI reload state
+              scope.concept.conceptId = terminologyServerService.createGuid();              
+              scope.computeRelationshipGroups();
+              sortDescriptions();
+              sortRelationships();
+              $timeout(function () {
+                scope.concept.conceptId = conceptId;
+              }, 100);
             });
         };
 

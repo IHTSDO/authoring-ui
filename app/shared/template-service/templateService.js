@@ -679,7 +679,7 @@ angular.module('singleConceptAuthoringApp')
                 conceptCopy.classAxioms[0].relationships.push(newRel);
               }
             });
-            for (var i = conceptCopy.relationships.length - 1; i >= 0; i--) {
+            for (var i = conceptCopy.classAxioms[0].relationships.length - 1; i >= 0; i--) {
                 if (conceptCopy.classAxioms[0].relationships[i].relationshipId !== null && conceptCopy.classAxioms[0].relationships[i].relationshipId !== undefined && conceptCopy.classAxioms[0].relationships[i].type !== 'INFERRED' && !conceptCopy.classAxioms[0].relationships[i].targetSlot) {
                     conceptCopy.classAxioms[0].relationships.splice(i, 1);
                 }
