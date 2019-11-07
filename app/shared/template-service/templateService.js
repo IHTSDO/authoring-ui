@@ -446,17 +446,16 @@ angular.module('singleConceptAuthoringApp')
               idConceptMap[c.id] = c;
             });
             angular.forEach(template.conceptOutline.relationships, function (r) {
-              r.type.fsn = {};
-              r.target.fsn = {};
-              r.type.fsn.term = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].fsn.term : null;
-              r.target.fsn.term = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].fsn.term : null;
+              r.type.pt = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].pt.term : null;
+              r.type.fsn = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].fsn.term : null;             
+              r.target.fsn = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].fsn.term : null;
+              r.target.pt = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].pt.term : null;
               r.target.definitionStatus = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].definitionStatus : null;
             });
             template.initialized = true;
             template.conceptOutline.classAxioms = [];
             template.conceptOutline.classAxioms.push(componentAuthoringUtil.getNewAxiom(true));
-            template.conceptOutline.classAxioms[0].relationships = template.relationships;
-            delete template.conceptOutline.relationships;
+            template.conceptOutline.classAxioms[0].relationships = angular.copy(template.conceptOutline.relationships);
             console.log(template.conceptOutline);
             deferred.resolve(template);
           },
@@ -482,14 +481,18 @@ angular.module('singleConceptAuthoringApp')
 
           // create concept from the concept template
           var tc = angular.copy(template.conceptOutline);
-
+          // delete relationships if any.
+          delete tc.relationships;
           // store template details against each component
           angular.forEach(tc.descriptions, function (d) {
             d.template = angular.copy(d);
             d.term = d.initialTerm;
           });
-          tc.classAxioms = [];
-          tc.classAxioms.push(componentAuthoringUtil.getNewAxiom(true));
+          if (typeof tc.classAxioms === "undefined") {
+            tc.classAxioms = [];
+            tc.classAxioms.push(componentAuthoringUtil.getNewAxiom(true));
+          }
+          
           angular.forEach(tc.classAxioms, function (a) {
               angular.forEach(a.relationships, function (r) {
                 r.template = angular.copy(r);

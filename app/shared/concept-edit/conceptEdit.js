@@ -4291,6 +4291,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 refreshAttributeTypesForAxiom(axiom);
                 scope.computeAxioms(axiom.type);
+
+                scope.updateRelationship(relationship);
                 autoSave();
               }, function () {
                 scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
