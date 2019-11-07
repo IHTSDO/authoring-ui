@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp')
           function applyNgTableSortingParams(concept) {
             concept.sctid = terminologyServerService.isSctid(concept.conceptId) ? concept.conceptId : '';
             concept.fsn = componentAuthoringUtil.getFsnForConcept(concept);
-            angular.forEach(concept.relationships, function (r) {
+            angular.forEach(concept.classAxioms[0].relationships, function (r) {
               if (r.targetSlot && r.targetSlot.slotName) {
                 concept[r.targetSlot.slotName] = r.target.fsn;
               }
@@ -148,7 +148,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             // get the slot name
             try {
-              var slotRelationship = concept.relationships.filter(function (r) {
+              var slotRelationship = concept.classAxioms[0].relationships.filter(function (r) {
                 return r.targetSlot && r.targetSlot.slotName === slotName;
               })[0];
               constraintService.getConceptsForValueTypeahead(slotRelationship.type.conceptId, searchStr, scope.branch, slotRelationship.targetSlot.allowableRangeECL).then(function (response) {
@@ -164,7 +164,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getRelationshipTargetDragObject = function (concept, slotName) {
             var dragObj;
-            angular.forEach(concept.relationships, function (relationship) {
+            angular.forEach(concept.classAxioms[0].relationships, function (relationship) {
               if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
                 dragObj = {
                   id: relationship.target.conceptId,
@@ -177,7 +177,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getTableCellValue = function (concept, slotName) {
             var fsn = '';
-            angular.forEach(concept.relationships, function (relationship) {
+            angular.forEach(concept.classAxioms[0].relationships, function (relationship) {
               if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
                 fsn = relationship.target.fsn;
               }
@@ -190,7 +190,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.dropRelationshipTarget = function (concept, slotName, data) {
-            angular.forEach(concept.relationships, function (relationship) {
+            angular.forEach(concept.classAxioms[0].relationships, function (relationship) {
               if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
                 constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
                   relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp')
 
 // TODO Set relationship target and update target slot on typeahead select
           scope.setTargetSlot = function (concept, slotName, data) {
-            angular.forEach(concept.relationships, function (r) {
+            angular.forEach(concept.classAxioms[0].relationships, function (r) {
               if (r.targetSlot && r.targetSlot.slotName === slotName) {
                 r.target.conceptId = data.id;
                 r.target.fsn = data.fsn.term;
@@ -608,11 +608,13 @@ angular.module('singleConceptAuthoringApp')
                       delete description.descriptionId;
                     }
                   });
-                  angular.forEach(concept.relationships, function (relationship) {
-                    if (!relationship.released) {
-                      delete relationship.relationshipId;
-                    }
-                  });
+                  angular.forEach(concept.classAxioms, function (axiom) {
+                    angular.forEach(axiom.relationships, function (relationship) {
+                      if (!relationship.released) {
+                        delete relationship.relationshipId;
+                      }
+                    });
+                  });                  
 
                   if (!concept.conceptId) {
                     saveFn = terminologyServerService.createConcept;

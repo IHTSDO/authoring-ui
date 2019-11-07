@@ -1706,9 +1706,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(scope.concept.descriptions, function (description) {
             description.moduleId = concept.moduleId;
           });
+          /*
           angular.forEach(scope.concept.relationships, function (relationship) {
             relationship.moduleId = concept.moduleId;
           });
+          */
 
           if (scope.concept.classAxioms) {
             angular.forEach(scope.concept.classAxioms, function (axiom) {
@@ -1793,15 +1795,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               description.moduleId = moduleId;
             }
           });
-
-          angular.forEach(scope.concept.relationships, function (relationship) {
-            if(!relationship.moduleId) {
-              relationship.moduleId = moduleId;
+          angular.forEach(scope.concept.classAxioms, function (axiom) {
+            if(!axiom.moduleId) {
+              axiom.moduleId = moduleId;
             }
-            if(!relationship.target.moduleId) {
-              relationship.target.moduleId = moduleId;
-            }
+            angular.forEach(axiom.relationships, function (relationship) {
+              if(!relationship.moduleId) {
+                relationship.moduleId = moduleId;
+              }              
+            });
           });
+          angular.forEach(scope.concept.gciAxioms, function (axiom) {
+            if(!axiom.moduleId) {
+              axiom.moduleId = moduleId;
+            }
+            angular.forEach(axiom.relationships, function (relationship) {
+              if(!relationship.moduleId) {
+                relationship.moduleId = moduleId;
+              }              
+            });
+          });          
         }
 
         scope.setCaseSignificance = function (description, caseSignificance) {
@@ -3679,7 +3692,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (!metadataService.isExtensionSet()) {
 
                 // if all target slots are set
-                if (scope.concept.relationships.filter(function (r) {
+                if (scope.concept.classAxioms[0].relationships.filter(function (r) {
                     return r.targetSlot && !r.target.conceptId;
                   }).length === 0) {
 
@@ -4257,10 +4270,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             description.moduleId = moduleId;
           }
 
-          for (var k = scope.concept.relationships.length - 1; k >= 0; k--) {
-            var relationship = scope.concept.relationships[k];
-            relationship.moduleId = moduleId;
-          }
+          angular.forEach(scope.concept.classAxioms, function (axiom) {            
+            axiom.moduleId = moduleId;           
+            angular.forEach(axiom.relationships, function (relationship) {
+              relationship.moduleId = moduleId;
+            });
+          });
+          angular.forEach(scope.concept.gciAxioms, function (axiom) {
+            axiom.moduleId = moduleId;
+            angular.forEach(axiom.relationships, function (relationship) {
+              relationship.moduleId = moduleId;              
+            });
+          });
+
+          
         }
 
         scope.consolidateRelationship = function (relationship) {
