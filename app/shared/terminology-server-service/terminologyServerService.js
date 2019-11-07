@@ -297,7 +297,7 @@ angular.module('singleConceptAuthoringApp')
             delete relationship[key];
           }
         }
-        if(typeof relationship.pt == "object"){
+        if(relationship.pt !== null && typeof relationship.pt == "object"){
             relationship.pt = relationship.pt.term;
         }
       }
