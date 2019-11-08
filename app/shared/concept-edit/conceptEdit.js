@@ -572,15 +572,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.applyTemplate = function (template) {
             templateService.applyTemplateToExistingConcept(scope.concept, template, scope.branch).then(function(concept){
               scope.template = template;
-              scope.concept = concept;
-              let conceptId = scope.concept.conceptId; // keep conceptId (restore in timeout) and reset new id to fore UI reload state
-              scope.concept.conceptId = terminologyServerService.createGuid();              
-              scope.computeRelationshipGroups();
-              sortDescriptions();
-              sortRelationships();
-              $timeout(function () {
-                scope.concept.conceptId = conceptId;
-              }, 100);
+              
+              templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template).then(function() {
+                scope.concept = concept;
+                let conceptId = scope.concept.conceptId; // keep conceptId (restore in timeout) and reset new id to fore UI reload state
+                scope.concept.conceptId = terminologyServerService.createGuid();              
+                scope.computeRelationshipGroups();
+                sortDescriptions();
+                sortRelationships();
+                templateService.logTemplateConceptSave($routeParams.projectKey, conceptId, scope.concept.fsn, scope.template);
+                
+                $timeout(function () {
+                  scope.concept.conceptId = conceptId;
+                  autoSave();              
+                }, 100);
+              });
             });
         };
 
