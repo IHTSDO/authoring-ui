@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp')
           function initNgTableSlots(template) {
 
             if (template && template.conceptOutline) {
-              angular.forEach(template.conceptOutline.relationships, function (r) {
+              angular.forEach(template.conceptOutline.classAxioms[0].relationships, function (r) {
                 if (r.targetSlot && r.targetSlot.slotName) {
                   var add = true;
                   if(scope.templateSlots.length !== 0)

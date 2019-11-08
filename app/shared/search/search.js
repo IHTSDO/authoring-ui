@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         console.debug('before update template options', $scope.templateOptions);
 
         if ($scope.templateOptions.selectedTemplate) {
-          $scope.templateOptions.availableSlots = $scope.templateOptions.selectedTemplate.conceptOutline.relationships.filter(function (r) {
+          $scope.templateOptions.availableSlots = $scope.templateOptions.selectedTemplate.conceptOutline.classAxioms[0].relationships.filter(function (r) {
             return r.targetSlot && r.targetSlot.slotName;
           }).map(function (r) {
             return r.targetSlot;
