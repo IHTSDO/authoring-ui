@@ -753,7 +753,7 @@ angular.module('singleConceptAuthoringApp')
 
                         // update state after remove
                         batchEditingService.updateBatchUiState();
-                        $rootScope.$broadcast('batchEditing.batchSaveConceptsComplete', {numberSavedConcepts : concepts.length});
+                        $rootScope.$broadcast('batchEditing.batchSaveConceptsComplete', {numberSavedConcepts : scope.validConcepts.length});
                       });
                   });
                 }, function (error) {
