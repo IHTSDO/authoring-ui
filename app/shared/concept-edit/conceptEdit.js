@@ -1476,6 +1476,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                         let copy = angular.copy(relationship);
                         delete copy.relationshipId;
                         copy.active = true;
+                        copy.released = false;
                         statedRels.push(copy);                        
                     }
                   }
@@ -1494,6 +1495,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   axiom.active = true;
                   angular.forEach(axiom.relationships, function (relationship) {
                     relationship.active = true;
+                    relationship.released = false;
                   });
                 });
               }
