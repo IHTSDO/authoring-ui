@@ -193,7 +193,7 @@
                   </button>
 
                   <button type="button" ng-click="removeAxiomRelationship(relationship, axiom)"
-                          ng-if="relationship.active && !isStatic && !relationship.released && !isLockedModule(axiom.moduleId)"
+                          ng-if="relationship.active && !isStatic && !template && !relationship.released && !isLockedModule(axiom.moduleId)"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Remove Relationship</span>
                   </button>
