@@ -189,7 +189,7 @@ angular
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
         // copyright text in footer
-        $("#copyright_text").html(features.copyrightText);
+        $("#copyright_text").html(features.copyrightNotice);
         
         // don't want either true or false here please!
         $rootScope.loggedIn = null;
