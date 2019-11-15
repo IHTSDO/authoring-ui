@@ -33,7 +33,7 @@
       <button type="button"
               ng-click="removeAxiom(axiom,axiom.type)"
               class="btn-default red small-buttons tooltips-bottom small-size-tooltip offset-tooltip-right tooltips-light normal-case editbuttons fa-sca fa-minus axiom-staus-buttons"
-              ng-if="!isStatic && !axiom.released"
+              ng-if="!isStatic && !axiom.released && !template"
               ng-disabled="isLockedModule(axiom.moduleId)">
         <span>Delete Axiom</span>
       </button>
