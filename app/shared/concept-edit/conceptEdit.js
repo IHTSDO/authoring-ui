@@ -2725,6 +2725,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if template supplied, check ECL/ESCG
           if (scope.template) {
+              consolde.log('here');
 
             constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
               relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
@@ -2811,8 +2812,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var tempFsn = relationship.target.fsn;
 
           relationship.target.fsn = 'Validating...';
+            
+          // if template supplied, check ECL/ESCG
+          if (scope.template) {
+              console.log('here');
 
-          if (metadataService.isMrcmEnabled()) {
+            constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
+              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+              relationship.target.conceptId = data.id;
+              relationship.target.fsn = data.name;
+
+              if(!metadataService.isExtensionSet()
+                && relationship.type.conceptId === '116680003') {// Is a (attribute)
+                terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
+                  if (relationship.moduleId !== response.moduleId) {
+                    resetModuleId(response.moduleId);
+                  }
+                  scope.updateRelationship(relationship, false);
+                  scope.isModified = true;
+                  scope.computeAxioms(type);
+                  refreshAttributeTypesForAxiom(axiom);
+                  autoSave();
+                });
+              } else {
+                scope.updateRelationship(relationship, false);
+              }
+            }, function (error) {
+              scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
+              relationship.target.fsn = tempFsn;
+            });
+          }
+
+          else if (metadataService.isMrcmEnabled()) {
 
             if (relationship.type.conceptId) {
 
