@@ -188,6 +188,9 @@ angular
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
+        // copyright text in footer
+        $("#copyright_text").html(features.copyrightText);
+        
         // don't want either true or false here please!
         $rootScope.loggedIn = null;
 
