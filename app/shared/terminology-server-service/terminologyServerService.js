@@ -1799,7 +1799,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject('Cannot poll for merge details, id required');
         }
         if (!intervalTime) {
-          intervalTime = 1000;
+          intervalTime = 5000;
         }
 
         $timeout(function () {
@@ -1813,7 +1813,7 @@ angular.module('singleConceptAuthoringApp')
                 deferred.reject('Could not retrieve details of reported current review');
               });
             } else {
-              pollForReview(mergeReviewId, intervalTime * 1.5).then(function (pollResults) {
+              pollForReview(mergeReviewId, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
                 deferred.reject(error);
