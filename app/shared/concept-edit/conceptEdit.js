@@ -2725,7 +2725,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if template supplied, check ECL/ESCG
           if (scope.template) {
-              consolde.log('here');
 
             constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
               relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
@@ -2815,7 +2814,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             
           // if template supplied, check ECL/ESCG
           if (scope.template) {
-              console.log('here');
 
             constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
               relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
