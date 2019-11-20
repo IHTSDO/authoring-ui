@@ -188,8 +188,16 @@ angular
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
-        // copyright text in footer
-        $("#copyright_text").html(features.copyrightNotice);
+        // Footer information
+        $("#copyright_text").html(features.copyrightNotice);      
+       
+        if(endpoints.userGuideEndpoint) {
+          $("#user_guide").attr("href", endpoints.userGuideEndpoint)
+        }
+        
+        if(endpoints.contactUsEndpoint) {
+          $("#contact_us").attr("href", endpoints.contactUsEndpoint)
+        }        
         
         // don't want either true or false here please!
         $rootScope.loggedIn = null;
