@@ -1,5 +1,5 @@
 
-<div class="edits editing-form darken-3 grey" drop-channel="axiomObj" ui-on-drop="dropAxiom($data)" drag-enter-class="sca-drag-target">
+<div class="edits editing-form darken-3 grey">
   <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="getExtensionNamespace() !== ''">
      <span >Unpublished concept from {{extensionNamespace}}</span>
   </i>
@@ -50,7 +50,6 @@
                   popover-append-to-body="true">
             <span>More details</span>
           </button>
-<!--
           <div class="template-controls " ng-if="template && !isMerge && !isStatic && !isBatch">
             <ul class="sub-navigation-link-list ">
               <li>
@@ -66,13 +65,12 @@
 
           <div ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic && !isBatch"
               popover-template="'components/edit/editTemplateSelect.html'"
-              popover-placement="left-bottom"
+              popover-placement="left-top"
               popover-trigger="click: click"
               popover-append-to-body="true"
               class="pointer btn btn-default tooltips-right tooltips-light transparent normal-case wandbutton attach-template-control">
             <i class="md fa fa-magic"></i><span>Attach Template</span>
           </div>
--->
 
           <div class="copy-to-clipboard" ng-if="isSctid(concept.conceptId) && concept.fsn">
             <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
@@ -201,8 +199,8 @@
                           ng-click="collapse(concept)"></i></span>
               </div>
               <ul ng-if=" role === 'AUTHOR' || !isStatic || role === 'REVIEWER'">
-                <li ng-click="addAdditionalAxiom(false)" ng-if="!isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
-                <li ng-click="addGCIAxiom()" ng-if="!isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
+                <li ng-click="addAdditionalAxiom(false)" ng-if="!template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
+                <li ng-click="addGCIAxiom()" ng-if="!template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
@@ -335,9 +333,9 @@
 
             <span class="{{getCaseSignificanceDisplayText(description)}}"></span>
           </button>
-          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-caseSignificance'].style !== ''"
+          <div ng-if="isFeedback && componentStyles[description.descriptionId + '-caseSignificance'].style !== ''"
             class="tooltips-bottom tooltips-light medium-size-tooltip custom-margin"
-            ng-class="innerComponentStyle[description.descriptionId + '-caseSignificance'].style"><span>{{innerComponentStyle[description.descriptionId + '-caseSignificance'].message}}</span></div>
+            ng-class="componentStyles[description.descriptionId + '-caseSignificance'].style"><span>{{componentStyles[description.descriptionId + '-caseSignificance'].message}}</span></div>
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
@@ -396,9 +394,9 @@
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
-          <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-type'].style !== ''"
+          <div ng-if="isFeedback && componentStyles[description.descriptionId + '-type'].style !== ''"
                 class="tooltips-bottom offset-tooltip-right xlarge-size-tooltip"
-                ng-class="innerComponentStyle[description.descriptionId + '-type'].style"><span>{{innerComponentStyle[description.descriptionId + '-type'].message}}</span></div>
+                ng-class="componentStyles[description.descriptionId + '-type'].style"><span>{{componentStyles[description.descriptionId + '-type'].message}}</span></div>
           <!-- Dialect / Acceptability -- never alterable for saved FSN -->
           <div>
 
@@ -413,9 +411,9 @@
                     </div>
                     <span> {{getAcceptabilityTooltipText(description, dialectId)}}</span>
                   </button>
-                  <div ng-if="isFeedback && innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style !== ''"
+                  <div ng-if="isFeedback && componentStyles[description.descriptionId + '-acceptability-' + dialectId].style !== ''"
                     class="tooltips-bottom offset-tooltip-right xxlarge-size-tooltip"
-                    ng-class="innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{innerComponentStyle[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
+                    ng-class="componentStyles[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{componentStyles[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
               </div>
             </div>
           </div>

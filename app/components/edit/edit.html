@@ -19,12 +19,12 @@
     <!-- Create new template concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             popover-template="'components/edit/editTemplateSelect.html'"
-            popover-placement="bottom-left"
+            popover-placement="right-top"
             popover-trigger="click"
             popover-append-to-body="true"
             type="button"
             id="templateCreateBtn"
-            disabled
+            ng-disabled="task.status === 'Promoted' || !canCreateConcept"
             ng-if="templates.length > 0"
             class="btn btn-default create-template widget-toolbar tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i>
@@ -246,6 +246,7 @@
                    branch="targetBranch" static="branchLocked || !isOwnTask"
                    ui-state-update-fn="updateEditListUiState()"
                    project-taxonomy-visible="true"
+                   highlight-changes="true"
               >
               </div>
             </div>
@@ -293,6 +294,7 @@
           <div class="no-gutter grey darken-3 panel-height col-md-12">
             <div concept-edit concept="concepts[$index]" id="concept-edit-{{concept.conceptId}}"
                  branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
+                 highlight-changes="true"
             >
             </div>
           </div>

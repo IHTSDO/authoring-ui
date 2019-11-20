@@ -185,35 +185,77 @@ angular.module('singleConceptAuthoringApp')
 
         prepareCrsConcept(attachment.content).then(function (preparedConcept) {
 
-          deferred.resolve({
-            // the id fields (for convenience)
-            conceptId: preparedConcept.conceptId,
-            fsn: preparedConcept.fsn,
-            preferredSynonym: preparedConcept.preferredSynonym,
-
-            // the request url
-            requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
-
-            // the ticket ids
-            crsId: attachment.issueKey,
-            scaId: attachment.ticketKey,
-
-            // the freshly retrieved concept with definition changes appended
-            concept: preparedConcept,
-
-            // the original JSON
-            conceptJson: attachment,
-
-            // flags & error
-            emptyContent: attachment.emptyContent,
-            error: attachment.error,
-            saved: false,
-
-            // duplicate flags -- isNewConcept is static, requiresCreation changes
-            isNewConcept: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT',
-            requiresCreation: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
-
+          var promises = [];
+          angular.forEach(preparedConcept.descriptions, function(description) {
+            if (description.active && !description.effectiveTime && !description.released && description.type === 'SYNONYM') {
+              promises.push(componentAuthoringUtil.runDescriptionAutomations(preparedConcept, description, false));
+            }
           });
+            
+          if (promises.length !== 0) {
+            $q.all(promises).then(function () {
+              deferred.resolve({
+                // the id fields (for convenience)
+                conceptId: preparedConcept.conceptId,
+                fsn: preparedConcept.fsn,
+                preferredSynonym: preparedConcept.preferredSynonym,
+    
+                // the request url
+                requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
+    
+                // the ticket ids
+                crsId: attachment.issueKey,
+                scaId: attachment.ticketKey,
+    
+                // the freshly retrieved concept with definition changes appended
+                concept: preparedConcept,
+    
+                // the original JSON
+                conceptJson: attachment,
+    
+                // flags & error
+                emptyContent: attachment.emptyContent,
+                error: attachment.error,
+                saved: false,
+    
+                // duplicate flags -- isNewConcept is static, requiresCreation changes
+                isNewConcept: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT',
+                requiresCreation: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
+    
+              });
+            });
+          }
+          else {
+            deferred.resolve({
+              // the id fields (for convenience)
+              conceptId: preparedConcept.conceptId,
+              fsn: preparedConcept.fsn,
+              preferredSynonym: preparedConcept.preferredSynonym,
+  
+              // the request url
+              requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
+  
+              // the ticket ids
+              crsId: attachment.issueKey,
+              scaId: attachment.ticketKey,
+  
+              // the freshly retrieved concept with definition changes appended
+              concept: preparedConcept,
+  
+              // the original JSON
+              conceptJson: attachment,
+  
+              // flags & error
+              emptyContent: attachment.emptyContent,
+              error: attachment.error,
+              saved: false,
+  
+              // duplicate flags -- isNewConcept is static, requiresCreation changes
+              isNewConcept: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT',
+              requiresCreation: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
+  
+            });
+          }          
         }, function (error) {
           deferred.reject(error);
         });
