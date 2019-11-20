@@ -192,7 +192,7 @@ angular
         $("#copyright_text").html(features.copyrightNotice);      
        
         if(endpoints.userGuideEndpoint) {
-          $("#user_guide").attr("href", endpoints.userGuideEndpoint)
+          $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint)
         }
         
         if(endpoints.contactUsEndpoint) {
