@@ -61,7 +61,6 @@ angular.module('singleConceptAuthoringApp')
             if (typeof relationship.type == "object") {
               normaliseSnowstormTerms(relationship.type);
               relationship.type.pt = relationship.type.fsn.substr(0, relationship.type.fsn.lastIndexOf('(')).trim();
-              console.log(relationship);
             }
             if (typeof relationship.target == "object") {
               normaliseSnowstormTerms(relationship.target);
@@ -298,7 +297,7 @@ angular.module('singleConceptAuthoringApp')
             delete relationship[key];
           }
         }
-        if(typeof relationship.pt == "object"){
+        if(relationship.pt !== null && typeof relationship.pt == "object"){
             relationship.pt = relationship.pt.term;
         }
       }
@@ -1800,7 +1799,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject('Cannot poll for merge details, id required');
         }
         if (!intervalTime) {
-          intervalTime = 1000;
+          intervalTime = 5000;
         }
 
         $timeout(function () {
@@ -1814,7 +1813,7 @@ angular.module('singleConceptAuthoringApp')
                 deferred.reject('Could not retrieve details of reported current review');
               });
             } else {
-              pollForReview(mergeReviewId, intervalTime * 1.5).then(function (pollResults) {
+              pollForReview(mergeReviewId, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
                 deferred.reject(error);

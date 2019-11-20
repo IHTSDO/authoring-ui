@@ -394,7 +394,7 @@ angular.module('singleConceptAuthoringApp')
           var parent = null;
 
           // if a concept is supplied
-          if (scope.concept) {
+          if (scope.concept && scope.concept.conceptId !== metadataService.getSnomedCtRootId()) {
 
             parent = scope.concept;
             // add as root tree

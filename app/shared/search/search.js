@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         console.debug('before update template options', $scope.templateOptions);
 
         if ($scope.templateOptions.selectedTemplate) {
-          $scope.templateOptions.availableSlots = $scope.templateOptions.selectedTemplate.conceptOutline.relationships.filter(function (r) {
+          $scope.templateOptions.availableSlots = $scope.templateOptions.selectedTemplate.conceptOutline.classAxioms[0].relationships.filter(function (r) {
             return r.targetSlot && r.targetSlot.slotName;
           }).map(function (r) {
             return r.targetSlot;
@@ -193,7 +193,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        /*if(!metadataService.isTemplatesEnabled())
+        if(!metadataService.isTemplatesEnabled())
             {
                 if ($scope.searchMode === 'Switch to ECL') {
                   $scope.searchMode = 'Switch to Template';
@@ -213,7 +213,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.templateMode = false;
                 }
             }
-        else{*/
+        else{
             if ($scope.searchMode === 'Switch to ECL') {
               $scope.searchMode = 'Switch to Text';
               $scope.isEscgMode = true;
@@ -227,7 +227,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.isEscgMode = false;
               $scope.templateMode = false;
             }
-        /*}*/
+        }
 
         $scope.newSearch();
       };
@@ -878,7 +878,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             if (queue.length > 0 || !conceptLoaded) {
               if(!processingConceptId) {
                 processingConceptId = queue.shift();
-                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+                $rootScope.$broadcast('editConcept', {conceptId: processingConceptId, loadFromTermServer: true});
               }
 
               conceptLoaded = false;
@@ -891,7 +891,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               if (conceptLoaded) {
                 if (queue.length > 0) {
                   processingConceptId = queue.shift();
-                  $rootScope.$broadcast('editConcept', {conceptId: processingConceptId});
+                  $rootScope.$broadcast('editConcept', {conceptId: processingConceptId, loadFromTermServer: true});
                   conceptLoaded = false;
                 }
 

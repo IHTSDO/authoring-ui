@@ -178,10 +178,7 @@ angular
         var endpoints = response.endpoints;
         var features = response.features
         $rootScope.endpoints = endpoints;
-
-        if (features.network && features.network.connection.minimum) {
-          window.minNetworkConnection = features.network.connection.minimum;
-        }
+       
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         crsService.setCrsEndpoint(endpoints['crsEndpoint']);
         crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);
@@ -191,6 +188,17 @@ angular
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
+        // Footer information
+        $("#copyright_text").html(features.copyrightNotice);      
+       
+        if(endpoints.userGuideEndpoint) {
+          $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint)
+        }
+        
+        if(endpoints.contactUsEndpoint) {
+          $("#contact_us").attr("href", endpoints.contactUsEndpoint)
+        }        
+        
         // don't want either true or false here please!
         $rootScope.loggedIn = null;
 

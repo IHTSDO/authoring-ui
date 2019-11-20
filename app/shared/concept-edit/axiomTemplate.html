@@ -1,4 +1,4 @@
-<div class="row grey darken-4 p-t-5" ng-class="getComponentStyle(axiom.axiomId, null, '', axiom) + ' ' + getComponentStyle(axiom.axiomId, null, '', null)">
+<div class="axiom row grey darken-4 p-t-5" drop-channel="axiomObj" ui-on-drop="dropAxiom($data)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover" ng-class="getComponentStyle(axiom.axiomId, null, '', axiom) + ' ' + getComponentStyle(axiom.axiomId, null, '', null)">
   <div class="col-md-1 no-padding pull-left">
     <button
         class="btn-default md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
@@ -33,7 +33,7 @@
       <button type="button"
               ng-click="removeAxiom(axiom,axiom.type)"
               class="btn-default red small-buttons tooltips-bottom small-size-tooltip offset-tooltip-right tooltips-light normal-case editbuttons fa-sca fa-minus axiom-staus-buttons"
-              ng-if="!isStatic && !axiom.released"
+              ng-if="!isStatic && !axiom.released && !template"
               ng-disabled="isLockedModule(axiom.moduleId)">
         <span>Delete Axiom</span>
       </button>
@@ -44,7 +44,7 @@
                   ng-disabled="isInactivation  || isLockedModule(axiom.moduleId) && concept.released"
                   class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case m-l-5">
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'FULLY_DEFINED'"
-              ng-disabled="isStatic || isLockedModule(axiom.moduleId)"
+              ng-disabled="isStatic || isLockedModule(axiom.moduleId) || template"
               class="white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right m-l-5"
               ng-class="[{'fully-defined-btn' : axiom.definitionStatus === 'FULLY_DEFINED'}]"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
@@ -53,7 +53,7 @@
         <span>Fully Defined</span>
       </button>
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'PRIMITIVE'"
-              ng-disabled="isStatic || isLockedModule(axiom.moduleId)"
+              ng-disabled="isStatic || isLockedModule(axiom.moduleId) || template"
               class="primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right m-l-5"
               ng-class="[{'primitive-btn' : axiom.definitionStatus === 'PRIMITIVE'}]"
               ng-click="toggleAxiomDefinitionStatus(axiom)">
@@ -113,7 +113,7 @@
 
                     <textarea id="{{axiom.type}}-axiom-relationship-type-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
                               custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.pt"
-                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(axiom.moduleId) || isBatch"
+                              ng-readonly="relationship.effectiveTime || isStatic || template || isLockedModule(axiom.moduleId) || isBatch || relationship.deleted"
                               class="resizable-text form-control msd-elastic no-border-bottom rel"
                               typeahead="suggestion as suggestion.pt.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
                               typeahead-focus-first="false"
@@ -147,7 +147,7 @@
                   <div class="small-size-tooltip tooltips-bottom">
                       <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
-                                ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(axiom.moduleId)"
+                                ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
                                 typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                                 typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -193,7 +193,7 @@
                   </button>
 
                   <button type="button" ng-click="removeAxiomRelationship(relationship, axiom)"
-                          ng-if="relationship.active && !isStatic && !relationship.released && !isLockedModule(axiom.moduleId)"
+                          ng-if="relationship.active && !isStatic && !template && !relationship.released && !isLockedModule(axiom.moduleId)"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Remove Relationship</span>
                   </button>
@@ -226,16 +226,16 @@
                   <div ng-bind="warning"></div>
                 </div>
           </div>
-        </div>
-      <div ng-if="$last && groupId !== 0" class="row axiom-group-top"></div>
-      <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template && !isLockedModule(axiom.moduleId)">
-        <div class="col-md-9 col-s-8 col-xs-6"></div>
-            <div class="col-md-3 col-s-4 col-xs-6 no-padding no-margin">
-                <button class="btn-default role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right pull-right"
-                ng-click="addAxiomRelationshipGroup(axiom)"><div class="add-group-button pull-right sans-serif line-height-20">+1 Add Group</div>
-              </button>
-            </div>
-        </div>
+        </div>      
+    </div>
+    <div ng-if="$last && groupId !== 0" class="row axiom-group-top"></div>
+    <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template && !isLockedModule(axiom.moduleId)">
+      <div class="col-md-9 col-s-8 col-xs-6"></div>
+      <div class="col-md-3 col-s-4 col-xs-6 no-padding no-margin">
+          <button class="btn-default role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right pull-right"
+          ng-click="addAxiomRelationshipGroup(axiom)"><div class="add-group-button pull-right sans-serif line-height-20">+1 Add Group</div>
+        </button>
       </div>
+    </div>
   </div>
 </div>

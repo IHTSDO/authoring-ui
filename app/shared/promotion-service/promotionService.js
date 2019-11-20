@@ -420,7 +420,7 @@ angular.module('singleConceptAuthoringApp')
       if(deletedCRSConceptFound) {
         flags.push({
                     checkTitle: 'Deleted CRS concept',
-                    checkWarning: 'A CRS concept has been deleted on this task, please verify that the request was rejected',
+                    checkWarning: 'A CRS request has been deleted on this task, the associated CRS request has been put back into a state of Accepted',
                     blocksPromotion: false
                   });
       }

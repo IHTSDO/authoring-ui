@@ -17,7 +17,7 @@
 <div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing">
     <div class="row column-md-12 p-15">
         <div
-                        disabled
+                        ng-disabled="templatesLoading"
                         id="batchTemplateSelectBtn"
                         popover-template="'components/edit/editTemplateSelect.html'"
                         popover-placement="bottom-left"
