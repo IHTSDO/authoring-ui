@@ -221,6 +221,10 @@ angular.module('singleConceptAuthoringApp')
         scope.openReporting = function() {
           window.open('/reporting/');
         };
+          
+        scope.openMRCM = function() {
+          window.open('/mrcm/');
+        };
       }
     };
   }]);
