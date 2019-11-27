@@ -98,10 +98,21 @@
     width: 5px;
     background-color: red;
 }
-.sca-drag-target,
-.sca-drag-hover {
+.sca-drag-target{
     background-color: transparent;
     border: none;
+}
+.sca-drag-hover, 
+.sca-drag-hover textarea,
+.sca-drag-hover button,
+.sca-drag-hover .drag-button-width,
+.sca-drag-hover .is_a.is_a_bg,
+.sca-drag-hover .sourcename.relationship-targe,
+.sca-drag-hover .typeid,
+.sca-drag-hover .typeid select{
+    background-color: #43A047 !important;
+    border: none;
+    color: #dedede;
 }
 .taxonomy-panel .second-taxonomy.sca-drag-hover {
     border: 1px dashed #9f9f9f;
@@ -116,18 +127,12 @@
 
 .sca-drag-hover textarea {
     border: 1px dashed #fff;
-    background: #00a6e5;
+    background: green;
     color: #fff;
 }
 .sca-drag-target textarea {
     border: 1px dashed #9f9f9f;
     background: #dedede;
-}
-.sca-relgroup-drag-target,
-.sca-relgroup-drag-hover {
-    border: 1px dashed #fff;
-    background: #00a6e5;
-    color: #fff;
 }
 .sca-drag-handle {
     background-color: red;
