@@ -3710,6 +3710,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             }
           }
+          else {
+            autoSave();
+          }
         };
 
 // function to update relationship and autoSave if indicated
