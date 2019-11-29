@@ -34,8 +34,9 @@
           <div class="col-md-4"> {{formatComponentMoreText(key)}} </div>
           <div class="col-md-8">
             <div class="row  p-b-5" ng-repeat="target in value">
-              <div class="col-md-4">{{target}}</div>
-              <div class="col-md-8">{{getTerm(target)}}</div>
+              <div class="col-md-3">{{target}}</div>
+              <div class="col-md-7">{{getTerm(target)}}</div>
+              <div class="col-md-2">{{getStatus(target)}}</div>
             </div>
           </div>
         </div>
