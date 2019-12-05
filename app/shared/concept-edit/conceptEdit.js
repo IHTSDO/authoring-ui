@@ -3611,14 +3611,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             for (var j = axiom.relationships.length - 1; j >= 0; j--) {
               var rel = axiom.relationships[j];
               if (rel.active && rel.type.conceptId !== '116680003') {
-                var found = axiom.allowedAttributes.filter(function(item){
-                  return rel.type.conceptId === item.conceptId;
-                }).length !== 0;
-                if (!found) {
-                  scope.isModified = false;
-                  var errorMessage = 'MRCM validation error: The attribute type ' + rel.type.fsn + ' can not be used with the selected parents.';
-                  errors.push(errorMessage);
-                }                    
+                if (typeof axiom.allowedAttributes !== 'undefined' && axiom.allowedAttributes.length !== 0) {
+                  var found = axiom.allowedAttributes.filter(function(item){
+                    return rel.type.conceptId === item.conceptId;
+                  }).length !== 0;
+                  if (!found) {                  
+                    var errorMessage = 'MRCM validation error: The attribute type ' + rel.type.fsn + ' can not be used with the selected parents.';
+                    errors.push(errorMessage);
+                  }  
+                }                                  
               }                      
             }
           }
