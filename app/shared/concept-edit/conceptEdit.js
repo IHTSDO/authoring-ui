@@ -1212,6 +1212,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return;
             }
 
+            errors = isMrcmAttributesValid(scope.concept);
+            if (errors && errors.length > 0) {
+              scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+              return;
+            }
+
             // clean concept of any locally added information
             // store original concept id for CRS integration
             var originalConcept = angular.copy(scope.concept);
@@ -3596,6 +3602,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return componentAuthoringUtil.checkConceptComplete(concept);
         };
 
+        function isMrcmAttributesValid (concept) {
+          var errors = [];
+
+          for (var i = 0; i < scope.concept.classAxioms.length; i++) {
+            var axiom = scope.concept.classAxioms[i];
+            
+            for (var j = axiom.relationships.length - 1; j >= 0; j--) {
+              var rel = axiom.relationships[j];
+              if (rel.active && rel.type.conceptId !== '116680003') {
+                var found = axiom.allowedAttributes.filter(function(item){
+                  return rel.type.conceptId === item.conceptId;
+                }).length !== 0;
+                if (!found) {
+                  scope.isModified = false;
+                  var errorMessage = 'MRCM validation error: The attribute type ' + rel.type.fsn + ' can not be used with the selected parents.';
+                  errors.push(errorMessage);
+                }                    
+              }                      
+            }
+          }
+          
+          return errors;
+        }
+
         scope.replaceSuggestion = function (description, word, suggestion) {
           if (description.term && word && suggestion) {
             var re = new RegExp(word, 'gi');
@@ -4368,41 +4398,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 refreshAttributeTypesForAxiom(axiom).then(function() {
                   if (relationship.type.conceptId === '116680003') {
-                    var validateMRCM = function(type, target, branch) {
-                      constraintService.isValueAllowedForType(type.conceptId, target.conceptId, branch).then(function () {}, 
-                        function () {
-                          var warningMessage = 'MRCM validation error: ' + target.fsn.term + ' is not a valid target for attribute type ' + type.fsn.term + '.';
-                          if (typeof scope.warnings !== 'undefined' && scope.warnings.length !== 0) {
-                            scope.warnings.push(warningMessage);
-                          }
-                          else {
-                            scope.warnings = [];
-                            scope.warnings.push(warningMessage);
-                          }                        
-                      });
-                    };
-
-                    for (var i = axiom.relationships.length - 1; i >= 0; i--) {
-                      var rel = axiom.relationships[i];
-                      if (rel.active && rel.type.conceptId !== '116680003') {
-                        var found = axiom.allowedAttributes.filter(function(item){
-                          return rel.type.conceptId === item.conceptId;
-                        }).length !== 0;
-                        if (!found) {
-                          scope.isModified = false;
-                          var errorMessage = 'MRCM validation error: The attribute type ' + rel.type.fsn + ' can not be used with the selected parents.';
-                          if (typeof scope.errors !== 'undefined' && scope.errors.length !== 0) {
-                            scope.errors.push(errorMessage);
-                          }
-                          else {
-                            scope.errors = [];
-                            scope.errors.push(errorMessage);
-                          }
-                        }
-                        else {
-                          validateMRCM(rel.type,rel.target,scope.branch);
-                        }                     
-                      }                      
+                    var errors = isMrcmAttributesValid(scope.concept);
+                    if (errors && errors.length > 0) {
+                      scope.errors = scope.errors ? scope.errors.concat(errors) : errors;                      
                     }
                   }                  
                 });
