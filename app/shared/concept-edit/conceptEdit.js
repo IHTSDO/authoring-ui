@@ -3192,7 +3192,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               copy.sourceId = scope.concept.conceptId;
 
               // set the group based on target
-              copy.groupId = target.groupId;
+              copy.groupId = (metadataService.isUngroupedAttribute(source.type.conceptId) || source.type.conceptId === '116680003') ? 0 : target.groupId;
 
               // get index of target relationship
               var targetIndex = axiom.relationships.indexOf(target);
@@ -3380,7 +3380,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   var copy = angular.copy(rel);
 
                   // set the group based on target
-                  copy.groupId = newGroup;
+                  copy.groupId = (metadataService.isUngroupedAttribute(rel.type.conceptId) || rel.type.conceptId === '116680003') ? 0 : newGroup;
 
                   // set sourceId from current concept
                   copy.sourceId = scope.concept.conceptId;
