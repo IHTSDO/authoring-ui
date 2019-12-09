@@ -762,7 +762,9 @@ angular.module('singleConceptAuthoringApp')
                     for (var key in scope.affectedConceptAssocs[j].associationTargets) {
                       if (tempConcept.associationTargets.hasOwnProperty(key)){                        
                         angular.forEach(scope.affectedConceptAssocs[j].associationTargets[key], function(item) {
-                          tempConcept.associationTargets[key].push(item);
+                          if (!tempConcept.associationTargets[key].includes(item)) {
+                            tempConcept.associationTargets[key].push(item);
+                          }                          
                         });
                       } else {
                         tempConcept.associationTargets[key] = scope.affectedConceptAssocs[j].associationTargets[key];
@@ -819,7 +821,7 @@ angular.module('singleConceptAuthoringApp')
                     console.debug('  concept match found');
                     angular.forEach(c.descriptions, function (cd) {
                       console.debug('    checking against concept description', cd.descriptionId);
-                      if (cd.descriptionId === d.id) {
+                      if (cd.descriptionId === d.descriptionId) {
                         console.debug('      match found');
                         if (d.inactivationIndicator !== 'NOT_SEMANTICALLY_EQUIVALENT') {
                           cd.inactivationIndicator = d.inactivationIndicator;
@@ -829,7 +831,9 @@ angular.module('singleConceptAuthoringApp')
                             for (var key in d.associationTargets) {
                               if (cd.associationTargets.hasOwnProperty(key)){                        
                                 angular.forEach(d.associationTargets[key], function(item) {
-                                  cd.associationTargets[key].push(item);
+                                  if (!cd.associationTargets[key].includes(item)) {
+                                    cd.associationTargets[key].push(item);
+                                  }                                  
                                 });
                               } 
                             }                           
@@ -859,13 +863,31 @@ angular.module('singleConceptAuthoringApp')
             console.log(scope.affectedConcepts);
 
             // clear association targets for affected concepts
+            //angular.forEach(scope.affectedConceptAssocs, function (item) {
+            //  item.associationTargets = {};
+            //});
+
+            // clear old association target
             angular.forEach(scope.affectedConceptAssocs, function (item) {
-              item.associationTargets = {};
+              for (var key in item.associationTargets) {
+                item.associationTargets[key] = item.associationTargets[key].filter(function(id) {
+                  return id !== scope.inactivationConcept.conceptId;
+                });
+              }
             });
 
             // clear association targets for affected descriptions
+            //angular.forEach(scope.affectedDescToConceptAssocs, function (item) {
+            //  item.associationTargets = {};
+            //});
+
+            // clear old association target
             angular.forEach(scope.affectedDescToConceptAssocs, function (item) {
-              item.associationTargets = {};
+              for (var key in item.associationTargets) {
+                item.associationTargets[key] = item.associationTargets[key].filter(function(id) {
+                  return id !== scope.inactivationConcept.conceptId;
+                });
+              }
             });
 
             // update the historical associations on the objects
@@ -955,8 +977,13 @@ angular.module('singleConceptAuthoringApp')
                 if (cntr < list.length) {
                     if(list[cntr].newTargetId)
                     {
-                      list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
-                      
+                      if(typeof list[cntr].associationTargets[list[cntr].refsetName] !== 'undefined'
+                        && !list[cntr].associationTargets[list[cntr].refsetName].includes(list[cntr].newTargetId)) {
+                        list[cntr].associationTargets[list[cntr].refsetName].push(list[cntr].newTargetId);
+                      }
+                      else {
+                        list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                      }
                     }
                   cntr++;
                   next();
