@@ -97,8 +97,7 @@ angular.module('singleConceptAuthoringApp')
                 for (var j = 0; j < scope.associationTargets.length; j++) {
 
                   // if concept has this association target
-                  if (Object.keys(concept.associationTargets).indexOf(scope.associationTargets[j].id) !== -1
-                    && concept.associationTargets[scope.associationTargets[j].id].includes(scope.inactivationConcept.conceptId)) {
+                  if (Object.keys(concept.associationTargets).indexOf(scope.associationTargets[j].id) !== -1) {
 
                     // if historical association targets were supplied to inactivation process
                       if (scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0) {
@@ -860,9 +859,9 @@ angular.module('singleConceptAuthoringApp')
             console.log(scope.affectedConcepts);
 
             // clear association targets for affected concepts
-            //angular.forEach(scope.affectedConceptAssocs, function (item) {
-            //  item.associationTargets = {};
-            //});
+            angular.forEach(scope.affectedConceptAssocs, function (item) {
+              item.associationTargets = {};
+            });
 
             // clear association targets for affected descriptions
             angular.forEach(scope.affectedDescToConceptAssocs, function (item) {
@@ -956,12 +955,8 @@ angular.module('singleConceptAuthoringApp')
                 if (cntr < list.length) {
                     if(list[cntr].newTargetId)
                     {
-                      if (!list[cntr].associationTargets.hasOwnProperty(list[cntr].refsetName)) {
-                        list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
-                      }
-                      else {
-                        list[cntr].associationTargets[list[cntr].refsetName].push(list[cntr].newTargetId);
-                      }
+                      list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                      
                     }
                   cntr++;
                   next();

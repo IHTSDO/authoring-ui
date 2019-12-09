@@ -290,7 +290,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
         var originalConceptId = null;
         var componentTerms = {};
-        var componentStatuses = {};
         var axiomType = {
           'ADDITIONAL': 'additional',
           'GCI': 'gci'
@@ -3468,7 +3467,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (terminologyServerService.isConceptId(componentId)) {
               terminologyServerService.getFullConcept(componentId, scope.branch).then(function (response) {
                 componentTerms[componentId] = response.fsn;
-                componentStatuses[componentId] = response.active ? 'Active' : 'Inactive';
               });
             } else if (terminologyServerService.isDescriptionId(componentId)) {
               terminologyServerService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
@@ -3476,10 +3474,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               })
             }
           }
-        };
-
-        scope.getStatus = function (componentId) {
-          return componentStatuses[componentId];
         };
 
         scope.copyToClipboard = function(toCopy) {
