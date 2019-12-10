@@ -65,7 +65,7 @@
 </div>
   <div ng-repeat="(groupId, relationshipGroup) in axiom.relationshipGroups">
     <div ng-if="showAxiomRelationshipGroup(relationshipGroup)">
-        <div ng-if="groupId !== 0" class="axiom-group-top"></div>
+        <div ng-if="$index !== 0" class="axiom-group-top"></div>
 
         <div ng-repeat="relationship in relationshipGroup | filter:filterAxiomRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
@@ -86,7 +86,7 @@
             </div>
           </div>
           
-          <div class="row darken-3 edits-row color_{{(relationship.groupId%2==0)?'even':'odd'}} "
+          <div class="row darken-3 edits-row color_{{($parent.$index%2==0)?'even':'odd'}} "
                ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
             <div class="col-md-11 no-padding left-of-edit {{relationship.characteristicType}}" drop-channel="axiomRelationshipObj"
@@ -187,7 +187,7 @@
     -->
 
                 <div>
-                  <button ng-if="relationship.active && !isStatic && !template && !isLockedModule(axiom.moduleId)" type="button" ng-click="addAxiomRelationship(groupId, relationship, axiom)"
+                  <button ng-if="relationship.active && !isStatic && !template && !isLockedModule(axiom.moduleId)" type="button" ng-click="addAxiomRelationship(relationship.groupId, relationship, axiom)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Add New Relationship</span>
                   </button>
@@ -228,7 +228,7 @@
           </div>
         </div>      
     </div>
-    <div ng-if="$last && groupId !== 0" class="row axiom-group-top"></div>
+    <div ng-if="$last && $index !== 0" class="row axiom-group-top"></div>
     <div class="row p-l-10" ng-if="$last && !isStatic && !template && !concept.template && !isLockedModule(axiom.moduleId)">
       <div class="col-md-9 col-s-8 col-xs-6"></div>
       <div class="col-md-3 col-s-4 col-xs-6 no-padding no-margin">

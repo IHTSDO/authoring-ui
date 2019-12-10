@@ -838,13 +838,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.concept || !scope.concept.relationships && !scope.concept.classAxioms && !scope.concept.gciAxioms) {
             return;
           }
-
-          angular.forEach(scope.concept.classAxioms, function (axiom){
-              sortRelationshipArray(axiom.relationships);
-          })
-          angular.forEach(scope.concept.gciAxioms, function (axiom){
-              sortRelationshipArray(axiom.relationships);
-          })
+         
           if(scope.concept.relationships){
               sortRelationshipArray(scope.concept.relationships);
           }
@@ -2359,7 +2353,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return activeRels.length > 0;
         };
 
-// function compute the relationship groups
+// function compute the inferred relationship groups
         scope.computeRelationshipGroups = function () {
 
           // sort relationships to ensure proper sorting
@@ -2398,43 +2392,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           if (type === axiomType.ADDITIONAL) {
             angular.forEach(scope.concept.classAxioms, function (axiom) {
-              axiom['relationshipGroups'] = [];
+              axiom['relationshipGroups'] = {};
               axiom.title = 'Axiom';
               axiom.type = axiomType.ADDITIONAL;
               angular.forEach(axiom.relationships, function (rel) {
                 rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
 
                 // if map does not have this group id, add blank array
-                if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
-                  axiom.relationshipGroups[parseInt(rel.groupId)] = [];
+                if (!axiom.relationshipGroups.hasOwnProperty(' ' + parseInt(rel.groupId))) {
+                  axiom.relationshipGroups[' ' + parseInt(rel.groupId)] = [];
                 }
 
                 // push this relationship onto group-mapped array
-                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
-
-                // sorts axioms
-                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);
+                axiom.relationshipGroups[' ' + parseInt(rel.groupId)].push(rel);               
               });
             });
           }
 
           if(type === axiomType.GCI) {
             angular.forEach(scope.concept.gciAxioms, function (axiom) {
-              axiom['relationshipGroups'] = [];
+              axiom['relationshipGroups'] = {};
               axiom.title = 'General Concept Inclusion';
               axiom.type = axiomType.GCI;
               angular.forEach(axiom.relationships, function (rel) {
                 rel.id = axiom.axiomId + '_' + rel.groupId + '_' + rel.type.conceptId + '_' + rel.target.conceptId;
                 // if map does not have this group id, add blank array
-                if (!axiom.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
-                  axiom.relationshipGroups[parseInt(rel.groupId)] = [];
+                if (!axiom.relationshipGroups.hasOwnProperty(' ' + parseInt(rel.groupId))) {
+                  axiom.relationshipGroups[' ' + parseInt(rel.groupId)] = [];
                 }
 
                 // push this relationship onto group-mapped array
-                axiom.relationshipGroups[parseInt(rel.groupId)].push(rel);
-
-                // sorts axioms
-                axiom.relationshipGroups[parseInt(rel.groupId)] = sortRelationshipArray(axiom.relationshipGroups[parseInt(rel.groupId)]);
+                axiom.relationshipGroups[' ' +  parseInt(rel.groupId)].push(rel);
               });
             });
           }
