@@ -141,7 +141,12 @@ angular.module('singleConceptAuthoringApp')
             if (response && response.data && response.data.status === 'COMPLETED') {
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'FAILED') {
-              deferred.reject('Bulk concept update failed');
+              if (typeof response.data.message !== 'undefined') {
+                deferred.reject(response.data.message);
+              }
+              else {
+                deferred.reject('Bulk concept update failed');
+              }              
             } else {
               pollForBulkUpdate(url, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
