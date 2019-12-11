@@ -76,7 +76,8 @@ angular.module('singleConceptAuthoringApp')
               if (field.active === true && field.characteristicType === "STATED_RELATIONSHIP") {
                 if (field.type.conceptId === '116680003') {
                   svgIsaModel.push(field);
-                } else {
+                } 
+                else {
                   if(field.groupId > scope.numberOfGroups)
                   {
                     scope.numberOfGroups = field.groupId;
@@ -85,38 +86,39 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
             });
+            $.each(concept.classAxioms, function (i, axiom) {
+              var axiomToPush = {
+                  relationships : [],
+                  type : 'add',
+                  definitionStatus : axiom.definitionStatus
+              };
+              $.each(axiom.relationships, function (i, field) {
+                if (field.active) {
+                  if (field.type.conceptId === '116680003') {
+                    axiomToPush.relationships.push(field);
+                  } else {
+                    axiomToPush.relationships.push(field);
+                  }
+                }
+              });
+              axioms.push(axiomToPush);
+            });
             $.each(concept.gciAxioms, function (i, axiom) {
                 var axiomToPush = {};
                 axiomToPush.relationships = [];
                 axiomToPush.type = 'gci';
                 $.each(axiom.relationships, function (i, field) {
-                      if (field.active) {
-                        if (field.type.conceptId === '116680003') {
-                          axiomToPush.relationships.push(field);
-                        } else {
-                          axiomToPush.relationships.push(field);
-                        }
-                      }
-                    });
+                  if (field.active) {
+                    if (field.type.conceptId === '116680003') {
+                      axiomToPush.relationships.push(field);
+                    } else {
+                      axiomToPush.relationships.push(field);
+                    }
+                  }
+                });
                 axioms.push(axiomToPush);
             });
-            $.each(concept.classAxioms, function (i, axiom) {
-                var axiomToPush = {
-                    relationships : [],
-                    type : 'add',
-                    definitionStatus : axiom.definitionStatus
-                };
-                $.each(axiom.relationships, function (i, field) {
-                      if (field.active) {
-                        if (field.type.conceptId === '116680003') {
-                          axiomToPush.relationships.push(field);
-                        } else {
-                          axiomToPush.relationships.push(field);
-                        }
-                      }
-                    });
-                axioms.push(axiomToPush);
-            });
+            
           } else if (scope.view === 'inferred'){
             if (concept.relationships) {
               $.each(concept.relationships, function (i, field) {
@@ -235,9 +237,6 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
           }
-            // console.log(svgAttrModel);
-            // console.log(svgIsaModel);
-
           var parentDiv = div;
           var height = 350;
           var width  = 700;
@@ -256,33 +255,25 @@ angular.module('singleConceptAuthoringApp')
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {
-                      if (field.active) {
-                        height = height + 55;
-                        width = width + 110;
-                      }
-                    });
+                  if (field.active) {
+                    height = height + 55;
+                    width = width + 110;
+                  }
+                });
              });
              $.each(concept.gciAxioms, function (i, axiom) {
                 height = height + 40;
                 width = width + 80;
                 $.each(axiom.relationships, function (i, field) {
-                      if (field.active) {
-                        height = height + 55;
-                        width = width + 110;
-                      }
-                    });
+                  if (field.active) {
+                    height = height + 55;
+                    width = width + 110;
+                  }
+                });
             });
           }
           scope.height = height;
           scope.width = width;
-//          if(scope.numberOfGroups)
-//              {
-//                  var i = scope.numberOfGroups;
-//                  for(i > 0; i--;)
-//                      {
-//                          
-//                      }
-//              }
           parentDiv.svg({
             settings: {
               height: height + 'px',
@@ -344,11 +335,11 @@ angular.module('singleConceptAuthoringApp')
           // load ungrouped attributes
           var maxRoleNumber = 0;
           $.each(svgAttrModel, function (i, relationship) {
-                if (relationship.target.definitionStatus === "PRIMITIVE") {
-                    sctClass = "sct-primitive-concept";
-                } else {
-            sctClass = "sct-defined-concept";
-                }
+            if (relationship.target.definitionStatus === "PRIMITIVE") {
+              sctClass = "sct-primitive-concept";
+            } else {
+              sctClass = "sct-defined-concept";
+            }
             if (relationship.groupId === 0) {
               if(relationship.nest){
                   var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
@@ -396,10 +387,10 @@ angular.module('singleConceptAuthoringApp')
             }
             if(relationship.nest){
                   if (relationship.nest[0].target.definitionStatus === "PRIMITIVE") {
-                        sctClass = "sct-primitive-concept";
-                    } else {
-                sctClass = "sct-defined-concept";
-                    }
+                    sctClass = "sct-primitive-concept";
+                  } else {
+                    sctClass = "sct-defined-concept";
+                  }
                   y = y + 25;
                   x = x + 50;
                   var rectAttrNest = drawSctBox(svg, x, y, relationship.nest[0].type.fsn, relationship.nest[0].type.conceptId, "sct-attribute");
@@ -418,10 +409,11 @@ angular.module('singleConceptAuthoringApp')
             connectElements(svg, groupNode, conjunctionNode, 'right', 'left');
             $.each(svgAttrModel, function (m, relationship) {
               if (relationship.groupId === i) {
-                        if (relationship.target.definitionStatus ==
- "PRIMITIVE") { sctClass = "sct-primitive-concept"; } else {
-                sctClass = "sct-defined-concept";
-                        }
+                if (relationship.target.definitionStatus == "PRIMITIVE") { 
+                  sctClass = "sct-primitive-concept"; 
+                } else {
+                  sctClass = "sct-defined-concept";
+                }
                 var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
                 connectElements(svg, conjunctionNode, rectRole, 'center', 'left');
                 var rectRole2 = drawSctBox(svg, x + 85 + rectRole.getBBox().width + 30, y - 18, relationship.target.fsn, relationship.target.conceptId, sctClass);
@@ -451,7 +443,7 @@ angular.module('singleConceptAuthoringApp')
               x = x + 40;
               y = y - 18;
               maxX = ((maxX < x) ? x : maxX);
-              var axiomRoleNumber = 0;
+              var axiomRoles = [];
               $.each(axiom.relationships, function (i, relationship) {
                   if(relationship.type.conceptId === '116680003'){
                       if (relationship.target.definitionStatus === "PRIMITIVE") {
@@ -469,38 +461,38 @@ angular.module('singleConceptAuthoringApp')
                   else{
                       if (relationship.target.definitionStatus === "PRIMITIVE") {
                         sctClass = "sct-primitive-concept";
-                        } else {
+                      } else {
                         sctClass = "sct-defined-concept";
-                            }
-                        if (relationship.groupId === 0) {
-                              var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
-                              connectElements(svg, circle2, rectAttr, 'center', 'left');
-                              var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
-                              connectElements(svg, rectAttr, rectTarget, 'right', 'left');
-                              y = y + rectTarget.getBBox().height + 25;
-                              maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
-                        } else {
-                          if (relationship.groupId > axiomRoleNumber) {
-                            axiomRoleNumber = relationship.groupId;
-                          }
+                      }
+                      if (relationship.groupId === 0) {
+                            var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                            connectElements(svg, circle2, rectAttr, 'center', 'left');
+                            var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                            connectElements(svg, rectAttr, rectTarget, 'right', 'left');
+                            y = y + rectTarget.getBBox().height + 25;
+                            maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+                      } else {
+                        if (!axiomRoles.includes(relationship.groupId)) {
+                          axiomRoles.push(relationship.groupId);
                         }
-                      
-                  }
-                
+                      }                    
+                  }                
               });
               
               y = y + 15;
-              for (var i = 1; i <= axiomRoleNumber; i++) {
+              for (var i = 0; i < axiomRoles.length; i++) {
                 var groupNode = drawAttributeGroupNode(svg, x, y);
                 connectElements(svg, circle2, groupNode, 'center', 'left');
                 var conjunctionNode = drawConjunctionNode(svg, x + 55, y);
                 connectElements(svg, groupNode, conjunctionNode, 'right', 'left');
                 $.each(axiom.relationships, function (m, relationship) {
-                  if (relationship.groupId === i) {
-                            if (relationship.target.definitionStatus ==
-     "PRIMITIVE") { sctClass = "sct-primitive-concept"; } else {
-                    sctClass = "sct-defined-concept";
-                            }
+                  if (relationship.groupId === axiomRoles[i]) {
+                    if (relationship.target.definitionStatus == "PRIMITIVE") { 
+                      sctClass = "sct-primitive-concept"; 
+                    } 
+                    else {
+                      sctClass = "sct-defined-concept";
+                    }
                     var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
                     connectElements(svg, conjunctionNode, rectRole, 'center', 'left');
                     var rectRole2 = drawSctBox(svg, x + 85 + rectRole.getBBox().width + 30, y - 18, relationship.target.fsn, relationship.target.conceptId, sctClass);
@@ -516,9 +508,9 @@ angular.module('singleConceptAuthoringApp')
           var svgCode = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' + parentDiv.html();
           svgCode = svgCode.substr(0, svgCode.indexOf("svg") + 4) +
             ' xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" ' +
-            svgCode.substr(svgCode.indexOf("svg") + 4)
+            svgCode.substr(svgCode.indexOf("svg") + 4);
           svgCode = svgCode.replace('width="1000px" height="2000px"', 'width="' + maxX + '" height="' + y + '"');
-//            var b64 = Base64.encode(svgCode);
+
           // Store svg code for reuse
           scope.backupSvgCode = svgCode;
 
