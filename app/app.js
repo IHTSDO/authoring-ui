@@ -59,7 +59,9 @@ angular
       }
     };
   })
-
+  .constant('AppConstants', {
+    AUTHORING_SERVICES_ENDPOINT: '/authoring-services/'
+  })
 
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider, localStorageServiceProvider) {
 
@@ -123,7 +125,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService, crsService) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService, crsService, spellcheckService, AppConstants) {
 
     console.log('Running application');
 
@@ -179,6 +181,8 @@ angular
         var features = response.features
         $rootScope.endpoints = endpoints;
        
+        scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
+        spellcheckService.setEndpoint(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'spelling/check');
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         crsService.setCrsEndpoint(endpoints['crsEndpoint']);
         crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);

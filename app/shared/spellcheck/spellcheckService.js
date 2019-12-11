@@ -6,8 +6,11 @@ angular.module('singleConceptAuthoringApp')
  */
   .factory('spellcheckService', function ($http, $rootScope, $q) {
 
-    // TODO Move this into endpoint-config
-    var endpoint = '/authoring-services/spelling/check';
+    var endpoint = null;
+
+    function setEndpoint(url) {
+      endpoint = url;
+    }
 
     function getSuggestions(tokenizedWords) {
       var deferred = $q.defer();
@@ -71,6 +74,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     return {
+      setEndpoint: setEndpoint,
       checkSpelling: checkSpelling
     }
 

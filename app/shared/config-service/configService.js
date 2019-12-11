@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .factory('configService', ['$http', '$q', function ($http, $q) {
+  .factory('configService', ['$http', '$q', 'AppConstants', function ($http, $q, AppConstants) {
 
     var properties = null;
     var validationProperties = null;
@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
     function getConfigProperties() {
       var deferred = $q.defer();
       if (!properties) {
-        $http.get('/authoring-services/ui-configuration').then(function (response) {
+        $http.get(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'ui-configuration').then(function (response) {
           properties = response.data;
           $http.get('/validationConfig/validationConfig.json').then(function (validationResponse) {
               validationProperties = validationResponse.data;
