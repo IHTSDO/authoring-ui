@@ -4,9 +4,12 @@ angular.module('singleConceptAuthoringApp')
   .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'terminologyServerService', '$timeout', '$window',
     function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, terminologyServerService, $timeout, $window) {
 
-      // TODO Wire this to endpoint service, endpoint config
-      var apiEndpoint = '../authoring-services/';
+      var apiEndpoint = null;
 
+      function setEndpoint(url) {
+        apiEndpoint = url;
+      }
+      
       //
       // Modified concept list utility functions
       //
@@ -525,7 +528,7 @@ angular.module('singleConceptAuthoringApp')
       }
       
       return {
-          
+        setEndpoint: setEndpoint,  
         getDialectMatches: getDialectMatches,
         getSuggestionMatches: getSuggestionMatches,
 
