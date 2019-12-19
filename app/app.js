@@ -150,36 +150,25 @@ angular
     });
 
     $rootScope.notProd = false;
-    $rootScope.logo = '';
     $timeout(function () {
       var env = $location.host().split(/[.]/)[0];
-      if (env === 'local') {
+      if (env === 'local' || env.startsWith('dev-')) {
         $rootScope.development = true;
         $rootScope.notProd = true;
-        $rootScope.logo = 'loc';
-      }
-      else if (env.startsWith('dev-')) {
-        $rootScope.development = true;
-        $rootScope.notProd = true;
-        $rootScope.logo = 'dev';
       }
       else if (env.startsWith('uat-')) {
         $rootScope.uat = true;
         $rootScope.notProd = true;
-        $rootScope.logo = 'uat';
       }
       else if (env.startsWith('training-')) {
         $rootScope.training = true;
         $rootScope.notProd = true;
-        $rootScope.logo = 'trn';
       }
       else {
-        $rootScope.logo = 'prd';
         $rootScope.notProd = false;
         $rootScope.uat = false;
         $rootScope.development = false;
         $rootScope.training = false;
-        $rootScope.local = false;
       }
     }, 3000);
 
