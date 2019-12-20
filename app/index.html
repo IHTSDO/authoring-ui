@@ -6,14 +6,7 @@
   <meta name="description" content="SNOMED International Authoring Platform for SNOMED CT">
   <meta name="viewport" content="width=device-width">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png"/>
-  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png"/>
-  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72.png"/>
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144.png"/>
-  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120.png"/>
-  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png"/>
-  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
-  <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16"/>
+  
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <meta name="application-name" content="Authoring Platform"/>
   <meta name="msapplication-TileColor" content="#00A4E4"/>
@@ -84,6 +77,40 @@
     'ga');
 </script>
 
+<script>
+  function changeFavicon(path) {
+    var link;
+    link = document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = path + '-favicon-16x16.png';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+
+  function getIconPrefixFromEnv() {
+    const env = window.location.hostname.split(/[.]/)[0];
+    let prefix;
+    if (env === 'local') {
+      prefix = 'loc';
+    }
+    else if (env.startsWith('dev-')) {
+      prefix = 'dev';
+    }
+    else if (env.startsWith('uat-')) {
+      prefix = 'uat';
+    }
+    else if (env.startsWith('training-')) {
+      prefix = 'trn';
+    }
+    else {
+      prefix = 'prd';
+    }
+
+    return prefix;
+  }
+  
+  changeFavicon(getIconPrefixFromEnv());
+</script>
 <!-- build:js(.) scripts/vendor.js -->
 <!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
