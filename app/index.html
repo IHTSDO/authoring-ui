@@ -76,12 +76,12 @@
 </script>
 
 <script>
-  function changeFavicon(path) {
+  function changeFavicon(iconPrefix) {
     var link;
     link = document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
-    link.href = path + '-favicon-16x16.png';
+    link.href = iconPrefix + '-favicon-16x16.png';
     document.getElementsByTagName('head')[0].appendChild(link);
   }
 
