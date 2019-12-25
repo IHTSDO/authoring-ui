@@ -1504,19 +1504,18 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.getConceptsForTypeahead = function (searchStr) {
-            return terminologyServerService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
-              response = response.items;
+            return terminologyServerService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
               // remove duplicates
-              for (var i = 0; i < response.length; i++) {
-                for (var j = response.length - 1; j > i; j--) {
-                  if (response[j].concept.conceptId === response[i].concept.conceptId) {
-                    response.splice(j, 1);
+              for (var i = 0; i < response.items.length; i++) {
+                for (var j = response.items.length - 1; j > i; j--) {
+                  if (response.items[j].concept.conceptId === response.items[i].concept.conceptId) {
+                    response.items.splice(j, 1);
                     j--;
                   }
                 }
               }
-
-              return response;
+              
+              return response.items;
             });
           };
 
