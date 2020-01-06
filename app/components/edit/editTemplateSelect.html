@@ -2,6 +2,10 @@
   <div class="col-md-12 row">
       <h3 class="p-5">Select Template</h3>
       <div class="col-md-6">
+        <textarea type="text" ng-model="templateTableParams.filter()['search']" class="form-control blue-underline"
+               placeholder="Filter by name" autofocus></textarea>
+      </div>
+      <div class="col-md-6">
           <textarea type="text" class="form-control"
                     ng-model="focusConcept"
                     typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
@@ -11,11 +15,7 @@
                     typeahead-on-select="selectFocusForTemplate($item)"
                     placeholder="Type to select a focus concept..."></textarea>
 
-      </div>
-      <div class="col-md-6">
-              <textarea type="text" ng-model="templateTableParams.filter()['search']" class="form-control blue-underline"
-                     placeholder="Filter by name" autofocus></textarea>
-      </div>
+      </div>      
   </div>
   <div class="col-md-12 table-container row" ng-if="templateOptions">
       <table ng-table="templateTableParams" template-pagination="utilities/data-table-pager.html"
