@@ -354,7 +354,7 @@ section thead input {
 }
 .feedback-header-main {
     color: #fff;
-    height: 33px;
+    height: auto;
     margin: 0px;
     padding: 0px;
     border: none;
@@ -371,6 +371,9 @@ section thead input {
 }
 .feedback-header-main .btn {
     padding: 0px 12px;
+}
+.feedback-header-main .switch {
+    height: 33px
 }
 .review-button-list {
     background-color: #880e4f;
