@@ -180,7 +180,7 @@ angular
         var endpoints = response.endpoints;
         var features = response.features
         $rootScope.endpoints = endpoints;
-       
+
         scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
         spellcheckService.setEndpoint(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'spelling/check');
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
@@ -193,16 +193,16 @@ angular
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
         // Footer information
-        $("#copyright_text").html(features.copyrightNotice);      
-       
-        if(endpoints.userGuideEndpoint) {
-          $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint)
+        $("#copyright_text").html(features.copyrightNotice);
+
+        if(endpoints.scaUserGuideEndpoint) {
+          $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint);
         }
-        
+
         if(endpoints.contactUsEndpoint) {
           $("#contact_us").attr("href", endpoints.contactUsEndpoint)
-        }        
-        
+        }
+
         // don't want either true or false here please!
         $rootScope.loggedIn = null;
 
