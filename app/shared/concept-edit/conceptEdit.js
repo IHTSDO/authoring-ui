@@ -2918,15 +2918,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
 
               relationship.type.conceptId = data.id;
-              relationship.type.fsn = data.name;
+              relationship.type.fsn = data.fsn;
 
               scope.updateRelationship(relationship, false);
             } else {
-              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid attribute.'];
+              scope.warnings = ['MRCM validation error: ' + data.fsn + ' is not a valid attribute.'];
             }
           } else {
             relationship.type.conceptId = data.id;
-            relationship.type.fsn = data.name;
+            relationship.type.fsn = data.fsn;
           }
         };
 
@@ -2967,7 +2967,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.computeAxioms(axiom.type);
               autoSave();
             } else {
-              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid attribute.'];
+              scope.warnings = ['MRCM validation error: ' + data.fsn + ' is not a valid attribute.'];
             }
           } else {
             relationship.type.conceptId = data.id;
@@ -3587,22 +3587,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function isMrcmAttributesValid (concept) {
           var errors = [];
 
-          for (var i = 0; i < scope.concept.classAxioms.length; i++) {
-            var axiom = scope.concept.classAxioms[i];
-            
-            for (var j = axiom.relationships.length - 1; j >= 0; j--) {
-              var rel = axiom.relationships[j];
-              if (rel.active && rel.type.conceptId !== '116680003') {
-                if (typeof axiom.allowedAttributes !== 'undefined' && axiom.allowedAttributes.length !== 0) {
-                  var found = axiom.allowedAttributes.filter(function(item){
-                    return rel.type.conceptId === item.conceptId;
-                  }).length !== 0;
-                  if (!found) {                  
-                    var errorMessage = 'MRCM validation error: The attribute type ' + rel.type.fsn + ' can not be used with the selected parents.';
-                    errors.push(errorMessage);
-                  }  
-                }                                  
-              }                      
+          if (metadataService.isMrcmEnabled()) {
+            for (var i = 0; i < scope.concept.classAxioms.length; i++) {
+              var axiom = scope.concept.classAxioms[i];
+              
+              for (var j = axiom.relationships.length - 1; j >= 0; j--) {
+                var rel = axiom.relationships[j];
+                if (rel.active && rel.type.conceptId !== '116680003') {
+                  if (typeof axiom.allowedAttributes !== 'undefined' && axiom.allowedAttributes.length !== 0) {
+                    var found = axiom.allowedAttributes.filter(function(item){
+                      return rel.type.conceptId === item.conceptId;
+                    }).length !== 0;
+                    if (!found) {                  
+                      var errorMessage = 'MRCM validation error: The attribute type ' + rel.type.fsn + ' can not be used with the selected parents.';
+                      errors.push(errorMessage);
+                    }  
+                  }                                  
+                }                      
+              }
             }
           }
           
