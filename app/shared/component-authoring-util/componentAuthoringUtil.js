@@ -628,6 +628,16 @@ angular.module('singleConceptAuthoringApp')
               termUs = description.term;
             }
 
+            // check duplicate GB term 
+            var isTermGbFoundFn = function (termGb, concept) {
+              return concept.descriptions.filter(function(description) {
+                  return description.term && description.term.trim() === termGb.trim() 
+                        && description.acceptabilityMap.hasOwnProperty('900000000000508004')
+                        && description.active
+                        && (description.acceptabilityMap['900000000000508004'] === 'PREFERRED' || description.acceptabilityMap['900000000000508004'] === 'ACCEPTABLE');
+              }).length !== 0
+            };
+
             // replace original words with the suggested dialect spellings
             termGb = termUs;
             if(hasDialectMatchingWords){
@@ -636,14 +646,18 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
+            var termGbFound = isTermGbFoundFn(termGb, concept);
+
             // replace original words with the suggested synonym spellings
             var synonymTermGbArr = [];
             if(hasSynonymMatchingWords) {
               for (var match in synonymMatchingWords) {
                   var words = synonymMatchingWords[match];
                   for (var i = 0; i < words.length; i++) {
-                    var tempTermGb = termUs;
-                    synonymTermGbArr.push(tempTermGb.replace(match, words[i].trim()));
+                    var tempTermGb = termUs.replace(match, words[i].trim()).trim();
+                    if (!isTermGbFoundFn(tempTermGb, concept)) {
+                      synonymTermGbArr.push(tempTermGb);
+                    }                    
                   }
               }
             }
@@ -661,15 +675,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // SYN, en-GB acceptable
                   if (!isTemplateConcept) {
-                    // check duplicate GB term 
-                    var found = concept.descriptions.filter(function(description) {
-                      return description.term.trim() === termGb.trim() 
-                            && description.acceptabilityMap.hasOwnProperty('900000000000508004')
-                            && description.active
-                            && (description.acceptabilityMap['900000000000508004'] === 'PREFERRED' || description.acceptabilityMap['900000000000508004'] === 'ACCEPTABLE');
-                    }).length !== 0;
-
-                    if (hasDialectMatchingWords && !found) {
+                    if (hasDialectMatchingWords && !termGbFound) {
                       addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                     }                    
 
@@ -697,7 +703,7 @@ angular.module('singleConceptAuthoringApp')
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN en-GB matching acceptability of original description
-                  if (hasDialectMatchingWords) {
+                  if (hasDialectMatchingWords && !termGbFound) {
                     addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                   }
 
@@ -725,7 +731,7 @@ angular.module('singleConceptAuthoringApp')
                     // SYN en-US preferred
                     var newDescription = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
 
-                    if (hasDialectMatchingWords) {
+                    if (hasDialectMatchingWords && !termGbFound) {
                       // SYN en-GB preferred
                       addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                     }
@@ -759,7 +765,7 @@ angular.module('singleConceptAuthoringApp')
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN en-GB matching acceptability of original description
-                  if (hasDialectMatchingWords) {
+                  if (hasDialectMatchingWords  && !termGbFound) {
                     addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                   }
                  
