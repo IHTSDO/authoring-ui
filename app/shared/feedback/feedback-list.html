@@ -57,7 +57,7 @@
         <div class="badge pull-right pink darken-1 numbers ">{{feedbackContainer.review.conceptsReviewed.length}} </div>
         </a> </li>
       <li role="presentation border-right"> <a
-           ng-click="actionTab=3"
+           ng-click="actionTab=3; loadFsnForConceptsClassified();"
            aria-controls="home"
            role="tab"
            data-toggle="tab">Inferred
@@ -295,48 +295,49 @@
       <div role="tabpanel" ng-if="actionTab === 3">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
-             ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No
-          Classification concepts. </div>
-        <table show-filter="false" ng-table="conceptsClassifiedTableParams"
-               ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0"
-               template-pagination="utilities/review-table-pager.html"
-               class="table feedback-table concepts-classified" drop-channel="feedbackConcept">
-          <div class="m-10 ">
-            <input class=" input-filter form-control ng-scope ng-valid ng-touched"
-                   placeholder="Filter concepts"
-                   ng-model="conceptsClassifiedSearchStr"
-                   ng-show="feedbackContainer.review.conceptsClassified.length > 0"
-                   ng-change="reloadConceptsClassified(conceptsClassifiedSearchStr)"
-                   ng-model-options="{debounce: 500}" ui-on-drop="null">
-          </div>
-          <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
-          <tr ng-repeat="concept in conceptsClassified">
-            <td class=" " data-title="'Concept'" sortable="'term'"
-                filter="{ 'term': 'text' }"
-                ui-draggable="true" drag="concept"
-                drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{concept.term? concept.term : 'Deleted concept'}} </span></td>
-            <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
-                class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
-                <button
-                  class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                  ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
-                  ng-class="[{'disable' : concept.viewed}]">
-                <div
-                    class="md md-edit "></div>
-                <span>Add to Edit Panel</span> </button>
-              </div></td>
-            <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
-                <button
-                  class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                  ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
-                  ng-class="[{'disable' : concept.viewed}]">
-                <div
-                    class="md md-edit "></div>
-                <span>Add to Edit Panel</span> </button>
-              </div></td>
-          </tr>
-        </table>
+             ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No Classification concepts. </div>
+        <div ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length !== 0 && loadingFsnForConceptsClassified"> Loading... </div>
+        <div ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0 && !loadingFsnForConceptsClassified">
+          <table show-filter="false" ng-table="conceptsClassifiedTableParams"
+                template-pagination="utilities/review-table-pager.html"
+                class="table feedback-table concepts-classified" drop-channel="feedbackConcept">
+            <div class="m-10 ">
+              <input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                    placeholder="Filter concepts"
+                    ng-model="conceptsClassifiedSearchStr"
+                    ng-show="feedbackContainer.review.conceptsClassified.length > 0 && !loadingFsnForConceptsClassified"
+                    ng-change="reloadConceptsClassified(conceptsClassifiedSearchStr)"
+                    ng-model-options="{debounce: 500}" ui-on-drop="null">
+            </div>
+            <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
+            <tr ng-repeat="concept in conceptsClassified">
+              <td class=" " data-title="'Concept'" sortable="'term'"
+                  filter="{ 'term': 'text' }"
+                  ui-draggable="true" drag="concept"
+                  drag-channel="feedbackConcept" drop-channel="feedbackConcept"
+                  ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{concept.term? concept.term : 'Deleted concept'}} </span></td>
+              <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
+                  class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
+                  <button
+                    class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
+                    ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
+                    ng-class="[{'disable' : concept.viewed}]">
+                  <div
+                      class="md md-edit "></div>
+                  <span>Add to Edit Panel</span> </button>
+                </div></td>
+              <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
+                  <button
+                    class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
+                    ng-click="addToEdit(concept)" ng-mouseover="setTooltipPosition($event);"
+                    ng-class="[{'disable' : concept.viewed}]">
+                  <div
+                      class="md md-edit "></div>
+                  <span>Add to Edit Panel</span> </button>
+                </div></td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>

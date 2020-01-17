@@ -59,14 +59,6 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function getConceptIdsForTraceability(traceability) {
-      var ids = [];
-      if (!traceability || !traceability.content) {
-        return ids;
-      }
-
-    }
-
     function checkTraceability(task, results) {
       var deferred = $q.defer();
       // first, check if traceability returns changes on this task
@@ -172,6 +164,135 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function getLatestReview(branch, projectKey, taskKey) {
+      var deferred = $q.defer();
+      terminologyServerService.getTraceabilityForBranch(branch).then(function (traceability) {
+        var review = {};
+
+        review.traceability = traceability;
+        review.concepts = [];
+        review.conceptsClassified = [];
+        var idList = [];
+        angular.forEach(traceability.content, function (change) {
+          if (change.activityType === 'CONTENT_CHANGE') {
+            angular.forEach(change.conceptChanges, function (concept) {
+              if (review.concepts.filter(function (obj) {
+                  return obj.conceptId === concept.conceptId.toString();
+                }).length === 0 && concept.componentChanges.filter(function (obj) {
+                  return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                }).length !== 0) {
+
+                concept.conceptId = concept.conceptId.toString();
+                concept.lastUpdatedTime = change.commitDate;
+                review.concepts.push(concept);
+                idList.push(concept.conceptId);
+              }
+              else if (review.conceptsClassified.filter(function (obj) {
+                  return obj.conceptId === concept.conceptId.toString();
+                }).length === 0 && concept.componentChanges.filter(function (obj) {
+                  return obj.componentSubType === 'INFERRED_RELATIONSHIP';
+                }).length !== 0) {
+                concept.conceptId = concept.conceptId.toString();
+                concept.lastUpdatedTime = change.commitDate;
+                review.conceptsClassified.push(concept);
+              }
+              else if (concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                var updateConcept = review.concepts.filter(function (obj) {
+                  return obj.conceptId === concept.conceptId.toString();
+                })[0];
+                angular.forEach(concept.componentChanges, function (componentChange) {
+                  updateConcept.componentChanges.push(componentChange);
+                });
+                updateConcept.lastUpdatedTime = change.commitDate;
+              }
+            });
+          }
+          else if (change.activityType === 'CLASSIFICATION_SAVE') {
+            angular.forEach(change.conceptChanges, function (concept) {
+              if (review.conceptsClassified.filter(function (obj) {
+                  return obj.conceptId === concept.conceptId.toString();
+                }).length === 0) {
+                concept.conceptId = concept.conceptId.toString();
+                review.conceptsClassified.push(concept);
+              }
+              else {
+                var updateConcept = review.conceptsClassified.filter(function (obj) {
+                  return obj.conceptId === concept.conceptId.toString();
+                })[0];
+                angular.forEach(concept.componentChanges, function (componentChange) {
+                  updateConcept.componentChanges.push(componentChange);
+                });
+                updateConcept.lastUpdatedTime = change.commitDate;
+              }
+            });
+          }
+
+        });
+
+        fetchFsnAndFeedback(projectKey, taskKey, branch, idList, review).then(function(response) {
+          deferred.resolve(response ? response : {});
+        });
+      }, function (error) {
+        deferred.reject(error);        
+      });
+
+      return deferred.promise;
+    }
+
+    function fetchFsnAndFeedback(projectKey, taskKey, branch, idList, review) {
+      var deferred = $q.defer();
+      scaService.getReviewForTask(projectKey, taskKey).then(function (feedback) {
+
+        var getConceptsForReview = function (branch, idList, review, feedbackList) {
+          var deferred = $q.defer();
+          terminologyServerService.bulkRetrieveFullConcept(idList, branch).then(function (response) {
+            angular.forEach(response, function (concept) {
+              angular.forEach(review.concepts, function (reviewConcept) {
+                if (concept.conceptId === reviewConcept.conceptId) {
+                  reviewConcept.term = concept.fsn;
+                  angular.forEach(feedbackList, function (feedback) {
+                    if (reviewConcept.conceptId === feedback.id) {
+                      reviewConcept.messages = feedback.messages;
+                      reviewConcept.viewDate = feedback.viewDate;
+                    }
+                  });
+                }
+              });
+              angular.forEach(review.conceptsClassified, function (reviewConcept) {
+                if (concept.conceptId === reviewConcept.conceptId) {                  
+                  angular.forEach(feedbackList, function (feedback) {
+                    if (reviewConcept.conceptId === feedback.id) {
+                      reviewConcept.messages = feedback.messages;
+                      reviewConcept.viewDate = feedback.viewDate;
+                    }
+                  });
+                }
+              });
+            });
+            deferred.resolve();
+          });
+
+          return deferred.promise;
+        };
+
+        var i, j, temparray, chunk = 50;
+        var promises = [];
+        for (i = 0, j = idList.length; i < j; i += chunk) {
+          temparray = idList.slice(i, i + chunk);
+          promises.push(getConceptsForReview(branch, temparray, review, feedback));            ;
+        }
+
+        // on resolution of all promises
+        $q.all(promises).then(function () {
+            deferred.resolve(review);
+        });
+      });      
+
+      return deferred.promise;
+    }
+
     return {
 
       // transition functions
@@ -179,6 +300,7 @@ angular.module('singleConceptAuthoringApp')
       submitForReview: submitForReview,
       cancelReview: cancelReview,
       unclaimReview: unclaimReview,
+      getLatestReview: getLatestReview,
 
       // utility functions
       checkReviewPrerequisites: checkReviewPrerequisites
