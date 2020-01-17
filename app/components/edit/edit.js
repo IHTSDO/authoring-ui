@@ -568,45 +568,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // pass inactivation service function to determine whether in active inactivation (heh)
     $scope.isInactivation = inactivationService.isInactivation;
-
-
-    //
-    // Review functions
-    //
-
-    $scope.getConceptsForReview = function (idList, review, feedbackList) {
-      var deferred = $q.defer();
-      terminologyServerService.bulkRetrieveFullConcept(idList, $scope.branch).then(function (response) {
-        angular.forEach(response, function (concept) {
-          angular.forEach(review.concepts, function (reviewConcept) {
-            if (concept.conceptId === reviewConcept.conceptId) {
-              reviewConcept.term = concept.fsn;
-              angular.forEach(feedbackList, function (feedback) {
-                if (reviewConcept.conceptId === feedback.id) {
-                  reviewConcept.messages = feedback.messages;
-                  reviewConcept.viewDate = feedback.viewDate;
-                }
-              });
-            }
-          });
-          angular.forEach(review.conceptsClassified, function (reviewConcept) {
-            if (concept.conceptId === reviewConcept.conceptId) {
-              reviewConcept.term = concept.fsn;
-              angular.forEach(feedbackList, function (feedback) {
-                if (reviewConcept.conceptId === feedback.id) {
-                  reviewConcept.messages = feedback.messages;
-                  reviewConcept.viewDate = feedback.viewDate;
-                }
-              });
-            }
-          });
-        });
-        deferred.resolve();
-      });
-
-      return deferred.promise;
-    };
-
+    
     // on load, set the initial view based on classify/validate parameters
     $scope.setInitialView = function () {
       if ($routeParams.mode === 'classify') {
@@ -1271,81 +1233,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // get latest review
     $scope.getLatestReview = function () {
-      terminologyServerService.getTraceabilityForBranch($scope.branch, false, false, true).then(function (traceability) {
-        var review = {};
-
-        review.traceability = traceability;
-        review.concepts = [];
-        review.conceptsClassified = [];
-        var idList = [];
-        angular.forEach(traceability.content, function (change) {
-          if (change.activityType === 'CONTENT_CHANGE') {
-            angular.forEach(change.conceptChanges, function (concept) {
-              if (review.concepts.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                }).length === 0) {
-
-                concept.conceptId = concept.conceptId.toString();
-                concept.lastUpdatedTime = change.commitDate;
-                review.concepts.push(concept);
-                idList.push(concept.conceptId);
-              }
-              else if (review.conceptsClassified.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                }).length === 0) {
-                concept.conceptId = concept.conceptId.toString();
-                concept.lastUpdatedTime = change.commitDate;
-                review.conceptsClassified.push(concept);
-                idList.push(concept.conceptId);
-              }
-              else{
-                var updateConcept = review.concepts.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                })[0];
-                angular.forEach(concept.componentChanges, function (componentChange) {
-                  updateConcept.componentChanges.push(componentChange);
-                });
-                updateConcept.lastUpdatedTime = change.commitDate;
-              }
-            });
-          }
-          else if (change.activityType === 'CLASSIFICATION_SAVE') {
-            angular.forEach(change.conceptChanges, function (concept) {
-              if (review.conceptsClassified.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                }).length === 0) {
-                concept.conceptId = concept.conceptId.toString();
-                review.conceptsClassified.push(concept);
-                idList.push(concept.conceptId);
-              }
-              else {
-                var updateConcept = review.conceptsClassified.filter(function (obj) {
-                  return obj.conceptId === concept.conceptId.toString();
-                })[0];
-                angular.forEach(concept.componentChanges, function (componentChange) {
-                  updateConcept.componentChanges.push(componentChange);
-                });
-                updateConcept.lastUpdatedTime = change.commitDate;
-              }
-            });
-          }
-
-        });
-        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
-          var i, j, temparray, chunk = 50;
-          var promises = [];
-          for (i = 0, j = idList.length; i < j; i += chunk) {
-            temparray = idList.slice(i, i + chunk);
-            promises.push($scope.getConceptsForReview(temparray, review, feedback));            ;
-          }
-
-          // on resolution of all promises
-          $q.all(promises).then(function () {
-            $scope.feedbackContainer.review = review ? review : {};
-          }, function (error) {
-          });
-        });
-
+      reviewService.getLatestReview($scope.branch, $routeParams.projectKey, $routeParams.taskKey).then(function (review) {
+        $scope.feedbackContainer.review = review;
       }, function (error) {
         $scope.feedbackContainer.review = {errorMsg: error};
       });

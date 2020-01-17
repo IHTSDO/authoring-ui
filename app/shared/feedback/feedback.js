@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -78,6 +78,7 @@ angular.module('singleConceptAuthoringApp')
           scope.projectKey = $routeParams.projectKey;
           scope.taskKey = $routeParams.taskKey;
           scope.inactiveDescriptions = {};
+          scope.loadingFsnForConceptsClassified = false;
           var users = [];
           var sendingConceptToReview = false;
 
@@ -1597,39 +1598,6 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-          scope.getConceptsForReview = function (idList, review, feedbackList) {
-            var deferred = $q.defer();
-            terminologyServerService.bulkRetrieveFullConcept(idList, scope.branch).then(function (response) {
-              angular.forEach(response, function (concept) {
-                angular.forEach(review.concepts, function (reviewConcept) {
-                  if (concept.conceptId === reviewConcept.conceptId) {
-                    reviewConcept.term = concept.fsn;
-                    angular.forEach(feedbackList, function (feedback) {
-                      if (reviewConcept.conceptId === feedback.id) {
-                        reviewConcept.messages = feedback.messages;
-                        reviewConcept.viewDate = feedback.viewDate;
-                      }
-                    });
-                  }
-                });
-                angular.forEach(review.conceptsClassified, function (reviewConcept) {
-                  if (concept.conceptId === reviewConcept.conceptId) {
-                    reviewConcept.term = concept.fsn;
-                    angular.forEach(feedbackList, function (feedback) {
-                      if (reviewConcept.conceptId === feedback.id) {
-                        reviewConcept.messages = feedback.messages;
-                        reviewConcept.viewDate = feedback.viewDate;
-                      }
-                    });
-                  }
-                });
-              });
-              deferred.resolve();
-            });
-
-            return deferred.promise;
-          };
-
           scope.editReviewer = false;
           scope.listenReviewerTypeaheadEvent = function(event){
             event = event.event;
@@ -1730,6 +1698,50 @@ angular.module('singleConceptAuthoringApp')
             return false;
           };
 
+          var alreadyLoadedFsnForConceptsClassified = false;
+          scope.loadFsnForConceptsClassified = function() {            
+            if (alreadyLoadedFsnForConceptsClassified || !scope.feedbackContainer.review || scope.feedbackContainer.review.conceptsClassified.length === 0) {             
+              return;
+            }
+
+            scope.loadingFsnForConceptsClassified = true;
+            
+            var fetchFsnForConceptsClassified = function (branch, idList, conceptsClassified) {
+              var deferred = $q.defer();
+              terminologyServerService.bulkRetrieveFullConcept(idList, branch).then(function (response) {
+                angular.forEach(response, function (concept) {                  
+                  angular.forEach(conceptsClassified, function (reviewConcept) {
+                    if (concept.conceptId === reviewConcept.conceptId) {
+                      reviewConcept.term = concept.fsn;		  
+                    }
+                  });
+                });
+                deferred.resolve();
+              });
+
+              return deferred.promise;
+            };
+
+            var idList = [];
+            for(var index = 0; index < scope.feedbackContainer.review.conceptsClassified.length; index++) {
+              idList.push(scope.feedbackContainer.review.conceptsClassified[index].conceptId);
+            }
+            
+            var i, j, temparray, chunk = 50;
+            var promises = [];
+            for (i = 0, j = idList.length; i < j; i += chunk) {
+              temparray = idList.slice(i, i + chunk);
+              promises.push(fetchFsnForConceptsClassified(scope.branch, temparray, scope.feedbackContainer.review.conceptsClassified));            ;
+            }
+
+            // on resolution of all promises
+            $q.all(promises).then(function () {
+              alreadyLoadedFsnForConceptsClassified = true;
+              scope.loadingFsnForConceptsClassified = false;
+              scope.conceptsClassifiedTableParams.reload();
+            });         
+          };
+
           scope.$on('viewProjectTaxonomy', function (event, data) {
             if (data.flag) {
               projectTaxonomyList.push(data.conceptId);
@@ -1808,99 +1820,14 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              terminologyServerService.getTraceabilityForBranch(scope.task.branchPath, false, false, false).then(function (traceability) {
-                var review = {};
-                if (traceability) {
-                  console.log(traceability);
-                  review.traceability = traceability;
-                  review.concepts = [];
-                  review.conceptsClassified = [];                 
-
-                  var idList = [];
-                  angular.forEach(traceability.content, function (change) {
-                    if (change.activityType === 'CONTENT_CHANGE') {
-
-                      angular.forEach(change.conceptChanges, function (concept) {
-
-
-                        if (review.concepts.filter(function (obj) {
-                            return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0 && concept.componentChanges.filter(function (obj) {
-                            return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                          }).length !== 0) {
-                          concept.conceptId = concept.conceptId.toString();
-                          concept.lastUpdatedTime = change.commitDate;
-                          review.concepts.push(concept);
-                          console.log(concept.conceptId);
-                          idList.push(concept.conceptId);
-                        }
-                        else if (review.conceptsClassified.filter(function (obj) {
-                            return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0 && concept.componentChanges.filter(function (obj) {
-                            return obj.componentSubType === 'INFERRED_RELATIONSHIP';
-                          }).length !== 0) {
-                          concept.conceptId = concept.conceptId.toString();
-                          concept.lastUpdatedTime = change.commitDate;
-                          review.conceptsClassified.push(concept);
-                          idList.push(concept.conceptId);
-                        }
-                        else if (concept.componentChanges.filter(function (obj) {
-                            return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                          }).length !== 0) {
-                          var updateConcept = review.concepts.filter(function (obj) {
-                            return obj.conceptId === concept.conceptId.toString();
-                          })[0];
-                          angular.forEach(concept.componentChanges, function (componentChange) {
-                            updateConcept.componentChanges.push(componentChange);
-                          });
-                          updateConcept.lastUpdatedTime = change.commitDate;
-                        }
-                      });
-                    }
-                    else if (change.activityType === 'CLASSIFICATION_SAVE') {
-                      angular.forEach(change.conceptChanges, function (concept) {
-                        if (review.conceptsClassified.filter(function (obj) {
-                            return obj.conceptId === concept.conceptId.toString();
-                          }).length === 0) {
-                          concept.conceptId = concept.conceptId.toString();
-                          review.conceptsClassified.push(concept);
-                          idList.push(concept.conceptId);
-                        }
-                        else {
-                          var updateConcept = review.conceptsClassified.filter(function (obj) {
-                            return obj.conceptId === concept.conceptId.toString();
-                          })[0];
-                          angular.forEach(concept.componentChanges, function (componentChange) {
-                            updateConcept.componentChanges.push(componentChange);
-                          });
-                          updateConcept.lastUpdatedTime = change.commitDate;
-                        }
-                      });
-                    }
-
-                  });
-                  scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
-                    var i, j, temparray, chunk = 50;
-                    var promises = [];
-                    for (i = 0, j = idList.length; i < j; i += chunk) {
-                      temparray = idList.slice(i, i + chunk);
-                      promises.push(scope.getConceptsForReview(temparray, review, feedback));
-                    }
-
-                    // on resolution of all promises
-                    $q.all(promises).then(function () {
-                      scope.feedbackContainer.review = review ? review : {};
-                    }, function (error) {
-                    });
-                  });
-                  notificationService.sendMessage('Feedback Submitted', 5000, null);
-                }
-                else if (!traceability) {
-                  review = response;
-                  scope.feedbackContainer.review = review ? review : {};
-                  notificationService.sendMessage('Feedback Submitted', 5000, null);
-                }
-              });
+              reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey).then(function (review) {
+                // Do not reload classified concepts.
+                review.conceptsClassified = scope.feedbackContainer.review.conceptsClassified;
+                scope.feedbackContainer.review = review;
+                notificationService.sendMessage('Feedback Submitted', 5000, null);
+              }, function (error) {
+                 scope.feedbackContainer.review = {errorMsg: error};
+              });              
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
