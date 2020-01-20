@@ -14,6 +14,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.automatePromotionStatus = "";
       $scope.automatePromotionErrorMsg = "";    
       $scope.hasRequestPendingClarification = crsService.hasRequestPendingClarification;
+      $scope.isTaskPromotionDisabled = metadataService.isTaskPromotionDisabled;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -56,6 +57,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       }
 
       $scope.promote = function () {
+        if ($scope.isTaskPromotionDisabled()) {
+          return;
+        }
+
         $scope.promoting = true;
         notificationService.sendMessage('Preparing for task promotion...');
 
@@ -134,6 +139,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
       
       $scope.proceedAutomatePromotion = function () {
+        if ($scope.isTaskPromotionDisabled()) {
+          return;
+        }
         notificationService.sendMessage('Preparing for task promotion automation...');
         $scope.automatePromotionErrorMsg = '';
         $scope.automatePromotionStatus = '';       

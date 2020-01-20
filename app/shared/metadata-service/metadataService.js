@@ -23,6 +23,8 @@ angular.module('singleConceptAuthoringApp')
 
     var spellcheckDisabled = false;
 
+    var taskPromotionDisabled = false;
+
     // relationship metadata
     var isaRelationshipId = '116680003';
 
@@ -614,6 +616,10 @@ angular.module('singleConceptAuthoringApp')
         spellcheckDisabled = value;
     }
 
+    function setTaskPromotionDisabled(value){
+        taskPromotionDisabled = value;
+    }
+
     function isMrcmEnabled() {
       return mrcmEnabled;
     }
@@ -624,6 +630,10 @@ angular.module('singleConceptAuthoringApp')
 
     function isSpellcheckDisabled() {
       return spellcheckDisabled;
+    }
+
+    function isTaskPromotionDisabled() {
+      return taskPromotionDisabled;
     }
 
     function setNamespaces(list) {
@@ -725,7 +735,7 @@ angular.module('singleConceptAuthoringApp')
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
       isSpellcheckDisabled: isSpellcheckDisabled,
-      
+      isTaskPromotionDisabled: isTaskPromotionDisabled,
 
       // extension module-dependent retrieval functions
 
@@ -752,6 +762,7 @@ angular.module('singleConceptAuthoringApp')
       setTemplatesEnabled: setTemplatesEnabled,
       setSpellcheckDisabled: setSpellcheckDisabled,
       setModuleName: setModuleName,
+      setTaskPromotionDisabled: setTaskPromotionDisabled,
 
       // branch/task fupath retrieval functions
       getBranch: getBranch,
