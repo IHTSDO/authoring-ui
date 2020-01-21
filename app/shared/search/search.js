@@ -79,7 +79,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       }, true);
 
       // on load, get templates
-      if(!metadataService.isTemplatesEnabled()){
+      if(metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
           for(let i = response.length -1; i <= 0; i--){
             console.log(response[i]);
@@ -193,7 +193,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        if(!metadataService.isTemplatesEnabled())
+        if(metadataService.isTemplatesEnabled())
             {
                 if ($scope.searchMode === 'Switch to ECL') {
                   $scope.searchMode = 'Switch to Template';

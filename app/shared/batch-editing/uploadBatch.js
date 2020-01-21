@@ -73,7 +73,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
               $scope.dlcDialog(data.data, fileName);
             });
           }
-        if(!metadataService.isTemplatesEnabled()){
+        if(metadataService.isTemplatesEnabled()){
             templateService.getTemplates(true).then(function (response) {
                 $scope.templates = response;
             });
@@ -146,7 +146,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 if($scope.templateOptions.selectedTemplate === null){
                     $scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
                 }
-                if(!metadataService.isTemplatesEnabled()){
+                if(metadataService.isTemplatesEnabled()){
                     templateService.getTemplates(true).then(function (templates) {
                       $scope.templateOptions.availableTemplates = templates;
                         $scope.templatesLoading = false;

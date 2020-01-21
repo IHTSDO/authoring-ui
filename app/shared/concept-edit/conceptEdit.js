@@ -4765,7 +4765,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         function getTemplates() {
-          if(!metadataService.isTemplatesEnabled()){
+          if(metadataService.isTemplatesEnabled()){
             var parentIds = [];
             angular.forEach(scope.concept.relationships, function(rel){
                 if(rel.active && rel.characteristicType === 'STATED_RELATIONSHIP' && rel.type.conceptId === '116680003'){
