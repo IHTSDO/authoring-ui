@@ -1895,12 +1895,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set any project-level metadata flags
         metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
-        metadataService.setTemplatesEnabled($scope.project.projectTemplatesDisabled);
+        metadataService.setTemplatesEnabled(!$scope.project.projectTemplatesDisabled);
         metadataService.setSpellcheckDisabled($scope.project.projectSpellCheckDisabled);
         metadataService.setTaskPromotionDisabled($scope.project.taskPromotionDisabled);
 
         // retrieve available templates
-        if(!metadataService.isTemplatesEnabled()){
+        if(metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (templates) {
             for(var i = templates.length -1; i >= 0; i--){
                   if(templates[i].additionalSlots.length > 0)

@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
     };
     $scope.loading = false;
 
-    if(!metadataService.isTemplatesEnabled()){
+    if(metadataService.isTemplatesEnabled()){
         templateService.getTemplates().then(function (response) {
           var list = [];
           var patt1 =  new RegExp("^.*\\((.*)\\)$");

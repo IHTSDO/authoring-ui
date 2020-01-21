@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.sidebarEdit', [])
         else{
             $scope.actionTab = 4;
         }
-        $scope.hideBatch = metadataService.isTemplatesEnabled();
+        $scope.hideBatch = !metadataService.isTemplatesEnabled();
 
       $scope.setActiveTab = function (tabIndex) {
         $scope.actionTab = tabIndex;
