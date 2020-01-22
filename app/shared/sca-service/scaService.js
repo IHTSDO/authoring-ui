@@ -1543,6 +1543,12 @@ angular.module('singleConceptAuthoringApp')
 
         connectWebsocket: function () {          
           stompConnect();          
+          
+          // Need to reconnect WS one more time to make sure the connect is established.
+          // For some reasons, Server does not see the WS connection after the first connect.
+          setTimeout(function() {
+            stompConnect();
+          }, 3000);
         },
 
         getTaskAttachments: function (projectKey, taskKey) {
