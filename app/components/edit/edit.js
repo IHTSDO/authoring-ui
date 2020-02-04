@@ -200,9 +200,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.automatedPromotionInQueued = false;
     $rootScope.currentTask = null;
 
-    // reset flag before checking in getting branch detail
-    $rootScope.hasViewExclusionsPermission = false;
-
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Note : This flag is used for indicating where sitebar comes from "be loaded from begining"
     // or "be loading from Feedback view". Currently, we have 2 diffenent sitebars.
@@ -1871,10 +1868,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       notificationService.sendMessage('Loading task details...');
-        
-      //Check whether user has permission to see whitelist
-      metadataService.checkViewExclusionPermission($routeParams.projectKey);
-
+      
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
       
@@ -1948,14 +1942,9 @@ angular.module('singleConceptAuthoringApp.edit', [
                 // set the extension metadata for use by other elements
                 metadataService.setExtensionMetadata($scope.project.metadata);
 
-                // This check would be used in validation report where to show/hide whitelist for task
-                metadataService.checkViewExclusionPermission($routeParams.projectKey);
               }, function (error) {
                 notificationService.sendError('Fatal error: Could not load extension module concept');
               });
-            } else {
-              // Always show whitelist for all users for International
-              $rootScope.hasViewExclusionsPermission = true;
             }
 
 

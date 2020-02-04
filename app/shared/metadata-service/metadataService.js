@@ -671,42 +671,7 @@ angular.module('singleConceptAuthoringApp')
       }
       return false;
     }
-      
-    function checkViewExclusionPermission(projectKey) {
-      console.log(projectKey);
-      console.log(myProjects);
-      if (extensionMetadata !== null) {
-        if (myProjects.length > 0) {
-          if (myProjects.indexOf(projectKey) === -1) {
-            $rootScope.hasViewExclusionsPermission = false;
-          } else {
-            $rootScope.hasViewExclusionsPermission = true;
-          }
-        } else {
-          var interval = null;
-          var count = 0;
-
-          // wait until my project list is set
-          interval = $interval(function () {            
-            if (myProjects.length > 0) {
-              if (myProjects.indexOf(projectKey) === -1) {
-                $rootScope.hasViewExclusionsPermission = false;
-              } else {
-                $rootScope.hasViewExclusionsPermission = true;
-              }
-              interval = $interval.cancel(interval);
-            } else if (count > 30) {
-              interval = $interval.cancel(interval);
-            } else {
-              count++;
-            }            
-          }, 2000);
-        }        
-      } else {
-        $rootScope.hasViewExclusionsPermission = true;
-      } 
-    }
-
+    
     return {
 
       // relationship functions
@@ -780,9 +745,6 @@ angular.module('singleConceptAuthoringApp')
       getBranchMetadata: function () {
         return branchMetadata;
       },
-
-      // uitility to check view whitelist in validation report
-      checkViewExclusionPermission: checkViewExclusionPermission,
 
       setNamespaces: setNamespaces,
       getNamespaces: getNamespaces,

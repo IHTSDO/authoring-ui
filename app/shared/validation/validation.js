@@ -418,7 +418,7 @@ angular.module('singleConceptAuthoringApp')
 
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
-                      if (!failure.hasOwnProperty('branchRoot') || failure['branchRoot'] === branchRoot) {
+                      if (!failure.hasOwnProperty('branchRoot') || failure['branchRoot'] === branchRoot || failure['branchRoot'].includes(branchRoot) || branchRoot.includes(failure['branchRoot'])) {
                         orderedData.push(failure);
                       }                      
                     });
