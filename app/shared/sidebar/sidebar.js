@@ -47,5 +47,21 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         }, function () {
         });
       };
+
+      $scope.openTaskSearchModal = function () {
+        $modal.open({
+            templateUrl: 'shared/task/taskSearch.html',
+            controller: 'taskSearchCtrl',
+            resolve: {
+                task: function () {
+                    return null;
+                },
+                canDelete: function () {
+                    return false;
+                }
+            }
+        });
+      };
+      
     }
   ]);
