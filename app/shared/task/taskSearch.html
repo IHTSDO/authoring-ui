@@ -28,7 +28,7 @@
          class="table table-full table-full-small">
         <tr ng-repeat="task in $data" class="clickable-row">
           <td>
-            <a ng-click="goToTask(task,true)" class="btn btn-round btn-center btn-default lighten-2 blue no-padding tooltips-right"><div class="md md-open-in-new"></div></div><span>Open in new Tab</span></a>
+            <a ng-click="goToTask(task,true)" class="btn btn-round btn-center btn-default lighten-2 blue no-padding tooltips-right"><div class="md md-open-in-new"></div><span>Open in new Tab</span></a>
           </td>
 
           <td data-title="'Name'" sortable="'summary'" header-class="'header-tooltips'" header-title="'Click to sort'" filter="{ 'summary': 'text' }">
