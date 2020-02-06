@@ -46,7 +46,12 @@
                 <span ng-if="isProjectsLoaded()">Create a New Task</span>
                 <span ng-if="!isProjectsLoaded()">Please wait...</span>
               </button>
-              {{getProjects}}
+              <button type="button"
+                      class="btn btn-round tasks-bubble btn-default tooltips-bottom medium-size-tooltip offset-tooltip-right"
+                      ng-click="openSearchTasksModel()">
+                <div class="md md-search"></div>
+                <span>Search tasks</span>
+              </button>
             </div>
           </div>
         </div>
