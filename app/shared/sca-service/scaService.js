@@ -586,6 +586,21 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
+        searchTasks: function (criteria) {
+          return $http.get(apiEndpoint + 'projects/tasks/search?lightweight=true&criteria=' + decodeURIComponent(criteria)).then(
+            function (response) {
+              return response.data;
+            }, function (error) {
+              if (error.status === 403) {
+                $location.path('/login');
+              }
+              else {
+                console.error(error);
+              }
+            }
+          );
+        },
+
         getReviewTasks: function () {
           return $http.get(apiEndpoint + 'projects/review-tasks').then(
             function (response) {

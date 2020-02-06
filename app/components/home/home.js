@@ -366,6 +366,21 @@ angular.module('singleConceptAuthoringApp.home', [
             });
         };
 
+        $scope.openSearchTasksModel = function () {
+            $modal.open({
+                templateUrl: 'shared/task/taskSearch.html',
+                controller: 'taskSearchCtrl',
+                resolve: {
+                    task: function () {
+                        return null;
+                    },
+                    canDelete: function () {
+                        return false;
+                    }
+                }
+            });
+        };
+
         function addingTaskToList (newTask) {
             if (loadingTask) {
                 var loadingTasksPoll = $interval(function () {
