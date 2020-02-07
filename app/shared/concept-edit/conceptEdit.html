@@ -36,10 +36,10 @@
   </div>
 
   <!-- end validation error -->
-  <div ng-class="[{'new-concept' : componentStyles.isNew}]">
+  <div ng-class="[{'new-concept' : componentStyles.isNew}, {'deleted-concept' : componentStyles.isDeleted}]">
 
 
-    <div class="row grey concept-headers darken-4" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
+    <div class="row grey concept-headers darken-4 ng-scope" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
 
       <div class="pull-left no-padding col-md-1" ng-disabled="saving" ng-class="{'disabled': saving}">
           <button ng-click="setConceptProperties(concept, $event)" type="button" id="concept-more-{{initializationTimeStamp}}"
@@ -88,8 +88,10 @@
 
 
         <button type="button" class="btn-default grey darken-4 fsn-title-button pull-right" ng-class="[{'conceptFocus' : hasFocus}]">
-          <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
-            ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
+          <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   
+            <span ng-show="componentStyles.isNew"><strong>-New Concept</strong></span>
+            <span ng-show="componentStyles.isDeleted"><strong>-Deleted Concept</strong></span>
+          </span>
 
           <span ng-show="!concept.fsn && !concept.effectiveTime" class="fsn">Unsaved Concept</span>
 
