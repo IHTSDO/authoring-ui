@@ -227,7 +227,7 @@ angular.module('singleConceptAuthoringApp')
               window.open('/mrcm/?branch=' + $rootScope.currentTask.branchPath);
             }
           else if(window.location.href.indexOf("project/") > -1) {
-              window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey);
+              window.open('/mrcm/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey);
             }
           else{
               window.open('/mrcm/');
