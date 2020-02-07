@@ -315,7 +315,7 @@
                   filter="{ 'term': 'text' }"
                   ui-draggable="true" drag="concept"
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                  ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{concept.term? concept.term : 'Deleted concept'}} </span></td>
+                  ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
               <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
                   class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                   <button

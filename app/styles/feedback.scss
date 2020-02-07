@@ -20,6 +20,12 @@
 .new-concept .concept-headers:first-child {
     padding-top: 3px
 }
+
+/* deleted concept */
+.deleted-concept .grey.darken-4 {
+    background-color: #ff6755;
+    color: #201f23
+}
 /*feedback window filter */
 
 .concept-filter {

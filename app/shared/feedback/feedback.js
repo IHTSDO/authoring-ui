@@ -685,10 +685,21 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
+          scope.deletedConceptIds = [];
           scope.isDeletedConcept = function(concept) {
-            return !concept.term;
+            var deleted = !concept.term;
+            if (deleted && !scope.deletedConceptIds.includes(concept.conceptId)) {              
+              scope.deletedConceptIds.push(concept.conceptId);
+              scope.styles[concept.conceptId] = {};
+              scope.styles[concept.conceptId].conceptStyle = {'style' : 'redhl'};
+              scope.styles[concept.conceptId].isDeleted = true;
+            }
+            return deleted;
           };
 
+          scope.checkDeletedConceptById = function (conceptId) {
+            return scope.deletedConceptIds.includes(conceptId);
+          }
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
             if (sendingConceptToReview) return;
@@ -1423,7 +1434,26 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
             if(scope.isDeletedConcept(concept)) {
-              notificationService.sendMessage('The selected concept was deleted, it cannot be loaded anymore.');
+              // check if concept already exists in list
+              for (var i = 0; i < scope.viewedConcepts.length; i++) {
+                if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
+                  notificationService.sendWarning('Concept already shown');
+                  if (scope.role === 'REVIEWER') {
+                    $rootScope.$broadcast('conceptFocusedFromKey', {id : concept.conceptId});
+                  }
+                  return;
+                }
+              }
+
+              notificationService.sendMessage('Loading concept ' + concept.conceptId);
+              terminologyServerService.getFullConceptAtDate(concept.conceptId, scope.branch, null, '-').then(function (response) {
+                scope.viewedConcepts.push(response);
+                notificationService.clear();
+              },           
+              function() {
+                notificationService.sendMessage('The selected concept was created and deleted in task, it cannot be loaded anymore.');
+              }
+            );
             } else {
               scope.simultaneousFeedbackAdded = false;
               if (actions && actions.length > 0) {

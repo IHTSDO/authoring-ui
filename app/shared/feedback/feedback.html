@@ -148,7 +148,7 @@
         </div>
         <div ng-class="getLayoutWidths('concepts')">
           <div id="conceptId-{{concept.conceptId}}" concept-edit concept="concept" branch="branch" 
-              static="role !== 'AUTHOR'" load-validation="{{role === 'REVIEWER'}}" 
+              static="role !== 'AUTHOR' || checkDeletedConceptById(concept.conceptId)" load-validation="{{role === 'REVIEWER'}}" 
               component-styles="styles[concept.conceptId]" inactive-descriptions="inactiveDescriptions[concept.conceptId]"
               feedback-view="true" project-taxonomy-visible="true" 
               allow-approval="checkApprovalPermission(concept)" traceabilities="feedbackContainer.review.traceability"></div>
