@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp')
                 results.classificationStatuses.push({
                   checkTitle: 'Classification Not Completed',
                   checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
-                  blocksPromotion: false
+                  blocksSubmitForReview: false
                 });
               }
 
@@ -244,7 +244,8 @@ angular.module('singleConceptAuthoringApp')
               ////////////////////////////////////////////////////////////
 
               // check if saved
-              if (latestClassificationJson.status === 'SAVED') {                
+              if (latestClassificationJson.status === 'SAVED') {  
+                // do nothing              
               }
 
               // check if classification has results
@@ -260,11 +261,7 @@ angular.module('singleConceptAuthoringApp')
 
               // if no results, put up a display message
               else {
-                results.classificationStatuses.push({
-                  checkTitle: 'Classification Has No Results to Accept',
-                  checkWarning: null,
-                  blocksSubmitForReview: null
-                });
+                // do nothing
               }
 
               ////////////////////////////////////////////////////////////
@@ -274,7 +271,7 @@ angular.module('singleConceptAuthoringApp')
                 results.classificationStatuses.push({
                   checkTitle: 'Equivalencies Found',
                   checkWarning: 'Classification reports equivalent concepts on this branch. You may not submit for review until these are resolved',
-                  blocksPromotion: true
+                  blocksSubmitForReview: false
                 });
               }
               
