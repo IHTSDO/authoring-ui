@@ -1762,7 +1762,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         templateUrl: 'shared/review-check-modal/reviewCheckModal.html',
         controller: 'reviewCheckModalCtrl',
         resolve: {
-          reviewChecks: reviewChecks
+          reviewChecks: function() {
+            return reviewChecks;
+          }
         }
       });
 
@@ -1785,7 +1787,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0) {
+            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0 && reviewChecks.classificationStatuses.length === 0) {
               reviewService.submitForReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Submitted for review', 3000);
