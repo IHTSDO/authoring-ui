@@ -700,13 +700,13 @@ angular.module('singleConceptAuthoringApp')
                   if (!description.acceptabilityMap['900000000000509007']) {
                     description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                   }
-                  delete description.acceptabilityMap['900000000000508004'];
-
-                  // SYN en-GB matching acceptability of original description
+                                    
                   if (hasDialectMatchingWords && !termGbFound) {
+                    delete description.acceptabilityMap['900000000000508004'];
                     addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                   }
-
+                  
+                  // SYN en-GB matching acceptability of original description
                   if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
                         addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
@@ -745,7 +745,6 @@ angular.module('singleConceptAuthoringApp')
                 }
                 // else, add matching PT
                 else {
-
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
                   if (!isTemplateConcept) {
@@ -762,13 +761,13 @@ angular.module('singleConceptAuthoringApp')
                   if (!description.acceptabilityMap['900000000000509007']) {
                     description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                   }
-                  delete description.acceptabilityMap['900000000000508004'];
-
-                  // SYN en-GB matching acceptability of original description
+                                    
                   if (hasDialectMatchingWords  && !termGbFound) {
+                    delete description.acceptabilityMap['900000000000508004'];
                     addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                   }
                  
+                  // SYN en-GB matching acceptability of original description
                   if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {                     
                         addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
