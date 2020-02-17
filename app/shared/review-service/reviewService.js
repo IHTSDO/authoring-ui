@@ -144,6 +144,166 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function checkClassificationPrerequisites(branch, latestClassificationJson, results) {      
+      var deferred = $q.defer();      
+
+      if (!branch) {
+        results.classificationStatuses.push({
+          checkTitle: 'Branch Not Provided ',
+          checkWarning: 'Branch not provided to submit for review. This is a fatal error: contact an administrator',
+          blocksSubmitForReview: true
+        });
+        deferred.resolve(results);
+
+      } else {
+        if (!latestClassificationJson) {
+          results.classificationStatuses.push({
+            checkTitle: 'Classification Not Run',
+            checkWarning: 'No classifications were run on this branch.',
+            blocksSubmitForReview: false
+          });
+		      deferred.resolve(results);          
+        } else {
+          // get the branch details
+          terminologyServerService.getBranch(branch).then(function (branchStatus) {
+            terminologyServerService.getTraceabilityForBranch(branch).then(function (activities) {
+              if (!branchStatus) {
+                results.classificationStatuses.push({
+                  checkTitle: 'Could Not Retrieve Branch Details',
+                  checkWarning: 'Could not retrieve branch details for branch: ' + branch + '.  This is a fatal error; contact an administrator',
+                  blocksSubmitForReview: true
+                });
+
+                deferred.resolve(results);
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK: Was classification run?
+              ////////////////////////////////////////////////////////////
+
+              if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
+                // do nothing
+              } else {
+                results.classificationStatuses.push({
+                  checkTitle: 'Classification Not Completed',
+                  checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
+                  blocksPromotion: false
+                });
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Is the classification current?
+              ////////////////////////////////////////////////////////////
+
+              // Case 1: if classification report is completed, but not
+              // accepted, check that results are current relative to task
+              // modification does not require ui state, can use timestamp on
+              // classification status
+              if (latestClassificationJson.status === 'COMPLETED') {
+
+                if ((new Date(latestClassificationJson.creationDate)).getTime() < branchStatus.headTimestamp) {
+                    results.classificationStatuses.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.',
+                      blocksSubmitForReview: false
+                  });
+                }
+              }
+
+              // Case 2: if classification results were accepted, use the
+              // stored ui-state to check that the results are current
+              // relative to task modifications
+              else if (latestClassificationJson.status === 'SAVED') {
+
+                // if no classification status saved or saved state was not
+                // captured by application
+                if (!latestClassificationJson.saveDate) {
+                  results.classificationStatuses.push({
+                    checkTitle: 'Classification May Not Be Current',
+                    checkWarning: 'Could not determine whether modifications were made after saving the classification.',
+                    blocksSubmitForReview: false
+                  });
+                }
+
+                // otherwise compare the head timestamp of the branch to the
+                // saved timestamp of classification results acceptance
+                else if (isClassificationSavedCurrent(activities)) { 
+                  // do nothing                
+                }
+                else {
+                  results.classificationStatuses.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Classification was run, but modifications were made to the task afterwards.',
+                      blocksSubmitForReview: false
+                    });
+                }
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Was classification saved?
+              ////////////////////////////////////////////////////////////
+
+              // check if saved
+              if (latestClassificationJson.status === 'SAVED') {                
+              }
+
+              // check if classification has results
+              else if (latestClassificationJson.equivalentConceptsFound ||
+                latestClassificationJson.inferredRelationshipChangesFound ||
+                latestClassificationJson.redundantStatedRelationshipsFound) {
+                  results.classificationStatuses.push({
+                  checkTitle: 'Classification Not Accepted',
+                  checkWarning: 'Classification results were not accepted to this branch',
+                  blocksSubmitForReview: false
+                });
+              }
+
+              // if no results, put up a display message
+              else {
+                results.classificationStatuses.push({
+                  checkTitle: 'Classification Has No Results to Accept',
+                  checkWarning: null,
+                  blocksSubmitForReview: null
+                });
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Does the classification report equivalencies?
+              ////////////////////////////////////////////////////////////
+              if (latestClassificationJson.equivalentConceptsFound) {
+                results.classificationStatuses.push({
+                  checkTitle: 'Equivalencies Found',
+                  checkWarning: 'Classification reports equivalent concepts on this branch. You may not submit for review until these are resolved',
+                  blocksPromotion: true
+                });
+              }
+              
+              deferred.resolve(results);           
+
+            },
+            function (error) {
+              deferred.reject('Could not get traceability for branch');
+            });
+          },
+          function (error) {
+            deferred.reject('Could not determine branch state');
+          });
+        }
+
+      }
+      return deferred.promise;
+    }
+	
+    function isClassificationSavedCurrent(activities) {    
+        var lastClassificationSaved = 0;
+        var lastModifiedTime = (new Date(activities.content[activities.content.length - 1].commitDate)).getTime();
+        angular.forEach(activities.content, function(activity) {
+          if (activity.activityType === 'CLASSIFICATION_SAVE')
+            lastClassificationSaved = (new Date(activity.commitDate)).getTime();
+        });
+        return lastClassificationSaved === lastModifiedTime;
+    }
+
     function checkReviewPrerequisites(task) {
       var deferred = $q.defer();
 
@@ -151,10 +311,11 @@ angular.module('singleConceptAuthoringApp')
       var results = {
         unsavedConcepts: [],
         hasChangedContent: false,
-        messages: []
+        messages: [],
+        classificationStatuses: []
       };
 
-      var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results)];
+      var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results), checkClassificationPrerequisites(task.branchPath,task.latestClassificationJson,results)];
       $q.all(promises).then(function () {
         deferred.resolve(results);
       }, function (error) {
