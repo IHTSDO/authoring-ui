@@ -564,12 +564,16 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
+        $scope.searchTimestamp = new Date().getTime();
         if($scope.userOptions.template){
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
                 if(results.data.length > 0){
-                    terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data, $scope.searchAfter).then(function (results) {
-                        if (!results) {
+                    terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data, $scope.searchAfter, $scope.searchTimestamp).then(function (results) {
+                      if (results.searchTimestamp !== $scope.searchTimestamp) {
+                        return;
+                      }  
+                      if (!results) {
                             notificationService.sendError('Unexpected error searching for concepts', 10000);
                           }
                           if(results.searchAfter){
@@ -602,9 +606,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         }
         else{
-
-        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter).then(function (results) {
-          console.log(results);
+        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter, $scope.searchTimestamp).then(function (results) {
+          if (results.searchTimestamp !== $scope.searchTimestamp) {
+            return;
+          }
           if (!results) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
           }
