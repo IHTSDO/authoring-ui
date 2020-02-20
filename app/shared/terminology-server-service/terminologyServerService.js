@@ -1171,7 +1171,7 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter, searchTimestamp) {
         let deferred = $q.defer();
         let config = {};
         let params = {
@@ -1179,7 +1179,7 @@ angular.module('singleConceptAuthoringApp')
           limit: limit ? limit : '50',
           expand: 'fsn()'
         };
-        if(searchAfter !== null){
+        if (searchAfter !== null){
             params.searchAfter = searchAfter;
         }
 
@@ -1193,15 +1193,15 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
-        if(syn){
+        if (syn) {
           params.expand = 'pt()';
         }
 
-        if(activeFilter !== null) {
+        if (activeFilter !== null) {
           params.activeFilter = activeFilter;
         }
 
-        if(tsv) {
+        if (tsv) {
           config.headers['Accept'] = 'text/csv';
           //params.offset = 0;
           params.limit = 10000;
@@ -1212,31 +1212,26 @@ angular.module('singleConceptAuthoringApp')
           params.definitionStatusFilter = definitionStatus;
         }
 
-        let isAsychronousRequest = false;
-
         // if the user is searching with a refsetId
-        if(termFilter.substr(8, 1) === '-' && termFilter.substr(13, 1) === '-'){
-            doRefsetSearch(branch, params, config, termFilter).then(function (response) {
-                  deferred.resolve(response);
-              }, function (error) {
-                deferred.reject(error);
-              });
+        if (termFilter.substr(8, 1) === '-' && termFilter.substr(13, 1) === '-') {
+          doRefsetSearch(branch, params, config, termFilter).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error);
+          });
         }
-
         // if the user is searching with some form of numerical ID
-        else if(!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
-
+        else if (!isNaN(parseFloat(termFilter)) && isFinite(termFilter) || Array.isArray(conceptIdList)) {
           // if user is searching with a conceptID
-          if(conceptIdList || termFilter.substr(-2, 1) === '0') {
-            if(!Array.isArray(conceptIdList)) {
-              isAsychronousRequest = true;
+          if (conceptIdList || termFilter.substr(-2, 1) === '0') {
+            if (!Array.isArray(conceptIdList)) {
               params.conceptIds = [termFilter];
-              doSearch(branch, params, config, tsv).then(function (response) {
+              doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
                 // If no concept found, then search by normal text
                 if (response.total === 0) {
                   delete params.conceptIds;
                   params.termFilter = termFilter;
-                  doSearch(branch, params, config, tsv).then(function (response) {
+                  doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
                     deferred.resolve(response);
                   }, function (error) {
                     deferred.reject(error);
@@ -1251,22 +1246,24 @@ angular.module('singleConceptAuthoringApp')
             else {
               params.termFilter = termFilter;
               params.conceptIds = conceptIdList;
+
+              doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+                deferred.resolve(response);
+              }, function (error) {
+                deferred.reject(error);
+              });
             }
           }
-
           // if user is searching with a descriptionID
-          else if(termFilter.substr(-2, 1) === '1') {
-            isAsychronousRequest = true;
+          else if (termFilter.substr(-2, 1) === '1') {
             $http.get(apiEndpoint + branch + '/descriptions/' + termFilter).then(function(response) {
-
               params.conceptIds = [response.data.conceptId];
-
-              doSearch(branch, params, config, tsv).then(function (response) {
+              doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
                 // If no concept found, then search by normal text
                 if (response.total === 0) {
                   delete params.conceptIds;
                   params.termFilter = termFilter;
-                  doSearch(branch, params, config, tsv).then(function (response) {
+                  doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
                     deferred.resolve(response);
                   }, function (error) {
                     deferred.reject(error);
@@ -1281,20 +1278,16 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject(error);
             });
           }
-
           // if user is searching with a relationshipID
-          else if(termFilter.substr(-2, 1) === '2') {
-            isAsychronousRequest = true;
+          else if (termFilter.substr(-2, 1) === '2') {
             $http.get(apiEndpoint + branch + '/relationships/' + termFilter, { params : params }).then(function(response) {
-
               params.conceptIds = [response.data.sourceId, response.data.destinationId];
-
-              doSearch(branch, params, config, tsv).then(function (response) {
+              doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
                 // If no concept found, then search by normal text
                 if (response.total === 0) {
                   delete params.conceptIds;
                   params.termFilter = termFilter;
-                  doSearch(branch, params, config, tsv).then(function (response) {
+                  doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
                     deferred.resolve(response);
                   }, function (error) {
                     deferred.reject(error);
@@ -1310,16 +1303,21 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject(error);
             });
           }
-
           // if the id is unrecognised
           else {
             console.error('unrecognised ID');
             params.termFilter = termFilter;
+
+            doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error);
+            });
           }
         }
 
         // if the user is doing an ecl search
-        else if(escgExpr){
+        else if (escgExpr) {
           params.termFilter = termFilter;
 
           if (view === 'stated') {
@@ -1327,15 +1325,19 @@ angular.module('singleConceptAuthoringApp')
           } else {
             params.eclFilter = escgExpr;
           }
+
+          doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error);
+          });
         }
 
         // if the user is searching for text
         else {
           params.termFilter = termFilter;
-        }
 
-        if (!isAsychronousRequest) {
-          doSearch(branch, params, config, tsv).then(function (response) {
+          doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
             deferred.reject(error);
@@ -1345,27 +1347,30 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function doSearch (branch, params, config, tsv) {
+      function doSearch (branch, params, config, tsv, searchTimestamp) {
         let deferred = $q.defer();
 
         $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
-
-            if(tsv) {
+            if (tsv) {
               deferred.resolve(response);
             }
-
             else {
               let results = [];
-
               angular.forEach(response.data.items, function(item) {
                 let obj = browserStructureConversion(item);
-
                 results.push(obj);
               });
-              response.data.items = results;
-              deferred.resolve(response.data ? response.data : {items: [], total: 0});
+              if (results.length !== 0) {
+                response.data.items = results;
+              }
+              else {
+                response.data = {items: [], total: 0}
+              }              
+              if (searchTimestamp) {
+                response.data.searchTimestamp = searchTimestamp;
+              }
+              deferred.resolve(response.data);
             }
-
           }, function (error) {
             deferred.reject(error);
           });
