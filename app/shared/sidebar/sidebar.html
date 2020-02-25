@@ -22,17 +22,15 @@
       <button type="button" class="btn grey darken-3 dashboard-links">All Projects
       </button>
     </li>
- 
+    <li>
+      <button class="btn grey darken-3 dashboard-links" ng-click="openTaskSearchModal()">
+        Search Tasks
+      </button>
+    </li>
     <li>
       <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-disabled="!isProjectsLoaded()">
     New Task
       </button>
-    </li>
-
-    <li>
-      <button class="btn grey darken-3 dashboard-links" ng-click="openTaskSearchModal()">
-        Task Search
-      </button>
-    </li>
+    </li>    
   </ul>
 </div>
