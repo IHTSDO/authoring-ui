@@ -1451,7 +1451,7 @@ angular.module('singleConceptAuthoringApp')
                 notificationService.clear();
               },           
               function() {
-                notificationService.sendMessage('The selected concept was created and deleted in task, it cannot be loaded anymore.');
+                notificationService.sendMessage('The selected concept was created and deleted in this task, it cannot be loaded anymore.');
               }
             );
             } else {
