@@ -411,7 +411,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             .add({
               combo: 'alt+r',
               description: 'Add relationship to current concept: ' + scope.concept.fsn,
-              callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template && !scope.showInferredRels){scope.addRelationship()}
+              callback: function() {
+                if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.concept.template && !scope.showInferredRels){
+                  let axiom = scope.concept.classAxioms[scope.concept.classAxioms.length - 1];
+                  let relationship = axiom.relationships[axiom.relationships.length -1];
+                  scope.addAxiomRelationship(relationship.groupId, relationship, axiom);
+                }
               }
             })
           hotkeys.bindTo(scope)
@@ -424,7 +429,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             .add({
               combo: 'alt+g',
               description: 'Add role group to current concept: ' + scope.concept.fsn,
-              callback: function() {if(!scope.static && !scope.isLockedModule(scope.concept.moduleId)  && !scope.template && !scope.concept.template && !scope.showInferredRels){scope.addRelationshipGroup()}}
+              callback: function() {
+                if(!scope.static && !scope.isLockedModule(scope.concept.moduleId) && !scope.template && !scope.concept.template && !scope.showInferredRels){
+                  let axiom = scope.concept.classAxioms[scope.concept.classAxioms.length - 1];
+                  scope.addAxiomRelationshipGroup(axiom);
+                }
+              }
             })
           hotkeys.bindTo(scope)
             .add({
