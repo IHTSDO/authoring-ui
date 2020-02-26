@@ -74,6 +74,15 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
+      //compare function that treats the empty space as a match
+      scope.emptyOrMatch = function (actual, expected) {
+        if (expected === ' ') {
+          return true;
+        }
+        var reg = new RegExp('.*' + expected.toLowerCase().split(' ').join('.*'),'i');       
+        return actual ? reg.test(actual.toString().toLowerCase()) : false;
+      };
+      
       // Bind keyboard events, exclude : Delete and Backspace
       // If input matches an item of the list exactly, select it automatically.
       // Use typeahead-select-on-exact-with-ajax="true" along with typeahead directive when the suggestions come from server.
