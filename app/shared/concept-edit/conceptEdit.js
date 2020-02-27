@@ -373,14 +373,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         } else {
           scope.highlightChanges = false;
         }
-
-        scope.isAxiomSupport =  function() {
-          if (scope.concept && scope.concept.moduleId === '900000000000207008' /* SNOMED CT core module (core metadata concept) */) {
-            return true;
-          }
-          return false;
-        };
-
+        
         scope.enterListener = function(event){
             event = event.event
             if(event.keyCode === 13) {
