@@ -274,12 +274,6 @@ angular
           });
         });
 
-        cisService.getAllNamespaces().then(function (response) {
-          if(response.length > 0) {
-            metadataService.setNamespaces(response);
-          }
-        });
-
         hotkeys.bindTo($rootScope)
             .add({
               combo: 'alt+h',

@@ -1,4 +1,10 @@
-<div class="axiom row grey darken-4 p-t-5" drop-channel="axiomObj" ui-on-drop="dropAxiom($data)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover" ng-class="getComponentStyle(axiom.axiomId, null, '', axiom) + ' ' + getComponentStyle(axiom.axiomId, null, '', null)">
+<div class="axiom row grey darken-4 p-t-5" 
+  drop-channel="axiomObj" 
+  ui-on-drop="dropAxiom($data)"
+  drop-validate="!isLockedModule(axiom.moduleId) && !isStatic && !isExtensionSet()"
+  drag-enter-class="sca-drag-target" 
+  drag-hover-class="sca-drag-hover" 
+  ng-class="getComponentStyle(axiom.axiomId, null, '', axiom) + ' ' + getComponentStyle(axiom.axiomId, null, '', null)">
   <div class="col-md-1 no-padding pull-left">
     <button
         class="btn-default md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
