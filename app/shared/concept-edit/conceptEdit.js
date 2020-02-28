@@ -2671,7 +2671,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 ////////////////////////////////////
 // Drag and drop functions
 ////////////////////////////////////
-
+        scope.isDragEnable = function (moduleId){          
+          return scope.isExtensionSet() ? moduleId === scope.getExtensionMetadata().modules[0].id : true;
+        }
 // construct an id-name pair json object
         scope.getConceptIdNamePair = function (concept) {
           return {
@@ -3160,11 +3162,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationship = function (target, source, axiom) {
-
-          console.log(source);
-            console.log(target);
-
-
           if (!target || !source) {
             console.error('Cannot drop relationship, either source or target not specified');
             return;
@@ -3180,7 +3177,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if (constraintService.isAttributeAllowedForArray(source.type.fsn, axiom.allowedAttributes)) {
+          if (constraintService.isAttributeAllowedForArray(source.type.conceptId, axiom.allowedAttributes)) {
 
             constraintService.isValueAllowedForType(source.type.conceptId, source.target.conceptId, scope.branch).then(function () {
               // copy relationship object and replace target relationship
@@ -3372,7 +3369,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // strip identifying information from each relationship and push
           // to relationships with new group id
           angular.forEach(relGroup, function (rel) {
-            if (constraintService.isAttributeAllowedForArray(rel.type.fsn, axiom.allowedAttributes)) {
+            if (constraintService.isAttributeAllowedForArray(rel.type.conceptId, axiom.allowedAttributes)) {
 
               constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {
                   // copy relationship object and replace target relationship
