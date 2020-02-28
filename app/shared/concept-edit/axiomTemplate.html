@@ -104,7 +104,7 @@
 
                 <button
                   class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
-                  ui-draggable="relationship.active" drag="relationship" drag-channel="axiomRelationshipObj"
+                  ui-draggable="{{relationship.active && isDragEnable(axiom.moduleId)}}" drag="relationship" drag-channel="axiomRelationshipObj"
                   drag-image="getDragImageForRelationship(relationship)">
                   <span>Drag This Row</span>
                 </button>
@@ -213,7 +213,7 @@
                  drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
               <button ng-if="$index === 0"
                       class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right m-t-7"
-                      ui-draggable="true" drag="relationshipGroup" drag-channel="axiomRelationshipGroupObj"
+                      ui-draggable="{{isDragEnable(axiom.moduleId)}}" drag="relationshipGroup" drag-channel="axiomRelationshipGroupObj"
                       drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
                 <span>Drag Relationship Group</span>
               </button>
