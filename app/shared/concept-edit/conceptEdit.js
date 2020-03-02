@@ -2671,9 +2671,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 ////////////////////////////////////
 // Drag and drop functions
 ////////////////////////////////////
-        scope.isDragEnable = function (moduleId){          
-          return scope.isExtensionSet() ? moduleId === scope.getExtensionMetadata().modules[0].id : true;
-        }
+
 // construct an id-name pair json object
         scope.getConceptIdNamePair = function (concept) {
           return {
@@ -3133,6 +3131,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           axiom.axiomId = null;
           axiom.active = true;
           axiom.released = false;
+          axiom.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
           delete axiom.effectiveTime;
           delete axiom.id;
           if (axiom.type === axiomType.ADDITIONAL) {
@@ -3143,6 +3142,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               rel.sourceId = scope.concept.conceptId;
               rel.active = true;
               rel.released = false;
+              rel.moduleId = axiom.moduleId;
             });
             scope.concept.classAxioms.push(axiom);
             scope.computeAxioms(axiomType.ADDITIONAL);
@@ -3154,6 +3154,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               rel.sourceId = scope.concept.conceptId;
               rel.active = true;
               rel.released = false;
+              rel.moduleId = axiom.moduleId;
             });
             scope.concept.gciAxioms.push(axiom);
             scope.computeAxioms(axiomType.GCI);
@@ -3186,6 +3187,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // set sourceId from current concept
               copy.sourceId = scope.concept.conceptId;
+
+              // set module Id
+              copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
               // set the group based on target
               copy.groupId = (metadataService.isUngroupedAttribute(source.type.conceptId) || source.type.conceptId === '116680003') ? 0 : target.groupId;
@@ -3377,6 +3381,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // set the group based on target
                   copy.groupId = (metadataService.isUngroupedAttribute(rel.type.conceptId) || rel.type.conceptId === '116680003') ? 0 : newGroup;
+
+                  // set module Id
+                  copy.moduleId = metadataService.isExtensionSet()? metadataService.getCurrentModuleId() : scope.concept.moduleId;
 
                   // set sourceId from current concept
                   copy.sourceId = scope.concept.conceptId;
