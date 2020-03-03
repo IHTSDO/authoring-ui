@@ -459,11 +459,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === usModel.dialectId ||
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
-        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
-          let fileName = 'searchResults_' + $routeParams.taskKey;
-
+        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, null, null, !fsnSearchFlag, acceptLanguageValue, activeFilter, true, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
+          const fileName = 'searchResults_' + $routeParams.taskKey;
           $scope.dlcDialog(data.data, fileName);
-        });
+
+          // Get total items and notify user if exceeded 10K
+          notificationService.clear();
+          terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, null, 1, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
+            if (data.total > 10000) {
+              notificationService.sendWarning('The total number of results are ' + data.total + ', but only first 10K items will be downloaded.');
+            }
+          });
+        });        
       };
 
       $scope.autoExpand = function() {
