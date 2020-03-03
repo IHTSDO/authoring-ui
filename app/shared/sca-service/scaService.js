@@ -601,8 +601,8 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
-        getReviewTasks: function () {
-          return $http.get(apiEndpoint + 'projects/review-tasks').then(
+        getReviewTasks: function (excludePromoted) {
+          return $http.get(apiEndpoint + 'projects/review-tasks?excludePromoted=' + (excludePromoted ? true : false)).then(
             function (response) {
               if ($rootScope.loggedIn === null) {
                 $rootScope.loggedIn = true;
