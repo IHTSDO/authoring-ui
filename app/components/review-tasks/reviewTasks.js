@@ -124,7 +124,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.toggleShowPromotedReviews = function () {
         $scope.showPromotedReviews = !$scope.showPromotedReviews;
         $rootScope.reviewTaskFilter.showPromoted = $scope.showPromotedReviews;
-        $scope.reviewTableParams.reload();
+        loadTasks();
       };
 
       $scope.toggleShowNewEdits = function () {
@@ -146,7 +146,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         if ($rootScope.reviewTaskFilter.showNewEdits) {
             $scope.showNewEdits = $rootScope.reviewTaskFilter.showNewEdits;
         }
-        scaService.getReviewTasks().then(function (response) {
+        scaService.getReviewTasks($scope.showPromotedReviews ? false : true).then(function (response) {
           $scope.reviewTasks = response;
           if ($scope.reviewTasks) {
             notificationService.sendMessage('All tasks loaded', 5000);
