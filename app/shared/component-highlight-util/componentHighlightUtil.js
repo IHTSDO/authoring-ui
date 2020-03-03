@@ -230,7 +230,7 @@ angular.module('singleConceptAuthoringApp')
         
       angular.forEach(axiom.relationships, function(newRelationship){
         if(newRelationship.found){
-        delete newRelationship.found;
+          delete newRelationship.found;
         }
       });
         
@@ -368,7 +368,9 @@ angular.module('singleConceptAuthoringApp')
       for (var key in oldGroups) {
           if (newGroups.hasOwnProperty(key)) size++;
       }
-      if(size === matchedGroups.length && size !== 0){
+      if(size === matchedGroups.length 
+          && size !== 0
+          && Object.keys(oldGroups).length === Object.keys(newGroups).length) {
           params.onlyNew = true;
       }
       params.partialMatches = partialMatches;
