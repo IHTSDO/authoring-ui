@@ -256,7 +256,7 @@ angular.module('singleConceptAuthoringApp')
             originalRelationship.found = true;
           }
         });
-        if(!originalRelationship.found && !params.matchedGroups.includes(originalRelationship.groupId) && (originalRelationship.groupId === 0 || !params.onlyNew)){
+        if(!originalRelationship.found && !params.originalMatchedGroups.includes(originalRelationship.groupId)){
           originalRelationship.relationshipId = terminologyServerService.createGuid();
           originalRelationship.active = false;
           originalRelationship.deleted = true;
@@ -362,17 +362,8 @@ angular.module('singleConceptAuthoringApp')
                   });
               }
           })
-      });
-        
-      let size = 0;
-      for (var key in oldGroups) {
-          if (newGroups.hasOwnProperty(key)) size++;
-      }
-      if(size === matchedGroups.length 
-          && size !== 0
-          && Object.keys(oldGroups).length === Object.keys(newGroups).length) {
-          params.onlyNew = true;
-      }
+      });        
+      
       params.partialMatches = partialMatches;
       params.matchedGroups = matchedGroups;
       params.originalMatchedGroups = originalMatchedGroups;
