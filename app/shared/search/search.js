@@ -15,8 +15,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     };
 })
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'terminologyServerService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, terminologyServerService, templateService, batchEditingService, modalService, savedListService,$timeout) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'terminologyServerService', 'templateService', 'batchEditingService', 'modalService','savedListService','$timeout','$filter',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, terminologyServerService, templateService, batchEditingService, modalService, savedListService,$timeout,$filter) {
 
       let usModel = {
         moduleId: '731000124108',
@@ -467,7 +467,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           notificationService.clear();
           terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, null, 1, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, conceptIdList).then(function (data) {
             if (data.total > 10000) {
-              notificationService.sendWarning('The total number of results are ' + data.total + ', but only first 10K items will be downloaded.');
+              notificationService.sendWarning('The total number of results is ' + $filter('number')(data.total) + ', but only the first 10,000 will be downloaded. Please contact technical support if you require the full set of results.');
             }
           });
         });        
