@@ -113,15 +113,15 @@
         <button class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple"
                 ng-click="openSettingsModal()"><i class="md md-settings f20"></i></button>
 
-      </li>
-      <li class="pull-right">
-        <a ng-href="#/logout">Logout</a>
-      </li>
+      </li>      
       <li class="pull-right">
         <a id="profile_not_active" title="display name will link to profile services in later updates">
           <span ng-if="accountDetails === null">Logged in as unknown user</span>
           <span ng-if="accountDetails !== null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
         </a>
+      </li>
+      <li class="pull-right">
+        <a ng-href="#/logout">Logout</a>
       </li>
     </ul>
   </div>
