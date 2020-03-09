@@ -400,7 +400,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else{
                 return false;
             }
-        }
+        };
+
+        scope.isGciAxiomPresent = function() {
+          return scope.concept.hasOwnProperty('gciAxioms') ? scope.concept.gciAxioms.length !== 0 : false;
+        };
 
         function bindShortcutToScope () {
           hotkeys.bindTo(scope)

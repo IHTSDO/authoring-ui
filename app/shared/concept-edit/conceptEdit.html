@@ -297,7 +297,8 @@
       <div class="row darken-3 p-t-5 grey">
         <div class="col-md-12 no-padding color_ def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
-             drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
+             drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover"
+             ng-class="[{'GCI' : isGciAxiomPresent()}]">
 
           <button id="description-more-{{initializationTimeStamp}}-{{$index}}" ng-click="setDescriptionProperties(description, $event)"
                   class="btn-default transparent md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"

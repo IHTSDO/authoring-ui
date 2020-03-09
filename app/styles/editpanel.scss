@@ -677,6 +677,37 @@ button.fsn-title-button {
     background-color: #dbdbff;
     color: #474747;
 }
+.def_PRIMITIVE.GCI textarea,
+.def_PRIMITIVE.GCI select,
+.def_PRIMITIVE.GCI .custom-button,
+.def_PRIMITIVE.GCI .form-control[disabled],
+.def_PRIMITIVE.GCI [type=text].form-control[disabled],
+.def_PRIMITIVE.GCI [type=text].form-control[readonly],
+.def_FULLY_DEFINED.GCI textarea,
+.def_FULLY_DEFINED.GCI select,
+.def_FULLY_DEFINED.GCI .custom-button,
+.def_FULLY_DEFINED.GCI .form-control[disabled],
+.def_FULLY_DEFINED.GCI [type=text].form-control[disabled],
+.def_FULLY_DEFINED.GCI [type=text].form-control[readonly] {
+    font-size: 11px;
+    height: 30px;
+    background-color: #f8e481;
+    color: #474747;
+    box-shadow: none;
+}
+.color_.def_FULLY_DEFINED.GCI input,
+.color_.def_FULLY_DEFINED.GCI textarea,
+.color_.def_FULLY_DEFINED.GCI select,
+.color_.def_FULLY_DEFINED.GCI .custom-button,
+.color_.def_FULLY_DEFINED.GCI .sourcename,
+.color_.def_PRIMITIVE.GCI input,
+.color_.def_PRIMITIVE.GCI textarea,
+.color_.def_PRIMITIVE.GCI select,
+.color_.def_PRIMITIVE.GCI .custom-button,
+.color_.def_PRIMITIVE.GCI .sourcename {
+    background-color: #f8e481;
+    color: #474747;
+}
 
 .is_a input,
 .is_a textarea,
