@@ -292,7 +292,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getConceptsForValueTypeahead = constraintService.getConceptsForValueTypeahead;
         scope.crsFilter = crsService.crsFilter;
 
-        var drugsOrdering = metadataService.getdrugsModelOrdering();        
+        var conceptsMap = {};        
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
@@ -402,9 +402,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
         };
 
-        scope.isGciAxiomPresent = function() {
-          return scope.concept.hasOwnProperty('gciAxioms') ? scope.concept.gciAxioms.length !== 0 : false;
+        scope.isGciAxiomPresent = function(conceptId) {
+          if (conceptId) {
+            let concept = conceptsMap[conceptId];
+            return concept && concept.hasOwnProperty('gciAxioms') ? concept.gciAxioms.length !== 0 : false;
+          }
+          else {
+            return scope.concept.hasOwnProperty('gciAxioms') ? scope.concept.gciAxioms.length !== 0 : false;
+          }          
         };
+
+        function bulkRetrieveFullConceptForRelationships(destinationIds) {
+          let filterd = destinationIds.filter(function(id) {
+            return !conceptsMap.hasOwnProperty(id);
+          })
+
+          if (filterd.length === 0) {
+            return;
+          }
+
+          // bulk call for concept ids
+          terminologyServerService.bulkRetrieveFullConcept(filterd, scope.branch).then(function (concepts) {
+            angular.forEach(concepts, function (concept) {
+              conceptsMap[concept.conceptId] = concept;
+            });         
+          });
+        }
 
         function bindShortcutToScope () {
           hotkeys.bindTo(scope)
@@ -2830,6 +2853,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.target.conceptId = data.id;
               relationship.target.fsn = data.name;
 
+              let destinationIds = [];
+              destinationIds.push(relationship.target.conceptId);
+              bulkRetrieveFullConceptForRelationships(destinationIds);
+
               if(!metadataService.isExtensionSet()
                 && relationship.type.conceptId === '116680003') {// Is a (attribute)
                 terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
@@ -2864,6 +2891,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   relationship.target.moduleId = response.moduleId;
                   relationship.target.active= response.active;
                   relationship.target.released = response.released;
+
+                  let destinationIds = [];
+                  destinationIds.push(relationship.target.conceptId);
+                  bulkRetrieveFullConceptForRelationships(destinationIds);
 
                   scope.isModified = true;
                   scope.computeAxioms(type);
@@ -3142,24 +3173,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if(!scope.concept.hasOwnProperty('classAxioms')){
               scope.concept.classAxioms = [];
             }
+            let destinationIds = [];
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
               rel.active = true;
               rel.released = false;
               rel.moduleId = axiom.moduleId;
+              destinationIds.push(rel.target.conceptId);
             });
+            bulkRetrieveFullConceptForRelationships(destinationIds);
             scope.concept.classAxioms.push(axiom);
             scope.computeAxioms(axiomType.ADDITIONAL);
           } else {
             if(!scope.concept.hasOwnProperty('gciAxioms')){
               scope.concept.gciAxioms = [];
             }
+            let destinationIds = [];
             axiom.relationships.forEach(function (rel) {
               rel.sourceId = scope.concept.conceptId;
               rel.active = true;
               rel.released = false;
               rel.moduleId = axiom.moduleId;
+              destinationIds.push(rel.target.conceptId);
             });
+            bulkRetrieveFullConceptForRelationships(destinationIds);
             scope.concept.gciAxioms.push(axiom);
             scope.computeAxioms(axiomType.GCI);
           }
@@ -3210,6 +3247,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               else {
                 axiom.relationships[targetIndex] = copy;
               }
+              let destinationIds = [];
+              destinationIds.push(copy.target.conceptId);
+              bulkRetrieveFullConceptForRelationships(destinationIds);
 
               refreshAttributeTypesForAxiom(axiom);
               scope.computeAxioms(axiom.type);
@@ -3374,6 +3414,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.warnings = [];
 
           var relationshipMap = {};
+
+          let destinationIds = [];
           // strip identifying information from each relationship and push
           // to relationships with new group id
           angular.forEach(relGroup, function (rel) {
@@ -3383,6 +3425,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // copy relationship object and replace target relationship
                   var copy = angular.copy(rel);
 
+                  destinationIds.push(copy.target.conceptId);
+                  
                   // set the group based on target
                   copy.groupId = (metadataService.isUngroupedAttribute(rel.type.conceptId) || rel.type.conceptId === '116680003') ? 0 : newGroup;
 
@@ -3404,7 +3448,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       axiom.relationships.push(relationshipMap[key]);
                       refreshAttributeTypesForAxiom(axiom);
                     }
-
+                    bulkRetrieveFullConceptForRelationships(destinationIds);
                     autoSave();
                     scope.computeAxioms(axiom.type);
                   }
@@ -4401,6 +4445,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.active= item.active;
                 relationship.target.released = item.released;
 
+                let destinationIds = [];
+                destinationIds.push(relationship.target.conceptId);
+                bulkRetrieveFullConceptForRelationships(destinationIds);
+
                 refreshAttributeTypesForAxiom(axiom).then(function() {
                   if (relationship.type.conceptId === '116680003') {
                     var errors = isMrcmAttributesValid(scope.concept);
@@ -4993,8 +5041,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeAxioms(axiomType.ADDITIONAL);
           scope.computeAxioms(axiomType.GCI);
 
+          var destinationIds = [];
+
           //Watch classAxiom relationships for changes and update allowable attributes
           angular.forEach(scope.concept.classAxioms, function(axiom){
+            angular.forEach(axiom.relationships, function(rel) {
+              destinationIds.push(rel.target.conceptId);
+            });
             scope.$watch(axiom.relationships, function (newValue, oldValue) {
                 refreshAttributeTypesForAxiom(axiom);
                 scope.computeAxioms(axiomType.ADDITIONAL);
@@ -5003,11 +5056,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           //Watch gciAxiom relationships for changes and update allowable attributes
           angular.forEach(scope.concept.gciAxioms, function(axiom){
+            angular.forEach(axiom.relationships, function(rel) {
+              destinationIds.push(rel.target.conceptId);
+            });
               scope.$watch(axiom.relationships, function (newValue, oldValue) {
                   refreshAttributeTypesForAxiom(axiom);
                   scope.computeAxioms(axiomType.GCI);
               }, true);
           });         
+
+          // load all relationship concepts
+          if (destinationIds.length !== 0) {
+            // bulk call for concept ids
+            bulkRetrieveFullConceptForRelationships(destinationIds);            
+          }
 
           // on load, load the deleted components if any
           if(scope.highlightChanges) {
