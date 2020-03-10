@@ -1264,6 +1264,12 @@ button-link .bluehl .grey.darken-3 {
     background-color: #b7dbff;
     color: #474747;
 }
+.PRIMITIVE .GCI textarea.relationship,
+.PRIMITIVE .GCI.sourcename,
+.FULLY_DEFINED .GCI textarea.relationship,
+.FULLY_DEFINED .GCI.sourcename {
+    background-color: #fbd1cc;
+}
 .def_PRIMITIVE textarea,
 .def_PRIMITIVE select,
 .def_PRIMITIVE .custom-button,
