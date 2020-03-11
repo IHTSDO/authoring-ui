@@ -774,7 +774,7 @@ angular.module('singleConceptAuthoringApp')
             if (mergeReviewId) {
 
               terminologyServerService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
-                  console.log(mergeReview);
+                  
                 // Previous review is current and has concepts,
                 // initialize from this review
                 if (mergeReview && mergeReview.length > 0) {
@@ -785,11 +785,10 @@ angular.module('singleConceptAuthoringApp')
                 // and initialize from new review
                 else {
                   terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
-
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      rebase(); 
+                      rebase(newReview.id); 
                     }
                   }, function (error) {
                     if (error) {
@@ -802,10 +801,9 @@ angular.module('singleConceptAuthoringApp')
 
               }, function(error){
                   terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
-
                     // DIVERGED, but no merges to resolve
                     if (!newReview || newReview.length === 0) {
-                      rebase();
+                      rebase(newReview.id);
                     }
 
                     // DIVERGED, with merges to resolve
@@ -826,10 +824,9 @@ angular.module('singleConceptAuthoringApp')
             // review
             else {
               terminologyServerService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
-
                 // DIVERGED, but no merges to resolve
                 if (!newReview || newReview.length === 0) {
-                  rebase();
+                  rebase(newReview.id);
                 }
 
                 // DIVERGED, with merges to resolve
