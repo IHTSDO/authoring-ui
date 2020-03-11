@@ -17,7 +17,7 @@
     </button>
     <button
       class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
-      ui-draggable="true" drag="axiom" drag-channel="axiomObj" drag-image="getDragImageForAxiom(axiom)">
+      ui-draggable-custom="true" drag="axiom" drag-channel="axiomObj" drag-image="getDragImageForAxiom(axiom)">
       <span>Drag This Row</span>
     </button>
   </div>
@@ -104,7 +104,7 @@
 
                 <button
                   class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
-                  ui-draggable="true" drag="relationship" drag-channel="axiomRelationshipObj"
+                  ui-draggable-custom="true" drag="relationship" drag-channel="axiomRelationshipObj"
                   drag-image="getDragImageForRelationship(relationship)">
                   <span>Drag This Row</span>
                 </button>
@@ -133,7 +133,7 @@
 
                   <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom"
                        ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"
-                       ui-draggable="true"
+                       ui-draggable-custom="true"
                        drag="getConceptIdNameTripleFromAttributeType(relationship)"
                        drag-channel="completeConcept"
                        drag-image="getDragImageForConcept(relationship.type.fsn)"
@@ -167,7 +167,7 @@
 
                   <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
-                       ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+                       ui-draggable-custom="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                        drag-channel="completeConcept"
                        drag-image="getDragImageForConcept(relationship.target.fsn)"
                        ng-dblclick="openConceptTarget(relationship)">
@@ -213,7 +213,7 @@
                  drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
               <button ng-if="$index === 0"
                       class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right m-t-7"
-                      ui-draggable="true" drag="relationshipGroup" drag-channel="axiomRelationshipGroupObj"
+                      ui-draggable-custom="true" drag="relationshipGroup" drag-channel="axiomRelationshipGroupObj"
                       drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
                 <span>Drag Relationship Group</span>
               </button>
