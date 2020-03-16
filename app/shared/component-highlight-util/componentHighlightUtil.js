@@ -177,27 +177,27 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function cleanRelationship(relationship) {
+      delete relationship.target.pt;
+      delete relationship.target.fsn;
+      delete relationship.target.moduleId;
+      delete relationship.target.preferredSynonym;
+      delete relationship.type.pt;
+      delete relationship.type.fsn;
+      delete relationship.type.moduleId;        
+      delete relationship.type.preferredSynonym;
+      delete relationship.relationshipId;
+    }
+
     function compareAxiomRelationships (styles, inactiveDescriptions, axiom, originalAxiom, currentConcept, params){
       var deferred = $q.defer();
       angular.forEach(axiom.relationships, function(newRelationship){
         let newRelClone = angular.copy(newRelationship);       
-        delete newRelClone.target.pt;
-        delete newRelClone.target.fsn;
-        delete newRelClone.target.preferredSynonym;
-        delete newRelClone.type.pt;
-        delete newRelClone.type.fsn;
-        delete newRelClone.type.preferredSynonym;
-        delete newRelClone.relationshipId;
+        cleanRelationship(newRelClone);
 
         angular.forEach(originalAxiom.relationships, function(originalRelationship){
           let oldRelClone = angular.copy(originalRelationship);
-          delete oldRelClone.target.pt;
-          delete oldRelClone.target.fsn;
-          delete oldRelClone.target.preferredSynonym;
-          delete oldRelClone.type.pt;
-          delete oldRelClone.type.fsn;
-          delete oldRelClone.type.preferredSynonym;
-          delete oldRelClone.relationshipId;
+          cleanRelationship(oldRelClone);
           if(!params.originalMatchedGroups.includes(originalRelationship.groupId) && JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
             newRelationship.found = true;
           }
@@ -236,22 +236,12 @@ angular.module('singleConceptAuthoringApp')
         
       angular.forEach(originalAxiom.relationships, function(originalRelationship){
         var cleanedOriginalRelationship = angular.copy(originalRelationship);
-        delete cleanedOriginalRelationship.relationshipId;        
-        delete cleanedOriginalRelationship.target.pt;
-        delete cleanedOriginalRelationship.target.preferredSynonym;
-        delete cleanedOriginalRelationship.target.fsn;
-        delete cleanedOriginalRelationship.type.pt;
-        delete cleanedOriginalRelationship.type.preferredSynonym;
-        delete cleanedOriginalRelationship.type.fsn;
+        cleanRelationship(cleanedOriginalRelationship);
+        
         angular.forEach(axiom.relationships, function(newRelationship){
           var cleanedNewRelationship = angular.copy(newRelationship);
-          delete cleanedNewRelationship.relationshipId;         
-          delete cleanedNewRelationship.target.pt;
-          delete cleanedNewRelationship.target.preferredSynonym;
-          delete cleanedNewRelationship.target.fsn;
-          delete cleanedNewRelationship.type.pt;
-          delete cleanedNewRelationship.type.preferredSynonym;
-          delete cleanedNewRelationship.type.fsn;
+          cleanRelationship(cleanedNewRelationship);
+          
           if(JSON.stringify(cleanedNewRelationship) === JSON.stringify(cleanedOriginalRelationship)){
             originalRelationship.found = true;
           }
