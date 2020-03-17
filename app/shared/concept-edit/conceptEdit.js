@@ -2404,7 +2404,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           angular.forEach(scope.concept.relationships, function (rel) {
             let flag = false;
-            if ((scope.showInferredRels &&  rel.characteristicType === 'INFERRED_RELATIONSHIP' && rel.active)
+            if ((scope.showInferredRels &&  rel.characteristicType === 'INFERRED_RELATIONSHIP')
               || (!scope.showInferredRels && rel.characteristicType === 'STATED_RELATIONSHIP')) {
               flag = true;
             }
