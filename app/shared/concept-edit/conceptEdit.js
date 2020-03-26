@@ -1429,21 +1429,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           };
 
-          var promises = [];
-          angular.forEach(scope.concept.descriptions, function(description) {
-            if (description.active && !description.effectiveTime && !description.released && description.type === 'SYNONYM') {
-              promises.push(componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false));
-            }
-          });
+          // var promises = [];
+          // angular.forEach(scope.concept.descriptions, function(description) {
+          //   if (description.active && !description.effectiveTime && !description.released && description.type === 'SYNONYM') {
+          //     promises.push(componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false));
+          //   }
+          // });
             
-          if (promises.length !== 0) {
-            $q.all(promises).then(function () {
-              saveConceptFn();
-            });
-          }
-          else {
+          // if (promises.length !== 0) {
+          //   $q.all(promises).then(function () {
+          //     saveConceptFn();
+          //   });
+          // }
+          // else {
             saveConceptFn();
-          }          
+          // }          
         };
 
 // Update feedback
