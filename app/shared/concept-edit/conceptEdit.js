@@ -3771,26 +3771,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var symanticTag = null;
           if (description.type === 'FSN') {
             symanticTag = symanticTagTattern.exec(description.term)[1];
-            if (symanticTag
-                && (symanticTag === 'medicinal product'
-                 || symanticTag === 'medicinal product form'
-                 || symanticTag === 'clinical drug'
-                 || symanticTag === 'substance'
-                 || symanticTag === 'product')) {
-              // just save data
-              autoSave();
-            }
-            else {
-              componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
-                autoSave();
-              }, function (error) {
-                notificationService.sendWarning('Automations failed: ' + error);
-                autoSave();
-              });
-            }
           }
-          else {
+
+          if (symanticTag
+            && (symanticTag === 'medicinal product'
+               || symanticTag === 'medicinal product form'
+               || symanticTag === 'clinical drug'
+               || symanticTag === 'substance'
+               || symanticTag === 'product')) {
+            // just save data
             autoSave();
+          } else {
+            componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+              autoSave();
+            }, function (error) {
+              notificationService.sendWarning('Automations failed: ' + error);
+              autoSave();
+            });
           }
         };
 
