@@ -290,6 +290,26 @@ angular.module('singleConceptAuthoringApp')
             }
           });
           concept.fsn = response.fsn;
+          concept.definitionStatus = response.definitionStatus;
+          if (concept.classAxioms && concept.classAxioms.length !== 0) {
+            let definedAxiom = false;
+            angular.forEach(concept.classAxioms, function(axiom){
+                if(axiom.definitionStatus === 'FULLY_DEFINED'){
+                    definedAxiom = true;
+                }
+            });
+            if (concept.definitionStatus === 'FULLY_DEFINED' && !definedAxiom) {
+              concept.classAxioms[0].definitionStatus = concept.definitionStatus;
+            }
+            else if (concept.definitionStatus === 'PRIMITIVE' && definedAxiom) {
+              angular.forEach(concept.classAxioms, function(axiom){
+                axiom.definitionStatus = concept.definitionStatus;
+              });
+            }
+            else {
+              // do nothing
+            }
+          }
           applyTemplateToConcept(concept, template);
           deferred.resolve(concept);
         });
