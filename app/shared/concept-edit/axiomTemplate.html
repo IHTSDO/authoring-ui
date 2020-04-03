@@ -144,11 +144,10 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left axiom-relationship sourcename relationship-target" ng-class="[{'GCI' : isGciAxiomPresent(relationship['target']['conceptId'])}]" drag-enter-class="sca-drag-target"
+                <div class="pull-left axiom-relationship sourcename relationship-target {{getTargetSlotStyle(relationship)}}" ng-class="[{'GCI' : isGciAxiomPresent(relationship['target']['conceptId'])}]" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="completeConcept" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type, axiom)"
-                     drop-validate="!isLockedModule(axiom.moduleId)"
-                     ng-class="getTargetSlotStyle(relationship)"
+                     drop-validate="!isLockedModule(axiom.moduleId)"                     
                      ng-mouseover="setTooltipPosition($event)">
                   <div class="small-size-tooltip tooltips-bottom">
                       <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
