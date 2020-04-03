@@ -408,7 +408,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return concept && concept.hasOwnProperty('gciAxioms') ? concept.gciAxioms.length !== 0 : false;
           }
           else {
-            return scope.concept.hasOwnProperty('gciAxioms') ? scope.concept.gciAxioms.length !== 0 : false;
+            return (scope.concept.hasOwnProperty('gciAxioms') && scope.concept.definitionStatus !== 'FULLY_DEFINED') ? scope.concept.gciAxioms.length !== 0 : false;
           }          
         };
 
