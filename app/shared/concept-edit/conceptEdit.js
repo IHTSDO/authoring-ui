@@ -2847,7 +2847,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             
           // if template supplied, check ECL/ESCG
           if (scope.template) {
-
+            if (!relationship.template || !relationship.template.targetSlot) {
+              relationship.target.fsn = tempFsn;
+              return;
+            }
             constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
               relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
               relationship.target.conceptId = data.id;
