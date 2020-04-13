@@ -892,7 +892,7 @@ angular.module('singleConceptAuthoringApp')
 
             // update the historical associations on the objects
             updateHistoricalAssociations(scope.affectedConceptAssocs).then(function () {
-              updateHistoricalAssociations(scope.affectedDescToConceptAssocs).then(function () {
+              updateHistoricalAssociations(scope.affectedDescToConceptAssocs, true).then(function () {
                 getConceptsToUpdate().then(function (conceptArray) {
 
                   angular.forEach(conceptArray, function (concept) {
@@ -967,7 +967,7 @@ angular.module('singleConceptAuthoringApp')
             scope.reloadTables();
           };
 
-          function updateHistoricalAssociations(list) {
+          function updateHistoricalAssociations(list, isAffectedDescToConcept) {
             var deferred = $q.defer();
             console.log(list);
             if (list && list.length > 0) {
@@ -977,13 +977,35 @@ angular.module('singleConceptAuthoringApp')
                 if (cntr < list.length) {
                     if(list[cntr].newTargetId)
                     {
-                      if(typeof list[cntr].associationTargets[list[cntr].refsetName] !== 'undefined'
-                        && !list[cntr].associationTargets[list[cntr].refsetName].includes(list[cntr].newTargetId)) {
-                        list[cntr].associationTargets[list[cntr].refsetName].push(list[cntr].newTargetId);
+                      if (list[cntr].oldInactivationIndicator && list[cntr].oldInactivationIndicator === 'AMBIGUOUS'
+                         && scope.reasonId === 'AMBIGUOUS') {
+                          if(typeof list[cntr].associationTargets[list[cntr].refsetName] !== 'undefined'
+                            && !list[cntr].associationTargets[list[cntr].refsetName].includes(list[cntr].newTargetId)) {
+                            list[cntr].associationTargets[list[cntr].refsetName].push(list[cntr].newTargetId);
+                          }
+                          else {
+                            list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                          }
                       }
                       else {
-                        list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
-                      }
+                        if (!isAffectedDescToConcept) {
+                          list[cntr].associationTargets = {};
+                          list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                        }
+                        else {
+                          if(typeof list[cntr].associationTargets[list[cntr].refsetName] !== 'undefined'
+                            && !list[cntr].associationTargets[list[cntr].refsetName].includes(list[cntr].newTargetId)) {
+                            list[cntr].associationTargets[list[cntr].refsetName].push(list[cntr].newTargetId);
+                          }
+                          else {
+                            list[cntr].associationTargets = {};
+                            list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                          }
+                        }                        
+                      }                      
+                    }
+                    else {
+                      list[cntr].associationTargets = {};
                     }
                   cntr++;
                   next();
