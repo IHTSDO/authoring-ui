@@ -64,12 +64,12 @@ angular.module('singleConceptAuthoringApp')
               $rootScope.$broadcast('toggleValidationReport', {});
             }, 1500);
           }
-        }; 
+        };
 
         scope.$on('gotoNotificationLink', function (event, notification) {
           scope.gotoNotificationLink();
         });
-        
+
         // Expected format from notificationService.js
         // {message: ..., url: ..., durationInMs: ...}
         scope.$on('notification', function (event, notification) {
@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             //Detect classification with results
-            if (notification.message.startsWith('Classification completed successfully for project') 
+            if (notification.message.startsWith('Classification completed successfully for project')
               && notification.url) {
               classificationResultsFound = true;
             } else {
@@ -195,7 +195,7 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.gotoAllProjects = function() {
-            
+
           $location.url('projects');
         };
 
@@ -217,18 +217,18 @@ angular.module('singleConceptAuthoringApp')
               }
           });
         };
-        
+
         scope.openReporting = function() {
           window.open('/reporting/');
         };
-          
+
         scope.openMRCM = function() {
-          if(window.location.href.indexOf("task/") > -1) {
-              window.open('/mrcm/?branch=' + $rootScope.currentTask.branchPath);
-            }
-          else if(window.location.href.indexOf("project/") > -1) {
-              window.open('/mrcm/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey);
-            }
+          if(metadataService.isExtensionSet()) {
+            let date = metadataService.getPreviousRelease();
+            let path = 'MAIN/' + date.slice(0,4) + '-' + date.slice(4,6) + '-' + date.slice(6,8);
+
+            window.open('/mrcm/?branch=' + path);
+          }
           else{
               window.open('/mrcm/');
           }
