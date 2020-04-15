@@ -11,7 +11,7 @@ angular.module('singleConceptAuthoringApp')
     var mrcmAttributeDomainMembers = [];
 
     var ungroupedAttributes = [];
-      
+
     var myProjects = [];
 
     // whether mrcm is currently enabled (default true)
@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp')
     var isaRelationshipId = '116680003';
 
     var snomedCtRootId = '138875005';
-      
+
     $rootScope.extensionMetadataSet = false;
 
     function getSnomedCtRootId() {
@@ -184,8 +184,8 @@ angular.module('singleConceptAuthoringApp')
     // and should be automatically set by edit.js
     // and similar views
     var branchMetadata = {};
-      
-      
+
+
     //function to remove duplicated languages (Ireland edge case)
     function parseLanguages(languages) {
             return Array.from(new Set(languages));
@@ -261,7 +261,7 @@ angular.module('singleConceptAuthoringApp')
                       dialectDefaults[languageValue] = lang.default;
                   }
                   if(lang.readOnly !== null && lang.readOnly !== undefined){
-                      //set dialect default for langauge refset value autogeneration 
+                      //set dialect default for langauge refset value autogeneration
                       readOnlyDialects[languageValue] = lang.readOnly;
                   }
                 });
@@ -295,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         }
-        
+
         languages = parseLanguages(languages);
         defaultLanguages = parseLanguages(defaultLanguages);
 
@@ -305,11 +305,11 @@ angular.module('singleConceptAuthoringApp')
         if (!metadata.shortname) {
           console.warn('No country code (shortname) supplied for extension metadata');
         }
-          
+
         if (defaultLanguages.length === 0) {
           defaultLanguages.push(languages[0]);
         }
-          
+
         if (!defaultLanguageRefsetId && metadata.defaultModuleId !== '731000124108' /*US extension*/) {
           console.error('Could not determine language refset for extension metadata');
         }
@@ -472,6 +472,10 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    function getPreviousRelease() {
+      return branchMetadata.metadata.dependencyRelease;
+    }
+
     // returns extension dialects plus international dialects
     // NOTE: Extension dialects override international
     function getAllDialects() {
@@ -502,7 +506,7 @@ angular.module('singleConceptAuthoringApp')
         return internationalMetadata.dialectDefaults;
       }
     }
-    
+
     function getReadOnlyDialectsForModuleId(moduleId, FSN) {
       if (extensionMetadata && !FSN && extensionMetadata.readOnlyDialects !== null) {
         return extensionMetadata.readOnlyDialects;
@@ -538,8 +542,8 @@ angular.module('singleConceptAuthoringApp')
 
     function getExtensionAcceptLanguageValueByDialectId (dialectId) {
       if (extensionMetadata && extensionMetadata.dialects[dialectId]) {
-        var languageNames = extensionMetadata.dialects[dialectId].split('-');     
-        return (languageNames.length > 1 ? languageNames[1] : languageNames[0]) + '-' + (extensionMetadata.shortname ? extensionMetadata.shortname.toUpperCase() : 'XX') + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';        
+        var languageNames = extensionMetadata.dialects[dialectId].split('-');
+        return (languageNames.length > 1 ? languageNames[1] : languageNames[0]) + '-' + (extensionMetadata.shortname ? extensionMetadata.shortname.toUpperCase() : 'XX') + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';
       }
     }
     //
@@ -671,7 +675,7 @@ angular.module('singleConceptAuthoringApp')
       }
       return false;
     }
-    
+
     return {
 
       // relationship functions
@@ -732,6 +736,7 @@ angular.module('singleConceptAuthoringApp')
       // branch/task fupath retrieval functions
       getBranch: getBranch,
       getBranchRoot: getBranchRoot,
+      getPreviousRelease: getPreviousRelease,
 
       // TODO Functions exposed for dev work, remove when complete
 
