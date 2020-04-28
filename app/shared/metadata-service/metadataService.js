@@ -329,7 +329,8 @@ angular.module('singleConceptAuthoringApp')
           languages: languages,
           dialects: dialects,
           dialectDefaults: dialectDefaults,
-          readOnlyDialects: readOnlyDialects
+          readOnlyDialects: readOnlyDialects,
+          dependencyRelease: metadata.dependencyRelease
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -473,7 +474,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getPreviousRelease() {
-      return branchMetadata.metadata.dependencyRelease;
+      return extensionMetadata.dependencyRelease;
     }
 
     // returns extension dialects plus international dialects
