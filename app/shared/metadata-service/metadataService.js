@@ -543,9 +543,14 @@ angular.module('singleConceptAuthoringApp')
 
     function getExtensionAcceptLanguageValueByDialectId (dialectId) {
       if (extensionMetadata && extensionMetadata.dialects[dialectId]) {
-        var languageNames = extensionMetadata.dialects[dialectId].split('-');
-        return (languageNames.length > 1 ? languageNames[1] : languageNames[0]) + '-' + (extensionMetadata.shortname ? extensionMetadata.shortname.toUpperCase() : 'XX') + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';
+        if (extensionMetadata.dialects[dialectId].indexOf('-') !== -1) {
+          return extensionMetadata.dialects[dialectId] + '-x-' + dialectId + ';q=0.8,en-US;q=0.5';
+        }
+        else {
+          return extensionMetadata.dialects[dialectId] + '-' + extensionMetadata.dialects[dialectId].toUpperCase() + '-x-' + dialectId + ';q=0.8,en-US;q=0.5'
+        }        
       }
+      return 'q=0.8,en-US;q=0.5';
     }
     //
     // Relationship metadata functions
