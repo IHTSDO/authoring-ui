@@ -34,16 +34,20 @@ angular.module('singleConceptAuthoringApp.transformModal', [])
           var list = [];
           var patt1 =  new RegExp("^.*\\((.*)\\)$");
           var patt2 =  new RegExp("^.*\\((.*)\\)");
-          var symanticTagOfTemplateFrom1 = patt1.exec($scope.templateFrom.domain.replace(/\|/g,'').trim())[1];
-          var symanticTagOfTemplateFrom2 = patt2.exec($scope.templateFrom.name.replace(/\|/g,'').trim())[1];
-          var pattSymanticTag1 =  new RegExp("^.*\\(("+ symanticTagOfTemplateFrom1 +")\\)");
-          var pattSymanticTag2 =  new RegExp("^.*\\(("+ symanticTagOfTemplateFrom2 +")\\)");
+          var pattSymanticTag1 = null, pattSymanticTag2 = null;
+          if (patt1.exec($scope.templateFrom.domain.replace(/\|/g,'').trim())) {
+            var symanticTagOfTemplateFrom1 = patt1.exec($scope.templateFrom.domain.replace(/\|/g,'').trim())[1];
+            pattSymanticTag1 =  new RegExp("^.*\\(("+ symanticTagOfTemplateFrom1 +")\\)");
+          }
+          if (patt2.exec($scope.templateFrom.name.replace(/\|/g,'').trim())) {
+            var symanticTagOfTemplateFrom2 = patt2.exec($scope.templateFrom.name.replace(/\|/g,'').trim())[1];
+            pattSymanticTag2 =  new RegExp("^.*\\(("+ symanticTagOfTemplateFrom2 +")\\)");
+          }
+          
           for(let i = response.length -1; i >= 0; i--){
             if(response[i].additionalSlots.length === 0
-              && (pattSymanticTag1.test(response[i].name) 
-                || pattSymanticTag2.test(response[i].name)
-                || pattSymanticTag1.test(response[i].domain)
-                || pattSymanticTag2.test(response[i].domain))) {
+              && ((pattSymanticTag1 && (pattSymanticTag1.test(response[i].name) || pattSymanticTag1.test(response[i].domain))) 
+              || (pattSymanticTag2 && (pattSymanticTag2.test(response[i].name) || pattSymanticTag2.test(response[i].domain))))) {
               list.push(response[i]);
             }
           }
