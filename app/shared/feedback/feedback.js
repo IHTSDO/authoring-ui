@@ -1311,6 +1311,13 @@ angular.module('singleConceptAuthoringApp')
                     item.selected = scope.booleanObj.checkedReviewed;
                     conceptsReviewed.push(item);
                   }
+
+                  // populate term to the classified concepts
+                  angular.forEach(scope.feedbackContainer.review.conceptsClassified, function (reviewConcept) {
+                    if (item.conceptId === reviewConcept.conceptId && item.term) {
+                      reviewConcept.term = item.term;		  
+                    }
+                  });
                 });
 
                 // Check read or unread status
