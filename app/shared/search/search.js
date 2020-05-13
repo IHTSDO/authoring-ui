@@ -159,6 +159,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.searchType = 'Active Only';
+      $scope.descriptionSeachStatus = 'active';
       $scope.isEscgMode = false;
       $scope.templateMode = false;
       $scope.escgExpr = null;
@@ -187,6 +188,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // $scope.processResults();
       };
 
+      $scope.toggleDescriptionStatus = function () {
+        $scope.descriptionSeachStatus = $scope.descriptionSeachStatus === 'active' ? 'inactive' : 'active';
+        $scope.newSearch();
+      };
+
       $scope.toggleSearchMode = function () {
         $scope.escgExpr = '';
         $scope.searchStr = '';
@@ -197,6 +203,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             {
                 if ($scope.searchMode === 'Switch to ECL') {
                   $scope.searchMode = 'Switch to Template';
+                  $scope.descriptionSeachStatus = 'active';
                   $scope.isEscgMode = true;
                   $scope.templateMode = false;
                   $scope.userOptions.statedSelection = 'inferred';
@@ -216,6 +223,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         else{
             if ($scope.searchMode === 'Switch to ECL') {
               $scope.searchMode = 'Switch to Text';
+              $scope.descriptionSeachStatus = 'active';
               $scope.isEscgMode = true;
               $scope.userOptions.statedSelection = 'inferred';
               $scope.templateMode = false;
@@ -613,7 +621,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         }
         else{
-        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter, $scope.searchTimestamp).then(function (results) {
+        terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter, $scope.searchTimestamp, $scope.descriptionSeachStatus).then(function (results) {
           if (results.searchTimestamp !== $scope.searchTimestamp) {
             return;
           }
