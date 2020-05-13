@@ -102,6 +102,15 @@
       </button>
     </div>
 
+    <div class="col-md-6" ng-if="isEscgMode">
+      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
+              title="Search Type"
+              ng-click="toggleDescriptionStatus()">
+        <div class="md col-md-12 no-padding text-center ng-binding">
+          {{descriptionSeachStatus === 'active' ? 'Active Description' : 'Inactive Description'}}
+        </div>
+      </button>
+    </div>
 
     <div class="col-md-6 pull-right">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center  ng-click-active search-type btn-blue"
@@ -121,7 +130,7 @@
       <div class="col-md-5 filter-label">
         <label class="pull-right m-t-10">Filter by :</label>
       </div>
-      <div class="col-md-7 filter-input" style="">
+      <div class="col-md-7 filter-input">
         <select ng-options="id as getDisplayedLanguageFromKey(id) for (id, name) in dialects"
                 ng-change="newSearch()" name="select-type"
                 ng-model="userOptions.selectedDialect"

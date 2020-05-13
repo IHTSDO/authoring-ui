@@ -1171,7 +1171,7 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter, searchTimestamp) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter, searchTimestamp, termActive) {
         let deferred = $q.defer();
         let config = {};
         let params = {
@@ -1199,6 +1199,10 @@ angular.module('singleConceptAuthoringApp')
 
         if (activeFilter !== null) {
           params.activeFilter = activeFilter;
+        }
+
+        if (escgExpr && termActive) {
+          params.termActive = termActive === 'active' ? true : false;
         }
 
         if (tsv) {
