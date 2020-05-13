@@ -296,6 +296,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
+        var semanticTags = metadataService.getSemanticTags();
+
         //var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
         var originalConceptId = null;
         var componentTerms = {};
@@ -3770,18 +3772,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
 
-          var symanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
-          var symanticTag = null;
+          var semanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
+          var semanticTagFromFsn = null;
           if (description.type === 'FSN') {
-            symanticTag = symanticTagTattern.exec(description.term)[1];
+            semanticTagFromFsn = semanticTagTattern.exec(description.term)[1];
           }
 
-          if (symanticTag
-            && (symanticTag === 'medicinal product'
-               || symanticTag === 'medicinal product form'
-               || symanticTag === 'clinical drug'
-               || symanticTag === 'substance'
-               || symanticTag === 'product')) {
+          var semanticTagFromSynonym = null;
+          if (description.type === 'SYNONYM' && semanticTagTattern.exec(description.term)) {
+            semanticTagFromSynonym = semanticTagTattern.exec(description.term)[1];
+          }
+
+          let excludedSemanticTags = ['medicinal product', 'medicinal product form', 'clinical drug', 'substance', 'product'];
+          if ((semanticTagFromFsn  && excludedSemanticTags.includes(semanticTagFromFsn))
+            || (semanticTagFromSynonym && semanticTags.includes(semanticTagFromSynonym))) {
             // just save data
             autoSave();
           } else {
