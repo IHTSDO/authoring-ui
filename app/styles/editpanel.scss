@@ -963,7 +963,8 @@ button.fsn-title-button {
 }
 .concept-more > *,
 .description-more > *,
-.relationship-more > * {
+.relationship-more > *,
+.axiom-more > * {
     min-width: 3em;
     margin: 2px 2px;
     min-height: 11px;
@@ -973,7 +974,8 @@ button.fsn-title-button {
 }
 .concept-more select,
 .description-more select,
-.relationship-more select {
+.relationship-more select,
+.axiom-more select {
     height: 15px;
     min-height: 11px;
     padding-bottom: 0px;
@@ -981,7 +983,8 @@ button.fsn-title-button {
 
 .concept-more .control-label,
 .description-more .control-label,
-.relationship-more .control-label {
+.relationship-more .control-label,
+.axiom-more .control-label {
     padding-bottom: 0px;
     margin-bottom: 0px;
 }
