@@ -469,6 +469,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.concepts = [];
           break;
         case 'edit-default':
+          var path = $location.path();          
+          if (!path.includes('/edit')) {
+            $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+            return;
+          }
+
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
@@ -484,7 +490,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           {
             return;
           }
-
+          var path = $location.path();          
+          if (!path.includes('/edit')) {
+            $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+            return;
+          }
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
@@ -496,6 +506,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
           break;
         case 'edit-no-model':
+          var path = $location.path();          
+          if (!path.includes('/edit')) {
+            $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+            return;
+          }
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
