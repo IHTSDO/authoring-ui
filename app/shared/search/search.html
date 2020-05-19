@@ -125,7 +125,15 @@
   </div>
 
   <div class="row search-filter" ng-if="isExtension && !isEscgMode">
-    <div class="col-md-6"></div>
+    <div class="col-md-6">      
+      <div ng-dropdown-multiselect="" 
+        class="p-t-5" 
+        options="languageRefsetOptions" 
+        selected-model="selectedLanguageRefsets" 
+        extra-settings="languageRefsetMultiselectSettings" 
+        translation-texts="languageRefsetMultiselectTranslationTexts"
+        events="languageRefsetMultiselectEvents"></div>
+    </div>
     <div class="col-md-6 z-index-1">
       <div class="col-md-5 filter-label">
         <label class="pull-right m-t-10">Filter by :</label>
@@ -181,7 +189,7 @@
   <div class="row no-padding" ng-if="results.length > 0">
 
 
-    <div class="col-md-10" ng-class="{'m-t-negative' : isExtension && !isEscgMode && !templateMode, 'm-t-10' : !isExtension || isEscgMode || templateMode}">
+    <div class="col-md-10" ng-class="{'m-t-10' : !isExtension || isEscgMode || templateMode}">
       <h5 class="dark-centured-text total-text"><span>{{searchTotal}}</span> concepts found</h5>
     </div>
   </div>

@@ -986,10 +986,6 @@ div.checkbox.download-checkbox input {
 .sca-colours ul.classification-nav:hover .btn {
 background: #43A047;
 }
-
-.m-t-negative {
-    margin-top: -22px;
-}
 .z-index-1 {
     z-index: 1
 }
@@ -1054,4 +1050,11 @@ div.search-result:hover {
 }
 .first .taxonomies-comparison-panel .row > div {
     margin-top: 29px;
+}
+.multiselect-parent.btn-group.dropdown-multiselect {
+    width: 100%;
+}
+.dropdown-multiselect ul.dropdown-menu {
+    width: max-content;
+    border-radius: unset;
 }
