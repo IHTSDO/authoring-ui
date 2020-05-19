@@ -32,6 +32,7 @@ angular
     'ui.tinymce',
     'cfp.hotkeys',
     'LocalStorageModule',
+    'angularjs-dropdown-multiselect',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',

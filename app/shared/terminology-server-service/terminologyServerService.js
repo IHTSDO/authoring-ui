@@ -923,6 +923,21 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
+
+      function getReferenceSetMembersForBranch(branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + 'browser/'+ branch + '/members?active=true&limit=1').then(function (response) {
+          if (response.data.referenceSets) {
+            deferred.resolve(response.data.referenceSets);
+          } else {
+            deferred.resolve(null);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+        
         
       // Retrieve members where the type is GCI and the provided conceptId is referenced
       // GET /{path}/members
@@ -1171,13 +1186,13 @@ angular.module('singleConceptAuthoringApp')
         };
       }
 
-      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter, searchTimestamp, termActive) {
+      function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter, searchTimestamp, termActive, preferredOrAcceptableIn) {
         let deferred = $q.defer();
         let config = {};
         let params = {
           //offset: offset ? offset : '0',
           limit: limit ? limit : '50',
-          expand: 'fsn()'
+          //expand: 'fsn()'
         };
         if (searchAfter !== null){
             params.searchAfter = searchAfter;
@@ -1193,9 +1208,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
-        if (syn) {
-          params.expand = 'pt()';
-        }
+        // if (syn) {
+        //   params.expand = 'pt()';
+        // }
 
         if (activeFilter !== null) {
           params.activeFilter = activeFilter;
@@ -1209,11 +1224,15 @@ angular.module('singleConceptAuthoringApp')
           config.headers['Accept'] = 'text/csv';
           //params.offset = 0;
           params.limit = 10000;
-          params.expand = 'pt(),fsn()';
+          //params.expand = 'pt(),fsn()';
         }
 
         if (definitionStatus && escgExpr || definitionStatus && conceptIdList) {
           params.definitionStatusFilter = definitionStatus;
+        }
+
+        if (preferredOrAcceptableIn) {
+          params.preferredOrAcceptableIn = preferredOrAcceptableIn;
         }
 
         // if the user is searching with a refsetId
@@ -2294,6 +2313,7 @@ angular.module('singleConceptAuthoringApp')
         getReview: getReview,
         getHistoricalAssociationMembers: getHistoricalAssociationMembers,
         getMembersByTargetComponent: getMembersByTargetComponent,
+        getReferenceSetMembersForBranch: getReferenceSetMembersForBranch,
         getMembersByReferencedComponent:getMembersByReferencedComponent,
         getGciExpressionsFromTarget: getGciExpressionsFromTarget,
 
