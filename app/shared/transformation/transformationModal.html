@@ -20,21 +20,19 @@
         </div>
 
         <div class="col-md-6 p-t-20">
-          <label class="no-margin">Select Assignee:</label>            
-          <select name="select-choice" class="form-control"
-            ng-options="user.username as user.displayName for user in users"
-            ng-model="transformation.assignee"         
-            >
-          </select>
+          <label class="no-margin">Select Assignee:</label>
+          <input class="form-control" type="text" 
+            ng-model="transformation.assignee"
+            typeahead="user as user.displayName for user in getUsersForTypeahead(transformation.reviewer) | filter:{displayName:$viewValue}">                 
+          </input>
         </div>
 
         <div class="col-md-6 p-t-20">
           <label class="no-margin">Select Reviewer:</label>            
-          <select name="select-choice" class="form-control"
-            ng-options="user.username as user.displayName for user in users"
-            ng-model="transformation.reviewer"        
-            >
-          </select>
+          <input class="form-control" type="text" 
+            ng-model="transformation.reviewer"
+            typeahead="user as user.displayName for user in getUsersForTypeahead(transformation.assignee) | filter:{displayName:$viewValue}">                 
+          </input>
         </div>
 
         <div class="col-md-6 p-t-20">

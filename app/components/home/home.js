@@ -191,9 +191,11 @@ angular.module('singleConceptAuthoringApp.home', [
 
         // TODO Workaround to capture full review functionality
         // Replace with loadAllTasks when endpoints are complete
-        function loadTasks() {
+        function loadTasks(disableNotification) {
 
-            notificationService.sendMessage('Loading tasks...', 0);
+            if (!disableNotification) {
+                notificationService.sendMessage('Loading tasks...', 0);
+            }            
 
             $scope.tasks = null;
             $scope.reviewTasks = null;
@@ -216,21 +218,27 @@ angular.module('singleConceptAuthoringApp.home', [
                             $scope.tasks = results;
                             loadingTask = false;
                             if ($scope.tasks) {
-                                notificationService.sendMessage('All tasks loaded', 5000);
+                                if (!disableNotification) {
+                                    notificationService.sendMessage('All tasks loaded', 5000);
+                                }
                             }
                         });
                     } else {
                         $scope.tasks = response;
                         loadingTask = false;
                         if ($scope.tasks) {
-                            notificationService.sendMessage('All tasks loaded', 5000);
+                            if (!disableNotification) {
+                                notificationService.sendMessage('All tasks loaded', 5000);
+                            }
                         }
                     }
                 } else {
                    $scope.tasks = response;
                     loadingTask = false;
                     if ($scope.tasks) {
-                        notificationService.sendMessage('All tasks loaded', 5000);
+                        if (!disableNotification) {
+                            notificationService.sendMessage('All tasks loaded', 5000);
+                        }
                     }
                 }
             });
@@ -404,8 +412,10 @@ angular.module('singleConceptAuthoringApp.home', [
         };
 
         $scope.$on('reloadTasks', function (event, data) {
-            if (data.isCreateTask) {
+            if (data && data.isCreateTask) {
                 addingTaskToList(data.concept);
+            } else if (data && data.disableNotification) {
+                loadTasks(true);
             } else {
                 loadTasks();
             }
@@ -414,10 +424,7 @@ angular.module('singleConceptAuthoringApp.home', [
 // Initialization:  get tasks and classifications
         function initialize() {
             $scope.tasks = [];
-
-
             loadTasks();
-
         }
 
         initialize();

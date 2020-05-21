@@ -129,7 +129,12 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
               const fileName = 'Batch_result_' + result.jobId + '.tsv';
               dlcDialog(data, fileName);
             });
-            $rootScope.batchFileUploading = false; 
+            $rootScope.batchFileUploading = false;
+            
+            // reload tasks if no assignee or assignee is login user
+            if (!result.assignee || result.assignee.username === $rootScope.accountDetails.login) {
+              $rootScope.$broadcast('reloadTasks', {disableNotification: true});
+            }            
           }, function (error) {            
           });        
         }, function () {
