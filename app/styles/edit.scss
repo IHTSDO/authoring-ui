@@ -1058,3 +1058,15 @@ div.search-result:hover {
     width: max-content;
     border-radius: unset;
 }
+.dropdown-multiselect .checkbox, 
+.dropdown-multiselect .option {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.dropdown-multiselect .option {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.dropdown-multiselect .checkbox input.checkboxInput {
+    min-height: 25px;
+}

@@ -41,9 +41,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.searchStr = '';
       $scope.selectedLanguageRefsets = [];
       $scope.languageRefsetOptions = [];
-      $scope.languageRefsetMultiselectSettings = {showCheckAll: false, showUncheckAll: false, buttonClasses: 'btn btn-default btn-primary btn-blue col-md-12'};
+      $scope.languageRefsetMultiselectSettings = {showCheckAll: false, showUncheckAll: false, smartButtonMaxItems: 5, smartButtonTextConverter : smartButtonTextConverter, buttonClasses: 'btn btn-default btn-primary btn-blue col-md-12'};
       $scope.languageRefsetMultiselectTranslationTexts = {buttonDefaultText: 'Language Refsets', dynamicButtonTextSuffix: 'selected'};
       $scope.languageRefsetMultiselectEvents = {onItemSelect: function() {$scope.newSearch();},onItemDeselect: function() {$scope.newSearch();}};
+
+      function smartButtonTextConverter(text, option) {
+        let dialects = metadataService.getAllDialects();
+        let languages = dialects[option.id].split('-');
+        return (languages.length > 1 ? languages[1].toUpperCase() : languages[0].toUpperCase());
+      }
 
       function initialize() {
         terminologyServerService.getReferenceSetMembersForBranch($scope.branch).then(function(result) {
