@@ -27,6 +27,11 @@
         Search Tasks
       </button>
     </li>
+    <li ng-if="$root.managedServiceUser">
+      <button class="btn grey darken-3 dashboard-links" ng-disabled="!isProjectsLoaded()" ng-click="openUploadBatchModal()">
+        Upload a Batch
+      </button>
+    </li>
     <li>
       <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-disabled="!isProjectsLoaded()">
     New Task

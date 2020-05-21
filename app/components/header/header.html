@@ -70,8 +70,13 @@
           <span>Automated promotion queued</span>
         </button>
       </li>
-
-
+      <li ng-if="batchFileUploading">
+        <button type="button"
+                class="btn btn-round-sm btn-default pull-left tooltips-right normalcase blue header-nav-button">
+          <div class="md md-backup"></div>
+          <span>Batch File Uploading</span>
+        </button>
+      </li>
 
     </ul>
 
