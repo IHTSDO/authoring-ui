@@ -1004,7 +1004,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         let transformConcepts = [];
         let openModel = function(concepts) {
           let modalInstance = $modal.open({
-            templateUrl: 'shared/transform/transformModal.html',
+            templateUrl: 'shared/template-transform/transformModal.html',
             controller: 'transformModalCtrl',
             resolve: {
               results: function () {

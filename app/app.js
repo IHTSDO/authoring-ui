@@ -50,6 +50,7 @@ angular
     'singleConceptAuthoringApp.taskDetail',
     'singleConceptAuthoringApp.conceptInformationModal',
     'singleConceptAuthoringApp.transformModal',
+    'singleConceptAuthoringApp.transformationModal',
     'singleConceptAuthoringApp.uploadBatch',
     'singleConceptAuthoringApp.owlAxiomExpressionModal'
   ])
@@ -212,6 +213,10 @@ angular
 
           if(!(account.roles.includes('ROLE_ihtsdo-sca-author'))) {
             window.location.href = decodeURIComponent(imsUrl + 'login');
+          }
+
+          if(account.roles.includes('ROLE_ms-users')) {
+            $rootScope.managedServiceUser = true;
           }
 
           // start connecting websocket

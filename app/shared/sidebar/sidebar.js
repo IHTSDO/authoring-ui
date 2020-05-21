@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebar', [])
 
-  .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal','metadataService',
-    function sidebarCtrl($scope, $rootScope, $location, $modal, metadataService) {
+  .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal', '$q', '$timeout','metadataService','templateService', 'notificationService',
+    function sidebarCtrl($scope, $rootScope, $location, $modal, $q, $timeout, metadataService, templateService, notificationService) {
 
       $scope.gotoBrowser = function() {
         window.open('/browser', '_blank');
@@ -63,5 +63,78 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         });
       };
       
+      $scope.openUploadBatchModal = function() {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/transformation/transformationModal.html',
+          controller: 'transformationModalCtrl'          
+        });
+
+        modalInstance.result.then(function (result) {
+          $rootScope.batchFileUploading = true;
+          // creates element for dialog download of classification data
+          var dlcDialog = (function (data, fileName) {
+
+            // create the hidden element
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+
+            return function (data, fileName) {
+              var blob = new Blob([data], {type: 'text/tab-separated-values'}),
+                  url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = fileName;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+          }());
+
+          var pollForTransformation = function(branchPath, recipe, jobId, intervalTime) {
+            var deferred = $q.defer();
+      
+            if (!jobId) {
+              console.error('Cannot poll for Transformation details, id required');
+              deferred.reject('Cannot poll for Transformation details, id required');
+            }      
+      
+            $timeout(function () {
+              templateService.getTransformationJob(branchPath, recipe, jobId).then(function (response) {
+                if (response && response.status && (response.status.status === 'COMPLETED' || response.status.status === 'COMPLETED_WITH_FAILURE' || response.status.status === 'FAILED')) {
+                  deferred.resolve(response);
+                } else {
+                  pollForTransformation(branchPath, recipe, jobId, intervalTime).then(function (pollResults) {
+                    deferred.resolve(pollResults);
+                  }, function (error) {
+                    deferred.reject(error);
+                  });
+                }
+              }, function (error) {
+                deferred.reject('Cannot retrieve Transformation information');
+              });
+            }, intervalTime);
+      
+            return deferred.promise;
+          };
+
+          pollForTransformation(result.branchPath, result.recipe, result.jobId, 1000).then(function (response) {
+            if (response.status.status === 'COMPLETED') {
+              notificationService.sendMessage('Batch Upload Complete.');
+            } 
+            else if (response.status.status === 'COMPLETED_WITH_FAILURE') {
+              notificationService.sendWarning('Batch Upload Completed With Error: ' + response.status.message);
+            }
+            else {
+              notificationService.sendError('Batch Upload Failed: ' + response.status.message);               
+            }  
+            templateService.getTransformationJobResultAsTsv(result.branchPath , result.recipe, result.jobId).then(function (data) {
+              const fileName = 'Batch_result_' + result.jobId + '.tsv';
+              dlcDialog(data, fileName);
+            });
+            $rootScope.batchFileUploading = false; 
+          }, function (error) {            
+          });        
+        }, function () {
+        });
+      };
+
     }
   ]);

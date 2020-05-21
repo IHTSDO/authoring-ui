@@ -1300,6 +1300,72 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function getTransformationRecipes(branchPath) {
+      var deferred = $q.defer();
+
+      $http.get(apiEndpoint + 'MAIN/recipes').then(function (response) {
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject('Failed to retrieve Transformation Recipes: ' + error.message);
+      });
+      
+      return deferred.promise;
+    }    
+
+    function getTransformationJob(branchPath, recipe, jobId) {
+      var deferred = $q.defer();
+
+      $http.get(apiEndpoint + branchPath + '/recipes/' + recipe + '/jobs/' + jobId).then(function (response) {
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject('Failed to retrieve Transformation Job: ' + error.message);
+      });
+      
+      return deferred.promise;
+    }
+
+    function getTransformationJobResultAsTsv(branchPath, recipe, jobId) {
+      var deferred = $q.defer();
+
+      $http.get(apiEndpoint + branchPath + '/recipes/' + recipe + '/jobs/' + jobId + '/result-tsv').then(function (response) {
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject('Failed to retrieve Transformation Job result: ' + error.message);
+      });
+      
+      return deferred.promise;
+    }
+
+    function createTransformationJob(branchPath, recipe, batchSize, projectKey, taskTitle, file) {
+      var deferred = $q.defer();
+      var params = {};
+
+      if (batchSize) {
+        params.batchSize = batchSize;
+      }
+
+      if (projectKey) {
+        params.projectKey = projectKey;
+      }
+
+      if (taskTitle) {
+        params.taskTitle = taskTitle;
+      }
+
+      $http.post(apiEndpoint + branchPath + '/recipes/' + recipe + '/jobs', file, {
+        withCredentials: true,
+        params : params,
+        headers: { 'Content-Type': undefined },
+        transformRequest: angular.identity
+      }).then(function (response) {
+        var locHeader = response.headers('Location');
+        var jobId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
+        deferred.resolve(jobId);
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
 
     return {
 
@@ -1338,7 +1404,11 @@ angular.module('singleConceptAuthoringApp')
       // batch functions
       downloadTemplateCsv: downloadTemplateCsv,
       uploadTemplateCsv: uploadTemplateCsv,
-      transform: transform
+      transform: transform,
+      getTransformationRecipes: getTransformationRecipes,
+      getTransformationJob: getTransformationJob,
+      getTransformationJobResultAsTsv: getTransformationJobResultAsTsv,
+      createTransformationJob: createTransformationJob
     };
 
   })

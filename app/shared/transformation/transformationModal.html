@@ -1,0 +1,82 @@
+<div id="transformationModal" class="clearfix">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Upload a Batch</h4>
+  </div>
+  <div class="modal-body">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="col-md-6">
+          <label class="no-margin">Task Title:</label>
+          <input autofocus="true" type="text" class="form-control" ng-model="transformation.taskTitle"></input>
+        </div>
+
+        <div class="col-md-6">
+          <label class="no-margin">Select Project:</label>            
+          <select name="select-choice" class="form-control"
+            ng-options="project.key as project.title for project in projects | orderBy: 'title'"
+            ng-model="transformation.projectKey"        
+            >
+          </select>
+        </div>
+
+        <div class="col-md-6 p-t-20">
+          <label class="no-margin">Select Assignee:</label>            
+          <select name="select-choice" class="form-control"
+            ng-options="user.username as user.displayName for user in users"
+            ng-model="transformation.assignee"         
+            >
+          </select>
+        </div>
+
+        <div class="col-md-6 p-t-20">
+          <label class="no-margin">Select Reviewer:</label>            
+          <select name="select-choice" class="form-control"
+            ng-options="user.username as user.displayName for user in users"
+            ng-model="transformation.reviewer"        
+            >
+          </select>
+        </div>
+
+        <div class="col-md-6 p-t-20">
+          <label class="no-margin">Number of Concepts Per Task:</label>            
+          <select name="select-choice" class="form-control"
+            ng-options="number for number in conceptsPerTaskOptions"
+            ng-model="transformation.batchSize"         
+            >
+          </select>
+        </div>
+
+        <div class="col-md-6 p-t-20">
+          <label class="no-margin">Select Recipe:</label>            
+          <select name="select-choice" class="form-control"
+            ng-options="recipe.key as recipe.title for recipe in transformationRecipes"
+            ng-model="transformation.recipe"        
+            >
+          </select>
+        </div>
+
+        <div class="col-md-6 p-t-40">         
+          <label class="btn btn-default btn-file btn-primary button-link sca-light-text" id="translation-batch-file-label">Upload Batch File
+            <input type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this)" class="invisible">
+          </label>
+        </div>
+    </div>
+
+  </div>
+
+  <!--Footer-->
+  <div class="modal-footer" ng-if="!uploading">
+    <div class="row no-padding no-gutter">           
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" ng-disabled="uploading" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="cancel()">Cancel </button>
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <button type="button" ng-disabled="uploading" class="col-md-12 btn btn-info no-margin"
+                ng-click="createTasks()">Create Tasks</button>
+      </div>
+    </div>    
+  </div>
+</div>
