@@ -106,7 +106,7 @@
           <button type="button"
               class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
               ng-click="saveConcept()"
-              ng-if="!isMerge && !isStatic"
+              ng-if="!isMerge && !isStatic && !isIntegrityCheck"
               ng-disabled="!isModified">
             <span> Save Concept </span>
           </button>
@@ -114,6 +114,11 @@
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
                   ng-click="saveConcept()" ng-if="isMerge">
             <span> Accept This Version </span>
+          </button>
+          <button type="button"
+                  class="btn-default save-button small-buttons green lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
+                  ng-click="saveConcept()" ng-if="isIntegrityCheck">
+            <span> Save and next </span>
           </button>
           <!-- Revert button only appears if parent is specified -->
           <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">

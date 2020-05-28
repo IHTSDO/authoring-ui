@@ -468,6 +468,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           //  view starts with no concepts
           $scope.concepts = [];
           break;
+        case 'integrityCheck':
+            $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+            $routeParams.mode = 'integrityCheck';
+            $scope.canCreateConcept = false;
+            $rootScope.showSidebarEdit = false;  
+            //  view starts with no concepts
+            $scope.concepts = [];
+            break;
         case 'edit-default':
           var path = $location.path();          
           if (!path.includes('/edit')) {
@@ -1967,15 +1975,25 @@ angular.module('singleConceptAuthoringApp.edit', [
 
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
+              // set role functionality and initial view
+              $scope.isOwnTask = role === 'AUTHOR';
+              $scope.role = role;
+              setBranchFunctionality($scope.task.branchState);
 
-                notificationService.sendMessage('Task details loaded', 3000);
-
-                // set role functionality and initial view
-                $scope.isOwnTask = role === 'AUTHOR';
-                $scope.role = role;
-                setBranchFunctionality($scope.task.branchState);
+              terminologyServerService.branchIntegrityCheck($scope.task.branchPath).then(function(response) {                  
+                if (response && response.empty == false && response.axiomsWithMissingOrInactiveReferencedConcept && $scope.isOwnTask) {
+                  notificationService.clear();
+                  $scope.setView('integrityCheck');
+                  $scope.integrityCheckResult = response;                    
+                } else { 
+                  notificationService.sendMessage('Task details loaded', 3000);
+                  $scope.setInitialView();
+                }
+              }, function(error) {
+                notificationService.sendError('Branch integrity check failed. ' + error);
                 $scope.setInitialView();
-              },
+              });            
+            },
               // if no role, send error and return to dashboard after slight delay
               function () {
                 /*  TODO Reenable this later

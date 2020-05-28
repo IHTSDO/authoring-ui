@@ -1,0 +1,88 @@
+<section class="tables-data integrity-check"> 
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
+           id="select_all_to_review"
+           name="filter-checkbox" value=""/>
+  </script>
+  <div class="row no-gutter no-padding">   
+    <div class="col-md-12 no-padding no-gutter">      
+      <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
+        <div >
+          <div class="row no-padding">
+            <div class="col-md-12 conflicts-list-header p-l-20">
+              <h4>Upgrade
+                <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-right" title="Hide Sidebar"></button>
+              </h4>
+            </div>                       
+            <div>
+              <ul class="nav nav-tabs no-padding" role="tablist">
+                <li role="presentation" class="active">
+                  <a  aria-controls="home" role="tab" data-toggle="tab">Changes To Review</a>
+                </li>                
+              </ul>
+            </div>
+
+            <div class="tab-content row m-t-10 col-sm-12 no-padding">
+              <div>
+                <table show-filter="false" ng-table="integrityCheckTableParams"
+                       template-pagination="utilities/data-table-pager.html"
+                       class="table table-full table-full-small concepts-in-conflict">
+                  <tr ng-repeat="concept in $data"> 
+                    
+                    <!-- Fsn -->
+                    <td class="col-concept col-md-10" data-title="'Concept'"
+                        sortable="'term'"> <div class="p-l-40 p-r-5 p-t-7 p-b-7"
+                        ng-click="selectConcept(concept)">{{concept.term}}</div> </td>
+                    
+                    <!-- Controls -->
+                    <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 " 
+                              ng-click="viewConcept(concept)" ng-disabled="selectedConcept.priorConcept.conceptId === concept.conceptId">
+                      <div
+                          class="md md-edit "></div>
+                      </button></td>
+                  </tr>
+                </table>
+              </div>             
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Conflicts Report: Content -->
+      <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]">
+        <div class="row no-padding no-gutter">
+          <div class="col-md-6 project-header">
+            <h4>
+              <button ng-show="hideSidebar" ng-click="toggleSidebar()" type="button" class="md md-keyboard-arrow-right pull-left show-conflict-list" title="Show Sidebar"></button>
+              Prior Version </h4>
+          </div>
+          <div class="col-md-6 merged-header">
+            <h4>Resolution</h4>
+          </div>          
+        </div>
+        <div class="row no-padding no-gutter" ng-if="selectedConcept.priorConcept && selectedConcept.resolutionConcept">
+          <div class="col-md-6 conflict-concept-column">
+            <div concept-edit
+                 concept="selectedConcept.priorConcept"
+                 branch="branch"
+                 static="true"                 
+                 autosave="false"
+                 show-inactive="false"
+                 component-styles="componentStyle.priorConcept"> </div>
+          </div>
+          <div class="col-md-6 merged-version conflict-concept-column">
+            <div concept-edit
+                 concept="selectedConcept.resolutionConcept"
+                 branch="branch"
+                 static="false"
+                 autosave="false"                
+                 show-inactive="false"
+                 component-styles="componentStyle.resolutionConcept"
+                 integrity-check-view="true"></div>
+          </div>      
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

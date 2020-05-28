@@ -1134,6 +1134,19 @@ button-link .bluehl .grey.darken-3 {
 .merges-button .button-link {
     font-size: 12px;
 }
+.integrity-check .nav-tabs > li {
+    width: 100%;
+    text-align: center;
+}
+.integrity-check tbody>tr{
+    height:auto;
+    min-height: 27px;
+}
+.integrity-check .table>tbody>tr>td, 
+.integrity-check .table>tbody>tr>th {
+    padding: 0;
+    line-height: 14px;
+}
 .tealhl .grey.darken-3,
 .tealhl .row.edits-row {
     background-color: #00a39b;
