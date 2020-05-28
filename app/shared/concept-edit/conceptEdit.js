@@ -206,6 +206,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // this up
         merge: '@?',
 
+        // whether this display is part of the integrity Check view
+        integrityCheckView: '@?',
+
         // whether this directive is used in batch view
         batch: '@?',
 
@@ -339,6 +342,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         } else {
           scope.isMerge = false;
         }
+
+        if (scope.integrityCheckView === 'true' || scope.integrityCheckView === true) {
+          scope.isIntegrityCheck = true;
+        } else {
+          scope.isIntegrityCheck = false;
+        }
+        
 
         if (scope.inactivationEditing === 'true' || scope.merge === true) {
           scope.isInactivation = true;
@@ -1352,6 +1362,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       });
                     } else {
                       notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+
+                      if (scope.isIntegrityCheck) {
+                        if (scope.task.status === 'New') {
+                          scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey);
+                        }
+                        $rootScope.$broadcast('loadNextConcept');
+                        return;
+                      }
                       scope.focusHandler(true, false);
                     }
                     scope.saving = false;

@@ -209,11 +209,8 @@ angular.module('singleConceptAuthoringApp')
                     delete newRelClone.groupId
                     
                     let oldRelClone = angular.copy(originalRelationship);
-                    delete oldRelClone.groupId
-                    delete oldRelClone.target.pt;
-                    delete oldRelClone.target.fsn;
-                    delete oldRelClone.target.preferredSynonym;
-                    delete oldRelClone.relationshipId;
+                    cleanRelationship(oldRelClone)
+                    delete oldRelClone.groupId;
                     
                     if(JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
                         newRelationship.found = true;
