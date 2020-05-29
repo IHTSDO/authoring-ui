@@ -28,13 +28,15 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
         window.alert(errors.join('\n'));
         return;
       }
+      $scope.uploading = true;
       const branchPath = getProjectBranchPath($scope.transformation.projectKey);
       const assignee = $scope.transformation.assignee ? $scope.transformation.assignee.username : null;
       const reviewer = $scope.transformation.reviewer ? $scope.transformation.reviewer.username : null;
       templateService.createTransformationJob(branchPath, $scope.transformation.recipe, $scope.transformation.batchSize, $scope.transformation.projectKey, $scope.transformation.taskTitle, $scope.fd, assignee, reviewer).then(function(jobId) {
         $modalInstance.close({branchPath: branchPath, recipe: $scope.transformation.recipe, jobId: jobId, assignee: $scope.transformation.assignee});
       }, function(error) {
-        console.error('Error while transforming a job: ' + error)      
+        console.error('Error while transforming a job: ' + error);
+        $scope.uploading = false;      
       });      
     };    
 
