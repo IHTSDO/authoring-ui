@@ -45,7 +45,7 @@
         </div>
 
         <div class="col-md-6 p-t-20">
-          <label class="no-margin">Select Recipe:</label>            
+          <label class="no-margin">Select Import Type:</label>            
           <select name="select-choice" class="form-control"
             ng-options="recipe.key as recipe.title for recipe in transformationRecipes"
             ng-model="transformation.recipe"        
@@ -63,11 +63,11 @@
   </div>
 
   <!--Footer-->
-  <div class="modal-footer" ng-if="!uploading">
+  <div class="modal-footer">
     <div class="row no-padding no-gutter">           
       <!-- Cancel always appears -->
       <div class="col-md-4">
-        <button type="button" ng-disabled="uploading" class=" col-md-12 btn btn-warning no-margin"
+        <button type="button" class=" col-md-12 btn btn-warning no-margin"
                 ng-click="cancel()">Cancel </button>
       </div>
       <div class="col-md-4"></div>
