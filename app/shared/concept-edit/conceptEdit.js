@@ -344,9 +344,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         if (scope.integrityCheckView === 'true' || scope.integrityCheckView === true) {
-          scope.isIntegrityCheck = true;
+          scope.isIntegrityCheckView = true;
         } else {
-          scope.isIntegrityCheck = false;
+          scope.isIntegrityCheckView = false;
         }
         
 
@@ -1363,7 +1363,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     } else {
                       notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
 
-                      if (scope.isIntegrityCheck) {
+                      if (scope.isIntegrityCheckView) {
                         if (scope.task.status === 'New') {
                           scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey);
                         }

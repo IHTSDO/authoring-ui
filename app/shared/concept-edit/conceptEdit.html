@@ -106,7 +106,7 @@
           <button type="button"
               class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
               ng-click="saveConcept()"
-              ng-if="!isMerge && !isStatic && !isIntegrityCheck"
+              ng-if="!isMerge && !isStatic && !isIntegrityCheckView"
               ng-disabled="!isModified">
             <span> Save Concept </span>
           </button>
@@ -117,7 +117,7 @@
           </button>
           <button type="button"
                   class="btn-default save-button small-buttons green lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
-                  ng-click="saveConcept()" ng-if="isIntegrityCheck">
+                  ng-click="saveConcept()" ng-if="isIntegrityCheckView">
             <span> Save and next </span>
           </button>
           <!-- Revert button only appears if parent is specified -->
@@ -138,7 +138,7 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="revertToVersion()" ng-if="!isStatic && role === 'AUTHOR'"
+                  ng-click="revertToVersion()" ng-if="!isStatic && !isIntegrityCheckView && role === 'AUTHOR'"
                   ng-disabled="!isSctid(concept.conceptId) || !concept.active">
             <span>Revert to version</span>
           </button>
@@ -152,12 +152,12 @@
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
                   ng-click="toggleConceptActive(concept)"
                   ng-if="concept.released"
-                  ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
+                  ng-disabled="isInactivation || isStatic || isIntegrityCheckView || isLockedModule(concept.moduleId) && concept.released"
                   class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case">
 
-            <span ng-if="!isStatic  && !isInactivation"> Activate/ inactivate concept </span>
-            <span ng-if="!isStatic && isInactivation">Inactivation in progress, cannot change active status</span>
-            <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+            <span ng-if="!isStatic && !isIntegrityCheckView && !isInactivation"> Activate/ inactivate concept </span>
+            <span ng-if="!isStatic && !isIntegrityCheckView && isInactivation">Inactivation in progress, cannot change active status</span>
+            <span ng-if="isStatic || isIntegrityCheckView || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"
@@ -322,11 +322,11 @@
 
           <!-- Active/Inactive -->
           <button type="button"
-                  ng-disabled="isStatic || !description.released || isLockedModule(description.moduleId) || showInferredRels"
+                  ng-disabled="isStatic || isIntegrityCheckView || !description.released || isLockedModule(description.moduleId) || showInferredRels"
                   ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent">
-            <span ng-if="isStatic">Active/Inactive</span>
+            <span ng-if="isStatic || isIntegrityCheckView">Active/Inactive</span>
             <span ng-if="!isStatic && description.released">Toggle Active/Inactive</span>
             <span ng-if="!isStatic && !description.released">Cannot inactivate unreleased description</span>
           </button>
@@ -334,7 +334,7 @@
           <!-- Case Significance -->
           <button type="button"
                   class=" blue accent-2 button-width custom-button text-center tooltips-bottom tooltips-light xxlarge-size-tooltip normal-case"
-                  ng-disabled="isStatic || isLockedModule(description.moduleId) || showInferredRels"
+                  ng-disabled="isStatic || isIntegrityCheckView || isLockedModule(description.moduleId) || showInferredRels"
                   ng-click="toggleCaseSignificance(description)">
 
             <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
@@ -350,7 +350,7 @@
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-copy="copyDescriptionTerm($event)"
-                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
+                      ng-readonly="isStatic || isIntegrityCheckView || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-model="description.term"
                       class="form-control msd-elastic no-border-bottom desc"
@@ -362,7 +362,7 @@
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-copy="copyDescriptionTerm($event)"
-                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
+                      ng-readonly="isStatic || isIntegrityCheckView || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-model="description.term"
                       class="form-control msd-elastic no-border-bottom desc"
@@ -373,7 +373,7 @@
 
             <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
-                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
+                      ng-readonly="isStatic || isIntegrityCheckView || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
                       ng-copy="copyDescriptionTerm($event)"
                       ng-model="description.term"
@@ -386,7 +386,7 @@
                       maxlength="4096"
                       ng-change="updateDescription(description)"
                       ng-copy="copyDescriptionTerm($event)"
-                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
+                      ng-readonly="isStatic || isIntegrityCheckView || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
@@ -396,7 +396,7 @@
 
           <!-- TypeId -->
           <div class="pull-left typeid">
-            <select ng-disabled="description.released || isStatic || isLockedModule(description.moduleId) || showInferredRels"
+            <select ng-disabled="description.released || isStatic || isIntegrityCheckView || isLockedModule(description.moduleId) || showInferredRels"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.type" ng-change="updateDescription(description)" name="select-type"
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
@@ -413,7 +413,7 @@
               <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1">
                   <button type="button"
                           class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                          ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels || checkReadOnlyDialect(dialectId)"
+                          ng-disabled="isStatic || isIntegrityCheckView || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels || checkReadOnlyDialect(dialectId)"
                           ng-click="toggleAcceptability(description, dialectId)">
                     <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
                     </div>
@@ -427,7 +427,7 @@
           </div>
 
 
-          <div ng-show="!isStatic && !showInferredRels">
+          <div ng-show="!isStatic && !isIntegrityCheckView && !showInferredRels">
 
             <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
                     class="btn-default add-buttons md fa-sca fa-plus plus-button-width pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
