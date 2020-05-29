@@ -712,7 +712,12 @@ angular.module('singleConceptAuthoringApp')
                 var branch = metadataService.getBranch();
                 terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
                   if (response && response.empty == false) {
-                    notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
+                    if ($routeParams.taskKey) {
+                      exitConflictsView();
+                    }
+                    else {
+                      notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
+                    }                    
                   } else {
                     scope.rebaseRunning = false;
                     scope.rebaseComplete = true;
