@@ -6,40 +6,24 @@
   </script>
   <div class="row no-gutter no-padding">   
     <div class="col-md-12 no-padding no-gutter">      
-      <div ng-show="!hideSidebar" class="col-md-3 no-padding no-gutter">
+      <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
         <div >
-          <div class="row no-padding">                                   
+          <div class="row no-padding">
+            <div class="col-md-12 conflicts-list-header p-l-20">
+              <h4>Upgrade
+                <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-right" title="Hide Sidebar"></button>
+              </h4>
+            </div>                       
             <div>
-              <ul class="nav nav-tabs no-padding sidebar-tabs" role="tablist">
-                <li role="presentation" ng-class="{'active' : actionTab === 1}">
-                  <a ng-click="setActiveTab(1)" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-bottom tooltips-light small-size-tooltip normal-case">
-                    <div class="md md-my-library-books"></div>
-                    <span>Taxonomy</span>
-                  </a>
-                </li>
-                <li role="presentation" ng-class="{'active' : actionTab === 2}">
-                  <a ng-click="setActiveTab(2)" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
-                    <div class="fa fa-search"></div>
-                    <span>Search</span>
-                  </a>
-                </li>
-                <li role="presentation" ng-class="{'active' : actionTab === 3}">
-                  <a ng-click="setActiveTab(3)" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
-                    <div class="md md-work"></div>
-                    <span>Changes To Review</span>                    
-                  </a>
+              <ul class="nav nav-tabs no-padding" role="tablist">
+                <li role="presentation" class="active">
+                  <a  aria-controls="home" role="tab" data-toggle="tab">Changes To Review</a>
                 </li>                
               </ul>
             </div>
 
-            <div class="tab-content row col-sm-12 no-padding">
-              <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}" ng-show="actionTab === 1">
-                <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-              </div>
-              <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}" ng-show="actionTab === 2">
-                <div ng-include="'shared/search/search.html'"></div>
-              </div>
-              <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}" ng-show="actionTab === 3">
+            <div class="tab-content row m-t-10 col-sm-12 no-padding">
+              <div>
                 <table show-filter="false" ng-table="integrityCheckTableParams"
                        template-pagination="utilities/data-table-pager.html"
                        class="table table-full table-full-small concepts-in-conflict">
@@ -70,7 +54,6 @@
           <div class="col-md-6 project-header">
             <h4>
               <button ng-show="hideSidebar" ng-click="toggleSidebar()" type="button" class="md md-keyboard-arrow-right pull-left show-conflict-list" title="Show Sidebar"></button>
-              <button ng-show="!hideSidebar" ng-click="toggleSidebar()" type="button" class="md md-keyboard-arrow-left pull-left show-conflict-list" title="Hide Sidebar"></button>
               Prior Version </h4>
           </div>
           <div class="col-md-6 merged-header">
