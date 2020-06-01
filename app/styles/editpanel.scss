@@ -42,7 +42,8 @@ tab-pane.active .no-padding.col-md-9 {
     margin-right: .3em;
     width: 18px;
 }
-.editpanel a {
+.editpanel a,
+.integrity-check a {
     color: #666;
 }
 .editpanel a.white-icon {
@@ -1135,7 +1136,7 @@ button-link .bluehl .grey.darken-3 {
     font-size: 12px;
 }
 .integrity-check .nav-tabs > li {
-    width: 100%;
+    width: 33.3333%;
     text-align: center;
 }
 .integrity-check tbody>tr{
