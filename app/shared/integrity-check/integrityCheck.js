@@ -1,7 +1,7 @@
 angular.module('singleConceptAuthoringApp')
 
-  .directive('integrityCheck', ['$rootScope', 'ngTableParams', '$route', '$routeParams', '$filter', '$rootScope', 'terminologyServerService', 'notificationService',
-    function ($rootScope, NgTableParams, $route, $routeParams, $filter, $rootScope, terminologyServerService, notificationService) {
+  .directive('integrityCheck', ['$rootScope', 'ngTableParams', '$route', '$routeParams', '$filter', '$location', 'terminologyServerService', 'notificationService',
+    function ($rootScope, NgTableParams, $route, $routeParams, $filter, $location, terminologyServerService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -21,11 +21,6 @@ angular.module('singleConceptAuthoringApp')
           scope.selectedConcept.priorConcept = null;
           scope.selectedConcept.resolutionConcept = null;
           scope.componentStyle = {};
-          scope.actionTab = 3;
-
-          scope.setActiveTab = function (tabIndex) {
-            scope.actionTab = tabIndex;
-          };         
 
           scope.integrityCheckTableParams = new NgTableParams({
               page: 1,
@@ -67,13 +62,6 @@ angular.module('singleConceptAuthoringApp')
               constructResolutionConcept(response, concept.axiomsToBeReplaced);              
             });
           };   
-
-          scope.$on('viewTaxonomy', function(event, data) {
-            scope.actionTab = 1;
-          });
-          scope.$on('viewSearch', function(event, data) {
-            scope.actionTab = 2;
-          });
 
           scope.$on('loadNextConcept', function () {
             let pos = -1;

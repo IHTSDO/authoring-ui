@@ -886,7 +886,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('editConcept', function (event, data) {
 
       // do not modify if in view with own managed list
-      if ($scope.thisView === 'classification' || $scope.thisView === 'validation' || $scope.thisView === 'integrityCheck') {
+      if ($scope.thisView === 'classification' || $scope.thisView === 'validation') {
         return;
       }
 
