@@ -1,5 +1,5 @@
 angular.module('singleConceptAuthoringApp.transformationModal', [])
-  .controller('transformationModalCtrl', function ($scope, $modalInstance, metadataService, scaService, templateService) {
+  .controller('transformationModalCtrl', function ($rootScope, $scope, $timeout, $modalInstance, metadataService, scaService, templateService, notificationService) {
     $scope.transformation = {};
     $scope.transformation.batchSize = 100;   
     
@@ -19,11 +19,14 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       
       $scope.fd = new FormData();     
       $scope.fd.append("tsvFile", $scope.selectedFile);
-      $("#translation-batch-file-label").html('File Selected: ' + $scope.selectedFile.name);
+      // Refresh UI
+      $timeout(function() {
+        angular.element('#translation-batch-file-label').triggerHandler('click');
+      }); 
     };
     
     $scope.createTasks = function() {
-      var errors = checkPrerequisites();
+      var errors = $scope.checkPrerequisites();
       if (errors.length > 0) {
         window.alert(errors.join('\n'));
         return;
@@ -35,7 +38,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       templateService.createTransformationJob(branchPath, $scope.transformation.recipe, $scope.transformation.batchSize, $scope.transformation.projectKey, $scope.transformation.taskTitle, $scope.fd, assignee, reviewer).then(function(jobId) {
         $modalInstance.close({branchPath: branchPath, recipe: $scope.transformation.recipe, jobId: jobId, assignee: $scope.transformation.assignee});
       }, function(error) {
-        console.error('Error while transforming a job: ' + error);
+        notificationService.sendError('Error while transforming a job: ' + error.data.message)
         $scope.uploading = false;      
       });      
     };    
@@ -69,7 +72,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       return '';
     }
 
-    function checkPrerequisites() {
+    $scope.checkPrerequisites = function () {
       var error = [];
       
       if (!$scope.transformation.taskTitle) {
@@ -79,7 +82,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
         error.push('No Project found');
       }
       if (!$scope.transformation.recipe) {
-        error.push('No Recipe found');
+        error.push('No Import Type found');
       }
       if (!$scope.selectedFile) {
         error.push('No Batch File found');
@@ -99,6 +102,10 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
             user.email = item.emailAddress;
             user.username = item.key;
             $scope.users.push(user);
+
+            if (user.username === $rootScope.accountDetails.login) {
+              $scope.transformation.assignee = user;
+            }
           });
         }
 
