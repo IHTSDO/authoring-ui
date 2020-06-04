@@ -54,7 +54,8 @@
         </div>
 
         <div class="col-md-6 p-t-40">         
-          <label class="btn btn-default btn-file btn-primary button-link sca-light-text" id="translation-batch-file-label">Select Batch File
+          <label class="btn btn-default btn-file btn-primary button-link sca-light-text" id="translation-batch-file-label">
+            {{selectedFile ==  null? 'Select Batch File' : 'File Selected: ' + selectedFile.name}}
             <input type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this)" class="invisible">
           </label>
         </div>
@@ -72,7 +73,7 @@
       </div>
       <div class="col-md-4"></div>
       <div class="col-md-4">
-        <button type="button" ng-disabled="uploading" class="col-md-12 btn btn-info no-margin"
+        <button type="button" ng-disabled="uploading || checkPrerequisites().length !== 0" class="col-md-12 btn btn-info no-margin"
                 ng-click="createTasks()">Create Tasks</button>
       </div>
     </div>    
