@@ -2061,10 +2061,24 @@ angular.module('singleConceptAuthoringApp')
       /**
        * Branch integrity check - if available on this terminology server
        */
-      function branchIntegrityCheck(branch, extensionMainBranchPath) {
+      function branchIntegrityCheck(branch) {
         var deferred = $q.defer();
         
-        $http.post(apiEndpoint + branch + '/integrity-check' + (extensionMainBranchPath ? '?extensionMainBranchPath=' + extensionMainBranchPath : '')).then(function (response) {
+        $http.post(apiEndpoint + branch + '/integrity-check').then(function (response) {
+          deferred.resolve(response.data);
+        }, function(error) {
+          deferred.reject(error.message);
+        });
+        return deferred.promise;
+      }
+
+       /**
+       * Branch upgrade integrity check - if available on this terminology server
+       */
+      function branchUpgradeIntegrityCheck(branch, extensionMainBranchPath) {
+        var deferred = $q.defer();
+        
+        $http.post(apiEndpoint + branch + '/upgrade-integrity-check' + (extensionMainBranchPath ? '?extensionMainBranchPath=' + extensionMainBranchPath : '')).then(function (response) {
           deferred.resolve(response.data);
         }, function(error) {
           deferred.reject(error.message);
@@ -2338,6 +2352,7 @@ angular.module('singleConceptAuthoringApp')
         storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
         mergeAndApply: mergeAndApply,
         branchIntegrityCheck: branchIntegrityCheck,
+        branchUpgradeIntegrityCheck: branchUpgradeIntegrityCheck,
         fetchConflictMessage: fetchConflictMessage,
 
         // validation
