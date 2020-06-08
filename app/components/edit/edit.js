@@ -1955,61 +1955,28 @@ angular.module('singleConceptAuthoringApp.edit', [
           // load the branch from task branch path
           loadBranch($scope.task.branchPath).then(function (branch) {
             console.log('Branch loaded');
-            // check for extension metadata
-            if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
-
-              // get the extension default module concept
-              terminologyServerService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
-
-                // set the name for display
-                $scope.project.metadata.defaultModuleName = extConcept.fsn;
-
-                // set the extension metadata for use by other elements
-                metadataService.setExtensionMetadata($scope.project.metadata);
-
-              }, function (error) {
-                notificationService.sendError('Fatal error: Could not load extension module concept');
-              });
-            }
-
-
-            // retrieve user role
-            accountService.getRoleForTask($scope.task).then(function (role) {
-              // set role functionality and initial view
-              $scope.isOwnTask = role === 'AUTHOR';
-              $scope.role = role;
-              setBranchFunctionality($scope.task.branchState);
-
-              terminologyServerService.branchIntegrityCheck($scope.task.branchPath).then(function(response) {                  
-                if (response && response.empty == false && response.axiomsWithMissingOrInactiveReferencedConcept && $scope.isOwnTask) {
-                  notificationService.clear();
-                  $scope.setView('integrityCheck');
-                  $scope.integrityCheckResult = response;                    
-                } else { 
-                  notificationService.sendMessage('Task details loaded', 3000);
-                  $scope.setInitialView();
-                }
-              }, function(error) {
-                notificationService.sendError('Branch integrity check failed. ' + error);
-                $scope.setInitialView();
-              });            
-            },
-              // if no role, send error and return to dashboard after slight delay
-              function () {
-                /*  TODO Reenable this later
-                 notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
-                 $timeout(function () {
-                 $location.url('/');
-                 }, 4000);*/
-
+            
+            $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
+              if ($scope.role === 'AUTHOR') {                
+                  terminologyServerService.branchIntegrityCheck($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
+                    if (response && response.empty == false && response.axiomsWithMissingOrInactiveReferencedConcept && $scope.isOwnTask) {
+                      notificationService.clear();
+                      $scope.setView('integrityCheck');
+                      $scope.integrityCheckResult = response;                    
+                    } else { 
+                      notificationService.sendMessage('Task details loaded', 3000);
+                      $scope.setInitialView();
+                    }
+                  }, function(error) {
+                    notificationService.sendError('Branch integrity check failed. ' + error);
+                    $scope.setInitialView();
+                  });                
+              }
+              else {
                 notificationService.sendMessage('Task details loaded', 3000);
-
-                // set role functionality and initial view
-                $scope.role = 'UNDEFINED';
-                $scope.isOwnTask = $scope.role === 'AUTHOR';
-                setBranchFunctionality($scope.task.branchState);
                 $scope.setInitialView();
-              });
+              }
+            });
 
             // populate the container objects
             $scope.getLatestValidation();
@@ -2036,6 +2003,63 @@ angular.module('singleConceptAuthoringApp.edit', [
         notificationService.sendError('Unexpected error: ' + error);
       });
     }
+
+    function setExtensionDefaultModuleName() {
+      var deferred = $q.defer();
+      // check for extension metadata
+      if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
+
+        // get the extension default module concept
+        terminologyServerService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
+
+          // set the name for display
+          $scope.project.metadata.defaultModuleName = extConcept.fsn;
+
+          // set the extension metadata for use by other elements
+          metadataService.setExtensionMetadata($scope.project.metadata);
+          deferred.resolve();
+
+        }, function (error) {
+          notificationService.sendError('Fatal error: Could not load extension module concept');
+        });
+      }
+      else {
+        deferred.resolve();
+      }
+
+      return deferred.promise;
+    }
+
+    function getRoleForTask() {
+      var deferred = $q.defer();
+      // retrieve user role
+      accountService.getRoleForTask($scope.task).then(function (role) {
+        // set role functionality and initial view
+        $scope.isOwnTask = role === 'AUTHOR';
+        $scope.role = role;
+        setBranchFunctionality($scope.task.branchState);
+        deferred.resolve();
+             
+      },
+        // if no role, send error and return to dashboard after slight delay
+        function () {
+          /*  TODO Reenable this later
+           notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
+           $timeout(function () {
+           $location.url('/');
+           }, 4000);*/
+         
+
+          // set role functionality and initial view
+          $scope.role = 'UNDEFINED';
+          $scope.isOwnTask = $scope.role === 'AUTHOR';
+          setBranchFunctionality($scope.task.branchState);
+          deferred.resolve();
+        });
+
+      return deferred.promise;
+    }
+
 
     function loadUngroupedAttributes() {
       // retrieve all self-grouped attribute domain members
