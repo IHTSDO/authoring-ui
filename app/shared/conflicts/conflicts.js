@@ -710,7 +710,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // Run branch integrity check
                 var branch = metadataService.getBranch();
-                terminologyServerService.branchIntegrityCheck(branch, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {
+                terminologyServerService.branchIntegrityCheck(branch).then(function(response) {
                   if (response && response.empty == false) {
                     if ($routeParams.taskKey) {
                       exitConflictsView();

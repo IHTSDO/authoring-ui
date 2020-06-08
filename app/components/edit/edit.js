@@ -1957,8 +1957,9 @@ angular.module('singleConceptAuthoringApp.edit', [
             console.log('Branch loaded');
             
             $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
-              if ($scope.role === 'AUTHOR') {                
-                  terminologyServerService.branchIntegrityCheck($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
+              if ($scope.role === 'AUTHOR') {    
+                  var intergrityCheckFn = metadataService.isExtensionSet() ? terminologyServerService.branchUpgradeIntegrityCheck : terminologyServerService.branchIntegrityCheck;
+                  intergrityCheckFn($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
                     if (response && response.empty == false && response.axiomsWithMissingOrInactiveReferencedConcept && $scope.isOwnTask) {
                       notificationService.clear();
                       $scope.setView('integrityCheck');
