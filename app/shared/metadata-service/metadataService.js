@@ -395,7 +395,8 @@ angular.module('singleConceptAuthoringApp')
           dialects: dialects,
           dialectDefaults: dialectDefaults,
           readOnlyDialects: readOnlyDialects,
-          dependencyRelease: metadata.dependencyRelease
+          dependencyRelease: metadata.dependencyRelease,
+          codeSystemShortName : metadata.codeSystemShortName
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
