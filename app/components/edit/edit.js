@@ -1955,7 +1955,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           // load the branch from task branch path
           loadBranch($scope.task.branchPath).then(function (branch) {
             $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
-              if ($scope.role === 'AUTHOR') {    
+              if(metadataService.isExtensionSet()){
+                  
+              }
+              if ($scope.role === 'AUTHOR' && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue) {
+                  console.log(metadataService.getBranchMetadata());
                   var intergrityCheckFn = metadataService.isExtensionSet() ? terminologyServerService.branchUpgradeIntegrityCheck : terminologyServerService.branchIntegrityCheck;
                   intergrityCheckFn($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
                     $scope.branchIntegrityDone = true;
