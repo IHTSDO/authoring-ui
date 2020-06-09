@@ -122,9 +122,9 @@ angular.module('singleConceptAuthoringApp')
               if (updatedConcepts.length !== 0) {
                 terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
                   if (response.conceptIds) {
-                    notificationService.sendMessage(response.conceptIds.length + ' concept(s) has been updated successfully.')
+                    notificationService.sendMessage('Updated ' + response.conceptIds.length + ' concepts successfully.')
                     scope.concepts = scope.concepts.filter(function(item) {
-                      return !response.conceptIds.includes(item.conceptId);
+                      return !response.conceptIds.includes(parseInt(item.conceptId));
                     });
 
                     if (scope.concepts.length !== 0) {
@@ -135,6 +135,7 @@ angular.module('singleConceptAuthoringApp')
                       if (!found) {
                         scope.viewConcept(scope.concepts[0]);
                       }
+                      scope.integrityCheckTableParams.reload();
                     } 
                     else {
                       $route.reload();
