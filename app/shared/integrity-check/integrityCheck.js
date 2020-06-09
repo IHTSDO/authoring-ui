@@ -56,6 +56,95 @@ angular.module('singleConceptAuthoringApp')
             scope.hideSidebar = !scope.hideSidebar;
           };
 
+          scope.selectAll = function (isChecked) {
+            angular.forEach(scope.concepts, function (item) {
+              item.selected = isChecked;
+            });
+          };
+
+          scope.applyAutomatedContentFix = function() {
+            var selectedConcepts = [];
+            if (scope.checkAll) {
+              selectedConcepts = scope.concepts;
+            }
+            else {
+              angular.forEach(scope.concepts, function (item) {
+                if (item.selected) {
+                  selectedConcepts.push(item);
+                }
+              });
+            }
+            if (selectedConcepts.length === 0) {
+              return;
+            }
+
+            let ids = [];
+            angular.forEach(selectedConcepts, function (selectedConcept) {
+              ids.push(selectedConcept.conceptId);
+              for (let axiomId in selectedConcept.axiomsToBeReplaced) {
+                ids = ids.concat(selectedConcept.axiomsToBeReplaced[axiomId]);
+              }
+            });          
+            notificationService.sendMessage('Saving auto-fixed content for selected concepts...');
+            // Fetch the active and inacive concepts
+            terminologyServerService.bulkRetrieveFullConcept(ids,scope.branch).then(function (concepts) {
+              // find concept id replacements
+              var inactiveConceptIdMap = {};
+              for (let i =0; i < concepts.length; i++) {
+                let concept = concepts[i];
+                if (!concept.active && concept.hasOwnProperty('associationTargets')) {
+                  for (let associationTarget in concept.associationTargets){
+                    inactiveConceptIdMap[concept.conceptId] = concept.associationTargets[associationTarget];
+                  }
+                }                
+              }
+
+              var updatedConcepts = [];
+              for (let i =0; i < selectedConcepts.length; i++) {
+                let concept = selectedConcepts[i];
+                for (let j =0; j < concepts.length; j++) { 
+                  let conceptFull = concepts[j];                 
+                  if (concept.conceptId === conceptFull.conceptId) {
+                    for (let axiomId in concept.axiomsToBeReplaced) {
+                      for (let k =0; k < conceptFull.classAxioms.length; k++) {
+                        replaceInactiveTargetId(axiomId, conceptFull.classAxioms[k], inactiveConceptIdMap);
+                      }
+                      for (let k =0; k < conceptFull.gciAxioms.length; k++) {
+                        replaceInactiveTargetId(axiomId, conceptFull.gciAxioms[k], inactiveConceptIdMap);
+                      }
+                    }
+                    updatedConcepts.push(conceptFull);
+                    break;
+                  }                
+                }                
+              }
+
+              if (updatedConcepts.length !== 0) {
+                terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
+                  if (response.conceptIds) {
+                    notificationService.sendMessage(response.conceptIds.length + ' concept(s) has been updated successfully.')
+                    scope.concepts = scope.concepts.filter(function(item) {
+                      return !response.conceptIds.includes(item.conceptId);
+                    });
+
+                    if (scope.concepts.length !== 0) {
+                      var found = scope.concepts.filter(function(item) {
+                        return item.conceptId === scope.selectedConcept.priorConcept.conceptId;
+                      }).length !== 0;
+
+                      if (!found) {
+                        scope.viewConcept(scope.concepts[0]);
+                      }
+                    } 
+                    else {
+                      $route.reload();
+                    }
+                  }
+                });
+              }
+            });
+          }
+
           scope.viewConcept = function (concept) {
             notificationService.sendMessage('Loading concept: ' + concept.term);
             scope.selectedConcept.priorConcept = null;
@@ -159,6 +248,27 @@ angular.module('singleConceptAuthoringApp')
             scope.componentStyle.resolutionConcept[relationship.relationshipId].style = 'tealhl';
           }
 
+          function replaceInactiveTargetId(axiomId , axiom, inactiveConceptIdMap) {            
+            if (axiomId === axiom.axiomId){
+              for (let l =0; l < axiom.relationships.length; l++) {
+                let relationship = axiom.relationships[l];
+                if (inactiveConceptIdMap.hasOwnProperty(relationship.target.conceptId)) {
+                  let newTargetIds = inactiveConceptIdMap[relationship.target.conceptId];
+                  for (let m = 0; m < newTargetIds.length; m++) {
+                    if (m === 0) {                            
+                      relationship.target.conceptId = newTargetIds[m];
+                    }
+                    else {
+                      let newRelationship = angular.copy(relationship);
+                      newRelationship.target.conceptId = newTargetIds[m];                                  
+                      axiom.relationships.push(newRelationship);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
           function replaceInactiveConcepts(axioms, axiomId, conceptIdsToBeReplaced, inactiveConceptIdMap, replacedConceptMap) {
             for (let axiomIndex = 0; axiomIndex < axioms.length; axiomIndex++) {
               let axiom = axioms[axiomIndex];
@@ -172,9 +282,9 @@ angular.module('singleConceptAuthoringApp')
 
                       for (let i = 0; i < inactiveConceptIds.length; i++) {
                         let newTarget = replacedConceptMap[inactiveConceptIds[i]];
-                        newTarget.fsn = newTarget.fsn.term;
-                        newTarget.pt = newTarget.pt.term;
-                        newTarget.preferredSynonym = newTarget.pt.term;
+                        newTarget.fsn = newTarget.fsn && newTarget.fsn.term ? newTarget.fsn.term : newTarget.fsn;
+                        newTarget.pt = newTarget.pt && newTarget.pt.term ? newTarget.pt.term :newTarget.pt;
+                        newTarget.preferredSynonym = newTarget.pt && newTarget.pt.term ? newTarget.pt.term : newTarget.pt;
 
                         if (i === 0) {                            
                           relationship.target = newTarget;

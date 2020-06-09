@@ -1,9 +1,14 @@
-<section class="tables-data integrity-check"> 
+<section class="tables-data integrity-check">
   <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
-    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
-           id="select_all_to_review"
-           name="filter-checkbox" value=""/>
+    <div class="checkbox">
+      <label class="filled">
+        <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
+       id="select_all_checkbox"
+       name="filter-checkbox" value=""/>
+      </label>
+    </div>
   </script>
+
   <div class="row no-gutter no-padding">   
     <div class="col-md-12 no-padding no-gutter">      
       <div ng-show="!hideSidebar" class="col-md-3 no-padding no-gutter">
@@ -26,7 +31,7 @@
                 <li role="presentation" ng-class="{'active' : actionTab === 3}">
                   <a ng-click="setActiveTab(3)" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
                     <div class="md md-work"></div>
-                    <span>Changes To Review</span>                    
+                    <span>Changes To Upgrade</span>                    
                   </a>
                 </li>                
               </ul>
@@ -40,14 +45,33 @@
                 <div ng-include="'shared/search/search.html'"></div>
               </div>
               <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}" ng-show="actionTab === 3">
+                <div>
+                  <h5 class="p-l-40 p-t-5">Total Items: {{concepts.length}}</h5>
+                </div>
                 <table show-filter="false" ng-table="integrityCheckTableParams"
                        template-pagination="utilities/data-table-pager.html"
-                       class="table table-full table-full-small concepts-in-conflict">
+                       class="table">
+                  <div class="col-md-12 no-padding" >
+                    <div class="pull-right p-r-15">                       
+                      <button
+                        class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
+                        ng-click="applyAutomatedContentFix()">
+                        <div class="md md-assignment-turned-in"></div>
+                        <span>Auto-fix content for selected</span>
+                      </button>        
+                    </div>
+                  </div>
                   <tr ng-repeat="concept in $data"> 
-                    
+                    <td class="col-checkbox col-md-1 no-padding "
+                        header="'ng-table/headers/checkboxHeader.html'"><div class="checkbox">
+                        <label class="filled">
+                          <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
+                        </label>
+                      </div>
+                    </td>
                     <!-- Fsn -->
                     <td class="col-concept col-md-10" data-title="'Concept'"
-                        sortable="'term'"> <div class="p-l-40 p-r-5 p-t-7 p-b-7"
+                        sortable="'term'"> <div class="p-r-5 p-t-7 p-b-7"
                         ng-click="selectConcept(concept)">{{concept.term}}</div> </td>
                     
                     <!-- Controls -->

@@ -1954,12 +1954,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           // load the branch from task branch path
           loadBranch($scope.task.branchPath).then(function (branch) {
-            console.log('Branch loaded');
-            
             $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
               if ($scope.role === 'AUTHOR') {    
                   var intergrityCheckFn = metadataService.isExtensionSet() ? terminologyServerService.branchUpgradeIntegrityCheck : terminologyServerService.branchIntegrityCheck;
                   intergrityCheckFn($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
+                    $scope.branchIntegrityDone = true;
+                    $scope.branchIntegrityChecking = false;
                     if (response && response.empty == false && response.axiomsWithMissingOrInactiveReferencedConcept && $scope.isOwnTask) {
                       notificationService.clear();
                       $scope.setView('integrityCheck');
@@ -1972,6 +1972,13 @@ angular.module('singleConceptAuthoringApp.edit', [
                     notificationService.sendError('Branch integrity check failed. ' + error);
                     $scope.setInitialView();
                   });                
+                  // Delay 2 seconds before displaying the branch integirty checking page
+                  $timeout(function () {
+                    if (!$scope.branchIntegrityDone) {
+                      $scope.branchIntegrityChecking = true;
+                      notificationService.clear();
+                    }
+                  }, 2000);                 
               }
               else {
                 notificationService.sendMessage('Task details loaded', 3000);
