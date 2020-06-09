@@ -1352,6 +1352,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       });
                     }
                     else if (scope.validation.hasWarnings) {
+                      if (scope.isIntegrityCheckView) {
+                        if (scope.task.status === 'New') {
+                          scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey);
+                        }
+                        $rootScope.$broadcast('loadNextConcept');
+                        return;
+                      }
+                      
                       notificationService.sendWarning('Concept saved, but contradictions of conventions were detected. Please review Convention Warnings.');
                       $rootScope.$broadcast('conceptEdit.validation', {
                         branch: scope.branch,
