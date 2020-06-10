@@ -1955,13 +1955,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           // load the branch from task branch path
           loadBranch($scope.task.branchPath).then(function (branch) {
             $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
-              if(metadataService.isExtensionSet()){
-                  
-              }
-              if ($scope.role === 'AUTHOR' && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue) {
-                  console.log(metadataService.getBranchMetadata());
-                  var intergrityCheckFn = metadataService.isExtensionSet() ? terminologyServerService.branchUpgradeIntegrityCheck : terminologyServerService.branchIntegrityCheck;
-                  intergrityCheckFn($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
+              if ($scope.role === 'AUTHOR') {
+                if (metadataService.isExtensionSet() && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue) {
+                  terminologyServerService.branchUpgradeIntegrityCheck($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
                     $scope.branchIntegrityDone = true;
                     $scope.branchIntegrityChecking = false;
                     if (response && response.empty == false && response.axiomsWithMissingOrInactiveReferencedConcept && $scope.isOwnTask) {
@@ -1974,7 +1970,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                     }
                   }, function(error) {
                     notificationService.sendError('Branch integrity check failed. ' + error);
-                    $scope.setInitialView();
                   });                
                   // Delay 2 seconds before displaying the branch integirty checking page
                   $timeout(function () {
@@ -1982,7 +1977,12 @@ angular.module('singleConceptAuthoringApp.edit', [
                       $scope.branchIntegrityChecking = true;
                       notificationService.clear();
                     }
-                  }, 2000);                 
+                  }, 2000);
+                }
+                else {
+                  notificationService.sendMessage('Task details loaded', 3000);
+                  $scope.setInitialView();
+                }                
               }
               else {
                 notificationService.sendMessage('Task details loaded', 3000);
