@@ -88,7 +88,7 @@
         </div>
       </div>
       
-      <!-- Conflicts Report: Content -->
+      <!-- Integrity Report: Content -->
       <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]">
         <div class="row no-padding no-gutter">
           <div class="col-md-6 project-header">
@@ -121,6 +121,54 @@
                  component-styles="componentStyle.resolutionConcept"
                  integrity-check-view="true"></div>
           </div>      
+        </div>
+      </div>
+
+      <!-- Concepts -->
+      <div class="no-gutter p-t-20" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]">
+        <!-- model & concept data-->
+        <div class="row no-padding no-gutter hide-scroll"
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+
+
+          <!-- model & concept data-->
+          <div class="row-fluid no-gutter edit-row"
+               ng-repeat-start="concept in viewConcepts"
+               ng-class="isLast($last)"
+               repeat-complete callback="renderingComplete()">
+
+            <!-- model -->
+            <div class="no-gutter col-md-6">
+              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>              
+            </div>
+
+            <!-- concept -->
+            <div class="no-gutter grey darken-3 panel-height col-md-6">
+              <div concept-edit concept="concept" id="'concept-edit-{{concept.conceptId}}'" branch="branch" static="true">
+              </div>
+            </div>
+
+          </div>
+          <div class="row-fluid no-gutter edit-row" ng-if="$last" ng-repeat-end>
+            <div class="no-gutter col-md-6">
+              <div class="modelScrollBox"></div>
+            </div>
+
+            <!-- concept -->
+            <div class="no-gutter grey darken-3 col-md-6" fill-height>
+            </div>
+
+          </div>
+          <div class="row-fluid no-gutter edit-row" ng-if="$last" ng-repeat-end>
+            <div class="no-gutter col-sm-6 col-md-6 col-lg-6">
+              <div class="modelScrollBox"></div>
+            </div>
+
+            <!-- concept -->
+            <div class="no-gutter col-sm-6 col-md-6 col-lg-6 grey darken-3" fill-height>
+            </div>
+          </div>
         </div>
       </div>
 

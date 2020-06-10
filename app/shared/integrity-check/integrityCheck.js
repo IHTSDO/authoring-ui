@@ -22,6 +22,7 @@ angular.module('singleConceptAuthoringApp')
           scope.selectedConcept.resolutionConcept = null;
           scope.componentStyle = {};
           scope.actionTab = 3;
+          scope.viewConcepts = [];
 
           scope.setActiveTab = function (tabIndex) {
             scope.actionTab = tabIndex;
@@ -120,41 +121,65 @@ angular.module('singleConceptAuthoringApp')
               }
 
               if (updatedConcepts.length !== 0) {
-                terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
-                  if (response.conceptIds) {
-                    notificationService.sendMessage('Updated ' + response.conceptIds.length + ' concepts successfully.')
-                    scope.concepts = scope.concepts.filter(function(item) {
-                      return !response.conceptIds.includes(parseInt(item.conceptId));
-                    });
-
-                    if (scope.concepts.length !== 0) {
-                      var found = scope.concepts.filter(function(item) {
-                        return item.conceptId === scope.selectedConcept.priorConcept.conceptId;
-                      }).length !== 0;
-
-                      if (!found) {
-                        scope.viewConcept(scope.concepts[0]);
+                terminologyServerService.bulkValidateConcepts(scope.branch, updatedConcepts).then(function(validationResponse){
+                  var invalidConceptIds = []
+                  if (validationResponse && validationResponse.data && validationResponse.data.length !== 0) {
+                    for (let i = 0; i < validationResponse.data.length; i++) {
+                      if (validationResponse.data[i].severity === 'ERROR' && !invalidConceptIds.includes(validationResponse.data[i].conceptId)) {
+                        invalidConceptIds.push(validationResponse.data[i].conceptId);
                       }
-                      scope.integrityCheckTableParams.reload();
-                    } 
-                    else {
-                      $route.reload();
                     }
                   }
-                });
+
+                  if (invalidConceptIds.length !== 0) {
+                    updatedConcepts = updatedConcepts.filter(function(item) {
+                      return !invalidConceptIds.includes(item.conceptId);
+                    })
+                  }
+                  if (updatedConcepts.length !== 0) {
+                    terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
+                      if (response.conceptIds) {
+                        notificationService.sendMessage('Updated ' + response.conceptIds.length + ' concepts successfully.')
+                        scope.concepts = scope.concepts.filter(function(item) {
+                          return !response.conceptIds.includes(parseInt(item.conceptId));
+                        });
+    
+                        if (scope.concepts.length !== 0) {
+                          var found = scope.concepts.filter(function(item) {
+                            return item.conceptId === scope.selectedConcept.priorConcept.conceptId;
+                          }).length !== 0;
+    
+                          if (!found) {
+                            scope.viewConcept(scope.concepts[0], true);
+                          }
+                          scope.integrityCheckTableParams.reload();
+                        } 
+                        else {
+                          $route.reload();
+                        }
+                      }
+                    });
+                  } else {
+                    notificationService.sendMessage('No concepts updated.');
+                  }
+                });                
+              } else {
+                notificationService.sendMessage('No concepts updated.');
               }
             });
           }
 
-          scope.viewConcept = function (concept) {
-            notificationService.sendMessage('Loading concept: ' + concept.term);
+          scope.viewConcept = function (concept, skipNotifcation) {
+            if (!skipNotifcation) {
+              notificationService.sendMessage('Loading concept: ' + concept.term);
+            }            
             scope.selectedConcept.priorConcept = null;
             scope.selectedConcept.resolutionConcept = null;
             scope.componentStyle = {};
             terminologyServerService.getFullConcept(concept.conceptId, scope.branch).then(function (response) {
               scope.selectedConcept.priorConcept = response;                      
               highlightInactiveComponents(scope.selectedConcept.priorConcept, concept.axiomsToBeReplaced);
-              constructResolutionConcept(response, concept.axiomsToBeReplaced);              
+              constructResolutionConcept(response, concept.axiomsToBeReplaced, skipNotifcation);              
             });
           };   
 
@@ -185,7 +210,41 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          function constructResolutionConcept(originalConcept, axiomsToBeReplaced) {
+          scope.$on('editConcept', function (event, data) {
+            // verify that this SCTID does not exist in the edit list
+            for (var i = 0; i < scope.viewConcepts.length; i++) {
+              if (scope.viewConcepts[i].conceptId === data.conceptId) {
+                notificationService.sendWarning('Concept already loaded', 5000);           
+                return;
+              }
+            }
+            // send loading notification for user display
+            notificationService.sendMessage('Loading concepts...', 10000, null);
+            terminologyServerService.getFullConcept(data.conceptId, scope.branch).then(function (response) {            
+              if (!response) {
+                return;
+              }
+              scope.viewConcepts.push(response);
+              scope.$broadcast('editingConcepts', {concepts: scope.viewConcepts});
+              notificationService.clear();
+            });      
+          });
+
+          scope.$on('stopEditing', function (event, data) {
+            removeViewedConcept(data.concept.conceptId);
+            scope.$broadcast('editingConcepts', {concepts: scope.viewConcepts});
+          });
+
+          function removeViewedConcept(conceptId) {
+            var index = scope.viewConcepts.map(function (c) {
+              return c.conceptId
+            }).indexOf(conceptId);
+            if (index !== -1) {
+              scope.viewConcepts.splice(index, 1);
+            }
+          }
+
+          function constructResolutionConcept(originalConcept, axiomsToBeReplaced, skipNotifcation) {
             scope.componentStyle.resolutionConcept = {};
             let ids = [];         
             for (let axiomId in axiomsToBeReplaced) {
@@ -221,7 +280,9 @@ angular.module('singleConceptAuthoringApp')
                 }
 
                 scope.selectedConcept.resolutionConcept = resolutionConcept;
-                notificationService.clear();
+                if (!skipNotifcation) {
+                  notificationService.clear();
+                }                
               });
             });
           }
