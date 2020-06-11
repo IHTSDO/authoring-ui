@@ -259,7 +259,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // traceability that will be passed from Feedback
         traceabilities: '=?',
 
-        highlightChanges: '@?'
+        highlightChanges: '@?',
+        
+        disableRemoveConcept: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -384,6 +386,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.highlightChanges = true;
         } else {
           scope.highlightChanges = false;
+        }
+
+        if (scope.disableRemoveConcept === 'true' || scope.disableRemoveConcept === true) {
+          scope.disableRemoveConcept = true;
+        } else {
+          scope.disableRemoveConcept = false;
         }
         
         scope.enterListener = function(event){
