@@ -139,7 +139,12 @@ angular.module('singleConceptAuthoringApp')
                   if (updatedConcepts.length !== 0) {
                     terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
                       if (response.conceptIds) {
-                        notificationService.sendMessage('Updated ' + response.conceptIds.length + ' concepts successfully.')
+                        var message = 'Updated ' + response.conceptIds.length + ' concepts successfully.';
+                        if (invalidConceptIds.length > 0) {
+                          message += ' ' + invalidConceptIds.length + ' concepts failed to validate, please correct them manually and re-try.';
+                        }
+                        
+                        notificationService.sendMessage(message)
                         scope.concepts = scope.concepts.filter(function(item) {
                           return !response.conceptIds.includes(parseInt(item.conceptId));
                         });
@@ -160,7 +165,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                   } else {
-                    notificationService.sendMessage('No concepts updated.');
+                    notificationService.sendMessage(invalidConceptIds.length + ' concepts failed to validate, please correct them manually and re-try.');
                   }
                 });                
               } else {
