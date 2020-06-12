@@ -117,7 +117,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       notificationService.sendError(conflictMessage);
                     });
                   } else {
-                    $rootScope.$broadcast('reloadTask');
+                    scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                        if(response.metadata && response.metadata.internal && response.metadata.internal.integrityIssue) {
+                            terminologyServerService.branchUpgradeIntegrityCheck(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName).then( function(response) {
+                                $rootScope.$broadcast('reloadTask');
+                            });
+                        }
+                        else{
+                            $rootScope.$broadcast('reloadTask');
+                        }
+                    });
                   }
                 }, function (error) {
                   $scope.promoting = false;

@@ -1956,7 +1956,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           loadBranch($scope.task.branchPath).then(function (branch) {
             $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
               if ($scope.role === 'AUTHOR') {
-                if ($routeParams.mode === 'edit' && metadataService.isExtensionSet() && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue) {
+                if ($routeParams.mode === 'edit' && metadataService.isExtensionSet() && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue === 'true') {
                   terminologyServerService.branchUpgradeIntegrityCheck($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {                  
                     $scope.branchIntegrityDone = true;
                     $scope.branchIntegrityChecking = false;
