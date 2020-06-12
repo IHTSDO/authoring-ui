@@ -193,7 +193,6 @@ angular.module('singleConceptAuthoringApp.project', [
           // if response contains no flags, simply promote
           if (!warningsFound) {
             terminologyServerService.getBranch($scope.branch).then(function (response) {
-              let metadata = response;
               if (!response.metadata || response.metadata && !response.metadata.lock) {
                 terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                   if (!response.metadata || response.metadata && !response.metadata.lock) {
@@ -222,14 +221,7 @@ angular.module('singleConceptAuthoringApp.project', [
                           }
                         });
                       } else {
-                        if($scope.project.metadata.metadata.internal && $scope.project.metadata.metadata.internal.integrityIssue) {
-                            terminologyServerService.branchUpgradeIntegrityCheck(metadataService.getBranchRoot()).then( function(response) {
-                                $scope.getProject();
-                            });
-                        }
-                        else{
-                            $scope.getProject();
-                        }
+                        $scope.getProject();
                       }
                     });
                   }
