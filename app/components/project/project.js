@@ -222,7 +222,7 @@ angular.module('singleConceptAuthoringApp.project', [
                           }
                         });
                       } else {
-                        if(metadata.internal metadata.internal.integrityIssue) {
+                        if($scope.project.metadata.metadata.internal && $scope.project.metadata.metadata.internal.integrityIssue) {
                             terminologyServerService.branchUpgradeIntegrityCheck(metadataService.getBranchRoot()).then( function(response) {
                                 $scope.getProject();
                             });
