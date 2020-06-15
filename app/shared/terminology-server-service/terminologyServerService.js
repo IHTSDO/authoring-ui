@@ -2081,7 +2081,13 @@ angular.module('singleConceptAuthoringApp')
         $http.post(apiEndpoint + branch + '/upgrade-integrity-check' + (extensionMainBranchPath ? '?extensionMainBranchPath=' + extensionMainBranchPath : '')).then(function (response) {
           deferred.resolve(response.data);
         }, function(error) {
-          deferred.reject(error.message);
+          if (error && error.data && error.data.message) {
+            deferred.reject(error.data.message);
+          }
+          else {
+            deferred.reject(error);
+          }
+          
         });
         return deferred.promise;
       }

@@ -1969,7 +1969,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                       $scope.setInitialView();
                     }
                   }, function(error) {
-                    notificationService.sendError('Branch integrity check failed. ' + error);
+                    $scope.branchIntegrityDone = true;
+                    notificationService.sendError('Branch integrity check failed: ' + error);
                   });                
                   // Delay 2 seconds before displaying the branch integirty checking page
                   $timeout(function () {
