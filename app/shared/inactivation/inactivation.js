@@ -933,7 +933,7 @@ angular.module('singleConceptAuthoringApp')
                           concept: scope.inactivationConcept                 
                         });
                         
-                        $route.reload();
+                        $rootScope.$broadcast('inactivation.inactivationCompleted');
                       });
                     }, function (error) {
                       notificationService.sendError('Error inactivating concept: ' + error);
@@ -944,12 +944,12 @@ angular.module('singleConceptAuthoringApp')
                       terminologyServerService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
                         if (response.status === 409) {
                           notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
-                          $route.reload();
+                          $rootScope.$broadcast('inactivation.inactivationCompleted');
                         }
                         else {
                           $rootScope.$broadcast('removeItem', {concept: scope.concept});
                           notificationService.sendMessage('Concept Deleted', 5000);
-                          $route.reload();
+                          $rootScope.$broadcast('inactivation.inactivationCompleted');
                         }
                       });
                     }, function (error) {

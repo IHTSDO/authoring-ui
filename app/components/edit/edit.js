@@ -407,6 +407,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('edit-default');
     });
 
+    $scope.$on('inactivation.inactivationCompleted', function (event, data) {
+      $scope.setView('edit-default');
+    });
+
 
     $scope.setView = function (name, skipLoadingEditPanelConcepts) {
 
