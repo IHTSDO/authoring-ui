@@ -459,7 +459,24 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.downloadSearchResults = function(conceptIdList) {
-        let acceptLanguageValue = getAcceptLanguage();
+        let acceptLanguageValue = '';
+        if($scope.isExtension) {
+           var allDialects = metadataService.getAllDialects();
+           for (let dialectId in (allDialects)) {
+             let dialect = allDialects[dialectId];
+             if(dialect.indexOf('-') !== -1)
+              {
+                  acceptLanguageValue += dialect + '-x-' + dialectId + ',';
+              }
+              else{
+                  acceptLanguageValue += dialect + '-' + dialect.toUpperCase() + '-x-' + dialectId + ',';
+              }             
+           }
+           acceptLanguageValue += 'en';
+        }
+        else {
+          acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+        }
 
         let activeFilter = null;
 
