@@ -83,7 +83,13 @@ angular.module('singleConceptAuthoringApp')
         // if extension, override language to international (pass null module id)
         if (metadataService.isExtensionSet()) {
           desc.lang = metadataService.getDefaultLanguageForModuleId(null);
-          desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial, desc.lang);
+          if(metadataService.useInternationalLanguageRefsets){
+            desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial, desc.lang);
+          }
+          else{
+            desc.acceptabilityMap = {};
+            desc.acceptabilityMap['900000000000509007']  = 'PREFERRED';
+          }
         } else {
           desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial, desc.lang);
         }
