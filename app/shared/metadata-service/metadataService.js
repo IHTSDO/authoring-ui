@@ -374,6 +374,11 @@ angular.module('singleConceptAuthoringApp')
         if (defaultLanguages.length === 0) {
           defaultLanguages.push(languages[0]);
         }
+          
+        if (metadata.useInternationalLanguageRefsets) {
+            dialects = internationalMetadata.dialects;
+            dialectDefaults = internationalMetadata.dialectDefaults;
+        }
 
         if (!defaultLanguageRefsetId && metadata.defaultModuleId !== '731000124108' /*US extension*/) {
           console.error('Could not determine language refset for extension metadata');
@@ -396,7 +401,8 @@ angular.module('singleConceptAuthoringApp')
           dialectDefaults: dialectDefaults,
           readOnlyDialects: readOnlyDialects,
           dependencyRelease: metadata.dependencyRelease,
-          codeSystemShortName : metadata.codeSystemShortName
+          codeSystemShortName : metadata.codeSystemShortName,
+          useInternationalLanguageRefsets: (metadata.useInternationalLanguageRefsets ? true : false)
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -796,6 +802,9 @@ angular.module('singleConceptAuthoringApp')
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
         return extensionMetadata !== null;
+      },
+      useInternationalLanguageRefsets: function () {
+        return extensionMetadata.useInternationalLanguageRefsets;
       },
 
       // module and branch metadata setters
