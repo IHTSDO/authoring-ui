@@ -7,10 +7,18 @@
       <div class="card">
 
         <div class="row card-title">
-          <div class="col-md-6">
+          <div class="col-md-8">
             <h3 class="table-title p-t-20">All Projects</h3>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
+              <select ng-if="typeDropdown.length > 1" id="taskProject" name="select-choice" class="form-control"
+                        ng-options="type for type in typeDropdown | orderBy: 'title'"
+                        ng-model="selectedType.type"
+                        ng-change="refreshTable()"
+                        style="margin-top:10px; padding: 10px 20px;">
+              </select>
+          </div>
+          <div class="col-md-2">
             <div class="table-search">
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
                      placeholder="Search All Projects" autofocus/>
