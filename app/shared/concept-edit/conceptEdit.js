@@ -3938,7 +3938,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function autoSave() {
           let definedAxiom = false;
           angular.forEach(scope.concept.classAxioms, function(axiom){
-              if(axiom.definitionStatus === 'FULLY_DEFINED'){
+              if(axiom.active && axiom.definitionStatus === 'FULLY_DEFINED'){
                   definedAxiom = true;
               }
           });
