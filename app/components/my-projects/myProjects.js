@@ -32,6 +32,9 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     $rootScope.pageTitle = "My Projects"
     $scope.projects = null;
     $scope.browserLink = '..';
+    $scope.typeDropdown = ['All'];
+    $scope.selectedType = {type:''};
+    $scope.selectedType.type = $scope.typeDropdown[0];
     
     hotkeys.bindTo($scope)
         .add({
@@ -75,15 +78,28 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
             var searchStr = params.filter().search;
             var mydata = [];
-
+            
+            if($scope.selectedType.type !== 'All'){
+               mydata = $scope.projects.filter(function (item) {
+                if(item.codeSystem){
+                    console.log(item.codeSystem.maintainerType === $scope.selectedType.type);
+                    return item.codeSystem.maintainerType === $scope.selectedType.type
+                }
+                else return -1
+              }); 
+            }
+              
             if (searchStr) {
-              mydata = $scope.projects.filter(function (item) {
+              if($scope.selectedType.type === 'All'){
+                mydata = $scope.projects;
+              }
+              mydata = mydata.filter(function (item) {
                 return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                 || item.projectLead.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                 || item.projectLead.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                 || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
-            } else {
+            } else if ($scope.selectedType.type === 'All' && !searchStr) {
               mydata = $scope.projects;
             }
             params.total(mydata.length);
@@ -126,11 +142,18 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         // add top-level element for ng-table sorting
         angular.forEach($scope.projects, function(project) {
           project.lead = project.projectLead.displayName;
+          if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+             $scope.typeDropdown.push(project.codeSystem.maintainerType);
+          }
         });
         $scope.tableParams.reload();
       }
 
     }, true);
+    
+    $scope.refreshTable = function () {
+        $scope.tableParams.reload();
+    }
 
     function relatesToUser(project)
     {

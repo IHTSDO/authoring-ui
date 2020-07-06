@@ -37,7 +37,12 @@ angular.module('singleConceptAuthoringApp.home', [
         // flags for displaying promoted tasks
         $scope.showPromotedTasks = false;
         $scope.showPromotedReviews = false;
+        $scope.projects = [];
         var loadingTask = false;
+    
+        $scope.typeDropdown = ['All'];
+        $scope.selectedType = {type:''};
+        $scope.selectedType.type = $scope.typeDropdown[0];
 
         if (!$rootScope.taskFilter || Object.keys($rootScope.taskFilter).length === 0) {
             $rootScope.taskFilter = {};
@@ -90,17 +95,28 @@ angular.module('singleConceptAuthoringApp.home', [
 
                         var mydata = [];
 
-
+                        if($scope.selectedType.type !== 'All'){
+                           mydata = $scope.tasks.filter(function (item) {
+                            if(item.codeSystem){
+                                console.log(item.codeSystem.maintainerType === $scope.selectedType.type);
+                                return item.codeSystem.maintainerType === $scope.selectedType.type
+                            }
+                            else return -1
+                          }); 
+                        }
                         if (searchStr) {
-                            mydata = $scope.tasks.filter(function (item) {
+                            if($scope.selectedType.type === 'All'){
+                                  mydata = $scope.tasks;
+                              }
+                            mydata = mydata.filter(function (item) {
                                 return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                                     || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                                     || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                                     || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                                     || item.updated.indexOf(searchStr) > -1;
                             });
-                        } else {
-                            mydata = $scope.tasks;
+                        } else if ($scope.selectedType.type === 'All' && !searchStr) {
+                          mydata = $scope.tasks;
                         }
 
                         if (!$scope.showPromotedTasks) {
@@ -341,15 +357,41 @@ angular.module('singleConceptAuthoringApp.home', [
             }
           });
         }
+    
+        $scope.refreshTable = function () {
+            $scope.tableParams.reload();
+        }
 
         $scope.$watch('rebaseComplete', function () {
             $scope.tableParams.reload();
         }, true);
+    
+        $scope.matchTasksToProjects = function() {
+            angular.forEach($scope.tasks, function (task) {
+                angular.forEach($scope.projects, function (project) {
+                    if(task.projectKey === project.key && project.codeSystem){
+                        task.codeSystem = project.codeSystem;
+                    }
+                });
+            });
+        }
 
         // on successful set, reload table parameters
         $scope.$watch('tasks', function () {
+            if($scope.projects && $scope.projects.length > 0){
+                $scope.matchTasksToProjects();
+            }
             $scope.tableParams.reload();
-
+        }, true);
+    
+        $scope.$watch('projects', function () {
+            angular.forEach($scope.projects, function(project) {
+              project.lead = project.projectLead.displayName;
+              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
+              }
+            });
+            $scope.tableParams.reload();
         }, true);
 
         $scope.openCreateTaskModal = function () {
@@ -408,6 +450,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.isProjectsLoaded = function() {
             var projects = metadataService.getProjects();
+            $scope.projects = projects;
             return projects && projects.length > 0;
         };
 
