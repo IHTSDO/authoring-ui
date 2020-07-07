@@ -44,6 +44,10 @@ html {
 .about dl dd dl {font-size: 0.9em; margin-left: 3em;}
 #userPreferencesModal .has-feedback .form-control {padding: 0}
 
+#userPreferencesModal .checkbox {
+    display: inline;
+}
+
 .project-subtitle {
     font-family: Roboto, sans-serif ;
     color: #666 ;
