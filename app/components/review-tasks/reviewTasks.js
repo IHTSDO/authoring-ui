@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService, accountService) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -33,6 +33,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.reviewTasks = null;
       $scope.projects = [];
       $scope.browserLink = '..';
+      $scope.preferences = {};
     
       $scope.typeDropdown = ['All'];
       $scope.selectedType = {type:''};
@@ -401,6 +402,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       }
       
       $scope.refreshTable = function () {
+            $scope.preferences.selectedType = $scope.selectedType.type;
+            accountService.saveUserPreferences($scope.preferences).then(function (response) {
+            });
             $scope.reviewTableParams.reload();
         }
 
@@ -417,12 +421,21 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               loadTasks();
               return;
             } else {
+              metadataService.setProjects(response);
               $scope.projects = response;
               angular.forEach($scope.projects, function(project) {
                   if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                      $scope.typeDropdown.push(project.codeSystem.maintainerType);
                   }
                 });
+                
+              accountService.getUserPreferences().then(function (preferences) {
+                $scope.preferences = preferences;
+
+                if(preferences.hasOwnProperty("selectedType")) {
+                  $scope.selectedType.type = $scope.preferences.selectedType;
+                }
+              });
               loadTasks();
             }
           });
@@ -433,6 +446,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                  $scope.typeDropdown.push(project.codeSystem.maintainerType);
               }
             });
+            accountService.getUserPreferences().then(function (preferences) {
+                $scope.preferences = preferences;
+
+                if(preferences.hasOwnProperty("selectedType")) {
+                  $scope.selectedType.type = $scope.preferences.selectedType;
+                }
+              });
           loadTasks();
       }
         // temporary workaround, restricting to WRPAS tasks

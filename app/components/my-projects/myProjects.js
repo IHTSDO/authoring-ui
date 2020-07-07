@@ -22,11 +22,12 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, metadataService, notificationService, hotkeys, localStorageService) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, metadataService, notificationService, hotkeys, localStorageService, accountService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $scope.preferences = {};
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Projects"
@@ -146,12 +147,22 @@ angular.module('singleConceptAuthoringApp.myProjects', [
              $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
         });
-        $scope.tableParams.reload();
+          accountService.getUserPreferences().then(function (preferences) {
+            $scope.preferences = preferences;
+
+            if(preferences.hasOwnProperty("selectedType")) {
+              $scope.selectedType.type = $scope.preferences.selectedType;
+            }
+            $scope.tableParams.reload();
+          });
       }
 
     }, true);
     
     $scope.refreshTable = function () {
+        $scope.preferences.selectedType = $scope.selectedType.type;
+        accountService.saveUserPreferences($scope.preferences).then(function (response) {
+        });
         $scope.tableParams.reload();
     }
 
@@ -163,17 +174,30 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
     function loadProjects() {
       $scope.projects = [];
-      scaService.getProjects().then(function(results){
+      if(metadataService.getProjects().length === 0){
+          scaService.getProjects().then(function(results){
+              angular.forEach($scope.projectKeys, function(projectKey) {
+                    angular.forEach(results, function(result) {
+                        if(result.key === projectKey)
+                        {
+                            $scope.projects.push(result);
+                        }
+                    });
+                });
+              notificationService.sendMessage('Projects loaded', 5000);
+          });
+      }
+      else{
           angular.forEach($scope.projectKeys, function(projectKey) {
-                angular.forEach(results, function(result) {
-                    if(result.key === projectKey)
+                angular.forEach(metadataService.getProjects(), function(project) {
+                    if(project.key === projectKey)
                     {
-                        $scope.projects.push(result);
+                        $scope.projects.push(project);
                     }
                 });
             });
           notificationService.sendMessage('Projects loaded', 5000);
-      });
+      }
     }
 
     // Initialization:  get projects
