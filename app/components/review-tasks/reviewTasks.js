@@ -33,6 +33,10 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.reviewTasks = null;
       $scope.projects = [];
       $scope.browserLink = '..';
+    
+      $scope.typeDropdown = ['All'];
+      $scope.selectedType = {type:''};
+      $scope.selectedType.type = $scope.typeDropdown[0];
       
       if (!$rootScope.reviewTaskFilter || Object.keys($rootScope.reviewTaskFilter).length === 0) {
         $rootScope.reviewTaskFilter = {};
@@ -84,9 +88,21 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               var searchStr = params.filter().search;
              
               var mydata = [];
+                
+              if($scope.selectedType.type !== 'All'){
+                   mydata = $scope.reviewTasks.filter(function (item) {
+                    if(item.codeSystem){
+                        return item.codeSystem.maintainerType === $scope.selectedType.type
+                    }
+                    else return -1
+                  }); 
+                }
 
               if (searchStr) {
-                mydata = $scope.reviewTasks.filter(function (item) {
+                if($scope.selectedType.type === 'All'){
+                    mydata = $scope.reviewTasks;
+                }
+                mydata = mydata(function (item) {
                   return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                     || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                     || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
@@ -94,7 +110,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                     || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                     || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                 });
-              } else {
+              } else if ($scope.selectedType.type === 'All' && !searchStr) {
                 mydata = $scope.reviewTasks;
               }
 
@@ -132,6 +148,17 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         $rootScope.reviewTaskFilter.showNewEdits = $scope.showNewEdits;
         $scope.reviewTableParams.reload();
       };
+    
+      $scope.matchTasksToProjects = function() {
+            angular.forEach($scope.reviewTasks, function (task) {
+                angular.forEach($scope.projects, function (project) {
+                    if(task.projectKey === project.key && project.codeSystem){
+                        task.codeSystem = project.codeSystem;
+                    }
+                });
+            });
+            console.log($scope.reviewTasks);
+        }
 
       // TODO Workaround to capture full review functionality
       // Replace with loadAllTasks when endpoints are complete
@@ -148,6 +175,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         }
         scaService.getReviewTasks($scope.showPromotedReviews ? false : true).then(function (response) {
           $scope.reviewTasks = response;
+          $scope.matchTasksToProjects();
           if ($scope.reviewTasks) {
             notificationService.sendMessage('All tasks loaded', 5000);
           }
@@ -371,25 +399,45 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         }
         return false;
       }
+      
+      $scope.refreshTable = function () {
+            $scope.reviewTableParams.reload();
+        }
 
 // Initialization:  get tasks and classifications
       function initialize() {
         $scope.reviewTasks = [];
 
         // get all projects for task creation
-//      scaService.getProjects().then(function (response) {
-//        if (!response || response.length === 0) {
-//          $scope.projects = [];
-//          return;
-//        } else {
-//          $scope.projects = response;
-//        }
-//      });
-        $scope.projects = metadataService.getProjects();
-
+      $scope.projects = metadataService.getProjects();
+      if($scope.projects.length === 0){
+          scaService.getProjects().then(function (response) {
+            if (!response || response.length === 0) {
+              $scope.projects = [];
+              loadTasks();
+              return;
+            } else {
+              $scope.projects = response;
+              angular.forEach($scope.projects, function(project) {
+                  if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                     $scope.typeDropdown.push(project.codeSystem.maintainerType);
+                  }
+                });
+              loadTasks();
+            }
+          });
+      }
+      else{
+          angular.forEach($scope.projects, function(project) {
+              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
+              }
+            });
+          loadTasks();
+      }
         // temporary workaround, restricting to WRPAS tasks
         // and getting
-        loadTasks();
+        
 
         /*
          // TODO Commented out until endpoints are fleshed out for review tasks
