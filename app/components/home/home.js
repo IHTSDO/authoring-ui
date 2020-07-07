@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -33,6 +33,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $rootScope.pageTitle = "My Tasks";
         $scope.tasks = null;
         $scope.browserLink = '..';
+        $scope.preferences = {};
 
         // flags for displaying promoted tasks
         $scope.showPromotedTasks = false;
@@ -358,6 +359,9 @@ angular.module('singleConceptAuthoringApp.home', [
         }
     
         $scope.refreshTable = function () {
+            $scope.preferences.selectedType = $scope.selectedType.type;
+            accountService.saveUserPreferences($scope.preferences).then(function (response) {
+            });
             $scope.tableParams.reload();
         }
 
@@ -389,6 +393,7 @@ angular.module('singleConceptAuthoringApp.home', [
               if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                  $scope.typeDropdown.push(project.codeSystem.maintainerType);
               }
+              
             });
             $scope.tableParams.reload();
         }, true);
@@ -466,7 +471,48 @@ angular.module('singleConceptAuthoringApp.home', [
 // Initialization:  get tasks and classifications
         function initialize() {
             $scope.tasks = [];
-            loadTasks();
+            $scope.projects = metadataService.getProjects();
+              if($scope.projects.length === 0){
+                  scaService.getProjects().then(function (response) {
+                    if (!response || response.length === 0) {
+                      $scope.projects = [];
+                      loadTasks();
+                      return;
+                    } else {
+                      metadataService.setProjects(response);
+                      $scope.projects = response;
+                      angular.forEach($scope.projects, function(project) {
+                          if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                             $scope.typeDropdown.push(project.codeSystem.maintainerType);
+                          }
+                        });
+
+                      accountService.getUserPreferences().then(function (preferences) {
+                        $scope.preferences = preferences;
+
+                        if(preferences.hasOwnProperty("selectedType")) {
+                          $scope.selectedType.type = $scope.preferences.selectedType;
+                        }
+                      });
+                      loadTasks();
+                    }
+                  });
+              }
+              else{
+                  angular.forEach($scope.projects, function(project) {
+                      if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                         $scope.typeDropdown.push(project.codeSystem.maintainerType);
+                      }
+                    });
+                    accountService.getUserPreferences().then(function (preferences) {
+                        $scope.preferences = preferences;
+
+                        if(preferences.hasOwnProperty("selectedType")) {
+                          $scope.selectedType.type = $scope.preferences.selectedType;
+                        }
+                      });
+                  loadTasks();
+              }
         }
 
         initialize();
