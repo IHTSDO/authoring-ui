@@ -42,17 +42,17 @@
               <div class="min-height-20 pull-right p-15">
                 <button ng-show="hasSelectedUnclaimedTasks()"
                         ng-click="assignSelectedUnclaimedTasks()"
-                        class="badge In Review"><i class="md md-email"></i>&nbsp;Claim
+                        class="badge In Review" style="margin-top: 5px;"><i class="md md-email"></i>&nbsp;Claim
                 Selected </button>
               </div>
           </div>
           <div class="col-md-1"> &nbsp;&nbsp;
             <button ng-show="hasSelectedClaimedTasks()"
                     ng-click="unassignSelectedClaimedTasks()"
-                    class="badge In Review"><i class="fa fa-close"></i>&nbsp;Unclaim Selected </button>
+                    class="badge In Review" style="margin-top: 5px;"><i class="fa fa-close"></i>&nbsp;Unclaim Selected </button>
           </div>
           <div class="col-md-1"> <span class="pull-right p-t-20">
-            <button type="button"
+            <button type="button" style="margin-top: -15px;"
                           class="btn btn-round   tasks-bubble btn-info ng-scope tooltips-left tooltips-light "> {{reviewTasks.length}} <span> {{reviewTasks.length}} reviews are in progress</span> </button>
             </span> </div>
         </div>

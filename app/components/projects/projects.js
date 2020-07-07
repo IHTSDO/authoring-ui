@@ -22,11 +22,12 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
   })
 
-  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, $timeout, $q, notificationService, hotkeys, localStorageService) {
+  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, $timeout, $q, notificationService, hotkeys, localStorageService, accountService, metadataService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $scope.preferences = {};
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "All Projects"
@@ -124,12 +125,22 @@ angular.module('singleConceptAuthoringApp.projects', [
              $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
         });
-        $scope.tableParams.reload();
+        accountService.getUserPreferences().then(function (preferences) {
+            $scope.preferences = preferences;
+
+            if(preferences.hasOwnProperty("selectedType")) {
+              $scope.selectedType.type = $scope.preferences.selectedType;
+            }
+            $scope.tableParams.reload();
+          });
       }
 
     }, true);
     
     $scope.refreshTable = function () {
+        $scope.preferences.selectedType = $scope.selectedType.type;
+        accountService.saveUserPreferences($scope.preferences).then(function (response) {
+        });
         $scope.tableParams.reload();
     }
 
@@ -182,21 +193,53 @@ angular.module('singleConceptAuthoringApp.projects', [
       notificationService.sendMessage('Loading projects...');
 
       $scope.projects = [];
+      if(metadataService.getProjects().length === 0){
+          scaService.getProjects().then(function (response) {
+            if (!response || response.length === 0) {
+              $scope.projects = [];
+              return;
+            }
 
-      // get projects from all projects and append sample data
-      scaService.getProjects().then(function (response) {
-        if (!response || response.length === 0) {
-          $scope.projects = [];
-          return;
-        }
+            $scope.projects = response;
 
-        $scope.projects = response;
+            angular.forEach($scope.projects, function(project) {
+              project.lead = project.projectLead.displayName;
+              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
+              }
+            });
+            accountService.getUserPreferences().then(function (preferences) {
+                $scope.preferences = preferences;
 
-        notificationService.sendMessage('Projects loaded.', 5000);
+                if(preferences.hasOwnProperty("selectedType")) {
+                  $scope.selectedType.type = $scope.preferences.selectedType;
+                }
+                notificationService.sendMessage('Projects loaded.', 5000);
+                $scope.tableParams.reload();
+              });
 
-      }, function (error) {
-        // TODO Handle errors
-      });
+          }, function (error) {
+            // TODO Handle errors
+          });
+      }
+      else{
+          angular.forEach(metadataService.getProjects(), function(project) {
+              project.lead = project.projectLead.displayName;
+              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
+              }
+            });
+            accountService.getUserPreferences().then(function (preferences) {
+                $scope.preferences = preferences;
+
+                if(preferences.hasOwnProperty("selectedType")) {
+                  $scope.selectedType.type = $scope.preferences.selectedType;
+                }
+                notificationService.sendMessage('Projects loaded.', 5000);
+                $scope.projects = metadataService.getProjects();
+                $scope.tableParams.reload();
+          });
+      }
 
     }
 
