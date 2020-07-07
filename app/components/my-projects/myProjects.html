@@ -7,8 +7,14 @@
     <section class="tables-data">
       <div class="card">
         <div class="row card-title">
-          <div class="col-md-8">
+          <div class="col-md-1">
             <h3 class="table-title p-t-20">My Projects</h3>
+          </div>
+          <div class="col-md-2">
+            <div class="table-search">
+              <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
+                     placeholder="Search My Projects" autofocus/>
+            </div>
           </div>
           <div class="col-md-2">
               <select ng-if="typeDropdown.length > 2" id="taskProject" name="select-choice" class="form-control"
@@ -18,13 +24,8 @@
                         style="margin-top:10px; padding: 10px 20px;">
               </select>
           </div>
-          <div class="col-md-2">
-            <div class="table-search">
-              <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
-                     placeholder="Search My Projects" autofocus/>
-            </div>
-          </div>
         </div>
+        
         <div class="table-responsive white">
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
