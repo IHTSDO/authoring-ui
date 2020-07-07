@@ -98,7 +98,6 @@ angular.module('singleConceptAuthoringApp.home', [
                         if($scope.selectedType.type !== 'All'){
                            mydata = $scope.tasks.filter(function (item) {
                             if(item.codeSystem){
-                                console.log(item.codeSystem.maintainerType === $scope.selectedType.type);
                                 return item.codeSystem.maintainerType === $scope.selectedType.type
                             }
                             else return -1
