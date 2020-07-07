@@ -10,8 +10,18 @@
       <div class="card">
 
         <div class="row card-title" >
-          <div class="col-md-3 no-padding">
+          <div class="col-md-1 no-padding">
             <h3 class="table-title p-20">My Tasks</h3>
+          </div>
+          
+          <div class="col-md-2">
+            <div class="table-search">
+              <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
+                     placeholder="Search My Tasks" autofocus/>
+
+              <button ng-show="tableParams.filter()['search'] !== ''" class="btn btn-default md md-close light-button transparent" ng-click="tableParams.filter()['search'] = ''"></button>
+            </div>
+
           </div>
           <div class="col-md-2">
               <select ng-if="typeDropdown.length > 2" id="taskProject" name="select-choice" class="form-control"
@@ -21,15 +31,7 @@
                         style="margin-top:10px; padding: 10px 20px;">
               </select>
           </div>
-          <div class="col-md-4">
-            <div class="table-search">
-              <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
-                     placeholder="Search My Tasks" autofocus/>
-
-              <button ng-show="tableParams.filter()['search'] !== ''" class="btn btn-default md md-close light-button transparent" ng-click="tableParams.filter()['search'] = ''"></button>
-            </div>
-
-          </div>
+          <div class="col-md-4"></div>
           <div class="col-md-2 promoted-check-box">
             <button class="btn btn-default form-control dark-fix transparent"
                     ng-class="[{'md-check-box' : showPromotedTasks}, {'md-check-box-outline-blank' : !showPromotedTasks}]"
