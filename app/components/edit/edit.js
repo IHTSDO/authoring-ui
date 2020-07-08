@@ -1004,7 +1004,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           // Remove en-gb description if Extension is enable
-          if (isExtension && description.acceptabilityMap.hasOwnProperty("900000000000508004")) {
+          if (isExtension && description.acceptabilityMap.hasOwnProperty("900000000000508004") && !metadataService.useInternationalLanguageRefsets()) {
             if(Object.keys(description.acceptabilityMap).length === 1) {
               clonedConcept.descriptions.splice(k, 1);
             } 
