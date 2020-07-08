@@ -103,7 +103,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                 if($scope.selectedType.type === 'All'){
                     mydata = $scope.reviewTasks;
                 }
-                mydata = mydata(function (item) {
+                mydata = mydata.filter(function (item) {
                   return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                     || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                     || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
