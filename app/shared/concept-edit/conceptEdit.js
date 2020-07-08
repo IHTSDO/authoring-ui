@@ -3784,7 +3784,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
-              if(metadataService.isExtensionSet()){
+              if(metadataService.isExtensionSet() && !metadataService.useInternationalLanguageRefsets()){
                   delete description.acceptabilityMap['900000000000508004'];
               }
               if(!description.caseSignificance) {
@@ -3797,7 +3797,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.updateConceptReference({concept: scope.concept});
           }
             
-          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet()) {
+          if (!description.effectiveTime && description.lang && metadataService.isExtensionSet() && !metadataService.useInternationalLanguageRefsets()) {
             angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
               // strip any dialects that are not belong to language
               if (scope.getDialectsForDescription(description)[dialectId].indexOf(description.lang) === -1) {
