@@ -38,6 +38,10 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.typeDropdown = ['All'];
       $scope.selectedType = {type:''};
       $scope.selectedType.type = $scope.typeDropdown[0];
+
+      $scope.statusOptions = [];
+      $scope.reviewOptions = ['All', 'Available', 'Claimed'];
+      $scope.assigneeOptions = [];      
       
       if (!$rootScope.reviewTaskFilter || Object.keys($rootScope.reviewTaskFilter).length === 0) {
         $rootScope.reviewTaskFilter = {};
@@ -87,7 +91,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             } else {
 
               var searchStr = params.filter().search;
-             
+              var statusStr = params.filter().status;
+              var reviewStr = params.filter().review;
+              var assigneeStr = params.filter().assignee;
               var mydata = [];
                 
               if($scope.selectedType.type !== 'All'){
@@ -103,16 +109,51 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                 if($scope.selectedType.type === 'All'){
                     mydata = $scope.reviewTasks;
                 }
+                searchStr = searchStr.toLowerCase();
                 mydata = mydata.filter(function (item) {
-                  return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  return item.summary.toLowerCase().indexOf(searchStr) > -1
+                    || item.projectKey.toLowerCase().indexOf(searchStr) > -1
+                    || item.status.toLowerCase().indexOf(searchStr) > -1
+                    || item.assignee.username.toLowerCase().indexOf(searchStr) > -1
+                    || item.assignee.displayName.toLowerCase().indexOf(searchStr) > -1
+                    || item.key.toLowerCase().indexOf(searchStr) > -1;
                 });
               } else if ($scope.selectedType.type === 'All' && !searchStr) {
                 mydata = $scope.reviewTasks;
+              }
+
+              if (statusStr && statusStr !== 'All') {
+                if (statusStr === 'Ready for Review') {
+                  mydata = mydata.filter(function (item) {
+                    return  item.status === 'In Review' && (!item.reviewers || item.reviewers.length === 0);
+                  });
+                } else if (statusStr === 'In Review') {
+                  mydata = mydata.filter(function (item) {
+                    return  item.status === 'In Review' && item.reviewers && item.reviewers.length !== 0;
+                  });                  
+                } else {
+                  mydata = mydata.filter(function (item) {
+                    return  item.status === statusStr;
+                  });
+                }
+              }
+
+              if (reviewStr && reviewStr !== 'All') {
+                if (reviewStr === 'Claimed') {
+                  mydata = mydata.filter(function (item) {
+                    return  item.reviewers && item.reviewers.length !== 0;
+                  });
+                } else {
+                  mydata = mydata.filter(function (item) {
+                    return  !item.reviewers || item.reviewers.length === 0;
+                  });
+                }
+              }
+
+              if (assigneeStr) {
+                mydata = mydata.filter(function (item) {
+                  return  item.assignee.displayName === assigneeStr;
+                });
               }
 
               if (!$scope.showPromotedReviews) {
@@ -133,7 +174,6 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
               $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
-
           }
         }
       );
@@ -151,20 +191,35 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       };
     
       $scope.matchTasksToProjects = function() {
-            angular.forEach($scope.reviewTasks, function (task) {
-                angular.forEach($scope.projects, function (project) {
-                    if(task.projectKey === project.key && project.codeSystem){
-                        task.codeSystem = project.codeSystem;
-                    }
-                });
+        angular.forEach($scope.reviewTasks, function (task) {
+            angular.forEach($scope.projects, function (project) {
+                if(task.projectKey === project.key && project.codeSystem){
+                    task.codeSystem = project.codeSystem;
+                }
             });
-            console.log($scope.reviewTasks);
-        }
+        });
+      };
+
+      function populateDropdownOptions() {
+        $scope.reviewTasks.forEach(function(item) {
+          let status = item.status === 'In Review' && (!item.reviewers || item.reviewers.length === 0) ? 'Ready for Review' : item.status;
+          if (!$scope.statusOptions.includes(status)) {
+            $scope.statusOptions.push(status);
+          }
+          
+          if (!$scope.assigneeOptions.includes(item.assignee.displayName)) {
+            $scope.assigneeOptions.push(item.assignee.displayName);
+          }
+        });
+        $scope.statusOptions.sort();
+        $scope.statusOptions.unshift('All');
+        $scope.reviewTableParams.filter().review = $scope.reviewOptions[0];
+        $scope.reviewTableParams.filter().status = $scope.statusOptions[0];
+      }
 
       // TODO Workaround to capture full review functionality
       // Replace with loadAllTasks when endpoints are complete
       function loadTasks() {
-
         notificationService.sendMessage('Loading tasks...', 0);
         $scope.reviewTasks = null;
         $scope.reviewTableParams.filter()['search'] = $rootScope.reviewTaskFilter.searchStr ? $rootScope.reviewTaskFilter.searchStr : '';
@@ -177,6 +232,8 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         scaService.getReviewTasks($scope.showPromotedReviews ? false : true).then(function (response) {
           $scope.reviewTasks = response;
           $scope.matchTasksToProjects();
+          populateDropdownOptions()         
+
           if ($scope.reviewTasks) {
             notificationService.sendMessage('All tasks loaded', 5000);
           }
@@ -334,12 +391,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         })
       };
 
-
-
       //
       // Bulk claim of available (unclaimed) review tasks
       //
-
 
       // Unclaimed tasks (left hand column)
       $scope.isUnclaimedTask = function (task) {
@@ -367,7 +421,6 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           }
         });
       };
-
 
       $scope.assignSelectedUnclaimedTasks = function () {
         var promises = [];
@@ -399,22 +452,22 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           return task.feedbackMessageDate && branchModifiedDate > feedbackMessageDate && viewDate < branchModifiedDate;
         }
         return false;
-      }
+      };
       
       $scope.refreshTable = function () {
-            $scope.preferences.selectedType = $scope.selectedType.type;
-            accountService.saveUserPreferences($scope.preferences).then(function (response) {
-            });
-            $scope.reviewTableParams.reload();
-        }
+        $scope.preferences.selectedType = $scope.selectedType.type;
+        accountService.saveUserPreferences($scope.preferences).then(function (response) {
+        });
+        $scope.reviewTableParams.reload();
+      };
 
 // Initialization:  get tasks and classifications
       function initialize() {
         $scope.reviewTasks = [];
 
         // get all projects for task creation
-      $scope.projects = metadataService.getProjects();
-      if($scope.projects.length === 0){
+        $scope.projects = metadataService.getProjects();
+        if($scope.projects.length === 0){
           scaService.getProjects().then(function (response) {
             if (!response || response.length === 0) {
               $scope.projects = [];
@@ -425,7 +478,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               $scope.projects = response;
               angular.forEach($scope.projects, function(project) {
                   if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                     $scope.typeDropdown.push(project.codeSystem.maintainerType);
+                    $scope.typeDropdown.push(project.codeSystem.maintainerType);
                   }
                 });
                 
@@ -439,22 +492,22 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               loadTasks();
             }
           });
-      }
-      else{
+        }
+        else{
           angular.forEach($scope.projects, function(project) {
-              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
-              }
-            });
-            accountService.getUserPreferences().then(function (preferences) {
-                $scope.preferences = preferences;
+            if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                $scope.typeDropdown.push(project.codeSystem.maintainerType);
+            }
+          });
+          accountService.getUserPreferences().then(function (preferences) {
+            $scope.preferences = preferences;
 
-                if(preferences.hasOwnProperty("selectedType")) {
-                  $scope.selectedType.type = $scope.preferences.selectedType;
-                }
-              });
+            if(preferences.hasOwnProperty("selectedType")) {
+              $scope.selectedType.type = $scope.preferences.selectedType;
+            }
+          });
           loadTasks();
-      }
+        }
         // temporary workaround, restricting to WRPAS tasks
         // and getting
         
