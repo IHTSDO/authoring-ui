@@ -477,7 +477,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               metadataService.setProjects(response);
               $scope.projects = response;
               angular.forEach($scope.projects, function(project) {
-                  if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                  if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                     $scope.typeDropdown.push(project.codeSystem.maintainerType);
                   }
                 });
@@ -495,7 +495,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         }
         else{
           angular.forEach($scope.projects, function(project) {
-            if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+            if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
             }
           });

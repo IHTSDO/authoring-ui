@@ -390,7 +390,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.$watch('projects', function () {
             angular.forEach($scope.projects, function(project) {
               project.lead = project.projectLead.displayName;
-              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+              if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                  $scope.typeDropdown.push(project.codeSystem.maintainerType);
               }
               
@@ -482,7 +482,7 @@ angular.module('singleConceptAuthoringApp.home', [
                       metadataService.setProjects(response);
                       $scope.projects = response;
                       angular.forEach($scope.projects, function(project) {
-                          if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                          if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                              $scope.typeDropdown.push(project.codeSystem.maintainerType);
                           }
                         });
@@ -500,7 +500,7 @@ angular.module('singleConceptAuthoringApp.home', [
               }
               else{
                   angular.forEach($scope.projects, function(project) {
-                      if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                      if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                          $scope.typeDropdown.push(project.codeSystem.maintainerType);
                       }
                     });
