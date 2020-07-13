@@ -121,7 +121,7 @@ angular.module('singleConceptAuthoringApp.projects', [
         // add top-level element for ng-table sorting
         angular.forEach($scope.projects, function(project) {
           project.lead = project.projectLead.displayName;
-          if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+          if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
              $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
         });
@@ -204,7 +204,7 @@ angular.module('singleConceptAuthoringApp.projects', [
 
             angular.forEach($scope.projects, function(project) {
               project.lead = project.projectLead.displayName;
-              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+              if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                  $scope.typeDropdown.push(project.codeSystem.maintainerType);
               }
             });
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp.projects', [
       else{
           angular.forEach(metadataService.getProjects(), function(project) {
               project.lead = project.projectLead.displayName;
-              if(project.codeSystem && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+              if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                  $scope.typeDropdown.push(project.codeSystem.maintainerType);
               }
             });
