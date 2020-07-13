@@ -7,8 +7,8 @@
     <section class="tables-data">
       <div class="card">
         <div class="row card-title">
-          <div class="col-md-2">
-            <h3 class="table-title p-t-20">My Projects</h3>
+          <div class="col-md-1 ">
+            <h3 class="table-title p-t-20" style="padding-left: 5px; padding-right: 5px;">My Projects</h3>
           </div>
           <div class="col-md-3">
             <div class="table-search">
@@ -21,7 +21,7 @@
                         ng-options="type for type in typeDropdown | orderBy: 'title'"
                         ng-model="selectedType.type"
                         ng-change="refreshTable()"
-                        style="margin-top:10px; padding: 10px 20px;">
+                        style="margin-top:10px;">
               </select>
           </div>
         </div>

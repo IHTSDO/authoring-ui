@@ -7,9 +7,9 @@
     <section class="tables-data row no-gutter">
       <div class="card">
         <div class="row card-title">
-          <div class="col-md-2 no-padding">
+          <div class="col-md-1 no-padding">
             <h3 class="table-title ">
-              <div class="p-20 pull-left">Review Tasks </div>
+              <div class="p-20 pull-left" style="padding-left: 5px; padding-right: 5px;">Review Tasks </div>
             </h3>
           </div>
           <div class="col-md-3">
@@ -21,14 +21,14 @@
             </div>
           </div>
           <div class="col-md-2">
-              <select ng-if="typeDropdown.length > 2" id="taskProject" name="select-choice" class="form-control"
+              <select ng-if="typeDropdown.length > 2" name="select-choice" class="form-control"
                         ng-options="type for type in typeDropdown | orderBy: 'title'"
                         ng-model="selectedType.type"
                         ng-change="refreshTable()"
-                        style="margin-top:10px; padding: 10px 20px;">
+                        style="margin-top:10px;">
               </select>
           </div>
-          <div class="col-md-1">
+          <div class="col-md-3">
               <div class="min-height-20 pull-right p-15">
                 <button ng-show="hasSelectedUnclaimedTasks()"
                         ng-click="assignSelectedUnclaimedTasks()"
@@ -36,7 +36,7 @@
                 Selected </button>
               </div>
           </div>
-          <div class="col-md-3 promoted-check-box">
+          <div class="col-md-2 promoted-check-box">
             <button class="btn btn-default form-control dark-fix transparent m-r-15"
                     ng-class="[{'md-check-box' : showPromotedReviews}, {'md-check-box-outline-blank' : !showPromotedReviews}]"
                     ng-click="toggleShowPromotedReviews()"> <span class="promoted-check-box">Show Promoted</span></button>
@@ -45,13 +45,15 @@
                     ng-click="toggleShowNewEdits()"> <span class="promoted-check-box">Show New Edits</span></button>
           </div>
           
+<!--
           <div class="col-md-1"> &nbsp;&nbsp;
             <button ng-show="hasSelectedClaimedTasks()"
                     ng-click="unassignSelectedClaimedTasks()"
                     class="badge In Review" style="margin-top: 5px;"><i class="fa fa-close"></i>&nbsp;Unclaim Selected </button>
           </div>
+-->
           <div class="col-md-1"> <span class="pull-right p-t-20">
-            <button type="button" style="margin-top: -15px;"
+            <button type="button"
                           class="btn btn-round   tasks-bubble btn-info ng-scope tooltips-left tooltips-light "> {{reviewTasks.length}} <span> {{reviewTasks.length}} reviews are in progress</span> </button>
             </span> </div>
         </div>
