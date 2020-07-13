@@ -191,7 +191,7 @@ angular
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
-        $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
+        $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);        
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
         // Footer information
@@ -219,6 +219,11 @@ angular
             $rootScope.managedServiceUser = true;
           }
 
+          if ($rootScope.managedServiceUser) {
+            $("<script>").attr({src: $rootScope.msCollectorUrl !== '' ? $rootScope.msCollectorUrl : $rootScope.collectorUrl}).appendTo("body");
+          } else {
+            $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
+          }
           // start connecting websocket
           scaService.connectWebsocket();
         }, function (error) {
