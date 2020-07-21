@@ -245,8 +245,32 @@ angular.module('singleConceptAuthoringApp')
       }
     );
 
+    $scope.tableParamsReferenceSetAssociations = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          characteristicType: 'desc',
+          sourceFsn: 'asc'
+        },
+        orderBy: 'sourceFsn'
+      },
+      {
+        total: $scope.referenceSetAssociations ? $scope.referenceSetAssociations.length : 0,
+        getData: function ($defer, params) {
 
-     $scope.hasNoConceptTarget = function () {
+          if (!$scope.referenceSetAssociations || $scope.referenceSetAssociations.length === 0) {
+            $defer.resolve([]);
+          } else {
+
+            params.total($scope.referenceSetAssociations.length);
+            let referenceSetsDisplayed = params.sorting() ? $filter('orderBy')($scope.referenceSetAssociations, params.orderBy()) : $scope.referenceSetAssociations;
+            $defer.resolve(referenceSetsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          }
+        }
+      }
+    );
+
+    $scope.hasNoConceptTarget = function () {
         for (let i = 0; i < $scope.associations.length; i++) {
           let association = $scope.associations[i];
           if(!association.concept || !association.concept.concept || !association.concept.concept.conceptId
@@ -255,7 +279,7 @@ angular.module('singleConceptAuthoringApp')
           }
        }
        return false;
-     };
+    };
 
     $scope.selectReason = function () {
 
@@ -367,7 +391,7 @@ angular.module('singleConceptAuthoringApp')
      * @param startIndex
      * @param maxResults
      */
-    function getInboundRelationships(conceptId, branch, startIndex, maxResults) {
+    function getInboundRelationships(conceptId) {
       let deferred = $q.defer();
       $scope.inboundRelationshipsLoading = true;
       // get the concept relationships again (all)
@@ -448,6 +472,21 @@ angular.module('singleConceptAuthoringApp')
       });
 
       return deferred.promise;
+    }
+
+    function getReferenceSetAssociations() {
+      terminologyServerService.getReferenceSetsByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
+          if (response !== null) {
+            $scope.referenceSetAssociations = [];
+            var items = [];
+            angular.forEach(response.items, function (item) {
+              let newItem = angular.copy(item);
+              newItem.refsetPt = response.referenceSets[item.refsetId].pt.term;
+              $scope.referenceSetAssociations.push(newItem);
+            });
+            $scope.tableParamsReferenceSetAssociations.reload();
+          }  
+      });
     }
 
     function getHistoricalAssociations() {
@@ -541,7 +580,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get the limited number of inbound relationships for display
     if ($scope.componentType === 'Concept') {
-      getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function () {
+      getInboundRelationships($scope.conceptId).then(function () {
         checkStatedChildren();
         // detect case where no stated parent-child relationship was found, but
         // more results may exist
@@ -552,6 +591,10 @@ angular.module('singleConceptAuthoringApp')
 //          });
 //        }
       });
+
+      if (!$scope.deletion) {
+        getReferenceSetAssociations();
+      }
     }
 
     $scope.cancel = function () {

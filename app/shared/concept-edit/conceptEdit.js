@@ -2722,7 +2722,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           modalInstance.result.then(function (results) {
-
             deferred.resolve(results);
           }, function () {
             deferred.reject();
