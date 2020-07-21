@@ -970,6 +970,20 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getReferenceSetsByReferencedComponent(conceptId, branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + 'browser/' + branch + '/members?referencedComponentId=' + conceptId + '&limit=1000').then(function (response) {
+          if (response.data.totalElements === 0) {
+            deferred.resolve(null);
+          } else {
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       function getMrcmAttributeDomainMembers(branch) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + branch + '/members?referenceSet=723561005&offset=0&limit=500&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
@@ -2327,7 +2341,8 @@ angular.module('singleConceptAuthoringApp')
         getHistoricalAssociationMembers: getHistoricalAssociationMembers,
         getMembersByTargetComponent: getMembersByTargetComponent,
         getReferenceSetMembersForBranch: getReferenceSetMembersForBranch,
-        getMembersByReferencedComponent:getMembersByReferencedComponent,
+        getMembersByReferencedComponent: getMembersByReferencedComponent,
+        getReferenceSetsByReferencedComponent: getReferenceSetsByReferencedComponent,
         getGciExpressionsFromTarget: getGciExpressionsFromTarget,
 
         // attribute retrieval
