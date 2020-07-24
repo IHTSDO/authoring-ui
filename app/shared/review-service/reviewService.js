@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp')
 
 
       }, function (error) {
-        deferred.reject(results);
+        deferred.reject(error);
       });
 
       return deferred.promise;
