@@ -989,7 +989,7 @@ angular.module('singleConceptAuthoringApp')
             if (error.status === 404 || error.status === '404') {
               deferred.resolve([]);
             } else {
-              deferred.reject('Unexpected error retrieving modified concept ids for task: ' + error.message);
+              deferred.reject('Unexpected error retrieving modified concept ids for task' + (typeof error.data.message !== 'undefined' ?': ' + error.data.message : ''));
             }
           });
           return deferred.promise;
