@@ -2600,11 +2600,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               axiom.relationships.push(isaRel);
             }
+            if(scope.template || scope.concept.template) {
+              templateService.replaceLexicalValues(scope.concept, scope.template ? scope.template : scope.concept.template, scope.branch).then(function(concept) {
+                scope.concept = concept;
+                scope.computeAxioms(axiom.type);
+                autoSave();
+              });
+            } else {
+              scope.computeAxioms(axiom.type);
+              autoSave();
+            }
           } else {
             console.error('Error removing axiom relationship; relationship not found');
-          }
-          scope.computeAxioms(axiom.type);
-          autoSave();
+            scope.computeAxioms(axiom.type);
+            autoSave();
+          }          
         };
 
         scope.toggleAxiomActive = function (axiom) {
