@@ -566,6 +566,7 @@ angular.module('singleConceptAuthoringApp')
             d.descriptionId = terminologyServerService.createGuid();
           });
           angular.forEach(tc.classAxioms, function (a) {
+            a.axiomId = terminologyServerService.createGuid();
             angular.forEach(a.relationships, function (r) {
               r.relationshipId = terminologyServerService.createGuid();
             })
