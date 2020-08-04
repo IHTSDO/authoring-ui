@@ -801,6 +801,12 @@ strong {
     padding-left: 0px;
     margin-bottom: 2px;
 }
-.feedback .first .taxonomies-comparison-panel .row > div {
-    margin-top: -4px;
+.feedback .first .project-taxonomy-container .project-taxonomy-panel {
+    margin-top: -1.5px;
+}
+.feedback .project-taxonomy-panel ol {
+    margin-left: unset;
+}
+.feedback .project-taxonomy-panel .progress{
+    height: 1.5px;
 }

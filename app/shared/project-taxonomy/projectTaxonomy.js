@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
       link: function (scope, element) {       
 
         scope.projectConcept = null;
-        scope.loadingCompleted = false;
+        scope.loadComplete = false;
         scope.projectConceptFound = false;
         scope.projectBranch = null;
 
@@ -31,17 +31,17 @@ angular.module('singleConceptAuthoringApp')
           return branch.substring(0,branch.lastIndexOf('/'));
         }
 
-        function setLayoutWidth() {
-          let documentResult = document.getElementsByClassName('sidebar-bg');
-          let wrappedDocumentResult = angular.element(documentResult);
-          let width = wrappedDocumentResult[0].clientWidth !== 0 ? wrappedDocumentResult[0].clientWidth : wrappedDocumentResult[1].clientWidth;    
-          let elementResult = element[0].querySelector('.custom-width');
-          elementResult.style.width = (width + 30) + 'px';
+        function adjustTaxonomyWidth() {
+          let documentResult = document.getElementsByClassName('sidebar-bg');        
+          let taskTaxonomyPanel = documentResult[0].getElementsByClassName('taxonomy-panel');
+          let width = taskTaxonomyPanel[0].clientWidth !== 0 ? taskTaxonomyPanel[0].clientWidth : documentResult[0].clientWidth;    
+          let elementResult = element[0].querySelector('.project-taxonomy-panel');
+          elementResult.style.width = width + 'px';
         }
 
         function intialize() {
           scope.projectBranch = getParentBranch(scope.branch);
-
+          adjustTaxonomyWidth();
           if (scope.projectBranch === '') {
             console.error('Project branch is not definied.');
           }
@@ -51,20 +51,21 @@ angular.module('singleConceptAuthoringApp')
             scope.projectConcept.conceptId = response.conceptId;
             scope.projectConcept.fsn = response.fsn;
                      
-            scope.loadingCompleted = true;
+            scope.loadComplete = true;
             scope.projectConceptFound = true;
+            setTimeout(function() {
+              adjustTaxonomyWidth();
+            }, 2000);            
           }, function (error) {
             if (error.status === 404) {
-              scope.loadingCompleted = true;
+              scope.loadComplete = true;
               scope.projectConceptFound = false;
             } else {
               console.error('Error retrieving concept from project branch');
             }            
           });
-
-          // set width for project taxonomy similar to side bar
-          setLayoutWidth();
         }
+
         intialize();
 
       }
