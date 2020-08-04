@@ -192,55 +192,34 @@ angular.module('singleConceptAuthoringApp.projects', [
 
       notificationService.sendMessage('Loading projects...');
 
-      $scope.projects = [];
-      if(metadataService.getProjects().length === 0){
-          scaService.getProjects().then(function (response) {
-            if (!response || response.length === 0) {
-              $scope.projects = [];
-              return;
+      $scope.projects = [];      
+      scaService.getProjects().then(function (response) {
+        if (!response || response.length === 0) {
+          $scope.projects = [];
+          return;
+        }
+
+        $scope.projects = response;
+
+        angular.forEach($scope.projects, function(project) {
+          project.lead = project.projectLead.displayName;
+          if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+              $scope.typeDropdown.push(project.codeSystem.maintainerType);
+          }
+        });
+        accountService.getUserPreferences().then(function (preferences) {
+            $scope.preferences = preferences;
+
+            if(preferences.hasOwnProperty("selectedType")) {
+              $scope.selectedType.type = $scope.preferences.selectedType;
             }
-
-            $scope.projects = response;
-
-            angular.forEach($scope.projects, function(project) {
-              project.lead = project.projectLead.displayName;
-              if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
-              }
-            });
-            accountService.getUserPreferences().then(function (preferences) {
-                $scope.preferences = preferences;
-
-                if(preferences.hasOwnProperty("selectedType")) {
-                  $scope.selectedType.type = $scope.preferences.selectedType;
-                }
-                notificationService.sendMessage('Projects loaded.', 5000);
-                $scope.tableParams.reload();
-              });
-
-          }, function (error) {
-            // TODO Handle errors
+            notificationService.sendMessage('Projects loaded.', 5000);
+            $scope.tableParams.reload();
           });
-      }
-      else{
-          angular.forEach(metadataService.getProjects(), function(project) {
-              project.lead = project.projectLead.displayName;
-              if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                 $scope.typeDropdown.push(project.codeSystem.maintainerType);
-              }
-            });
-            accountService.getUserPreferences().then(function (preferences) {
-                $scope.preferences = preferences;
 
-                if(preferences.hasOwnProperty("selectedType")) {
-                  $scope.selectedType.type = $scope.preferences.selectedType;
-                }
-                notificationService.sendMessage('Projects loaded.', 5000);
-                $scope.projects = metadataService.getProjects();
-                $scope.tableParams.reload();
-          });
-      }
-
+      }, function (error) {
+        // TODO Handle errors
+      });      
     }
 
 

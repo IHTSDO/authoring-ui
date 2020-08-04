@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, metadataService, notificationService, hotkeys, localStorageService, accountService) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $q, notificationService, hotkeys, localStorageService, accountService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -166,78 +166,65 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         $scope.tableParams.reload();
     }
 
-    function relatesToUser(project)
-    {
-
-    }
-
-
     function loadProjects() {
-      $scope.projects = [];
-      if(metadataService.getProjects().length === 0){
-          scaService.getProjects().then(function(results){
-              angular.forEach($scope.projectKeys, function(projectKey) {
-                    angular.forEach(results, function(result) {
-                        if(result.key === projectKey)
-                        {
-                            $scope.projects.push(result);
-                        }
-                    });
-                });
-              notificationService.sendMessage('Projects loaded', 5000);
-          });
-      }
-      else{
+      $scope.projects = [];      
+      scaService.getProjects().then(function(results){
           angular.forEach($scope.projectKeys, function(projectKey) {
-                angular.forEach(metadataService.getProjects(), function(project) {
-                    if(project.key === projectKey)
+                angular.forEach(results, function(result) {
+                    if(result.key === projectKey)
                     {
-                        $scope.projects.push(project);
+                        $scope.projects.push(result);
                     }
                 });
             });
           notificationService.sendMessage('Projects loaded', 5000);
-      }
+      });
     }
 
-    // Initialization:  get projects
-    function initialize() {
-
-      notificationService.sendMessage('Loading projects...');
-
-      $scope.projectKeys = [];
-      var tasksDone = false;
-      var reviewTasksDone = false;
-
+    function getProjectKeysFromTasks() {
+      var deferred = $q.defer();
       scaService.getTasks().then(function (response) {
+        var projectKeys = [];
         angular.forEach(response, function (task) {
-          if ($scope.projectKeys.indexOf(task.projectKey) === -1) {
-            $scope.projectKeys.push(task.projectKey);
+          if (projectKeys.indexOf(task.projectKey) === -1) {
+            projectKeys.push(task.projectKey);
           }
 
         });
-        tasksDone = true;
-
-        if (reviewTasksDone) {
-          loadProjects()
-        }
-        ;
+        deferred.resolve(projectKeys);
       });
+      return deferred.promise;
+    }
 
+    function getProjectKeysFromReviewTasks() {
+      var deferred = $q.defer();
       scaService.getReviewTasks().then(function (response) {
+        var projectKeys = [];
         angular.forEach(response, function (task) {
-          if ($scope.projectKeys.indexOf(task.projectKey) === -1) {
-            $scope.projectKeys.push(task.projectKey);
+          if (projectKeys.indexOf(task.projectKey) === -1) {
+            projectKeys.push(task.projectKey);
           }
-        });
-        reviewTasksDone = true;
-
-        if (tasksDone) {
-          loadProjects();
-        }
-
+        });       
+        deferred.resolve(projectKeys);
       });
-
+      return deferred.promise;
+    }
+   
+    function initialize() {
+      notificationService.sendMessage('Loading projects...');
+      $scope.projectKeys = [];
+      $q.all([getProjectKeysFromTasks(),getProjectKeysFromReviewTasks()]).then(function(responses) {
+        angular.forEach(responses, function (projectKeyArray) {
+          angular.forEach(projectKeyArray, function (projectKey) {
+            if ($scope.projectKeys.indexOf(projectKey) === -1) {
+              $scope.projectKeys.push(projectKey);
+            }
+          });
+        });
+        if ($scope.projectKeys.length !== 0) {
+          loadProjects();
+        }        
+      });
     }
 
 
@@ -261,8 +248,6 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
     };
 
-
     initialize();
-
   })
 ;
