@@ -556,6 +556,25 @@ angular.module('singleConceptAuthoringApp')
           }
 
           if (relAndDescMap !== null && relAndDescMap !== undefined) {
+            // remove optional attributes if no value provide
+            tc.classAxioms[0].relationships = tc.classAxioms[0].relationships.filter(function(tcRel) {
+              if (!isOptionalAttribute(tcRel)) {
+                return true;
+              }
+
+              for (var i = 0; i < relAndDescMap.classAxioms[0].relationships.length; i++) {
+                let rel = relAndDescMap.classAxioms[0].relationships[i];
+                if (typeof tcRel.targetSlot !== 'undefined'
+                  && typeof rel.targetSlot !== 'undefined'
+                  && tcRel.targetSlot.slotName === rel.targetSlot.slotName 
+                  && typeof rel.target !== 'undefined'
+                  && typeof rel.target.conceptId !== 'undefined')
+                  return true
+              }
+
+              return false;
+            });
+
             for (var i = 0; i < tc.classAxioms[0].relationships.length; i++) {
               tc.classAxioms[0].relationships[i].target = relAndDescMap.classAxioms[0].relationships[i].target;
             }
