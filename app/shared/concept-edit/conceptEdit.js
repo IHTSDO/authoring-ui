@@ -4640,6 +4640,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (relationship && relationship.targetSlot && relationship.targetSlot.slotName) {
             return 'template-editable';
           }
+
+          //Set to blue as default for "is a"-field when creating a new concept
+          if (relationship && relationship.type && relationship.type.conceptId === '116680003' 
+              && !terminologyServerService.isSctid(scope.concept.conceptId)
+              && !scope.template && !scope.concept.template) {
+            return 'bluehl';
+          }
+
           return '';
         };
 
