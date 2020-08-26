@@ -4645,7 +4645,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (relationship && relationship.type && relationship.type.conceptId === '116680003' 
               && !terminologyServerService.isSctid(scope.concept.conceptId)
               && !scope.template && !scope.concept.template) {
-            return 'bluehl';
+            return 'PRIMITIVE';
           }
 
           return '';

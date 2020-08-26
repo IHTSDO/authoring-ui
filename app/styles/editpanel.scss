@@ -1113,13 +1113,6 @@ button.fsn-title-button {
 .redhl .color_odd.role-group-drag {
     background-color: transparent;
 }
-.bluehl.axiom-relationship.relationship-target textarea {
-    background-color: #0091d7;
-    color: #fff;
-}
-.bluehl.axiom-relationship.relationship-target.sourcename {
-    background-color: #0091d7;
-}
 .bluehl .grey.darken-3,
 .bluehl .row.edits-row {
     background-color: #0091d7;
@@ -1269,6 +1262,9 @@ button-link .bluehl .grey.darken-3 {
 .color_.def_PRIMITIVE .custom-button:focus,
 .color_.def_PRIMITIVE .custom-button:active {
      background-color: #b7dbff;
+}
+.PRIMITIVE.axiom-relationship.relationship-target.sourcename {
+    background-color: #b7dbff;
 }
 .PRIMITIVE .color_even input,
 .PRIMITIVE .color_even textarea,
