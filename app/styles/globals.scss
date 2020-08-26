@@ -58,9 +58,6 @@ html {
 .table-full thead tr > th {
     font-size: 11px;
 }
-.table-full thead tr > th ul.dropdown-menu {
-    text-transform: none;;
-}
 form-control hover-fix:hover{
     background:transparent;
 }
@@ -333,11 +330,6 @@ td select {
     position: absolute; 
     right: 35px;
     top: 12px;
-}
-.dash-tables .table-full .btn.md-close {
-    float: right;
-    margin-bottom: -38px;
-    padding-right: 0px;
 }
 .pager .btn {
     padding: 1px 8px;
