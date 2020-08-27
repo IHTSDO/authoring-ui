@@ -87,26 +87,12 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             $.each(concept.classAxioms, function (i, axiom) {
-              var axiomToPush = {
+              if (axiom.active) {
+                var axiomToPush = {
                   relationships : [],
                   type : 'add',
                   definitionStatus : axiom.definitionStatus
-              };
-              $.each(axiom.relationships, function (i, field) {
-                if (field.active) {
-                  if (field.type.conceptId === '116680003') {
-                    axiomToPush.relationships.push(field);
-                  } else {
-                    axiomToPush.relationships.push(field);
-                  }
-                }
-              });
-              axioms.push(axiomToPush);
-            });
-            $.each(concept.gciAxioms, function (i, axiom) {
-                var axiomToPush = {};
-                axiomToPush.relationships = [];
-                axiomToPush.type = 'gci';
+                };
                 $.each(axiom.relationships, function (i, field) {
                   if (field.active) {
                     if (field.type.conceptId === '116680003') {
@@ -117,6 +103,24 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 axioms.push(axiomToPush);
+              }              
+            });
+            $.each(concept.gciAxioms, function (i, axiom) {
+                if (axiom.active) {
+                  var axiomToPush = {};
+                  axiomToPush.relationships = [];
+                  axiomToPush.type = 'gci';
+                  $.each(axiom.relationships, function (i, field) {
+                    if (field.active) {
+                      if (field.type.conceptId === '116680003') {
+                        axiomToPush.relationships.push(field);
+                      } else {
+                        axiomToPush.relationships.push(field);
+                      }
+                    }
+                  });
+                  axioms.push(axiomToPush);
+                }                
             });
             
           } else if (scope.view === 'inferred'){
