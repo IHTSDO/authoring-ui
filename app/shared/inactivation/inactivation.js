@@ -577,6 +577,13 @@ angular.module('singleConceptAuthoringApp')
               total: '-',
               getData: function ($defer, params) {
                 var data = scope.affectedConceptAssocs ? scope.affectedConceptAssocs : [];
+                if (scope.tableFilter) {
+                  data = data.filter(function (item) {
+                    return item.conceptId.toLowerCase().indexOf(scope.tableFilter.toLowerCase()) > -1 ||
+                      item.fsn.toLowerCase().indexOf(scope.tableFilter.toLowerCase()) > -1 ||
+                      (item.newTargetFsn && item.newTargetFsn.toLowerCase().indexOf(scope.tableFilter.toLowerCase()) > -1)
+                  });
+                }
                 params.total(data.length);
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
