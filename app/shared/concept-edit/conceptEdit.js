@@ -4479,18 +4479,56 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-          if (metadataService.isMrcmEnabled()) {
+
+          var populateRelationshipTarget = function(relationship, item) {
+              relationship.target.conceptId = item.id;
+              relationship.target.fsn = item.fsn.term;
+              relationship.target.definitionStatus = item.definitionStatus;
+              relationship.target.effectiveTime = item.effectiveTime;
+              relationship.target.moduleId = item.moduleId;
+              relationship.target.active= item.active;
+              relationship.target.released = item.released;
+          }
+
+          if (scope.template) {
+            if (!relationship.template || !relationship.template.targetSlot) {
+              relationship.target.fsn = tempFsn;
+              return;
+            }
+            constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch,
+              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+                populateRelationshipTarget(relationship, item);
+
+              let destinationIds = [];
+              destinationIds.push(relationship.target.conceptId);
+              bulkRetrieveFullConceptForRelationships(destinationIds);
+
+              if(!metadataService.isExtensionSet()
+                && relationship.type.conceptId === '116680003') {// Is a (attribute)
+                terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
+                  if (relationship.moduleId !== response.moduleId) {
+                    resetModuleId(response.moduleId);
+                  }
+                  scope.updateRelationship(relationship, false);
+                  scope.isModified = true;
+                  scope.computeAxioms(type);
+                  refreshAttributeTypesForAxiom(axiom);
+                  autoSave();
+                });
+              } else {
+                scope.updateRelationship(relationship, false);
+                autoSave();
+              }
+            }, function (error) {
+              scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
+              relationship.target.fsn = tempFsn;
+            });
+          } else if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
             } else {
               constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
-                relationship.target.conceptId = item.id;
-                relationship.target.fsn = item.fsn.term;
-                relationship.target.definitionStatus = item.definitionStatus;
-                relationship.target.effectiveTime = item.effectiveTime;
-                relationship.target.moduleId = item.moduleId;
-                relationship.target.active= item.active;
-                relationship.target.released = item.released;
+                populateRelationshipTarget(relationship, item);
 
                 let destinationIds = [];
                 destinationIds.push(relationship.target.conceptId);
@@ -4513,13 +4551,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             }
           } else {
-            relationship.target.conceptId = item.id;
-            relationship.target.fsn = item.fsn.term;
-            relationship.target.definitionStatus = item.definitionStatus;
-            relationship.target.effectiveTime = item.effectiveTime;
-            relationship.target.moduleId = item.moduleId;
-            relationship.target.active= item.active;
-            relationship.target.released = item.released;
+            populateRelationshipTarget(relationship, item);
 
             refreshAttributeTypesForAxiom(axiom);
             scope.computeAxioms(axiom.type);
@@ -4527,6 +4559,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // Trigger blur event after relationship target has been selected
+          setFocusToNextInputElement(axiom, relationshipGroupId, parentIndex, itemIndex);
+        };
+
+        function setFocusToNextInputElement(axiom, relationshipGroupId, parentIndex, itemIndex) {
           var elemID = axiom.type + '-axiom-relationship-target-' + scope.initializationTimeStamp + '-' + parentIndex + '-' + relationshipGroupId + '-' + itemIndex;
           var elem = angular.element(document.querySelector('#' + elemID));
           $timeout(function () {
@@ -4536,9 +4572,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 parent.find("textarea").filter(function() { return this.value == ""; })[0].focus();
             }
           }, 1000);
-        };
-
-
+        }
 //////////////////////////////////////////////
 // Component Removal functions
 //////////////////////////////////////////////
