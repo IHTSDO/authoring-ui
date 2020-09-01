@@ -289,7 +289,17 @@ angular.module('singleConceptAuthoringApp')
               delete d.descriptionId;
             }
           });
-          concept.fsn = response.fsn;
+          if (response.fsn) {
+            concept.fsn = response.fsn;
+          } else {
+            angular.forEach(concept.descriptions, function (d) {
+              if (d.active && d.type === 'FSN') {
+                concept.fsn = d.term;
+                return;
+              }
+            });
+          }
+          
           concept.definitionStatus = response.definitionStatus;
           if (concept.classAxioms && concept.classAxioms.length !== 0) {
             let definedAxiom = false;
