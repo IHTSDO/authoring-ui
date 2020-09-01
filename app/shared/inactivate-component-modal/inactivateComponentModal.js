@@ -475,14 +475,17 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getReferenceSetAssociations() {
+      const excludedRefset = ['733073007'];
       terminologyServerService.getReferenceSetsByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
           if (response !== null) {
             $scope.referenceSetAssociations = [];
             var items = [];
             angular.forEach(response.items, function (item) {
-              let newItem = angular.copy(item);
-              newItem.refsetPt = response.referenceSets[item.refsetId].pt.term;
-              $scope.referenceSetAssociations.push(newItem);
+              if (!excludedRefset.includes(item.refsetId)) {
+                let newItem = angular.copy(item);
+                newItem.refsetPt = response.referenceSets[item.refsetId].pt.term;
+                $scope.referenceSetAssociations.push(newItem);
+              }              
             });
             $scope.tableParamsReferenceSetAssociations.reload();
           }  
