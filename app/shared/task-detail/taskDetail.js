@@ -488,7 +488,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.branchLocked = false;
                 if (!isInitialPageLoad) {
                   $scope.automatePromotionErrorMsg =  'Error automate promotion' + (typeof response.message !== 'undefined' ? ': ' + response.message : '');
-                  notificationService.clear();
+                  notificationService.clear();                  
+                }
+                if (response.message && response.message === 'Classification already in progress on this branch.') {
+                  $scope.checkForLock();  
                 }
                 break;
               default:
