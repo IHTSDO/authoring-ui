@@ -475,7 +475,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getReferenceSetAssociations() {
-      const excludedRefset = ['733073007'];
+      const excludedRefset = ['733073007', '900000000000497000'];
       terminologyServerService.getReferenceSetsByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
           if (response !== null) {
             $scope.referenceSetAssociations = [];
