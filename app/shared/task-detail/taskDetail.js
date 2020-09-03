@@ -446,6 +446,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = true;
                 notificationService.clear();
                 break;
+              case 'Classification in progress':
+                  if(!isInitialPageLoad) {
+                    $rootScope.branchLocked = true;
+                    $rootScope.automatedPromotionInQueued = false;
+                    $rootScope.classificationRunning = true;
+                    $scope.automatePromotionErrorMsg =  'Error automate promotion: Classification already in progress on this branch.';
+                  }
+                  notificationService.clear();
+                  $scope.checkForLock();                  
+                  break;
               case 'Classified with results':
                 if(isInitialPageLoad && $rootScope.classificationRunning) {
                   $scope.automatePromotionStatus = '';
@@ -489,10 +499,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 if (!isInitialPageLoad) {
                   $scope.automatePromotionErrorMsg =  'Error automate promotion' + (typeof response.message !== 'undefined' ? ': ' + response.message : '');
                   notificationService.clear();                  
-                }
-                if (response.message && response.message === 'Classification already in progress on this branch.') {
-                  $scope.checkForLock();  
-                }
+                }                
                 break;
               default:
                 $rootScope.automatedPromotionInQueued = false;
