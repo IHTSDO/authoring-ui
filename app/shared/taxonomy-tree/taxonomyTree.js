@@ -359,6 +359,7 @@ angular.module('singleConceptAuthoringApp')
           scope.synonymFlag = metadataService.isExtensionSet();
         
           if (scope.searchExtensionFlag
+              && !metadataService.useInternationalLanguageRefsets()
               && scope.defaultLanguage !== '900000000000509007-fsn' 
               && scope.defaultLanguage !== '900000000000509007-pt') {
             if (scope.defaultLanguage) {

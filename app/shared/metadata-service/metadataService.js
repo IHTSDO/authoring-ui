@@ -339,7 +339,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                 }
-                else if(Object.keys(dialects).length > 1){
+                if(!defaultLanguageRefsetId && Object.keys(dialects).length > 1){
                     requiredLanguageRefsets.forEach(function(lang) {
                         let languageValue = null;
                         for (var key in lang) {
@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
                             }
                       });
                 }
-                else {
+                if(!defaultLanguageRefsetId) {
                   defaultLanguageRefsetId = '900000000000509007';
                 }
               }
