@@ -532,8 +532,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           scaService.saveSelectedLanguegeForUser({'defaultLanguage' : $scope.userOptions.selectedDialect});
         }
 
-        if((!$scope.searchStr || $scope.searchStr.length < 3) && !$scope.escgExpr && !$scope.userOptions.template) {
-          return;
+        if(!$scope.escgExpr && !$scope.userOptions.template) {
+          if (!$scope.searchStr) {
+            return;
+          }
+          // Check min length for Traditional Medicine project
+          const isTraditionalMedicineProject = metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '895344001';
+          if (isTraditionalMedicineProject ? $scope.searchStr.length < 1 : $scope.searchStr.length < 3) {
+            return;
+          }        
         }
 
         // update and display search in progress message
