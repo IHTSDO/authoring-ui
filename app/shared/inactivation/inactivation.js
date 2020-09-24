@@ -1302,6 +1302,31 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
 
+          function getHistoricalAssocConceptTargets() {
+            var deferred = $q.defer();
+            let requestCount = 0;
+            let requestDoneCount = 0; 
+            for (var key in scope.assocs) {
+              angular.forEach(scope.assocs[key], function (id) {
+                requestCount++;
+                var concept = {};
+                concept.assocName = key;
+                concept.conceptId = id;
+                terminologyServerService.findConcept(id, scope.branch).then(function (response) {
+                  if (response) {
+                    concept.fsn = response.fsn;
+                  }
+                  scope.histAssocTargets.concepts.push(concept);
+                  requestDoneCount++;
+                  if (requestCount === requestDoneCount) {
+                    deferred.resolve();
+                  }
+                });                                
+              });
+            }          
+            return deferred.promise;
+          }
+
           //
           // Relationship approval and completion marking
           //
@@ -1477,7 +1502,6 @@ angular.module('singleConceptAuthoringApp')
           function initialize() {
             notificationService.sendMessage('Initializing inactivation...');
 
-
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
             scope.assocs = inactivationService.getAssocs();
@@ -1494,33 +1518,6 @@ angular.module('singleConceptAuthoringApp')
             console.debug('scope.assocs', scope.assocs);
             console.debug('reason id', scope.reasonId);
 
-
-            for (var key in scope.assocs) {
-
-              angular.forEach(scope.assocs[key], function (id) {
-
-
-                var concept = {};
-                concept.assocName = key;
-                concept.conceptId = id;
-                terminologyServerService.getConceptDescriptions(id, scope.branch).then(function (response) {
-                  angular.forEach(response, function (desc) {
-                    if (desc.typeId === '900000000000003001' && desc.active === true) {
-                      concept.fsn = desc.term;
-                    }
-                  });
-
-                });
-                scope.histAssocTargets.concepts.push(concept);
-                console.log(concept);
-
-
-              });
-
-            }
-
-            console.debug('histAssocTargets', scope.histAssocTargets);
-
             // extract the parent concepts
             angular.forEach(scope.inactivationConcept.classAxioms, function (axiom) {
               angular.forEach(axiom.relationships, function (rel) {
@@ -1530,29 +1527,31 @@ angular.module('singleConceptAuthoringApp')
               });
             });
 
-
             // ensure that children have been retrieved
-            getNewTargetConceptParents().then(function (parents) {
-              scope.newTargetConceptParents = parents;
-              notificationService.sendMessage('Retrieving inbound relationships...');
-              getAffectedObjectIds().then(function () {
-                notificationService.sendMessage('Retrieving affected associations...');
-                getAffectedAssociations().then(function () {
-                  notificationService.sendMessage('Retreiving affected GCIs... ');
-                  getAffectedGcis().then(function () {
-                    notificationService.sendMessage('Initializing affected concepts...')
-                    getAffectedConcepts().then(function () {
-                      notificationService.sendMessage('Preparing affected relationships...');
-                      prepareAffectedRelationships().then(function () {
-                        notificationService.sendMessage('Inactivation initialization complete', 5000);
-                        scope.reloadTables();
-                        scope.initializing = false;
-                      })
+            getHistoricalAssocConceptTargets().then(function() {
+              console.debug('histAssocTargets', scope.histAssocTargets);
+              getNewTargetConceptParents().then(function (parents) {
+                scope.newTargetConceptParents = parents;
+                notificationService.sendMessage('Retrieving inbound relationships...');
+                getAffectedObjectIds().then(function () {
+                  notificationService.sendMessage('Retrieving affected associations...');
+                  getAffectedAssociations().then(function () {
+                    notificationService.sendMessage('Retreiving affected GCIs... ');
+                    getAffectedGcis().then(function () {
+                      notificationService.sendMessage('Initializing affected concepts...')
+                      getAffectedConcepts().then(function () {
+                        notificationService.sendMessage('Preparing affected relationships...');
+                        prepareAffectedRelationships().then(function () {
+                          notificationService.sendMessage('Inactivation initialization complete', 5000);
+                          scope.reloadTables();
+                          scope.initializing = false;
+                        })
+                      });
                     });
                   });
                 });
               });
-            });
+            });            
           }
 
           initialize();

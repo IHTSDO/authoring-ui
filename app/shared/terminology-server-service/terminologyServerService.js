@@ -601,15 +601,6 @@ angular.module('singleConceptAuthoringApp')
 
       }
 
-      function getConceptFsn(conceptId, branch, count) {
-        return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/fsn').then(function (response) {
-          return {data : response.data, count: count};
-        }, function (error) {
-          return {term: 'Could not determine preferred term'};
-        });
-
-      }
-
       // Retrieve parents of a concept
       // GET /{path}/concepts/{conceptId}/parents
       function getConceptParents(conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag) {
@@ -1042,6 +1033,25 @@ angular.module('singleConceptAuthoringApp')
         }
 
         $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, config).then(function (response) {
+          normaliseSnowstormConcept(response.data);
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
+      // Helper call to retrieve a concept with all elements
+      // Puts all elements in save-ready format
+      function findConcept(conceptId, branch, acceptLanguageValue) {
+
+        var deferred = $q.defer();
+        var config = {};
+        if (acceptLanguageValue) {
+          config.headers = {'Accept-Language': acceptLanguageValue};
+        }
+
+        $http.get(apiEndpoint +  branch + '/concepts/' + conceptId, config).then(function (response) {
           normaliseSnowstormConcept(response.data);
           deferred.resolve(response.data);
         }, function (error) {
@@ -2295,7 +2305,6 @@ angular.module('singleConceptAuthoringApp')
         getDescriptionProperties: getDescriptionProperties,
         getRelationshipProperties: getRelationshipProperties,
         getConceptPreferredTerm: getConceptPreferredTerm,
-        getConceptFsn: getConceptFsn,
         updateConcept: updateConcept,
         bulkUpdateConcept: bulkUpdateConcept,
         bulkValidateConcepts: bulkValidateConcepts,
@@ -2312,6 +2321,7 @@ angular.module('singleConceptAuthoringApp')
         getConceptDescendants: getConceptDescendants,
         getRelationshipDisplayNames: getRelationshipDisplayNames,
         getFullConcept: getFullConcept,
+        findConcept: findConcept,
         getFullConceptAtDate: getFullConceptAtDate,
         updateDescription: updateDescription,
         startClassificationForTask: startClassificationForTask,
