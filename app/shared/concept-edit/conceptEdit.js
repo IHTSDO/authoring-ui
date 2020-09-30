@@ -283,6 +283,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.relationshipGroups = {};
         scope.extensionNamespace = '';
         scope.modelVisible = true;
+        scope.totalTemplate = 0;
 
         // utility function pass-thrus        
         scope.isSctid = terminologyServerService.isSctid;
@@ -596,6 +597,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             filterDelay: 50,
             total: scope.templates ? scope.templates.length : 0, // length of data
             getData: function ($defer, params) {
+                scope.totalTemplate = scope.templates.length;
                 var searchStr = params.filter().search;
                 var mydata = [];
                 if (!scope.templates || scope.templates.length === 0) {

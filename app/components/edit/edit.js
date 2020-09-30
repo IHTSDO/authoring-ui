@@ -211,6 +211,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Infinite Scroll
     //////////////////////////////
     $scope.conceptsDisplayed = 10;
+    $scope.totalTemplate = 0;
     $scope.conceptsRendering = false;
     $scope.addMoreItems = function () {
       if ($scope.conceptsDisplayed < $scope.concepts.length) {
@@ -1607,6 +1608,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         filterDelay: 50,
         total: $scope.innerTemplates ? $scope.innerTemplates.length : 0, // length of data
         getData: function ($defer, params) {
+                $scope.totalTemplate = $scope.innerTemplates.length;
                 var searchStr = params.filter().search;
                 var mydata = [];
                 if (!$scope.innerTemplates || $scope.innerTemplates.length === 0) {
