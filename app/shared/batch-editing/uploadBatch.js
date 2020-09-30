@@ -9,6 +9,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             selectedTemplate: null
           };
          $scope.templatesLoading = true;
+         $scope.totalTemplate = 0;
 
          var conceptPromises = [];
 
@@ -33,6 +34,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 filterDelay: 50,
                 total: $scope.templateOptions.availableTemplates ? $scope.templateOptions.availableTemplates.length : 0, // length of data
                 getData: function ($defer, params) {
+                    $scope.totalTemplate = $scope.templateOptions.availableTemplates.length;
                     var searchStr = params.filter().search;
                     var mydata = [];
                     if (!$scope.templateOptions.availableTemplates || $scope.templateOptions.availableTemplates.length === 0) {
