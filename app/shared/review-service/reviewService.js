@@ -322,7 +322,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function getLatestReview(branch, projectKey, taskKey) {
+    function getLatestReview(branch, projectKey, taskKey, acceptLanguageValue, useFSN) {
       var deferred = $q.defer();
       terminologyServerService.getTraceabilityForBranch(branch).then(function (traceability) {
         var review = {};
@@ -389,7 +389,7 @@ angular.module('singleConceptAuthoringApp')
 
         });
 
-        fetchFsnAndFeedback(projectKey, taskKey, branch, idList, review).then(function(response) {
+        fetchTermAndFeedback(projectKey, taskKey, branch, idList, review, acceptLanguageValue, useFSN).then(function(response) {
           deferred.resolve(response ? response : {});
         });
       }, function (error) {
@@ -399,17 +399,21 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function fetchFsnAndFeedback(projectKey, taskKey, branch, idList, review) {
+    function fetchTermAndFeedback(projectKey, taskKey, branch, idList, review, acceptLanguageValue, useFSN) {
       var deferred = $q.defer();
       scaService.getReviewForTask(projectKey, taskKey).then(function (feedback) {
 
         var getConceptsForReview = function (branch, idList, review, feedbackList) {
           var deferred = $q.defer();
-          terminologyServerService.bulkRetrieveFullConcept(idList, branch).then(function (response) {
+          terminologyServerService.bulkRetrieveFullConcept(idList, branch, acceptLanguageValue).then(function (response) {
             angular.forEach(response, function (concept) {
               angular.forEach(review.concepts, function (reviewConcept) {
                 if (concept.conceptId === reviewConcept.conceptId) {
-                  reviewConcept.term = concept.fsn;
+                  if (useFSN) {
+                    reviewConcept.term = concept.fsn;
+                  } else {
+                    reviewConcept.term = concept.pt;
+                  }
                   angular.forEach(feedbackList, function (feedback) {
                     if (reviewConcept.conceptId === feedback.id) {
                       reviewConcept.messages = feedback.messages;

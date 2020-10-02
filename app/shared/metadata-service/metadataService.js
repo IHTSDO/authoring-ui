@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('metadataService', ['$http', '$rootScope', '$interval', function ($http, $rootScope, $interval) {
+  .service('metadataService', ['$rootScope', function ($rootScope) {
 
     // project cache (still used?)
     var projects = [];
@@ -16,8 +16,6 @@ angular.module('singleConceptAuthoringApp')
 
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
-
-    var productCode = '';
 
     var templatesEnabled = false;
 
@@ -655,9 +653,6 @@ angular.module('singleConceptAuthoringApp')
     function getSemanticTags() {
       return semanticTags;
     }
-//    function getDescriptionAssociationInactivationReasons() {
-//      return descriptionAssociationInactivationReasons;
-//    }
 
     //
     // Cached project retrieval functions
@@ -757,6 +752,71 @@ angular.module('singleConceptAuthoringApp')
       return false;
     }
 
+    function getDropdownLanguages() {      
+      var result = {};
+      let usModel = {
+        moduleId: '731000124108',
+        dialectId: '900000000000509007'
+      };
+
+      let noModel = {
+        moduleId: '51000202101',
+        dialectId: '61000202103'
+      };
+      let gbDialectId = '900000000000508004';
+      let usFSN = {id: '900000000000509007-fsn', label: 'FSN in US'};
+      let usPT = {id: '900000000000509007-pt', label: 'PT in US'};
+      var internatinalFilter = [];
+      internatinalFilter.push(usFSN);
+      internatinalFilter.push(usPT);           
+
+      var extensionFilter = [];
+      extensionFilter.push(usFSN);
+      extensionFilter.push(usPT);
+
+      if (extensionMetadata !== null) {          
+        var dialects = getAllDialects();
+        // Remove 'en-gb' if any
+        
+        if (dialects.hasOwnProperty(gbDialectId)) {             
+          delete dialects[gbDialectId];
+        }
+
+        // us dialect + extension with one dialect
+        if (Object.keys(dialects).length === 2 && getCurrentModuleId() !== usModel.moduleId) {
+          for (var key in dialects) {
+            if (key !== usModel.dialectId) {
+              let languages = dialects[key].split('-');
+              var dialect = {id: key, label: 'PT in ' + (languages.length > 1 ? languages[1].toUpperCase() : languages[0].toUpperCase())}
+              extensionFilter.push(dialect);
+              result.selectedLanguage = dialect; // Set PT in extension by default
+            }
+          }
+          result.languages = extensionFilter;
+        } else if (getCurrentModuleId() === usModel.moduleId) {
+          // us module
+          result.languages = internatinalFilter;
+          result.selectedLanguage = usPT; // Set PT in US by default
+        } else {
+          // multiple dialects
+          for (var key in dialects) {
+            if (key !== usModel.dialectId) {
+              let languages = dialects[key].split('-');
+              var dialect = {id: key, label: 'PT in ' + (languages.length > 1 ? languages[1].toUpperCase() : languages[0].toUpperCase())}
+              extensionFilter.push(dialect);               
+            }
+          }
+          result.languages = extensionFilter;
+          result.selectedLanguage = usPT; // Set PT in US by default
+        }                
+      } else {
+        result.languages = internatinalFilter;
+        result.selectedLanguage = usFSN; // Set FSN in US by default
+      }
+
+      return result;
+    }
+
     return {
 
       // relationship functions
@@ -841,7 +901,8 @@ angular.module('singleConceptAuthoringApp')
       setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
       setUngroupedAttributes: setUngroupedAttributes,
       isUngroupedAttribute: isUngroupedAttribute,
-      getSemanticTags: getSemanticTags
+      getSemanticTags: getSemanticTags,
+      getDropdownLanguages: getDropdownLanguages
     };
 
   }])

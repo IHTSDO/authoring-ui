@@ -40,6 +40,14 @@
     <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
       <div class="m-10">Loading review...</div>
     </div>
+    <div class="filter-input col-md-12 no-padding">
+      <div class="pull-right">
+        <label class="m-r-10 control-label">Language:</label>
+        <select ng-model="selectedLanguage" ng-change="onLanguageChange(selectedLanguage)" name="select-type" class="no-padding m-t-5"
+                ng-options="item as item.label for item in languages track by item.id">
+        </select>
+      </div>
+    </div>
     <ul class="nav nav-tabs " role="tablist"
         ng-init="actionTab=1">
       <li role="presentation" class="active border-right"> <a
@@ -67,7 +75,8 @@
     <!--Tab panes -->
     <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review">
       <!--Concepts To Review -->
-      <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1">
+      <div ng-if="loadingTermForConcepts" progressbar value="getProgress()" type="success" > </div>
+      <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1 && !loadingTermForConcepts">
         <!-- only appears if author row -->
         <!-- No results display banner -->
         <div class="ng-table-no-results"
@@ -236,7 +245,7 @@
         </div>
       </div>
       <!--Concepts Reviewed-->
-      <div role="tabpanel" ng-if="actionTab === 2">
+      <div role="tabpanel" ng-if="actionTab === 2 && !loadingTermForConcepts">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0"> No Approved
@@ -292,12 +301,12 @@
         </table>
       </div>
       <!--Classification affected concepts-->
-      <div role="tabpanel" ng-if="actionTab === 3">
+      <div role="tabpanel" ng-if="actionTab === 3 && !loadingTermForConcepts">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No Classification concepts. </div>
-        <div ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length !== 0 && loadingFsnForConceptsClassified"> Loading... </div>
-        <div ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0 && !loadingFsnForConceptsClassified">
+        <div ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length !== 0 && loadingTermForClassifiedConcepts"> Loading... </div>
+        <div ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0 && !loadingTermForClassifiedConcepts">
           <table show-filter="false" ng-table="conceptsClassifiedTableParams"
                 template-pagination="utilities/review-table-pager.html"
                 class="table feedback-table concepts-classified" drop-channel="feedbackConcept">
@@ -305,7 +314,7 @@
               <input class=" input-filter form-control ng-scope ng-valid ng-touched"
                     placeholder="Filter concepts"
                     ng-model="conceptsClassifiedSearchStr"
-                    ng-show="feedbackContainer.review.conceptsClassified.length > 0 && !loadingFsnForConceptsClassified"
+                    ng-show="feedbackContainer.review.conceptsClassified.length > 0 && !loadingTermForClassifiedConcepts"
                     ng-change="reloadConceptsClassified(conceptsClassifiedSearchStr)"
                     ng-model-options="{debounce: 500}" ui-on-drop="null">
             </div>
