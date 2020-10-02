@@ -443,8 +443,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.showSidebarEdit = true;
           break;
         case 'feedback':
-          $scope.feedbackContainer = {};
-          $scope.getLatestReview();
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'feedback';
           $rootScope.showSidebarEdit = false; // Feedback page has its own sitebar
@@ -1256,15 +1254,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 // Review and Feedback
 //////////////////////////////////////////
 
-// get latest review
-    $scope.getLatestReview = function () {
-      reviewService.getLatestReview($scope.branch, $routeParams.projectKey, $routeParams.taskKey).then(function (review) {
-        $scope.feedbackContainer.review = review;
-      }, function (error) {
-        $scope.feedbackContainer.review = {errorMsg: error};
-      });
-    };
-
     var feedbackStyles = {};
 
     $scope.getFeedbackStyles = function (concept) {
@@ -1462,10 +1451,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       executionStatus: 'Loading...',       // NOTE: Overwritten by validation
                                            // field
       report: null
-    };
-    $scope.feedbackContainer = {
-      review: null,
-      feedback: null
     };
 
 // initialize with empty concepts list

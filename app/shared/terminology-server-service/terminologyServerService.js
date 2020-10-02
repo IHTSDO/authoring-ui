@@ -1140,7 +1140,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       //Function to bulk get full concepts via POST
-      function bulkRetrieveFullConcept(conceptIdList, branch, expandPt) {
+      function bulkRetrieveFullConcept(conceptIdList, branch, acceptLanguageValue) {
         var deferred = $q.defer();
         // Return empty array if no concepts requested
         if (conceptIdList.length === 0) {
@@ -1150,8 +1150,19 @@ angular.module('singleConceptAuthoringApp')
         var body = {
             "conceptIds":conceptIdList
         }
-        var queryString = '';
-        $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk-load', body).then(function (response) {
+        var config = {};
+        
+        // if accept language value set, set header
+        if (acceptLanguageValue) {
+          // declare headers if not specified
+          if (!config.headers) {
+            config.headers = {};
+          }
+          // set the accept language header
+          config.headers['Accept-Language'] = acceptLanguageValue;
+        }
+
+        $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk-load', body, config).then(function (response) {
           normaliseSnowstormConcepts(response.data)
           deferred.resolve(response.data);
         }, function (error) {

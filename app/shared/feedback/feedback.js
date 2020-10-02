@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService', 'localStorageService', 
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService, localStorageService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -43,8 +43,6 @@ angular.module('singleConceptAuthoringApp')
         scope: {
           // feedback container structure:
           // { conceptsToReview: [...], conceptsReviewed: [...] }
-
-          feedbackContainer: '=',
 
           // flag for whether or not to allow editing controls
           editable: '&',
@@ -70,6 +68,7 @@ angular.module('singleConceptAuthoringApp')
           // feedbackContainer elements, necessitating some rather
           // cumbersome functions, which are marked accordingly
           ////////////////////////////////////////////////////
+          scope.feedbackContainer = {};
           $rootScope.$broadcast('viewReview', {});
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
@@ -78,7 +77,9 @@ angular.module('singleConceptAuthoringApp')
           scope.projectKey = $routeParams.projectKey;
           scope.taskKey = $routeParams.taskKey;
           scope.inactiveDescriptions = {};
-          scope.loadingFsnForConceptsClassified = false;
+          scope.loadingTermForClassifiedConcepts = false;
+          scope.loadingTermForConcepts = false;
+          scope.languages = [];
           var users = [];
           var sendingConceptToReview = false;
 
@@ -105,7 +106,64 @@ angular.module('singleConceptAuthoringApp')
             function (error) {});
           }
 
-          getUsers(0,50);
+          function initLanguagesDropdown () {
+            let foundInCache = false;
+            let result = metadataService.getDropdownLanguages();
+            scope.languages = result.languages;
+            
+            if (localStorageService.get($rootScope.accountDetails.login + '-review-selected-language-id')) {              
+              const cachedLanguageId = localStorageService.get($rootScope.accountDetails.login + '-review-selected-language-id');
+              let language = scope.languages.filter(function(item) {
+                return item.id === cachedLanguageId;
+              })[0];
+              if (language) {
+                foundInCache = true;
+                scope.selectedLanguage = language;
+              } 
+            }
+            if (!foundInCache) {
+              scope.selectedLanguage = result.selectedLanguage;
+            }
+            scope.onLanguageChange(scope.selectedLanguage);
+          }          
+
+          scope.onLanguageChange = function(language) {
+            scope.selectedLanguage = language;
+            localStorageService.set($rootScope.accountDetails.login + '-review-selected-language-id', language.id);
+            const acceptLanguageValue = getAcceptLanguageValue(language);
+            const useFSN = language && (language.id === '900000000000509007' ||language.id === '900000000000509007-fsn');
+            
+            feedbackContainerDone = false;
+            scope.loadingTermForConcepts = true;
+            reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey, acceptLanguageValue, useFSN).then(function (review) {
+              scope.feedbackContainer.review = review;
+              scope.conceptsToReviewTableParams.reload();
+              scope.conceptsReviewedTableParams.reload();
+              scope.conceptsClassifiedTableParams.reload();
+              feedbackContainerDone = true;
+              scope.loadingTermForConcepts = false;
+            }, function (error) {
+               scope.feedbackContainer.review = {errorMsg: error};
+            }); 
+          };
+
+          function getAcceptLanguageValue(language) {
+            let acceptLanguageValue = "";
+            if (metadataService.isExtensionSet()
+              && !metadataService.useInternationalLanguageRefsets()
+              && language.id !== '900000000000509007-fsn' 
+              && language.id !== '900000000000509007-pt') {
+              if (language) {
+                acceptLanguageValue = metadataService.getExtensionAcceptLanguageValueByDialectId(language.id);
+              } else {
+                acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
+              }                            
+            } else {
+              acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
+            }
+
+            return acceptLanguageValue;
+          }
 
           scope.authorInputOnFocus = function (event){
             console.log(event);
@@ -927,7 +985,6 @@ angular.module('singleConceptAuthoringApp')
           // depending on current viewed tab
           scope.addMultipleToEdit = function (actionTab) {
             var conceptsToAdd = [];
-            var conceptsAdded = 0;
             scope.simultaneousFeedbackAdded = false;
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
@@ -971,9 +1028,7 @@ angular.module('singleConceptAuthoringApp')
                             }
                             return true;
                           });
-
-            var sortingDirection = scope.conceptsToReviewTableParams.sorting().term;
-            let idList = [];
+            
             for (var i = 0; i < conceptsToAdd.length; i++) {
               if (!scope.isDeletedConcept(conceptsToAdd[i])) {  
                 conceptsToAdd[i].viewed = true;
@@ -1164,7 +1219,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-
             // splice in the array at the insert point
             Array.prototype.splice.apply(newConceptArray, [insertIndex, 0].concat(conceptsToInsert));
 
@@ -1348,8 +1402,7 @@ angular.module('singleConceptAuthoringApp')
                 getViewedFeedback();
               });
             }
-          }, true)
-          ;
+          }, true);
 
           // check all request
           scope.checkAll = function () {
@@ -1555,12 +1608,7 @@ angular.module('singleConceptAuthoringApp')
               
               return response.items;
             });
-          };
-
-          function createConceptPlaceholder(conceptId, fsn) {
-
-            return '<span style="color: #00a6e5" id="id">' + fsn + '</span>';
-          }
+          };          
 
           /**
            * Creates an image object with data source
@@ -1638,7 +1686,6 @@ angular.module('singleConceptAuthoringApp')
           scope.editReviewer = false;
           scope.listenReviewerTypeaheadEvent = function(event){
             event = event.event;
-
 
             // escape
             if (event.keyCode === 27) {
@@ -1741,15 +1788,15 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            scope.loadingFsnForConceptsClassified = true;
+            scope.loadingTermForClassifiedConcepts = true;
             
-            var fetchFsnForConceptsClassified = function (branch, idList, conceptsClassified) {
+            var fetchTermForClassifiedConcepts = function (branch, idList, conceptsClassified, acceptLanguageValue, useFSN) {
               var deferred = $q.defer();
-              terminologyServerService.bulkRetrieveFullConcept(idList, branch).then(function (response) {
+              terminologyServerService.bulkRetrieveFullConcept(idList, branch, acceptLanguageValue).then(function (response) {
                 angular.forEach(response, function (concept) {                  
                   angular.forEach(conceptsClassified, function (reviewConcept) {
-                    if (concept.conceptId === reviewConcept.conceptId) {
-                      reviewConcept.term = concept.fsn;		  
+                    if (concept.conceptId === reviewConcept.conceptId) {                      
+                      reviewConcept.term = useFSN ? concept.fsn : concept.pt;		  
                     }
                   });
                 });
@@ -1766,18 +1813,24 @@ angular.module('singleConceptAuthoringApp')
             
             var i, j, temparray, chunk = 50;
             var promises = [];
+            const acceptLanguageValue = getAcceptLanguageValue(scope.selectedLanguage);
+            const useFSN = scope.selectedLanguage && (scope.selectedLanguage.id === '900000000000509007' ||scope.selectedLanguage.id === '900000000000509007-fsn');
             for (i = 0, j = idList.length; i < j; i += chunk) {
               temparray = idList.slice(i, i + chunk);
-              promises.push(fetchFsnForConceptsClassified(scope.branch, temparray, scope.feedbackContainer.review.conceptsClassified));            ;
+              promises.push(fetchTermForClassifiedConcepts(scope.branch, temparray, scope.feedbackContainer.review.conceptsClassified, acceptLanguageValue, useFSN));            ;
             }
 
             // on resolution of all promises
             $q.all(promises).then(function () {
               alreadyLoadedFsnForConceptsClassified = true;
-              scope.loadingFsnForConceptsClassified = false;
+              scope.loadingTermForClassifiedConcepts = false;
               scope.conceptsClassifiedTableParams.reload();
             });         
           };
+
+          scope.$on('setExtensionMetadata', function (event, data) {
+            initLanguagesDropdown();        
+          });
 
           scope.$on('viewProjectTaxonomy', function (event, data) {
             if (data.flag) {
@@ -1857,7 +1910,10 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey).then(function (review) {
+              
+              const acceptLanguageValue = getAcceptLanguageValue(scope.selectedLanguage);
+              const useFSN = scope.selectedLanguage && (scope.selectedLanguage.id === '900000000000509007' ||scope.selectedLanguage.id === '900000000000509007-fsn');
+              reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey, acceptLanguageValue, useFSN).then(function (review) {
                 // Do not reload classified concepts.
                 review.conceptsClassified = scope.feedbackContainer.review.conceptsClassified;
                 scope.feedbackContainer.review = review;
@@ -1870,10 +1926,23 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
+          var feedbackContainerDone = false; // 1 if feedback container done
+          /**
+           * Progress defined as 100 * (1/4  + 3/4 * feedbackContainerDone)
+           * @returns {Number}
+           */
+          scope.getProgress = function () {
+            return feedbackContainerDone ? 100 : 25;
+          };
+
+          function initialize() {
+            initLanguagesDropdown();
+            getUsers(0,50);
+          }
+
+          initialize();
         }
 
-      }
-        ;
-
+      };
     }])
 ;
