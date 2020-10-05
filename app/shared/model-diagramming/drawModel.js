@@ -339,7 +339,9 @@ angular.module('singleConceptAuthoringApp')
           // load ungrouped attributes
           var maxRoleNumber = 0;
           $.each(svgAttrModel, function (i, relationship) {
-            if (relationship.target.definitionStatus === "PRIMITIVE") {
+            if (!isNaN(relationship.target.fsn.charAt(0))) {
+                  sctClass = "concrete-domain"; 
+                } else if (relationship.target.definitionStatus === "PRIMITIVE") {
               sctClass = "sct-primitive-concept";
             } else {
               sctClass = "sct-defined-concept";
@@ -413,7 +415,9 @@ angular.module('singleConceptAuthoringApp')
             connectElements(svg, groupNode, conjunctionNode, 'right', 'left');
             $.each(svgAttrModel, function (m, relationship) {
               if (relationship.groupId === i) {
-                if (relationship.target.definitionStatus == "PRIMITIVE") { 
+                if (!isNaN(relationship.target.fsn.charAt(0))) {
+                  sctClass = "concrete-domain"; 
+                } else if (relationship.target.definitionStatus == "PRIMITIVE") { 
                   sctClass = "sct-primitive-concept"; 
                 } else {
                   sctClass = "sct-defined-concept";
@@ -561,6 +565,13 @@ angular.module('singleConceptAuthoringApp')
               stroke: '#333',
               strokeWidth: 2
             });
+          } else if (cssClass === "concrete-domain") {
+            rect = svg.rect(x, y, textWidth + widthPadding, textHeight + heightpadding, {
+              id: 'rect' + idSequence,
+              fill: '#BAEEC8',
+              stroke: '#333',
+              strokeWidth: 2
+            });
           } else if (cssClass === "sct-defined-concept") {
             rect = svg.rect(x - 2, y - 2, textWidth + widthPadding + 4, textHeight + heightpadding + 4, {
               fill: 'white',
@@ -586,6 +597,14 @@ angular.module('singleConceptAuthoringApp')
               strokeWidth: 1
             });
           } else if (cssClass === "sct-slot") {
+            rect = svg.rect(x, y, textWidth + widthPadding, textHeight + heightpadding, {
+              id: 'rect' + idSequence,
+              fill: '#99ccff',
+              stroke: '#333',
+              strokeWidth: 2
+            });
+          }
+          else if (cssClass === "sct-slot") {
             rect = svg.rect(x, y, textWidth + widthPadding, textHeight + heightpadding, {
               id: 'rect' + idSequence,
               fill: '#99ccff',
