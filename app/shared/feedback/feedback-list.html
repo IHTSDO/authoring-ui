@@ -40,7 +40,7 @@
     <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
       <div class="m-10">Loading review...</div>
     </div>
-    <div class="filter-input col-md-12 no-padding">
+    <div class="filter-input col-md-12 no-padding" ng-if="isExtensionSet()">
       <div class="pull-right">
         <label class="m-r-10 control-label">Language:</label>
         <select ng-model="selectedLanguage" ng-change="onLanguageChange(selectedLanguage)" name="select-type" class="no-padding m-t-5"
