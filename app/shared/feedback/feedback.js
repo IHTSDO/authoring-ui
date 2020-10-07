@@ -83,6 +83,10 @@ angular.module('singleConceptAuthoringApp')
           var users = [];
           var sendingConceptToReview = false;
 
+          // utility function pass-thrus
+          scope.isExtensionSet = metadataService.isExtensionSet;
+          scope.useInternationalLanguageRefsets = metadataService.useInternationalLanguageRefsets
+
           function getUsers(start, end) {
             var expand =  'users[' + start + ':' + end + ']';
             scaService.getUsers(expand).then(function (response) {
@@ -131,7 +135,7 @@ angular.module('singleConceptAuthoringApp')
             scope.selectedLanguage = language;
             localStorageService.set($rootScope.accountDetails.login + '-review-selected-language-id', language.id);
             const acceptLanguageValue = getAcceptLanguageValue(language);
-            const useFSN = language && (language.id === '900000000000509007' ||language.id === '900000000000509007-fsn');
+            const useFSN = (language && (language.id === '900000000000509007' ||language.id === '900000000000509007-fsn')) || !scope.isExtensionSet() || scope.useInternationalLanguageRefsets();
             
             feedbackContainerDone = false;
             scope.loadingTermForConcepts = true;
@@ -149,8 +153,8 @@ angular.module('singleConceptAuthoringApp')
 
           function getAcceptLanguageValue(language) {
             let acceptLanguageValue = "";
-            if (metadataService.isExtensionSet()
-              && !metadataService.useInternationalLanguageRefsets()
+            if (scope.isExtensionSet()
+              && !scope.useInternationalLanguageRefsets()
               && language.id !== '900000000000509007-fsn' 
               && language.id !== '900000000000509007-pt') {
               if (language) {
@@ -1814,7 +1818,7 @@ angular.module('singleConceptAuthoringApp')
             var i, j, temparray, chunk = 50;
             var promises = [];
             const acceptLanguageValue = getAcceptLanguageValue(scope.selectedLanguage);
-            const useFSN = scope.selectedLanguage && (scope.selectedLanguage.id === '900000000000509007' ||scope.selectedLanguage.id === '900000000000509007-fsn');
+            const useFSN = (scope.selectedLanguage && (scope.selectedLanguage.id === '900000000000509007' ||scope.selectedLanguage.id === '900000000000509007-fsn')) || !scope.isExtensionSet() || scope.useInternationalLanguageRefsets();
             for (i = 0, j = idList.length; i < j; i += chunk) {
               temparray = idList.slice(i, i + chunk);
               promises.push(fetchTermForClassifiedConcepts(scope.branch, temparray, scope.feedbackContainer.review.conceptsClassified, acceptLanguageValue, useFSN));            ;
