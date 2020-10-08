@@ -129,11 +129,13 @@ angular.module('singleConceptAuthoringApp')
           copy.classAxioms = [];
           copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
           copy.classAxioms[0].relationships = angular.copy(copy.relationships);
+          if (crsRequest.definitionStatus === 'FULLY_DEFINED') {
+            copy.classAxioms[0].definitionStatus = 'FULLY_DEFINED';
+          }
           angular.forEach(copy.classAxioms[0].relationships, function (rel){
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
           })
-          delete copy.relationships;
-          console.log(copy);
+          delete copy.relationships;          
           deferred.resolve(copy);
         }
 
@@ -150,11 +152,13 @@ angular.module('singleConceptAuthoringApp')
           copy.classAxioms = [];
           copy.classAxioms.push(componentAuthoringUtil.getNewAxiom());
           copy.classAxioms[0].relationships = angular.copy(copy.relationships);
+          if (crsRequest.definitionStatus === 'FULLY_DEFINED') {
+            copy.classAxioms[0].definitionStatus = 'FULLY_DEFINED';
+          }
           angular.forEach(copy.classAxioms[0].relationships, function (rel){
               rel.type.pt =  rel.type.fsn.substr(0, rel.type.fsn.lastIndexOf('(')).trim();
           });
-          delete copy.relationships;
-          
+          delete copy.relationships;          
           deferred.resolve(angular.copy(copy));
         }
 
