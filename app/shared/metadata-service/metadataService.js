@@ -359,6 +359,13 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
+        // Add optional language refsets
+        if (metadata.optionalLanguageRefsets) {
+          for (let i = 0; i < metadata.optionalLanguageRefsets.length; i++) {
+            dialects[metadata.optionalLanguageRefsets[i]['refsetId']] = metadata.optionalLanguageRefsets[i]['key'];
+          }              
+        } 
+
         languages = parseLanguages(languages);
         defaultLanguages = parseLanguages(defaultLanguages);
 
@@ -400,7 +407,8 @@ angular.module('singleConceptAuthoringApp')
           readOnlyDialects: readOnlyDialects,
           dependencyRelease: metadata.dependencyRelease,
           codeSystemShortName : metadata.codeSystemShortName,
-          useInternationalLanguageRefsets: (metadata.useInternationalLanguageRefsets ? true : false)
+          useInternationalLanguageRefsets: (metadata.useInternationalLanguageRefsets ? true : false),
+          optionalLanguageRefsets: metadata.optionalLanguageRefsets
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -552,9 +560,16 @@ angular.module('singleConceptAuthoringApp')
     function getAllDialects() {
       // get the test branch dialects
       var dialects = angular.copy(internationalMetadata.dialects);
-      if (extensionMetadata && extensionMetadata.dialects) {
-        for (var key in extensionMetadata.dialects) {
-          dialects[key] = extensionMetadata.dialects[key];
+      if (extensionMetadata) {
+        if (extensionMetadata.dialects) {
+          for (var key in extensionMetadata.dialects) {
+            dialects[key] = extensionMetadata.dialects[key];
+          }
+        }
+        if (extensionMetadata.optionalLanguageRefsets) {
+          for (let i = 0; i < extensionMetadata.optionalLanguageRefsets.length; i++) {
+            dialects[extensionMetadata.optionalLanguageRefsets[i].refsetId] = extensionMetadata.optionalLanguageRefsets[i].key;
+          }
         }
       }
       return dialects;
@@ -592,6 +607,14 @@ angular.module('singleConceptAuthoringApp')
       } else {
         return internationalMetadata.languages;
       }
+    }
+
+    function getOptionalLanguageRefsets() {
+      if (extensionMetadata && extensionMetadata.optionalLanguageRefsets) {
+        return extensionMetadata.optionalLanguageRefsets;
+      } 
+
+      return null;
     }
 
     function getDefaultLanguageForModuleId(moduleId) {
@@ -902,7 +925,8 @@ angular.module('singleConceptAuthoringApp')
       setUngroupedAttributes: setUngroupedAttributes,
       isUngroupedAttribute: isUngroupedAttribute,
       getSemanticTags: getSemanticTags,
-      getDropdownLanguages: getDropdownLanguages
+      getDropdownLanguages: getDropdownLanguages,
+      getOptionalLanguageRefsets: getOptionalLanguageRefsets
     };
 
   }])

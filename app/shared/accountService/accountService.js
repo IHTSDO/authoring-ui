@@ -92,6 +92,9 @@ angular.module('singleConceptAuthoringApp')
       // create local copy for modification and return (don't modify original object)
       var localPreferences = JSON.parse(JSON.stringify(preferences));
 
+      // cache UserPreferences
+      userPreferences = preferences;
+
       // handle as promise for now, in case later preferences require processing
       // (not currently needed, but meh)
       var deferred = $q.defer();
@@ -165,6 +168,10 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    function getCachedUserPreferences() {
+      return userPreferences;
+    }
+
     function isValidBranchPath (branch) {
       let projects = metadataService.getProjects();
       if (projects.length > 0) {
@@ -185,7 +192,8 @@ angular.module('singleConceptAuthoringApp')
       getRoleForProject: getRoleForProject,     
       applyUserPreferences : applyUserPreferences,
       getUserPreferences: getUserPreferences,
-      saveUserPreferences: saveUserPreferences
+      saveUserPreferences: saveUserPreferences,
+      getCachedUserPreferences: getCachedUserPreferences
     };
 
   })

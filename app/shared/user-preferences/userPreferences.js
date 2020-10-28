@@ -8,15 +8,9 @@ angular.module('singleConceptAuthoringApp')
       // Basic User Preferences
       /////////////////////////////////////////
 
-      // on load, retrieve the user preferences
-      accountService.getUserPreferences().then(function (response) {
-        $scope.userPreferences = response;
-        configService.getVersions().then(function(versions){
-            $scope.versions = versions;
-        });
-      });
-        
-      $scope.projects = metadataService.getProjects();
+      $scope.optionalLanguageRefsets = [];
+
+      $scope.selectedLanguageRefsets = {};
 
       // revert settings to original
       $scope.revert = function () {
@@ -70,7 +64,9 @@ angular.module('singleConceptAuthoringApp')
           }
       }
 
-
+      $scope.isTaskView = function() {
+        return window.location.href.indexOf('tasks') > -1;
+      }
 
       //////////////////////////////////////////
       // Modal Controls
@@ -78,6 +74,9 @@ angular.module('singleConceptAuthoringApp')
 
       // close modal and apply settings
       $scope.save = function () {
+
+        // Optional language refset
+        $scope.userPreferences.optionalLanguageRefsets = getSelectedOptionalLanguageRefsets();
         accountService.applyUserPreferences($scope.userPreferences).then(function (userPreferences) {
 
           // if layout specified, attach/replace it in user preferences
@@ -106,5 +105,51 @@ angular.module('singleConceptAuthoringApp')
         $modalInstance.close();
       };
 
+      function getSelectedOptionalLanguageRefsets() {
+        let result = []
+        if (Object.keys($scope.selectedLanguageRefsets).length) {
+          for (const [key, value] of Object.entries($scope.selectedLanguageRefsets)) {
+            if (value) {
+              result.push(key);
+            }
+          }
+        }
+        return result;
+      }
+
+      function setSelectedOptionalLanguageRefsets(userPreferences) {
+        if (userPreferences.optionalLanguageRefsets) {
+          angular.forEach(userPreferences.optionalLanguageRefsets, function(item) {
+            $scope.selectedLanguageRefsets[item] = true;
+          })
+        }
+      }
+
+      function setOptionalLanguageRefsets() {
+        $scope.optionalLanguageRefsets = [];
+        var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+        if (optionalLanguageRefsets) {
+          $scope.optionalLanguageRefsets = optionalLanguageRefsets
+        }       
+      }
+
+      function initialize() {
+        // on load, retrieve the user preferences
+        accountService.getUserPreferences().then(function (response) {
+          $scope.userPreferences = response;
+          setSelectedOptionalLanguageRefsets($scope.userPreferences);
+          configService.getVersions().then(function(versions){
+              $scope.versions = versions;
+          });
+        });
+
+        $scope.projects = metadataService.getProjects();
+
+        if ($scope.isTaskView() && $rootScope.currentTask) {
+          setOptionalLanguageRefsets();
+        }
+      }
+
+      initialize();
 
     }]);

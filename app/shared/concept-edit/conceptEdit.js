@@ -1862,6 +1862,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return Object.keys(dialects);
         };
 
+        scope.getOptionalLanguageRefsetsLength = function() {
+          var count = 0
+          var userPreferences = accountService.getCachedUserPreferences();
+          if (userPreferences.optionalLanguageRefsets && userPreferences.optionalLanguageRefsets.length !== 0) {
+            var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+            if (optionalLanguageRefsets) {
+              count = optionalLanguageRefsets.filter(function(item) {
+                return userPreferences.optionalLanguageRefsets.indexOf(item.refsetId) > -1;
+              }).length;
+            }            
+          }
+
+          return count;
+        }
+
         scope.getDialectsForDescription = function (description, FSN) {
           return metadataService.getDialectsForModuleId(description.moduleId, FSN);
         };
@@ -1869,6 +1884,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.filterDescriptions = function (d) {
           return !scope.hideInactive || d.active;
         };                
+        
+        scope.isOptionalLanguageRefset = function(description, dialectId) {
+          var currentModuleId = metadataService.getCurrentModuleId();
+          var userPreferences = accountService.getCachedUserPreferences();
+          if (currentModuleId == description.moduleId) {
+            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+            if (optionalLanguageRefsets && userPreferences.optionalLanguageRefsets) {
+              for (let i =0; i < optionalLanguageRefsets.length; i++) {
+                if (optionalLanguageRefsets[i].refsetId === dialectId 
+                    && userPreferences.optionalLanguageRefsets.indexOf(dialectId) > -1) {
+                  return true;
+                }
+              }
+            }
+          }
+
+          return false;
+        }
 
         function setDefaultModuleId() {
           var moduleId = metadataService.getCurrentModuleId();
