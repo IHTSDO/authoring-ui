@@ -346,7 +346,7 @@
             class="tooltips-bottom tooltips-light medium-size-tooltip custom-margin"
             ng-class="componentStyles[description.descriptionId + '-caseSignificance'].style"><span>{{componentStyles[description.descriptionId + '-caseSignificance'].message}}</span></div>
           <!-- Term -->
-          <div class="pull-left description no-padding lang-ref-set-{{dialectLength}}"
+          <div class="pull-left description no-padding lang-ref-set-{{dialectLength + getOptionalLanguageRefsetsLength()}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
@@ -411,7 +411,8 @@
 
             <!-- button for each dialect key -->
             <div ng-repeat="dialectId in getDialectIdsForDescription(description)">
-              <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1">
+              <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1
+                          || isOptionalLanguageRefset(description, dialectId)">
                   <button type="button"
                           class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                           ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels || checkReadOnlyDialect(dialectId)"

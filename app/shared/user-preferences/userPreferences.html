@@ -47,6 +47,14 @@
         </div>
         <br>
         <br>
+        <div ng-if="isTaskView() && optionalLanguageRefsets.length !== 0" class="m-b-15">
+          <label>Context Specific Language Refsets</label>
+          <br>
+          <div ng-repeat="languageRefset in optionalLanguageRefsets" class="inline m-r-20">
+            <label class="w400">{{languageRefset.label}}</label><div class="no-padding checkbox inline m-l-25"><input type="checkbox" class="m-r-20" ng-model="selectedLanguageRefsets[languageRefset.refsetId]"></div>
+          </div>          
+        </div>
+
         <label for="layoutGrid">Page Layout</label>
        
         <div id="layoutGrid" class="row no-gutter no-padding">
