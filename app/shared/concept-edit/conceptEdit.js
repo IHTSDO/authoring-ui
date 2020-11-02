@@ -1865,7 +1865,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getOptionalLanguageRefsetsLength = function() {
           var count = 0
           var userPreferences = accountService.getCachedUserPreferences();
-          if (userPreferences.optionalLanguageRefsets && userPreferences.optionalLanguageRefsets.length !== 0) {
+          var internationalModuleId = metadataService.getInternationalModuleId();
+          var hasExtensionDescritpion = scope.concept.descriptions.filter(function(item) {
+            if (scope.hideInactive) {
+              return item.active && item.moduleId !== internationalModuleId;
+            } else {
+              return item.moduleId !== internationalModuleId;
+            }
+          }).length !== 0;
+          if (hasExtensionDescritpion && userPreferences.optionalLanguageRefsets && userPreferences.optionalLanguageRefsets.length !== 0) {
             var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
             if (optionalLanguageRefsets) {
               count = optionalLanguageRefsets.filter(function(item) {
@@ -1888,6 +1896,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isOptionalLanguageRefset = function(description, dialectId) {
           var currentModuleId = metadataService.getCurrentModuleId();
           var userPreferences = accountService.getCachedUserPreferences();
+          console.log("Available languages: ");
+          console.log(scope.getAvailableLanguages(description.moduleId));
           if (currentModuleId == description.moduleId) {
             const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
             if (optionalLanguageRefsets && userPreferences.optionalLanguageRefsets) {
