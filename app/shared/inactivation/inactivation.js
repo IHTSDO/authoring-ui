@@ -725,12 +725,9 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
-          function getFullConceptsForIds(ids, array) {
-              
-              var deferred = $q.defer();
-                if (!array) {
-                  array = [];
-                }
+          function getFullConceptsForIds(ids) {
+            var array = [];  
+            var deferred = $q.defer();                
             if (!ids || ids.length === 0) {
               deferred.resolve(array);
             } else {
@@ -739,7 +736,7 @@ angular.module('singleConceptAuthoringApp')
                     if (ids.length === 1 && response.length > 0) {
                       array.push(response[0]);
                     } else {
-                      array.push(response.items);
+                      array = response;
                     }
                     deferred.resolve(array);
               });
