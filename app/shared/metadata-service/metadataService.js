@@ -362,7 +362,7 @@ angular.module('singleConceptAuthoringApp')
         // Add optional language refsets
         if (metadata.optionalLanguageRefsets) {
           for (let i = 0; i < metadata.optionalLanguageRefsets.length; i++) {
-            dialects[metadata.optionalLanguageRefsets[i]['refsetId']] = metadata.optionalLanguageRefsets[i]['key'];
+            dialects[metadata.optionalLanguageRefsets[i]['refsetId']] = metadata.optionalLanguageRefsets[i]['language'];
           }              
         } 
 
