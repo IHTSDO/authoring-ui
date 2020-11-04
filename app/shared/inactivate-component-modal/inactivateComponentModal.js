@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
 
         if($scope.descendants) {
           angular.forEach($scope.descendants.items, function(descendant) {
-            descendants.push(descendant.id);
+            descendants.push(descendant.concept.conceptId);
           });
         }
 
