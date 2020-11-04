@@ -2398,16 +2398,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
+            
+          const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+          let textString = '';
+          for (let i =0; i < optionalLanguageRefsets.length; i++) {
+            if (optionalLanguageRefsets[i].refsetId === dialectId) {
+                textString = optionalLanguageRefsets[i].label + ': ';
+            }
+          }
+
           if (!description || !dialectId) {
             return null;
           }
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
-            return 'Not Acceptable';
+            return textString + 'Not Acceptable';
           }
 
-          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
+          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? textString + 'Preferred' : textString + 'Acceptable';
         };
 
 // returns the display abbreviation for a specified dialect
