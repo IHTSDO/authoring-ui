@@ -1862,27 +1862,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return Object.keys(dialects);
         };
 
-        scope.getOptionalLanguageRefsetsLength = function() {
-          var count = 0
+        scope.getUnSelectedOptionalLanguageRefsetsLength = function() {
+          var unSelecteLanguageCount = 0
           var userPreferences = accountService.getCachedUserPreferences();
-          var internationalModuleId = metadataService.getInternationalModuleId();
-          var hasExtensionDescritpion = scope.concept.descriptions.filter(function(item) {
-            if (scope.hideInactive) {
-              return item.active && item.moduleId !== internationalModuleId;
-            } else {
-              return item.moduleId !== internationalModuleId;
-            }
-          }).length !== 0;
-          if (hasExtensionDescritpion && userPreferences.optionalLanguageRefsets && userPreferences.optionalLanguageRefsets.length !== 0) {
-            var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-            if (optionalLanguageRefsets) {
-              count = optionalLanguageRefsets.filter(function(item) {
-                return userPreferences.optionalLanguageRefsets.indexOf(item.refsetId) > -1;
-              }).length;
-            }            
-          }
+          var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();         
+          if (userPreferences.optionalLanguageRefsets && optionalLanguageRefsets) {
+            var count = optionalLanguageRefsets.filter(function(item) {
+              return userPreferences.optionalLanguageRefsets.indexOf(item.refsetId) > -1;
+            }).length;
 
-          return count;
+            unSelecteLanguageCount = optionalLanguageRefsets.length - count;
+          }
+          return unSelecteLanguageCount;
         }
 
         scope.getDialectsForDescription = function (description, FSN) {
@@ -1893,24 +1884,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return !scope.hideInactive || d.active;
         };                
         
-        scope.isOptionalLanguageRefset = function(description, dialectId) {
-          var currentModuleId = metadataService.getCurrentModuleId();
+        scope.isOptionalLanguageRefsetPresent = function(dialectId) {          
           var userPreferences = accountService.getCachedUserPreferences();
-          console.log("Available languages: ");
-          console.log(scope.getAvailableLanguages(description.moduleId));
-          if (currentModuleId == description.moduleId) {
-            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-            if (optionalLanguageRefsets && userPreferences.optionalLanguageRefsets) {
-              for (let i =0; i < optionalLanguageRefsets.length; i++) {
-                if (optionalLanguageRefsets[i].refsetId === dialectId 
-                    && userPreferences.optionalLanguageRefsets.indexOf(dialectId) > -1) {
+          const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+
+          let dialectFound = false;
+
+          // if dialectId is not an optional language refset, then return TRUE
+          // else checking where or not it is selected in User Preference 
+          if (optionalLanguageRefsets && userPreferences.optionalLanguageRefsets) {
+            for (let i =0; i < optionalLanguageRefsets.length; i++) {
+              if (optionalLanguageRefsets[i].refsetId === dialectId) {
+                dialectFound = true;
+                if (userPreferences.optionalLanguageRefsets.indexOf(dialectId) > -1) {
                   return true;
-                }
+                }               
               }
             }
           }
-
-          return false;
+          
+          return !dialectFound ? true : false;
         }
 
         function setDefaultModuleId() {
