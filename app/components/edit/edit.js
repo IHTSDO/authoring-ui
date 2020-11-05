@@ -1148,10 +1148,20 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.createConcept = function (isBlank) {
 
       var selectedTemplate = templateService.getSelectedTemplate();
-        console.log(selectedTemplate);
-
+      
       if (!selectedTemplate || isBlank) {
         var concept = componentAuthoringUtil.getNewConcept();
+
+        // Remove optional language refset to avoid any mistakes                
+        const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();        
+        if (optionalLanguageRefsets) {
+          concept.descriptions.forEach(function (description) {
+            for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+              delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
+            }
+          });          
+        }
+
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
         $scope.clearTemplate();

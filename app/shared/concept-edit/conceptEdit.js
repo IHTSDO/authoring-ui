@@ -2041,6 +2041,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }
                 });
 
+                // Remove optional language refset to avoid any mistakes                
+                const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();        
+                if (optionalLanguageRefsets) {
+                  for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+                    delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
+                  }
+                }
+                
                 if (afterIndex === null || afterIndex === undefined) {
                   scope.concept.descriptions.push(description);
                   autoSave();
