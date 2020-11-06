@@ -2409,11 +2409,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             
           const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
           let textString = '';
-          for (let i =0; i < optionalLanguageRefsets.length; i++) {
-            if (optionalLanguageRefsets[i].refsetId === dialectId) {
-                textString = optionalLanguageRefsets[i].label + ': ';
+          if (optionalLanguageRefsets) {
+            for (let i =0; i < optionalLanguageRefsets.length; i++) {
+              if (optionalLanguageRefsets[i].refsetId === dialectId) {
+                  textString = optionalLanguageRefsets[i].label + ': ';
+              }
             }
-          }
+          }          
 
           if (!description || !dialectId) {
             return null;
