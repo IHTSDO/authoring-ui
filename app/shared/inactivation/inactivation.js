@@ -827,8 +827,8 @@ angular.module('singleConceptAuthoringApp')
                       console.debug('    checking against concept description', cd.descriptionId);
                       if (cd.descriptionId === d.descriptionId) {
                         console.debug('      match found');
-                        if (d.inactivationIndicator !== 'NOT_SEMANTICALLY_EQUIVALENT') {
-                          cd.inactivationIndicator = d.inactivationIndicator;
+                        cd.inactivationIndicator = d.inactivationIndicator;
+                        if (d.inactivationIndicator !== 'NOT_SEMANTICALLY_EQUIVALENT') {                          
                           delete cd.associationTargets;
                         } else {
                           if (tempDescConceptMap[d.id + '-' + d.conceptId] !== undefined) {
