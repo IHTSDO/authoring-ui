@@ -136,7 +136,10 @@ angular.module('singleConceptAuthoringApp')
                     else {
                       var item = angular.copy(concept);
                       item.inactivationIndicator = scope.reasonId;
-                      item.refsetName = scope.associationTargets[j].id;
+                      item.refsetName = '';
+                      if (!concept.active && concept.inactivationIndicator) {
+                        item.oldInactivationIndicator = concept.inactivationIndicator;
+                      }                      
 
                       parsedComponents.concepts.push(item);
                     }
@@ -1302,25 +1305,31 @@ angular.module('singleConceptAuthoringApp')
           function getHistoricalAssocConceptTargets() {
             var deferred = $q.defer();
             let requestCount = 0;
-            let requestDoneCount = 0; 
-            for (var key in scope.assocs) {
-              angular.forEach(scope.assocs[key], function (id) {
-                requestCount++;
-                var concept = {};
-                concept.assocName = key;
-                concept.conceptId = id;
-                terminologyServerService.findConcept(id, scope.branch).then(function (response) {
-                  if (response) {
-                    concept.fsn = response.fsn;
-                  }
-                  scope.histAssocTargets.concepts.push(concept);
-                  requestDoneCount++;
-                  if (requestCount === requestDoneCount) {
-                    deferred.resolve();
-                  }
-                });                                
-              });
-            }          
+            let requestDoneCount = 0;
+            if (Object.keys(scope.assocs).length !== 0) {
+              for (var key in scope.assocs) {
+                angular.forEach(scope.assocs[key], function (id) {
+                  requestCount++;
+                  var concept = {};
+                  concept.assocName = key;
+                  concept.conceptId = id;
+                  terminologyServerService.findConcept(id, scope.branch).then(function (response) {
+                    if (response) {
+                      concept.fsn = response.fsn;
+                    }
+                    scope.histAssocTargets.concepts.push(concept);
+                    requestDoneCount++;
+                    if (requestCount === requestDoneCount) {
+                      deferred.resolve();
+                    }
+                  });                                
+                });
+              } 
+            } else {
+              scope.histAssocTargets.concepts = [];
+              deferred.resolve();
+            }
+                     
             return deferred.promise;
           }
 
@@ -1396,11 +1405,16 @@ angular.module('singleConceptAuthoringApp')
 
           scope.resetRelTargetConcept = function (rel) {
             if (rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
-              rel.newTargetFsn = "";
-              rel.newTargetId = "";
+              rel.newTargetFsn = '';
+              rel.newTargetId = '';
             } else {
-              rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
-              rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+              if (scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
+                rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
+                rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+              } else {
+                rel.newTargetFsn = '';
+                rel.newTargetId = '';
+              }             
             }
 
             var associations = scope.getAssociationsForReason(rel.inactivationIndicator);
@@ -1424,9 +1438,13 @@ angular.module('singleConceptAuthoringApp')
           scope.updateDescRefAssocTarget = function (rel) {
             if(rel.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
               rel.refsetName = 'REFERS_TO';
-              rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
-              rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
-
+              if (scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
+                rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
+                rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+              } else {
+                rel.newTargetId = '';
+                rel.newTargetFsn = '';
+              }
             } else {
               rel.refsetName = '';
               rel.newTargetId = '';
