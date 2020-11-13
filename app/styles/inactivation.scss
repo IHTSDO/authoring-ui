@@ -55,7 +55,8 @@
   background-color: #9e9e9e;
 }
 
-#inactivateComponentModal.inactivation .classification-report .nav-tabs > li {
+#inactivateComponentModal.inactivation .classification-report .nav-tabs > li,
+#inactivateComponentModal.deletion .classification-report .nav-tabs > li {
 	width: 20%;
 	text-align: center;
 }
