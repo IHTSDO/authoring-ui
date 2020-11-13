@@ -479,7 +479,6 @@ angular.module('singleConceptAuthoringApp')
       terminologyServerService.getReferenceSetsByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
           if (response !== null) {
             $scope.referenceSetAssociations = [];
-            var items = [];
             angular.forEach(response.items, function (item) {
               if (!excludedRefset.includes(item.refsetId)) {
                 let newItem = angular.copy(item);
@@ -585,19 +584,9 @@ angular.module('singleConceptAuthoringApp')
     if ($scope.componentType === 'Concept') {
       getInboundRelationships($scope.conceptId).then(function () {
         checkStatedChildren();
-        // detect case where no stated parent-child relationship was found, but
-        // more results may exist
-//        if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
-//
-//          getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
-//            checkStatedChildren();
-//          });
-//        }
       });
 
-      if (!$scope.deletion) {
-        getReferenceSetAssociations();
-      }
+      getReferenceSetAssociations();
     }
 
     $scope.cancel = function () {
