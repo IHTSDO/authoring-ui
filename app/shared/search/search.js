@@ -548,6 +548,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         // trim and lower-case the search string
         $scope.searchStr = $scope.searchStr.trim();
+        let searchStr = $scope.searchStr;
+
+        // omitted the text between the pipe-bars if any
+        var patt = new RegExp('^\\d+\\s\\|.*\\|$');
+        if (patt.test($scope.searchStr)) {
+            searchStr = searchStr.substring(0, searchStr.indexOf(' '));
+        }
 
         // initialize or clear the results list
         if (!$scope.results || !appendResults) {
@@ -591,7 +598,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
                 if(results.data.length > 0){
-                    terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data, $scope.searchAfter, $scope.searchTimestamp).then(function (results) {
+                    terminologyServerService.searchAllConcepts($scope.branch, searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, results.data, $scope.searchAfter, $scope.searchTimestamp).then(function (results) {
                       if (results.searchTimestamp !== $scope.searchTimestamp) {
                         return;
                       }  
@@ -628,7 +635,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         }
         else{
-          terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter, $scope.searchTimestamp, $scope.descriptionSeachStatus, getPreferredOrAcceptableIn()).then(function (results) {
+          terminologyServerService.searchAllConcepts($scope.branch, searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize, !fsnSearchFlag, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, null, $scope.searchAfter, $scope.searchTimestamp, $scope.descriptionSeachStatus, getPreferredOrAcceptableIn()).then(function (results) {
             if (results.searchTimestamp !== $scope.searchTimestamp) {
               return;
             }
