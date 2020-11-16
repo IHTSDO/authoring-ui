@@ -7,6 +7,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
       $rootScope.branchLocked = false;
+      $scope.crsConcepts = [];
 
       // the project and task branch objects
       $scope.projectBranch = null;
@@ -580,6 +581,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
             $scope.isCrsTask = true;
+            $scope.crsConcepts = crsService.getCrsConcepts();
           }
         });
       }
