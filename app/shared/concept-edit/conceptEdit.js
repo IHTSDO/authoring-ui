@@ -1328,6 +1328,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.computeAxioms(axiomType.GCI);
                 scope.reapplyTemplate();
 
+                if (originalConcept.conceptId) {
+                  scope.concept.conceptId = originalConcept.conceptId;
+                }
+
                 $rootScope.$broadcast('conceptEdit.validation', {
                   branch: scope.branch,
                   conceptId: scope.concept.conceptId,
@@ -1467,21 +1471,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           };
 
-          // var promises = [];
-          // angular.forEach(scope.concept.descriptions, function(description) {
-          //   if (description.active && !description.effectiveTime && !description.released && description.type === 'SYNONYM') {
-          //     promises.push(componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false));
-          //   }
-          // });
-            
-          // if (promises.length !== 0) {
-          //   $q.all(promises).then(function () {
-          //     saveConceptFn();
-          //   });
-          // }
-          // else {
-            saveConceptFn();
-          // }          
+         
+          saveConceptFn();        
         };
 
 // Update feedback
