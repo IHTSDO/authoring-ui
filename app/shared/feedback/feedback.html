@@ -78,9 +78,9 @@
           </div>
 
           <!-- Review In Progress / Review Complete toggle -->
-          <div class="switch pull-right white-text">
+          <div class="switch pull-right white-text" ng-if="feedbackContainer.review">
             <label class="switch"> Review in Progress
-              <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
+              <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="feedbackContainer.review.conceptsToReview.length !== 0"
                      ng-change="toggleReviewStatus()">
               <span class="lever"></span> Review Complete </label>
           </div>
