@@ -4722,6 +4722,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (relationship && relationship.targetSlot && relationship.targetSlot.slotName) {
             return 'template-editable';
           }
+            
+          if (relationship.concreteValue){
+              return 'concrete';
+          }
 
           //Set to blue as default for "is a"-field when creating a new concept
           if (relationship && relationship.type && relationship.type.conceptId === '116680003' 

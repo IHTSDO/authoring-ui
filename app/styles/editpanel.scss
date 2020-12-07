@@ -1275,6 +1275,15 @@ button-link .bluehl .grey.darken-3 {
 .color_.def_PRIMITIVE .custom-button:active {
      background-color: #b7dbff;
 }
+.concrete.axiom-relationship.relationship-target.sourcename {
+    background-color: #BAEEC8;
+}
+.concrete .color_even input,
+.concrete .color_even textarea,
+.concrete .color_even select,
+.concrete .color_even .custom-button {
+    background-color: #BAEEC8;
+}
 .PRIMITIVE.axiom-relationship.relationship-target.sourcename {
     background-color: #b7dbff;
 }
@@ -1299,6 +1308,16 @@ button-link .bluehl .grey.darken-3 {
 .sourcename {
     margin-left: .5%
 }
+
+.concrete textarea.relationship,
+.concrete textarea.rg,
+.concrete select,
+.concrete .custom-button,
+.concrete .sourcename {
+    background-color: #BAEEC8;
+    color: #474747;
+}
+
 .PRIMITIVE textarea.relationship,
 .PRIMITIVE textarea.rg,
 .PRIMITIVE select,

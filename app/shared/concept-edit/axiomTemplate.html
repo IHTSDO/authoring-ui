@@ -151,7 +151,7 @@
                      ng-mouseover="setTooltipPosition($event)">
                   <div class="small-size-tooltip tooltips-bottom">
                       <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
-                                ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
+                                ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.concreteValue ? relationship.concreteValue.value : relationship.target.fsn"
                                 ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
                                 typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
