@@ -616,8 +616,17 @@
                      ng-mouseover="setTooltipPosition($event)">
 
                   <div class="small-size-tooltip tooltips-bottom">
-                    <textarea id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
-                              ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.concreteValue ? relationship.concreteValue.value : relationship.target.fsn"
+                    <textarea ng-if="relationship.concreteValue" id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
+                              ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.concreteValue.value"
+                              ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
+                              class="resizable-text relationship msd-elastic no-border-bottom"
+                              typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
+                              typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
+                              typeahead-wait-ms="700"
+                              typeahead-on-select="setRelationshipTargetConcept(relationship, $item, concept.conceptId, relationship.groupId, $index)"
+                              typeahead-editable="false" typeahead-min-length="3"></textarea>
+                      <textarea ng-if="!relationship.concreteValue" id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
+                              ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.target.fsn"
                               ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                               class="resizable-text relationship msd-elastic no-border-bottom"
                               typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
