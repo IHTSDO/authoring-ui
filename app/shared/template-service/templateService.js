@@ -1210,12 +1210,12 @@ angular.module('singleConceptAuthoringApp')
       if ((relationship.cardinalityMin
         && relationship.cardinalityMax
         && relationship.cardinalityMin === '0'
-        && relationship.cardinalityMax === '1')
+        && (relationship.cardinalityMax === '1' || relationship.cardinalityMax === '*'))
         || (relationship.template
           && relationship.template.cardinalityMin
           && relationship.template.cardinalityMax
           && relationship.template.cardinalityMin === '0'
-          && relationship.template.cardinalityMax === '1')) {
+          && (relationship.template.cardinalityMax === '1' || relationship.template.cardinalityMax === '*'))) {
         return true;
       }
 
