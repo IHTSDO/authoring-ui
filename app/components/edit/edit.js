@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, terminologyServerService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile, hotkeys, modalService) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, terminologyServerService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $q, crsService, reviewService, ngTableParams, templateService, $filter, hotkeys, modalService) {
 
     // Close all concepts listener
     $scope.$on('closeAllOpenningConcepts', function (event, data) {
@@ -1517,15 +1517,17 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (angular.isUndefined(response.linkedIssues)) {
             response.linkedIssues = [];
           }
-
-          $scope.task = response;
-          $rootScope.currentTask = response;
-
-          // set the classification and validation flags
-          $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING' || $scope.task.latestClassificationJson.status === 'SCHEDULED');
-          $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
-
-          deferred.resolve(response);
+          
+          markTaskInProgressIfTraceabilityFound(response).then(function(task) {
+            $scope.task = task;
+            $rootScope.currentTask = task;
+              
+            // set the classification and validation flags
+            $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING' || $scope.task.latestClassificationJson.status === 'SCHEDULED');
+            $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
+            
+            deferred.resolve(task);
+          });          
         }, function (error) {
           deferred.reject('Task load failed');
         });
@@ -1534,8 +1536,28 @@ angular.module('singleConceptAuthoringApp.edit', [
         deferred.reject('No task to load');
       }
       return deferred.promise;
+    }
 
+    function markTaskInProgressIfTraceabilityFound(task) {
+      var deferred = $q.defer();
+      
+      if (task.status === 'New') {
+        terminologyServerService.getTraceabilityForBranch(task.branchPath).then(function(traceability) {
+          if (traceability) {
+            scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+              deferred.resolve(response.data);
+            })
+          } else {
+            deferred.resolve(task);
+          }
+        }, function () {
+          deferred.resolve(task);
+        });
+      } else {
+        deferred.resolve(task);
+      }
 
+      return deferred.promise;
     }
 
     $scope.$on('reloadTask', function (event, data) {
