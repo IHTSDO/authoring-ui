@@ -560,7 +560,7 @@ angular.module('singleConceptAuthoringApp')
           var widthPadding = 20;
           var heightpadding = 25;
           var concreteWidthPadding = 50;
-          var concreteHeightPadding = 24;
+          var concreteHeightPadding = 20;
 
           if (!sctid || !label) {
             heightpadding = 15;
@@ -574,8 +574,16 @@ angular.module('singleConceptAuthoringApp')
               strokeWidth: 2
             });
           } else if (cssClass === "concrete-domain") {
-            rect = svg.rect(x, y, textWidth + concreteWidthPadding + 4, textHeight + concreteHeightPadding + 4, {fill: '#BAEEC8', stroke: '#333', strokeWidth: 2});
-        var innerRect = svg.polygon([[x, y +10], [x +10, y], [x, y], [x + (textWidth + concreteWidthPadding + 4), y],[x + (textWidth + concreteWidthPadding -6), y],[x + (textWidth + concreteWidthPadding +4), y + 10], [x + (textWidth + concreteWidthPadding +4), y + (textHeight + concreteHeightPadding -6)],[x + (textWidth + concreteWidthPadding -6), y + (textHeight + concreteHeightPadding + 4)], [x +10, y + (textHeight + concreteHeightPadding + 4)], [x, y + (textHeight + concreteHeightPadding -6)]], {id: 'rect'+idSequence, fill: '#BAEEC8', stroke: '#333', strokeWidth: 2});
+              var width = 0;
+              if(textWidth + concreteWidthPadding + 4 > 65){
+                   width = textWidth + concreteWidthPadding + 4;
+              }
+              else{
+                  width = 65;
+              }
+             
+            rect = svg.rect(x, y, width, textHeight + concreteHeightPadding + 4, {fill: '#BAEEC8', stroke: '#333', strokeWidth: 2});
+        var innerRect = svg.polygon([[x, y +10], [x +10, y], [x, y], [x + (width), y],[x + (width -10), y],[x + (width), y + 10], [x + (width), y + (textHeight + concreteHeightPadding -6)],[x + (width -10), y + (textHeight + concreteHeightPadding + 4)], [x +10, y + (textHeight + concreteHeightPadding + 4)], [x, y + (textHeight + concreteHeightPadding -6)]], {id: 'rect'+idSequence, fill: '#BAEEC8', stroke: '#333', strokeWidth: 1});
           } else if (cssClass === "sct-defined-concept") {
             rect = svg.rect(x - 2, y - 2, textWidth + widthPadding + 4, textHeight + heightpadding + 4, {
               fill: 'white',
@@ -625,7 +633,13 @@ angular.module('singleConceptAuthoringApp')
           }
 
           if(cssClass == "concrete-domain"){
-            svg.text(x + 2 + (((textWidth + concreteWidthPadding)/2) - (textWidth/2)), y + 11 + (((textHeight + concreteHeightPadding)/2) - (textHeight/2)), label, {fontFamily: fontFamily, fontSize: '12', fill: 'black'});
+            if(textWidth + concreteWidthPadding + 4 > 65){
+               width = textWidth + concreteWidthPadding + 4;
+            }
+            else{
+              width = 65;
+            }
+            svg.text(x + (((width)/2) - (textWidth/2)), y + 13 + (((textHeight + concreteHeightPadding)/2) - (textHeight/2)), label, {fontFamily: fontFamily, fontSize: '12', fill: 'black'});
           } else if (sctid && label) {
             svg.text(x + 10, y + 16, sctid.toString(), {
               fontFamily: fontFamily,
