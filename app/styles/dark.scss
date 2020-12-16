@@ -1205,13 +1205,15 @@ background-color: #262e39;}
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAATUlEQVR42mNgGAWjYBTQBPynAAxOi2JjY7nJsSQ0NJSZ5OAj1TKyLCHVMoosIdYyqlhCyDKqWoLLMppYAgNAwzmhSZhptLQZBaNgGAMAnbVItrY8buUAAAAASUVORK5CYII=);
 }
 .sca-dark .search-scroll button.fa-power-off.disable,
-.sca-dark .search-scroll button.md-playlist-add.disable {
+.sca-dark .search-scroll button.md-playlist-add.disable,
+.sca-dark .model-header-sca button.md-playlist-add.disable {
     color: #666;
     background-color: transparent;
 }
 
 .sca-dark .search-scroll button.fa-power-off.disable:hover,
-.sca-dark .search-scroll button.md-playlist-add.disable:hover {
+.sca-dark .search-scroll button.md-playlist-add.disable:hover,
+.sca-dark .model-header-sca button.md-playlist-add.disable:hover {
     background-color: #c13244;
     color: #fff;
 }

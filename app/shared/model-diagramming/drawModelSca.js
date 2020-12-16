@@ -6,8 +6,8 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .directive('drawModelSca', ['$rootScope',
-    function(rootScope) {
+  .directive('drawModelSca', ['$rootScope','$routeParams','savedListService','terminologyServerService',
+    function(rootScope, routeParams, savedListService, terminologyServerService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -22,8 +22,10 @@ angular.module('singleConceptAuthoringApp')
       },
       templateUrl: 'shared/model-diagramming/drawModelSca.html',
 
-      link: function (scope, element, attrs, linkCtrl, terminologyServerService) {
+      link: function (scope, element, attrs, linkCtrl) {
 
+        scope.savedList = {items: []};
+        scope.isSctid = terminologyServerService.isSctid;
 
         // convert string to boolean value
         if (scope.classificationSaved === 'true') {
@@ -46,6 +48,44 @@ angular.module('singleConceptAuthoringApp')
             }
           });
         };
+
+        scope.clone = function (concept) {
+          if (concept && scope.isSctid(concept.conceptId)) {
+            rootScope.$broadcast('cloneConcept', {conceptId: concept.conceptId});
+          }
+        };
+
+        scope.addItemToSavedList = function (concept) {
+          if(scope.isInSavedList(concept.conceptId) || !scope.isSctid(concept.conceptId)) return;
+          var item = {};
+          item.active = concept.active;
+
+          var miniConcept = {};
+          miniConcept.active = concept.active;
+          miniConcept.conceptId = concept.conceptId;          
+          miniConcept.definitionStatus = concept.definitionStatus;
+          miniConcept.fsn = concept.fsn;
+          miniConcept.moduleId = concept.moduleId;
+          miniConcept.preferredSynonym = concept.preferredSynonym;
+          miniConcept.term = concept.term;
+
+          item.concept = miniConcept;
+          savedListService.addItemToSavedList(item, routeParams.projectKey, routeParams.taskKey);
+        };
+
+        scope.isInSavedList = function (id) {
+          if (!scope.savedList || !scope.savedList.items) {
+            return false;
+          }
+  
+          for (let i = 0, len = scope.savedList.items.length; i < len; i++) {
+            if (scope.savedList.items[i].concept.conceptId === id) {
+              return true;
+            }
+          }
+          return false;
+        };
+
         scope.getSNF = function(){
             scope.loading = true;
             if(scope.conceptSNF === null || scope.conceptSNF === undefined || angular.equals({}, scope.conceptSNF))
@@ -121,6 +161,13 @@ angular.module('singleConceptAuthoringApp')
 
           scope.zoomPercentage = 100;
         }
+        
+        scope.$watch(function () {
+            return savedListService.savedList;
+          },
+          function(newVal, oldVal) {
+            scope.savedList = newVal;
+        }, true);
       }
     }
   }]);
