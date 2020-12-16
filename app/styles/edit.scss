@@ -1018,17 +1018,20 @@ div.search-result:hover {
 .search-scroll .clear-position button {
     position: unset;
 }
-.search-scroll button.disable {
+.search-scroll button.disable,
+.model-header-sca button.disable {
     cursor: not-allowed;
     pointer-events: visibleFill;
     opacity: 1;
 }
-.search-scroll button.md-playlist-add.disable {
+.search-scroll button.md-playlist-add.disable,
+.model-header-sca button.md-playlist-add.disable {
     color: #76747c;
     background-color: #424249;
 }
 .search-scroll button.fa-power-off.disable:hover,
-.search-scroll button.md-playlist-add.disable:hover {
+.search-scroll button.md-playlist-add.disable:hover,
+.model-header-sca button.md-playlist-add.disable:hover {
     background-color: #c13244;
     color: #fff;
 }

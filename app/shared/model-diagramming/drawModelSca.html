@@ -1,10 +1,21 @@
 <div class="col-md-12 no-padding">
   <div class="col-md-12 no-padding  model-header-sca darken-3 grey keep">
-    <div class="col-md-8 no-padding ">
+    <div class="no-padding" ng-class="[{'col-md-8' : !isSctid(concept.conceptId), 'col-md-7' : isSctid(concept.conceptId)}]">
       <div class="fsn-title-button"> <span class="fsn p-t-3 p-l-5">{{concept.fsn}}</span></div>
     </div>
-    <div class="col-md-4 no-padding ">
+    <div class="no-padding" ng-class="[{'col-md-4' : !isSctid(concept.conceptId), 'col-md-5' : isSctid(concept.conceptId)}]">
       <div class="p-4">
+        <button  ng-if="isSctid(concept.conceptId)" type="button"
+                class= "btn btn-round widget-button tooltips-bottom medium-size-tooltip white m-l-5"
+                 ng-click="clone(concept)">
+          <i class="md md-content-copy"></i> <span> Clone this concept </span>
+        </button>
+        <button ng-if="isSctid(concept.conceptId)" type="button" ng-click="addItemToSavedList(concept)"
+                ng-class="[{'disable' : isInSavedList(concept.conceptId)}]"
+                class="btn btn-round widget-button md md-playlist-add no-padding keep green lighten-1 tooltips-bottom medium-size-tooltip m-l-5 "
+                >
+          <span>Add to Saved List</span>
+        </button>
         <button
           class="btn btn-round md md-my-library-books tooltips-bottom medium-size-tooltip  no-padding keep   purple darken-1 m-r-5"
           ng-click="viewConceptInTaxonomy(concept)" ng-disabled="!concept.active"> <span>View in Taxonomy</span> </button>
