@@ -6,18 +6,17 @@
     <div class="no-padding" ng-class="[{'col-md-4' : !isSctid(concept.conceptId), 'col-md-5' : isSctid(concept.conceptId)}]">
       <div class="p-4">
         <button  ng-if="isSctid(concept.conceptId)" type="button"
-                class= "btn btn-round widget-button tooltips-bottom medium-size-tooltip white m-l-5"
+                class= "btn btn-round widget-button tooltips-bottom medium-size-tooltip white m-r-5"
                  ng-click="clone(concept)">
           <i class="md md-content-copy"></i> <span> Clone this concept </span>
         </button>
         <button ng-if="isSctid(concept.conceptId)" type="button" ng-click="addItemToSavedList(concept)"
                 ng-class="[{'disable' : isInSavedList(concept.conceptId)}]"
-                class="btn btn-round widget-button md md-playlist-add no-padding keep green lighten-1 tooltips-bottom medium-size-tooltip m-l-5 "
-                >
+                class="btn btn-round widget-button md md-playlist-add no-padding keep green lighten-1 tooltips-bottom medium-size-tooltip m-r-5">
           <span>Add to Saved List</span>
         </button>
         <button
-          class="btn btn-round md md-my-library-books tooltips-bottom medium-size-tooltip  no-padding keep   purple darken-1 m-r-5"
+          class="btn btn-round md md-my-library-books tooltips-bottom medium-size-tooltip no-padding keep purple darken-1 m-r-5"
           ng-click="viewConceptInTaxonomy(concept)" ng-disabled="!concept.active"> <span>View in Taxonomy</span> </button>
         <button
           ng-click="openImage()"
