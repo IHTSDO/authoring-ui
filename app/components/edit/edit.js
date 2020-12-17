@@ -1564,6 +1564,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       loadTask();
     });
 
+    $scope.$on('conceptEdit.conceptChange', function (event, data) {
+      loadTask();
+    });
+
     $scope.$on('swapToTaxonomy', function (event, data) {
       $rootScope.$broadcast('viewTaxonomy', {});
     });
