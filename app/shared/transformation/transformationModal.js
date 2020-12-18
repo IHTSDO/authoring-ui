@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
             user.avatarUrl = item.avatarUrls['16x16'];
             user.displayName = item.displayName;
             user.email = item.emailAddress;
-            user.username = item.key;
+            user.username = item.name;
             $scope.users.push(user);
 
             if (user.username === $rootScope.accountDetails.login) {

@@ -1651,7 +1651,7 @@ angular.module('singleConceptAuthoringApp')
                 user.avatarUrl = value.avatarUrls['16x16'];
                 user.displayName = value.displayName;
                 user.email = value.emailAddress;
-                user.username = value.key;
+                user.username = value.name;
                
                 results.push(user);
               }              

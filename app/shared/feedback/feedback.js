@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
                     user.avatarUrl = item.avatarUrls['16x16'];
                     user.displayName = item.displayName;
                     user.email = item.emailAddress;
-                    user.username = item.key;
+                    user.username = item.name;
                     users.push(user);
                   }
                 });
