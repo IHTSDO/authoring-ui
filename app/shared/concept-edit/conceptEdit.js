@@ -2994,7 +2994,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   scope.isModified = true;
                   scope.computeAxioms(type);
-                  refreshAttributeTypesForAxiom(axiom);
+                  refreshAttributeTypesForAxiom(axiom).then(function() {
+                    if (relationship.type.conceptId === '116680003') {
+                      scope.errors = [];
+                      var errors = isMrcmAttributesValid(scope.concept);
+                      if (errors && errors.length > 0) {
+                        scope.errors = scope.errors ? scope.errors.concat(errors) : errors;                      
+                      }
+                    }                  
+                  });
                   autoSave();
                 });
               }, function (error) {
@@ -4584,6 +4592,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 refreshAttributeTypesForAxiom(axiom).then(function() {
                   if (relationship.type.conceptId === '116680003') {
+                    scope.errors = [];
                     var errors = isMrcmAttributesValid(scope.concept);
                     if (errors && errors.length > 0) {
                       scope.errors = scope.errors ? scope.errors.concat(errors) : errors;                      
