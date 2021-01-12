@@ -251,6 +251,8 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             if (response.reviewers && response.reviewers.length !== 0) {
               notificationService.sendWarning('Review task ' + task.key + ' has been claimed by another user', 1000);
               loadTasks();
+            } else if (response.status === 'Promoted') {
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
             }
 
             // otherwise assign the current user
