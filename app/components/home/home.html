@@ -87,7 +87,7 @@
 
               <td data-title="'Rebase'" header-title="'Click to sort'">
                 <button
-                  ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'"
+                  ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted' && task.status !== 'Completed'"
                   type="button" ng-click="goToConflicts(task)"
                   class="btn btn-round  btn-center btn-default lighten-1 amber tooltips-left">
                   <div class="md md-sync "></div>

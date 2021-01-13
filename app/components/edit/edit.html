@@ -9,7 +9,7 @@
     <button
       drag-enter-class="sca-drag-target"
       type="button" ng-click="createConcept(true)"
-      ng-disabled="task.status === 'Promoted' || !canCreateConcept"
+      ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || !canCreateConcept"
       class="btn btn-default new-concept-button widget-toolbar tooltips-right tooltips-light normal-case">
       <div class="md fa-sca fa-edit"></div>
 
@@ -24,7 +24,7 @@
             popover-append-to-body="true"
             type="button"
             id="templateCreateBtn"
-            ng-disabled="task.status === 'Promoted' || !canCreateConcept"
+            ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || !canCreateConcept"
             ng-if="templates.length > 0"
             class="btn btn-default create-template widget-toolbar tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i>
@@ -32,8 +32,8 @@
       <span>Create New Concept From Template</span></button>
 
     <!--Display the disabled button for Classification in case task was promoted -->
-    <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case classification"><i class="md md-notifications"></i></button>
-    <div class="navigation-link green classify" ng-if="task.status !== 'Promoted'">
+    <button type="button" ng-if="task.status === 'Promoted' || task.status === 'Completed'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case classification"><i class="md md-notifications"></i></button>
+    <div class="navigation-link green classify" ng-if="task.status !== 'Promoted' && task.status !== 'Completed'">
 
       <ul class="sub-navigation-link-list classification-nav">
         <li>
@@ -64,7 +64,7 @@
               Classification Running
             </li>
             <li ng-if="!classificationRunning && role === 'AUTHOR'" ng-click="classify()"
-                ng-disabled="task.status === 'Promoted' || classificationRunning || role === 'REVIEWER' || branchLocked">
+                ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || classificationRunning || role === 'REVIEWER' || branchLocked">
               Start New Classification
             </li>
           </ul>
@@ -75,8 +75,8 @@
     </div>
 
     <!--Display the disabled button for Validation in case task was promoted -->
-    <button type="button" ng-if="task.status === 'Promoted'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case validation"><i class="md md-school"></i></button>
-    <div class="navigation-link deep-purple darken-2 validate" ng-if="task.status !== 'Promoted'">
+    <button type="button" ng-if="task.status === 'Promoted' || task.status === 'Completed'" ng-disabled="true" class="btn btn-default widget-toolbar normal-case validation"><i class="md md-school"></i></button>
+    <div class="navigation-link deep-purple darken-2 validate" ng-if="task.status !== 'Promoted' && task.status !== 'Completed'">
 
       <ul class="sub-navigation-link-list validation-nav">
         <li>
@@ -99,7 +99,7 @@
             <li
               ng-if="role === 'AUTHOR' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"
               ng-click="validate()"
-              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.status === 'Completed' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
               Start New Validation
             </li>
           </ul>
@@ -124,7 +124,7 @@
             <li
               ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks"
               ng-click="toggleReview()"
-              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.status === 'Completed' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
               Submit for Review
             </li>
             <li

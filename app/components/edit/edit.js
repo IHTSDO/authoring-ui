@@ -1379,11 +1379,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'BEHIND':
           $scope.canPromote = false;
-          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted';
+          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed';
           break;
         case 'STALE':
           $scope.canPromote = false;
-          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted';
+          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed';
           break;
         case 'DIVERGED':
           /**
@@ -1401,7 +1401,7 @@ angular.module('singleConceptAuthoringApp.edit', [
            *
            */
           $scope.canPromote = false;
-          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted';
+          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed';
           break;
         default:
           notificationService.sendError('Error:  Cannot determine branch state. Conflict, rebase, and promote functions disabled');
@@ -1721,7 +1721,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     //
 
     $scope.classify = function () {
-      if ($scope.task.status === 'Promoted') {
+      if ($scope.task.status === 'Promoted' || $scope.task.status === 'Completed') {
         return;
       }
 
@@ -1758,7 +1758,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.validate = function () {
-      if ($scope.task.status === 'Promoted') {
+      if ($scope.task.status === 'Promoted' || $scope.task.status === 'Completed') {
         return;
       }
 

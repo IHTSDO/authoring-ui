@@ -567,7 +567,7 @@ angular.module('singleConceptAuthoringApp')
                 }
                 else if (response.status === 'In Review' || response.status === 'Review Completed') {
                   notificationService.sendWarning('Task is already in review', 10000);
-                } else if (response.status === 'Promoted') {
+                } else if (response.status === 'Promoted' || response.status === 'Completed') {
                   notificationService.sendWarning('Cannot submit promoted task for review', 10000);
                 } else {
 
