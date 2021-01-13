@@ -418,7 +418,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.checkForAutomatedPromotionStatus = function (isInitialPageLoad) {
         $scope.automatePromotionErrorMsg = '';
         promotionService.getAutomatePromotionStatus($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          if (response && $scope.task.status !== 'Promoted') {
+          if (response && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
             $scope.automatePromotionStatus = response.status;
             switch ($scope.automatePromotionStatus) {
               case 'Queued':
@@ -564,7 +564,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;          
-          if ($scope.task.status !== 'Promoted') {
+          if ($scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
             $scope.checkForAutomatedPromotionStatus(true);
           } else {
             $rootScope.branchLocked = true;

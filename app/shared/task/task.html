@@ -11,15 +11,15 @@
   <div class="modal-body">
     <div class="col-md-12 no-padding">
       <form class="form-floating">
-        <div class="alert alert-success" ng-show="task.status === 'Promoted'">
+        <div class="alert alert-success" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
           <h4>No Further Changes Permitted!</h4>
           <strong>This task is promoted</strong> and therefore cannot be modified or deleted. </div>
         <!-- TODO Fix formatting on control-label, causing absolute positioning and overlap -->
         <div class="form-group">
           <label for="taskTitle">Task title</label>
-          <p ng-show="task.status === 'Promoted'">{{task.summary}}</p>
-          <div ng-hide="task.status === 'Promoted'">
-            <input autofocus="true" id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted'" ng-change="clearMessages()" type="text" class="form-control"
+          <p ng-show="task.status === 'Promoted' || task.status === 'Completed'">{{task.summary}}</p>
+          <div ng-hide="task.status === 'Promoted' || task.status === 'Completed'">
+            <input autofocus="true" id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" ng-change="clearMessages()" type="text" class="form-control"
                  placeholder="Enter task title">
             <br>
           </div>
@@ -30,7 +30,7 @@
                     ng-model="task.projectKey"
                     ng-class="[{'task-color-black': task.key}] "
                     ng-change="clearMessages()"
-                    ng-disabled="task.status === 'Promoted'"
+                    ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"
               >
             </select>
           </div>
@@ -45,8 +45,8 @@
                     rows="3" id="textArea"
                      placeholder="Enter task details"></textarea>
 -->
-          <p compile-html="task.description" ng-show="task.status === 'Promoted'"></p>
-          <div ng-hide="task.status === 'Promoted'">
+          <p compile-html="task.description" ng-show="task.status === 'Promoted' || task.status === 'Completed'"></p>
+          <div ng-hide="task.status === 'Promoted' || task.status === 'Completed'">
             <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
           </div>
         </div>
@@ -56,14 +56,14 @@
     </div>
   </div>
   <div class="modal-footer clearfix">
-  <div class="card-action clearfix" ng-show="task.status === 'Promoted'">
+  <div class="card-action clearfix" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
   <hr>
           <div class="pull-right">
             <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-info no-margin"
                 ng-click="close()">Close Task Details </button>
           </div>
         </div>
-    <div class="col-md-12 no-padding" ng-hide="task.status === 'Promoted'"> 
+    <div class="col-md-12 no-padding" ng-hide="task.status === 'Promoted' || task.status === 'Completed'"> 
       <!-- Display create only if no task supplied -->
       <div ng-if="!task.key" class="col-md-4">
         <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
@@ -77,7 +77,7 @@
       
       <!-- If has a task key, replace Create with Update -->
       <div ng-if="task.key" class="" ng-class="[{'col-md-4' : canDelete}, {'col-md-6' : !canDelete}]">
-        <button type="button" ng-disabled="task.status === 'Promoted'" class="col-md-12 btn btn-info no-margin"
+        <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" class="col-md-12 btn btn-info no-margin"
                 ng-click="updateTask()">Save Changes </button>
       </div>
       
@@ -89,7 +89,7 @@
       
       <!-- If has a key, option to delete task -->
       <div ng-if="canDelete" class="col-md-4">
-        <button type="button" ng-disabled="task.status === 'Promoted'" class="col-md-12 btn btn-danger no-margin"
+        <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" class="col-md-12 btn btn-danger no-margin"
                 ng-click="deleteTask()">Delete Task </button>
       </div>
     </div>

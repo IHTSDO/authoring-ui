@@ -30,7 +30,7 @@
     <div class="classification-btn p-l-15 p-r-15">
       <button class="btn btn-default cyan darken-1 editingtask"
                         ng-click="updateTask()"
-                        ng-disabled="task.status === 'Promoted'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
+                        ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
     </div>
   </div>
 </div>

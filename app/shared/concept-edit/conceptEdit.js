@@ -4843,7 +4843,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               scope.task = response;
 
-              if (scope.task.status === 'Promoted') {
+              if (scope.task.status === 'Promoted' || scope.task.status === 'Completed') {
                 scope.isStatic = true;
               }
             });
