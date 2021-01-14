@@ -3797,12 +3797,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // function to update description and autoSave if indicated
-        scope.updateDescription = function (description, keepSCTID) {
+        scope.updateDescription = function (description, keepSCTID, descriptionTypeChange) {
           if (!keepSCTID) delete description.descriptionId;
           if (!description) return;
 
           // run spellchecker
-            console.log(metadataService.isSpellcheckDisabled());
           if(description.term !== null && description.term !== '' && !metadataService.isSpellcheckDisabled()){
               spellcheckService.checkSpelling(description.term).then(function (suggestions) {
                 console.log(suggestions);
@@ -3810,6 +3809,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   description.spellcheckSuggestions = suggestions;
                 }
               });
+          }
+
+          // re-populate language and acceptabilityMap
+          if (descriptionTypeChange && metadataService.isExtensionSet()) {
+            if (description.type === 'FSN') {
+              let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true, 'en');
+              description.lang = newFsn.lang;
+              description.acceptabilityMap = newFsn.acceptabilityMap;
+            } else {
+              let newDescriptions = []; 
+              angular.forEach(metadataService.getDefaultLanguageForModuleId(description.moduleId), function(language){
+                newDescriptions.push(componentAuthoringUtil.getNewDescription(description.moduleId, language));
+              });
+              if (newDescriptions.length !== 0) {
+                description.lang = newDescriptions[0].lang;
+                description.acceptabilityMap = newDescriptions[0].acceptabilityMap;
+                
+                let matchingDialects = [];
+                let dialects = metadataService.getDialectsForModuleId(description.moduleId);
+                for (var key in dialects) {
+                  if (dialects[key].indexOf(description.lang) !== -1) {
+                    matchingDialects.push(key);
+                  }
+                }
+                angular.forEach(matchingDialects, function(dialect){
+                    var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
+                        return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
+                      }).length > 0;
+
+                    if(havingPreferredSynonym) {
+                      if(metadataService.getDialectDefaultsForModuleId(description.moduleId)[dialect] !== "false"){
+                          description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                      }
+                    }
+                });
+              }              
+            }
           }
 
           // if this is a new TEXT_DEFINITION, apply defaults
