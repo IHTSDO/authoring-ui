@@ -100,8 +100,7 @@
                  drag-hover-class="sca-drag-hover"
                  drop-validate="!isLockedModule(axiom.moduleId)">
 
-              <div>
-
+              <div class="d-flex">
                 <button
                   class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
                   ui-draggable-custom="true" drag="relationship" drag-channel="axiomRelationshipObj"
@@ -202,7 +201,7 @@
                 </div>
     -->
 
-                <div>
+                <div class="w-8">
                   <button ng-if="axiom.active && relationship.active && !isStatic && !template && !isLockedModule(axiom.moduleId)" type="button" ng-click="addAxiomRelationship(relationship.groupId, relationship, axiom)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Add New Relationship</span>
