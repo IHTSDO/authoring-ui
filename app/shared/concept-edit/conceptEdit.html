@@ -348,7 +348,7 @@
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength - getUnSelectedOptionalLanguageRefsetsLength()}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
-            <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" autofocus ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
+            <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-copy="copyDescriptionTerm($event)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
@@ -372,7 +372,7 @@
                       placeholder="Description">
             </textarea>
 
-            <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'SYNONYM'"
+            <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId) || showInferredRels"
                       maxlength="255"
@@ -380,10 +380,10 @@
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
                       class="form-control  msd-elastic no-border-bottom desc" type="text"
-                      placeholder="Description" custom-autofocus="true">
+                      placeholder="Description" >
             </textarea>
 
-            <textarea ng-keyup="enterListener({event: $event})" ng-if="description.type === 'TEXT_DEFINITION'"
+            <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="4096"
                       ng-change="updateDescription(description)"
                       ng-copy="copyDescriptionTerm($event)"
@@ -618,6 +618,7 @@
                   <div class="small-size-tooltip tooltips-bottom">
                     <textarea ng-if="relationship.concreteValue" id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                               ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.concreteValue.value"
+                              custom-autofocus="true" autofocus
                               ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                               class="resizable-text relationship msd-elastic no-border-bottom"
                               typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
@@ -627,6 +628,7 @@
                               typeahead-editable="false" typeahead-min-length="3"></textarea>
                       <textarea ng-if="!relationship.concreteValue" id="relationship-taget-id-{{concept.conceptId}}-{{relationship.groupId}}-{{$index}}"
                               ng-keyup="enterListener({event: $event}); consolidateRelationship(relationship);" type="text" ng-model="relationship.target.fsn"
+                              custom-autofocus="true" autofocus
                               ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName) || (isBatch && !relationship.targetSlot) || relationship.characteristicType === 'INFERRED_RELATIONSHIP'"
                               class="resizable-text relationship msd-elastic no-border-bottom"
                               typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"

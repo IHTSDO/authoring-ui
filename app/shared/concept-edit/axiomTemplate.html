@@ -143,14 +143,15 @@
 
                 </div>
 
-                <!-- linked concept -->
-                <div class="pull-left axiom-relationship sourcename relationship-target {{getTargetSlotStyle(relationship)}}" ng-class="[{'GCI' : isGciAxiomPresent(relationship['target']['conceptId'])}]" drag-enter-class="sca-drag-target"
+                <!-- linked concept concrete-->
+                <div ng-if="relationship.concreteValue" class="pull-left axiom-relationship sourcename relationship-target {{getTargetSlotStyle(relationship)}}" ng-class="[{'GCI' : isGciAxiomPresent(relationship['target']['conceptId'])}]" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="completeConcept" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type, axiom)"
                      drop-validate="!isLockedModule(axiom.moduleId)"                     
                      ng-mouseover="setTooltipPosition($event)">
                   <div class="small-size-tooltip tooltips-bottom">
-                      <textarea ng-show="relationship.concreteValue" id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
+                      <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
+                                custom-autofocus="true" autofocus
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.concreteValue.value"
                                 ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
@@ -161,7 +162,28 @@
                                 typeahead-editable="false" typeahead-min-length="3"
                                 typeahead-select-on-exact-with-ajax="true">
                       </textarea>
-                      <textarea ng-show="!relationship.concreteValue" id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
+                      <span ng-show="relationship.target.conceptId">{{relationship.target.conceptId}}</span>
+                  </div>
+
+                  <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
+                       ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
+                       ui-draggable-custom="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+                       drag-channel="completeConcept"
+                       drag-image="getDragImageForConcept(relationship.target.fsn)"
+                       ng-dblclick="openConceptTarget(relationship)">
+                    <span>Drag This Component</span>
+                  </div>
+                </div>
+                
+                <!-- linked concept none concrete-->
+                <div ng-if="!relationship.concreteValue" class="pull-left axiom-relationship sourcename relationship-target {{getTargetSlotStyle(relationship)}}" ng-class="[{'GCI' : isGciAxiomPresent(relationship['target']['conceptId'])}]" drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover"
+                     drop-channel="completeConcept" ui-on-drop="dropAxiomRelationshipTarget(relationship, $data, axiom.type, axiom)"
+                     drop-validate="!isLockedModule(axiom.moduleId)"                     
+                     ng-mouseover="setTooltipPosition($event)">
+                  <div class="small-size-tooltip tooltips-bottom">
+                      <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
+                                custom-autofocus="true" autofocus
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
                                 ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
