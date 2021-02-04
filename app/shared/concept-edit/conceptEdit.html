@@ -339,12 +339,13 @@
                   ng-click="toggleCaseSignificance(description)">
 
             <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
-
-            <span class="{{getCaseSignificanceDisplayText(description)}}"></span>
+            <span class="{{getCaseSignificanceDisplayText(description)}}"></span>            
           </button>
           <div ng-if="isFeedback && componentStyles[description.descriptionId + '-caseSignificance'].style !== ''"
-            class="tooltips-bottom tooltips-light medium-size-tooltip custom-margin"
-            ng-class="componentStyles[description.descriptionId + '-caseSignificance'].style"><span>{{componentStyles[description.descriptionId + '-caseSignificance'].message}}</span></div>
+            class="tooltips-bottom tooltips-light medium-size-tooltip case-significance"
+            ng-class="componentStyles[description.descriptionId + '-caseSignificance'].style"><span>{{componentStyles[description.descriptionId + '-caseSignificance'].message}}</span>
+          </div>
+          
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength - getUnSelectedOptionalLanguageRefsetsLength()}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
