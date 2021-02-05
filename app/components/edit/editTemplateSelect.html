@@ -11,10 +11,12 @@
                     typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
                     typeahead-focus-first="false"
                     typeahead-wait-ms="500"
+                    typeahead-loading="targetTypeaheadLoading"
                     typeahead-editable="false" typeahead-min-length="3"
                     typeahead-on-select="selectFocusForTemplate($item)"
-                    placeholder="Type to select a focus concept..."></textarea>
-
+                    placeholder="Type to select a focus concept...">                    
+          </textarea>
+          <span ng-class="[{'' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"></span>
       </div>      
   </div>
   <div class="col-md-12 table-container row" ng-if="templateOptions">
