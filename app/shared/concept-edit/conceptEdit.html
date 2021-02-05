@@ -144,20 +144,20 @@
           </button>
           <button type="button"
                   ng-click="toggleConceptActive(concept, true)"
-                  ng-if="!isStatic && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
+                  ng-if="!isStatic && !isMerge && !isInactivation && !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="btn-default red tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus small-buttons">
             <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
           <button type="button"
                   ng-class="[{green : concept.active}, {red: !concept.active}]"
                   ng-click="toggleConceptActive(concept)"
-                  ng-if="concept.released"
-                  ng-disabled="isInactivation || isStatic || isIntegrityCheckView || isLockedModule(concept.moduleId) && concept.released"
+                  ng-if="concept.released || isMerge"
+                  ng-disabled="isInactivation || isStatic || isMerge || isIntegrityCheckView || isLockedModule(concept.moduleId) && concept.released"
                   class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case">
 
-            <span ng-if="!isStatic && !isIntegrityCheckView && !isInactivation"> Activate/ inactivate concept </span>
-            <span ng-if="!isStatic && !isIntegrityCheckView && isInactivation">Inactivation in progress, cannot change active status</span>
-            <span ng-if="isStatic || isIntegrityCheckView || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+            <span ng-if="!isStatic && !isMerge && !isIntegrityCheckView && !isInactivation"> Activate/ inactivate concept </span>
+            <span ng-if="!isStatic && !isMerge && !isIntegrityCheckView && isInactivation">Inactivation in progress, cannot change active status</span>
+            <span ng-if="isStatic || isMerge || isIntegrityCheckView || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light medium-size-tooltip normal-case stated-inferred-view"
