@@ -2305,6 +2305,28 @@ angular.module('singleConceptAuthoringApp')
           });
         }
       }
+
+      function findClosestActiveAncestor(inactiveConceptId, branch) {
+        var defer = $q.defer();
+        var findingConcept =  function(conceptId, branch, defer) {          
+          getFullConcept(conceptId, branch).then(function (response) {
+            if (response.active) {
+              defer.resolve(response);
+            } else {
+              for (let i = 0; i < response.classAxioms[0].relationships.length; i++) {
+                let rel = response.classAxioms[0].relationships[i];
+                if (rel.active && rel.type.conceptId === '116680003') {
+                  findingConcept(rel.target.conceptId, branch, defer);
+                  break;
+                }
+              }
+            }
+          });  
+        }
+        findingConcept(inactiveConceptId, branch, defer);
+        return defer.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2356,6 +2378,7 @@ angular.module('singleConceptAuthoringApp')
         getDialects: getDialects,
         downloadClassification: downloadClassification,
         findConceptsForQuery: findConceptsForQuery,
+        findClosestActiveAncestor: findClosestActiveAncestor,
         searchConcepts: searchConcepts,
         searchAllConcepts: searchAllConcepts,
         getReview: getReview,
