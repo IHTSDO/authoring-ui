@@ -1124,7 +1124,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var queryString = '';
         angular.forEach(conceptIdList, function (concept, key) {
-          if (key + 1 !== conceptIdList.length) {
+          if (key + 1 !== conceptIdList.length && concept !== "") {
             queryString += concept + '%20OR%20';
           }
           else {
