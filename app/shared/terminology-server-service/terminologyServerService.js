@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp')
       function cleanRelationship(relationship) {
 
         var allowableRelationshipProperties = [
-          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
+          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'concreteValue'
         ];
 
         // if a locally assigned UUID, strip
@@ -271,7 +271,7 @@ angular.module('singleConceptAuthoringApp')
       function cleanRelationship(relationship, keepTempIds) {
 
         var allowableRelationshipProperties = [
-          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
+          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'concreteValue'
         ];
 
         // if a locally assigned UUID, strip

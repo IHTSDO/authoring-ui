@@ -987,8 +987,10 @@ function getFsnDescriptionForConcept(concept) {
         if (!relationship.type || !relationship.type.conceptId) {
           errors.push('Relationship typeId must be set');
         }
-        if (!relationship.target || !relationship.target.conceptId) {
-          errors.push('Relationship targetId must be set');
+        if(!relationship.concreteValue){
+            if (!relationship.target || !relationship.target.conceptId) {
+              errors.push('Relationship targetId must be set');
+            }
         }
 
         return errors;
@@ -1004,8 +1006,10 @@ function getFsnDescriptionForConcept(concept) {
           if (!relationship.type || !relationship.type.conceptId) {
             errors.push('Relationship typeId must be set');
           }
-          if (!relationship.target || !relationship.target.conceptId) {
-            errors.push('Relationship targetId must be set');
+          if(!relationship.concreteValue){
+            if (!relationship.target || !relationship.target.conceptId) {
+              errors.push('Relationship targetId must be set');
+            }
           }
           if (relationship.type && relationship.type.conceptId && relationship.type.conceptId === '116680003') {
             hasIsARelationship = true;
