@@ -4383,6 +4383,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var deferred = $q.defer();
             if (!scope.isStatic) {
                     constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
+                    angular.forEach(attributes, function (attribute) {
+                        angular.forEach(attribute.attributeRange, function (range) {
+                            if(attribute.conceptId === range.referencedComponentId && range.dataType){
+                                attribute.dataType = range.dataType;
+                                attribute.rangeMin = range.rangeMin;
+                                attribute.rangeMax = range.rangeMax
+                            }
+                        });
+                    });
                     axiom.allowedAttributes = attributes;
                     deferred.resolve();
                 }, function (error) {
@@ -4440,9 +4449,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
+          console.log(item);
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
           relationship.type.pt = item.pt.term;
+          if(item.dataType){
+              relationship.concreteValue = {};
+              relationship.concreteValue.value = "";
+              relationship.concreteValue.dataType = item.dataType;
+              relationship.concreteValue.valueWithPrefix = '#';
+              relationship.concreteValue.concrete = true;
+              relationship.target = {};
+          }
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
                 scope.computeAxioms(type);
@@ -4459,7 +4477,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.computeAxioms(type);
             autoSave();
           }
-
+          console.log(relationship);
           // Trigger blur event after relationship type has been selected
           var elemID = type +'-axiom-relationship-type-' + scope.initializationTimeStamp + '-' + parentIndex + '-' + relationshipGroupId + '-' + itemIndex;
           var elem = angular.element(document.querySelector('#' + elemID));
@@ -4471,6 +4489,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }, 1000);
         };
+          
+        scope.updateConcreteValue = function (relationship) {
+            relationship.concreteValue.valueWithPrefix = '#' + relationship.concreteValue.value;
+        }
 
         /**
          * Sets relationship target concept based on typeahead selection
