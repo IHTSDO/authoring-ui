@@ -4388,7 +4388,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                             if(attribute.conceptId === range.referencedComponentId && range.dataType){
                                 attribute.dataType = range.dataType;
                                 attribute.rangeMin = range.rangeMin;
-                                attribute.rangeMax = range.rangeMax
+                                attribute.rangeMax = range.rangeMax;
+                                angular.forEach(axiom.relationships, function (relationship) {
+                                    if(attribute.conceptId === relationship.type.conceptId){
+                                        relationship.rangeMin = range.rangeMin;
+                                        relationship.rangeMax = range.rangeMax;
+                                        relationship.dataType = range.dataType;
+                                    }
+                                });
                             }
                         });
                     });
@@ -4449,17 +4456,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-          console.log(item);
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
           relationship.type.pt = item.pt.term;
           if(item.dataType){
               relationship.concreteValue = {};
               relationship.concreteValue.value = "";
+              relationship.dataType = item.dataType;
               relationship.concreteValue.dataType = item.dataType;
               relationship.concreteValue.valueWithPrefix = '#';
               relationship.concreteValue.concrete = true;
               relationship.target = {};
+              relationship.rangeMin = item.rangeMin;
+              relationship.rangeMax = item.rangeMax;
           }
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
@@ -4490,8 +4499,42 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, 1000);
         };
           
+        scope.looseJsonParse = function (obj) {
+            return Function('"use strict";return (' + obj + ')')();
+        }
+          
         scope.updateConcreteValue = function (relationship) {
-            relationship.concreteValue.valueWithPrefix = '#' + relationship.concreteValue.value;
+            scope.warnings = [];
+            console.log(relationship);
+            let min = relationship.rangeMin.replace('#', '');
+            let max = relationship.rangeMax.replace('#', '');
+            if(min === ''){
+                if(!scope.looseJsonParse(relationship.concreteValue.value + max)){
+                    scope.warnings = ["Value must be " + max];
+                }
+                else{
+                    relationship.concreteValue.valueWithPrefix = '#' + relationship.concreteValue.value;
+                    autoSave();
+                }
+            }
+            else if(max === ''){
+                if(!scope.looseJsonParse(relationship.concreteValue.value + min)){
+                    scope.warnings = ["Value must be " + min];
+                }
+                else{
+                    relationship.concreteValue.valueWithPrefix = '#' + relationship.concreteValue.value;
+                    autoSave();
+                }
+            }
+            else{
+                if(!scope.looseJsonParse(relationship.concreteValue.value + max) || !scope.looseJsonParse(relationship.concreteValue.value + min)){
+                    scope.warnings = ["Value must be " + min + " and " + max];
+                }
+                else{
+                    relationship.concreteValue.valueWithPrefix = '#' + relationship.concreteValue.value;
+                    autoSave();
+                }
+            }
         }
 
         /**
