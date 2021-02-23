@@ -152,7 +152,7 @@
                       <textarea id="{{axiom.type}}-axiom-relationship-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{relationship.groupId}}-{{$index}}"
                                 custom-autofocus="true" autofocus
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.concreteValue.value"
-                                ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted"
+                                ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted || relationship.dataType === 'STRING'"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
                                 ng-change="updateConcreteValue(relationship)">
                       </textarea>
