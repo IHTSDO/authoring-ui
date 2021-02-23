@@ -4470,6 +4470,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.rangeMin = item.rangeMin;
               relationship.rangeMax = item.rangeMax;
           }
+          else{
+              relationship.dataType = null;
+              delete relationship.concreteValue;
+              relationship.target = {};
+              relationship.rangeMin = null;
+              relationship.rangeMax = null;
+          }
           if (metadataService.isMrcmEnabled() && relationship.target.conceptId) {
             constraintService.isValueAllowedForType(relationship.type.conceptId, relationship.target.conceptId, scope.branch).then(function () {
                 scope.computeAxioms(type);
