@@ -4515,6 +4515,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.log(relationship);
             let min = relationship.rangeMin.replace('#', '');
             let max = relationship.rangeMax.replace('#', '');
+            if(relationship.dataType === 'INTEGER' && relationship.concreteValue.value.includes('.')){
+                scope.warnings = ["Value must not be decimal."];
+            }
             if(min === ''){
                 if(!scope.looseJsonParse(relationship.concreteValue.value + max)){
                     scope.warnings = ["Value must be " + max];
