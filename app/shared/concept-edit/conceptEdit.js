@@ -4509,6 +4509,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.looseJsonParse = function (obj) {
             return Function('"use strict";return (' + obj + ')')();
         }
+        
+        function isNumeric(str) {
+          if (typeof str != "string") return false
+          return !isNaN(str) &&
+                 !isNaN(parseFloat(str))
+        }
           
         scope.updateConcreteValue = function (relationship) {
             scope.warnings = [];
@@ -4517,6 +4523,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             let max = relationship.rangeMax.replace('#', '');
             if(relationship.dataType === 'INTEGER' && relationship.concreteValue.value.includes('.')){
                 scope.warnings = ["Value must not be decimal."];
+            }
+            if(relationship.concreteValue.value !== '' && !isNumeric(relationship.concreteValue.value) || relationship.concreteValue.value.includes(',')){
+                scope.warnings = ["Value must be a number."];
             }
             if(min === ''){
                 if(!scope.looseJsonParse(relationship.concreteValue.value + max)){
