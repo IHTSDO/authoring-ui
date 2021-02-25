@@ -127,6 +127,9 @@ angular.module('singleConceptAuthoringApp')
             if (concept.relationships) {
               $.each(concept.relationships, function (i, field) {
                 if (field.active === true && field.characteristicType === "INFERRED_RELATIONSHIP") {
+                  if(!field.target){
+                      field.target = {};
+                  }
                   if (field.type.conceptId === '116680003') {
                     svgIsaModel.push(field);
                   } else {
