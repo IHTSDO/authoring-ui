@@ -120,7 +120,7 @@
                               custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.type.pt"
                               ng-readonly="relationship.effectiveTime || isStatic || template || isLockedModule(axiom.moduleId) || isBatch || relationship.deleted"
                               class="resizable-text form-control msd-elastic no-border-bottom rel"
-                              typeahead="suggestion as suggestion.pt.term for suggestion in axiom.allowedAttributes | filter:$viewValue:emptyOrMatch"
+                              typeahead="suggestion as suggestion.term for suggestion in axiom.allowedAttributes | filter:{term:$viewValue}:emptyOrMatch"
                               typeahead-focus-first="false"
                               typeahead-loading="typeTypeaheadLoading"
                               typeahead-wait-ms="700"
