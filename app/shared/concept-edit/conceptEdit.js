@@ -4384,6 +4384,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!scope.isStatic) {
                     constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
                     angular.forEach(attributes, function (attribute) {
+                        attribute.term = attribute.pt.term;
                         angular.forEach(attribute.attributeRange, function (range) {
                             if(attribute.conceptId === range.referencedComponentId && range.dataType){
                                 attribute.dataType = range.dataType;
@@ -4409,7 +4410,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               deferred.resolve();
             }
             return deferred.promise;
-        }  
+        }
 
 // Relationship setter functions
 //
