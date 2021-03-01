@@ -617,6 +617,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         });
+
+        scope.clearTemplateSearch = function() {
+          scope.templateTableParams.filter()['search'] = '';
+          scope.templateTableParams.reload();
+        }
         
         //
         // Functionality for stashing and reapplying template, intended for use after cleanConcept invocations
