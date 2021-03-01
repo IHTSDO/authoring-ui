@@ -1661,6 +1661,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     };
 
+    $scope.clearTemplateSearch = function() {
+      $scope.templateTableParams.filter()['search'] = '';
+      $scope.templateTableParams.reload();
+    }
+
     $scope.selectFocusForTemplate = function(concept){
         var initialTemplates = $scope.innerTemplates;
         templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
