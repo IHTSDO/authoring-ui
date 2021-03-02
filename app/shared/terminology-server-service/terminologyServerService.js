@@ -87,12 +87,30 @@ angular.module('singleConceptAuthoringApp')
 
       // Create New Concept
       // POST /browser/{path}/concepts
-      function createConcept(project, task, concept) {
+      function createConcept(project, task, concept, validate) {
+        var queryParams = '';
+        if (validate) {
+          queryParams += 'validate=' + validate;
+        }
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + (queryParams ? '?' + queryParams : ''), concept).then(function (response) {
+          var validationResults = response.data && response.data.hasOwnProperty("validationResults") ? response.data.validationResults : [];
+          delete response.data.validationResults;
+
           normaliseSnowstormConcept(response.data);
-          deferred.resolve(response.data);
+
+          deferred.resolve({concept: response.data, validationResults: validationResults});
         }, function (error) {
+          if (error && error.status === 400) {
+            var validationResults = [];
+            if (error.data && error.data.hasOwnProperty("validationResults")) {
+              validationResults = error.data.validationResults;
+
+              deferred.resolve({concept: concept, validationResults: validationResults});
+            } else {
+              deferred.reject(error);
+            }            
+          }
           deferred.reject(error);
         });
         return deferred.promise;
@@ -100,12 +118,30 @@ angular.module('singleConceptAuthoringApp')
 
       // Update Existing Concept
       // PUT /browser/{path}/concepts/{conceptId}
-      function updateConcept(project, task, concept) {
+      function updateConcept(project, task, concept, validate) {
+        var queryParams = '';
+        if (validate) {
+          queryParams += 'validate=' + validate;
+        }
         var deferred = $q.defer();
-        $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+        $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId + (queryParams ? '?' + queryParams : ''), concept).then(function (response) {
+          var validationResults = response.data && response.data.hasOwnProperty("validationResults") ? response.data.validationResults : [];
+          delete response.data.validationResults;
+
           normaliseSnowstormConcept(response.data);
-          deferred.resolve(response.data);
+
+          deferred.resolve({concept: response.data, validationResults: validationResults});
         }, function (error) {
+          if (error && error.status === 400) {
+            var validationResults = [];
+            if (error.data && error.data.hasOwnProperty("validationResults")) {
+              validationResults = error.data.validationResults;             
+
+              deferred.resolve({concept: concept, validationResults: validationResults});
+            } else {
+              deferred.reject(error);
+            }            
+          }
           deferred.reject(error);
         });
         return deferred.promise;
