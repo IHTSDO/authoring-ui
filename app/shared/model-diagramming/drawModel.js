@@ -166,6 +166,9 @@ angular.module('singleConceptAuthoringApp')
                      field.type.fsn = field.type.term;
                      field.target = {};
                      field.groupId = 0;
+                     if(field.value.concrete){
+                         field.concreteValue = field.value;
+                     }
                      if(field.value.id)
                      {
                         field.target.conceptId = field.value.id;
@@ -220,6 +223,9 @@ angular.module('singleConceptAuthoringApp')
                          field.type.fsn = field.type.term;
                          field.target = {};
                          field.groupId = i + 1;
+                         if(field.value.concrete){
+                             field.concreteValue = field.value;
+                         }
                          if(field.value.id)
                          {
                             field.target.conceptId = field.value.id;
