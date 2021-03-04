@@ -2766,10 +2766,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // construct an id-name pair json object from relationship target
         scope.getConceptIdNamePairFromRelationshipTarget = function (relationship) {
-          return {
-            id: relationship.target.conceptId,
-            name: relationship.target.fsn
-          };
+          if(relationship.concreteValue){
+              return {
+                concreteValue: relationship.concreteValue.value
+              };
+          }
+          else {
+              return {
+                id: relationship.target.conceptId,
+                name: relationship.target.fsn
+              };
+          }
         };
 
 // construct an id-name pair json object from attribute type
@@ -2780,12 +2787,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           };
         };
 
-        scope.getConceptIdNameTripleFromAttributeType = function (relationship) {
-          return {
-            id: relationship.type.conceptId,
-            fsn: relationship.type.fsn,
-            pt: relationship.type.pt
-          };
+        scope.parseRelationshipType = function (relationship) {
+          if(relationship.concreteValue){
+              return {
+                id: relationship.type.conceptId,
+                fsn: relationship.type.fsn,
+                pt: relationship.type.pt,
+                concreteValue: relationship.concreteValue,
+                rangeMin: relationship.rangeMin,
+                rangeMax: relationship.rangeMax,
+                dataType: relationship.dataType
+              };
+          }
+          else{
+              return {
+                id: relationship.type.conceptId,
+                fsn: relationship.type.fsn,
+                pt: relationship.type.pt
+              };
+          }
         };
 
         scope.dropRelationshipTarget = function (relationship, data) {
@@ -2941,38 +2961,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else if (metadataService.isMrcmEnabled()) {
 
             if (relationship.type.conceptId) {
+              if(relationship.dataType && relationship.concreteValue){
+                  relationship.concreteValue.value = data.concreteValue;
+                  scope.updateConcreteValue(relationship);
+              }
+              else{
+                  constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
+                    terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
+                      relationship.target.conceptId = response.conceptId;
+                      relationship.target.fsn = response.fsn;
+                      relationship.target.definitionStatus = response.definitionStatus;
+                      relationship.target.effectiveTime = response.effectiveTime;
+                      relationship.target.moduleId = response.moduleId;
+                      relationship.target.active= response.active;
+                      relationship.target.released = response.released;
 
-              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
-                terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
-                  relationship.target.conceptId = response.conceptId;
-                  relationship.target.fsn = response.fsn;
-                  relationship.target.definitionStatus = response.definitionStatus;
-                  relationship.target.effectiveTime = response.effectiveTime;
-                  relationship.target.moduleId = response.moduleId;
-                  relationship.target.active= response.active;
-                  relationship.target.released = response.released;
+                      let destinationIds = [];
+                      destinationIds.push(relationship.target.conceptId);
+                      bulkRetrieveFullConceptForRelationships(destinationIds);
 
-                  let destinationIds = [];
-                  destinationIds.push(relationship.target.conceptId);
-                  bulkRetrieveFullConceptForRelationships(destinationIds);
-
-                  scope.isModified = true;
-                  scope.computeAxioms(type);
-                  refreshAttributeTypesForAxiom(axiom).then(function() {
-                    if (relationship.type.conceptId === '116680003') {
-                      scope.errors = [];
-                      var errors = isMrcmAttributesValid(scope.concept);
-                      if (errors && errors.length > 0) {
-                        scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
-                      }
-                    }
+                      scope.isModified = true;
+                      scope.computeAxioms(type);
+                      refreshAttributeTypesForAxiom(axiom).then(function() {
+                        if (relationship.type.conceptId === '116680003') {
+                          scope.errors = [];
+                          var errors = isMrcmAttributesValid(scope.concept);
+                          if (errors && errors.length > 0) {
+                            scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+                          }
+                        }
+                      });
+                      autoSave();
+                    });
+                  }, function (error) {
+                    scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+                    relationship.target.fsn = tempFsn;
                   });
-                  autoSave();
-                });
-              }, function (error) {
-                scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
-                relationship.target.fsn = tempFsn;
-              });
+              }
             } else {
               scope.warnings = ['MRCM validation error: Must set relationship type first'];
             }
@@ -3057,6 +3082,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // cancel if static
           if (scope.isStatic) {
             return;
+          }
+          if(data.dataType){
+              relationship.concreteValue = {};
+              relationship.concreteValue.value = "";
+              relationship.dataType = data.dataType;
+              relationship.concreteValue.dataType = data.dataType;
+              relationship.concreteValue.valueWithPrefix = '#';
+              relationship.concreteValue.concrete = true;
+              relationship.target = {};
+              relationship.rangeMin = data.rangeMin;
+              relationship.rangeMax = data.rangeMax;
+          }
+          else{
+              relationship.dataType = null;
+              delete relationship.concreteValue;
+              relationship.target = {};
+              relationship.rangeMin = null;
+              relationship.rangeMax = null;
           }
 
           // check that attribute is acceptable for MRCM rules
