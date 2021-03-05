@@ -4391,7 +4391,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!scope.isStatic) {
                     constraintService.getDomainAttributesForAxiom(axiom, scope.branch).then(function (attributes) {
                     angular.forEach(attributes, function (attribute) {
-                        attribute.term = attribute.pt.term;
+                        attribute.term = attribute.fsn.term;
                         angular.forEach(attribute.attributeRange, function (range) {
                             if(attribute.conceptId === range.referencedComponentId && range.dataType){
                                 attribute.dataType = range.dataType;
