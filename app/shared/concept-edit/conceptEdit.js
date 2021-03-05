@@ -2966,37 +2966,44 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.updateConcreteValue(relationship);
               }
               else{
-                  constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
-                    terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
-                      relationship.target.conceptId = response.conceptId;
-                      relationship.target.fsn = response.fsn;
-                      relationship.target.definitionStatus = response.definitionStatus;
-                      relationship.target.effectiveTime = response.effectiveTime;
-                      relationship.target.moduleId = response.moduleId;
-                      relationship.target.active= response.active;
-                      relationship.target.released = response.released;
-
-                      let destinationIds = [];
-                      destinationIds.push(relationship.target.conceptId);
-                      bulkRetrieveFullConceptForRelationships(destinationIds);
-
-                      scope.isModified = true;
-                      scope.computeAxioms(type);
-                      refreshAttributeTypesForAxiom(axiom).then(function() {
-                        if (relationship.type.conceptId === '116680003') {
-                          scope.errors = [];
-                          var errors = isMrcmAttributesValid(scope.concept);
-                          if (errors && errors.length > 0) {
-                            scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
-                          }
-                        }
-                      });
-                      autoSave();
-                    });
-                  }, function (error) {
-                    scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+                  if(data.id || data.id === undefined)
+                  {
+                    scope.warnings = ['MRCM validation error: ' + ' value is not a valid target for attribute type ' + relationship.type.fsn + '.'];
                     relationship.target.fsn = tempFsn;
-                  });
+                  }
+                  else{
+                      constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
+                        terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
+                          relationship.target.conceptId = response.conceptId;
+                          relationship.target.fsn = response.fsn;
+                          relationship.target.definitionStatus = response.definitionStatus;
+                          relationship.target.effectiveTime = response.effectiveTime;
+                          relationship.target.moduleId = response.moduleId;
+                          relationship.target.active= response.active;
+                          relationship.target.released = response.released;
+
+                          let destinationIds = [];
+                          destinationIds.push(relationship.target.conceptId);
+                          bulkRetrieveFullConceptForRelationships(destinationIds);
+
+                          scope.isModified = true;
+                          scope.computeAxioms(type);
+                          refreshAttributeTypesForAxiom(axiom).then(function() {
+                            if (relationship.type.conceptId === '116680003') {
+                              scope.errors = [];
+                              var errors = isMrcmAttributesValid(scope.concept);
+                              if (errors && errors.length > 0) {
+                                scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+                              }
+                            }
+                          });
+                          autoSave();
+                        });
+                      }, function (error) {
+                        scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+                        relationship.target.fsn = tempFsn;
+                      });
+                  }
               }
             } else {
               scope.warnings = ['MRCM validation error: Must set relationship type first'];
