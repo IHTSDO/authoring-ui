@@ -55,6 +55,11 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
               }
             });
 
+            $scope.clearTemplateSearch = function() {
+              $scope.templateTableParams.filter()['search'] = '';
+              $scope.templateTableParams.reload();
+            }
+
          $scope.dlcDialog = (function (data, fileName) {
             var a = document.createElement('a');
             document.body.appendChild(a);

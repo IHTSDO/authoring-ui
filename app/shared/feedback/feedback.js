@@ -1408,6 +1408,22 @@ angular.module('singleConceptAuthoringApp')
             }
           }, true);
 
+          scope.$watch(function() {
+              return document.getElementById("feedback-model-concept-view") ? document.getElementById("feedback-model-concept-view").offsetHeight : 0
+          }, function(newValue) {
+              let feedbackChat = document.getElementById("feedback-chat");
+              let feedbackWindow = document.getElementById("feedback-window");
+              const windowHeight = jQuery(window).height();
+              let availableHeight = windowHeight - newValue - 200;
+              if (feedbackChat) {                
+                feedbackChat.style.maxHeight = (availableHeight > 175 ? availableHeight : 175) + 'px';
+              }
+              if (feedbackWindow) {                
+                feedbackWindow.style.height = (availableHeight > 166 ? availableHeight : 166) + 'px';
+                jQuery(feedbackWindow).find('.ta-scroll-window').css('height', availableHeight > 166 ? (availableHeight - 70) + 'px' : '63%');
+              }               
+          }, true);
+
           // check all request
           scope.checkAll = function () {
             scope.allChecked = !scope.allChecked;

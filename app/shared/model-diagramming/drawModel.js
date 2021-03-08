@@ -127,6 +127,9 @@ angular.module('singleConceptAuthoringApp')
             if (concept.relationships) {
               $.each(concept.relationships, function (i, field) {
                 if (field.active === true && field.characteristicType === "INFERRED_RELATIONSHIP") {
+                  if(!field.target){
+                      field.target = {};
+                  }
                   if (field.type.conceptId === '116680003') {
                     svgIsaModel.push(field);
                   } else {
@@ -163,6 +166,9 @@ angular.module('singleConceptAuthoringApp')
                      field.type.fsn = field.type.term;
                      field.target = {};
                      field.groupId = 0;
+                     if(field.value.concrete){
+                         field.concreteValue = field.value;
+                     }
                      if(field.value.id)
                      {
                         field.target.conceptId = field.value.id;
@@ -217,6 +223,9 @@ angular.module('singleConceptAuthoringApp')
                          field.type.fsn = field.type.term;
                          field.target = {};
                          field.groupId = i + 1;
+                         if(field.value.concrete){
+                             field.concreteValue = field.value;
+                         }
                          if(field.value.id)
                          {
                             field.target.conceptId = field.value.id;

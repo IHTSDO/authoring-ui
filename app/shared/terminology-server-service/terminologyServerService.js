@@ -55,6 +55,9 @@ angular.module('singleConceptAuthoringApp')
 
       function normaliseSnowstormRelationships(items) {
         angular.forEach(items, function(relationship) {
+            if(!relationship.target){
+                relationship.target = {};
+            }
             if (typeof relationship.source == "object") {
               normaliseSnowstormTerms(relationship.source);
             }
@@ -87,12 +90,30 @@ angular.module('singleConceptAuthoringApp')
 
       // Create New Concept
       // POST /browser/{path}/concepts
-      function createConcept(project, task, concept) {
+      function createConcept(project, task, concept, validate) {
+        var queryParams = '';
+        if (validate) {
+          queryParams += 'validate=' + validate;
+        }
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + (queryParams ? '?' + queryParams : ''), concept).then(function (response) {
+          var validationResults = response.data && response.data.hasOwnProperty("validationResults") ? response.data.validationResults : [];
+          delete response.data.validationResults;
+
           normaliseSnowstormConcept(response.data);
-          deferred.resolve(response.data);
+
+          deferred.resolve({concept: response.data, validationResults: validationResults});
         }, function (error) {
+          if (error && error.status === 400) {
+            var validationResults = [];
+            if (error.data && error.data.hasOwnProperty("validationResults")) {
+              validationResults = error.data.validationResults;
+
+              deferred.resolve({concept: concept, validationResults: validationResults});
+            } else {
+              deferred.reject(error);
+            }            
+          }
           deferred.reject(error);
         });
         return deferred.promise;
@@ -100,12 +121,30 @@ angular.module('singleConceptAuthoringApp')
 
       // Update Existing Concept
       // PUT /browser/{path}/concepts/{conceptId}
-      function updateConcept(project, task, concept) {
+      function updateConcept(project, task, concept, validate) {
+        var queryParams = '';
+        if (validate) {
+          queryParams += 'validate=' + validate;
+        }
         var deferred = $q.defer();
-        $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+        $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId + (queryParams ? '?' + queryParams : ''), concept).then(function (response) {
+          var validationResults = response.data && response.data.hasOwnProperty("validationResults") ? response.data.validationResults : [];
+          delete response.data.validationResults;
+
           normaliseSnowstormConcept(response.data);
-          deferred.resolve(response.data);
+
+          deferred.resolve({concept: response.data, validationResults: validationResults});
         }, function (error) {
+          if (error && error.status === 400) {
+            var validationResults = [];
+            if (error.data && error.data.hasOwnProperty("validationResults")) {
+              validationResults = error.data.validationResults;             
+
+              deferred.resolve({concept: concept, validationResults: validationResults});
+            } else {
+              deferred.reject(error);
+            }            
+          }
           deferred.reject(error);
         });
         return deferred.promise;
@@ -187,7 +226,7 @@ angular.module('singleConceptAuthoringApp')
       function cleanRelationship(relationship) {
 
         var allowableRelationshipProperties = [
-          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
+          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'concreteValue'
         ];
 
         // if a locally assigned UUID, strip
@@ -271,7 +310,7 @@ angular.module('singleConceptAuthoringApp')
       function cleanRelationship(relationship, keepTempIds) {
 
         var allowableRelationshipProperties = [
-          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
+          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'concreteValue'
         ];
 
         // if a locally assigned UUID, strip
@@ -1124,7 +1163,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var queryString = '';
         angular.forEach(conceptIdList, function (concept, key) {
-          if (key + 1 !== conceptIdList.length) {
+          if (key + 1 !== conceptIdList.length && concept !== "") {
             queryString += concept + '%20OR%20';
           }
           else {
@@ -2305,6 +2344,28 @@ angular.module('singleConceptAuthoringApp')
           });
         }
       }
+
+      function findClosestActiveAncestor(inactiveConceptId, branch) {
+        var defer = $q.defer();
+        var findingConcept =  function(conceptId, branch, defer) {          
+          getFullConcept(conceptId, branch).then(function (response) {
+            if (response.active) {
+              defer.resolve(response);
+            } else {
+              for (let i = 0; i < response.classAxioms[0].relationships.length; i++) {
+                let rel = response.classAxioms[0].relationships[i];
+                if (rel.active && rel.type.conceptId === '116680003') {
+                  findingConcept(rel.target.conceptId, branch, defer);
+                  break;
+                }
+              }
+            }
+          });  
+        }
+        findingConcept(inactiveConceptId, branch, defer);
+        return defer.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2356,6 +2417,7 @@ angular.module('singleConceptAuthoringApp')
         getDialects: getDialects,
         downloadClassification: downloadClassification,
         findConceptsForQuery: findConceptsForQuery,
+        findClosestActiveAncestor: findClosestActiveAncestor,
         searchConcepts: searchConcepts,
         searchAllConcepts: searchAllConcepts,
         getReview: getReview,
