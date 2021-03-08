@@ -1045,6 +1045,17 @@ angular.module('singleConceptAuthoringApp.edit', [
             if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
               axiom.moduleId = metadataService.getCurrentModuleId();
             }
+            clonedConcept.classAxioms[index].relationships.forEach(function (rel){
+                if(rel.concreteValue && rel.concreteValue.concrete){
+                    rel.target = {};
+                    delete rel.characteristicType;
+                    delete rel.modifier;
+                    delete rel.moduleId;
+                    delete rel.released;
+                    delete rel.type.definitionStatus;
+                    delete rel.type.moduleId;
+                }
+            });
           }
         }
         if (clonedConcept.gciAxioms && clonedConcept.gciAxioms.length > 0) {
@@ -1058,6 +1069,17 @@ angular.module('singleConceptAuthoringApp.edit', [
             if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
               axiom.moduleId = metadataService.getCurrentModuleId();
             }
+            clonedConcept.gciAxioms[index].relationships.forEach(function (rel){
+                if(rel.concreteValue && rel.concreteValue.concrete){
+                    rel.target = {};
+                    delete rel.characteristicType;
+                    delete rel.modifier;
+                    delete rel.moduleId;
+                    delete rel.released;
+                    delete rel.type.definitionStatus;
+                    delete rel.type.moduleId;
+                }
+            });
           }
         }
 
@@ -1075,6 +1097,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
+        console.log(clonedConcept);
         $scope.conceptLoading = false;
 
         var successMsg = 'Concept ' + response.fsn + ' successfully cloned';
@@ -1660,6 +1683,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.createConcept(false);
       });
     };
+
+    $scope.clearTemplateSearch = function() {
+      $scope.templateTableParams.filter()['search'] = '';
+      $scope.templateTableParams.reload();
+    }
 
     $scope.selectFocusForTemplate = function(concept){
         var initialTemplates = $scope.innerTemplates;

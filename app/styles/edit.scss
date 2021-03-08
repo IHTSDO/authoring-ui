@@ -1042,14 +1042,17 @@ div.search-result:hover {
 .load-performed .fa-random.tooltips-top:hover span {
     margin-left: -32px;
 }
-.editing-form .triangle-redhl {
+.editing-form .triangle-redhl { 
     border-top: 9px solid red;
     border-left: 9px solid transparent;
-    width: 0px; position: absolute;
+    width: 0px;
+    position: absolute;
     margin-left: -9px;
 }
-.editing-form .triangle-redhl.custom-margin {
-    margin-left: -12px;
+.editing-form .triangle-redhl.case-significance {
+    margin-left: 92px;
+    left: 0px;
+    top: 0px;
 }
 .first .project-taxonomy-container .project-taxonomy-panel {
     margin-top: 29px;
