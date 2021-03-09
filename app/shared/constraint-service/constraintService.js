@@ -13,6 +13,13 @@ angular.module('singleConceptAuthoringApp')
         });
         return matches.length > 0;
       }
+        
+      function getAttributeById(id, attributesAllowed) {
+        var matches = attributesAllowed.filter(function (item) {
+          return item.id === id;
+        });
+        return matches[0];
+      }
 
       // Search str matches fsn or id of attributes dynamically computed from concept
       function isAttributeAllowedForConcept(searchStr, concept, branch) {
@@ -168,6 +175,7 @@ angular.module('singleConceptAuthoringApp')
 
         // utility functions
         isAttributeAllowedForArray: isAttributeAllowedForArray,
+        getAttributeById: getAttributeById,
         isAttributeAllowedForConcept: isAttributeAllowedForConcept,
         isValueAllowedForType: isValueAllowedForType
       };
