@@ -3101,16 +3101,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.concreteValue.dataType = data.dataType;
               relationship.concreteValue.valueWithPrefix = '#';
               relationship.concreteValue.concrete = true;
-              relationship.target = {};
+              //relationship.target = {};
               relationship.rangeMin = data.rangeMin;
               relationship.rangeMax = data.rangeMax;
           }
-          else{
-              relationship.dataType = null;
-              delete relationship.concreteValue;
-              relationship.target = {};
-              relationship.rangeMin = null;
-              relationship.rangeMax = null;
+          else if(!data.dataType && data.concreteValue){
+            scope.warnings = ['MRCM validation error:  Value is not a valid attribute.'];
+            return
           }
 
           // check that attribute is acceptable for MRCM rules
@@ -3118,13 +3115,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // check attribute allowed against stored array
             if (constraintService.isAttributeAllowedForArray(data.id, axiom.allowedAttributes)) {
-
+              relationship.dataType = null;
+              delete relationship.concreteValue;
+              //relationship.target = {};
+              relationship.rangeMin = null;
+              relationship.rangeMax = null;
+              var attribute = constraintService.getAttributeById(data.id, axiom.allowedAttributes);
+              if(attribute.dataType){
+                  relationship.concreteValue = {};
+                  relationship.concreteValue.value = "";
+                  relationship.dataType = attribute.dataType;
+                  relationship.concreteValue.dataType = attribute.dataType;
+                  relationship.concreteValue.valueWithPrefix = '#';
+                  relationship.concreteValue.concrete = true;
+                  //relationship.target = {};
+                  relationship.rangeMin = attribute.rangeMin;
+                  relationship.rangeMax = attribute.rangeMax;
+              }
+              
               // if target already specified, validate it
               if (relationship.target.conceptId) {
                 constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
-                  scope.warnings = ['MRCM validation error: ' + relationship.target.pt + ' is not a valid target for attribute type ' + data.name + '.'];
+                  scope.warnings = ['MRCM validation error: ' + relationship.target.pt + ' is not a valid target for attribute type ' + data.pt + '.'];
                 });
               }
 
