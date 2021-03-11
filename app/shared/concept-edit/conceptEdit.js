@@ -1147,6 +1147,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   }
 
                   // set concept and unmodified state
+                  delete scope.concept.descriptions;
+                  delete scope.concept.classAxioms;
+                  delete scope.concept.gciAxioms;
+                  delete scope.concept.relationships;
                   angular.merge(scope.concept, scope.concept, response.concept);
                   scope.unmodifiedConcept = JSON.parse(JSON.stringify(response.concept));
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
