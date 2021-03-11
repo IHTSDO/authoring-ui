@@ -2970,7 +2970,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.updateConcreteValue(relationship);
               }
               else{
-                  if(data.id || data.id === undefined)
+                  if(!data.id || data.id === undefined)
                   {
                     scope.warnings = ['MRCM validation error: ' + ' value is not a valid target for attribute type ' + relationship.type.fsn + '.'];
                     relationship.target.fsn = tempFsn;
