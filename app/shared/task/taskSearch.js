@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, scaService, notificationService) {
+  .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, scaService, notificationService) {
     $scope.criteria = '';
     $scope.message = '';
     $scope.searching = false;
@@ -18,6 +18,8 @@ angular.module('singleConceptAuthoringApp')
           } else {
               var mydata = $scope.tasks;
               params.total(mydata.length);
+
+              mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
               $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
         }
