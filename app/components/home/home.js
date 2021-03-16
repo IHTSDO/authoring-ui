@@ -11,11 +11,11 @@ angular.module('singleConceptAuthoringApp.home', [
             .when('/home', {
                 controller: 'HomeCtrl',
                 templateUrl: 'components/home/home.html',
-                resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+                resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
                     var defer = $q.defer();
-                    terminologyServerService.getEndpoint().then(function(){
-                      defer.resolve();
-                    });                        
+                    $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
+                        defer.resolve();
+                    });       
                     return defer.promise;
                   }
                 ]
@@ -452,10 +452,8 @@ angular.module('singleConceptAuthoringApp.home', [
             }
         }
 
-        $scope.isProjectsLoaded = function() {
-            var projects = metadataService.getProjects();
-            $scope.projects = projects;
-            return projects && projects.length > 0;
+        $scope.isProjectsLoaded = function() {            
+            return $scope.projects && $scope.projects.length > 0;
         };
 
         $scope.$on('reloadTasks', function (event, data) {
@@ -472,47 +470,19 @@ angular.module('singleConceptAuthoringApp.home', [
         function initialize() {
             $scope.tasks = [];
             $scope.projects = metadataService.getProjects();
-              if($scope.projects.length === 0){
-                  scaService.getProjects().then(function (response) {
-                    if (!response || response.length === 0) {
-                      $scope.projects = [];
-                      loadTasks();
-                      return;
-                    } else {
-                      metadataService.setProjects(response);
-                      $scope.projects = response;
-                      angular.forEach($scope.projects, function(project) {
-                          if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                             $scope.typeDropdown.push(project.codeSystem.maintainerType);
-                          }
-                        });
+            angular.forEach($scope.projects, function(project) {
+                if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+                    $scope.typeDropdown.push(project.codeSystem.maintainerType);
+                }
+            });
+            accountService.getUserPreferences().then(function (preferences) {
+                $scope.preferences = preferences;
 
-                      accountService.getUserPreferences().then(function (preferences) {
-                        $scope.preferences = preferences;
-
-                        if(preferences.hasOwnProperty("selectedType")) {
-                          $scope.selectedType.type = $scope.preferences.selectedType;
-                        }
-                      });
-                      loadTasks();
-                    }
-                  });
-              }
-              else{
-                  angular.forEach($scope.projects, function(project) {
-                      if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                         $scope.typeDropdown.push(project.codeSystem.maintainerType);
-                      }
-                    });
-                    accountService.getUserPreferences().then(function (preferences) {
-                        $scope.preferences = preferences;
-
-                        if(preferences.hasOwnProperty("selectedType")) {
-                          $scope.selectedType.type = $scope.preferences.selectedType;
-                        }
-                      });
-                  loadTasks();
-              }
+                if(preferences.hasOwnProperty("selectedType")) {
+                    $scope.selectedType.type = $scope.preferences.selectedType;
+                }
+            });
+            loadTasks();              
         }
 
         initialize();

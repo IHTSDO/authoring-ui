@@ -11,11 +11,11 @@ angular.module('singleConceptAuthoringApp.projectMerge', [
       .when('/projects/project/:projectKey/conflicts', {
         controller: 'ProjectMergeCtrl',
         templateUrl: 'components/project-merge/projectMerge.html',
-        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
+        resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
             var defer = $q.defer();
-            terminologyServerService.getEndpoint().then(function(){
-              defer.resolve();
-            });                        
+            $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
+                defer.resolve();
+            });       
             return defer.promise;
           }
         ]
