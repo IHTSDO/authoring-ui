@@ -2303,11 +2303,12 @@ angular.module('singleConceptAuthoringApp')
         if (!apiEndpoint) {                  
           setTimeout(function waitForTerminologyServerURL() {                              
             if (!apiEndpoint) {                      
-              setTimeout(waitForTerminologyServerURL, 100);            } 
+              setTimeout(waitForTerminologyServerURL, 10);
+            } 
             else {                  
               defer.resolve(apiEndpoint);
             }
-          }, 100);
+          }, 10);
         }
         else {              
           defer.resolve(apiEndpoint);

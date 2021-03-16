@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('metadataService', ['$rootScope', function ($rootScope) {
+  .service('metadataService', ['$rootScope', '$q', function ($rootScope, $q) {
 
     // project cache (still used?)
     var projects = [];
@@ -22,6 +22,8 @@ angular.module('singleConceptAuthoringApp')
     var spellcheckDisabled = false;
 
     var taskPromotionDisabled = false;
+
+    var projectsLoadCompleted = false;
 
     // relationship metadata
     var isaRelationshipId = '116680003';
@@ -685,6 +687,29 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
+    function isProjectsLoaded() {
+      var defer = $q.defer();        
+        if (!projectsLoadCompleted) {                  
+          setTimeout(function waitForProjectsLoadCompleted() {                              
+            if (!projectsLoadCompleted) {                      
+              setTimeout(waitForProjectsLoadCompleted, 10);
+            } 
+            else {                  
+              defer.resolve(projectsLoadCompleted);
+            }
+          }, 10);
+        }
+        else {              
+          defer.resolve(projectsLoadCompleted);
+        }
+        
+        return defer.promise;
+    }
+
+    function setProjectsLoaded(completed) {
+      projectsLoadCompleted = completed;
+    }
+
     function getMyProjects() {
       return myProjects;
     }
@@ -899,6 +924,8 @@ angular.module('singleConceptAuthoringApp')
       setSpellcheckDisabled: setSpellcheckDisabled,
       setModuleName: setModuleName,
       setTaskPromotionDisabled: setTaskPromotionDisabled,
+      isProjectsLoaded: isProjectsLoaded,
+      setProjectsLoaded: setProjectsLoaded,
 
       // branch/task fupath retrieval functions
       getBranch: getBranch,
