@@ -11,14 +11,14 @@ angular.module('singleConceptAuthoringApp.projects', [
       .when('/projects', {
         controller: 'ProjectsCtrl',
         templateUrl: 'components/projects/projects.html',
-        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
-          var defer = $q.defer();
-          terminologyServerService.getEndpoint().then(function(){
-            defer.resolve();
-          });                        
-          return defer.promise;
-        }
-      ]
+        resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
+            var defer = $q.defer();
+            $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
+                defer.resolve();
+            });       
+            return defer.promise;
+          }
+        ]
       });
   })
 

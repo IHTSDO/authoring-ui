@@ -11,12 +11,12 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       .when('/review-tasks', {
         controller: 'ReviewTasksCtrl',
         templateUrl: 'components/review-tasks/reviewTasks.html',
-        resolve: ['terminologyServerService', '$q', function(terminologyServerService, $q) {
-            var defer = $q.defer();
-            terminologyServerService.getEndpoint().then(function(){
+        resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
+          var defer = $q.defer();
+          $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
               defer.resolve();
-            });                        
-            return defer.promise;
+          });       
+          return defer.promise;
           }
         ]
       });
@@ -415,81 +415,20 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         $scope.reviewTasks = [];
 
         // get all projects for task creation
-      $scope.projects = metadataService.getProjects();
-      if($scope.projects.length === 0){
-          scaService.getProjects().then(function (response) {
-            if (!response || response.length === 0) {
-              $scope.projects = [];
-              loadTasks();
-              return;
-            } else {
-              metadataService.setProjects(response);
-              $scope.projects = response;
-              angular.forEach($scope.projects, function(project) {
-                  if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                    $scope.typeDropdown.push(project.codeSystem.maintainerType);
-                  }
-              });
-                
-              accountService.getUserPreferences().then(function (preferences) {
-                $scope.preferences = preferences;
+        $scope.projects = metadataService.getProjects();
+        angular.forEach($scope.projects, function(project) {
+          if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
+              $scope.typeDropdown.push(project.codeSystem.maintainerType);
+          }
+        });
+        accountService.getUserPreferences().then(function (preferences) {
+          $scope.preferences = preferences;
 
-                if(preferences.hasOwnProperty("selectedType")) {
-                  $scope.selectedType.type = $scope.preferences.selectedType;
-                }
-              });
-              loadTasks();
-            }
-          });
-      }
-      else{
-          angular.forEach($scope.projects, function(project) {
-            if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
-                $scope.typeDropdown.push(project.codeSystem.maintainerType);
-            }
-          });
-          accountService.getUserPreferences().then(function (preferences) {
-            $scope.preferences = preferences;
-
-            if(preferences.hasOwnProperty("selectedType")) {
-              $scope.selectedType.type = $scope.preferences.selectedType;
-            }
-          });
-          loadTasks();
-      }
-        // temporary workaround, restricting to WRPAS tasks
-        // and getting
-        
-
-        /*
-         // TODO Commented out until endpoints are fleshed out for review tasks
-         // get tasks across all projects
-         $scope.tasks = [];
-         scaService.getTasks().then(function (response) {
-         if (!response || response.length === 0) {
-         $scope.tasks = [];
-         return;
-         }
-
-         $scope.tasks = response;
-         }, function (error) {
-         });
-         */
-        /*
-         // disable polling
-         $timeout(function () {
-         scaService.getTasks().then(function (response) {
-         if (!response || response.length === 0) {
-         $scope.tasks = [];
-         return;
-         }
-
-         $scope.tasks = response;
-         }, function (error) {
-         });
-         }, 30000);
-         */
-
+          if(preferences.hasOwnProperty("selectedType")) {
+            $scope.selectedType.type = $scope.preferences.selectedType;
+          }
+        });
+        loadTasks();
       }
 
       initialize();

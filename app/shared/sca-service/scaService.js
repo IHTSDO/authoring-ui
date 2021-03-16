@@ -551,8 +551,14 @@ angular.module('singleConceptAuthoringApp')
         },
 
         // get all projects
-        getProjects: function () {
-          return $http.get(apiEndpoint + 'projects').then(
+        getProjects: function (lightweight) {
+          var params;
+          if (lightweight) {
+            params = 'lightweight=' + lightweight;
+          } else {
+            params = 'lightweight=false';
+          }
+          return $http.get(apiEndpoint + 'projects?' + params).then(
             function (response) {
               return response.data;
             }, function (error) {
