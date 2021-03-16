@@ -264,8 +264,9 @@ angular
         ///////////////////////////////////////////
         // Cache local data
         ///////////////////////////////////////////
-        scaService.getProjects().then(function (response) {
+        scaService.getProjects(true).then(function (response) {
           metadataService.setProjects(response);
+          metadataService.setProjectsLoaded(true);
           // get the user preferences (once logged in status confirmed)
           accountService.getUserPreferences().then(function (preferences) {
 
