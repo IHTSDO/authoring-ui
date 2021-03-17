@@ -297,7 +297,9 @@ content: '';
 .md-playlist-add.small-size-tooltip.tooltips-bottom:hover span {
     margin-left: -51px;
 }
-
+.md-playlist-add.large-size-tooltip.tooltips-top:hover span {
+    margin-left: -173px;
+}
 .tooltips-bottom .fa-info + span,
 .tooltips-bottom .md-my-library-books + span,
 .tooltips-btm .md-my-library-books + span {

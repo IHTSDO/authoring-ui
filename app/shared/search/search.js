@@ -458,6 +458,29 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
       };
 
+      $scope.addSelectedResultsToSavedList = function() {
+        let selectedResultsList = [];
+        let count = 0;
+        $scope.results.filter(function(item) {
+          if(item.selected) {
+            selectedResultsList.push(item);
+          }
+        });
+        if (selectedResultsList.length !== 0) {
+          angular.forEach(selectedResultsList, function (item) {
+            if(!$scope.isInSavedList(item.concept.conceptId)) {
+              savedListService.addItemToSavedList(item,$routeParams.projectKey, $routeParams.taskKey);
+              count++;
+            }            
+          });          
+        }
+        if (count === 0) {
+          notificationService.sendMessage('No concepts added to Saved List', 3000);
+        } else {
+          notificationService.sendMessage('Successfully added ' + count + ' concepts to Saved List', 3000);
+        }
+      };
+
       $scope.downloadSearchResults = function(conceptIdList) {
         let acceptLanguageValue = '';
         if($scope.isExtension) {
