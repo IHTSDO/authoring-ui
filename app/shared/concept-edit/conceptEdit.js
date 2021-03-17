@@ -303,6 +303,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
         var semanticTags = metadataService.getSemanticTags();
+        var internationalMetadata = metadataService.getInternationalMetadata();
 
         //var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
         var originalConceptId = null;
@@ -413,7 +414,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
         };
 
-        scope.checkReadOnlyDialect = function(dialectId){
+        scope.checkReadOnlyDialect = function(descriptionModuleId, dialectId) {
+            // Block editing of GB language refset on international in community
+            if (metadataService.useInternationalLanguageRefsets() &&
+                dialectId === '900000000000508004' &&
+                internationalMetadata.modules.filter(function(module) { return module.id === descriptionModuleId; }).length !==0) {
+                return true;
+            }
+
             let readOnly = metadataService.getReadOnlyDialectsForModuleId(scope.concept.moduleId);
             if(readOnly[dialectId] === 'true'){
                 return true;
