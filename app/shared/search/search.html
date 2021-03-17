@@ -291,11 +291,14 @@
   </div>
   <!-- load more button -->
   <div class="col-md-12 m-t-10 load-performed" ng-show="!templateMode && loadPerformed">
-    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-10 load-more" ng-click="loadMore()"
+    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-8 load-more" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
     </button>
+    <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn col-md-2 md md-playlist-add tooltips-top large-size-tooltip offset-tooltip-right white-icon green lighten-1" ng-click="addSelectedResultsToSavedList()">
+      <span class="tooltip-dl">Add Selected Results to Saved List</span>
+    </a>
     <a ng-show="loadPerformed" ng-disabled="!results.length || !downloadButtonActive" class="btn btn-primary col-md-2 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="downloadResultFilter()">
       <span class="tooltip-dl">Download Selected Results</span>
     </a>
