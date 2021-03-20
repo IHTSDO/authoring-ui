@@ -1,5 +1,5 @@
 
-<div id="taskModal" class="clearfix">
+<div id="taskModal" class="clearfix task-modal">
   <div class="modal-header clearfix">
 
    
@@ -10,7 +10,7 @@
   </div>
   <div class="modal-body">
     <div class="col-md-12 no-padding">
-      <form class="form-floating">
+      <div class="form-group">
         <div class="alert alert-success" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
           <h4>No Further Changes Permitted!</h4>
           <strong>This task is promoted</strong> and therefore cannot be modified or deleted. </div>
@@ -23,8 +23,32 @@
                  placeholder="Enter task title">
             <br>
           </div>
+          <div class="row" ng-if="task.key">
+            <div class="col-md-6 no-padding">
+              <div>
+                <label for="taskProject">Project</label>
+                <div class="">{{task.projectKey}}</div>
+              </div>
+            </div>
+            <div class="col-md-6 no-padding">
+              <label for="taskAuthor">Author</label>
+              <p ng-show="task.status === 'Promoted' || task.status === 'Completed'">{{task.assignee.displayName}}</p>
+              <input ng-hide="task.status === 'Promoted' || task.status === 'Completed'" class="form-control" type="text" ng-model="newAssignee"
+                typeahead="suggestion as suggestion.displayName for suggestion in searchUsers($viewValue)"  
+                typeahead-focus-first="false"                
+                typeahead-editable="false"
+                typeahead-min-length="1"
+                typeahead-wait-ms="500"
+                typeahead-on-select="updateAssignee($item)"
+                typeahead-loading="typeaheadLoading"
+                typeahead-focus-custom> 
+                <i ng-show="typeaheadLoading" class="md md-cached"></i>                   
+              </input>
+            </div>
+          </div>
+
           <div ng-if="!task.key">
-            <label for="taskProject">Select Project:</label>
+            <label for="taskProject">Select Project</label>
             <select id="taskProject" name="select-choice" class="form-control"
                     ng-options="project.key as project.title for project in projects | orderBy: 'title'"
                     ng-model="task.projectKey"
@@ -34,23 +58,15 @@
               >
             </select>
           </div>
-          <div ng-if="task.key">
-            <label for="taskProject">Project:</label>
-            <div class="">{{task.projectKey}}</div>
-          </div>
+          
           <br>
           <label for="textArea">Task Details</label>
-          <!--
-          <textarea ng-change="clearMessages()" sca-auto-expand="" class="form-control vertical auto-grow-textarea"
-                    rows="3" id="textArea"
-                     placeholder="Enter task details"></textarea>
--->
           <p compile-html="task.description" ng-show="task.status === 'Promoted' || task.status === 'Completed'"></p>
           <div ng-hide="task.status === 'Promoted' || task.status === 'Completed'">
             <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
           </div>
         </div>
-      </form>
+      </div>
       <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
       <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
     </div>
@@ -77,7 +93,7 @@
       
       <!-- If has a task key, replace Create with Update -->
       <div ng-if="task.key" class="" ng-class="[{'col-md-4' : canDelete}, {'col-md-6' : !canDelete}]">
-        <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" class="col-md-12 btn btn-info no-margin"
+        <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || disabled" class="col-md-12 btn btn-info no-margin"
                 ng-click="updateTask()">Save Changes </button>
       </div>
       
@@ -89,7 +105,7 @@
       
       <!-- If has a key, option to delete task -->
       <div ng-if="canDelete" class="col-md-4">
-        <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" class="col-md-12 btn btn-danger no-margin"
+        <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || disabled" class="col-md-12 btn btn-danger no-margin"
                 ng-click="deleteTask()">Delete Task </button>
       </div>
     </div>

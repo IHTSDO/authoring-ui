@@ -341,8 +341,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     notificationService.sendMessage(msg, 0); 
                   }
-                }                      
-
+                }
                 break;
 
               /*
@@ -428,8 +427,6 @@ angular.module('singleConceptAuthoringApp')
                 } else {
                   console.error('Classification notification could not be processed', newNotification);
                 }
-
-
                 break;
 
               /*
@@ -462,9 +459,7 @@ angular.module('singleConceptAuthoringApp')
                 } else {
                   url = '#/project/' + newNotification.project;
                   $rootScope.$broadcast('reloadProject');
-                }
-
-
+                }                
                 break;
 
               /*
@@ -493,6 +488,18 @@ angular.module('singleConceptAuthoringApp')
                 // broadcast validation complete to taskDetail
                 $rootScope.$broadcast('reloadTask');
                 break;
+                
+              case 'AuthorChange':
+                var msg = newNotification.event;
+                if (newNotification.task) {
+                  url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                } else {
+                  url = '#/project/' + newNotification.project;
+                } 
+
+                notificationService.sendMessage(msg, 0, url);
+                break;
+
               default:
                 console.error('Unknown entity type for notification, stopping', +newNotification);
                 return;
@@ -1683,6 +1690,27 @@ angular.module('singleConceptAuthoringApp')
             }
           });
           return deferred.promise;          
+        },
+
+        searchUsers : function (username, projectKeys, issueKey, maxResults, startAt) {
+          var deferred = $q.defer();
+          var params = 'username=' + username;
+          params += '&projectKeys=' + projectKeys;
+          params += '&issueKey=' + issueKey;
+          params += '&maxResults=' + maxResults;
+          params += '&startAt=' + startAt; 
+          
+          // get the list
+          $http.get(apiEndpoint + 'users/search?' + params).then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            if (error.status === 404) {
+              deferred.resolve({});
+            } else {
+              deferred.reject('Error retrieving users');
+            }
+          });
+          return deferred.promise;
         },
 
         removeIssueLink: function (issueKey, linkId) {
