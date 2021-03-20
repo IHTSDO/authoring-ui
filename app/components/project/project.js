@@ -368,7 +368,16 @@ angular.module('singleConceptAuthoringApp.project', [
             if (response === 'DELETED') {
               initialize();
             } else {
-              $scope.task = response.data;
+              let updatedTask = response.data;
+              angular.forEach($scope.tasks, function (task) {
+                if (task.key === updatedTask.key) {
+                  task.assignee = updatedTask.assignee;
+                  task.summary = updatedTask.summary;
+                  task.description = updatedTask.description;
+                  task.authorKey = task.assignee ? task.assignee.displayName : '';
+                }
+              });
+              $scope.taskTableParams.reload();
             }
           } else {
             // do nothing

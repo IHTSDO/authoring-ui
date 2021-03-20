@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -359,6 +359,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (response === 'DELETED') {
             $location.url('home');
           } else {
+            let updatedTask = response.data;
+            if ($scope.task.assignee.username !== updatedTask.assignee.username) {
+              $route.reload();
+              return;
+            }
+
+            $scope.task.summary = updatedTask.summary;
+            $scope.task.description = updatedTask.description;
+
             // broadcast reload task event
             // NOTE:  Not necessary to broadcast as of 12/11, but in place in
             // case further task revision scenarios require app-wide reload
