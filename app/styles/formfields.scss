@@ -175,7 +175,9 @@ input[type=checkbox], input[type=radio] {
 .task-color-black {
 	color: black;
 }
-.modal-footer .btn-danger:disabled, .modal-footer .btn-info:disabled {
+.modal-footer .btn-warning:disabled,
+.modal-footer .btn-danger:disabled, 
+.modal-footer .btn-info:disabled {
 	background-color: #fff;
 	border: 1px solid #eee;
 	background-color: #eee;
