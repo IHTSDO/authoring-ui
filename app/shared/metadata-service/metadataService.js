@@ -912,7 +912,7 @@ angular.module('singleConceptAuthoringApp')
         return extensionMetadata !== null;
       },
       useInternationalLanguageRefsets: function () {
-        return extensionMetadata.useInternationalLanguageRefsets;
+        return extensionMetadata ? extensionMetadata.useInternationalLanguageRefsets : false;
       },
 
       // module and branch metadata setters
