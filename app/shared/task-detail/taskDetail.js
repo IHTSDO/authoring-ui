@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           return;
         }
 
-        $scope.promoting = true;
+        $scope.promoting = true;        
         notificationService.sendMessage('Preparing for task promotion...');
 
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
@@ -77,18 +77,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
+            $rootScope.branchLocked = true;
             notificationService.sendMessage('Promoting task...');
             promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response.status === 'CONFLICTS') {
                 var merge = JSON.parse(response.message);
                 terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
                   notificationService.sendError(conflictMessage);
+                  $scope.branchLocked = false;
                 });
               } else {
                 $rootScope.$broadcast('reloadTask');
               }
             }, function (error) {
               $scope.promoting = false;
+              $rootScope.branchLocked = false;
               notificationService.sendError('Error promoting task to project: ' + error);
             });
           } else {
@@ -110,12 +113,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
+                $rootScope.branchLocked = true;
                 notificationService.sendMessage('Promoting task...');
                 promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   if (response.status === 'CONFLICTS') {
                     var merge = JSON.parse(response.message);
                     terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
                       notificationService.sendError(conflictMessage);
+                      $scope.branchLocked = false;
                     });
                   } else {
                     scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
@@ -131,20 +136,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   }
                 }, function (error) {
                   $scope.promoting = false;
-                   notificationService.sendError('Error promoting task to project: ' + error);
+                  $rootScope.branchLocked = false;
+                  notificationService.sendError('Error promoting task to project: ' + error);
                 });
               } else {
                 notificationService.clear();
                 $scope.promoting = false;
+                $rootScope.branchLocked = false;
               }
             }, function () {
               notificationService.clear();
               $scope.promoting = false;
+              $rootScope.branchLocked = false;
             });
           }
         }, function (error) {
           notificationService.sendError('Unexpected error preparing for promotion: ' + error);
           $scope.promoting = false;
+          $rootScope.branchLocked = false;
         });
       };
       
