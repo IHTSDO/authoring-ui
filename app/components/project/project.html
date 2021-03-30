@@ -56,7 +56,7 @@
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
             </div>
-            <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote This Project to the Mainline</div>
+            <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Begin Promotion Preparation</div>
             <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
         </div>
@@ -69,33 +69,111 @@
         </div>
       </div>      
 </div>
-
-
     <div class="row project-page">
-      <!-- Conflict Report Results -->
+        
+      <!-- Acceptance Criteria -->
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-
             <button
-              ng-click="mergeAndRebase()"
-              ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled"
-              ng-init="conflictsCollapsed = true"
-              type="button"
-              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
-              <span class="project-subtitle"
-                ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content</span>
+              ng-init="criteriaCollapsed = false"
+              ng-click="criteriaCollapsed = !criteriaCollapsed" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : criteriaCollapsed, 'md-keyboard-arrow-down' : !criteriaCollapsed}]">
+              <span class="project-subtitle">Acceptance Criteria <i class="md md-settings f20" style="color: #00acc1"></i></span>
             </button>
-            </a>
-
-            <span class="project-icon amber pull-right"><span class="md md-sync"></span></span>
-            <span class="arrow-amber pull-right"></span>
-
+            <span class="project-icon pull-right"><span class="fa fa-tasks" style="font-size: 24px;
+    text-align: center;
+    line-height: 60px; border-radius: 0px 4px 4px 0px;
+    width: 100%;
+    float: left;
+    background-color: #00acc1; color:#fff"></span></span>
+            <span class="arrow-cyan pull-right"></span>
             <div class="clearfix"></div>
-
           </div>
         </div>
-
+        <div ng-show="criteriaCollapsed === false">
+          <div class="card-content clearfix">
+              <div class="col-md-4">
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check-circle pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 10px; font-size: 16px;">
+                              Automated Criteria
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Project is Forward of parent
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Content is classified.
+                          </div>
+                          
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              RVF Validation Clean.
+                          </div>
+                      </div>
+              </div>
+              <div class="col-md-4">
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check-circle pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 10px; font-size: 16px;">
+                              Manual Criteria
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              MRCM Validation Report checked.
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Release Notes Evaluated.
+                          </div>
+                          
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check-square pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Mapping requirements evaluated. 
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-check-square pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Whitelist additions evaluated. 
+                          </div>
+                      </div>
+              </div>
+              <div class="col-md-4">
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div style="margin-left: 10px; font-size: 16px;">
+                              Further Information
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-info pull-right" style="color: #fbc02d; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Mapping Estimate: 12 days. 
+                          </div>
+                      </div>
+                      <div class="row" style="display:inline-flex; width:100%;">
+                          <div class="fa fa-info pull-right" style="color: #fbc02d; font-size:28px; padding:10px;"></div>
+                          <div style="margin-top: 12px; font-size: 14px;">
+                              Component Changes: 387. 
+                          </div>
+                      </div>
+              </div>
+          </div>
+        </div>
       </div>
 
 
@@ -203,59 +281,57 @@
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd":"UTC"}}
               </td>
-              <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
-                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                       <button ng-show="task.latestClassificationJson !== null"
-                          type="button"
-                          ng-class="[
-                          {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
-                           {indicator_green : task.latestClassificationJson.status === 'COMPLETED' && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
-                            {indicator_green : task.latestClassificationJson.status === 'SAVED' && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
-                          {indicator_blue : task.latestClassificationJson.status === 'RUNNING'},
-                          {indicator_blue : task.latestClassificationJson.status === 'SCHEDULED'},
-                          {indicator_red : task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE' || task.latestClassificationJson.status === 'FAILED' && task.latestClassificationJson.status !== 'STALE'},
-                            {indicator_grey : task.latestClassificationJson.status === 'STALE'},
-                           {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
-                           ]"
-  class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                    <div class="md md-notifications "></div>
-                                        <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false"> but equivalent relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false"> but redundant stated relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true"> but redundant stated relationships and equivalency errors were found </div> </div></span>
-                  </button>
-
-                  </a>
-
-
-
-              </td>
-
-              <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'">
-                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
-                          type="button"
-                          ng-class="[
-                          {indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
-                          {indicator_red : task.latestValidationStatus === 'FAILED'},
-                          {indicator_blue : task.latestValidationStatus === 'VALIDATING'},
-                          {indicator_blue : task.latestValidationStatus === 'BUILDING'},
-                          {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
-                          class="btn btn-round btn-default lighten-2 pull-left ">
-                    <div class="md md-school "></div>    <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
-                  </button>
-
-
-                </a>
-              </td>
-
-
-              <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'">
-                <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
-              </td>
               <td header-title="'Click to sort'" data-title="''" sortable="''">
                 <button class="btn btn-default btn-round md md-settings blue  tooltips-light normal-case" ng-click="editTask(task)"></button>
               </td>
             </tr>
           </table>
 
+        </div>
+      </div>
+        
+      <div class="card ">
+        <div class="card-header">
+          <div class="card-title">
+            <button
+              ng-init="releaseNotesCollapsed = true"
+              ng-click="releaseNotesCollapsed = !releaseNotesCollapsed" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : releaseNotesCollapsed, 'md-keyboard-arrow-down' : !releaseNotesCollapsed}]">
+              <span class="project-subtitle">Release Notes</span>
+            </button>
+            <span class="project-icon pull-right"><span class="fa fa-clipboard" style="font-size: 24px;
+    text-align: center;
+    line-height: 60px; border-radius: 0px 4px 4px 0px;
+    width: 100%;
+    float: left;
+    background-color: #e91e63; color:#fff"></span></span>
+            <span class="arrow-pink pull-right"></span>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        <div ng-show="releaseNotesCollapsed === false">
+            <table ng-table="taskTableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small">
+            <tr ng-repeat="task in $data">
+
+              <td header-title="'Click to sort'" data-title="'Title'" sortable="'summary'" filter="{ 'summary': 'text' }">
+                <a class="tooltips-right"
+                   ng-click="viewTask(task)">Line Item Title</a>
+              </td>
+               <td header-title="'Click to sort'" data-title="'Last Edited By'" sortable="'key'" filter="{ 'key': 'text' }">
+                {{task.assignee.displayName}}
+              </td>
+              <td header-title="'Click to sort'" data-title="'Last Edited In'" sortable="'authorKey'" filter="{ 'author': 'text' }">
+                {{task.summary}}
+              </td>
+              <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">
+                {{task.updated | date: "yyyy-MM-dd":"UTC"}}
+              </td>
+              <td header-title="'Click to sort'" data-title="''" sortable="''">
+                <button class="btn btn-default btn-round md md-edit green  tooltips-light normal-case" ng-click="editTask(task)"></button>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
 
