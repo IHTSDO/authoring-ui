@@ -369,7 +369,7 @@ angular.module('singleConceptAuthoringApp')
     if ($scope.conceptId && $scope.branch) {
 
       // limit the number of descendants retrieved to prevent overload
-      terminologyServerService.searchAllConcepts($scope.branch, '', '<' + $scope.conceptId, 0, 50, null, true, true).then(function (response) {
+      terminologyServerService.searchAllConcepts($scope.branch, '', '<' + $scope.conceptId, 0, 50, null, true, true, null, null, 'stated').then(function (response) {
         $scope.descendants = response;
         $rootScope.descendants = response;
         $scope.descendantsLoading = false;
