@@ -459,6 +459,8 @@ angular.module('singleConceptAuthoringApp.project', [
               $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
               break;
           }
+        }, function() {
+          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
         });
       };
 
