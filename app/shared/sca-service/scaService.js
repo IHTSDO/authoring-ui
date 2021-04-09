@@ -1676,11 +1676,11 @@ angular.module('singleConceptAuthoringApp')
           });
         },
 
-        getUsers : function (expand) {          
+        getUsers : function (offset) {
           var deferred = $q.defer();
 
           // get the list
-          $http.get(apiEndpoint + 'users?expand=' + expand).then(function (response) {
+          $http.get(apiEndpoint + 'users?offset=' + offset).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 404) {
