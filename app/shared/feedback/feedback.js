@@ -87,9 +87,8 @@ angular.module('singleConceptAuthoringApp')
           scope.isExtensionSet = metadataService.isExtensionSet;
           scope.useInternationalLanguageRefsets = metadataService.useInternationalLanguageRefsets
 
-          function getUsers(start, end) {
-            var expand =  'users[' + start + ':' + end + ']';
-            scaService.getUsers(expand).then(function (response) {
+          function getUsers(start) {
+            scaService.getUsers(start).then(function (response) {
               if (response.users.items.length > 0) {
                 angular.forEach(response.users.items, function (item) {
                   if (item.key !== $rootScope.accountDetails.login) {
@@ -104,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
               }
 
               if (response.users.size > end) {
-                getUsers(start + 50, end + 50);
+                getUsers(start + 50);
               }
             },
             function (error) {});
