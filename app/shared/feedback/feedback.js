@@ -102,7 +102,7 @@ angular.module('singleConceptAuthoringApp')
                 });
               }
 
-              if (response.users.size > end) {
+              if (response.users.size > users.length + 1) {
                 getUsers(start + 50);
               }
             },
