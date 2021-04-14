@@ -789,10 +789,7 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
 
-          scope.editConcept = function (failure) {
-            if (!scope.task) {
-              return;
-            }
+          scope.editConcept = function (failure) {           
             
             // Already loaded check
             if(scope.viewedConcepts 
