@@ -525,8 +525,6 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$watch('validationContainer', function (newVal, oldVal) {
 
-            scope.initializing = true;
-
             if (!scope.validationContainer || !scope.validationContainer.report) {
               return;
             }
@@ -568,15 +566,15 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
                 notificationService.sendMessage('Initialization complete', 3000);
-                scope.initializing = false;
+                scope.initializationComplete = true;
               });
 
 
             }, function (error) {
-                notificationService.sendMessage('Initializing validation failures...');
+              notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
                 notificationService.sendMessage('Initialization complete', 3000);
-                scope.initializing = false;
+                scope.initializationComplete = true;
               });
         });
 
