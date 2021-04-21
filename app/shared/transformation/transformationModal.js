@@ -93,7 +93,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
 
     function getUsers(start, end) {
       var expand =  'users[' + start + ':' + end + ']';
-      scaService.getUsers(expand).then(function (response) {
+      scaService.getUsers(0,50).then(function (response) {
         if (response.users.items.length > 0) {
           angular.forEach(response.users.items, function (item) {
             var user = {};
@@ -110,7 +110,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
         }
 
         if (response.users.size > end) {
-          getUsers(start + 50, end + 50);
+          getUsers(0,50);
         }
       });
     }
