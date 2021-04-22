@@ -19,8 +19,6 @@ Run `bower install` to catch all build dependencies.
 Run `gem update --system` to ensure all Ruby gems are up to date.
 Run `gem install compass` to install the Compass SASS compiler.
 
-NB: Current Apple M1 Silicon chips have a further requirement of Ruby v3.0.0 for Compass.
-
 ## Testing
 
 Running `grunt test` will run the unit tests with karma.
