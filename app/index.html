@@ -33,6 +33,12 @@
       display: none;
     }
   </style>
+
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+
+  <!-- Standard dependencies -->
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-bundle.js"></script>
+  <script src="https://unpkg.com/@statuspage/status-widget/dist/index.js"></script>
 </head>
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
       class="theme-template-dark theme-blue">
@@ -106,7 +112,7 @@
 
     return prefix;
   }
-  
+
   changeFavicon(getIconPrefixFromEnv());
 </script>
 <!-- build:js(.) scripts/vendor.js -->

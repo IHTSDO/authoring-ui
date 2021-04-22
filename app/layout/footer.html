@@ -3,32 +3,36 @@
   <ul class="nav navbar-nav navbar-left navbar-left-no-collapse identity-services">
 
     <li><a href="http://www.snomed.org/" target="_blank" id="copyright_text"></a></li>
-    <li><a href="https://confluence.ihtsdotools.org/display/SIAPUG/SNOMED+International+Authoring+Platform+User+Guide" target="_blank" id="user_guide">User Guide</a></li>
+    <li><a href="https://confluence.ihtsdotools.org/display/SIAPUG/SNOMED+International+Authoring+Platform+User+Guide"
+           target="_blank" id="user_guide">User Guide</a></li>
     <li><a href="http://www.snomed.org/contact-us/" target="_blank" id="contact_us">Contact Us</a></li>
-
   </ul>
-  <div class="network-connection-warning" id="networkWarning"><i class="fa fa-exclamation-triangle"></i> &nbsp Your network connection is slow</div>
+  <div class="network-connection-warning" id="networkWarning"><i class="fa fa-exclamation-triangle"></i> &nbsp Your
+    network connection is slow
+  </div>
+
+  <statuspage-widget style="padding: 14px 10px 10px 10px; height: 50px" src="https://snomed.statuspage.io/"></statuspage-widget>
   <button class="btn btn-primary navbar-right" id="myCustomTrigger">Raise an Issue</button>
 
-    <div ng-if="collectorUrl">
-        <script type="text/javascript">
-            window.ATL_JQ_PAGE_PROPS = {
-                "triggerFunction": function(showCollectorDialog) {
-                    jQuery("#myCustomTrigger").click(function(e) {
-                        e.preventDefault();                      
-                        showCollectorDialog();
-                    });
-                }
-            };
-            
-            setInterval(function(){               
-              var downlink = navigator.connection.downlink;
-              if (window.minNetworkConnection && downlink && window.minNetworkConnection !== 0 && downlink < window.minNetworkConnection) {
-                $("#networkWarning").css("display", "inline");
-              } else {
-                $("#networkWarning").css("display", "none");
-              }
-             }, 15000);                                    
-        </script>
-    </div>
+  <div ng-if="collectorUrl">
+    <script type="text/javascript">
+      window.ATL_JQ_PAGE_PROPS = {
+        "triggerFunction": function (showCollectorDialog) {
+          jQuery("#myCustomTrigger").click(function (e) {
+            e.preventDefault();
+            showCollectorDialog();
+          });
+        }
+      };
+
+      setInterval(function () {
+        var downlink = navigator.connection.downlink;
+        if (window.minNetworkConnection && downlink && window.minNetworkConnection !== 0 && downlink < window.minNetworkConnection) {
+          $("#networkWarning").css("display", "inline");
+        } else {
+          $("#networkWarning").css("display", "none");
+        }
+      }, 15000);
+    </script>
+  </div>
 </div>
