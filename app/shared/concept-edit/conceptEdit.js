@@ -3717,17 +3717,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
           else {
+            let count = 0;
             var usPreferredTerm = '';
             var extensionPreferredTerm = '';
             var dialects = metadataService.getAllDialects();
 
             // Remove 'en-gb' and 'en-us' if any
-            if (dialects.hasOwnProperty('900000000000508004')) {
-              delete dialects['900000000000508004'];
-            }
-            if (dialects.hasOwnProperty('900000000000509007')) {
-              delete dialects['900000000000509007'];
-            }
+            delete dialects['900000000000508004'];
+            delete dialects['900000000000509007'];
 
             for (var i = 0; i < scope.concept.descriptions.length; i++) {
               var des = scope.concept.descriptions[i];
@@ -3736,13 +3733,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   usPreferredTerm = des.term;
                 }
 
-                if (Object.keys(dialects).length === 1 && des.acceptabilityMap[Object.keys(dialects)[0]] === 'PREFERRED') {
-                  return des.term;
-                }
+                Object.keys(dialects).forEach(function (dialect) {
+                  if (des.acceptabilityMap[dialect] === 'PREFERRED') {
+                    extensionPreferredTerm = des.term;
+                    count++;
+                  }
+                });                
               }
             }
 
-            return usPreferredTerm;
+            return count === 1 ? extensionPreferredTerm : usPreferredTerm;
           }
         };
 
