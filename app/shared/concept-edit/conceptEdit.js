@@ -3458,6 +3458,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute relationship groups
           scope.computeAxioms(axiom.type);
+
+          // set focus on new first created relationship type of group.
+          let axiomIndex = 0;
+          if (axiomType.ADDITIONAL == axiom.type) {
+            axiomIndex = scope.concept.classAxioms.indexOf(axiom);
+          } else {
+            axiomIndex = scope.concept.gciAxioms.indexOf(axiom);
+          }
+          var elemID = axiom.type + '-axiom-relationship-type-' + scope.initializationTimeStamp + '-' + axiomIndex + '-' + rel.groupId + '-0';
+          $timeout(function () {                     
+            $('#' + elemID).focus();            
+          }, 300);
         };
 
         scope.dropRelationshipGroup = function (relGroup) {
