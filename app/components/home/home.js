@@ -129,28 +129,16 @@ angular.module('singleConceptAuthoringApp.home', [
 
                         mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
-                        if(params.sorting().feedbackMessageDate === 'asc'){
+                        if(params.sorting().feedbackMessageDate === 'asc' || params.sorting().feedbackMessageDate === 'desc'){
                             mydata.sort(function (a, b) {
-                                return sortFeedbackFn(a,b,'asc');
+                                return sortFeedbackFn(a, b, params.sorting().feedbackMessageDate);
                             });
-                        } else if(params.sorting().feedbackMessageDate === 'desc') {
-                            mydata.sort(function (a, b) {
-                               return sortFeedbackFn(a,b,'desc');
-                            });
-                        } else {
-                            // do nothing
                         }
 
-                        if(params.sorting().status === 'asc'){
+                        if(params.sorting().status === 'asc' || params.sorting().status === 'desc'){
                             mydata.sort(function (a, b) {
-                                return sortStatusFn(a,b,'asc');
+                                return sortStatusFn(a, b, params.sorting().status);
                             });
-                        } else if(params.sorting().status === 'desc') {
-                            mydata.sort(function (a, b) {
-                               return sortStatusFn(a,b,'desc');
-                            });
-                        } else {
-                            // do nothing
                         }
 
                         $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
