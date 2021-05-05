@@ -130,6 +130,24 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               params.total(mydata.length);
               
               mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
+              
+              if(params.sorting().feedbackMessageDate === 'asc' || params.sorting().feedbackMessageDate === 'desc'){
+                mydata.sort(function (a, b) {
+                    return sortFeedbackFn(a, b, params.sorting().feedbackMessageDate);
+                });
+              }
+              
+              if(params.sorting().status === 'asc' || params.sorting().status === 'desc'){
+                mydata.sort(function (a, b) {
+                    return sortStatusFn(a, b, params.sorting().status);
+                });
+              }
+
+              if(params.sorting().reviewer === 'asc' || params.sorting().reviewer === 'desc'){
+                mydata.sort(function (a, b) {
+                    return sortReviewFn(a, b, params.sorting().reviewer);
+                });
+              }
 
               $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
@@ -137,6 +155,61 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           }
         }
       );
+
+      function sortStatusFn (a, b, direction) {
+        a.tempStatus = (a.status == 'In Review' && (!a.reviewers || a.reviewers.length === 0)) ? 'Ready for Review' : a.status;
+        b.tempStatus = (b.status == 'In Review' && (!b.reviewers || b.reviewers.length === 0)) ? 'Ready for Review' : b.status;
+        if (direction === 'asc') {
+            var result = a.tempStatus.localeCompare(b.tempStatus);
+            delete a.tempStatus;
+            delete b.tempStatus;
+            return result;
+        } else {
+            var result = b.tempStatus.localeCompare(a.tempStatus);
+            delete a.tempStatus;
+            delete b.tempStatus;
+            return result;
+        }
+      }
+
+      function sortReviewFn (a, b, direction) {
+        a.tempStatus = a.reviewers && a.reviewers.length !== 0 ? 'claimed' : 'availables';
+        b.tempStatus = b.reviewers && b.reviewers.length !== 0 ? 'claimed' : 'availables';
+        if (direction === 'asc') {
+            var result = a.tempStatus.localeCompare(b.tempStatus);
+            delete a.tempStatus;
+            delete b.tempStatus;
+            return result;
+        } else {
+            var result = b.tempStatus.localeCompare(a.tempStatus);
+            delete a.tempStatus;
+            delete b.tempStatus;
+            return result;
+        }
+      }
+      
+      function sortFeedbackFn (a, b, direction) {
+        if (a.feedbackMessageDate && b.feedbackMessageDate &&
+            a.feedbackMessagesStatus === 'unread' && b.feedbackMessagesStatus === 'unread') {
+            var dateA = new Date(a.feedbackMessageDate);
+            var dateB = new Date(b.feedbackMessageDate);
+            if (direction === 'asc') {
+                return dateA - dateB;
+            } else {
+                return dateB - dateA;
+            }
+        } else if (a.feedbackMessageDate && a.feedbackMessagesStatus === 'unread') {
+            return -1;
+        } else if (b.feedbackMessageDate && b.feedbackMessagesStatus === 'unread') {
+            return 1;
+        } else if (a.feedbackMessagesStatus === 'read') {
+            return -1;
+        } else if (b.feedbackMessagesStatus === 'read') {
+            return 1;
+        } else {
+            return 0;
+        }
+      }
 
       $scope.toggleShowPromotedReviews = function () {
         $scope.showPromotedReviews = !$scope.showPromotedReviews;
