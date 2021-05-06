@@ -77,9 +77,9 @@
           <div class="card-title">
             <button
               ng-init="criteriaCollapsed = false"
-              ng-click="criteriaCollapsed = !criteriaCollapsed" type="button"
+                type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : criteriaCollapsed, 'md-keyboard-arrow-down' : !criteriaCollapsed}]">
-              <span class="project-subtitle">Acceptance Criteria <i class="md md-settings f20" style="color: #00acc1"></i></span>
+              <span class="project-subtitle">Acceptance Criteria <i class="md md-settings f20" style="color: #00acc1" ng-click="openSACConfigModal()"></i></span>
             </button>
             <span class="project-icon pull-right"><span class="fa fa-tasks" style="font-size: 24px;
     text-align: center;
