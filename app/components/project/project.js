@@ -128,6 +128,25 @@ angular.module('singleConceptAuthoringApp.project', [
         }, function () {
         });
       };
+        
+      $scope.openSACConfigModal = function () {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/sacconfig/sacconfig.html',
+            controller: 'sacconfigCtrl',
+            resolve: {
+                task: function() {
+                  return null;
+                },
+                canDelete: function() {
+                  return false;
+                }
+              }
+          });
+
+          modalInstance.result.then(function () {
+          }, function () {
+          });
+        };
 
       // classify the project
       $scope.classify = function () {
