@@ -180,6 +180,8 @@ angular.module('singleConceptAuthoringApp')
 
                 // start polling
                 scope.startSavingClassificationPolling();
+                
+                scope.clearClassificationStatusCache();
               }
             });
           }
@@ -290,24 +292,23 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.clearClassificationStatusCache = function () {
-            // clear status cache
-            var clearClassificationStatusCache;
-            if ($routeParams.taskKey) {
-              clearClassificationStatusCache = scaService.clearClassificationStatusCacheForTask($routeParams.projectKey, $routeParams.taskKey);
-            } else {
-              clearClassificationStatusCache = scaService.clearClassificationStatusCacheForProject($routeParams.projectKey);
-            }
+            $timeout(function () {
+              var clearClassificationStatusCache;
+              if ($routeParams.taskKey) {
+                clearClassificationStatusCache = scaService.clearClassificationStatusCacheForTask($routeParams.projectKey, $routeParams.taskKey);
+              } else {
+                clearClassificationStatusCache = scaService.clearClassificationStatusCacheForProject($routeParams.projectKey);
+              }
 
-            clearClassificationStatusCache.then(function() {
-              // broadcast reloadTask/reloadProject event to capture new classificaiton status
-              $timeout(function () {
+              clearClassificationStatusCache.then(function() {
+                // broadcast reloadTask/reloadProject event to capture new classificaiton status
                 if ($routeParams.taskKey) {
                   $rootScope.$broadcast('reloadTask');
                 } else {
                   $rootScope.$broadcast('reloadProject');
                 }
-              }, 1000);
-            });
+              });
+            }, 500);
           };
 
           /**
