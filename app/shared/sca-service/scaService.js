@@ -1055,6 +1055,49 @@ angular.module('singleConceptAuthoringApp')
 
         },
 
+        // Clear classification status cache for task
+        // POST /projects/{projectKey}/tasks/{taskKey}/classification/status/cache-evict
+        clearClassificationStatusCacheForTask: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          if (!projectKey) {
+            deferred.reject('Must specify projectKey');            
+          }
+          if (!taskKey) {
+            deferred.reject('Must specify taskKe');
+          }
+
+          // POST call takes no data
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/classifications/status/cache-evict', {}).then(
+            function () {
+              deferred.resolve();
+            }, function (error) {
+              deferred.reject(error.statusText);
+            }
+          );
+
+          return deferred.promise;
+        },
+
+        // Clear classification status cache for project
+        // POST /projects/{projectKey}/classification/status/cache-evict
+        clearClassificationStatusCacheForProject: function (projectKey) {
+          var deferred = $q.defer();
+          if (!projectKey) {
+            deferred.reject('Must specify projectKey');            
+          }          
+
+          // POST call takes no data
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/classifications/status/cache-evict', {}).then(
+            function () {
+              deferred.resolve();
+            }, function (error) {
+              deferred.reject(error.statusText);
+            }
+          );
+
+          return deferred.promise;
+        },
+
 ///////////////////////////////////////////////
 // Validation
 ///////////////////////////////////////////////

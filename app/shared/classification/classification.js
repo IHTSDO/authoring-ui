@@ -180,15 +180,6 @@ angular.module('singleConceptAuthoringApp')
 
                 // start polling
                 scope.startSavingClassificationPolling();
-
-                // broadcast reload notification to edit.js after short timeout
-                $timeout(function () {
-                  if ($routeParams.taskKey) {
-                    $rootScope.$broadcast('reloadTask');
-                  } else {
-                    $rootScope.$broadcast('reloadProject');
-                  }
-                }, 500);
               }
             });
           }
@@ -198,16 +189,8 @@ angular.module('singleConceptAuthoringApp')
            * Results
            */
           scope.saveClassification = function () {
-            notificationService.sendMessage('Saving classification....');
-
-            // perform quick check to ensure task or project are not diverged
-            // TODO This is inelegant, should reconsider
-            var canSave = true;
-            if ($routeParams.taskKey) {
-              saveClassificationHelper();
-            } else {
-              saveClassificationHelper();
-            }
+            notificationService.sendMessage('Saving classification....')
+            saveClassificationHelper();
           };
 
           var savingClassificationPoll = null;
@@ -236,10 +219,6 @@ angular.module('singleConceptAuthoringApp')
 
                     notificationService.sendMessage('Classification saved', 5000);
 
-                    // broadcast reloadTask event to capture new classificaiton
-                    // status
-                    $rootScope.$broadcast('reloadTask');
-
                     // refresh the viewed list
                     var conceptsToReload = scope.viewedConcepts.map(function (concept) {
                       return concept.conceptId;
@@ -257,18 +236,14 @@ angular.module('singleConceptAuthoringApp')
                     $rootScope.$broadcast('reloadConcepts');
 
                     scope.stopSavingClassificationPolling();
-
-                    // save the ui state based on response status
                   }
                   else if (response.status === 'STALE') {
                     notificationService.sendWarning('Report Stale, please re-classify and save.');
-
                     scope.stopSavingClassificationPolling();
 
                   }
                   else if (response.status === 'SAVE_FAILED') {
                     notificationService.sendError('Saving classification aborted');
-
                     scope.stopSavingClassificationPolling();
 
                   }
@@ -279,11 +254,7 @@ angular.module('singleConceptAuthoringApp')
 
                     notificationService.sendMessage('Classification saved', 5000);
 
-                    scope.classificationContainer.status = response.status;
-
-                    $timeout(function () {
-                      $rootScope.$broadcast('reloadProject');
-                    }, 1000);
+                    scope.classificationContainer.status = response.status;                    
 
                     // refresh the viewed list
                     var conceptsToReload = scope.viewedConcepts.map(function (concept) {
@@ -302,7 +273,6 @@ angular.module('singleConceptAuthoringApp')
                     $rootScope.$broadcast('reloadConcepts');
 
                     scope.stopSavingClassificationPolling();
-
                   }
 
                 });
@@ -315,6 +285,29 @@ angular.module('singleConceptAuthoringApp')
               console.log('Stopping saving classification polling');
               $interval.cancel(savingClassificationPoll);
             }
+
+            scope.clearClassificationStatusCache();
+          };
+
+          scope.clearClassificationStatusCache = function () {
+            // clear status cache
+            var clearClassificationStatusCache;
+            if ($routeParams.taskKey) {
+              clearClassificationStatusCache = scaService.clearClassificationStatusCacheForTask($routeParams.projectKey, $routeParams.taskKey);
+            } else {
+              clearClassificationStatusCache = scaService.clearClassificationStatusCacheForProject($routeParams.projectKey);
+            }
+
+            clearClassificationStatusCache.then(function() {
+              // broadcast reloadTask/reloadProject event to capture new classificaiton status
+              $timeout(function () {
+                if ($routeParams.taskKey) {
+                  $rootScope.$broadcast('reloadTask');
+                } else {
+                  $rootScope.$broadcast('reloadProject');
+                }
+              }, 1000);
+            });
           };
 
           /**
