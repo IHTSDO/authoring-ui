@@ -2366,6 +2366,16 @@ angular.module('singleConceptAuthoringApp')
         findingConcept(inactiveConceptId, branch, defer);
         return defer.promise;
       }
+    
+      // Retrieve SAC items for a branch
+      // GET /acceptance/{branch}
+      function getBranchSAC(branch) {
+        return $http.get('/authoring-acceptance-gateway/acceptance/' + branch).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+
+      }
 
       ////////////////////////////////////////////
       // Method Visibility
@@ -2462,6 +2472,7 @@ angular.module('singleConceptAuthoringApp')
 
         // validation
         validateConcept: validateConcept,
+        getBranchSAC: getBranchSAC,
 
         // utility
         createGuid: createGuid,
