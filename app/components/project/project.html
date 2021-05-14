@@ -100,23 +100,11 @@
                               Automated Criteria
                           </div>
                       </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                      <div ng-repeat="criteria in sac | filter: { manual: 'false' }" class="row" style="display:inline-flex; width:100%;">
+                          <div ng-if="criteria.complete" class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div ng-if="!criteria.complete" class="fa fa-check pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
-                              Project is Forward of parent
-                          </div>
-                      </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
-                          <div style="margin-top: 12px; font-size: 14px;">
-                              Content is classified.
-                          </div>
-                          
-                      </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check pull-right" style="color: green; font-size:28px; padding:10px;"></div>
-                          <div style="margin-top: 12px; font-size: 14px;">
-                              RVF Validation Clean.
+                              {{criteria.label}}
                           </div>
                       </div>
               </div>
@@ -127,29 +115,11 @@
                               Manual Criteria
                           </div>
                       </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                      <div ng-repeat="criteria in sac | filter: { manual: 'true' }" class="row" style="display:inline-flex; width:100%;">
+                          <div ng-if="criteria.complete" class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div ng-if="!criteria.complete" class="fa fa-check-square pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
-                              MRCM Validation Report checked.
-                          </div>
-                      </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
-                          <div style="margin-top: 12px; font-size: 14px;">
-                              Release Notes Evaluated.
-                          </div>
-                          
-                      </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check-square pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
-                          <div style="margin-top: 12px; font-size: 14px;">
-                              Mapping requirements evaluated. 
-                          </div>
-                      </div>
-                      <div class="row" style="display:inline-flex; width:100%;">
-                          <div class="fa fa-check-square pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
-                          <div style="margin-top: 12px; font-size: 14px;">
-                              Whitelist additions evaluated. 
+                              {{criteria.label}}
                           </div>
                       </div>
               </div>
@@ -159,6 +129,7 @@
                               Further Information
                           </div>
                       </div>
+<!--
                       <div class="row" style="display:inline-flex; width:100%;">
                           <div class="fa fa-info pull-right" style="color: #fbc02d; font-size:28px; padding:10px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
@@ -171,6 +142,7 @@
                               Component Changes: 387. 
                           </div>
                       </div>
+-->
               </div>
           </div>
         </div>
