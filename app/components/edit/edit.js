@@ -276,55 +276,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     /////////////////////////////////
     // View & Layout
     /////////////////////////////////
-
-    /**
-     * Helper function called by setView
-     * NOTE: Currently only used to set layout for edit-default
-     */
-    function setLayout(useDefault) {
-
-      var layout = {
-            'name': 'editDefault',
-            'width': 12,
-            'children': [
-              {
-                'name': 'sidebar',
-                'width': 3,
-              },
-              {
-                'name': 'modelsAndConcepts',
-                'width': 9,
-                'children': [
-                  {
-                    'name': 'models',
-                    'width': 6,
-                  },
-                  {
-                    'name': 'concepts',
-                    'width': 6
-                  }
-                ]
-              }
-            ]
-          };
-
-      // set the default layout
-      if($scope.thisView === 'edit-default'
-        || $scope.thisView === 'batch'
-        || $scope.thisView === 'feedback') {
-        setDefaultLayout(layout);
-      } else {
-        layout = {};
-      }
-    }
-
-    function setDefaultLayout(layout){
+    function setDefaultLayout(){
       accountService.getUserPreferences().then(function (preferences) {
-        if (preferences && preferences.layout && preferences.layout.editDefault) {
-          layout = preferences.layout.editDefault;
-        }
-        // set the widths for easy access
-        layoutHandler.setLayout(layout);
+        layoutHandler.setLayout(preferences.layout.editDefault);       
       });
     }
 
@@ -549,7 +503,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.mode = $routeParams.mode;
 
       // set layout based on view
-      setLayout();
+      setDefaultLayout();
 
     };
 

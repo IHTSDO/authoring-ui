@@ -122,6 +122,37 @@ angular.module('singleConceptAuthoringApp')
       globalStyleClasses.push(localPreferences.appView);
 
       /////////////////////////////////////////////////////
+      // Default layout for task editing
+      /////////////////////////////////////////////////////
+      if (!localPreferences.layout) {
+        localPreferences['layout'] = {};
+        localPreferences['layout']['editDefault'] = {
+          'name': 'editDefault',
+          'width': 12,
+          'children': [
+            {
+              'name': 'sidebar',
+              'width': 3,
+            },
+            {
+              'name': 'modelsAndConcepts',
+              'width': 9,
+              'children': [
+                {
+                  'name': 'models',
+                  'width': 6,
+                },
+                {
+                  'name': 'concepts',
+                  'width': 6
+                }
+              ]
+            }
+          ]
+        };
+      }
+
+      /////////////////////////////////////////////////////
       // Apply global styling
       /////////////////////////////////////////////////////
       $rootScope.globalStyleClasses = globalStyleClasses;
