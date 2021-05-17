@@ -227,10 +227,6 @@ angular
           // start connecting websocket
           scaService.connectWebsocket();
         }, function (error) {
-          // apply default preferences
-          accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
-
-          })
         });
 
         cisService.getAllNamespaces().then(function (response) {
@@ -282,6 +278,12 @@ angular
               if (appliedPreferences !== preferences) {
                 accountService.saveUserPreferences(appliedPreferences);
               }
+            })
+          }, function(error) {
+            // apply default preferences
+            var userPreferences = {};            
+            accountService.applyUserPreferences(userPreferences).then(function (appliedPreferences) {
+              accountService.saveUserPreferences(appliedPreferences).then(function() {});
             })
           });
         });
