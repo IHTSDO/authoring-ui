@@ -2376,6 +2376,15 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
+        
+      // Accept an SAC item on a branch
+      // POST /acceptance/{branch}/item/{item-id}/accept
+      function acceptBranchSAC(branch, id) {
+        return $http.post('/authoring-acceptance-gateway/acceptance/' + branch + '/item/' + id + '/accept').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
 
       ////////////////////////////////////////////
       // Method Visibility
@@ -2473,6 +2482,7 @@ angular.module('singleConceptAuthoringApp')
         // validation
         validateConcept: validateConcept,
         getBranchSAC: getBranchSAC,
+        acceptBranchSAC: acceptBranchSAC,
 
         // utility
         createGuid: createGuid,
