@@ -116,7 +116,7 @@
                           </div>
                       </div>
                       <div ng-repeat="criteria in sac | filter: { manual: 'true' }" class="row" style="display:inline-flex; width:100%;">
-                          <div ng-if="criteria.complete" class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
+                          <div ng-if="criteria.complete" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
                           <div ng-if="!criteria.complete" ng-click="acceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:28px; padding:10px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
                               {{criteria.label}}

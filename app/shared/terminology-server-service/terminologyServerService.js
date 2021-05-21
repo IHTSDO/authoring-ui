@@ -2376,11 +2376,20 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
-        
+        unacceptBranchSAC
       // Accept an SAC item on a branch
       // POST /acceptance/{branch}/item/{item-id}/accept
       function acceptBranchSAC(branch, id) {
-        return $http.post('/authoring-acceptance-gateway/acceptance/' + branch + '/item/' + id + '/accept').then(function (response) {
+        return $http.post('/authoring-acceptance-gateway/acceptance/' + branch + '/item/' + id + '/accept', {}).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
+        
+      // Unaccept an SAC item on a branch
+      // DELETE /acceptance/{branch}/item/{item-id}/accept
+      function unacceptBranchSAC(branch, id) {
+        return $http.delete('/authoring-acceptance-gateway/acceptance/' + branch + '/item/' + id + '/accept').then(function (response) {
           return response.data;
         }, function (error) {
         });

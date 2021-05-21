@@ -33,58 +33,28 @@
             </div>
           </div>
         </li>
-        <li style="margin-bottom:10px;">
+        <li ng-repeat="criteria in sac | filter: { manual: 'false' }" style="margin-bottom:10px;">
           <div class="timeline-badge">
-              <div class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute;
-    left: 8px;
-    top: 10px;"></div>
+              <div ng-if="criteria.complete" class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+              <div ng-if="!criteria.complete" class="fa fa-check pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
           </div>
             <div class="timeline-panel">
                 <div class="timeline-heading">
                   <div style="font-size: 12px;">
-                      Task is Forward of parent
+                      {{criteria.label}}
                   </div>
                 </div>
             </div>
         </li>
-        <li style="margin-bottom:10px;">
+        <li ng-repeat="criteria in sac | filter: { manual: 'true' }" style="margin-bottom:10px;">
           <div class="timeline-badge">
-              <div class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute;
-    left: 8px;
-    top: 10px;"></div>
+              <div ng-if="criteria.complete" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+              <div ng-if="!criteria.complete" ng-click="acceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
           </div>
             <div class="timeline-panel">
                 <div class="timeline-heading">
                   <div style="font-size: 12px;">
-                      Content is classified.
-                  </div>
-                </div>
-            </div>
-        </li>
-        <li style="margin-bottom:10px;">
-          <div class="timeline-badge">
-              <div class="fa fa-check pull-right" style="color: grey; font-size:18px; position: absolute;
-    left: 8px;
-    top: 10px;"></div>
-          </div>
-            <div class="timeline-panel">
-                <div class="timeline-heading">
-                  <div style="font-size: 12px;">
-                      RVF Validation Clean.
-                  </div>
-                </div>
-            </div>
-        </li>
-        <li style="margin-bottom:10px;">
-          <div class="timeline-badge">
-              <div class="fa fa-check-square pull-right" style="color: grey; font-size:18px; position: absolute;
-    left: 8px;
-    top: 10px;"></div>
-          </div>
-            <div class="timeline-panel">
-                <div class="timeline-heading">
-                  <div style="font-size: 12px;">
-                      Review Completed.
+                      {{criteria.label}}
                   </div>
                 </div>
             </div>
