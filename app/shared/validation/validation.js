@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService', 'aagService',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService, aagService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -33,6 +33,7 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
           scope.autosaveEnabled = $routeParams.taskKey ? true : false;
+          scope.allWhitelistItems = [];
 
           // highlighting map
           scope.styles = {};
@@ -122,7 +123,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // declare table parameters
-          scope.topTableParams = new NgTableParams({
+          scope.failedAssertionsTableParams = new NgTableParams({
               page: 1,
               count: 10,
               sorting: {failureCount: 'desc'},
@@ -175,10 +176,56 @@ angular.module('singleConceptAuthoringApp')
             }
           );
 
+          scope.warningAssertionsTableParams = new NgTableParams({
+            page: 1,
+            count: 10,
+            sorting: {failureCount: 'desc'},
+            orderBy: 'failureCount'
+          },
+          {
+            filterDelay: 50,
+            total: '-',
+            getData: function ($defer, params) {
+
+              if (!scope.assertionsWarning || scope.assertionsWarning.length === 0) {
+                params.total(0);
+                $defer.resolve([]);
+              } else {
+
+                // cycle over each failed assertion to get count / display status
+                angular.forEach(scope.assertionsWarning, function (assertionWarning) {
+                  if(assertionWarning.failureCount > 0 && assertionWarning.testType === 'DROOL_RULES'){
+                      var filteredInstances = assertionWarning.firstNInstances.filter(function (instance) {
+                        // if viewing task report and instance is not user modified or validation failure is excluded, return false
+                        if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
+                          return false;
+                        }                        
+
+                        return true;
+                      });
+                      assertionWarning.filteredCount = filteredInstances.length;
+                      assertionWarning.total = assertionWarning.failureCount;
+                  }
+                });
+
+                // filter by user modification
+                var orderedData = scope.assertionsWarning.filter(function (assertionWarning) {
+                  return assertionWarning.filteredCount > 0;
+                });
+
+                params.total(orderedData.length);
+                orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+              }
+            }
+          }
+        );
+
           // sets view to top and clears viewed concept list
           scope.setViewTop = function () {
             scope.viewTop = true;
-            scope.topTableParams.reload();
+            scope.failedAssertionsTableParams.reload();
+            scope.warningAssertionsTableParams.reload();
             scope.viewedConcepts = [];
           };
 
@@ -312,48 +359,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
 
-
               deferred.resolve();
-              /*
-               if (componentIds) {
-
-               }
-
-
-               // try to match a description
-               var descId = failure.detail.match(/description: id=(\d+)/i);
-
-               // if description found and display name not already retrieved and added
-               if (descId && descId[1]) {
-               console.debug('  description found: ', descId[1]);
-               failure.referencedComponentId = descId[1];
-               terminologyServerService.getDescriptionProperties(descId[1], scope.branch).then(function (description) {
-               failure.detail = failure.detail.replace(/description: id=(\d+)/i, 'Description: ' + description.term);
-
-               if (++failuresPrepared === scope.failures.length) {
-               deferred.resolve();
-               }
-               });
-
-               }
-
-               // otherwise, try to match relationship
-               else {
-               var relId = failure.detail.match(/relationship: id=(\d+)/i);
-               if (relId && relId[1]) {
-               console.debug('  relationship found: ', relId[1]);
-               failure.referencedComponentId = relId[1];
-               if (++failuresPrepared === scope.failures.length) {
-               deferred.resolve();
-               }
-               }
-
-               // otherwise, do nothing
-               else if (++failuresPrepared === scope.failures.length) {
-               deferred.resolve();
-               }
-               }*/
-
             });
             return deferred.promise;
           }
@@ -380,16 +386,24 @@ angular.module('singleConceptAuthoringApp')
                   params.total(0); // resolving empty array does not actually set total to 0
                   $defer.resolve([]);
                 } else {
-
+                  
                   // filter by user modification
                   var orderedData = scope.failures.filter(function (failure) {
                     return scope.viewFullReport || failure.isBranchModification;
                   });
 
                   // filter by user exclusion
-                  orderedData = orderedData.filter(function (failure) {
-                    return !validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detailUnmodified);
-                  });
+                  if (scope.warningAssertion) {
+                    orderedData = orderedData.filter(function (failure) {
+                      return scope.allWhitelistItems.filter(function(item) {
+                        return item.validationRuleId === failure.validationRuleId && failure.componentId === item.componentId; 
+                      }).length === 0;
+                    });
+                  } else {
+                    orderedData = orderedData.filter(function (failure) {
+                      return !validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detailUnmodified);
+                    });
+                  }
 
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
@@ -413,24 +427,35 @@ angular.module('singleConceptAuthoringApp')
               getData: function ($defer, params) {
 
                 var orderedData = [];
+                scope.allWhitelistItems.forEach(function(item) {
+                  orderedData.push({
+                    id: item.id,
+                    assertionText: "",
+                    assertionUuid: item.validationRuleId,
+                    branchRoot: item.branch,
+                    conceptFsn: "",
+                    conceptId: item.conceptId,
+                    componentId: item.componentId,
+                    timestamp: new Date(item.creationDate).getTime(),
+                    user: item.userId
+                  });
+                });
+
                 var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN'; 
                 validationService.getValidationFailureExclusions().then(function (exclusions) {
-
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
                       if (!failure.hasOwnProperty('branchRoot') || failure['branchRoot'] === branchRoot || failure['branchRoot'].includes(branchRoot) || branchRoot.includes(failure['branchRoot'])) {
                         orderedData.push(failure);
                       }                      
                     });
-                  }
+                  }                 
 
-                  //     console.debug('ordered data', orderedData);
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
                   $defer.resolve(orderedData);
                 });
-
               }
             }
           );
@@ -446,7 +471,8 @@ angular.module('singleConceptAuthoringApp')
 
           scope.reloadTables = function () {
             if (scope.viewTop) {
-              scope.topTableParams.reload();
+              scope.failedAssertionsTableParams.reload();
+              scope.warningAssertionsTableParams.reload();
             } else {
               scope.failureTableParams.reload();
             }
@@ -471,9 +497,43 @@ angular.module('singleConceptAuthoringApp')
           function initFailures() {
 
             var deferred = $q.defer();
+            var checkWhitelistDone = false;
+            var checkExcludedValidationRuleIdsDone = false;
 
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
+            scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
+
+            // filter out from AAG whitelist
+            aagService.getAllWhitelistItems().then(function(whitelistItems) {
+              scope.allWhitelistItems = whitelistItems;              
+              angular.forEach(scope.assertionsWarning, function (assertion) {
+                if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
+                    assertion.isBranchModification = false;                  
+                    angular.forEach(assertion.firstNInstances, function (instance) {
+
+                      // store the unmodified text to preserve original data
+                      instance.detailUnmodified = instance.detail;
+
+                      // detect if instance references user modified concepts
+                      if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                        instance.isBranchModification = true;
+                        assertion.isBranchModification = true;
+                      }
+
+                      instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
+                        return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
+                      }).length !== 0;
+                    });
+                }
+              });
+              checkWhitelistDone = true;
+              if (checkExcludedValidationRuleIdsDone) {
+                // load the tables
+                scope.reloadTables();
+                deferred.resolve();
+              }
+            });
 
             // filter out technical errors
             configService.getExcludedValidationRuleIds().then(function (response) {
@@ -486,8 +546,7 @@ angular.module('singleConceptAuthoringApp')
               // set the viewable flags for all returned failure instances
               angular.forEach(scope.assertionsFailed, function (assertion) {
                 if(assertion.failureCount !== -1){
-                    assertion.isBranchModification = false;
-                    assertion.hasUserExclusions = false;
+                    assertion.isBranchModification = false;                    
                     angular.forEach(assertion.firstNInstances, function (instance) {
 
                       // store the unmodified text to preserve original data
@@ -500,24 +559,24 @@ angular.module('singleConceptAuthoringApp')
                       }
 
                       if (validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail)) {
-                        instance.isUserExclusion = true;
-                        instance.hasUserExclusions = true;
+                        instance.isUserExclusion = true;                        
                       }
                     });
                 }
               });
 
-              // load the tables
-              scope.reloadTables();
-              deferred.resolve();
+              checkExcludedValidationRuleIdsDone = true;
+              if (checkWhitelistDone) {
+                // load the tables
+                scope.reloadTables();
+                deferred.resolve();
+              }
             }, function() {
               scope.reloadTables();
               notificationService.sendWarning('Error retrieving validation configuration; whitelist and excluded rules are shown');
             });
 
             return deferred.promise;
-
-
           }
 
           // watch for changes in the validation in order to populate tables
@@ -528,7 +587,6 @@ angular.module('singleConceptAuthoringApp')
             if (!scope.validationContainer || !scope.validationContainer.report) {
               return;
             }
-
 
             // only initialize once -- watch statement fires multiple times otherwise
             if (failuresInitialized) {
@@ -543,7 +601,6 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Retrieving traceability information ...');
             terminologyServerService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
-
 
               // if traceability found, extract the user modified concept ids
               if (traceability) {
@@ -568,34 +625,32 @@ angular.module('singleConceptAuthoringApp')
                 notificationService.sendMessage('Initialization complete', 3000);
                 scope.initializationComplete = true;
               });
-
-
             }, function (error) {
               notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
                 notificationService.sendMessage('Initialization complete', 3000);
                 scope.initializationComplete = true;
               });
-        });
-
-
+            });
           }, true); // make sure to check object inequality, not reference!
 
 
-          scope.viewFailures = function (assertionFailure) {
-
+          scope.viewFailures = function (assertionFailure, warningAssertion) {
             scope.assertionFailureViewed = assertionFailure;
             scope.viewTop = false;
+            scope.warningAssertion = warningAssertion;
             scope.failuresLoading = true;
 
             var objArray = [];
 
-            // check if this failure is whitelistable
-            scope.whitelistEnabled = scope.whitelistEligibleRuleIds &&
-              scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
+            if (warningAssertion) {
+              scope.whitelistEnabled = true;
+            } else {
+              // check if this failure is whitelistable
+              scope.whitelistEnabled = scope.whitelistEligibleRuleIds && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
+            }
 
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
-
 
               // NOTE: store the unmodified failure text
               var obj = {
@@ -604,7 +659,10 @@ angular.module('singleConceptAuthoringApp')
                 detailUnmodified : instance.detailUnmodified,
                 selected: false,
                 isBranchModification: instance.isBranchModification,
-                isUserExclusion: instance.isUserExclusion
+                isUserExclusion: instance.isUserExclusion,
+                validationRuleId: assertionFailure.assertionUuid,
+                assertionText: assertionFailure.assertionText,
+                componentId: instance.componentId
               };
 
               objArray.push(obj);
@@ -717,37 +775,139 @@ angular.module('singleConceptAuthoringApp')
 // User-modified validation exclusion list
 //
 
-          scope.removeUserExclusionFromTable = function (failure, skipCommitFlag) {
-            validationService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText).then(function () {
-              scope.reloadTables();
-            });
+          scope.removeUserExclusionFromTable = function (failure) {
+            if (failure.id) {
+              aagService.removeFromWhitelist(failure.id).then(function() {
+                scope.allWhitelistItems = scope.allWhitelistItems.filter(function(item) {
+                  return item.id !== failure.id;
+                });
+                scope.resetUserExclusionFlag();
+                scope.reloadTables();
+              });
+            } else {
+              validationService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText).then(function () {
+                scope.reloadTables();
+              });
+            }            
           };
 
 // exclude a single failure, with optional commit
-          scope.excludeFailure = function (failure, skipCommitFlag) {
-
-            accountService.getAccount().then(function (accountDetails) {
-              // get the user name
-              var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
-              var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
-
-              // set the local flag to false to ensure immediate removal
-              failure.isUserExclusion = true;
-
-              // add the exclusion and update tables
-              // NOTE: Must use the unmodified detail, not the referenced component modified detail
-              validationService.addValidationFailureExclusion(scope.assertionFailureViewed.assertionUuid,
-                scope.assertionFailureViewed.assertionText,
-                failure.conceptId,
-                failure.conceptFsn,
-                failure.detailUnmodified,
-                userName,
-                branchRoot).then(function () {
-
-                scope.reloadTables();
+          scope.excludeFailure = function (failure) {
+            if (scope.warningAssertion){
+              getAdditionalFieldsAsString(scope.branch, failure.componentId).then(function(result) {
+                var whitelistItem = {};
+                whitelistItem.componentId = failure.componentId;
+                whitelistItem.conceptId = failure.conceptId;
+                whitelistItem.validationRuleId = failure.validationRuleId;
+                whitelistItem.branch = scope.branch;
+                whitelistItem.additionalFields = result[failure.componentId];
+                aagService.addToWhitelist(whitelistItem).then(function(respone) {
+                  scope.allWhitelistItems.push(respone.data);
+                  failure.isUserExclusion = true;
+                  scope.resetUserExclusionFlag();
+                  scope.reloadTables();
+                });
+              });                           
+            } else {
+              accountService.getAccount().then(function (accountDetails) {
+                // get the user name
+                var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
+                var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
+  
+                // set the local flag to false to ensure immediate removal
+                failure.isUserExclusion = true;
+  
+                // add the exclusion and update tables
+                // NOTE: Must use the unmodified detail, not the referenced component modified detail
+                validationService.addValidationFailureExclusion(
+                  scope.assertionFailureViewed.assertionUuid,
+                  scope.assertionFailureViewed.assertionText,
+                  failure.conceptId,
+                  failure.conceptFsn,
+                  failure.detailUnmodified,
+                  userName,
+                  branchRoot).then(function () {  
+                  scope.reloadTables();
+                });
               });
-            });
+            }
+          };
 
+          function getAdditionalFieldsAsString(branch, componentId) {
+            var deferred = $q.defer();
+            var SCTID_PATTERN = new RegExp("\\d{6,20}$");
+            var UUID_PATTERN = new RegExp("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");            
+            if (SCTID_PATTERN.test(componentId)){
+              switch (componentId.substr(-2, 1)) {
+                case "0":
+                  terminologyServerService.getConceptProperties(componentId, branch).then(function(concept) {
+                    deferred.resolve({[componentId]: getStatusCode(concept.active) + ',' + concept.moduleId + ',' + getDefinitionStatusId(concept.definitionStatus)});
+                  });
+                  break;
+                case "1":
+                  terminologyServerService.getDescriptionProperties(componentId, branch).then(function(desc) {                    
+                    deferred.resolve({[componentId]: getStatusCode(desc.active) + ',' + desc.moduleId + ',' + desc.conceptId + ',' + desc.lang + ',' + desc.typeId + ',' + desc.term + ',' + getCaseSignificanceId(desc.caseSignificance)});
+                  });
+                  break;
+                case "2":
+                  terminologyServerService.getRelationshipProperties(componentId, branch).then(function(rel) {
+                    deferred.resolve({[componentId]: getStatusCode(rel.active) + ',' + rel.moduleId + ',' + rel.sourceId + ',' + rel.destinationId + ',' + rel.groupId + ',' + rel.typeId + ',' + getCharacteristicTypeId(rel.characteristicTypeId)});
+                  });
+                  break;
+                default:
+                  deferred.resolve({[componentId]: ''});
+                  break;        
+              }        
+            } else if (UUID_PATTERN.matches(componentId)) {
+              terminologyServerService.getMemberProperties(componentId, branch).then(function(member) {
+                var result = getStatusCode(member.active) + ',' + member.moduleId + ',' + member.refsetId + ',' + member.referencedComponentId;
+                for (var key in Object.keys(member.additionalFields)) {                 
+                  result += (',' + member.additionalFields[key]);
+                }
+                deferred.resolve({[componentId]: result});
+              });
+              
+            } else {
+              deferred.resolve({[componentId]: ''});
+            }
+            return deferred.promise;
+          }
+
+          function getCaseSignificanceId(caseSignificance) {
+            switch (caseSignificance) {
+              case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
+                return '900000000000020002';
+              case 'CASE_INSENSITIVE':
+                return '900000000000448009';
+              case 'ENTIRE_TERM_CASE_SENSITIVE':
+                return '900000000000017005';
+              default:
+                return '';
+            }
+          };
+
+          function getCharacteristicTypeId(characteristicType) {
+            return characteristicType === 'INFERRED_RELATIONSHIP'? '900000000000011006' : '900000000000010007';
+          }
+
+          function getDefinitionStatusId(definitionStatus) {
+            return definitionStatus === 'PRIMITIVE' ? '900000000000074008' : '900000000000073002';
+          }
+
+          function getStatusCode(status) {
+            return status ? '1' : '0';
+          }
+
+          scope.resetUserExclusionFlag = function() {
+            angular.forEach(scope.assertionsWarning, function (assertion) {
+              if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){                                   
+                  angular.forEach(assertion.firstNInstances, function (instance) {
+                    instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
+                      return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
+                    }).length !== 0;
+                  });
+              }
+            });
           };
 
           scope.isExcluded = function (failure) {
@@ -854,28 +1014,56 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            accountService.getAccount().then(function (accountDetails) {
-              // get the user name
-              var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
-              var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
-
-              // set the local flag to false to ensure immediate removal
+            if (scope.warningAssertion){
+              var promises = [];
               angular.forEach(failuresToAddWhiteList, function (failure) {                
                 failure.isUserExclusion = true;
-              });              
-
-              // add the exclusion and update tables
-              // NOTE: Must use the unmodified detail, not the referenced component modified detail
-              validationService.addValidationFailuresExclusion(scope.assertionFailureViewed.assertionUuid,
-                scope.assertionFailureViewed.assertionText,
-                failuresToAddWhiteList,
-                userName,
-                branchRoot).then(function () {
-
-                scope.reloadTables();
+                promises.push(getAdditionalFieldsAsString(scope.branch,failure.componentId));
               });
-            });
-
+              $q.all(promises).then(function (responses) {
+                promises = [];
+                angular.forEach(failuresToAddWhiteList, function (failure) {
+                  var whitelistItem = {};                
+                  whitelistItem.componentId = failure.componentId;
+                  whitelistItem.conceptId = failure.conceptId;
+                  whitelistItem.validationRuleId = failure.validationRuleId;
+                  whitelistItem.branch = scope.branch;
+                  whitelistItem.additionalFields = responses.filter(function(item){
+                    return item.hasOwnProperty(failure.componentId);
+                  })[0][failure.componentId];
+                  promises.push(aagService.addToWhitelist(whitelistItem));
+                });
+                $q.all(promises).then(function (results) {
+                  results.forEach(function(item) {
+                    scope.allWhitelistItems.push(item.data);                  
+                  });
+                  scope.resetUserExclusionFlag()
+                  scope.reloadTables();
+                });
+              });              
+            } else {
+              accountService.getAccount().then(function (accountDetails) {
+                // get the user name
+                var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
+                var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
+  
+                // set the local flag to false to ensure immediate removal
+                angular.forEach(failuresToAddWhiteList, function (failure) {                
+                  failure.isUserExclusion = true;
+                });              
+  
+                // add the exclusion and update tables
+                // NOTE: Must use the unmodified detail, not the referenced component modified detail
+                validationService.addValidationFailuresExclusion(scope.assertionFailureViewed.assertionUuid,
+                  scope.assertionFailureViewed.assertionText,
+                  failuresToAddWhiteList,
+                  userName,
+                  branchRoot).then(function () {
+  
+                  scope.reloadTables();
+                });
+              });
+            }
           };
 
           scope.openCreateTaskModal = function (task, editList, savedList) {

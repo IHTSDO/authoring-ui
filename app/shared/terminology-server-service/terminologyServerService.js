@@ -876,6 +876,20 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+      /**
+       * Get the properties for a specified member
+       * @param memberId the memberId
+       * @param branch the member's branch
+       * @returns the member properties object
+       */
+      function getMemberProperties(memberId, branch) {
+        return $http.get(apiEndpoint + branch + 'members/' + memberId).then(function (response) {
+          return response.data;
+        }, function (error) {
+          return null;
+        });
+      }      
+
       // Retrieve inbound relationships of a concept
       // GET /{path}/concepts/{conceptId}/inbound-relationships
       function getConceptRelationshipsInbound(conceptId, branch, offset, limit, active) {
@@ -2377,6 +2391,7 @@ angular.module('singleConceptAuthoringApp')
         getConceptSNF: getConceptSNF,
         getDescriptionProperties: getDescriptionProperties,
         getRelationshipProperties: getRelationshipProperties,
+        getMemberProperties: getMemberProperties,
         getConceptPreferredTerm: getConceptPreferredTerm,
         updateConcept: updateConcept,
         bulkUpdateConcept: bulkUpdateConcept,

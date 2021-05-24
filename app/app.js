@@ -62,13 +62,12 @@ angular
     };
   })
   .constant('AppConstants', {
-    AUTHORING_SERVICES_ENDPOINT: '/authoring-services/'
+    AUTHORING_SERVICES_ENDPOINT: '/authoring-services/',
+    AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT: '/authoring-acceptance-gateway/'
   })
 
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider, localStorageServiceProvider) {
-
-    console.log('Configuring application');
-
+    
     localStorageServiceProvider.setPrefix('singleConceptAuthoringApp')
                                .setStorageType('localStorage');
 
@@ -127,9 +126,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce, hotkeys, $q, cisService, crsService, spellcheckService, AppConstants) {
-
-    console.log('Running application');
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, aagService, spellcheckService, AppConstants) {
 
     $window.ga('create', 'UA-41892858-21', 'auto');
     // track pageview on state change
@@ -184,6 +181,7 @@ angular
         $rootScope.endpoints = endpoints;
 
         scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
+        aagService.setEndpoint('..' + AppConstants.AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT);
         spellcheckService.setEndpoint(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'spelling/check');
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         crsService.setCrsEndpoint(endpoints['crsEndpoint']);
