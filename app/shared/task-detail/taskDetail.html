@@ -33,7 +33,32 @@
             </div>
           </div>
         </li>
-       
+        <li ng-repeat="criteria in sac | filter: { manual: 'false' }" style="margin-bottom:10px;">
+          <div class="timeline-badge">
+              <div ng-if="criteria.complete" class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+              <div ng-if="!criteria.complete" class="fa fa-check pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+          </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+                  <div style="font-size: 12px;">
+                      {{criteria.label}}
+                  </div>
+                </div>
+            </div>
+        </li>
+        <li ng-repeat="criteria in sac | filter: { manual: 'true' }" style="margin-bottom:10px;">
+          <div class="timeline-badge">
+              <div ng-if="criteria.complete" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+              <div ng-if="!criteria.complete" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:28px; padding:10px;     margin-left: -1px;"></div>
+          </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+                  <div style="font-size: 12px;">
+                      {{criteria.label}}
+                  </div>
+                </div>
+            </div>
+        </li>
       </ul>
     </div>
   </div>

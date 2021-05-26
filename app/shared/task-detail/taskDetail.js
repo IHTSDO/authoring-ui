@@ -16,10 +16,39 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.automatePromotionErrorMsg = "";    
       $scope.hasRequestPendingClarification = crsService.hasRequestPendingClarification;
       $scope.isTaskPromotionDisabled = metadataService.isTaskPromotionDisabled;
+      $scope.sac = [];
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
       $scope.taxonomyConcept = null;
+        
+      $scope.acceptManualSac = function (id) {
+          terminologyServerService.acceptBranchSAC($scope.branch, id).then(function (sac) {
+              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+              });
+          });
+      };
+        
+      $scope.unacceptManualSac = function (id) {
+          terminologyServerService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
+              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+              });
+          });
+      };
 
       $scope.classify = function () {
 
@@ -581,6 +610,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          terminologyServerService.getBranchSAC(response.branchPath).then(function (sac) {
+              $scope.sac = [];
+              angular.forEach(sac.criteriaItems, function (criteria) {
+                    if (criteria.authoringLevel === "TASK") {
+                      $scope.sac.push(criteria);
+                        console.log($scope.sac);
+                    }
+                  });
+              console.log($scope.sac);
+          });
           $scope.task = response;          
           if ($scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
             $scope.checkForAutomatedPromotionStatus(true);
