@@ -154,6 +154,20 @@ angular.module('singleConceptAuthoringApp.project', [
           });
       };
         
+      $scope.unacceptManualSac = function (id) {
+          terminologyServerService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
+              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+              });
+          });
+      };
+        
       $scope.openSACConfigModal = function () {
           var modalInstance = $modal.open({
             templateUrl: 'shared/sacconfig/sacconfig.html',
