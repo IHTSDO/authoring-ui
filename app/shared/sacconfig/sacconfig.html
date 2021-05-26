@@ -1,0 +1,104 @@
+
+<div id="configModal" class="clearfix task-modal">
+  <div class="modal-header clearfix">
+
+   
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title" ng-if="!task.key">Service Acceptance Configuration</h4>
+
+  </div>
+  <div class="modal-body">
+    <div class="col-md-12 no-padding">
+      <div class="form-group">
+          <div class="col-md-1"></div>
+          <div class="col-md-5">
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div style="margin-top: 10px; margin-left: 9px; font-size: 15px;">
+                          Project Criteria
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          MRCM Validation Report checked.
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          Release Notes Evaluated.
+                      </div>
+
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          Mapping requirements evaluated. 
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          Whitelist additions evaluated. 
+                      </div>
+                  </div>
+          </div>
+          <div class="col-md-5">
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div style="margin-top: 10px; margin-left: 9px; font-size: 15px;">
+                          Task Criteria
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          Review Completed. 
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          RVF Validation Clean. 
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          Classification Complete. 
+                      </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                      <div class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
+                      <div style="margin-top: 9px; font-size: 13px;">
+                          Whitelist additions evaluated. 
+                      </div>
+                  </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+  <div class="card-action clearfix" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
+  <hr>
+          <div class="pull-right">
+            <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-info no-margin"
+                ng-click="close()">Close Task Details </button>
+          </div>
+        </div>
+      </br> </br>
+    <div class="col-md-12 no-padding" ng-hide="task.status === 'Promoted' || task.status === 'Completed'"> 
+      <!-- Display create only if no task supplied -->
+      <div ng-if="!task.key" class="col-md-4">
+        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
+                ng-click="createTask(false)">Save </button>
+      </div>
+        <div class="col-md-4"></div>
+      
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="close()">Cancel </button>
+      </div>
+    </div>
+  </div>
+</div>

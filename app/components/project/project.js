@@ -34,6 +34,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.validationContainer = null;
       $scope.classificationContainer = null;
       $scope.conflictsContainer = null;
+      $scope.sac = null;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -61,8 +62,17 @@ angular.module('singleConceptAuthoringApp.project', [
       });
 
       $scope.getProject = function () {
-        permissionService.setRolesForBranch(null, []);
-        scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+        scaService.getProjectForKey($routeParams.projectKey).then(function (response) { 
+          terminologyServerService.getBranchSAC(response.branchPath).then(function (sac) {
+              $scope.sac = [];
+              angular.forEach(sac.criteriaItems, function (criteria) {
+                    if (criteria.authoringLevel === "PROJECT") {
+                      $scope.sac.push(criteria);
+                        console.log($scope.sac);
+                    }
+                  });
+              console.log($scope.sac);
+          });
 
           // set the local project and branch for use by containers (classification/validation)
           $scope.project = response;
@@ -137,6 +147,53 @@ angular.module('singleConceptAuthoringApp.project', [
         }, function () {
         });
       };
+        
+      $scope.acceptManualSac = function (id) {
+          terminologyServerService.acceptBranchSAC($scope.branch, id).then(function (sac) {
+              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+              });
+          });
+      };
+        
+      $scope.unacceptManualSac = function (id) {
+          terminologyServerService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
+              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+              });
+          });
+      };
+        
+      $scope.openSACConfigModal = function () {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/sacconfig/sacconfig.html',
+            controller: 'sacconfigCtrl',
+            resolve: {
+                task: function() {
+                  return null;
+                },
+                canDelete: function() {
+                  return false;
+                }
+              }
+          });
+
+          modalInstance.result.then(function () {
+          }, function () {
+          });
+        };
 
       // classify the project
       $scope.classify = function () {
