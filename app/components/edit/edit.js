@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, terminologyServerService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $q, crsService, reviewService, ngTableParams, templateService, $filter, hotkeys, modalService) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, terminologyServerService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $q, crsService, reviewService, ngTableParams, templateService, $filter, hotkeys, modalService, permissionService) {
 
     // Close all concepts listener
     $scope.$on('closeAllOpenningConcepts', function (event, data) {
@@ -1570,6 +1570,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var deferred = $q.defer();
 
+      permissionService.setRolesForBranch(null, []);
       terminologyServerService.getBranch(branchPath).then(function (response) {
         // if not found, create branch
         if (response.status === 404) {
@@ -1579,6 +1580,11 @@ angular.module('singleConceptAuthoringApp.edit', [
             notificationService.sendWarning('Task initialization complete', 3000);
             $rootScope.$broadcast('reloadTaxonomy');
             $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+            if (response.hasOwnProperty('userRoles')) {
+              permissionService.setRolesForBranch($scope.branch, response.userRoles);
+            } else {
+              permissionService.setRolesForBranch($scope.branch, []);
+            }
 
             // add slight timeout to allow propagation of branch information
             // TODO Added because crsService was receiving 404 on branch initially, but succeeding on reload
@@ -1590,6 +1596,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           });
         } else {
           $scope.branch = response.path;
+          if (response.hasOwnProperty('userRoles')) {
+            permissionService.setRolesForBranch($scope.branch, response.userRoles);
+          } else {
+            permissionService.setRolesForBranch($scope.branch, []);
+          }
+
           deferred.resolve();
         }
       });

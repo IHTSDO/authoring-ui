@@ -21,8 +21,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval', 'permissionService',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval, permissionService) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -61,6 +61,7 @@ angular.module('singleConceptAuthoringApp.project', [
       });
 
       $scope.getProject = function () {
+        permissionService.setRolesForBranch(null, []);
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
           // set the local project and branch for use by containers (classification/validation)
@@ -77,6 +78,14 @@ angular.module('singleConceptAuthoringApp.project', [
             if (promotionTime) {
               let date = new Date(promotionTime);
               $scope.project.lastPromotion = date.toUTCString();
+            }
+          });
+
+          terminologyServerService.getBranch(($scope.branch)).then(function(response) {            
+            if (response.hasOwnProperty('userRoles')) {
+              permissionService.setRolesForBranch($scope.branch, response.userRoles);
+            } else {
+              permissionService.setRolesForBranch($scope.branch, []);
             }
           });
 
