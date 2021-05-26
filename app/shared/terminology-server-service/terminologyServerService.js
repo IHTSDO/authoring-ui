@@ -2377,6 +2377,16 @@ angular.module('singleConceptAuthoringApp')
 
       }
         
+      // Retrieve SAC items
+      // GET /acceptance
+      function getSAC() {
+        return $http.get('/authoring-acceptance-gateway/criteria-items').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+
+      }
+        
       // Accept an SAC item on a branch
       // POST /acceptance/{branch}/item/{item-id}/accept
       function acceptBranchSAC(branch, id) {
@@ -2491,6 +2501,7 @@ angular.module('singleConceptAuthoringApp')
 
         // validation
         validateConcept: validateConcept,
+        getSAC: getSAC,
         getBranchSAC: getBranchSAC,
         acceptBranchSAC: acceptBranchSAC,
         unacceptBranchSAC: unacceptBranchSAC,
