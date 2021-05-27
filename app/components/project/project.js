@@ -35,6 +35,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.classificationContainer = null;
       $scope.conflictsContainer = null;
       $scope.sac = null;
+      $scope.fullSac = [];
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -66,6 +67,7 @@ angular.module('singleConceptAuthoringApp.project', [
           terminologyServerService.getBranchSAC(response.branchPath).then(function (sac) {
               $scope.sac = [];
               angular.forEach(sac.criteriaItems, function (criteria) {
+                    $scope.fullSac = sac.criteriaItems;
                     if (criteria.authoringLevel === "PROJECT") {
                       $scope.sac.push(criteria);
                         console.log($scope.sac);
@@ -186,6 +188,9 @@ angular.module('singleConceptAuthoringApp.project', [
                 },
                 canDelete: function() {
                   return false;
+                },
+                criteria: function() {
+                  return $scope.fullSac;
                 }
               }
           });
