@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('sacconfigCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, terminologyServerService, branch, criteria, $location, accountService, modalService) {
+  .controller('sacconfigCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, aagService, branch, criteria, $location, accountService, modalService) {
 
     // scope variables
     $scope.projects = null;
@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.criteriaConfig = [];
 
     function initialize() {
-      terminologyServerService.getSAC().then(function (response) {
+      aagService.getSAC().then(function (response) {
           angular.forEach(response.content, function (configItem) {
               angular.forEach($scope.criteria, function (selectedItem) {
                   if(configItem.id === selectedItem.id){
@@ -54,12 +54,12 @@ angular.module('singleConceptAuthoringApp')
               }
           });
         if($scope.criteria.length === 0){
-            terminologyServerService.createBranchSAC($scope.branch, sac).then(function (response) {
+            aagService.createBranchSAC($scope.branch, sac).then(function (response) {
                 $modalInstance.close();
             });
         }
         else{
-            terminologyServerService.updateBranchSAC($scope.branch, sac).then(function (response) {
+            aagService.updateBranchSAC($scope.branch, sac).then(function (response) {
                 $modalInstance.close();
             });
         }

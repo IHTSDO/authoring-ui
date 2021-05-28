@@ -42,11 +42,74 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
+    
+    // Retrieve SAC items for a branch
+      // GET /acceptance/{branch}
+      function getBranchSAC(branch) {
+        return $http.get(apiEndpoint + 'acceptance/' + branch).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+
+      }
+        
+      // Retrieve SAC items
+      // GET /acceptance
+      function getSAC() {
+        return $http.get(apiEndpoint + 'criteria-items').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+
+      }
+        
+      // Accept an SAC item on a branch
+      // POST /acceptance/{branch}/item/{item-id}/accept
+      function acceptBranchSAC(branch, id) {
+        return $http.post(apiEndpoint + 'acceptance/' + branch + '/item/' + id + '/accept', {}).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
+        
+      // Unaccept an SAC item on a branch
+      // DELETE /acceptance/{branch}/item/{item-id}/accept
+      function unacceptBranchSAC(branch, id) {
+          console.log('delete');
+        return $http.delete(apiEndpoint + 'acceptance/' + branch + '/item/' + id + '/accept').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
+        
+      // Update Branch SAC
+      // PUT /criteria/{branch}
+      function updateBranchSAC(branch, sac) {
+        return $http.put(apiEndpoint + 'criteria/' + branch, sac).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
+    
+      // Create Branch SAC
+      // POST /criteria/{branch}
+      function createBranchSAC(branch, sac) {
+        return $http.post(apiEndpoint + 'criteria', sac).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
 
 //
 // Function exposure
 //
     return {
+      getSAC: getSAC,
+      getBranchSAC: getBranchSAC,
+      acceptBranchSAC: acceptBranchSAC,
+      unacceptBranchSAC: unacceptBranchSAC,
+      updateBranchSAC: updateBranchSAC,
+      createBranchSAC: createBranchSAC,
       setEndpoint: setEndpoint,
       getAllWhitelistItems: getAllWhitelistItems,
       addToWhitelist: addToWhitelist,
