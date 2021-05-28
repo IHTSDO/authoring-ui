@@ -18,8 +18,8 @@
                       </div>
                   </div>
                   <div ng-repeat="criteria in criteriaConfig | filter: { authoringLevel: 'PROJECT' }" class="row" style="display:inline-flex; width:100%;">
-                      <div ng-if="criteria.selected" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
-                      <div ng-if="!criteria.selected" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px;     margin-left: -1px;"></div>
+                      <div ng-if="criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
+                      <div ng-if="!criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px;     margin-left: -1px;"></div>
                       <div style="margin-top: 12px; font-size: 14px;">
                           {{criteria.label}}
                       </div>
@@ -32,8 +32,8 @@
                       </div>
                   </div>
                   <div ng-repeat="criteria in criteriaConfig | filter: { authoringLevel: 'TASK' }" class="row" style="display:inline-flex; width:100%;">
-                      <div ng-if="criteria.selected" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
-                      <div ng-if="!criteria.selected" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px;     margin-left: -1px;"></div>
+                      <div ng-if="criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding:10px;"></div>
+                      <div ng-if="!criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding:10px;     margin-left: -1px;"></div>
                       <div style="margin-top: 12px; font-size: 14px;">
                           {{criteria.label}}
                       </div>
@@ -51,11 +51,11 @@
           </div>
         </div>
       </br> </br>
-    <div class="col-md-12 no-padding" ng-hide="task.status === 'Promoted' || task.status === 'Completed'"> 
+    <div class="col-md-12 no-padding"> 
       <!-- Display create only if no task supplied -->
-      <div ng-if="!task.key" class="col-md-4">
-        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="createTask(false)">Save </button>
+      <div class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-info no-margin"
+                ng-click="saveSac()">Save </button>
       </div>
         <div class="col-md-4"></div>
       

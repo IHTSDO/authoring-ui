@@ -2419,6 +2419,24 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
         });
       }
+        
+      // Update Branch SAC
+      // PUT /criteria/{branch}
+      function updateBranchSAC(branch, sac) {
+        return $http.put('/authoring-acceptance-gateway/criteria/' + branch, sac).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
+    
+      // Create Branch SAC
+      // POST /criteria/{branch}
+      function createBranchSAC(branch, sac) {
+        return $http.post('/authoring-acceptance-gateway/criteria', sac).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
 
       ////////////////////////////////////////////
       // Method Visibility
@@ -2520,6 +2538,8 @@ angular.module('singleConceptAuthoringApp')
         getBranchSAC: getBranchSAC,
         acceptBranchSAC: acceptBranchSAC,
         unacceptBranchSAC: unacceptBranchSAC,
+        updateBranchSAC: updateBranchSAC,
+        createBranchSAC: createBranchSAC,
 
         // utility
         createGuid: createGuid,

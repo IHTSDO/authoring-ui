@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('sacconfigCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, terminologyServerService, task, criteria, $location, accountService, modalService) {
+  .controller('sacconfigCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, terminologyServerService, branch, criteria, $location, accountService, modalService) {
 
     // scope variables
     $scope.projects = null;
-    $scope.task = task;
+    $scope.branch = branch;
     $scope.criteria = criteria;
     $scope.criteriaConfig = [];
 
@@ -22,6 +22,48 @@ angular.module('singleConceptAuthoringApp')
       });
       
     }
+    
+    $scope.toggleSac = function (id) {
+        angular.forEach($scope.criteriaConfig, function (item) {
+              if(item.id === id){
+                  if(!item.selected){
+                      item.selected = true;
+                  }
+                  else{
+                      item.selected = false;
+                  }
+              }
+          });
+    };
+    
+    $scope.saveSac = function() {
+        let sac = {
+          "branchPath": $scope.branch,
+          "projectIteration": 0,
+          "selectedProjectCriteriaIds": [],
+          "selectedTaskCriteriaIds": []
+        }
+        angular.forEach($scope.criteriaConfig, function (selectedItem) {
+              if(selectedItem.selected){
+                  if(selectedItem.authoringLevel === 'PROJECT'){
+                      sac.selectedProjectCriteriaIds.push(selectedItem.id);
+                  }
+                  else{
+                      sac.selectedTaskCriteriaIds.push(selectedItem.id);
+                  }
+              }
+          });
+        if($scope.criteria.length === 0){
+            terminologyServerService.createBranchSAC($scope.branch, sac).then(function (response) {
+                $modalInstance.close();
+            });
+        }
+        else{
+            terminologyServerService.updateBranchSAC($scope.branch, sac).then(function (response) {
+                $modalInstance.close();
+            });
+        }
+    };
 
 
     // closes the modal instance (if applicable)

@@ -183,8 +183,8 @@ angular.module('singleConceptAuthoringApp.project', [
             templateUrl: 'shared/sacconfig/sacconfig.html',
             controller: 'sacconfigCtrl',
             resolve: {
-                task: function() {
-                  return null;
+                branch: function() {
+                  return $scope.branch;
                 },
                 canDelete: function() {
                   return false;
@@ -196,7 +196,16 @@ angular.module('singleConceptAuthoringApp.project', [
           });
 
           modalInstance.result.then(function () {
-          }, function () {
+              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        $scope.fullSac = sac.criteriaItems;
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+              });
           });
         };
 
