@@ -21,8 +21,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval', 'permissionService',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval, permissionService) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval', 'permissionService',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval, permissionService) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -64,7 +64,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) { 
-          terminologyServerService.getBranchSAC(response.branchPath).then(function (sac) {
+          aagService.getBranchSAC(response.branchPath).then(function (sac) {
               $scope.sac = [];
               angular.forEach(sac.criteriaItems, function (criteria) {
                     $scope.fullSac = sac.criteriaItems;
@@ -151,8 +151,8 @@ angular.module('singleConceptAuthoringApp.project', [
       };
         
       $scope.acceptManualSac = function (id) {
-          terminologyServerService.acceptBranchSAC($scope.branch, id).then(function (sac) {
-              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+          aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
+              aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
                         if (criteria.authoringLevel === "PROJECT") {
@@ -165,8 +165,8 @@ angular.module('singleConceptAuthoringApp.project', [
       };
         
       $scope.unacceptManualSac = function (id) {
-          terminologyServerService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
-              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+          aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
+              aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
                         if (criteria.authoringLevel === "PROJECT") {
@@ -196,7 +196,7 @@ angular.module('singleConceptAuthoringApp.project', [
           });
 
           modalInstance.result.then(function () {
-              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+              aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
                         $scope.fullSac = sac.criteriaItems;

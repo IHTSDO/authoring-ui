@@ -2380,63 +2380,6 @@ angular.module('singleConceptAuthoringApp')
         findingConcept(inactiveConceptId, branch, defer);
         return defer.promise;
       }
-    
-      // Retrieve SAC items for a branch
-      // GET /acceptance/{branch}
-      function getBranchSAC(branch) {
-        return $http.get('/authoring-acceptance-gateway/acceptance/' + branch).then(function (response) {
-          return response.data;
-        }, function (error) {
-        });
-
-      }
-        
-      // Retrieve SAC items
-      // GET /acceptance
-      function getSAC() {
-        return $http.get('/authoring-acceptance-gateway/criteria-items').then(function (response) {
-          return response.data;
-        }, function (error) {
-        });
-
-      }
-        
-      // Accept an SAC item on a branch
-      // POST /acceptance/{branch}/item/{item-id}/accept
-      function acceptBranchSAC(branch, id) {
-        return $http.post('/authoring-acceptance-gateway/acceptance/' + branch + '/item/' + id + '/accept', {}).then(function (response) {
-          return response.data;
-        }, function (error) {
-        });
-      }
-        
-      // Unaccept an SAC item on a branch
-      // DELETE /acceptance/{branch}/item/{item-id}/accept
-      function unacceptBranchSAC(branch, id) {
-          console.log('delete');
-        return $http.delete('/authoring-acceptance-gateway/acceptance/' + branch + '/item/' + id + '/accept').then(function (response) {
-          return response.data;
-        }, function (error) {
-        });
-      }
-        
-      // Update Branch SAC
-      // PUT /criteria/{branch}
-      function updateBranchSAC(branch, sac) {
-        return $http.put('/authoring-acceptance-gateway/criteria/' + branch, sac).then(function (response) {
-          return response.data;
-        }, function (error) {
-        });
-      }
-    
-      // Create Branch SAC
-      // POST /criteria/{branch}
-      function createBranchSAC(branch, sac) {
-        return $http.post('/authoring-acceptance-gateway/criteria', sac).then(function (response) {
-          return response.data;
-        }, function (error) {
-        });
-      }
 
       ////////////////////////////////////////////
       // Method Visibility
@@ -2534,12 +2477,6 @@ angular.module('singleConceptAuthoringApp')
 
         // validation
         validateConcept: validateConcept,
-        getSAC: getSAC,
-        getBranchSAC: getBranchSAC,
-        acceptBranchSAC: acceptBranchSAC,
-        unacceptBranchSAC: unacceptBranchSAC,
-        updateBranchSAC: updateBranchSAC,
-        createBranchSAC: createBranchSAC,
 
         // utility
         createGuid: createGuid,

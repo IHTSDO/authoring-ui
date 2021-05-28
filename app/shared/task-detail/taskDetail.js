@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -23,8 +23,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.taxonomyConcept = null;
         
       $scope.acceptManualSac = function (id) {
-          terminologyServerService.acceptBranchSAC($scope.branch, id).then(function (sac) {
-              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+          aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
+              aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
                         if (criteria.authoringLevel === "PROJECT") {
@@ -37,8 +37,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
         
       $scope.unacceptManualSac = function (id) {
-          terminologyServerService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
-              terminologyServerService.getBranchSAC($scope.branch).then(function (sac) {
+          aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
+              aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
                         if (criteria.authoringLevel === "PROJECT") {
@@ -610,7 +610,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          terminologyServerService.getBranchSAC(response.branchPath).then(function (sac) {
+          aagService.getBranchSAC(response.branchPath).then(function (sac) {
               $scope.sac = [];
               angular.forEach(sac.criteriaItems, function (criteria) {
                     if (criteria.authoringLevel === "TASK") {
