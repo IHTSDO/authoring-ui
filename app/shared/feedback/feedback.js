@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService', 'localStorageService', 
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService, localStorageService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService', 'localStorageService', 'aagService', 
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService, localStorageService, aagService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -1245,6 +1245,7 @@ angular.module('singleConceptAuthoringApp')
               if (scope.conceptsToReviewViewed.length === 0) {
                 scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   scope.task.status = response.data.status;
+                  updateReviewChangesFlagForSACTask(true);
                   notificationService.sendMessage('Review marked completed for task ' + $routeParams.taskKey, 5000);
                 }, function (error) {
                   notificationService.sendError('Error marking review complete: ' + error);
@@ -1255,6 +1256,7 @@ angular.module('singleConceptAuthoringApp')
             } else if (scope.task.status === 'Review Completed') {
               scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.task.status = response.data.status;
+                updateReviewChangesFlagForSACTask(false);
                 notificationService.sendMessage('Task ' + $routeParams.taskKey + ' marked for review');
               }, function (error) {
                 notificationService.sendMessage('Review returned to In Progress', 5000);
@@ -1263,6 +1265,20 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('Cannot toggle review completion status: task has unexpected status ' + scope.task.status);
             }
           };
+
+          function updateReviewChangesFlagForSACTask(completed) {
+            aagService.getBranchSAC(scope.branch).then(function (sac) {              
+              angular.forEach(sac.criteriaItems, function (criteria) {
+                if (criteria.authoringLevel === "TASK" && criteria.id === 'ihtsdo-aag-task-review-changes') {
+                  criteria.complete = completed;
+                  aagService.updateBranchSAC(scope.branch, criteria).then(function() {
+                    console.log('Task review-changes has been updated to ' + completed);
+                  });
+                  return;
+                }
+              });              
+            });
+          }
 
           scope.getDateFromFeedback = function (feedback) {
             return new Date(feedback.creationDate);
