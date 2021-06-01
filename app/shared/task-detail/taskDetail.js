@@ -662,9 +662,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             $scope.task = response;
             angular.forEach($scope.sac, function (criteria) {
-              if (criteria.authoringLevel === "TASK" && criteria.id === 'ihtsdo-aag-task-review-changes' && criteria.complete) {
+              if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes') && criteria.complete) {
                 criteria.complete = false;
-                aagService.updateBranchSAC(scope.branch, criteria).then(function() {
+                aagService.unacceptBranchSAC(scope.branch, criteria.id).then(function() {
                   console.log('Task review-changes has been updated to ' + completed);
                 });
                 return;
