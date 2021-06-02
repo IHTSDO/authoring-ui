@@ -1632,6 +1632,16 @@ angular.module('singleConceptAuthoringApp')
           stompConnect();
         },
 
+        // Defaut server.session.timeout is 30 minutes,
+        // sending the polling request each 25 minutes to keep the session alive
+        startPolling: function() {
+          $interval(function () {
+            $http.get(apiEndpoint + 'main').then(function() {
+              // do nothing
+            })
+          }, 1500000);
+        },
+
         getTaskAttachments: function (projectKey, taskKey) {
           var deferred = $q.defer();
           $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments').then(function (response) {

@@ -171,7 +171,6 @@ angular
       }
     }, 3000);
 
-
     // get endpoint information and set route provider options
     configService.getConfigurations().then(
       // Success block -- config properties retrieved
@@ -188,9 +187,9 @@ angular
         crsService.setUSCrsEndpoint(endpoints['crsEndpoint.US']);
         var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
-        $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
-        $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);        
         var imsUrlParams = '?serviceReferer=' + window.location.href;
+        $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
+        $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);
 
         // Footer information
         $("#copyright_text").html(features.copyrightNotice);
@@ -207,53 +206,37 @@ angular
         $rootScope.loggedIn = null;
 
         // get the account details
-        accountService.getAccount(accountUrl).then(function (account) {
+        accountService.getAccount(accountUrl).then(
+          function (account) {
 
-          if(!(account.roles.includes('ROLE_ihtsdo-sca-author'))) {
-            window.location.href = decodeURIComponent(imsUrl + 'login');
-          }
+            if(!(account.roles.includes('ROLE_ihtsdo-sca-author'))) {
+              window.location.href = decodeURIComponent(imsUrl + 'login');
+            }
 
-          if(account.roles.includes('ROLE_ms-users')) {
-            $rootScope.managedServiceUser = true;
-          }
+            if(account.roles.includes('ROLE_ms-users')) {
+              $rootScope.managedServiceUser = true;
+            }
 
-          if ($rootScope.managedServiceUser) {
-            $("<script>").attr({src: $rootScope.msCollectorUrl !== '' ? $rootScope.msCollectorUrl : $rootScope.collectorUrl}).appendTo("body");
-          } else {
-            $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
-          }
-          // start connecting websocket
-          scaService.connectWebsocket();
-        }, function (error) {
-        });
+            if ($rootScope.managedServiceUser) {
+              $("<script>").attr({src: $rootScope.msCollectorUrl !== '' ? $rootScope.msCollectorUrl : $rootScope.collectorUrl}).appendTo("body");
+            } else {
+              $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
+            }
 
+            // start connecting websocket after retrieving user information
+            scaService.connectWebsocket();          
+          }, 
+          function () {}
+        );
+
+        ///////////////////////////////////////////
+        // Cache namespaces
+        ///////////////////////////////////////////
         cisService.getAllNamespaces().then(function (response) {
           if(response.length > 0) {
             metadataService.setNamespaces(response);
           }
-        });
-
-        hotkeys.bindTo($rootScope)
-            .add({
-              combo: 'alt+h',
-              description: 'Go to Home - My Tasks',
-              callback: function() {$location.url('home');}
-            })
-            .add({
-              combo: 'alt+b',
-              description: 'Open TS Browser',
-              callback: function() {window.open('/browser', '_blank');}
-            })
-            .add({
-              combo: 'alt+p',
-              description: 'Go to Projects',
-              callback: function() {$location.url('projects');}
-            })
-            .add({
-              combo: 'alt+w',
-              description: 'Go to Review Tasks',
-              callback: function() {$location.url('review-tasks');}
-            })
+        });        
 
         ///////////////////////////////////////////
         // Cache local data
@@ -261,6 +244,7 @@ angular
         scaService.getProjects(true).then(function (response) {
           metadataService.setProjects(response);
           metadataService.setProjectsLoaded(true);
+
           // get the user preferences (once logged in status confirmed)
           accountService.getUserPreferences().then(function (preferences) {
 
@@ -285,29 +269,37 @@ angular
             })
           });
         });
+        
+        ///////////////////////////////////////////
+        // Start polling to keep the session alive
+        ///////////////////////////////////////////
+        scaService.startPolling();
 
+        ///////////////////////////////////////////
+        // Binding shortcut
+        ///////////////////////////////////////////
         hotkeys.bindTo($rootScope)
-            .add({
-              combo: 'alt+h',
-              description: 'Go to Home - My Tasks',
-              callback: function() {$location.url('home');}
-            })
-            .add({
-              combo: 'alt+b',
-              description: 'Open TS Browser',
-              callback: function() {window.open('/browser', '_blank');}
-            })
-            .add({
-              combo: 'alt+p',
-              description: 'Go to Projects',
-              callback: function() {$location.url('projects');}
-            })
-            .add({
-              combo: 'alt+w',
-              description: 'Go to Review Tasks',
-              callback: function() {$location.url('review-tasks');}
-            })
-
+          .add({
+            combo: 'alt+h',
+            description: 'Go to Home - My Tasks',
+            callback: function() {$location.url('home');}
+          })
+          .add({
+            combo: 'alt+b',
+            description: 'Open TS Browser',
+            callback: function() {window.open('/browser', '_blank');}
+          })
+          .add({
+            combo: 'alt+p',
+            description: 'Go to Projects',
+            callback: function() {$location.url('projects');}
+          })
+          .add({
+            combo: 'alt+w',
+            description: 'Go to Review Tasks',
+            callback: function() {$location.url('review-tasks');}
+          }
+        );
 
         // add required endpoints to route provider
         $routeProvider
