@@ -652,6 +652,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         initialize();
       });
 
+// reload SAC
+    $scope.$on('reloadSAC', function (event, data) {
+      if (data.task && data.task === $routeParams.taskKey && data.project === $routeParams.projectKey) {
+        aagService.getBranchSAC($scope.branch).then(function (sac) {
+          $scope.sac = [];
+          angular.forEach(sac.criteriaItems, function (criteria) {
+            if (criteria.authoringLevel === "TASK") {
+              $scope.sac.push(criteria);                  
+            }
+          });       
+        });
+      }      
+    });
+
 // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptChange', function (event, data) {
         initialize();

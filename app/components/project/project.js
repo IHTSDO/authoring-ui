@@ -130,6 +130,21 @@ angular.module('singleConceptAuthoringApp.project', [
         $scope.getProject();
       });
 
+      // reload SAC
+      $scope.$on('reloadSAC', function (event, data) {
+        if (!data.task && data.project === $routeParams.projectKey) {
+          aagService.getBranchSAC($scope.branch).then(function (sac) {
+            $scope.sac = [];
+            angular.forEach(sac.criteriaItems, function (criteria) {
+              $scope.fullSac = sac.criteriaItems;
+              if (criteria.authoringLevel === "PROJECT") {
+                $scope.sac.push(criteria);               
+              }
+            });
+          });
+        }        
+      });      
+
       // task creation from projects page
       $scope.openCreateTaskModal = function () {
         var modalInstance = $modal.open({
