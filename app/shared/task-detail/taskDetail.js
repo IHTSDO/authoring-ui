@@ -27,7 +27,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
-                        if (criteria.authoringLevel === "PROJECT") {
+                        if (criteria.authoringLevel === "TASK") {
                           $scope.sac.push(criteria);
                             console.log($scope.sac);
                         }
@@ -41,7 +41,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
                   angular.forEach(sac.criteriaItems, function (criteria) {
-                        if (criteria.authoringLevel === "PROJECT") {
+                        if (criteria.authoringLevel === "TASK") {
                           $scope.sac.push(criteria);
                             console.log($scope.sac);
                         }
