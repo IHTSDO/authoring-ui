@@ -286,8 +286,8 @@ angular.module('singleConceptAuthoringApp')
           setTimeout(function() {
             reconnectedOnFailed = true;
             stompConnect();
-          }, 1000);
-          console.log('STOMP: Reconecting in 1 seconds');
+          }, 5000);
+          console.log('STOMP: Reconecting in 5 seconds');
       };
         
       var subscriptionHandler = function(message) {
@@ -398,11 +398,11 @@ angular.module('singleConceptAuthoringApp')
                       }
 
                       notificationService.sendMessage(msg, 0, url);
+                      $rootScope.$broadcast('reloadSAC', {project: newNotification.project,  task: newNotification.task});
                     }
                   });
                 } else if (newNotification.project) {
                   terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
-                    console.log(newNotification);
                     if (!classifications || classifications.length === 0) {
                       msg += ' but no classifications could be retrieved';
                       notificationService.sendError(msg);
@@ -426,7 +426,7 @@ angular.module('singleConceptAuthoringApp')
                   $rootScope.$broadcast('reloadProject');
                 } else {
                   console.error('Classification notification could not be processed', newNotification);
-                }
+                }                
                 break;
 
               /*
@@ -485,9 +485,26 @@ angular.module('singleConceptAuthoringApp')
                     url = '#/project/' + newNotification.project;
                   }
                 }
-                // broadcast validation complete to taskDetail
-                $rootScope.$broadcast('reloadTask');
+
+                if (newNotification.task) {
+                  // broadcast validation complete to taskDetail
+                  $rootScope.$broadcast('reloadTask');
+                } else {
+                  $rootScope.$broadcast('reloadSAC', {project: newNotification.project});
+                }
+                                
                 break;
+
+              /*
+                BranchHead object structure
+                entityType: "BranchHead"
+                event: ""
+                project: "WRPAS"
+                task: "WRPAS-98" (omitted for project)
+                */
+              case 'BranchHead':                 
+                  $rootScope.$broadcast('reloadSAC', {project: newNotification.project,  task: newNotification.task});
+                  break;
                 
               case 'AuthorChange':
                 var msg = newNotification.event;
@@ -510,7 +527,6 @@ angular.module('singleConceptAuthoringApp')
 
               // send the notification (if message supplied) with optional url
               if (msg) {
-
                 notificationService.sendMessage(msg, 0, url);
               }
             }
@@ -1613,13 +1629,7 @@ angular.module('singleConceptAuthoringApp')
         },
 
         connectWebsocket: function () {          
-          stompConnect();          
-          
-          // Need to reconnect WS one more time to make sure the connect is established.
-          // For some reasons, Server does not see the WS connection after the first connect.
-          setTimeout(function() {
-            stompConnect();
-          }, 3000);
+          stompConnect();
         },
 
         getTaskAttachments: function (projectKey, taskKey) {
