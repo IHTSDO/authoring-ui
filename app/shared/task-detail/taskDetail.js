@@ -678,7 +678,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             angular.forEach($scope.sac, function (criteria) {
               if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes') && criteria.complete) {
                 criteria.complete = false;
-                aagService.unacceptBranchSAC(scope.branch, criteria.id).then(function() {
+                aagService.unacceptBranchSAC($scope.branch, criteria.id).then(function() {
                   console.log('Task review-changes has been updated to ' + completed);
                 });
                 return;
