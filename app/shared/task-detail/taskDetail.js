@@ -668,22 +668,23 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptChange', function (event, data) {
+        angular.forEach($scope.sac, function (criteria) {
+          if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes') && criteria.complete) {
+            criteria.complete = false;
+            aagService.unacceptBranchSAC($scope.branch, criteria.id).then(function() {
+              console.log('Task review-changes has been updated to false');
+            });
+            return;
+          }
+        });
+        
         initialize();
       });
 
       $scope.$on('conceptEdit.conceptModified', function (event, data) {
         if ($scope.task.status === 'Review Completed') {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            $scope.task = response;
-            angular.forEach($scope.sac, function (criteria) {
-              if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes') && criteria.complete) {
-                criteria.complete = false;
-                aagService.unacceptBranchSAC($scope.branch, criteria.id).then(function() {
-                  console.log('Task review-changes has been updated to ' + completed);
-                });
-                return;
-              }
-            });
+            $scope.task = response;            
           });
         }
       });      
