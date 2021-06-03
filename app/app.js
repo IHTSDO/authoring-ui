@@ -224,7 +224,9 @@ angular
             }
 
             // start connecting websocket after retrieving user information
-            scaService.connectWebsocket();          
+            $timeout(function () {
+              scaService.connectWebsocket();
+            }, 5000);       
           }, 
           function () {}
         );
