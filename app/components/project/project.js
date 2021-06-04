@@ -35,6 +35,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.classificationContainer = null;
       $scope.conflictsContainer = null;
       $scope.sac = null;
+      $scope.creationDate = null;
       $scope.fullSac = [];
 
       // initialize the header notification
@@ -65,15 +66,19 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) { 
           aagService.getBranchSAC(response.branchPath).then(function (sac) {
-              $scope.sac = [];
-              angular.forEach(sac.criteriaItems, function (criteria) {
-                    $scope.fullSac = sac.criteriaItems;
-                    if (criteria.authoringLevel === "PROJECT") {
-                      $scope.sac.push(criteria);
-                        console.log($scope.sac);
-                    }
-                  });
-              console.log($scope.sac);
+              aagService.getBranchCriteria(response.branchPath).then(function (criteria) {
+                  $scope.sac = [];
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                        $scope.fullSac = sac.criteriaItems;
+                        if (criteria.authoringLevel === "PROJECT") {
+                          $scope.sac.push(criteria);
+                            console.log($scope.sac);
+                        }
+                      });
+                  if(criteria.creationDateLong && criteria.creationDateLong !== null){
+                      $scope.creationDate = criteria.creationDateLong;
+                  }
+                });
           });
 
           // set the local project and branch for use by containers (classification/validation)

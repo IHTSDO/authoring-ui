@@ -22,6 +22,27 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
+    
+    function getWhitelistItemsByBranchAndDate(branch, date) {
+      var deferred = $q.defer();      
+      let args = '';
+      if(date && date !== null && date !== undefined){
+          args = date +'&page=0&size=10000'
+      }
+      else{
+          args = '';
+      }
+      $http.get(apiEndpoint + 'whitelist-items/' + branch + '?creationDate=' + args).then(function (response) {
+        deferred.resolve(response.data.content);
+      }, function (error) {
+        if (error.status === 404) {
+          deferred.resolve([]);
+        } else {
+          deferred.reject('Error retrieving all whitelist items. Error: ' + error.message);
+        }
+      });
+      return deferred.promise;
+    }
 
     function addToWhitelist(whitelistItem) {
       var deferred = $q.defer();      
@@ -81,6 +102,15 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
         });
       }
+    
+      // Update Branch SAC
+      // PUT /criteria/{branch}
+      function getBranchCriteria(branch) {
+        return $http.get(apiEndpoint + 'criteria/' + branch).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
         
       // Update Branch SAC
       // PUT /criteria/{branch}
@@ -108,9 +138,11 @@ angular.module('singleConceptAuthoringApp')
       getBranchSAC: getBranchSAC,
       acceptBranchSAC: acceptBranchSAC,
       unacceptBranchSAC: unacceptBranchSAC,
+      getBranchCriteria: getBranchCriteria,
       updateBranchSAC: updateBranchSAC,
       createBranchSAC: createBranchSAC,
       setEndpoint: setEndpoint,
+      getWhitelistItemsByBranchAndDate: getWhitelistItemsByBranchAndDate,
       getAllWhitelistItems: getAllWhitelistItems,
       addToWhitelist: addToWhitelist,
       removeFromWhitelist: removeFromWhitelist
