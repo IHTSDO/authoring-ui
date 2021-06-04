@@ -20,7 +20,10 @@ angular.module('singleConceptAuthoringApp')
           branch: '=',
 
           // the task (optional)
-          task: '=?'
+          task: '=?',
+            
+          // date the branch was last promoted (optional)
+          lastPromotion: '=?'
         },
         templateUrl: 'shared/validation/validation.html',
 
@@ -505,8 +508,11 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
 
             // filter out from AAG whitelist
-            aagService.getAllWhitelistItems().then(function(whitelistItems) {
-              scope.allWhitelistItems = whitelistItems;              
+            aagService.getWhitelistItemsByBranchAndDate(scope.branch, scope.lastPromotion).then(function(whitelistItems) {
+              console.log(whitelistItems);
+              if(whitelistItems !== undefined){
+                scope.allWhitelistItems = whitelistItems;
+              }
               angular.forEach(scope.assertionsWarning, function (assertion) {
                 if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
                     assertion.isBranchModification = false;                  
