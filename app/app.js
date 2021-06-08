@@ -224,9 +224,7 @@ angular
             }
 
             // start connecting websocket after retrieving user information
-            $timeout(function () {
-              scaService.connectWebsocket();
-            }, 5000);       
+            scaService.connectWebsocket();       
           }, 
           function () {}
         );
@@ -271,11 +269,6 @@ angular
             })
           });
         });
-        
-        ///////////////////////////////////////////
-        // Start polling to keep the session alive
-        ///////////////////////////////////////////
-        scaService.startPolling();
 
         ///////////////////////////////////////////
         // Binding shortcut

@@ -280,11 +280,8 @@ angular.module('singleConceptAuthoringApp')
 
       var stompClient;
 
-      var reconnectedOnFailed = false;
-
-      var stompFailureCallback = function (error) {    
-          setTimeout(function() {
-            reconnectedOnFailed = true;
+      var stompFailureCallback = function () {    
+          setTimeout(function() {            
             stompConnect();
           }, 5000);
           console.log('STOMP: Reconecting in 5 seconds');
@@ -536,12 +533,15 @@ angular.module('singleConceptAuthoringApp')
           }
       }
 
-      var stompSuccessCallback = function() {
-//        if (reconnectedOnFailed) {
-//          $window.location.reload();
-//          return;
-//        }
-        stompClient.subscribe('/topic/user/' + $rootScope.accountDetails.login + '/notifications', subscriptionHandler, {id : 'sca-subscription-id-' + $rootScope.accountDetails.login});
+      var stompSuccessCallback = function(frame) {
+        var username = frame.headers['user-name'];
+        if (!username) {
+          $http.get(apiEndpoint + 'main').then(function() {
+            stompFailureCallback();
+          });                   
+        } else {
+          stompClient.subscribe('/topic/user/' + $rootScope.accountDetails.login + '/notifications', subscriptionHandler, {id : 'sca-subscription-id-' + $rootScope.accountDetails.login});
+        }
       }
 
       function stompConnect() {          
@@ -1630,17 +1630,7 @@ angular.module('singleConceptAuthoringApp')
 
         connectWebsocket: function () {          
           stompConnect();
-        },
-
-        // Defaut server.session.timeout is 30 minutes,
-        // sending the polling request each 25 minutes to keep the session alive
-        startPolling: function() {
-          $interval(function () {
-            $http.get(apiEndpoint + 'main').then(function() {
-              // do nothing
-            })
-          }, 1500000);
-        },
+        },        
 
         getTaskAttachments: function (projectKey, taskKey) {
           var deferred = $q.defer();
