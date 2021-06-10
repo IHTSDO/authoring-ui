@@ -205,7 +205,7 @@
       
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
-        ng-show="$root.showSidebarEdit && mode !== 'validation'  && mode !== 'classification' && mode !== 'conflicts' && mode !== 'integrityCheck' && thisView !== 'edit-no-sidebar'"
+        ng-show="$root.showSidebarEdit && mode !== 'validate'  && mode !== 'classify' && mode !== 'conflicts' && thisView !== 'integrityCheck' && thisView !== 'edit-no-sidebar'"
         class="editpanel sca-column">
     </div>
   <div class="row no-gutter">  
@@ -309,7 +309,7 @@
     </div>
 
     <!-- Validation view -->
-    <div ng-if="mode === 'validation'">
+    <div ng-if="thisView === 'validation'">
 
       <!-- validation report -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
@@ -319,7 +319,7 @@
     </div>
 
     <!-- Inactivation view -->
-    <div ng-if="mode === 'inactivation'">
+    <div ng-if="thisView === 'inactivation'">
 
       <div class="row no-padding no-gutter">
 
@@ -338,8 +338,7 @@
 
 
     <!-- Classification view -->
-    <div ng-if="mode === 'classification'">
-
+    <div ng-if="thisView === 'classification'">
       <div class="row no-padding no-gutter">
 
         <!-- classification report -->
@@ -350,9 +349,8 @@
       </div>
     </div>
 
-
     <!-- Review/Feedback view -->
-    <div ng-if="mode === 'feedback'">
+    <div ng-if="thisView === 'feedback'">
       <!-- feedback report -->
       <div>
         <div feedback branch="targetBranch" editable="true" view="thisView"></div>
@@ -360,7 +358,7 @@
     </div>
 
     <!-- Conflict view -->
-    <div ng-if="mode === 'conflicts'">
+    <div ng-if="thisView === 'conflicts'">
 
       <!-- conflict report -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -371,13 +369,13 @@
     </div>
 
     <!-- Integrity Check -->
-    <div ng-if="mode === 'integrityCheck'">
+    <div ng-if="thisView === 'integrityCheck'">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
         <div integrity-check integrity-check-result="integrityCheckResult" branch="task.branchPath"></div>
       </div>
     </div>
 
-    <div ng-if="mode === 'batch'" class="batch-editing">
+    <div ng-if="thisView === 'batch'" class="batch-editing">
 
       <!-- concepts-->
       <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')">

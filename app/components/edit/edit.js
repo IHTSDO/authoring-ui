@@ -383,15 +383,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       switch (name) {
         case 'validation':
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          $routeParams.mode = 'validation';
+          $routeParams.mode = 'validate';
           //  view starts with no concepts
           $scope.concepts = [];
           $scope.canCreateConcept = false;
           $rootScope.showSidebarEdit = false;
           break;
         case 'inactivation':
-          $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          $routeParams.mode = 'inactivation';
+          $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;          
           $scope.concepts = [];
           $scope.canCreateConcept = false;
           $rootScope.showSidebarEdit = true;
@@ -411,7 +410,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'classification':
           $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          $routeParams.mode = 'classification';
+          $routeParams.mode = 'classify';
           $scope.getClassificationEditPanel();
           $scope.canCreateConcept = false;
           $rootScope.showSidebarEdit = false;
@@ -426,8 +425,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.concepts = [];
           break;
         case 'integrityCheck':
-            $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
-            $routeParams.mode = 'integrityCheck';
+            $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');            
             $scope.canCreateConcept = false;
             $rootScope.showSidebarEdit = false;  
             //  view starts with no concepts
@@ -552,17 +550,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.setView('classification');
       } else if ($routeParams.mode === 'validate') {
         $scope.setView('validation');
-      } else if ($routeParams.mode === 'inactivation') {
-        // on load, check ui state for active inactivations (heh)
-        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept').then(function (response) {
-          if (response) {
-            inactivationService.setConceptToInactivate(response);
-            $scope.setView('inactivation');
-          }
-        });
-
       } else if ($routeParams.mode === 'feedback') {
-
         $scope.setView('feedback');
       } else if ($routeParams.mode === 'conflicts') {
         $scope.setView('conflicts');
