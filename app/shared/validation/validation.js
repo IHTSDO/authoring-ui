@@ -534,34 +534,34 @@ angular.module('singleConceptAuthoringApp')
                     
                   });
                   scope.allWhitelistItems = whitelistItems;
+                  angular.forEach(scope.assertionsWarning, function (assertion) {
+                    if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
+                        assertion.isBranchModification = false;                  
+                        angular.forEach(assertion.firstNInstances, function (instance) {
+
+                          // store the unmodified text to preserve original data
+                          instance.detailUnmodified = instance.detail;
+
+                          // detect if instance references user modified concepts
+                          if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                            instance.isBranchModification = true;
+                            assertion.isBranchModification = true;
+                          }
+
+                          instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
+
+                            return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
+                          }).length !== 0;
+                        });
+                    }
+                  });
+                  checkWhitelistDone = true;
+                  if (checkExcludedValidationRuleIdsDone) {
+                    // load the tables
+                    scope.reloadTables();
+                    deferred.resolve();
+                  }
                 });
-              }
-              angular.forEach(scope.assertionsWarning, function (assertion) {
-                if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
-                    assertion.isBranchModification = false;                  
-                    angular.forEach(assertion.firstNInstances, function (instance) {
-
-                      // store the unmodified text to preserve original data
-                      instance.detailUnmodified = instance.detail;
-
-                      // detect if instance references user modified concepts
-                      if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                        instance.isBranchModification = true;
-                        assertion.isBranchModification = true;
-                      }
-
-                      instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-                        
-                        return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
-                      }).length !== 0;
-                    });
-                }
-              });
-              checkWhitelistDone = true;
-              if (checkExcludedValidationRuleIdsDone) {
-                // load the tables
-                scope.reloadTables();
-                deferred.resolve();
               }
             });
 
