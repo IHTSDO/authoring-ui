@@ -502,9 +502,9 @@ angular.module('singleConceptAuthoringApp')
             if (item.active) {
               // Historical concepts found
               if (item.referencedComponent) {
-                item.sourceFsn = item.referencedComponent.fsn.term;
+                item.sourceFsn = item.referencedComponent.term;
                 item.source = [];
-                item.source.fsn = item.referencedComponent.fsn.term;                    
+                item.source.fsn = item.referencedComponent.term;                    
                 item.characteristicType = 'STATED_RELATIONSHIP';
     
                 var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
