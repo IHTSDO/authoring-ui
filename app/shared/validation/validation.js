@@ -433,10 +433,10 @@ angular.module('singleConceptAuthoringApp')
                 scope.allWhitelistItems.forEach(function(item) {
                   orderedData.push({
                     id: item.id,
-                    assertionText: "",
+                    failureText: item.failureText,
                     assertionUuid: item.validationRuleId,
                     branchRoot: item.branch,
-                    conceptFsn: "",
+                    conceptFsn: item.conceptFsn,
                     conceptId: item.conceptId,
                     componentId: item.componentId,
                     timestamp: new Date(item.creationDate).getTime(),
@@ -509,9 +509,32 @@ angular.module('singleConceptAuthoringApp')
 
             // filter out from AAG whitelist
             aagService.getWhitelistItemsByBranchAndDate(scope.branch, scope.lastPromotion).then(function(whitelistItems) {
-              console.log(whitelistItems);
               if(whitelistItems !== undefined){
-                scope.allWhitelistItems = whitelistItems;
+                let idList = [];
+                angular.forEach(whitelistItems, function (item) {
+                    angular.forEach(scope.assertionsWarning, function (assertion) {
+                        if(item.validationRuleId === assertion.assertionUuid){
+                            item.failureText = assertion.assertionText;
+                        }
+                    });
+                    angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                        if(item.validationRuleId === assertion.assertionUuid){
+                            item.failureText = assertion.assertionText;
+                        }
+                    });
+                    idList.push(item.conceptId);
+                });
+                terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
+                  angular.forEach(concepts.items, function (concept) {
+                      angular.forEach(whitelistItems, function (failure) {
+                        if(failure.conceptId === concept.conceptId){
+                            failure.conceptFsn = concept.fsn.term;
+                        }
+                      });
+                    
+                  });
+                  scope.allWhitelistItems = whitelistItems;
+                });
               }
               angular.forEach(scope.assertionsWarning, function (assertion) {
                 if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
@@ -528,6 +551,7 @@ angular.module('singleConceptAuthoringApp')
                       }
 
                       instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
+                        
                         return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
                       }).length !== 0;
                     });
@@ -814,28 +838,6 @@ angular.module('singleConceptAuthoringApp')
                   scope.reloadTables();
                 });
               });                           
-            } else {
-              accountService.getAccount().then(function (accountDetails) {
-                // get the user name
-                var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
-                var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
-  
-                // set the local flag to false to ensure immediate removal
-                failure.isUserExclusion = true;
-  
-                // add the exclusion and update tables
-                // NOTE: Must use the unmodified detail, not the referenced component modified detail
-                validationService.addValidationFailureExclusion(
-                  scope.assertionFailureViewed.assertionUuid,
-                  scope.assertionFailureViewed.assertionText,
-                  failure.conceptId,
-                  failure.conceptFsn,
-                  failure.detailUnmodified,
-                  userName,
-                  branchRoot).then(function () {  
-                  scope.reloadTables();
-                });
-              });
             }
           };
 

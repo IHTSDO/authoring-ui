@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp')
           args = '';
       }
       $http.get(apiEndpoint + 'whitelist-items/' + branch + '?creationDate=' + args).then(function (response) {
-        deferred.resolve(response.data.content);
+        deferred.resolve(response.data);
       }, function (error) {
         if (error.status === 404) {
           deferred.resolve([]);
