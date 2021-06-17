@@ -36,7 +36,7 @@
                 ng-href="#/project/{{project.key}}">{{project.title}} <span>View Project Details</span></a></td>
               <td data-title="'Project Key'" sortable="'key'" filter="{ 'project': 'text' }"> {{project.key}} </td>
               <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }"> {{project.projectLead.displayName}} </td>
-              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'"><a ng-href="#/project/{{project.key}}">
+              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'"><a ng-href="#/project/{{project.key}}?expandClassification=true">
                   <button ng-show="project.latestClassificationJson"
                           type="button"
                           ng-class="[
@@ -60,7 +60,7 @@
                     </span>
                   </button>
                 </a></td>
-              <td data-title="'Validation Results'" sortable="'validationStatus'"><a ng-href="#/project/{{project.key}}">
+              <td data-title="'Validation Results'" sortable="'validationStatus'"><a ng-href="#/project/{{project.key}}?expandValidation=true">
                 <button ng-show="project.validationStatus && project.validationStatus !== 'Failed-to-retrieve'"
                        type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
