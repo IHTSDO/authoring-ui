@@ -49,7 +49,7 @@
 
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
 
-                <a ng-href="#/project/{{project.key}}">
+                <a ng-href="#/project/{{project.key}}?expandClassification=true">
                   <button ng-show="project.latestClassificationJson"
                           type="button"
                           ng-class="[
@@ -77,7 +77,7 @@
 
               </td>
               <td data-title="'Validation Results'" sortable="'validationStatus'">
-                <a ng-href="#/project/{{project.key}}">
+                <a ng-href="#/project/{{project.key}}?expandValidation=true">
 
                   <button ng-show="project.validationStatus && project.validationStatus !== 'Failed-to-retrieve'"
                           type="button"

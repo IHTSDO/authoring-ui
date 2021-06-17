@@ -44,6 +44,11 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
 
+      var expandValidation = $location.search().expandValidation;
+      var expandClassification = $location.search().expandClassification;      
+      $scope.validationCollapsed = expandValidation ? !expandValidation : true;
+      $scope.classificationCollapsed = expandClassification ? !expandClassification : true;      
+
       hotkeys.bindTo($scope)
       .add({
         combo: 'alt+y',
