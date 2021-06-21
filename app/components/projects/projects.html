@@ -87,7 +87,8 @@
                           {indicator_blue : project.validationStatus === 'VALIDATING'},
                           {indicator_blue : project.validationStatus === 'BUILDING'},
                           {indicator_green : project.validationStatus === 'COMPLETED'},
-                          {indicator_red : project.validationStatus === 'FAILED'}]"
+                          {indicator_red : project.validationStatus === 'FAILED'},
+                          {indicator_grey : project.validationStatus === 'STALE'}]"
                           class="btn btn-round btn-default pull-left lighten-1 tooltips-right">
                     <div class="md md-school "></div>
                     <span> <div class="message_validation_{{project.validationStatus}}"> </div></span>
