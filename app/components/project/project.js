@@ -125,7 +125,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning =
-            $scope.project.validationStatus && ($scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED');
+            $scope.project.validationStatus && ($scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED' && $scope.project.validationStatus !== 'STALE');
 
           // get the latest validation for this project (if exists)
           if ($scope.project.validationStatus !== 'FAILED') {
