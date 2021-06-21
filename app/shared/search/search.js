@@ -485,14 +485,21 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         let acceptLanguageValue = '';
         if($scope.isExtension) {
            var allDialects = metadataService.getAllDialects();
+           const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
            for (let dialectId in (allDialects)) {
-             let dialect = allDialects[dialectId];
-             if(dialect.indexOf('-') !== -1)
-              {
-                  acceptLanguageValue += dialect + '-x-' + dialectId + ',';
+              let dialect = allDialects[dialectId];
+              let foundOptionalRefset = null;
+              if (optionalLanguageRefsets) {
+                foundOptionalRefset = optionalLanguageRefsets.filter(function(item) {
+                  return item.refsetId === dialectId;
+                })[0];
               }
-              else{
-                  acceptLanguageValue += dialect + '-' + dialect.toUpperCase() + '-x-' + dialectId + ',';
+              if (foundOptionalRefset) {
+                acceptLanguageValue += foundOptionalRefset.language + '-' + foundOptionalRefset.key.toUpperCase() + '-x-' + dialectId + ',';
+              } else if(dialect.indexOf('-') !== -1) {
+                acceptLanguageValue += dialect + '-x-' + dialectId + ',';
+              } else {
+                acceptLanguageValue += dialect + '-' + dialect.toUpperCase() + '-x-' + dialectId + ',';
               }             
            }
            acceptLanguageValue += 'en';
