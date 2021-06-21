@@ -1,6 +1,6 @@
 <section class="tables-data">
   <!-- for ng-table checkboxes -->
-  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html" ng-show="task">
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html" ng-show="task && warningAssertion">
     <input type="checkbox" ng-model="checkAll" ng-class="[{'project' : !task}]" ng-change="selectAll(checkAll)" title="Select Concepts"
            id="select_all_failures"
            name="filter-checkbox" value=""/>
@@ -8,7 +8,7 @@
   <script type="text/ng-template" id="excludeheader.html">
     <button type="button" ng-click="excludeFailures()"
             class="btn btn-default back-button"
-            ng-if="whitelistEnabled">
+            ng-if="whitelistEnabled && warningAssertion">
             Add selected to Whitelist
     </button>
   </script>
@@ -118,7 +118,7 @@
           <tr ng-repeat="failure in $data" ng-class="[{'validation-table-padding' : !editable && !whitelistEnabled}]">
             <td header-title="'Click to select all'"
                 header="'ng-table/headers/checkboxHeader.html'"
-                ng-show="task || whitelistEnabled || warningAssertion"><div class="checkbox">
+                ng-show="task || whitelistEnabled && warningAssertion"><div class="checkbox">
                 <label class="filled">
 
                   <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
