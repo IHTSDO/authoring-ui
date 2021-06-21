@@ -111,7 +111,8 @@
                           {indicator_red : task.latestValidationStatus === 'FAILED'},
                           {indicator_blue : task.latestValidationStatus === 'VALIDATING'},
                           {indicator_blue : task.latestValidationStatus === 'BUILDING'},
-                          {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
+                          {indicator_green : task.latestValidationStatus === 'COMPLETED'},
+                          {indicator_grey : task.latestValidationStatus === 'STALE'}]"
                           class="btn btn-round   btn-default lighten-2 pull-left ">
                 <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                          class="md md-school "></div>
