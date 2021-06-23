@@ -513,62 +513,69 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
 
             // filter out from AAG whitelist
-            aagService.getWhitelistItemsByBranchAndDate(scope.branch, scope.lastPromotion).then(function(whitelistItems) {
-              if(whitelistItems !== undefined){
-                let idList = [];
-                angular.forEach(whitelistItems, function (item) {
-                    angular.forEach(scope.assertionsWarning, function (assertion) {
-                        if(item.validationRuleId === assertion.assertionUuid){
-                            item.failureText = assertion.assertionText;
-                        }
+              terminologyServerService.getLastPromotionTime(scope.branch).then(function (promotionTime) {
+                  let date = '';
+                if (promotionTime) {
+                  let date = new Date(promotionTime);
+                  //$scope.project.lastPromotion = date.toUTCString();
+                }
+                aagService.getWhitelistItemsByBranchAndDate(scope.branch, new Date(promotionTime).getTime()).then(function(whitelistItems) {
+                  if(whitelistItems !== undefined){
+                    let idList = [];
+                    angular.forEach(whitelistItems, function (item) {
+                        angular.forEach(scope.assertionsWarning, function (assertion) {
+                            if(item.validationRuleId === assertion.assertionUuid){
+                                item.failureText = assertion.assertionText;
+                            }
+                        });
+                        angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                            if(item.validationRuleId === assertion.assertionUuid){
+                                item.failureText = assertion.assertionText;
+                            }
+                        });
+                        idList.push(item.conceptId);
                     });
-                    angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
-                        if(item.validationRuleId === assertion.assertionUuid){
-                            item.failureText = assertion.assertionText;
-                        }
-                    });
-                    idList.push(item.conceptId);
-                });
-                terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
-                  angular.forEach(concepts.items, function (concept) {
-                      angular.forEach(whitelistItems, function (failure) {
-                        if(failure.conceptId === concept.conceptId){
-                            failure.conceptFsn = concept.fsn.term;
+                    terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
+                      angular.forEach(concepts.items, function (concept) {
+                          angular.forEach(whitelistItems, function (failure) {
+                            if(failure.conceptId === concept.conceptId){
+                                failure.conceptFsn = concept.fsn.term;
+                            }
+                          });
+
+                      });
+                      scope.allWhitelistItems = whitelistItems;
+                      angular.forEach(scope.assertionsWarning, function (assertion) {
+                        if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
+                            assertion.isBranchModification = false;                  
+                            angular.forEach(assertion.firstNInstances, function (instance) {
+
+                              // store the unmodified text to preserve original data
+                              instance.detailUnmodified = instance.detail;
+
+                              // detect if instance references user modified concepts
+                              if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                                instance.isBranchModification = true;
+                                assertion.isBranchModification = true;
+                              }
+
+                              instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
+
+                                return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
+                              }).length !== 0;
+                            });
                         }
                       });
-                    
-                  });
-                  scope.allWhitelistItems = whitelistItems;
-                  angular.forEach(scope.assertionsWarning, function (assertion) {
-                    if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
-                        assertion.isBranchModification = false;                  
-                        angular.forEach(assertion.firstNInstances, function (instance) {
-
-                          // store the unmodified text to preserve original data
-                          instance.detailUnmodified = instance.detail;
-
-                          // detect if instance references user modified concepts
-                          if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                            instance.isBranchModification = true;
-                            assertion.isBranchModification = true;
-                          }
-
-                          instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-
-                            return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
-                          }).length !== 0;
-                        });
-                    }
-                  });
-                  checkWhitelistDone = true;
-                  if (checkExcludedValidationRuleIdsDone) {
-                    // load the tables
-                    scope.reloadTables();
-                    deferred.resolve();
+                      checkWhitelistDone = true;
+                      if (checkExcludedValidationRuleIdsDone) {
+                        // load the tables
+                        scope.reloadTables();
+                        deferred.resolve();
+                      }
+                    });
                   }
                 });
-              }
-            });
+              });
 
             // filter out technical errors
             configService.getExcludedValidationRuleIds().then(function (response) {
