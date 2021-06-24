@@ -194,6 +194,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
+    // utility function pass-thrus
+    $scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
+
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
@@ -1643,9 +1646,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.templateTableParams.reload();
     }
 
-    $scope.selectFocusForTemplate = function(concept){
+    $scope.selectFocusForTemplate = function(item){
         var initialTemplates = $scope.innerTemplates;
-        templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
+        templateService.getTemplates(true, [item.conceptId], $scope.branch).then(function (templates) {
           for(var i = templates.length -1; i >= 0; i--){
               if(templates[i].additionalSlots.length > 0)
                   {
@@ -1955,7 +1958,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           });
         }
 
-        else{$scope.templates = null}
+        else{ 
+          $scope.templates = null;
+        }
 
         // initialize the CRS service
         // NOTE: Must be done before loading initial view
@@ -2015,6 +2020,12 @@ angular.module('singleConceptAuthoringApp.edit', [
               $scope.sourceBranch = metadataService.getBranchRoot() + '/';
             }
 
+            if(metadataService.isTemplatesEnabled()) {
+              // Get all top level hierarchy concepts
+              terminologyServerService.getConceptChildren("138875005", $scope.branch, null, false, true).then(function (children) {
+                metadataService.setTopLevelConcepts(children);
+              });
+            }
           });
         }, function (error) {
           console.error('Unexpected error checking CRS status');

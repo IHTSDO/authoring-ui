@@ -6,6 +6,8 @@ angular.module('singleConceptAuthoringApp')
     // project cache (still used?)
     var projects = [];
 
+    var topLevelConcepts = [];
+
     var namespaces = [];
 
     var mrcmAttributeDomainMembers = [];
@@ -687,6 +689,14 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
+    function setTopLevelConcepts(concepts) {
+      topLevelConcepts = concepts;
+    }
+
+    function getTopLevelConcepts() {
+      return topLevelConcepts;
+    }
+
     function isProjectsLoaded() {
       var defer = $q.defer();        
         if (!projectsLoadCompleted) {                  
@@ -877,6 +887,8 @@ angular.module('singleConceptAuthoringApp')
       setMyProjects : setMyProjects,
       getMyProjects : getMyProjects,
       getProjectForKey: getProjectForKey,
+      setTopLevelConcepts: setTopLevelConcepts,
+      getTopLevelConcepts: getTopLevelConcepts,
 
       // inactivation reason retrieval
       getConceptInactivationReasons: getConceptInactivationReasons,
