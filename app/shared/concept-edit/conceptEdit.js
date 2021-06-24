@@ -297,6 +297,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
         scope.getConceptsForValueTypeahead = constraintService.getConceptsForValueTypeahead;
         scope.crsFilter = crsService.crsFilter;
+        scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
 
         var conceptsMap = {};
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
@@ -412,6 +413,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     $(this).blur();
                 }
             }
+        };
+
+        scope.selectFocusForTemplate = function(item){
+            var initialTemplates = scope.templates;
+            templateService.getTemplates(true, [item.conceptId], scope.branch).then(function (response) {
+                scope.templates = response;
+                scope.templateTableParams.reload();
+                scope.templates = initialTemplates;
+            });
         };
 
         scope.checkReadOnlyDialect = function(descriptionModuleId, dialectId) {
