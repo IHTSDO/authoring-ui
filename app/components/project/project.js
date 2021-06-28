@@ -535,6 +535,9 @@ angular.module('singleConceptAuthoringApp.project', [
         // initialize the project
         $scope.getProject();
 
+        // start monitoring of project
+        scaService.monitorProject($routeParams.projectKey);
+
         // get the project task list
         scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
           $scope.tasks = response;
