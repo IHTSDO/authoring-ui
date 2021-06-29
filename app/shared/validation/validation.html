@@ -38,8 +38,8 @@
       <span ng-if="viewFullReport">View only concepts modified in {{taskKey ? 'task' : 'project'}}</span> <span ng-if="!viewFullReport">View all validation errors in {{taskKey ? 'task' : 'project'}}</span> </button>
     </div>
   </div>  
-  <div ng-if="validationContainer.executionStatus == 'STALE'" ng-show="!isCollapsed" class="btn">      
-    <button type="button" class="btn btn-round btn-default lighten-2 pull-left indicator_grey"> <div class="md md-school "></div></button>
+  <div ng-if="validationContainer.executionStatus == 'STALE'" ng-show="!isCollapsed" class="btn stale-validation-report">      
+    <button type="button" class="btn btn-round btn-default lighten-2 pull-left indicator_grey"> <div class="md md-school"></div></button>
     <span class="button-link"> Validation is stale, please run again to see updated results.</span>
   </div>
   <div class="validation-report report-table" ng-show="!isCollapsed && validationContainer.executionStatus == 'COMPLETED'">
