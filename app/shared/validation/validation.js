@@ -501,6 +501,36 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.userModifiedConceptIds = [];
+            
+          scope.generateWhitelistFields = function(whitelistItems){
+              let idList = [];
+              angular.forEach(whitelistItems, function (item) {
+                    angular.forEach(scope.assertionsWarning, function (assertion) {
+                        if(item.validationRuleId === assertion.assertionUuid){
+                            item.failureText = assertion.assertionText;
+                        }
+                    });
+                    angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                        if(item.validationRuleId === assertion.assertionUuid){
+                            item.failureText = assertion.assertionText;
+                        }
+                    });
+                    idList.push(item.conceptId);
+                });
+                terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
+                  angular.forEach(concepts.items, function (concept) {
+                      angular.forEach(whitelistItems, function (failure) {
+                        if(failure.conceptId === concept.conceptId){
+                            failure.conceptFsn = concept.fsn.term;
+                        }
+                      });
+
+                  });
+                scope.reloadTables();
+                });
+            
+            return whitelistItems
+          }
 
           function initFailures() {
 
@@ -845,9 +875,9 @@ angular.module('singleConceptAuthoringApp')
                 whitelistItem.additionalFields = result[failure.componentId];
                 aagService.addToWhitelist(whitelistItem).then(function(respone) {
                   scope.allWhitelistItems.push(respone.data);
+                  scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
                   failure.isUserExclusion = true;
                   scope.resetUserExclusionFlag();
-                  scope.reloadTables();
                 });
               });                           
             }
@@ -1054,11 +1084,13 @@ angular.module('singleConceptAuthoringApp')
                   promises.push(aagService.addToWhitelist(whitelistItem));
                 });
                 $q.all(promises).then(function (results) {
-                  results.forEach(function(item) {
-                    scope.allWhitelistItems.push(item.data);                  
+                  results.forEach(function(item, current, array) {
+                    scope.allWhitelistItems.push(item.data);
+                    if (current === array.length - 1){
+                        scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+                    }
                   });
                   scope.resetUserExclusionFlag()
-                  scope.reloadTables();
                 });
               });              
             } else {
