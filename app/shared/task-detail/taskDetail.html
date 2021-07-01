@@ -33,7 +33,7 @@
             </div>
           </div>
         </li>
-        <li ng-repeat="criteria in sac" style="margin-bottom:10px;" ng-if="!criteria.manual || (criteria.manual && criteria.id.includes('task-review-changes'))">
+        <li ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="!criteria.manual || (criteria.manual && criteria.id.includes('task-review-changes'))">
           <div  class="timeline-badge">
               <div ng-if="criteria.complete" class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
               <div ng-if="!criteria.complete" class="fa fa-exclamation-triangle pull-right" style="color: #fbc02d; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
@@ -46,7 +46,7 @@
               </div>
           </div>
         </li>
-        <li ng-repeat="criteria in sac" style="margin-bottom:10px;" ng-if="criteria.manual && !criteria.id.includes('task-review-changes')">
+        <li ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="criteria.manual && !criteria.id.includes('task-review-changes')">
           <div class="timeline-badge">
               <div ng-if="criteria.complete" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
               <div ng-if="!criteria.complete" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding:10px; margin-left: -1px;"></div>

@@ -1267,22 +1267,24 @@ angular.module('singleConceptAuthoringApp')
           };
 
           function updateReviewChangesFlagForSACTask(completed) {
-            aagService.getBranchSAC(scope.branch).then(function (sac) {              
-              angular.forEach(sac.criteriaItems, function (criteria) {
-                if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes')) {
-                  if (completed && !criteria.complete) {
-                    aagService.acceptBranchSAC(scope.branch, criteria.id).then(function() {
-                      console.log('Task review-changes has been updated to ' + completed);
-                    });
-                  } else if (!completed && criteria.complete){
-                    aagService.unacceptBranchSAC(scope.branch, criteria.id).then(function() {
-                      console.log('Task review-changes has been updated to ' + completed);
-                    });
+            aagService.getBranchSAC(scope.branch).then(function (sac) {   
+              if (sac && sac.criteriaItems) {
+                angular.forEach(sac.criteriaItems, function (criteria) {
+                  if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes')) {
+                    if (completed && !criteria.complete) {
+                      aagService.acceptBranchSAC(scope.branch, criteria.id).then(function() {
+                        console.log('Task review-changes has been updated to ' + completed);
+                      });
+                    } else if (!completed && criteria.complete){
+                      aagService.unacceptBranchSAC(scope.branch, criteria.id).then(function() {
+                        console.log('Task review-changes has been updated to ' + completed);
+                      });
+                    }
+                    
+                    return;
                   }
-                  
-                  return;
-                }
-              });              
+                }); 
+              }         
             });
           }
 

@@ -73,13 +73,15 @@ angular.module('singleConceptAuthoringApp.project', [
           aagService.getBranchSAC(response.branchPath).then(function (sac) {
               aagService.getBranchCriteria(response.branchPath).then(function (criteria) {
                   $scope.sac = [];
-                  angular.forEach(sac.criteriaItems, function (criteria) {
-                        $scope.fullSac = sac.criteriaItems;
-                        if (criteria.authoringLevel === "PROJECT") {
-                          $scope.sac.push(criteria);
-                            console.log($scope.sac);
-                        }
-                      });
+                  $scope.fullSac = [];
+                  if (sac && sac.criteriaItems) {
+                    $scope.fullSac = sac.criteriaItems;
+                    angular.forEach(sac.criteriaItems, function (criteria) {                      
+                      if (criteria.authoringLevel === "PROJECT") {
+                        $scope.sac.push(criteria);                            
+                      }
+                    });
+                  }                  
                   if(criteria.creationDateLong && criteria.creationDateLong !== null){
                       $scope.creationDate = criteria.creationDateLong;
                   }
@@ -145,12 +147,15 @@ angular.module('singleConceptAuthoringApp.project', [
         if (!data.task && data.project === $routeParams.projectKey) {
           aagService.getBranchSAC($scope.branch).then(function (sac) {
             $scope.sac = [];
-            angular.forEach(sac.criteriaItems, function (criteria) {
+            $scope.fullSac = [];
+            if (sac && sac.criteriaItems) {
               $scope.fullSac = sac.criteriaItems;
-              if (criteria.authoringLevel === "PROJECT") {
-                $scope.sac.push(criteria);               
-              }
-            });
+              angular.forEach(sac.criteriaItems, function (criteria) {                      
+                if (criteria.authoringLevel === "PROJECT") {
+                  $scope.sac.push(criteria);                            
+                }
+              });
+            }
           });
         }        
       });      
@@ -179,12 +184,13 @@ angular.module('singleConceptAuthoringApp.project', [
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
-                  angular.forEach(sac.criteriaItems, function (criteria) {
-                        if (criteria.authoringLevel === "PROJECT") {
-                          $scope.sac.push(criteria);
-                            console.log($scope.sac);
-                        }
-                      });
+                  if (sac && sac.criteriaItems) {
+                    angular.forEach(sac.criteriaItems, function (criteria) {
+                      if (criteria.authoringLevel === "PROJECT") {
+                        $scope.sac.push(criteria);
+                      }
+                    });
+                  }                  
               });
           });
       };
@@ -193,12 +199,13 @@ angular.module('singleConceptAuthoringApp.project', [
           aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
-                  angular.forEach(sac.criteriaItems, function (criteria) {
-                        if (criteria.authoringLevel === "PROJECT") {
-                          $scope.sac.push(criteria);
-                            console.log($scope.sac);
-                        }
-                      });
+                  if (sac && sac.criteriaItems) {
+                    angular.forEach(sac.criteriaItems, function (criteria) {
+                      if (criteria.authoringLevel === "PROJECT") {
+                        $scope.sac.push(criteria);
+                      }
+                    });
+                  }                  
               });
           });
       };
@@ -211,9 +218,6 @@ angular.module('singleConceptAuthoringApp.project', [
                 branch: function() {
                   return $scope.branch;
                 },
-                canDelete: function() {
-                  return false;
-                },
                 criteria: function() {
                   return $scope.fullSac;
                 }
@@ -223,13 +227,15 @@ angular.module('singleConceptAuthoringApp.project', [
           modalInstance.result.then(function () {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
-                  angular.forEach(sac.criteriaItems, function (criteria) {
-                        $scope.fullSac = sac.criteriaItems;
-                        if (criteria.authoringLevel === "PROJECT") {
-                          $scope.sac.push(criteria);
-                            console.log($scope.sac);
-                        }
-                      });
+                  $scope.fullSac = [];
+                  if (sac && sac.criteriaItems) {
+                    $scope.fullSac = sac.criteriaItems;
+                    angular.forEach(sac.criteriaItems, function (criteria) {                        
+                      if (criteria.authoringLevel === "PROJECT") {
+                        $scope.sac.push(criteria);
+                      }
+                    });
+                  }                  
               });
           });
         };

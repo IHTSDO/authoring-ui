@@ -80,7 +80,7 @@
               ng-click="criteriaCollapsed = !criteriaCollapsed"
               type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : criteriaCollapsed, 'md-keyboard-arrow-down' : !criteriaCollapsed}]">
-              <span class="project-subtitle">Acceptance Criteria <i class="md md-settings f20" style="color: #00acc1" ng-click="openSACConfigModal()"></i></span>
+              <span class="project-subtitle">Acceptance Criteria <i class="md md-settings f20" style="color: #00acc1" ng-click="openSACConfigModal(); $event.stopPropagation()"></i></span>
             </button>
             <span class="project-icon pull-right"><span class="fa fa-tasks" style="font-size: 24px;
     text-align: center;
@@ -128,7 +128,7 @@
                               Manual Criteria
                           </div>
                       </div>
-                      <div ng-repeat="criteria in sac | filter: { manual: 'true' }" class="row" style="display:inline-flex; width:100%;">
+                      <div ng-repeat="criteria in sac | filter: { manual: 'true' } | orderBy : ['order','label']" class="row" style="display:inline-flex; width:100%;">
                           <div ng-if="criteria.complete" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:28px; padding:10px;"></div>
                           <div ng-if="!criteria.complete" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:28px; padding:10px;     margin-left: -1px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
