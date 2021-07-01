@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('sacconfigCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, aagService, branch, criteria, $location, accountService, modalService) {
+  .controller('sacconfigCtrl', function ($scope, $modalInstance, aagService, branch, criteria) {
 
     // scope variables
     $scope.projects = null;

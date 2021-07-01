@@ -26,12 +26,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
-                  angular.forEach(sac.criteriaItems, function (criteria) {
-                        if (criteria.authoringLevel === "TASK") {
-                          $scope.sac.push(criteria);
-                            console.log($scope.sac);
-                        }
-                      });
+                  if (sac && sac.criteriaItems) {
+                    angular.forEach(sac.criteriaItems, function (criteria) {
+                      if (criteria.authoringLevel === "TASK") {
+                        $scope.sac.push(criteria);
+                      }
+                    });
+                  }                  
               });
           });
       };
@@ -40,12 +41,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
-                  angular.forEach(sac.criteriaItems, function (criteria) {
-                        if (criteria.authoringLevel === "TASK") {
-                          $scope.sac.push(criteria);
-                            console.log($scope.sac);
-                        }
-                      });
+                  if (sac && sac.criteriaItems) {
+                    angular.forEach(sac.criteriaItems, function (criteria) {
+                      if (criteria.authoringLevel === "TASK") {
+                        $scope.sac.push(criteria);
+                      }
+                    });
+                  }                  
               });
           });
       };
@@ -612,13 +614,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           aagService.getBranchSAC(response.branchPath).then(function (sac) {
               $scope.sac = [];
-              angular.forEach(sac.criteriaItems, function (criteria) {
-                    if (criteria.authoringLevel === "TASK") {
-                      $scope.sac.push(criteria);
-                        console.log($scope.sac);
-                    }
-                  });
-              console.log($scope.sac);
+              if (sac && sac.criteriaItems) {
+                angular.forEach(sac.criteriaItems, function (criteria) {
+                  if (criteria.authoringLevel === "TASK") {
+                    $scope.sac.push(criteria);
+                  }
+                });
+              }
           });
           $scope.task = response;          
           if ($scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
@@ -657,11 +659,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       if (data.task && data.task === $routeParams.taskKey && data.project === $routeParams.projectKey) {
         aagService.getBranchSAC($scope.branch).then(function (sac) {
           $scope.sac = [];
-          angular.forEach(sac.criteriaItems, function (criteria) {
-            if (criteria.authoringLevel === "TASK") {
-              $scope.sac.push(criteria);                  
-            }
-          });       
+          if (sac && sac.criteriaItems) {
+            angular.forEach(sac.criteriaItems, function (criteria) {
+              if (criteria.authoringLevel === "TASK") {
+                $scope.sac.push(criteria);                  
+              }
+            }); 
+          }                
         });
       }      
     });
