@@ -1529,7 +1529,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.$on('reloadTask', function (event, data) {
-      loadTask();
+      if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
+        loadTask();
+      }      
     });
 
     $scope.$on('conceptEdit.conceptChange', function (event, data) {

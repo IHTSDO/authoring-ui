@@ -372,13 +372,10 @@ angular.module('singleConceptAuthoringApp')
               case 'Classification':
                 msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
 
-
                 // retrieve the latest classification
-
                 // set url and broadcast classification complete to taskDetail.js or project.js
                 if (newNotification.task) {
-                  terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
-                    console.log(newNotification);
+                  terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {                   
                     if (!classifications || classifications.length === 0) {
                       msg += ' but no classifications could be retrieved';
                       notificationService.sendError(msg);
@@ -395,7 +392,7 @@ angular.module('singleConceptAuthoringApp')
                       }
 
                       notificationService.sendMessage(msg, 0, url);
-                      $rootScope.$broadcast('reloadSAC', {project: newNotification.project,  task: newNotification.task});
+                      $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                     }
                   });
                 } else if (newNotification.project) {
@@ -420,7 +417,7 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
 
-                  $rootScope.$broadcast('reloadProject');
+                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
                 } else {
                   console.error('Classification notification could not be processed', newNotification);
                 }                
@@ -434,7 +431,7 @@ angular.module('singleConceptAuthoringApp')
               case 'BranchState':
                 if (newNotification.event === 'DIVERGED') {
                   //$rootScope.$broadcast('branchDiverged');
-                  $rootScope.$broadcast('notification.branchState', newNotification);
+                  $rootScope.$broadcast('notification.branchState', {project: newNotification.project, task: newNotification.task});
                 }
                 break;
 
@@ -451,11 +448,10 @@ angular.module('singleConceptAuthoringApp')
                 // set url and broadcast classification complete to taskDetail.js or project.js
                 if (newNotification.task) {
                   url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
-                  $rootScope.$broadcast('reloadTask');
-                  $rootScope.$broadcast('rebaseComplete');
+                  $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                 } else {
                   url = '#/project/' + newNotification.project;
-                  $rootScope.$broadcast('reloadProject');
+                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
                 }                
                 break;
 
@@ -484,10 +480,9 @@ angular.module('singleConceptAuthoringApp')
                 }
 
                 if (newNotification.task) {
-                  // broadcast validation complete to taskDetail
-                  $rootScope.$broadcast('reloadTask');
+                  $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                 } else {
-                  $rootScope.$broadcast('reloadSAC', {project: newNotification.project});
+                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});                  
                 }
                                 
                 break;
@@ -598,12 +593,6 @@ angular.module('singleConceptAuthoringApp')
             function (response) {
               if ($rootScope.loggedIn === null) {
                 $rootScope.loggedIn = true;
-
-                // temporary check to verify authentication on Home component
-                // will later be replaced by accountService call in app.js
-//              if (response.data.length > 0) {
-//                $rootScope.accountDetails = response.data[0].assignee;
-//              }
               }
 
               return response.data;
@@ -1427,25 +1416,6 @@ angular.module('singleConceptAuthoringApp')
             deferred.reject(error.message);
           });
           return deferred.promise;
-
-          /*return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {            
-            return response.data;
-          }, function (error) {
-            if (error.status === 504) {
-              notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
-              return 1;
-            }
-            else if (error.status === 409) {
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
-            }
-            else {
-              console.error('Error promoting project ' + projectKey);
-              notificationService.sendError('Error promoting project', 10000);
-              return null;
-            }
-
-          });*/
         },
 
 // GET /projects/{projectKey}/rebase
@@ -1475,27 +1445,7 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendError('Error rebasing Project: ' + projectKey);
             deferred.reject(error);
           });
-          return deferred.promise;
-
-
-          /*return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {
-            notificationService.sendMessage('Project Rebased Successfully', 10000);
-            return response.data;
-          }, function (error) {
-            if (error.status === 504) {
-              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
-              return 1;
-            }
-            else if (error.status === 409) {
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
-
-            }
-            else {
-              notificationService.sendError('Error rebasing Task: ' + projectKey);
-              return null;
-            }
-          }); */
+          return deferred.promise;         
         },
 // POST /projects/{projectKey}/tasks/{taskKey}/promote
 // Promote the task to the Project
@@ -1621,13 +1571,6 @@ angular.module('singleConceptAuthoringApp')
           });
         },
 
-// directly retrieve notification
-// TODO Decide if we want to instantiate this, will duplicate
-// notification handling which should be moved to a non-exposed function
-        getNotifications: function () {
-          return null;
-        },
-
         connectWebsocket: function () {          
           stompConnect();
         },        
@@ -1700,34 +1643,7 @@ angular.module('singleConceptAuthoringApp')
             }
           });
           return deferred.promise;
-        },
-
-        searchUsers : function (username,projectKeys,issueKey,maxResults,startAt) {          
-          var params = 'startAt=' + (startAt ? startAt : 0) 
-                     + '&maxResults=' + (maxResults ? maxResults : 50)
-                     + '&username=' + username
-                     + (projectKeys ? ('&projectKeys=' + projectKeys) : '')
-                     + (issueKey ? ('&issueKey=' + issueKey) : '')
-                     + '&_=' + Date.now();
-          return $http.get(apiEndpoint + 'users/search?' + params).then(function (response) {
-            var results = [];
-            angular.forEach(response.data, function(value, key) {
-              if (value.active) {
-                var user = {};
-                user.avatarUrl = value.avatarUrls['16x16'];
-                user.displayName = value.displayName;
-                user.email = value.emailAddress;
-                user.username = value.name;
-               
-                results.push(user);
-              }              
-            });
-
-            return results;
-          }, function (error) {
-             return [];
-          });
-        },
+        },        
 
         getUsers : function (offset) {
           var deferred = $q.defer();
@@ -1758,7 +1674,7 @@ angular.module('singleConceptAuthoringApp')
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 404) {
-              deferred.resolve({});
+              deferred.resolve([]);
             } else {
               deferred.reject('Error retrieving users');
             }

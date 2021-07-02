@@ -126,8 +126,7 @@ angular.module('singleConceptAuthoringApp.project', [
           }
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
-          $rootScope.validationRunning =
-            $scope.project.validationStatus && ($scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED' && $scope.project.validationStatus !== 'STALE');
+          $rootScope.validationRunning = $scope.project.validationStatus && ($scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED' && $scope.project.validationStatus !== 'STALE');
 
           // get the latest validation for this project (if exists)
           if ($scope.project.validationStatus !== 'FAILED') {
@@ -139,7 +138,9 @@ angular.module('singleConceptAuthoringApp.project', [
       };
 
       $scope.$on('reloadProject', function (event, data) {
-        $scope.getProject();
+        if (!data || data.project === $routeParams.projectKey) {
+          $scope.getProject();
+        }
       });
 
       // reload SAC
