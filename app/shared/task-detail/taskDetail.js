@@ -117,8 +117,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   notificationService.sendError(conflictMessage);
                   $scope.branchLocked = false;
                 });
-              } else {
-                $rootScope.$broadcast('reloadTask');
               }
             }, function (error) {
               $scope.promoting = false;
@@ -152,17 +150,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
                       notificationService.sendError(conflictMessage);
                       $scope.branchLocked = false;
-                    });
-                  } else {
-                    scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-                        if(response.metadata && response.metadata.internal && response.metadata.internal.integrityIssue) {
-                            terminologyServerService.branchUpgradeIntegrityCheck(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName).then( function(response) {
-                                $rootScope.$broadcast('reloadTask');
-                            });
-                        }
-                        else{
-                            $rootScope.$broadcast('reloadTask');
-                        }
                     });
                   }
                 }, function (error) {
@@ -429,28 +416,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               $scope.checkForLock();
             }, 10000);
            }
-          else {
-            terminologyServerService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-              if (response && response.length > 0) {
-                var item = response[response.length -1];
-                if (item.status === 'SCHEDULED' || item.status === 'RUNNING') {
-                  $rootScope.branchLocked = true;
-                  $rootScope.classificationRunning = true;
-                  $timeout(function () {
-                    $scope.checkForLock();
-                  }, 10000);
-                } else {
-                  if ($rootScope.classificationRunning) {
-                    $rootScope.$broadcast('reloadTask');
-                  }
-                  $rootScope.branchLocked = false;
-                  $rootScope.classificationRunning = false;
-                }
-              } else {
-                $rootScope.branchLocked = false;
-              }
-            });
-
+          else {            
+            $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'SCHEDULED' || $scope.task.latestClassificationJson.status === 'BUILDING');            
+            $rootScope.branchLocked = $rootScope.classificationRunning;
           }
         });
       };
@@ -535,12 +503,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.clear();
                 break;
               case 'Completed':
-                $rootScope.classificationRunning = false;
-                $rootScope.automatedPromotionInQueued = false;
-                $rootScope.branchLocked = true;
-                if (!isInitialPageLoad) {
-                  $rootScope.$broadcast('reloadTask');
-                }
                 break;
               case 'Failed':
                 $rootScope.automatedPromotionInQueued = false;
@@ -649,6 +611,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
           initialize();
         }        
+      });
+
+      $scope.$on('promotion.completed', function (event, data) {
+        if (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {          
+            scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                if(response.metadata && response.metadata.internal && response.metadata.internal.integrityIssue) {
+                    terminologyServerService.branchUpgradeIntegrityCheck(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName).then( function(response) {
+                        $rootScope.$broadcast('reloadTask');
+                    });
+                }
+                else{
+                    $rootScope.$broadcast('reloadTask');
+                }
+            });
+        }
       });
 
 // re-initialize if branch state changes

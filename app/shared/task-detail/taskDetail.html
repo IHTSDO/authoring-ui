@@ -88,7 +88,9 @@
                                     || automatePromotionStatus === 'Rebasing'
                                     || automatePromotionStatus === 'Classifying'
                                     || automatePromotionStatus === 'Promoting') 
-                                    && automatePromotionErrorMsg === ''">
+                                    && automatePromotionErrorMsg === ''
+                                    && task.status !== 'Promoted' 
+                                    && task.status !== 'Completed'">
       <div class="alert" ng-class="[{'green' : automatePromotionStatus === 'Classifying'}, 
                 {'amber' :  automatePromotionStatus === 'Rebasing'},
                 {'blue' : automatePromotionStatus === 'Promoting'},

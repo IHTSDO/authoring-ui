@@ -487,17 +487,7 @@ angular.module('singleConceptAuthoringApp')
 
       //////////////////////////////////////////////
       // Classification functions
-      //////////////////////////////////////////////
-
-      function startClassificationForTask(taskKey, branch) {
-        // TODO This is probably dead code - we don't used SnoRocket any more.
-        var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
-        return $http.post(apiEndpoint + branch + '/tasks/' + taskKey + '/classifications', JSON, {
-          headers: {'Content-Type': 'application/json; charset=UTF-8'}
-        }).then(function (response) {
-          return response;
-        });
-      }
+      //////////////////////////////////////////////      
 
       // get a specific classification result for projectKey, taskKey, and
       // classifierId
@@ -521,14 +511,7 @@ angular.module('singleConceptAuthoringApp')
         return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/classifications/').then(function (response) {
           return response.data.items;
         });
-      }
-
-      // get all classification results for a project and task
-      function getClassificationsForTask(projectKey, taskKey) {
-        return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
-          return response.data.items;
-        });
-      }
+      }      
         
       // get all classification results for a branchroot
       function getClassificationsForBranchRoot(branchroot) {
@@ -2412,10 +2395,8 @@ angular.module('singleConceptAuthoringApp')
         findConcept: findConcept,
         getFullConceptAtDate: getFullConceptAtDate,
         updateDescription: updateDescription,
-        startClassificationForTask: startClassificationForTask,
         getClassificationForTask: getClassificationForTask,
-        getClassificationForProject: getClassificationForProject,
-        getClassificationsForTask: getClassificationsForTask,
+        getClassificationForProject: getClassificationForProject,        
         getClassificationsForBranchRoot: getClassificationsForBranchRoot,
         getClassifications: getClassifications,
         getClassificationsForProject: getClassificationsForProject,

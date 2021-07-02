@@ -339,6 +339,7 @@ angular.module('singleConceptAuthoringApp')
                     notificationService.sendMessage(msg, 0); 
                   }
                 }
+                $rootScope.$broadcast('promotion.completed', {project: newNotification.project, task: newNotification.task});
                 break;
 
               /*
