@@ -332,8 +332,6 @@ angular.module('singleConceptAuthoringApp.project', [
                             }
                           }
                         });
-                      } else {
-                        $scope.getProject();
                       }
                     });
                   }
@@ -590,6 +588,12 @@ angular.module('singleConceptAuthoringApp.project', [
           }
         }, 500);
       });
+
+      $scope.$on('promotion.completed', function (event, data) {
+        if (data && data.project === $routeParams.projectKey && !data.task) {
+          $scope.getProject();
+        }
+      });      
 
       // on open validation report from notification link
       $scope.$on('toggleValidationReport', function () {
