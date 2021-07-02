@@ -646,12 +646,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       }
 
       $scope.$on('reloadTask', function (event, data) {
-        initialize();
+        if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
+          initialize();
+        }        
       });
 
 // re-initialize if branch state changes
       $scope.$on('notification.branchState', function (event, data) {
-        initialize();
+        if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
+          initialize();
+        }        
       });
 
 // reload SAC

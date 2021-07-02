@@ -144,7 +144,7 @@ angular.module('singleConceptAuthoringApp')
       return scaService.searchUsers(username, $scope.task.projectKey, $scope.task.key, 50, 0).then(function (response) {
         var results = [];
         angular.forEach(response, function (item) {
-          if (!isTaskAuthorOrReviewer(item.name)) {
+          if (item.active && !isTaskAuthorOrReviewer(item.name)) {
             var user = {};
             user.avatarUrl = item.avatarUrls['16x16'];
             user.displayName = item.displayName;
