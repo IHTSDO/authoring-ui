@@ -908,7 +908,7 @@ angular.module('singleConceptAuthoringApp')
                   deferred.resolve({[componentId]: ''});
                   break;        
               }        
-            } else if (UUID_PATTERN.matches(componentId)) {
+            } else if (UUID_PATTERN.test(componentId)) {
               terminologyServerService.getMemberProperties(componentId, branch).then(function(member) {
                 var result = getStatusCode(member.active) + ',' + member.moduleId + ',' + member.refsetId + ',' + member.referencedComponentId;
                 for (var key in Object.keys(member.additionalFields)) {                 
