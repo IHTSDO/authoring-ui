@@ -41,10 +41,10 @@
                     </div>
                   </div>
                   <div ng-repeat="criteria in criteriaConfig | filter: { authoringLevel: 'PROJECT', manual: false } | orderBy : ['order','label']" class="row" style="display:inline-flex; width:100%;">
-                    <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; cursor: default;" disabled></div>
-                    <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px;"></div>
-                    <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 12px; font-size: 14px;">
+                    <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;" disabled></div>
+                    <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
                         {{criteria.label}}
                     </div>
                 </div>
@@ -56,10 +56,10 @@
                     </div>
                   </div>
                   <div ng-repeat="criteria in criteriaConfig | filter: { authoringLevel: 'PROJECT', manual: true } | orderBy : ['order','label']" class="row" style="display:inline-flex; width:100%;">
-                    <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; cursor: default;" disabled></div>
-                    <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px;"></div>
-                    <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 12px; font-size: 14px;">
+                    <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;" disabled></div>
+                    <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
                         {{criteria.label}}
                     </div>
                   </div>
@@ -84,10 +84,10 @@
                       </div>
                     </div>
                     <div ng-repeat="criteria in criteriaConfig | orderBy : ['order','label']" class="row" style="display:inline-flex; width:100%;" ng-if="criteria.authoringLevel == 'TASK' && (!criteria.manual || criteria.id.includes('task-review-changes'))">
-                      <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; cursor: default;" disabled></div>
-                      <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px;"></div>
-                      <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; margin-left: -1px;"></div>
-                      <div style="margin-top: 12px; font-size: 14px;">
+                      <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;" disabled></div>
+                      <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                      <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 7px; font-size: 12px;">
                           {{criteria.label}}
                       </div>
                   </div>
@@ -99,10 +99,10 @@
                       </div>
                     </div>
                     <div ng-repeat="criteria in criteriaConfig | orderBy : ['order','label']" class="row" style="display:inline-flex; width:100%;" ng-if="criteria.authoringLevel == 'TASK' && (criteria.manual && !criteria.id.includes('task-review-changes'))">
-                      <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; cursor: default;" disabled></div>
-                      <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px;"></div>
-                      <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:20px; padding-top:10px; padding-bottom:10px; padding-right:10px; margin-left: -1px;"></div>
-                      <div style="margin-top: 12px; font-size: 14px;">
+                      <div ng-if="criteria.mandatory" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;" disabled></div>
+                      <div ng-if="!criteria.mandatory && criteria.selected" ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                      <div ng-if="!criteria.mandatory && !criteria.selected" ng-click="toggleSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                      <div style="margin-top: 7px; font-size: 12px;">
                           {{criteria.label}}
                       </div>
                     </div>
