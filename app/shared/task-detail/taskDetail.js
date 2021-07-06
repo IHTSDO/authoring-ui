@@ -475,6 +475,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   $scope.checkForLock();                  
                   break;
               case 'Classified with results':
+              case 'Classified with equivalencies Found':
+                // Manual classification is running
                 if(isInitialPageLoad && $rootScope.classificationRunning) {
                   $scope.automatePromotionStatus = '';
                   break;
@@ -491,10 +493,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
                 if ($scope.task.latestClassificationJson.status === 'SAVED' || new Date($scope.task.latestClassificationJson.completionDate) > new Date(response.completeDate)) {
                   $scope.automatePromotionStatus = '';
-                  break;
+                } else {
+                  if ($scope.automatePromotionStatus === 'Classified with results') {
+                    $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';
+                  } else {
+                    $scope.automatePromotionErrorMsg = 'Classification reports equivalent concepts on this branch. You may not promote until these are resolved.';
+                  }
                 }
-
-                $scope.automatePromotionErrorMsg = 'Classification results detected during automated promotion. Please review and accept classification results, then restart automation.';               
                 break;
               case 'Promoting':
                 $rootScope.classificationRunning = false;
@@ -518,6 +523,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
             }
+            
             if ($scope.automatePromotionStatus === 'Queued'
                 || response.status === 'Rebasing'
                 || response.status === 'Classifying'
