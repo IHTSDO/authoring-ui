@@ -99,7 +99,7 @@
     <div class="p-l-15 p-r-15" ng-if="automatePromotionErrorMsg !== ''">
       <div class="alert alert-danger">{{automatePromotionErrorMsg}}
         <div ng-if="automatePromotionStatus === 'Rebased with conflicts'">Click <a ng-click="viewConflicts()">here</a> to redirect to Merge Concepts page.</div>
-        <div ng-if="automatePromotionStatus === 'Classified with results'">Click <a ng-click="viewClassification()">here</a> to see the classification results.</div>
+        <div ng-if="automatePromotionStatus === 'Classified with results' || automatePromotionStatus === 'Classified with equivalencies Found'">Click <a ng-click="viewClassification()">here</a> to see the classification results.</div>        
       </div>
     </div>
     <div class="p-l-15 p-r-15">
