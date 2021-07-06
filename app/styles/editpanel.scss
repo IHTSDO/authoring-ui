@@ -1328,8 +1328,10 @@ button-link .bluehl .grey.darken-3 {
 }
 .PRIMITIVE .GCI textarea.relationship,
 .PRIMITIVE .GCI.sourcename,
+.PRIMITIVE.axiom-relationship.relationship-target.GCI.sourcename,
 .FULLY_DEFINED .GCI textarea.relationship,
-.FULLY_DEFINED .GCI.sourcename {
+.FULLY_DEFINED .GCI.sourcename,
+.FULLY_DEFINED.axiom-relationship.relationship-target.GCI.sourcename, {
     background-color: #fbd1cc;
 }
 .def_PRIMITIVE textarea,
