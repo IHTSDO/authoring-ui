@@ -36,19 +36,25 @@
        background-color: #5e35b1;
        color: #fff;
    }
-   .validation-report.report-table thead tr > th input[type=checkbox] {
+   .project-page .validation-report.report-table thead tr > th input[type=checkbox] {
        padding-top: 25px;
        padding-left: 14px;
+   }
+   .validation-report.report-table thead tr > th input[type=checkbox] {
+       padding-top: 13px;
+       padding-left: 0px;
    }
    .validation-report.report-table thead tr > th input[type=checkbox]:focus{
        outline: none;
    }
+   .project-page .validation-report.report-table thead tr > th input[type=checkbox]:checked:before {
+       left: 28px;
+   }
    .validation-report.report-table thead tr > th input[type=checkbox]:checked:before{
        position: absolute;
-       top: unset;
-       left: 28px;
-        margin-top: 2px;
-        margin-left: -1px;
+       top: unset;       
+       margin-top: 2px;
+       margin-left: -1px;
    }
    .validation-report.report-table thead tr > th input[type=checkbox].project:checked:before{      
       left: 49px;
