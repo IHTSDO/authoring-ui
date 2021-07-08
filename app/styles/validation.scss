@@ -26,6 +26,10 @@
    .validation-report .table-full-small thead tr > th:first-child {
        padding-left: 10px;
    }
+
+   .validation-report.report-table thead tr th:nth-of-type(2) {
+        min-width: 100px;
+    }
    .validation-report title {
        display: none
    }
