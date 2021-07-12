@@ -82,7 +82,7 @@ angular.module('singleConceptAuthoringApp.project', [
                       }
                     });
                   }                  
-                  if(criteria.creationDateLong && criteria.creationDateLong !== null){
+                  if(criteria && criteria.creationDateLong && criteria.creationDateLong !== null){
                       $scope.creationDate = criteria.creationDateLong;
                   }
                 });
@@ -94,16 +94,27 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // last rebased time
           if ($scope.project.branchBaseTimestamp) {
-            $scope.project.lastRebaseTime = new Date($scope.project.branchBaseTimestamp);
+            let date = new Date($scope.project.branchBaseTimestamp);
+            $scope.project.lastRebaseTime =  date.toUTCString();
           }
 
-          // last promotion time
-          terminologyServerService.getLastPromotionTime($scope.branch).then(function (promotionTime) {
+          // last promotion time to MAIN
+          terminologyServerService.getLastPromotionTimeToMain($scope.branch).then(function (promotionTime) {
             if (promotionTime) {
               let date = new Date(promotionTime);
-              $scope.project.lastPromotion = date.toUTCString();
+              $scope.project.lastPromotionTimeToMain = date.toUTCString();
             }
           });
+
+          // last TASK promotion time to project
+          terminologyServerService.getLastTaskPromotionTime($scope.branch).then(function (promotionTime) {
+            if (promotionTime) {
+              let date = new Date(promotionTime);
+              $scope.project.lastTaskPromotionTime = date.toUTCString();
+            }
+          });
+
+          
 
           terminologyServerService.getBranch(($scope.branch)).then(function(response) {            
             if (response.hasOwnProperty('userRoles')) {
