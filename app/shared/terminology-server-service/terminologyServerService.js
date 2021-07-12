@@ -1738,13 +1738,28 @@ angular.module('singleConceptAuthoringApp')
 
       // Get last promotion for branch
       // GET /traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
-      function getLastPromotionTime(branchRoot) {
+      function getLastPromotionTimeToMain(branchRoot) {
         if(!branchRoot) {
           console.error('Error retrieving last promotion time: Branh root is missing');
           return null;
         }
         var params = 'page=0&size=1&sort=commitDate%2Cdesc&sourceBranch=' + encodeURIComponent(branchRoot);
         return $http.get('/traceability-service/activities/promotions?' + params).then(function (response) {
+          return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
+        }, function (error) {
+          return null;
+        });
+      }
+
+      // Get last promotion for branch
+      // GET /traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
+      function getLastTaskPromotionTime(branchRoot) {
+        if(!branchRoot) {
+          console.error('Error retrieving last promotion time: Branh root is missing');
+          return null;
+        }
+        var params = 'page=0&size=1&sort=commitDate%2Cdesc&onBranch=' + encodeURIComponent(branchRoot);
+        return $http.get('/traceability-service/activities?' + params).then(function (response) {
           return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
         }, function (error) {
           return null;
@@ -2439,7 +2454,8 @@ angular.module('singleConceptAuthoringApp')
         getLastActivityOnBranches: getLastActivityOnBranches,
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
-        getLastPromotionTime: getLastPromotionTime,
+        getLastPromotionTimeToMain: getLastPromotionTimeToMain,
+        getLastTaskPromotionTime: getLastTaskPromotionTime,
         synchronousMerge: synchronousMerge,
 
         // Terminology Server Administrative Services

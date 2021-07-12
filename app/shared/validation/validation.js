@@ -543,7 +543,7 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
 
             // filter out from AAG whitelist
-              terminologyServerService.getLastPromotionTime(scope.branch).then(function (promotionTime) {
+              terminologyServerService.getLastPromotionTimeToMain(scope.branch).then(function (promotionTime) {
                   let date = '';
                 if (promotionTime) {
                   let date = new Date(promotionTime);

@@ -12,8 +12,11 @@
         <p class="lead p-l-15 m-b-5">
           {{project.projectLead.displayName}}
         </p>       
-        <div class="col-md-12 no-padding" ng-if="project.lastPromotion">
-          <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotion | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
+        <div class="col-md-12 no-padding" ng-if="project.lastPromotionTimeToMain">
+          <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotionTimeToMain | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
+        </div>
+        <div class="col-md-12 no-padding" ng-if="project.lastTaskPromotionTime">
+          <p class="p-l-15 m-b-0 promotion-box">Last task promotion date: {{project.lastTaskPromotionTime | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
         </div>
         <div class="col-md-12 no-padding" ng-if="project.lastRebaseTime">
           <p class="p-l-15 m-b-0 promotion-box">Last rebased date: {{project.lastRebaseTime | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
