@@ -237,8 +237,22 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       }
 
       $scope.startValidation = function () {
-        notificationService.sendMessage('Submitting task for validation...');
+        if ($scope.task.status === 'Promoted' || $scope.task.status === 'Completed') {
+          return;
+        }
 
+        checkPrerequisitesForValidation().then(function(message) {
+          if (message) {
+            modalService.confirm(message).then(function () {        
+              markTaskInProgressIfAnyAndValidate();
+            });
+          } else {
+            markTaskInProgressIfAnyAndValidate();
+          }
+        });
+      };
+
+      function markTaskInProgressIfAnyAndValidate() {
         if ($scope.task.status === 'New') {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             doValidate();
@@ -246,10 +260,34 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         } else {
           doValidate();
         }
-      };
+      }
+
+      function checkPrerequisitesForValidation() {
+        var deferred = $q.defer();
+        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          let msg = null;
+          if (response.latestClassificationJson) {
+            let latestClassificationJson = response.latestClassificationJson;
+            if ( response.branchHeadTimestamp > new Date(latestClassificationJson.completionDate).getTime()) {
+              msg = 'There are some new changes on this task. You should classify the task before submitting it for validation. Continue ?';
+            } else {
+              if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
+                && latestClassificationJson.status !== 'SAVED') {
+                msg = 'Classification has already been run. But the classification results have not been accepted. You should save the results. Continue ?'
+              }
+            } 
+          } else {
+            msg = 'Classification has never been run on this task. You should classify the task before submitting it for validation. Continue ?';
+          }
+
+          deferred.resolve(msg);         
+        });
+        return deferred.promise;
+      }
 
       function doValidate() {
         // NOTE: Validation does not lock task
+        notificationService.sendMessage('Submitting task for validation...');
 
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.$broadcast('reloadTask');
@@ -678,7 +716,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $scope.task = response;            
           });
         }
-      });      
+      });
+      
+      $scope.$on('triggerTaskValidation', function (event, data) {
+        if (data.task && data.task === $routeParams.taskKey && data.project === $routeParams.projectKey) {
+          $scope.startValidation();
+        }
+      });
 
       initialize();
     }

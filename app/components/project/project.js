@@ -21,8 +21,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval', 'permissionService',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval, permissionService) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -270,6 +270,40 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // validate the project
       $scope.validate = function () {
+        checkPrerequisitesForValidation().then(function(message) {
+          if (message) {
+            modalService.confirm(message).then(function () {        
+              doValidate();
+            });
+          } else {
+            doValidate();
+          }
+        });
+      };
+
+      function checkPrerequisitesForValidation() {
+        var deferred = $q.defer();
+        scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+          let msg = null;
+          if (response.latestClassificationJson) {
+            let latestClassificationJson = response.latestClassificationJson;
+            if ( response.branchHeadTimestamp > new Date(latestClassificationJson.completionDate).getTime()) {
+              msg = 'There are some new changes on this project. You should classify the project before submitting it for validation. Continue ?';
+            } else {
+              if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
+                && latestClassificationJson.status !== 'SAVED') {
+                  msg = 'Classification has already been run. But the classification results have not been accepted. You should save the results. Continue ?'
+              }
+            } 
+          } else {
+            msg = 'Classification has never been run on this project. You should classify the project before submitting it for validation. Continue ?';
+          }
+          deferred.resolve(msg);         
+        });
+        return deferred.promise;
+      }
+
+      function doValidate() {
         notificationService.sendMessage('Starting validation for project...');
         scaService.startValidationForProject($scope.project.key).then(function (response) {
           notificationService.sendMessage('Validation running');
@@ -281,7 +315,7 @@ angular.module('singleConceptAuthoringApp.project', [
         }, function (error) {
           notificationService.sendError('Error starting validation: ' + error);
         });
-      };
+      }
 
       // rebase the project -- simply route to merge/rebase view
       $scope.mergeAndRebase = function () {
