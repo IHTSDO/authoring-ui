@@ -35,6 +35,10 @@ angular.module('singleConceptAuthoringApp')
         return (currentTask.branchPath.indexOf('-US') !== -1) ? usCrsEndpoint : crsEndpoint;        
       }
 
+      function getApiEndPoint() {
+        return '../' + ((currentTask.branchPath.indexOf('-US') !== -1) ? 'us-ihtsdo-crs' : 'ihtsdo-crs') + '/api/request/';
+      }
+
       function getDescriptionForId(concept, id) {
         if (!id) {
           return null;
@@ -278,7 +282,7 @@ angular.module('singleConceptAuthoringApp')
 // Reject a CRS concept by Authoring user
       function rejectCrsConcept(issueKey, scaId, crsId) {        
         var deferred = $q.defer();        
-        var apiEndpoint = '../ihtsdo-crs/api/request/';
+        var apiEndpoint = getApiEndPoint();
 
         scaService.removeIssueLink(issueKey, scaId).then(function (response) {
           if (response == null || response.status !== 200) {
@@ -422,7 +426,7 @@ angular.module('singleConceptAuthoringApp')
         if (!list) {
           def.reject('No CRS id set');
         }
-        var apiEndpoint = '../ihtsdo-crs/api/request/';
+        var apiEndpoint = getApiEndPoint();
         var udpateCrsStatus = function(crsId) {
           var deferred = $q.defer(); 
           $http.put(apiEndpoint + crsId + '/status?status=CLARIFICATION_NEEDED', {"reason":"Pending Clarification by Authoring User"}).then(function () { 
@@ -449,7 +453,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return;
         }
-        var apiEndpoint = '../ihtsdo-crs/api/request/';
+        var apiEndpoint = getApiEndPoint();
         var list = [];
         angular.forEach(currentTaskConcepts, function(crsRequest) {
           if (list.indexOf(crsRequest.crsId) === -1) {
