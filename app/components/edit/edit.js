@@ -1745,32 +1745,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.validate = function () {
-      if ($scope.task.status === 'Promoted' || $scope.task.status === 'Completed') {
-        return;
-      }
-
-      notificationService.sendMessage('Submitting task for validation...');
-
-      if ($scope.task.status === 'New') {
-        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-          doValidate();
-        });
-      } else {
-        doValidate();
-      }
+      $scope.$broadcast('triggerTaskValidation', {project: $routeParams.projectKey, task: $routeParams.taskKey});
     };
 
-    function doValidate() {
-      // NOTE: Validation does not lock task
-
-      scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-        $rootScope.$broadcast('reloadTask');
-        notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
-      }, function () {
-        notificationService.sendMessage('Error submitting task for validation', 10000, null);
-        $rootScope.$broadcast('reloadTask');
-      });
-    }
+    
 
     //
     // Sidebar Review Functionality
