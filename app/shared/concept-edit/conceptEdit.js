@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp')
   };
 });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, terminologyServerService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService, componentHighlightUtil) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, terminologyServerService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService, componentHighlightUtil, browserService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -1197,6 +1197,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
                     scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+                    browserService.getConceptAcrossMultipleExtensions(scope.concept.conceptId).then(function(response) {
+                      if (response) {                        
+                        for (var i in response.items) {
+                          if (response.items[i].concept.fsn.term !== scope.concept.fsn) {
+                            notificationService.sendWarning('The requested SCTID and FSN do not match, based on the latest published extension content.');
+                            break;
+                          }
+                        }
+                      }
+                    });
                   }
 
                   // clear the saved modified state from the original concept id
