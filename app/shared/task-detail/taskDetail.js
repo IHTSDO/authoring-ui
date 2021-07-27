@@ -218,6 +218,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               }
             }, function () {
               notificationService.clear();
+              setTimeout(function(){
+                angular.element(document.activeElement).trigger('blur');
+              });
             });            
           }
         }, function (error) {
@@ -245,6 +248,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (message) {
             modalService.confirm(message).then(function () {        
               markTaskInProgressIfAnyAndValidate();
+            }, function() {
+              setTimeout(function(){
+                angular.element(document.activeElement).trigger('blur');
+              });
             });
           } else {
             markTaskInProgressIfAnyAndValidate();
@@ -269,15 +276,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (response.latestClassificationJson) {
             let latestClassificationJson = response.latestClassificationJson;
             if ( response.branchHeadTimestamp > new Date(latestClassificationJson.completionDate).getTime()) {
-              msg = 'There are some new changes on this task. You should classify the task before submitting it for validation. Continue ?';
+              msg = 'There are new changes on this task since the last classification. Do you still want to start a validation?';
             } else {
               if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
                 && latestClassificationJson.status !== 'SAVED') {
-                msg = 'Classification has already been run. But the classification results have not been accepted. You should save the results. Continue ?'
+                msg = 'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
             } 
           } else {
-            msg = 'Classification has never been run on this task. You should classify the task before submitting it for validation. Continue ?';
+            msg = 'Classification has not been run. Do you still want to start a validation?';
           }
 
           deferred.resolve(msg);         
