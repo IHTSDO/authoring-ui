@@ -288,15 +288,15 @@ angular.module('singleConceptAuthoringApp.project', [
           if (response.latestClassificationJson) {
             let latestClassificationJson = response.latestClassificationJson;
             if ( response.branchHeadTimestamp > new Date(latestClassificationJson.completionDate).getTime()) {
-              msg = 'There are some new changes on this project. You should classify the project before submitting it for validation. Continue ?';
+              msg = 'There are new changes on this project since the last classification. Do you still want to start a validation?';
             } else {
               if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
                 && latestClassificationJson.status !== 'SAVED') {
-                  msg = 'Classification has already been run. But the classification results have not been accepted. You should save the results. Continue ?'
+                  msg = 'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
             } 
           } else {
-            msg = 'Classification has never been run on this project. You should classify the project before submitting it for validation. Continue ?';
+            msg = 'Classification has not been run. Do you still want to start a validation?';
           }
           deferred.resolve(msg);         
         });
