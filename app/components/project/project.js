@@ -43,6 +43,8 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
+        
+      $scope.userRoles = [];
 
       var expandValidation = $location.search().expandValidation;
       var expandClassification = $location.search().expandClassification;      
@@ -118,6 +120,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           terminologyServerService.getBranch(($scope.branch)).then(function(response) {            
             if (response.hasOwnProperty('userRoles')) {
+              $scope.userRoles = response.userRoles;
               permissionService.setRolesForBranch($scope.branch, response.userRoles);
             } else {
               permissionService.setRolesForBranch($scope.branch, []);
