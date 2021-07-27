@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService','modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'permissionService', 'modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, permissionService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -17,6 +17,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.hasRequestPendingClarification = crsService.hasRequestPendingClarification;
       $scope.isTaskPromotionDisabled = metadataService.isTaskPromotionDisabled;
       $scope.sac = [];
+      $scope.userRoles = [];
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -465,6 +466,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'SCHEDULED' || $scope.task.latestClassificationJson.status === 'BUILDING');            
             $rootScope.branchLocked = $rootScope.classificationRunning;
           }
+          if (response.hasOwnProperty('userRoles')) {
+              permissionService.setRolesForBranch($scope.branch, response.userRoles);
+              $scope.userRoles = response.userRoles;
+            } else {
+              permissionService.setRolesForBranch($scope.branch, []);
+            }
         });
       };
 
