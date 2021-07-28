@@ -69,6 +69,16 @@ angular.module('singleConceptAuthoringApp.project', [
            $rootScope.$broadcast('gotoNotificationLink', {});
         }
       });
+        
+      $scope.sacSignedOff = function () {
+          let value = true;
+          angular.forEach($scope.sac, function (criteria) {                      
+              if (criteria.complete === false) {
+                value = false;                       
+              }
+            });
+          return value;
+      }
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) { 

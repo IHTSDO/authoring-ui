@@ -23,6 +23,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // root)
       $scope.taxonomyConcept = null;
         
+      $scope.sacSignedOff = function () {
+          let value = true;
+          angular.forEach($scope.sac, function (criteria) {                      
+              if (criteria.complete === false) {
+                value = false;                       
+              }
+            });
+          return value;
+      }
+        
       $scope.acceptManualSac = function (id) {
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
