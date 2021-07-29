@@ -140,23 +140,19 @@
   <!-- Exclusions table -->
   <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
     <div class="row">
-      <div class="col-md-10 p-10"> <strong>Exceptions</strong>: {{exclusionsTableParams.total()}} </div>
-      <div class="col-md-2 p-10">
-        <button class="btn btn-default blue back-button pull-right"
+      <div class="col-md-4 p-10"><strong>{{exceptionLoading ? 'Loading...' : (viewFullListException ? 'Exceptions since last release' : 'Exceptions since last project promotion')}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}} </div>
+      <div class="col-md-8 p-10">
+        <button class="btn btn-default blue back-button pull-right m-l-10"
                 ng-click="toggleViewExclusions()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exceptions </button>
-      </div>
-      <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
-        Create Task From Failures
-     </button></div>-->
+        <button class="btn btn-default blue back-button pull-right m-l-10"
+                ng-click="toggleViewFullListExceptions()" ng-disabled="exceptionLoading"> Show {{viewFullListException ? 'Project List' : 'Full List'}} </button>
+        <button class="btn btn-default blue back-button pull-right" ng-disabled="exclusionsTableParams.total() == 0"
+                ng-click="downloadExceptions()"> Download Exceptions </button>
+      </div>      
     </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
            class="table">
       <tr ng-repeat="failure in $data">
-
-        <!-- Removed due to space considerations -->
-        <!-- <td class="col-md-3" header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
-           {{failure.assertionText}}
-         </td>-->
         <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'"> {{failure.conceptId}} </td>
         <td class="col-md-3" header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
             ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>

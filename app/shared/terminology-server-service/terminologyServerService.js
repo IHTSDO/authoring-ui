@@ -1795,7 +1795,7 @@ angular.module('singleConceptAuthoringApp')
             url = 'snowowl/admin/codesystems/';
         }
         else{
-            url = apiEndpoint + '/codesystems/';
+            url = apiEndpoint + 'codesystems/';
         }
           
         return $http.get(url + codeSystemShortName + '/versions').then(function (response) {

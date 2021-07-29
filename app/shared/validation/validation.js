@@ -37,6 +37,8 @@ angular.module('singleConceptAuthoringApp')
           scope.isCollapsed = false;
           scope.autosaveEnabled = $routeParams.taskKey ? true : false;
           scope.allWhitelistItems = [];
+          scope.viewFullListException = false;
+          scope.exceptionLoading = false;
 
           // highlighting map
           scope.styles = {};
@@ -92,7 +94,6 @@ angular.module('singleConceptAuthoringApp')
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
 
-            console.log(status);
             if (status && status === 'Stale') {
               return status;
             }
@@ -477,6 +478,71 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.toggleViewFullListExceptions = function () {
+            scope.viewFullListException = !scope.viewFullListException;
+            scope.allWhitelistItems = [];
+            scope.exclusionsTableParams.reload();   
+            checkWhitelist().then(function() {
+              scope.exclusionsTableParams.reload();
+              setTimeout(function(){
+                angular.element(document.activeElement).trigger('blur');
+              });
+            });                     
+          };
+
+          var dlcDialog = (function (data, fileName) {
+            // create the hidden element
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+    
+            return function (data, fileName) {
+              var
+                blob = new Blob([data], {type: 'text/tab-separated-values'}),
+                url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = fileName;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+          }());
+
+          function convertToCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += '\t';
+                    line += array[i][index];
+                }
+                str += line + '\r\n';
+            }
+            return str;
+          }
+          
+          scope.downloadExceptions = function () {
+            var data = [];
+            data.push({
+              'conceptId': 'Concept',
+              'conceptFsn': 'FSN',
+              'componentId': 'Component ID',
+              'failureText': 'Error Message',
+              'creationDate': 'Date Added',
+              'user': 'User'
+            });
+            scope.allWhitelistItems.forEach(function(item) {
+              data.push({
+                'conceptId': item.conceptId,
+                'conceptFsn': item.conceptFsn,
+                'componentId': item.componentId,
+                'failureText': item.failureText ? item.failureText : '',
+                'creationDate': item.creationDate,
+                'user': item.userId
+              });
+            })                        
+            dlcDialog(convertToCSV(data), 'Exceptions_' + (new Date()).getTime());
+          };                    
+
           scope.reloadTables = function () {
             if (scope.viewTop) {
               scope.failedAssertionsTableParams.reload();
@@ -532,81 +598,88 @@ angular.module('singleConceptAuthoringApp')
             return whitelistItems
           }
 
-          function initFailures() {
-
+          function getWhitelistCreationDate() {
             var deferred = $q.defer();
-            var checkWhitelistDone = false;
-            var checkExcludedValidationRuleIdsDone = false;
-
-            // extract the failed assertions
-            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
-            scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
-
-            // filter out from AAG whitelist
-              terminologyServerService.getLastPromotionTimeToMain(scope.branch).then(function (promotionTime) {
-                  let date = '';
-                if (promotionTime) {
-                  let date = new Date(promotionTime);
-                  //$scope.project.lastPromotion = date.toUTCString();
+            if (scope.viewFullListException) {
+              terminologyServerService.getAllCodeSystemVersionsByShortName(metadataService.getBranchMetadata().codeSystem.shortName).then(function(response) {
+                if (response.data.items && response.data.items.length > 0) {
+                  deferred.resolve(response.data.items[response.data.items.length-1].version);
                 }
-                aagService.getWhitelistItemsByBranchAndDate(scope.branch, new Date(promotionTime).getTime()).then(function(whitelistItems) {
-                  if(whitelistItems !== undefined){
-                    let idList = [];
-                    angular.forEach(whitelistItems, function (item) {
-                        angular.forEach(scope.assertionsWarning, function (assertion) {
-                            if(item.validationRuleId === assertion.assertionUuid){
-                                item.failureText = assertion.assertionText;
-                            }
-                        });
-                        angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
-                            if(item.validationRuleId === assertion.assertionUuid){
-                                item.failureText = assertion.assertionText;
-                            }
-                        });
-                        idList.push(item.conceptId);
-                    });
-                    terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
-                      angular.forEach(concepts.items, function (concept) {
-                          angular.forEach(whitelistItems, function (failure) {
-                            if(failure.conceptId === concept.conceptId){
-                                failure.conceptFsn = concept.fsn.term;
-                            }
-                          });
+              });
+            } else {
+              terminologyServerService.getLastPromotionTimeToMain(scope.branch).then(function(promotionDate) {
+                deferred.resolve(promotionDate);
+              });
+            }            
+            return deferred.promise;
+          }
 
-                      });
-                      scope.allWhitelistItems = whitelistItems;
+          function checkWhitelist() {
+            var deferred = $q.defer();
+            scope.exceptionLoading = true;
+            // filter out from AAG whitelist
+            getWhitelistCreationDate().then(function (creationDate) {                
+              aagService.getWhitelistItemsByBranchAndDate(scope.branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
+                if(whitelistItems !== undefined){
+                  let idList = [];
+                  angular.forEach(whitelistItems, function (item) {
                       angular.forEach(scope.assertionsWarning, function (assertion) {
-                        if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
-                            assertion.isBranchModification = false;                  
-                            angular.forEach(assertion.firstNInstances, function (instance) {
-
-                              // store the unmodified text to preserve original data
-                              instance.detailUnmodified = instance.detail;
-
-                              // detect if instance references user modified concepts
-                              if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                                instance.isBranchModification = true;
-                                assertion.isBranchModification = true;
-                              }
-
-                              instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-
-                                return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
-                              }).length !== 0;
-                            });
-                        }
+                          if(item.validationRuleId === assertion.assertionUuid){
+                              item.failureText = assertion.assertionText;
+                          }
                       });
-                      checkWhitelistDone = true;
-                      if (checkExcludedValidationRuleIdsDone) {
-                        // load the tables
-                        scope.reloadTables();
-                        deferred.resolve();
+                      angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                          if(item.validationRuleId === assertion.assertionUuid){
+                              item.failureText = assertion.assertionText;
+                          }
+                      });
+                      idList.push(item.conceptId);
+                  });
+
+                  terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
+                    angular.forEach(concepts.items, function (concept) {
+                        angular.forEach(whitelistItems, function (failure) {
+                          if(failure.conceptId === concept.conceptId){
+                              failure.conceptFsn = concept.fsn.term;
+                          }
+                        });
+                    });
+                    scope.allWhitelistItems = whitelistItems;
+                    angular.forEach(scope.assertionsWarning, function (assertion) {
+                      if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
+                          assertion.isBranchModification = false;                  
+                          angular.forEach(assertion.firstNInstances, function (instance) {
+
+                            // store the unmodified text to preserve original data
+                            instance.detailUnmodified = instance.detail;
+
+                            // detect if instance references user modified concepts
+                            if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                              instance.isBranchModification = true;
+                              assertion.isBranchModification = true;
+                            }
+
+                            instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
+                              return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
+                            }).length !== 0;
+                          });
                       }
                     });
-                  }
-                });
+                    scope.exceptionLoading = false;
+                    deferred.resolve();                    
+                  });
+                }
+              }, function() {
+                scope.exceptionLoading = false;
               });
+            }, function() {
+              scope.exceptionLoading = false;
+            });
+            return deferred.promise;
+          };
 
+          function checkExcludedValidationRuleIds() {
+            var deferred = $q.defer();
             // filter out technical errors
             configService.getExcludedValidationRuleIds().then(function (response) {
               scope.assertionsExcluded = response;
@@ -636,16 +709,25 @@ angular.module('singleConceptAuthoringApp')
                     });
                 }
               });
-
-              checkExcludedValidationRuleIdsDone = true;
-              if (checkWhitelistDone) {
-                // load the tables
-                scope.reloadTables();
-                deferred.resolve();
-              }
-            }, function() {
-              scope.reloadTables();
+              deferred.resolve();              
+            }, function() {              
               notificationService.sendWarning('Error retrieving validation configuration; whitelist and excluded rules are shown');
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }
+
+          function initFailures() {
+
+            var deferred = $q.defer();         
+
+            // extract the failed assertions
+            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
+            scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
+            
+            $q.all([checkWhitelist(), checkExcludedValidationRuleIds()]).then(function() {
+              scope.reloadTables();
+              deferred.resolve();
             });
 
             return deferred.promise;
