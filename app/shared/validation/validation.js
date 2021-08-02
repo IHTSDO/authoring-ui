@@ -601,7 +601,13 @@ angular.module('singleConceptAuthoringApp')
           function getWhitelistCreationDate() {
             var deferred = $q.defer();
             if (scope.viewFullListException) {
-              terminologyServerService.getAllCodeSystemVersionsByShortName(metadataService.getBranchMetadata().codeSystem.shortName).then(function(response) {
+              let projectShortname;
+              if (scope.task) {
+                projectShortname = metadataService.getProjectForKey(scope.task.projectKey).codeSystem.shortName;
+              } else {
+                projectShortname = metadataService.getBranchMetadata().codeSystem.shortName;
+              }
+              terminologyServerService.getAllCodeSystemVersionsByShortName(projectShortname).then(function(response) {
                 if (response.data.items && response.data.items.length > 0) {
                   deferred.resolve(response.data.items[response.data.items.length-1].version);
                 }
@@ -658,10 +664,6 @@ angular.module('singleConceptAuthoringApp')
                               instance.isBranchModification = true;
                               assertion.isBranchModification = true;
                             }
-
-                            instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-                              return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
-                            }).length !== 0;
                           });
                       }
                     });
