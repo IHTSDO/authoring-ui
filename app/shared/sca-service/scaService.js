@@ -542,17 +542,14 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function stompConnect() { 
-          let sockJsProtocols = ["websocket"]
-          if(!document.webkitHidden)
-            {
-                if (stompClient && stompClient !== null) {
-                    stompClient.disconnect();
-                    stompClient = null;
-                }
-                var socketProvider =  new SockJS(apiEndpoint + 'authoring-services-websocket', null, {transports: sockJsProtocols});
-                stompClient = Stomp.over(socketProvider);
-                stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
-            }
+        let sockJsProtocols = ["websocket"]
+        if (stompClient && stompClient !== null) {
+            stompClient.disconnect();
+            stompClient = null;
+        }
+        var socketProvider =  new SockJS(apiEndpoint + 'authoring-services-websocket', null, {transports: sockJsProtocols});
+        stompClient = Stomp.over(socketProvider);
+        stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
       }
       
       return {
