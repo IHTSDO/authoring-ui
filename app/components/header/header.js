@@ -193,6 +193,10 @@ angular.module('singleConceptAuthoringApp')
         scope.gotoMyProjects = function() {
           $location.url('my-projects');
         };
+          
+        scope.gotoTemplates = function() {
+          window.open('/template-management/', '_blank');
+        };
 
         scope.gotoAllProjects = function() {
 

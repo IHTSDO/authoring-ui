@@ -280,7 +280,8 @@ angular.module('singleConceptAuthoringApp')
 
       var stompClient;
 
-      var stompFailureCallback = function () {    
+      var stompFailureCallback = function () { 
+          stompClient.disconnect();
           setTimeout(function() {            
             stompConnect();
           }, 5000);
@@ -540,10 +541,15 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
-      function stompConnect() {          
-          var socketProvider =  new SockJS(apiEndpoint + 'authoring-services-websocket');
-          stompClient = Stomp.over(socketProvider);
-          stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
+      function stompConnect() { 
+        let sockJsProtocols = ["websocket"]
+        if (stompClient && stompClient !== null) {
+            stompClient.disconnect();
+            stompClient = null;
+        }
+        var socketProvider =  new SockJS(apiEndpoint + 'authoring-services-websocket', null, {transports: sockJsProtocols});
+        stompClient = Stomp.over(socketProvider);
+        stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
       }
       
       return {
