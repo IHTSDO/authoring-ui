@@ -1333,9 +1333,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
       // status
       if (!branchState) {
-        branchState = $scope.task.status === 'New' ? 'UP_TO_DATE' : $scope.task.status;
+        branchState = $scope.task.status === 'New' ? 'UP_TO_DATE' : $scope.task.branchState;
       }
-
+        
       switch (branchState) {
         case 'FORWARD':
           $scope.canPromote = $scope.isOwnTask;
