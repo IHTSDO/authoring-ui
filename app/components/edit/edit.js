@@ -1571,6 +1571,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendWarning('Task initializing');
           terminologyServerService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             notificationService.sendWarning('Task initialization complete', 3000);
+            $scope.task.branchState = 'UP_TO_DATE';
             $rootScope.$broadcast('reloadTaxonomy');
             $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
             if (response.hasOwnProperty('userRoles')) {
