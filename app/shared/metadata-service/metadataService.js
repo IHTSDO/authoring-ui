@@ -773,6 +773,20 @@ angular.module('singleConceptAuthoringApp')
     function isTaskPromotionDisabled() {
       return taskPromotionDisabled;
     }
+      
+    function isComplex() {
+      let complex = false;
+      if(branchMetadata.metadata && branchMetadata.metadata.authorFlags && branchMetadata.metadata.authorFlags != null){
+          for (var key in branchMetadata.metadata.authorFlags) {
+              console.log(key);
+              if(key === 'complex'){
+                  complex = branchMetadata.metadata.authorFlags[key];
+                  console.log(branchMetadata.metadata.authorFlags[key]);
+              }
+          }
+        }
+      return complex;
+    }
 
     function setNamespaces(list) {
       namespaces = list;
@@ -906,6 +920,7 @@ angular.module('singleConceptAuthoringApp')
       isTemplatesEnabled: isTemplatesEnabled,
       isSpellcheckDisabled: isSpellcheckDisabled,
       isTaskPromotionDisabled: isTaskPromotionDisabled,
+      isComplex: isComplex,
 
       // extension module-dependent retrieval functions
 
