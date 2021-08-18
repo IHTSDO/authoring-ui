@@ -18,6 +18,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.isTaskPromotionDisabled = metadataService.isTaskPromotionDisabled;
       $scope.sac = [];
       $scope.userRoles = [];
+      $scope.complex = metadataService.isComplex();
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -31,6 +32,23 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               }
             });
           return value;
+      }
+      
+      $scope.markBranchAsComplex = function () {
+          terminologyServerService.markBranchAsComplex($scope.branch, !$scope.complex).then(function (response) {
+              metadataService.setBranchMetadata(response);
+              $scope.complex = metadataService.isComplex();
+              aagService.getBranchSAC($scope.branch).then(function (sac) {
+                  $scope.sac = [];
+                  if (sac && sac.criteriaItems) {
+                    angular.forEach(sac.criteriaItems, function (criteria) {
+                      if (criteria.authoringLevel === "TASK") {
+                        $scope.sac.push(criteria);                  
+                      }
+                    }); 
+                  }                
+                });
+            });
       }
         
       $scope.acceptManualSac = function (id) {

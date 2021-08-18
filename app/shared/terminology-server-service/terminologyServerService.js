@@ -2378,6 +2378,19 @@ angular.module('singleConceptAuthoringApp')
         findingConcept(inactiveConceptId, branch, defer);
         return defer.promise;
       }
+        
+      // Mark branch as complex
+      // POST /branches/{branchPath}/actions/set-author-flag
+      function markBranchAsComplex(branch, value) {
+        let body = {
+          "name": "complex",
+          "value": value
+        };
+        return $http.post(apiEndpoint + 'branches/' + branch + '/actions/set-author-flag', body).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+      }
 
       ////////////////////////////////////////////
       // Method Visibility
@@ -2457,6 +2470,7 @@ angular.module('singleConceptAuthoringApp')
         getLastPromotionTimeToMain: getLastPromotionTimeToMain,
         getLastTaskPromotionTime: getLastTaskPromotionTime,
         synchronousMerge: synchronousMerge,
+        markBranchAsComplex: markBranchAsComplex,
 
         // Terminology Server Administrative Services
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
