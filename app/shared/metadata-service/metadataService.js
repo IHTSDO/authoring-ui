@@ -785,7 +785,12 @@ angular.module('singleConceptAuthoringApp')
               }
           }
         }
-      return complex;
+      if(complex === 'true'){
+          return true
+      }
+      else{
+          return false
+      }
     }
 
     function setNamespaces(list) {
