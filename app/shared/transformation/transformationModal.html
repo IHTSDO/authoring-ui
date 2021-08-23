@@ -53,7 +53,12 @@
           </select>
         </div>
 
-        <div class="col-md-6 p-t-40">         
+        <div class="col-md-12 p-t-20">
+          <label class="no-margin">Enable Drools Validation</label>            
+          <input class="checkbox-inline" type="checkbox" style="margin-top: 0px; width: 15px; min-height: 0px; margin-left: 5px" ng-model="enableDrools">
+        </div>        
+
+        <div class="col-md-6 p-t-20">         
           <label class="btn btn-default btn-file btn-primary button-link sca-light-text" id="translation-batch-file-label">
             {{selectedFile ==  null? 'Select Batch File' : 'File Selected: ' + selectedFile.name}}
             <input type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this)" class="invisible">

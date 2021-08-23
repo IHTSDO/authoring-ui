@@ -1366,7 +1366,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function createTransformationJob(branchPath, recipe, batchSize, projectKey, taskTitle, file, assignee, reviewer) {
+    function createTransformationJob(branchPath, recipe, batchSize, projectKey, taskTitle, file, assignee, reviewer, skipDroolsValidation) {
       var deferred = $q.defer();
       var params = {};
 
@@ -1389,6 +1389,8 @@ angular.module('singleConceptAuthoringApp')
       if (reviewer) {
         params.taskReviewer = reviewer;
       }
+
+      params.skipDroolsValidation = skipDroolsValidation;
 
       $http.post(apiEndpoint + branchPath + '/recipes/' + recipe + '/jobs', file, {
         withCredentials: true,
