@@ -344,7 +344,9 @@ angular.module('singleConceptAuthoringApp')
                       // apply the reference
                       failure.referencedComponentId = matchInfo[1];
                       failure.referencedComponentType = 'Description';
-                      failure.detail = failure.detail.replace(matchInfo[0], '\"' + description.term + '\"');
+                      if (description && description.term) {
+                        failure.detail = failure.detail.replace(matchInfo[0], '\"' + description.term + '\"');
+                      }                      
 
                       if (++failuresPrepared === scope.failures.length) {
                         deferred.resolve();

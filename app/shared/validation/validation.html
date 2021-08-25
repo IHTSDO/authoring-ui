@@ -108,7 +108,7 @@
                     ng-click="setViewTop()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report </button>
           </div>
         </div>
-        <div class="ng-table-no-results" ng-if="!viewTop && failureTableParams.total() === 0 && "> No validation results to display </div>
+        <div class="ng-table-no-results" ng-if="!viewTop && failureTableParams.total() === 0"> No validation results to display </div>
         <table ng-show="failureTableParams.total() > 0"
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table">
