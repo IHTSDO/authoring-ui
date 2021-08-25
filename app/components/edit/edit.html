@@ -93,7 +93,7 @@
               ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'SCHEDULED')">
               Validation Running
             </li>
-            <li ng-if="task.latestValidationStatus === 'COMPLETED'" ng-click="viewValidationFromSidebar()">
+            <li ng-if="task.latestValidationStatus === 'COMPLETED' || task.latestValidationStatus === 'STALE'" ng-click="viewValidationFromSidebar()">
               View Validation Report
             </li>
             <li
