@@ -1536,6 +1536,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.$on('conceptEdit.conceptChange', function (event, data) {
       loadTask();
+      $scope.getLatestValidation();
     });
 
     $scope.$on('swapToTaxonomy', function (event, data) {
