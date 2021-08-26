@@ -100,7 +100,7 @@
               ng-if="role === 'AUTHOR' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"
               ng-click="validate()"
               ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.status === 'Completed' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
-              Start New Validation
+              Start New Validation {{enableMRCMValidation ? 'With' : 'Without'}} MRCM
             </li>
           </ul>
         </li>

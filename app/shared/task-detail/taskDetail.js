@@ -325,7 +325,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // NOTE: Validation does not lock task
         notificationService.sendMessage('Submitting task for validation...');
 
-        scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.enableMRCMValidation).then(function (response) {
           $rootScope.$broadcast('reloadTask');
           notificationService.sendMessage('Task successfully submitted for validation', 3000, null);
         }, function (error) {
@@ -690,6 +690,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
             $scope.isCrsTask = true;
             $scope.crsConcepts = crsService.getCrsConcepts();
+          }
+        });
+
+        // Check MRCM validation for task
+        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'task-mrcm-validation').then(function (response) {
+          if (response !== null) {
+            $scope.enableMRCMValidation = response.enableMRCMValidation;
           }
         });
       }

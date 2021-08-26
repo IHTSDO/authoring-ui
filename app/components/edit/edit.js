@@ -1473,7 +1473,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       var deferred = $q.defer();
 
       // get the task if appropriate
-      if ($routeParams.taskKey) {
+      if ($routeParams.taskKey) {        
+        // Check MRCM validation for task
+        scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'task-mrcm-validation').then(function (response) {
+          if (response !== null) {
+            $scope.enableMRCMValidation = response.enableMRCMValidation;
+          }
+        });
+
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
           if (!response) {
