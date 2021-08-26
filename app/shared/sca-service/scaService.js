@@ -1136,7 +1136,7 @@ angular.module('singleConceptAuthoringApp')
 
 // Initiate validation for a task
 // POST /projects/{projectKey}/tasks/{taskKey}/validation
-        startValidationForTask: function (projectKey, taskKey) {
+        startValidationForTask: function (projectKey, taskKey, enableMRCMValidation) {
           if (!projectKey) {
             console.error('Must specify projectKey to initiate validation');
             return {};
@@ -1145,9 +1145,13 @@ angular.module('singleConceptAuthoringApp')
             console.error('Must specify taskKey to initiate validation');
             return {};
           }
+          var param = '';
+          if (typeof(enableMRCMValidation) !== 'undefined') {
+            param += '?enableMRCMValidation=' + enableMRCMValidation;
+          }
 
           // POST call takes no data
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/validation', {}).then(
+          return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/validation' + param, {}).then(
             function (response) {
               return response;
             }, function (error) {

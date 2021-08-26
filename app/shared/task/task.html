@@ -59,6 +59,10 @@
             </select>
           </div>
           
+          <div ng-if="task.key" class="col-md-12 p-t-10 p-l-0 p-b-20">
+            <label class="no-margin">Enable MRCM Validation</label>            
+            <input ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" class="checkbox-inline" type="checkbox" style="margin-top: 0px; width: 15px; min-height: 0px; margin-left: 5px" ng-model="mrcmValidation.enable">
+          </div> 
           <br>
           <label for="textArea">Task Details</label>
           <p compile-html="task.description" ng-show="task.status === 'Promoted' || task.status === 'Completed'"></p>

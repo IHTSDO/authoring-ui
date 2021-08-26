@@ -9,6 +9,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.canDelete = canDelete;
     $scope.preferences = {};
     $scope.newAssignee = task && task.assignee ? task.assignee : null; 
+    $scope.mrcmValidation = {enable: false};
 
     // if no task passed in, create empty object
     if (!$scope.task) {
@@ -30,7 +31,14 @@ angular.module('singleConceptAuthoringApp')
           $scope.task.projectKey = $scope.preferences.lastProjectKey;
         }
       });
-      
+
+      if ($scope.task.key) {
+        scaService.getUiStateForTask($scope.task.projectKey, $scope.task.key, 'task-mrcm-validation').then(function (response) {
+          if (response !== null) {
+            $scope.mrcmValidation.enable = response.enableMRCMValidation;
+          }
+        });
+      }      
     }
 
     // TODO Consider relaxing jshint to allow functions to be called pre
@@ -40,9 +48,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.close = function () {
       $modalInstance.close();
     };
+
     initialize();
-
-
 
     // Creates a task from modal form
     $scope.createTask = function (openTask) {
@@ -167,13 +174,14 @@ angular.module('singleConceptAuthoringApp')
       $scope.msgError = null;
       $scope.msgSuccess = 'Updating task...';
       $scope.disabled = true;
+      scaService.saveUiStateForTask($scope.task.projectKey, $scope.task.key, 'task-mrcm-validation', {enableMRCMValidation: $scope.mrcmValidation.enable});
       scaService.updateTask($scope.task.projectKey, $scope.task.key, taskUpdate).then(function (response) {
         $modalInstance.close(response);
       }, function (error) {
         $scope.disabled = false;
         $scope.msgSuccess = '';
         $scope.msgError = 'Error occurred when trying to update task: ' + error;
-      });
+      });      
     }
     
     function isTaskAuthorOrReviewer(username) {      

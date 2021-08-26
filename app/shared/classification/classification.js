@@ -524,12 +524,7 @@ angular.module('singleConceptAuthoringApp')
 
             // check if this is a task or project
             if ($routeParams.taskKey) {
-              notificationService.sendMessage('Submitting task for validation...');
-              scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (validation) {
-                notificationService.sendMessage('Task successfully submitted for validation');
-              }, function () {
-                notificationService.sendMessage('Error submitting task for validation');
-              });
+              $scope.$broadcast('triggerTaskValidation', {project: $routeParams.projectKey, task: $routeParams.taskKey});             
             } else {
               notificationService.sendMessage('Submitting project for validation...');
 
