@@ -1276,16 +1276,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return;
             }
 
-            // broadcast event to any listeners (currently task detail, crs concept list,
-            // conflict/feedback resolved lists)
-            $rootScope.$broadcast('conceptEdit.saveConcept', {
-              branch: scope.branch,
-              conceptId: scope.concept.conceptId,
-              previousConceptId: originalConceptId,
-              concept: scope.concept,
-              validation: scope.validation
-            });
-
             // display error msg if concept not valid but no other
             // errors/warnings specified
             var errors = scope.isConceptValid(scope.concept);
