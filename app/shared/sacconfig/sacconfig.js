@@ -59,6 +59,7 @@ angular.module('singleConceptAuthoringApp')
             });
         }
         else{
+            delete sac.projectIteration;
             aagService.updateBranchSAC($scope.branch, sac).then(function (response) {
                 $modalInstance.close();
             });
