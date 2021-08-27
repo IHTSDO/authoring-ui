@@ -471,10 +471,6 @@ angular.module('singleConceptAuthoringApp')
         }).length > 0;
     }
 
-    function hasLanguageSpecified(){
-
-    }
-
     function isUsDialect(dialectId) {
       return dialectId === '900000000000509007';
     }
