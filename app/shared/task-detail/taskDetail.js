@@ -487,7 +487,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (response.metadata && response.metadata.lock) {            
             $rootScope.branchLocked = true;
             $timeout(function () {
-              $scope.checkForLock();
+              // Stop checking for lock if the task key not found
+              if ($routeParams.taskKey && $scope.branch.endsWith($routeParams.taskKey)) {
+                $scope.checkForLock();
+              }              
             }, 10000);
            }
           else {            

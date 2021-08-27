@@ -141,9 +141,11 @@
         <button class="btn btn-default blue back-button pull-right m-l-10"
                 ng-click="toggleViewExclusions()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exceptions </button>
         <button class="btn btn-default blue back-button pull-right m-l-10"
-                ng-click="toggleViewFullListExceptions()" ng-disabled="exceptionLoading"> Show {{viewFullListException ? 'Project List' : 'Full List'}} </button>
-        <button class="btn btn-default blue back-button pull-right" ng-disabled="exclusionsTableParams.total() == 0"
-                ng-click="downloadExceptions()"> Download Exceptions </button>
+                ng-click="toggleViewFullListExceptions()" ng-disabled="exceptionLoading"> Show {{viewFullListException ? 'Project List' : 'Full List'}} </button>        
+        <button
+          ng-if="exclusionsTableParams.total() != 0"
+          class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case pull-right" style="background-color: #2196F3; margin-top: 9px;"
+          ng-click="downloadExceptions()"> <span> Download Exceptions </span> </button>
       </div>      
     </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
