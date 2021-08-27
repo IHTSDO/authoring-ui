@@ -1598,6 +1598,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           });
         } else {
           $scope.branch = response.path;
+          if (response.metadata) {
+            var branchMetadata = metadataService.getBranchMetadata();
+            branchMetadata.metadata = response.metadata;
+            metadataService.setBranchMetadata(branchMetadata);
+          }
           if (response.hasOwnProperty('userRoles')) {
             permissionService.setRolesForBranch($scope.branch, response.userRoles);
           } else {

@@ -36,7 +36,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       
       $scope.markBranchAsComplex = function () {
           terminologyServerService.markBranchAsComplex($scope.branch, !$scope.complex).then(function (response) {
-              metadataService.setBranchMetadata(response);
+              var branchMetadata = metadataService.getBranchMetadata();
+              if (!response.metadata) {
+                delete branchMetadata.metadata;
+              } else {
+                branchMetadata.metadata = response.metadata;
+              }
+              metadataService.setBranchMetadata(branchMetadata);
               $scope.complex = metadataService.isComplex();
               aagService.getBranchSAC($scope.branch).then(function (sac) {
                   $scope.sac = [];
