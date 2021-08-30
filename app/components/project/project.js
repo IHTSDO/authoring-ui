@@ -82,7 +82,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) { 
-          aagService.getBranchSAC(response.branchPath).then(function (sac) {
+          aagService.getBranchSAC(response.branchPath, false).then(function (sac) {
               aagService.getBranchCriteria(response.branchPath).then(function (criteria) {
                   $scope.sac = [];
                   $scope.fullSac = [];
@@ -170,7 +170,7 @@ angular.module('singleConceptAuthoringApp.project', [
       // reload SAC
       $scope.$on('reloadSAC', function (event, data) {
         if (!data.task && data.project === $routeParams.projectKey) {
-          aagService.getBranchSAC($scope.branch).then(function (sac) {
+          aagService.getBranchSAC($scope.branch, false).then(function (sac) {
             $scope.sac = [];
             $scope.fullSac = [];
             if (sac && sac.criteriaItems) {
@@ -207,7 +207,7 @@ angular.module('singleConceptAuthoringApp.project', [
         
       $scope.acceptManualSac = function (id) {
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
-              aagService.getBranchSAC($scope.branch).then(function (sac) {
+              aagService.getBranchSAC($scope.branch, false).then(function (sac) {
                   $scope.sac = [];
                   if (sac && sac.criteriaItems) {
                     angular.forEach(sac.criteriaItems, function (criteria) {
@@ -222,7 +222,7 @@ angular.module('singleConceptAuthoringApp.project', [
         
       $scope.unacceptManualSac = function (id) {
           aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
-              aagService.getBranchSAC($scope.branch).then(function (sac) {
+              aagService.getBranchSAC($scope.branch, false).then(function (sac) {
                   $scope.sac = [];
                   if (sac && sac.criteriaItems) {
                     angular.forEach(sac.criteriaItems, function (criteria) {
@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp.project', [
           });
 
           modalInstance.result.then(function () {
-              aagService.getBranchSAC($scope.branch).then(function (sac) {
+              aagService.getBranchSAC($scope.branch, false).then(function (sac) {
                   $scope.sac = [];
                   $scope.fullSac = [];
                   if (sac && sac.criteriaItems) {

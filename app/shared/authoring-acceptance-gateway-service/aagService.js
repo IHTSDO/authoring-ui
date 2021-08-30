@@ -66,8 +66,8 @@ angular.module('singleConceptAuthoringApp')
     
     // Retrieve SAC items for a branch
       // GET /acceptance/{branch}
-      function getBranchSAC(branch) {
-        return $http.get(apiEndpoint + 'acceptance/' + branch).then(function (response) {
+      function getBranchSAC(branch, matchAuthorFlags) {
+        return $http.get(apiEndpoint + 'acceptance/' + branch + '?matchAuthorFlags=' + (typeof matchAuthorFlags !== 'undefined' ? matchAuthorFlags : true)).then(function (response) {
           return response.data;
         }, function (error) {
         });
