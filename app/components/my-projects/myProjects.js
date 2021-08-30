@@ -82,7 +82,10 @@ angular.module('singleConceptAuthoringApp.myProjects', [
             
             if($scope.selectedType.type !== 'All'){
                mydata = $scope.projects.filter(function (item) {
-                if(item.codeSystem){
+                if ($scope.selectedType.type === 'International') {
+                  return !item.codeSystem.maintainerType
+                }
+                else if(item.codeSystem){
                     console.log(item.codeSystem.maintainerType === $scope.selectedType.type);
                     return item.codeSystem.maintainerType === $scope.selectedType.type
                 }
@@ -141,20 +144,27 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       }
       else {
         // add top-level element for ng-table sorting
+        var anyInternationalProjectPresent = false;
         angular.forEach($scope.projects, function(project) {
           project.lead = project.projectLead.displayName;
+          if (!project.codeSystem.maintainerType) {
+            anyInternationalProjectPresent = true;
+          }
           if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
              $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
         });
-          accountService.getUserPreferences().then(function (preferences) {
-            $scope.preferences = preferences;
+        if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
+          $scope.typeDropdown.splice(1, 0, 'International');
+        }
+        accountService.getUserPreferences().then(function (preferences) {
+          $scope.preferences = preferences;
 
-            if(preferences.hasOwnProperty("selectedType")) {
-              $scope.selectedType.type = $scope.preferences.selectedType;
-            }
-            $scope.tableParams.reload();
-          });
+          if(preferences.hasOwnProperty("selectedType")) {
+            $scope.selectedType.type = $scope.preferences.selectedType;
+          }
+          $scope.tableParams.reload();
+        });
       }
 
     }, true);

@@ -92,7 +92,10 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                 
               if($scope.selectedType.type !== 'All'){
                    mydata = $scope.reviewTasks.filter(function (item) {
-                    if(item.codeSystem){
+                    if ($scope.selectedType.type === 'International') {
+                      return !item.codeSystem.maintainerType
+                    }
+                    else if(item.codeSystem){
                         return item.codeSystem.maintainerType === $scope.selectedType.type
                     }
                     else return -1
@@ -489,11 +492,18 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
         // get all projects for task creation
         $scope.projects = metadataService.getProjects();
+        var anyInternationalProjectPresent = false;
         angular.forEach($scope.projects, function(project) {
+          if (!project.codeSystem.maintainerType) {
+            anyInternationalProjectPresent = true;
+          }
           if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
               $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
         });
+        if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
+          $scope.typeDropdown.splice(1, 0, 'International');
+        }
         accountService.getUserPreferences().then(function (preferences) {
           $scope.preferences = preferences;
 

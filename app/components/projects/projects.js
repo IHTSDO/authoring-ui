@@ -82,7 +82,10 @@ angular.module('singleConceptAuthoringApp.projects', [
             var mydata = [];
             if($scope.selectedType.type !== 'All'){
                mydata = $scope.projects.filter(function (item) {
-                if(item.codeSystem){
+                if ($scope.selectedType.type === 'International') {
+                  return !item.codeSystem.maintainerType
+                }
+                else if(item.codeSystem){
                     console.log(item.codeSystem.maintainerType === $scope.selectedType.type);
                     return item.codeSystem.maintainerType === $scope.selectedType.type
                 }
@@ -200,13 +203,19 @@ angular.module('singleConceptAuthoringApp.projects', [
         }
 
         $scope.projects = response;
-
+        var anyInternationalProjectPresent = false;
         angular.forEach($scope.projects, function(project) {
           project.lead = project.projectLead.displayName;
+          if (!project.codeSystem.maintainerType) {
+            anyInternationalProjectPresent = true;
+          }
           if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
               $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
         });
+        if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
+          $scope.typeDropdown.splice(1, 0, 'International');
+        }
         accountService.getUserPreferences().then(function (preferences) {
             $scope.preferences = preferences;
 
