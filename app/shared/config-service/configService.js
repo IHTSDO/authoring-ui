@@ -12,19 +12,13 @@ angular.module('singleConceptAuthoringApp')
       if (!properties) {
         $http.get(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'ui-configuration').then(function (response) {
           properties = response.data;
-          $http.get('/validationConfig/validationConfig.json').then(function (validationResponse) {
-              validationProperties = validationResponse.data;
-              $http.get('/config/versions.json').then(function (confResponse) {
-                  versions = confResponse.data;
-                  deferred.resolve(properties, validationProperties);
-                }, function(error) {
-                  console.log(error);
-                  deferred.resolve(properties, validationProperties);
-                });
-            }, function() {
-              deferred.reject('Failed to retrieve validation configuration properties');
+            $http.get('/config/versions.json').then(function (confResponse) {
+              versions = confResponse.data;
+              deferred.resolve(properties, validationProperties);
+            }, function(error) {
+              console.log(error);
+              deferred.resolve(properties, validationProperties);
             });
-
         }, function() {
           deferred.reject('Failed to retrieve configuration properties');
         });
