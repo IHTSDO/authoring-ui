@@ -203,7 +203,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // cycle over each failed assertion to get count / display status
                 angular.forEach(scope.assertionsWarning, function (assertionWarning) {
-                  if(assertionWarning.failureCount > 0 && assertionWarning.testType === 'DROOL_RULES'){
+                  if(assertionWarning.failureCount > 0){
                       var filteredInstances = assertionWarning.firstNInstances.filter(function (instance) {
                         // if viewing task report and instance is not user modified or validation failure is excluded, return false
                         if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
@@ -995,7 +995,7 @@ angular.module('singleConceptAuthoringApp')
                   break;        
               }        
             } else if (UUID_PATTERN.test(componentId)) {
-              terminologyServerService.getMemberProperties(componentId, branch).then(function(member) {
+              terminologyServerService.getMemberProperties(componentId, branch + '/').then(function(member) {
                 var result = getStatusCode(member.active) + ',' + member.moduleId + ',' + member.refsetId + ',' + member.referencedComponentId;
                 for (var key in Object.keys(member.additionalFields)) {                 
                   result += (',' + member.additionalFields[key]);
