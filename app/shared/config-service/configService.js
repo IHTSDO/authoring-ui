@@ -47,27 +47,6 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject(error);
         });
         return deferred.promise;
-      },
-
-      getExcludedValidationRuleIds : function() {
-        var deferred = $q.defer();
-        getConfigProperties().then(function() {
-          deferred.resolve(validationProperties.excludedRuleIds);
-        }, function(error) {
-           deferred.reject(error);
-
-        });
-        return deferred.promise;
-      },
-
-      getWhiteListEligibleRuleIds : function() {
-        var deferred = $q.defer();
-        getConfigProperties().then(function() {
-         deferred.resolve(validationProperties.whitelistEligibleIds);
-        }, function(error) {
-          deferred.reject(error);
-        });
-        return deferred.promise;
       }
     };
   }]);
