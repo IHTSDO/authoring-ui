@@ -256,7 +256,7 @@ angular.module('singleConceptAuthoringApp')
       if (conceptIds.length > 0) {
 
         // bulk call for concept ids
-        terminologyServerService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (concepts) {
+        terminologyServerService.bulkGetConceptUsingPOST(conceptIds, currentTask.branchPath).then(function (concepts) {
           angular.forEach(concepts.items, function (concept) {
             angular.forEach(relationships, function (rel) {
               if (concept.id === rel.target.conceptId) {
@@ -467,7 +467,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         // get FSNs for relationship types and targets
-        terminologyServerService.bulkGetConcept(conceptIds, 'MAIN').then(function (concepts) {
+        terminologyServerService.bulkGetConceptUsingPOST(conceptIds, 'MAIN').then(function (concepts) {
           angular.forEach(concepts.items, function (c) {
             idConceptMap[c.id] = c;
           });

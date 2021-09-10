@@ -304,7 +304,7 @@ angular.module('singleConceptAuthoringApp')
               if (conceptIds.length > 0) {
 
                 // bulk call for concept ids
-                terminologyServerService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                terminologyServerService.bulkGetConceptUsingPOST(conceptIds, scope.branch).then(function (concepts) {
                   angular.forEach(concepts.items, function (concept) {
                     scope.idNameMap[concept.id] = concept.fsn.term;
                   });
@@ -585,7 +585,7 @@ angular.module('singleConceptAuthoringApp')
                     });
                     idList.push(item.conceptId);
                 });
-                terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
+                terminologyServerService.bulkGetConceptUsingPOST(idList, scope.branch).then(function (concepts) {
                   angular.forEach(concepts.items, function (concept) {
                       angular.forEach(whitelistItems, function (failure) {
                         if(failure.conceptId === concept.conceptId){
@@ -644,7 +644,7 @@ angular.module('singleConceptAuthoringApp')
                       idList.push(item.conceptId);
                   });
 
-                  terminologyServerService.bulkGetConcept(idList, scope.branch).then(function (concepts) {
+                  terminologyServerService.bulkGetConceptUsingPOST(idList, scope.branch).then(function (concepts) {
                     angular.forEach(concepts.items, function (concept) {
                         angular.forEach(whitelistItems, function (failure) {
                           if(failure.conceptId === concept.conceptId){
@@ -854,7 +854,7 @@ angular.module('singleConceptAuthoringApp')
               if (conceptIds.length > 0) {
 
               // bulk call for concept ids
-              terminologyServerService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+              terminologyServerService.bulkGetConceptUsingPOST(conceptIds, scope.branch).then(function (concepts) {
                 var idNameMap = {};
                 angular.forEach(concepts.items, function (concept) {
                   idNameMap[concept.id] = concept.fsn.term;
