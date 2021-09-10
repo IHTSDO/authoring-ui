@@ -534,7 +534,7 @@ angular.module('singleConceptAuthoringApp')
               count++;
               if (count === affectedDescriptionIds.length) {
                 // bulk call for concept ids
-                terminologyServerService.bulkGetConcept(conceptIds, $scope.branch).then(function (response) {
+                terminologyServerService.bulkGetConceptUsingPOST(conceptIds, $scope.branch).then(function (response) {
                   angular.forEach(response.items, function (concept) {
                     var item = {};
                     item.sourceFsn = concept.fsn.term;

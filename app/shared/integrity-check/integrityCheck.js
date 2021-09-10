@@ -297,7 +297,7 @@ angular.module('singleConceptAuthoringApp')
 
           function getAndReplaceInactiveConcept(newIds, originalConcept, axiomsToBeReplaced, inactiveConceptIdMap, skipNotifcation) {
             // get concepts and replace the originalConcept
-            terminologyServerService.bulkGetConcept(newIds,scope.branch).then(function (response) {
+            terminologyServerService.bulkGetConceptUsingPOST(newIds,scope.branch).then(function (response) {
               let replacedConceptMap = {};
               for (let i = 0; i < response.items.length; i++) {
                 replacedConceptMap[response.items[i].conceptId] = response.items[i];
