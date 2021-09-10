@@ -1156,18 +1156,17 @@ angular.module('singleConceptAuthoringApp')
       }
 
       //Function to bulk get concepts
-      function bulkGetConcept(conceptIdList, branch) {
+      function bulkGetConceptUsingPOST(conceptIdList, branch) {
         var deferred = $q.defer();
-        var queryString = '';
-        angular.forEach(conceptIdList, function (concept, key) {
-          if (key + 1 !== conceptIdList.length && concept !== "") {
-            queryString += 'conceptIds=' + concept + '&';
-          }
-          else {
-            queryString += 'conceptIds=' + concept;
-          }
-        });
-        $http.get(apiEndpoint + branch + '/concepts?limit=200&' + queryString).then(function (response) {
+        if (conceptIdList.length === 0) {
+          deferred.resolve({"items": []});
+          return deferred.promise;
+        }
+        var body = {
+            "conceptIds": conceptIdList,
+            "limit": 1000
+        }
+        $http.post(apiEndpoint + branch + '/concepts/search', body).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -2433,7 +2432,7 @@ angular.module('singleConceptAuthoringApp')
         getModelPreview: getModelPreview,
         saveClassification: saveClassification,
         addModules: addModules,
-        bulkGetConcept: bulkGetConcept,
+        bulkGetConceptUsingPOST: bulkGetConceptUsingPOST,
         bulkRetrieveFullConcept: bulkRetrieveFullConcept,
         getModules: getModules,
         addLanguages: addLanguages,

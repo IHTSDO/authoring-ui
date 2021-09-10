@@ -219,7 +219,7 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
             });                        
           }
           if (conceptIds.length !== 0) {
-              terminologyServerService.bulkGetConcept(conceptIds, $scope.branch).then(function(response) {
+              terminologyServerService.bulkGetConceptUsingPOST(conceptIds, $scope.branch).then(function(response) {
                 initializeConceptMap(response.items);
                 $scope.loading = false;
               });
