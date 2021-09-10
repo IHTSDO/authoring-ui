@@ -682,45 +682,6 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           };
 
-          function checkExcludedValidationRuleIds() {
-            var deferred = $q.defer();
-            // filter out technical errors
-            configService.getExcludedValidationRuleIds().then(function (response) {
-              scope.assertionsExcluded = response;
-
-              scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
-                return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
-              });
-
-              // set the viewable flags for all returned failure instances
-              angular.forEach(scope.assertionsFailed, function (assertion) {
-                if(assertion.failureCount !== -1){
-                    assertion.isBranchModification = false;                    
-                    angular.forEach(assertion.firstNInstances, function (instance) {
-
-                      // store the unmodified text to preserve original data
-                      instance.detailUnmodified = instance.detail;
-
-                      // detect if instance references user modified concepts
-                      if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                        instance.isBranchModification = true;
-                        assertion.isBranchModification = true;
-                      }
-
-                      if (validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail)) {
-                        instance.isUserExclusion = true;                        
-                      }
-                    });
-                }
-              });
-              deferred.resolve();              
-            }, function() {              
-              notificationService.sendWarning('Error retrieving validation configuration; whitelist and excluded rules are shown');
-              deferred.resolve();
-            });
-            return deferred.promise;
-          }
-
           function initFailures() {
 
             var deferred = $q.defer();         
@@ -729,7 +690,7 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
             
-            $q.all([checkWhitelist(), checkExcludedValidationRuleIds()]).then(function() {
+            checkWhitelist().then(function() {
               scope.reloadTables();
               deferred.resolve();
             });
@@ -750,12 +711,7 @@ angular.module('singleConceptAuthoringApp')
             if (failuresInitialized) {
               return;
             }
-            failuresInitialized = true;
-
-            // retrieve the whitelistable rule ids -- used to display Add to Whitelist button
-            configService.getWhiteListEligibleRuleIds().then(function (response) {
-              scope.whitelistEligibleRuleIds = response;
-            });
+            failuresInitialized = true;            
 
             notificationService.sendMessage('Retrieving traceability information ...');
             terminologyServerService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
@@ -803,9 +759,6 @@ angular.module('singleConceptAuthoringApp')
 
             if (warningAssertion) {
               scope.whitelistEnabled = true;
-            } else {
-              // check if this failure is whitelistable
-              scope.whitelistEnabled = scope.whitelistEligibleRuleIds && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
             }
 
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
