@@ -310,7 +310,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           let msg = null;
           if (response.latestClassificationJson) {
             let latestClassificationJson = response.latestClassificationJson;
-            if ( response.branchHeadTimestamp > new Date(latestClassificationJson.completionDate).getTime()) {
+            if ((new Date(latestClassificationJson.creationDate)).getTime() < response.headTimestamp) {
               msg = 'There are new changes on this task since the last classification. Do you still want to start a validation?';
             } else {
               if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
