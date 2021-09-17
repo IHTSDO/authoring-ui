@@ -284,10 +284,11 @@
                           type="button"
                           ng-class="[
                           {indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
-                          {indicator_red : task.latestValidationStatus === 'FAILED'},
-                          {indicator_blue : task.latestValidationStatus === 'VALIDATING'},
-                          {indicator_blue : task.latestValidationStatus === 'BUILDING'},
-                          {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
+                          {indicator_blue : task.latestValidationStatus === 'QUEUED'},
+                          {indicator_blue : task.latestValidationStatus === 'RUNNING'},
+                          {indicator_red : task.latestValidationStatus === 'FAILED'},                         
+                          {indicator_green : task.latestValidationStatus === 'COMPLETED'},
+                          {indicator_grey : task.latestValidationStatus === 'STALE'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>    <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>

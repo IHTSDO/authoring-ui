@@ -759,7 +759,7 @@ button.fsn-title-button {
 .message_validation_COMPLETED::before {
     content: "Validation successfully completed";
 }
-.message_validation_VALIDATING::before {
+.message_validation_RUNNING::before {
     content: "Validation is in progress";
 }
 .message_validation_FAILED::before {
@@ -768,8 +768,8 @@ button.fsn-title-button {
 .message_validation_SCHEDULED::before {
     content: "Validation has been scheduled";
 }
-.message_validation_BUILDING::before {
-    content: "Validation Report is building";
+.message_validation_QUEUED::before {
+    content: "Validation Report is in queue";
 }
 .message_validation_STALE::before {
     content: "Validation Report has gone stale";

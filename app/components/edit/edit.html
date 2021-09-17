@@ -90,16 +90,16 @@
               Validation Failed
             </li>
             <li
-              ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'SCHEDULED')">
+              ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'QUEUED' ||task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'SCHEDULED')">
               Validation Running
             </li>
             <li ng-if="task.latestValidationStatus === 'COMPLETED' || task.latestValidationStatus === 'STALE'" ng-click="viewValidationFromSidebar()">
               View Validation Report
             </li>
             <li
-              ng-if="role === 'AUTHOR' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"
+              ng-if="role === 'AUTHOR' && task.latestValidationStatus !== 'QUEUED' &&  task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'SCHEDULED'"
               ng-click="validate()"
-              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.status === 'Completed' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+              ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || branchLocked">
               Start New Validation {{enableMRCMValidation ? 'With' : 'Without'}} MRCM
             </li>
           </ul>
@@ -124,7 +124,7 @@
             <li
               ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks"
               ng-click="toggleReview()"
-              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.status === 'Completed' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.latestValidationStatus === 'QUEUED' || task.latestValidationStatus === 'RUNNING' || task.status === 'Promoted' || task.status === 'Completed' || branchLocked">
               Submit for Review
             </li>
             <li
