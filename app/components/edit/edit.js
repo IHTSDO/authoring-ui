@@ -1499,7 +1499,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               
             // set the classification and validation flags
             $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING' || $scope.task.latestClassificationJson.status === 'SCHEDULED');
-            $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
+            $rootScope.validationRunning = $scope.task.latestValidationStatus && ($scope.task.latestValidationStatus === 'QUEUED' || $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING');
             
             deferred.resolve(task);
           });          
