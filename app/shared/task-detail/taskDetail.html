@@ -5,16 +5,27 @@
     <div class="col col-md-12">
       <ul class="timeline">
         <li>
-          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
+          <div class="timeline-badge" style="top: -4px;"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
-              <label class="control-label">Task Title:</label>
+              <div class="row">
+                <label class="control-label col-md-4" style="padding-left: 0px;">Task Title:</label>
+                <div class="col-md-2"></div>
+                <div class="col-md-6 switch white-text" ng-if="sacSet">
+                    <label class="switch pull-right" style="color:#737373">
+                      <input type="checkbox" ng-checked="complex" ng-model="complex"
+                             ng-change="markBranchAsComplex()">
+                      <span class="lever lever-complex" style="margin-left: 0px; margin-right: 10px; top:-10px"></span> <span style="top:-10px; position:relative;">Complex</span></label>
+                  </div>
+              </div>
+              
               <h4 class="timeline-title">{{task.summary}}</h4>
+              
             </div>
           </div>
         </li>
         <li>
-          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
+          <div class="timeline-badge" style="top: -4px;"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">Task Details:</label>
@@ -34,10 +45,12 @@
           </div>
         </li>
         <li style="margin-bottom: 10px;">
-            <div  class="timeline-badge">
-              <div ng-if="complex && projectSAC" ng-click="markBranchAsComplex()" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
-              <div ng-if="!complex && projectSAC" ng-click="markBranchAsComplex()" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px; margin-left: -1px;"></div>
-            </div>
+              
+<!--
+              <div ng-if="complex && sacSet" ng-click="markBranchAsComplex()" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+              <div ng-if="!complex && sacSet" ng-click="markBranchAsComplex()" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px; margin-left: -1px;"></div>
+-->
+<!--
             <div class="timeline-panel">
               <div class="timeline-heading">
                 <div style="font-size: 12px;">
@@ -45,35 +58,31 @@
                 </div>
               </div>
           </div>
+-->
         </li>
-        <li ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="!criteria.manual || (criteria.manual && criteria.id.includes('task-review-changes'))">
+        <div class="row">
+        <li class="col-md-6" ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="!criteria.manual || (criteria.manual && criteria.id.includes('task-review-changes'))">
           <div  class="timeline-badge">
-              <div ng-if="criteria.complete" class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
-              <div ng-if="!criteria.complete" class="fa fa-exclamation-triangle pull-right" style="color: #fbc02d; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
+              <div ng-if="criteria.complete" class="fa fa-check pull-right" style="color: green; font-size:18px; position: absolute; left: 5px; top: 2px;"></div>
+              <div ng-if="!criteria.complete" class="fa fa-exclamation-triangle pull-right" style="color: #fbc02d; font-size:18px; position: absolute; left: 5px; top: 2px;"></div>
           </div>
-          <div class="timeline-panel">
-              <div class="timeline-heading">
-                <div style="font-size: 12px;">
-                    {{criteria.label}}
-                </div>
-              </div>
+          <div style="font-size: 12px; margin-left: 15px;">
+                {{criteria.label}}
           </div>
-        </li>
-        <li ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="criteria.manual && !criteria.id.includes('task-review-changes')">
+          </li>
+        
+        <li class="col-md-6" ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="criteria.manual && !criteria.id.includes('task-review-changes')">
           <div class="timeline-badge">
-              <div ng-if="criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
-              <div ng-if="criteria.complete && !userRoles.includes(criteria.requiredRole)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
-              <div ng-if="!criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px; margin-left: -1px;"></div>
-              <div ng-if="!criteria.complete && !userRoles.includes(criteria.requiredRole)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px; margin-left: -1px;"></div>
+              <div ng-if="criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
+              <div ng-if="criteria.complete && !userRoles.includes(criteria.requiredRole)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
+              <div ng-if="!criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
+              <div ng-if="!criteria.complete && !userRoles.includes(criteria.requiredRole)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
           </div>
-          <div class="timeline-panel">
-              <div class="timeline-heading">
-                <div style="font-size: 12px;">
-                    {{criteria.label}}
-                </div>
-              </div>
+          <div style="font-size: 12px; margin-left: 15px;">
+                {{criteria.label}}
           </div>
         </li>
+        </div>
       </ul>
     </div>
   </div>
