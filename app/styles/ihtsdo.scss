@@ -2984,6 +2984,20 @@ legend {
     -o-transition: left .3s ease, background .3s ease, box-shadow .1s ease;
     transition: left .3s ease, background .3s ease, box-shadow .1s ease;
 }
+
+.switch label .lever-complex {
+    width: 25px;
+}
+.switch label .lever:after {
+    width: 15px;
+    height: 15px;
+}
+.switch label .lever-complex:after {
+    width: 15px;
+    height: 15px;
+    top: -1px;
+}
+
 .timeline:before {
     content: " ";
 }
@@ -3002,6 +3016,9 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 }
 .switch label input[type=checkbox]:checked + .lever:after {
     left: 24px;
+}
+.switch label input[type=checkbox]:checked + .lever-complex:after {
+    left: 12px;
 }
 .switch input[type=checkbox][disabled] + .lever {
     cursor: default;
