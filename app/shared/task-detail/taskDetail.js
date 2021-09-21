@@ -19,6 +19,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.sac = [];
       $scope.userRoles = [];
       $scope.complex = false;
+      $scope.sacSet = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -675,11 +676,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           aagService.getBranchSAC(response.branchPath).then(function (sac) {
               $scope.sac = [];
               if (sac && sac.criteriaItems) {
+                $scope.sacSet = true;
                 angular.forEach(sac.criteriaItems, function (criteria) {
                   if (criteria.authoringLevel === "TASK") {
                     $scope.sac.push(criteria);
                   }
                 });
+              }
+              else{
+                $scope.sacSet = false;
               }
               $scope.complex = metadataService.isComplex();
           });
