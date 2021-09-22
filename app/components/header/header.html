@@ -46,8 +46,8 @@
 
         <ul class="breadcrumb">
 
-          <li ng-repeat="titleSection in titleSections" class="tooltips-bottom tooltips-light normal-case"
-              title="{{parseTitleSection(titleSection)}}">{{titleSection}}
+          <li ng-repeat="titleSection in titleSections" class=normal-case"
+              title="{{parseTitleSection(titleSection)}}"><span ng-bind-html="titleSection"></span>
           </li>
         </ul>
       </li>

@@ -129,7 +129,7 @@ angular.module('singleConceptAuthoringApp')
         // NOTE: task is set in edit.js as rootScope variable
 
         scope.parseTitleSection = function (titleSection) {
-
+          titleSection = titleSection.replace(/ *\<[^)]*\> */g, "");
           // check if matches the current task
           if ($rootScope.currentTask && titleSection === $rootScope.currentTask.key) {
             return $rootScope.currentTask.summary;
