@@ -14,7 +14,12 @@ angular.module('singleConceptAuthoringApp')
         templateUrl: 'shared/integrity-check/integrityCheck.html',
 
         link: function (scope) {
-          $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+          if ($routeParams.taskKey) {
+            $rootScope.pageTitle = 'Upgrade/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          } else {
+            $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey;
+          }
+          
           
           scope.concepts = [];
           scope.selectedConcept = {};
