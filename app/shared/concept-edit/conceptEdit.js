@@ -1197,16 +1197,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
                     scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
-                    browserService.getConceptAcrossMultipleExtensions(scope.concept.conceptId).then(function(response) {
-                      if (response) {                        
-                        for (var i in response.items) {
-                          if (response.items[i].concept.fsn.term !== scope.concept.fsn) {
-                            notificationService.sendWarning('The requested SCTID and FSN do not match, based on the latest published extension content.');
-                            break;
+                    if (!scope.concept.released && scope.concept.active) {
+                      browserService.getConceptAcrossMultipleExtensions(scope.concept.conceptId).then(function(response) {
+                        if (response) {                        
+                          for (var i in response.items) {
+                            if (response.items[i].concept.fsn.term !== scope.concept.fsn) {
+                              notificationService.sendWarning('The requested SCTID and FSN do not match, based on the latest published extension content.');
+                              break;
+                            }
                           }
                         }
-                      }
-                    });
+                      });
+                    }
                   }
 
                   // clear the saved modified state from the original concept id
