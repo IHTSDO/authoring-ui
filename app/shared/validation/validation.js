@@ -682,6 +682,26 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           };
 
+          function initViewableFlagForFailures() {
+            // set the viewable flags for all returned failure instances
+            angular.forEach(scope.assertionsFailed, function (assertion) {
+              if(assertion.failureCount !== -1) {
+                assertion.isBranchModification = false;                    
+                angular.forEach(assertion.firstNInstances, function (instance) {
+
+                  // store the unmodified text to preserve original data
+                  instance.detailUnmodified = instance.detail;
+
+                  // detect if instance references user modified concepts
+                  if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                    instance.isBranchModification = true;
+                    assertion.isBranchModification = true;
+                  }
+                });
+              }
+            });
+          }
+
           function initFailures() {
 
             var deferred = $q.defer();         
@@ -691,6 +711,7 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
             
             checkWhitelist().then(function() {
+              initViewableFlagForFailures();
               scope.reloadTables();
               deferred.resolve();
             });
