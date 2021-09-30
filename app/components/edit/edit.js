@@ -385,7 +385,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       switch (name) {
         case 'validation':
-          $rootScope.pageTitle = 'Validation/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Validation/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'validate';
           //  view starts with no concepts
           $scope.concepts = [];
@@ -393,13 +393,13 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.showSidebarEdit = false;
           break;
         case 'inactivation':
-          $rootScope.pageTitle = 'Inactivation/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;          
+          $rootScope.pageTitle = 'Inactivation/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;          
           $scope.concepts = [];
           $scope.canCreateConcept = false;
           $rootScope.showSidebarEdit = true;
           break;
         case 'feedback':
-          $rootScope.pageTitle = 'Providing Feedback/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Providing Feedback/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'feedback';
           $rootScope.showSidebarEdit = false; // Feedback page has its own sitebar
 
@@ -412,7 +412,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.canCreateConcept = false;
           break;
         case 'classification':
-          $rootScope.pageTitle = 'Classification/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Classification/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'classify';
           $scope.getClassificationEditPanel();
           $scope.canCreateConcept = false;
@@ -420,7 +420,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'conflicts':
           if ($routeParams.taskKey) {
-            $rootScope.pageTitle = 'Concept Merges/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey +  '/' + $routeParams.taskKey;
+            $rootScope.pageTitle = 'Concept Merges/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey +  '/' + $routeParams.taskKey;
           } else {
             $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey;
           }
@@ -434,7 +434,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'integrityCheck':
             if ($routeParams.taskKey) {
-              $rootScope.pageTitle = 'Upgrade/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey +  '/' + $routeParams.taskKey;
+              $rootScope.pageTitle = 'Upgrade/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey +  '/' + $routeParams.taskKey;
             } else {
               $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey;
             }
@@ -451,7 +451,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             return;
           }
 
-          $rootScope.pageTitle = 'Edit Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Edit Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
           $rootScope.showSidebarEdit = true;
@@ -471,7 +471,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
             return;
           }
-          $rootScope.pageTitle = 'Edit Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Edit Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
           $rootScope.showSidebarEdit = false;
@@ -487,7 +487,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
             return;
           }
-          $rootScope.pageTitle = 'Edit Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Edit Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
           $scope.canCreateConcept = true;
           $rootScope.showSidebarEdit = true;
@@ -497,7 +497,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
           break;
         case 'batch':
-          $rootScope.pageTitle = 'Batch Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Batch Concepts/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'batch';
           $scope.canCreateConcept = false;
           $rootScope.showSidebarEdit = true;
