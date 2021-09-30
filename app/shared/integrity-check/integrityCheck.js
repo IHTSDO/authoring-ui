@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope) {
           if ($routeParams.taskKey) {
-            $rootScope.pageTitle = 'Upgrade/<a href="#project&#47;'+ $routeParams.projectKey + '">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+            $rootScope.pageTitle = 'Upgrade/<a href="#project&#47;'+ $routeParams.projectKey + '" target="_blank">' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           } else {
             $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey;
           }
