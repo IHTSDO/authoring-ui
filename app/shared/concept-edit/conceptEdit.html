@@ -126,13 +126,13 @@
           </button>
           <button type="button"
                   class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-exit-to-app"
-                   ng-if="isFeedback"
+                   ng-if="enableLoadNext"
                   ng-click="closeAndLoadNext()">
             <span>Close and load next</span>
           </button>
           <button type="button"
                   class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-thumb-up"
-                   ng-if="allowApproval"
+                   ng-if="enableApproval"
                   ng-click="approveAndLoadNext()">
             <span>Approve</span>
           </button>
