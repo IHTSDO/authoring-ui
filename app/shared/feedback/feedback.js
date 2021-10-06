@@ -617,6 +617,10 @@ angular.module('singleConceptAuthoringApp')
             approveAndLoadNext(concept);
           });
 
+          scope.$on('closeAndLoadNext', function (event, concept) {
+            closeAndLoadNext(concept);
+          });
+
           scope.$on('selectNextConcept', function (event, data) {
             var index = null;
             var conceptId = null;
@@ -689,8 +693,50 @@ angular.module('singleConceptAuthoringApp')
               item.viewed = false;
             });
           }
+          
+          function closeAndLoadNext(concept) {
+            var elementPos = 0;
+            for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
+              if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {
+                elementPos = i;
+              }
+            }
 
-          function approveAndLoadNext (concept) {
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
+              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+              if (concept.conceptId === reviewConcept.conceptId) {
+                reviewConcept.viewed = false
+                // remove from viewed concepts list
+                for (var i = 0; i < scope.viewedConcepts.length; i++) {
+                  if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
+                    scope.viewedConcepts.splice(i, 1);
+                    break;
+                  }
+                }
+                break;
+              }
+            }
+
+            // load next concept
+            if (scope.viewedConcepts.length === 0) {
+              loadNextConcept(elementPos + 1);
+            } else {
+              // Check if the next concept has been loaded or not
+              var found = false;
+              angular.forEach(scope.viewedConcepts, function (viewConcept) {
+                angular.forEach(scope.conceptsToReviewViewed, function (conceptToReviewViewed) {
+                  if (viewConcept.conceptId === conceptToReviewViewed.conceptId) {
+                    found = true;
+                  }
+                });
+              });
+              if(!found) {
+                loadNextConcept(elementPos + 1);
+              }
+            }
+          }
+
+          function approveAndLoadNext(concept) {
             var elementPos = 0;
             for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
               if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {

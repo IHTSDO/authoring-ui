@@ -1736,6 +1736,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.$emit('approveAndLoadNext', scope.concept);
         };
 
+        scope.closeAndLoadNext = function() {
+          scope.$emit('closeAndLoadNext', scope.concept);
+        };        
+
         /**
          * Function to toggle the definition status of the displayed concept,
          * with autosave
