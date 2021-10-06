@@ -124,7 +124,12 @@
           <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
             Revert
           </button>
-
+          <button type="button"
+                  class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-exit-to-app"
+                   ng-if="isFeedback"
+                  ng-click="closeAndLoadNext()">
+            <span>Close and load next</span>
+          </button>
           <button type="button"
                   class="btn-default green small-buttons green tooltips-bottom medium-size-tooltip md md-thumb-up"
                    ng-if="allowApproval"
