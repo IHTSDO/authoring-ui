@@ -600,18 +600,16 @@ angular.module('singleConceptAuthoringApp')
             }
 
           };
-
-          scope.checkApprovalPermission = function (concept) {
-            if (scope.role === 'REVIEWER') {
-              for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
-                var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
-                if (concept.conceptId === reviewConcept.conceptId) {
-                  return true;
-                }
+          
+          scope.conceptExistsInToReviewList = function (concept) {            
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
+              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+              if (concept.conceptId === reviewConcept.conceptId) {
+                return true;
               }
-            }
+            }            
             return false;
-          }
+          };
 
           scope.$on('approveAndLoadNext', function (event, concept) {
             approveAndLoadNext(concept);

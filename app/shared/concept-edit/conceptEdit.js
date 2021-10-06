@@ -249,7 +249,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         feedbackView: '@?',
 
         // indicate if user has permission to approve concept in review panel
-        allowApproval: '=?',
+        enableApproval: '=?',
+
+        // indicate if the "Close and load next" is enable or not
+        enableLoadNext: '=?',
 
         // whether to initially display project taxonomy
         projectTaxonomyVisible: '@?',
@@ -530,7 +533,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             callback: function() {$rootScope.$broadcast('closeAllOpenningConcepts', {});}
           });
 
-          if (!scope.allowApproval) {
+          if (!scope.enableApproval) {
             hotkeys.bindTo(scope)
             .add({
               combo: 'alt+a',
