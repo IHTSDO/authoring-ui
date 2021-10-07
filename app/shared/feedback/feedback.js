@@ -611,6 +611,17 @@ angular.module('singleConceptAuthoringApp')
             return false;
           };
 
+          scope.conceptExistsInInferredList = function (concept) {            
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsClassified.length; i++) {
+              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+              if (concept.conceptId === reviewConcept.conceptId) {
+                return true;
+              }
+            }            
+            return false;
+          };
+          
+
           scope.$on('approveAndLoadNext', function (event, concept) {
             approveAndLoadNext(concept);
           });
@@ -890,6 +901,8 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
+            // Remove the concept id from Project Taxonomy View List
+            removeConceptFromProjectTaxonomyViewList(data.concept.conceptId);
           });
 
           // the scope variable containing the map of concept -> [style map]
@@ -1859,10 +1872,10 @@ angular.module('singleConceptAuthoringApp')
             return users.filter(item => -1 === reviewers.indexOf(item.username));
           };
 
-          var projectTaxonomyList = [];
+          var feebackProjectTaxonomyViewList = [];
           scope.isProjectTaxonomyVisisble = function (concept) {
-            for (var i =0; i < projectTaxonomyList.length; i++) {
-              if (concept.conceptId === projectTaxonomyList[i]) {
+            for (var i =0; i < feebackProjectTaxonomyViewList.length; i++) {
+              if (concept.conceptId === feebackProjectTaxonomyViewList[i]) {
                 return true;
               }
             }
@@ -1920,17 +1933,21 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.$on('viewProjectTaxonomy', function (event, data) {
-            if (data.flag) {
-              projectTaxonomyList.push(data.conceptId);
+            if (data.flag && feebackProjectTaxonomyViewList.indexOf(data.conceptId) === -1) {
+              feebackProjectTaxonomyViewList.push(data.conceptId);
             } else {
-              for (var i =0; i < projectTaxonomyList.length; i++) {
-                if (data.conceptId === projectTaxonomyList[i]) {
-                  projectTaxonomyList.splice(i,1);
-                  return;
-                }
-              }
+              removeConceptFromProjectTaxonomyViewList(data.conceptId);
             }
           });
+
+          function removeConceptFromProjectTaxonomyViewList(conceptId) {
+            var i = feebackProjectTaxonomyViewList.length
+            while (i--) {
+              if (conceptId === feebackProjectTaxonomyViewList[i]) { 
+                feebackProjectTaxonomyViewList.splice(i,1);
+              } 
+            } 
+          }
 
           scope.setTooltipPosition = function ($event) {
             var top = $event.target.getBoundingClientRect().top;

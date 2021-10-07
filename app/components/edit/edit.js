@@ -509,7 +509,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // Clear data
-      projectTaxonomyList = [];
+      editProjectTaxonomyViewList = [];
 
       $scope.mode = $routeParams.mode;
 
@@ -1113,6 +1113,9 @@ angular.module('singleConceptAuthoringApp.edit', [
             $rootScope.$broadcast('conceptFocused', {id: nextConceptIdToBeFocus});
           }
         }
+
+        // Remove the concept id from Project Taxonomy View List
+        removeConceptFromProjectTaxonomyViewList(data.concept.conceptId);
       }
 
       // Re-calculate the min-height for the last item
@@ -1287,12 +1290,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       return deferred.promise;
     };
 
-    
 
-    var projectTaxonomyList = [];
+    var editProjectTaxonomyViewList = [];
     $scope.isProjectTaxonomyVisisble = function (concept) {
-      for (var i =0; i < projectTaxonomyList.length; i++) {
-        if (concept.conceptId === projectTaxonomyList[i]) {
+      for (var i =0; i < editProjectTaxonomyViewList.length; i++) {
+        if (concept.conceptId === editProjectTaxonomyViewList[i]) {
           return true;
         }
       } 
@@ -1300,17 +1302,21 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.$on('viewProjectTaxonomy', function (event, data) {
-      if (data.flag) {
-        projectTaxonomyList.push(data.conceptId);
+      if (data.flag && editProjectTaxonomyViewList.indexOf(data.conceptId) === -1) {
+        editProjectTaxonomyViewList.push(data.conceptId);
       } else {
-        for (var i =0; i < projectTaxonomyList.length; i++) {
-          if (data.conceptId === projectTaxonomyList[i]) {
-            projectTaxonomyList.splice(i,1);
-            return;
-          }
-        } 
+        removeConceptFromProjectTaxonomyViewList(data.conceptId);      
       }      
     });
+
+    function removeConceptFromProjectTaxonomyViewList(conceptId) {
+      var i = editProjectTaxonomyViewList.length
+      while (i--) {
+        if (conceptId === editProjectTaxonomyViewList[i]) { 
+          editProjectTaxonomyViewList.splice(i,1);
+        } 
+      } 
+    }
 //////////////////////////////////////////
 // Conflict Report & Controls
 //////////////////////////////////////////

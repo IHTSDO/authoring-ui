@@ -150,11 +150,12 @@
           <div ng-class="getLayoutWidths('concepts')">
             <div id="conceptId-{{concept.conceptId}}" concept-edit concept="concept" branch="branch" 
                 static="role !== 'AUTHOR' || checkDeletedConceptById(concept.conceptId)" 
-                load-validation="{{role === 'REVIEWER' || role === 'AUTHOR'}}" 
+                load-validation="{{role === 'REVIEWER' || role === 'AUTHOR'}}"
+                load-project-taxonomy="conceptExistsInInferredList(concept)" 
                 component-styles="styles[concept.conceptId]" 
                 inactive-descriptions="inactiveDescriptions[concept.conceptId]"
                 feedback-view="true" 
-                project-taxonomy-visible="true" 
+                enable-project-taxonomy="true" 
                 enable-approval="role === 'REVIEWER' && conceptExistsInToReviewList(concept)"
                 enable-load-next="conceptExistsInToReviewList(concept)" 
                 traceabilities="feedbackContainer.review.traceability"></div>
