@@ -255,8 +255,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         enableLoadNext: '=?',
 
         // whether to initially display project taxonomy
-        projectTaxonomyVisible: '@?',
+        loadProjectTaxonomy: '@?',
 
+        // whether to initially enable project taxonomy
+        enableProjectTaxonomy: '@?',
+
+        // whether to initially display the validation against concept
         loadValidation: '@?',
 
         // traceability that will be passed from Feedback
@@ -1010,9 +1014,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
            scope.computeRelationshipGroups();
         };
 
+        scope.isProjectTaxonomyVisible = false;
         scope.toggleProjectTaxonomy = function () {
            scope.isProjectTaxonomyVisible = !scope.isProjectTaxonomyVisible;
-           scope.$emit('viewProjectTaxonomy', {conceptId : scope.concept.conceptId, flag : scope.isProjectTaxonomyVisible});
+           $rootScope.$broadcast('viewProjectTaxonomy', {conceptId : scope.concept.conceptId, flag : scope.isProjectTaxonomyVisible});
            if (scope.isProjectTaxonomyVisible) {
               $rootScope.$broadcast('viewTaxonomy', {
               concept: {
@@ -1022,6 +1027,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
            }
         };
+
+        if (scope.loadProjectTaxonomy) {
+          scope.toggleProjectTaxonomy();
+        }
 
         scope.removeConcept = function (concept) {
 
