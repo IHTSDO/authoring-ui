@@ -386,8 +386,18 @@ angular.module('singleConceptAuthoringApp')
               }
             });
           }
-
         });
+
+        // Exclude stated edits from Inferred tab
+        var i = review.conceptsClassified.length;
+        while (i--) {
+            for (var j = 0; j < review.concepts.length; j++) {
+              if (review.conceptsClassified[i].conceptId === review.concepts[j].conceptId) {
+                review.conceptsClassified.splice(i, 1);
+                break;
+              }
+            }
+        }
 
         fetchTermAndFeedback(projectKey, taskKey, branch, idList, review, acceptLanguageValue, useFSN).then(function(response) {
           deferred.resolve(response ? response : {});
