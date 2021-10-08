@@ -19,6 +19,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.sac = [];
       $scope.userRoles = [];
       $scope.complex = false;
+      $scope.batch = false;
       $scope.sacSet = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
@@ -687,6 +688,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $scope.sacSet = false;
               }
               $scope.complex = metadataService.isComplex();
+              $scope.batch = metadataService.isBatch();
           });
           $scope.task = response;          
           if ($scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
