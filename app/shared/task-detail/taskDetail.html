@@ -11,12 +11,17 @@
               <div class="row">
                 <label class="control-label col-md-4" style="padding-left: 0px;">Task Title:</label>
                 <div class="col-md-2"></div>
-                <div class="col-md-6 switch white-text" ng-if="sacSet">
+<!--
+                <div class="col-md-6 switch white-text" ng-if="sacSet && !batch">
                     <label class="switch pull-right" style="color:#737373">
                       <input type="checkbox" ng-checked="complex" ng-model="complex"
                              ng-change="markBranchAsComplex()">
                       <span class="lever lever-complex" style="margin-left: 0px; margin-right: 10px; top:-10px"></span> <span style="top:-10px; position:relative;">Complex</span></label>
-                  </div>
+                 </div>
+-->
+                 <div class="col-md-6 switch white-text pull-right" ng-if="sacSet">
+                     <div class="badge In Progress">Batch</div>
+                 </div>
               </div>
               
               <h4 class="timeline-title">{{task.summary}}</h4>
@@ -45,20 +50,6 @@
           </div>
         </li>
         <li style="margin-bottom: 10px;">
-              
-<!--
-              <div ng-if="complex && sacSet" ng-click="markBranchAsComplex()" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 8px; top: 10px;"></div>
-              <div ng-if="!complex && sacSet" ng-click="markBranchAsComplex()" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 8px; top: 10px; margin-left: -1px;"></div>
--->
-<!--
-            <div class="timeline-panel">
-              <div class="timeline-heading">
-                <div style="font-size: 12px;">
-                    Complex
-                </div>
-              </div>
-          </div>
--->
         </li>
         <div class="row">
         <li class="col-md-6" ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="!criteria.manual || (criteria.manual && criteria.id.includes('task-review-changes'))">

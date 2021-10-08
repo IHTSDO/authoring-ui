@@ -777,11 +777,27 @@ angular.module('singleConceptAuthoringApp')
               console.log(key);
               if(key === 'complex'){
                   complex = branchMetadata.metadata.authorFlags[key];
-                  console.log(branchMetadata.metadata.authorFlags[key]);
               }
           }
         }
       if(complex === 'true'){
+          return true
+      }
+      else{
+          return false
+      }
+    }
+      
+    function isBatch() {
+      let batch = false;
+      if(branchMetadata.metadata && branchMetadata.metadata.authorFlags && branchMetadata.metadata.authorFlags != null){
+          for (var key in branchMetadata.metadata.authorFlags) {
+              if(key === 'batch'){
+                  complex = branchMetadata.metadata.authorFlags[key];
+              }
+          }
+        }
+      if(batch === 'true'){
           return true
       }
       else{
@@ -922,6 +938,7 @@ angular.module('singleConceptAuthoringApp')
       isSpellcheckDisabled: isSpellcheckDisabled,
       isTaskPromotionDisabled: isTaskPromotionDisabled,
       isComplex: isComplex,
+      isBatch: isBatch,
 
       // extension module-dependent retrieval functions
 
