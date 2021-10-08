@@ -613,7 +613,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.conceptExistsInInferredList = function (concept) {            
             for (var i = 0; i < scope.feedbackContainer.review.conceptsClassified.length; i++) {
-              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
+              var reviewConcept = scope.feedbackContainer.review.conceptsClassified[i];
               if (concept.conceptId === reviewConcept.conceptId) {
                 return true;
               }
