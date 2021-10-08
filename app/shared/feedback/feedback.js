@@ -704,42 +704,46 @@ angular.module('singleConceptAuthoringApp')
           }
           
           function closeAndLoadNext(concept) {
-            var conceptInToReviewFound = false;
-            var conceptInReviewedFound = false;
-            var conceptInClassifiedFound = false;
-            var elementPos = 0;
-            for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
+            let conceptInToReviewFound = false;
+            let conceptInReviewedFound = false;
+            let conceptInClassifiedFound = false;
+            let elementPos = 0;
+            for (let i = 0; i < scope.conceptsToReviewViewed.length; i++) {
               if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {
                 elementPos = i;
                 conceptInToReviewFound = true;
+                break;
               }
             }
             if (!conceptInToReviewFound) {
-              for (var i = 0; i < scope.conceptsReviewedViewed.length; i++) {
+              for (let i = 0; i < scope.conceptsReviewedViewed.length; i++) {
                 if (scope.conceptsReviewedViewed[i].conceptId === concept.conceptId) {
                   elementPos = i;
                   conceptInReviewedFound = true;
+                  break;
                 }
               }
             }
             if (!conceptInToReviewFound && !conceptInReviewedFound && scope.conceptsClassified) {
-              for (var i = 0; i < scope.conceptsClassified.length; i++) {
+              for (let i = 0; i < scope.conceptsClassified.length; i++) {
                 if (scope.conceptsClassified[i].conceptId === concept.conceptId) {
                   elementPos = i;
                   conceptInClassifiedFound = true;
+                  break;
                 }
               }
             }           
 
             if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
-              var conceptArr = conceptInToReviewFound ? scope.feedbackContainer.review.conceptsToReview : 
-                                                        (conceptInReviewedFound ? scope.feedbackContainer.review.conceptsReviewed : scope.feedbackContainer.review.conceptsClassified);
-              for (var i = 0; i < conceptArr.length; i++) {
-                var reviewConcept = conceptArr[i];
+              let conceptArr = conceptInToReviewFound ? scope.feedbackContainer.review.conceptsToReview : 
+                                                        (conceptInReviewedFound ? scope.feedbackContainer.review.conceptsReviewed : 
+                                                                                  scope.feedbackContainer.review.conceptsClassified);
+              for (let i = 0; i < conceptArr.length; i++) {
+                let reviewConcept = conceptArr[i];
                 if (concept.conceptId === reviewConcept.conceptId) {
                   reviewConcept.viewed = false
                   // remove from viewed concepts list
-                  for (var i = 0; i < scope.viewedConcepts.length; i++) {
+                  for (let i = 0; i < scope.viewedConcepts.length; i++) {
                     if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
                       scope.viewedConcepts.splice(i, 1);                      
                       break;
@@ -750,39 +754,30 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // load next concept
-            if (scope.viewedConcepts.length === 0) {
-              if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
-                var conceptArr = conceptInToReviewFound ? scope.conceptsToReviewViewed : (conceptInReviewedFound ? scope.conceptsReviewedViewed : scope.conceptsClassified);                
-                if ((elementPos + 1) < conceptArr.length) {
-                  var nextConcept = conceptArr[elementPos + 1];
-                  if (!scope.isDeletedConcept(nextConcept)) {
-                    scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
-                  }
-                }
-              }              
-            } else {
-              // Check if the next concept has been loaded or not
-              if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
-                var conceptArr = conceptInToReviewFound ? scope.conceptsToReviewViewed : (conceptInReviewedFound ? scope.conceptsReviewedViewed : scope.conceptsClassified);
-                var found = false;
-                angular.forEach(scope.viewedConcepts, function (viewConcept) {
-                  angular.forEach(conceptArr, function (concept) {
-                    if (viewConcept.conceptId === concept.conceptId) {
-                      found = true;
-                    }
-                  });
-                });
-                if(!found) {
-                  if ((elementPos + 1) < conceptArr.length) {
-                    var nextConcept = conceptArr[elementPos + 1];
-                    if (!scope.isDeletedConcept(nextConcept)) {
-                      scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
-                    }
-                  }
-                }
+            // load next concept            
+            if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {              
+              let activeTableParam = conceptInToReviewFound ? scope.conceptsToReviewTableParams : (conceptInReviewedFound ? scope.conceptsReviewedTableParams : scope.conceptsClassifiedTableParams);
+              let totalPage = Math.ceil(activeTableParam.total()/activeTableParam.count());
+              let currentPage = activeTableParam.page();
+              let itemPage = activeTableParam.$params.count;
+              if (elementPos === (itemPage - 1) && currentPage < totalPage) {
+                elementPos = -1;
+                activeTableParam.page(currentPage + 1);
+                activeTableParam.reload();
               }
-            }
+              
+              let conceptArr = conceptInToReviewFound ? scope.conceptsToReviewViewed : (conceptInReviewedFound ? scope.conceptsReviewedViewed : scope.conceptsClassified);
+              let nextConcept = conceptArr[elementPos + 1];
+              let found = false;
+              angular.forEach(scope.viewedConcepts, function (viewConcept) {                  
+                  if (nextConcept.conceptId === viewConcept.conceptId) {
+                    found = true;
+                  }                  
+              });
+              if (!found && !scope.isDeletedConcept(nextConcept)) {
+                scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
+              }
+            }            
           }
 
           function approveAndLoadNext(concept) {
