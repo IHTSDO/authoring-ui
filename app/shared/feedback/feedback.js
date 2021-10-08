@@ -757,7 +757,7 @@ angular.module('singleConceptAuthoringApp')
                 if ((elementPos + 1) < conceptArr.length) {
                   var nextConcept = conceptArr[elementPos + 1];
                   if (!scope.isDeletedConcept(nextConcept)) {
-                    scope.selectConcept(nextConcept);
+                    scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
                   }
                 }
               }              
@@ -777,7 +777,7 @@ angular.module('singleConceptAuthoringApp')
                   if ((elementPos + 1) < conceptArr.length) {
                     var nextConcept = conceptArr[elementPos + 1];
                     if (!scope.isDeletedConcept(nextConcept)) {
-                      scope.selectConcept(nextConcept);
+                      scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
                     }
                   }
                 }
