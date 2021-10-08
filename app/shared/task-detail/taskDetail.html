@@ -11,15 +11,13 @@
               <div class="row">
                 <label class="control-label col-md-4" style="padding-left: 0px;">Task Title:</label>
                 <div class="col-md-2"></div>
-<!--
                 <div class="col-md-6 switch white-text" ng-if="sacSet && !batch">
                     <label class="switch pull-right" style="color:#737373">
                       <input type="checkbox" ng-checked="complex" ng-model="complex"
                              ng-change="markBranchAsComplex()">
                       <span class="lever lever-complex" style="margin-left: 0px; margin-right: 10px; top:-10px"></span> <span style="top:-10px; position:relative;">Complex</span></label>
                  </div>
--->
-                 <div class="col-md-6 switch white-text pull-right" ng-if="sacSet">
+                 <div class="col-md-6 switch white-text" ng-if="sacSet && batch">
                      <div class="badge In Progress">Batch</div>
                  </div>
               </div>
