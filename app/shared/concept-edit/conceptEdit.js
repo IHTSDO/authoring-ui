@@ -255,13 +255,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         enableLoadNext: '=?',
 
         // whether to initially display project taxonomy
-        loadProjectTaxonomy: '@?',
+        loadProjectTaxonomy: '=?',
 
         // whether to initially enable project taxonomy
-        enableProjectTaxonomy: '@?',
+        enableProjectTaxonomy: '=?',
 
         // whether to initially display the validation against concept
-        loadValidation: '@?',
+        loadValidation: '=?',
 
         // traceability that will be passed from Feedback
         traceabilities: '=?',

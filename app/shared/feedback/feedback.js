@@ -704,43 +704,83 @@ angular.module('singleConceptAuthoringApp')
           }
           
           function closeAndLoadNext(concept) {
+            var conceptInToReviewFound = false;
+            var conceptInReviewedFound = false;
+            var conceptInClassifiedFound = false;
             var elementPos = 0;
             for (var i = 0; i < scope.conceptsToReviewViewed.length; i++) {
               if (scope.conceptsToReviewViewed[i].conceptId === concept.conceptId) {
                 elementPos = i;
+                conceptInToReviewFound = true;
               }
             }
-
-            for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
-              var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
-              if (concept.conceptId === reviewConcept.conceptId) {
-                reviewConcept.viewed = false
-                // remove from viewed concepts list
-                for (var i = 0; i < scope.viewedConcepts.length; i++) {
-                  if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
-                    scope.viewedConcepts.splice(i, 1);
-                    break;
-                  }
+            if (!conceptInToReviewFound) {
+              for (var i = 0; i < scope.conceptsReviewedViewed.length; i++) {
+                if (scope.conceptsReviewedViewed[i].conceptId === concept.conceptId) {
+                  elementPos = i;
+                  conceptInReviewedFound = true;
                 }
-                break;
+              }
+            }
+            if (!conceptInToReviewFound && !conceptInReviewedFound && scope.conceptsClassified) {
+              for (var i = 0; i < scope.conceptsClassified.length; i++) {
+                if (scope.conceptsClassified[i].conceptId === concept.conceptId) {
+                  elementPos = i;
+                  conceptInClassifiedFound = true;
+                }
+              }
+            }           
+
+            if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
+              var conceptArr = conceptInToReviewFound ? scope.feedbackContainer.review.conceptsToReview : 
+                                                        (conceptInReviewedFound ? scope.feedbackContainer.review.conceptsReviewed : scope.feedbackContainer.review.conceptsClassified);
+              for (var i = 0; i < conceptArr.length; i++) {
+                var reviewConcept = conceptArr[i];
+                if (concept.conceptId === reviewConcept.conceptId) {
+                  reviewConcept.viewed = false
+                  // remove from viewed concepts list
+                  for (var i = 0; i < scope.viewedConcepts.length; i++) {
+                    if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
+                      scope.viewedConcepts.splice(i, 1);                      
+                      break;
+                    }
+                  }
+                  break;
+                }
               }
             }
 
             // load next concept
             if (scope.viewedConcepts.length === 0) {
-              loadNextConcept(elementPos + 1);
+              if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
+                var conceptArr = conceptInToReviewFound ? scope.conceptsToReviewViewed : (conceptInReviewedFound ? scope.conceptsReviewedViewed : scope.conceptsClassified);                
+                if ((elementPos + 1) < conceptArr.length) {
+                  var nextConcept = conceptArr[elementPos + 1];
+                  if (!scope.isDeletedConcept(nextConcept)) {
+                    scope.selectConcept(nextConcept);
+                  }
+                }
+              }              
             } else {
               // Check if the next concept has been loaded or not
-              var found = false;
-              angular.forEach(scope.viewedConcepts, function (viewConcept) {
-                angular.forEach(scope.conceptsToReviewViewed, function (conceptToReviewViewed) {
-                  if (viewConcept.conceptId === conceptToReviewViewed.conceptId) {
-                    found = true;
-                  }
+              if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
+                var conceptArr = conceptInToReviewFound ? scope.conceptsToReviewViewed : (conceptInReviewedFound ? scope.conceptsReviewedViewed : scope.conceptsClassified);
+                var found = false;
+                angular.forEach(scope.viewedConcepts, function (viewConcept) {
+                  angular.forEach(conceptArr, function (concept) {
+                    if (viewConcept.conceptId === concept.conceptId) {
+                      found = true;
+                    }
+                  });
                 });
-              });
-              if(!found) {
-                loadNextConcept(elementPos + 1);
+                if(!found) {
+                  if ((elementPos + 1) < conceptArr.length) {
+                    var nextConcept = conceptArr[elementPos + 1];
+                    if (!scope.isDeletedConcept(nextConcept)) {
+                      scope.selectConcept(nextConcept);
+                    }
+                  }
+                }
               }
             }
           }
