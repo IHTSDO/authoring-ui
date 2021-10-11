@@ -1038,7 +1038,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
 
-        clonedConcept.conceptId = null;
+        clonedConcept.conceptId = terminologyServerService.createGuid();
         clonedConcept.fsn = null;
         clonedConcept.released = false;
 
