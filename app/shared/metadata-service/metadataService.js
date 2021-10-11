@@ -792,7 +792,7 @@ angular.module('singleConceptAuthoringApp')
       let batch = false;
       if(branchMetadata.metadata && branchMetadata.metadata.authorFlags && branchMetadata.metadata.authorFlags != null){
           for (var key in branchMetadata.metadata.authorFlags) {
-              if(key === 'batch'){
+              if(key === 'batch-change'){
                   complex = branchMetadata.metadata.authorFlags[key];
               }
           }
