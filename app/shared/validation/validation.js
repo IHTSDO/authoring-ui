@@ -611,7 +611,7 @@ angular.module('singleConceptAuthoringApp')
               }
               terminologyServerService.getAllCodeSystemVersionsByShortName(projectShortname).then(function(response) {
                 if (response.data.items && response.data.items.length > 0) {
-                  deferred.resolve(response.data.items[response.data.items.length-1].version);
+                  deferred.resolve(response.data.items[response.data.items.length-1].importDate);
                 }
               });
             } else {
