@@ -83,6 +83,19 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      /////////////////////////////////////
+      // Terminology Server Branch Metadata Methods
+      /////////////////////////////////////
+
+      function updateBranchMetadata(branch, metadata) {
+        var deferred = $q.defer();
+        $http.put(apiEndpoint + 'branches/' + branch, metadata).then(function (response) {          
+          deferred.resolve(response.metadata);
+        }, function (error) {          
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
 
       /////////////////////////////////////
       // Terminology Server Concept Retrieval Methods
@@ -2404,6 +2417,7 @@ angular.module('singleConceptAuthoringApp')
         getMemberProperties: getMemberProperties,
         getConceptPreferredTerm: getConceptPreferredTerm,
         updateConcept: updateConcept,
+        updateBranchMetadata: updateBranchMetadata,
         bulkUpdateConcept: bulkUpdateConcept,
         bulkValidateConcepts: bulkValidateConcepts,
         createConcept: createConcept,
