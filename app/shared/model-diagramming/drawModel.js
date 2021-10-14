@@ -163,17 +163,15 @@ angular.module('singleConceptAuthoringApp')
               if(snfConcept.attributes){
                   $.each(snfConcept.attributes, function (i, field) {
                      field.type.conceptId = field.type.id;
-                     field.type.fsn = field.type.term;
-                     field.target = {};
+                     field.type.fsn = field.type.term;                     
                      field.groupId = 0;
-                     if(field.value.concrete){
+                     if(field.concrete){
                          field.concreteValue = field.value;
-                     }
-                     if(field.value.id)
-                     {
-                        field.target.conceptId = field.value.id;
-                        field.target.fsn = field.value.term;
-                        if(field.value.primitive)
+                         field.target = {};
+                     } else {
+                        field.target.conceptId = field.target.id;
+                        field.target.fsn = field.target.term;
+                        if(field.target.primitive)
                         {
                             field.target.definitionStatus = 'PRIMITIVE';
                         }
@@ -181,38 +179,6 @@ angular.module('singleConceptAuthoringApp')
                             field.target.definitionStatus = 'FULLY_DEFINED';
                         }
                      }
-                     else if (field.value.concepts)
-                     {
-                        field.target.conceptId = field.value.concepts[0].id;
-                        field.target.fsn = field.value.concepts[0].term;
-                        if(field.value.concepts[0].primitive)
-                        {
-                            field.target.definitionStatus = 'PRIMITIVE';
-                        }
-                        else{
-                            field.target.definitionStatus = 'FULLY_DEFINED';
-                        }
-                         field.nest = [];
-                        $.each(field.value.attributes, function (i, innerField) {
-                             innerField.type.conceptId = innerField.type.id;
-                             innerField.type.fsn = innerField.type.term;
-                             innerField.target = {};
-                             innerField.groupId = 0;
-                             if(innerField.value.id)
-                             {
-                                innerField.target.conceptId = innerField.value.id;
-                                innerField.target.fsn = innerField.value.term;
-                                if(innerField.value.primitive)
-                                {
-                                    innerField.target.definitionStatus = 'PRIMITIVE';
-                                }
-                                else{
-                                    innerField.target.definitionStatus = 'FULLY_DEFINED';
-                                }
-                             }
-                             field.nest.push(innerField);
-                        });
-                      }
                      concept.relationships.push(field);
                   });
               }
@@ -220,17 +186,15 @@ angular.module('singleConceptAuthoringApp')
                   $.each(snfConcept.groups, function (i, group) {
                      $.each(group.attributes, function (j, field) {
                          field.type.conceptId = field.type.id;
-                         field.type.fsn = field.type.term;
-                         field.target = {};
+                         field.type.fsn = field.type.term;                         
                          field.groupId = i + 1;
-                         if(field.value.concrete){
+                         if(field.concrete){
                              field.concreteValue = field.value;
-                         }
-                         if(field.value.id)
-                         {
-                            field.target.conceptId = field.value.id;
-                            field.target.fsn = field.value.term;
-                            if(field.value.primitive)
+                             field.target = {};
+                         } else {
+                            field.target.conceptId = field.target.id;
+                            field.target.fsn = field.target.term;
+                            if(field.target.primitive)
                             {
                                 field.target.definitionStatus = 'PRIMITIVE';
                             }
