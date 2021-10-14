@@ -102,6 +102,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // set the local project and branch for use by containers (classification/validation)
           $scope.project = response;
+          $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF ? response.metadata.enableDroolsInRVF !== 'true' : true;
           $scope.branch = response.branchPath;
 
           // last rebased time
@@ -593,6 +594,19 @@ angular.module('singleConceptAuthoringApp.project', [
         }, function (error) {
           $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
           notificationService.sendError('Error udpating Project Scheduled Rebase: ' + error);
+        });
+      };
+
+      $scope.toggleProjectDroolsValidation = function () {
+        $scope.project.projectDroolsValidationDisabled = !$scope.project.projectDroolsValidationDisabled;
+        notificationService.sendMessage('Updating Project Drools Validation...');
+        var branch = {};
+        branch.metadata = {'enableDroolsInRVF': !$scope.project.projectDroolsValidationDisabled + ''}        
+        terminologyServerService.updateBranchMetadata($scope.branch, branch).then(function (response) {         
+          notificationService.sendMessage('Project Drools Validation has been ' + ($scope.project.projectDroolsValidationDisabled ? 'disabled' : 'enabled') + ' successfully', 5000);
+        }, function (error) {
+          $scope.project.projectDroolsValidationDisabled = !$scope.project.projectDroolsValidationDisabled;
+          notificationService.sendError('Error udpating Project Drools Validation: ' + error);
         });
       };
       
