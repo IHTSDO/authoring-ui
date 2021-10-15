@@ -131,7 +131,8 @@
                           <div ng-if="!criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:28px; padding:10px; margin-left: -1px;"></div>
                           <div ng-if="!criteria.complete && !userRoles.includes(criteria.requiredRole)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:28px; padding:10px; margin-left: -1px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
-                              {{criteria.label}}
+                              <span ng-if="!criteria.reportName">{{criteria.label}}</span>
+                              <a ng-if="criteria.reportName" href="{{'/reporting/' + branch + '?report=' + criteria.reportName}}" target="_blank">{{criteria.label}}</a>                              
                           </div>
                       </div>
               </div>
