@@ -353,7 +353,7 @@
                 {{task.assignee.displayName}}
               </td>
               <td header-title="'Click to sort'" data-title="'Last Edited In'" sortable="'authorKey'" filter="{ 'author': 'text' }">
-                {{task.summary}}
+                {{task.key}}
               </td>
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd":"UTC"}}
@@ -366,6 +366,49 @@
         </div>
       </div>
 -->
+    
+      <div class="card ">
+        <div class="card-header">
+          <div class="card-title">
+            <button
+              ng-init="refsetsCollapsed = true"
+              ng-click="refsetsCollapsed = !refsetsCollapsed" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : refsetsCollapsed, 'md-keyboard-arrow-down' : !refsetsCollapsed}]">
+              <span class="project-subtitle">Refset Updates</span>
+            </button>
+            <span class="project-icon pull-right"><span class="md fa-sca fa-edit" style="font-size: 24px;
+    text-align: center;
+    line-height: 60px; border-radius: 0px 4px 4px 0px;
+    width: 100%;
+    float: left;
+    background-color: #8e24aa; color:#fff"></span></span>
+            <span class="arrow-dark-purple pull-right"></span>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        <div ng-show="refsetsCollapsed === false">
+            <div class="card-content clearfix">
+                <div class="row task-details project-main-buttons">
+                    <div class="col-md-3">
+                        <button class="btn btn-border cyan darken-1 editingtask"> 
+                            <span class="md fa-sca fa-edit cyan darken-2 iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
+    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update SE/SEP Refsets</span> 
+                        </button>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-border green darken-1 editingtask"> 
+                            <span class="md fa-sca fa-edit green darken-2 iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
+    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update Lateralizable Refset</span> 
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
 
     </div>
   </div>
