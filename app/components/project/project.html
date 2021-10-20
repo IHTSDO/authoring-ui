@@ -72,11 +72,11 @@
         </div>
         <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectDroolsValidationDisabled !== undefined" style="margin-top: 15px; margin-bottom: 15px;">
           <div><button class="btn btn-default transparent pull-right no-padding"             
-            ng-disabled="!userRoles.includes('PROJECT_MANAGER') && !userRoles.includes('PROJECT_LEAD')"        
+            ng-disabled="!userRoles.includes('ADMIN')"
             ng-class="[{'md-check-box' : !project.projectDroolsValidationDisabled}, {'md-check-box-outline-blank' : project.projectDroolsValidationDisabled}]"
             ng-click="toggleProjectDroolsValidation()" />
           </div>     
-          <div><p class="pull-right">Enable Drools Validation</p></div>
+          <div><p class="pull-right">Drools validation in RVF enabled</p></div>
         </div>
       </div>      
 </div>
