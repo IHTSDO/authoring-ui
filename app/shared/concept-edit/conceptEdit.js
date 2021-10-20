@@ -1263,6 +1263,87 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
            return deferred.promise;
         }
 
+        scope.acceptConceptVersion = function() {
+          // clear the top level errors and warnings
+          scope.errors = null;
+          scope.warnings = null;
+          scope.saving = true;
+
+          // clear the component-level errors and warnings
+          scope.validation = {
+            'warnings': {},
+            'errors': {}
+          };
+          notificationService.sendMessage('Saving accepted merged concept...');
+          var ids = [];
+          var collectConceptIds = function(axioms, ids) {
+            angular.forEach(axioms, function (axiom) {
+              angular.forEach(axiom.relationships, function (rel) {
+                if (!rel.deleted && rel.active) {
+                  if (ids.indexOf(rel.type.conceptId) === -1) {
+                    ids.push(rel.type.conceptId);
+                  }                  
+                  if (!rel.concrete && ids.indexOf(rel.target.conceptId) === -1) {
+                    ids.push(rel.target.conceptId);
+                  } 
+                }                                     
+              });
+            });
+          };
+          if(scope.concept.classAxioms) {
+            collectConceptIds(scope.concept.classAxioms, ids);
+          }
+          if(scope.concept.gciAxioms) {
+            collectConceptIds(scope.concept.gciAxioms, ids);
+          }
+
+          const branchPath = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+          terminologyServerService.bulkGetConceptUsingPOST(ids, branchPath).then(function(response) {
+            angular.forEach(response.items, function (concept) {
+              ids = ids.filter(function(item) {
+                return item !== concept.conceptId
+              });
+            });
+            
+            // accept the version even its' target concepts do not exist in the branch yet
+            if (ids.length > 0) {                            
+              $rootScope.$broadcast('acceptMerge', {
+                concept: scope.concept,
+                validationResults: scope.validation
+              });
+            } else {
+              // display error msg if concept not valid but no other
+              // errors/warnings specified
+              var errors = scope.isConceptValid(scope.concept);
+              if (errors && errors.length > 0) {
+                scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+                scope.saving = false;
+                notificationService.clear();
+                return;
+              }
+
+              errors = isMrcmAttributesValid(scope.concept);
+              if (errors && errors.length > 0) {
+                scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+                scope.saving = false;
+                notificationService.clear();
+                return;
+              }              
+              // store original concept id for CRS integration
+              var originalConcept = angular.copy(scope.concept);
+              scope.validateConcept(scope.concept).then(function () {
+                  $rootScope.$broadcast('acceptMerge', {
+                    concept: scope.concept,
+                    validationResults: scope.validation
+                  });
+                  if (Object.keys(scope.validation.errors).length > 0) {
+                    scope.concept = originalConcept;
+                    scope.saving = false;
+                  }              
+              });
+            }
+          });
+        };
 
         scope.saveConcept = function () {
           // clear the top level errors and warnings
@@ -1310,34 +1391,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             scope.saving = true;
 
-            // Merge and Inactivation are handled outside the concept componenet
-            if (scope.merge || scope.isInactivation) {
-              if (scope.merge) {
-                notificationService.sendMessage('Saving accepted merged concept...');
-              }
-              scope.validateConcept(scope.concept).then(function () {                
-                if (scope.merge) {
-                  $rootScope.$broadcast('acceptMerge', {
-                    concept: scope.concept,
-                    validationResults: scope.validation
-                  });
-
-                  if (Object.keys(scope.validation.errors).length > 0) {
-                    scope.concept = originalConcept;
-                    scope.saving = false;
-                  }
+            // Inactivation are handled outside the concept componenet
+            if (scope.isInactivation) {              
+              scope.validateConcept(scope.concept).then(function () {
+                if (scope.validation && scope.validation.hasErrors) {
+                  notificationService.sendError('Fix errors before continuing');
+                  scope.computeAxioms(axiomType.ADDITIONAL);
+                  scope.computeAxioms(axiomType.GCI);
+                  scope.reapplyTemplate();
                 } else {
-                  if (scope.validation && scope.validation.hasErrors) {
-                    notificationService.sendError('Fix errors before continuing');
-                    scope.computeAxioms(axiomType.ADDITIONAL);
-                    scope.computeAxioms(axiomType.GCI);
-                    scope.reapplyTemplate();
-                  } else {
-                    scope.saving = false;
-                    scope.isModified = false;
-                    $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
-                  }
-                }
+                  scope.saving = false;
+                  scope.isModified = false;
+                  $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
+                }                
               });
             } else {
               notificationService.sendMessage(scope.isSctid(scope.concept.conceptId) ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
