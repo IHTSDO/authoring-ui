@@ -1406,6 +1406,20 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
+    
+    function refsetUpdate(project, name){
+      var deferred = $q.defer();
+      let config = {
+          "jobName": name,
+          "project": project
+        }
+      $http.post(apiEndpoint + '/batch-jobs', config).then(function (response) {
+        deferred.resolve(response.data.resultUrl);
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
 
     return {
 
@@ -1448,7 +1462,8 @@ angular.module('singleConceptAuthoringApp')
       getTransformationRecipes: getTransformationRecipes,
       getTransformationJob: getTransformationJob,
       getTransformationJobResultAsTsv: getTransformationJobResultAsTsv,
-      createTransformationJob: createTransformationJob
+      createTransformationJob: createTransformationJob,
+      refsetUpdate: refsetUpdate
     };
 
   })

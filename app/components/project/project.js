@@ -21,8 +21,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', 'templateService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, notificationService, $location, ngTableParams, accountService, promotionService, templateService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -265,6 +265,12 @@ angular.module('singleConceptAuthoringApp.project', [
               });
           });
         };
+        
+      $scope.refsetUpdate = function (name) {
+          templateService.refsetUpdate($scope.project.key, name).then(function (response) {
+              $location.url('tasks/task/' + $scope.project.key + '/' + response + '/edit');
+          });
+      }
 
       // classify the project
       $scope.classify = function () {
