@@ -996,9 +996,13 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // GET /{path}/concepts/{conceptId}/members
-      function getMembersByReferencedComponent(conceptId, branch) {
+      function getMembersByReferencedComponent(referencedComponentId, branch, active) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/members?referencedComponentId=' + conceptId + '&limit=1000&active=true&expand=referencedComponent(expand(fsn()))').then(function (response) {
+        var params = '&limit=1000';
+        if (typeof active !== 'undefined') {
+          params += '&active=' + active;
+        }
+        $http.get(apiEndpoint + branch + '/members?referencedComponentId=' + referencedComponentId + params).then(function (response) {
           if (response.data.total === 0) {
             deferred.resolve([]);
           } else {
