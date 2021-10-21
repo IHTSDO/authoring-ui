@@ -957,6 +957,9 @@ button[disabled] .project-icon {
     padding: 0px 10px 0px 0px ;
     line-height: 30px;
 }
+.project-main-buttons button.transparent:disabled {    
+    border: none;
+}
 .project-main-buttons .project-icon {
     height: 30px;
     width: 30px;
