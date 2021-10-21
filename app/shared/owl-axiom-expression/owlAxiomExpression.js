@@ -189,7 +189,7 @@ angular.module('singleConceptAuthoringApp.owlAxiomExpressionModal', [])
     }
 
     function getOwlAxiomExpressions () {
-      terminologyServerService.getMembersByReferencedComponent($scope.conceptId, $scope.branch).then(function (response) {
+      terminologyServerService.getMembersByReferencedComponent($scope.conceptId, $scope.branch, true).then(function (response) {
         if (response.total !== 0) {
           angular.forEach(response.items, function (item) {
             if (item.additionalFields 
