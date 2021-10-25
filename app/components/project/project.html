@@ -367,7 +367,7 @@
       </div>
 -->
     
-      <div class="card ">
+      <div class="card " ng-show="userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD')">
         <div class="card-header">
           <div class="card-title">
             <button
@@ -392,15 +392,15 @@
                     <div class="col-md-3">
                         <button ng-click="refsetUpdate('Update SE SP Refsets')" class="btn btn-border cyan darken-1 editingtask"> 
                             <span class="md fa-sca fa-edit cyan darken-2 iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update SE/SEP Refsets</span> 
+    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update SEP Refsets</span> 
                         </button>
                     </div>
                     <div class="col-md-1">
                     </div>
                     <div class="col-md-3">
                         <button ng-click="refsetUpdate('Update Lateralizable Refset')" class="btn btn-border green darken-1 editingtask"> 
-                            <span class="md fa-sca fa-edit green darken-2 iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update Lateralizable Refset</span> 
+                            <span class="md fa-sca fa-edit iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
+    font-size: 22px; padding: 8px 13px; background-color: #2d7130"></span> <span class="button-link">Update Lateralizable Refset</span> 
                         </button>
                     </div>
                     <div class="col-md-2">
