@@ -267,9 +267,13 @@ angular.module('singleConceptAuthoringApp.project', [
         };
         
       $scope.refsetUpdate = function (name) {
-          templateService.refsetUpdate($scope.project.key, name).then(function (response) {
-              $location.url('tasks/task/' + $scope.project.key + '/' + response + '/edit');
-          });
+          modalService.confirm('This will update the relevant refset/s, create a new task and redirect you to it.  Continue?').then(function () {
+              templateService.refsetUpdate($scope.project.key, name).then(function (response) {
+                  $location.url('tasks/task/' + $scope.project.key + '/' + response + '/edit');
+              });
+            }, function () {
+              // do nothing
+            });
       }
 
       // classify the project
