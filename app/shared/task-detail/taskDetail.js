@@ -669,6 +669,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         window.open(rootUrl[1] + '/browse/' + issueKey, issueKey);
       };
+        
+      $scope.pollForCompletion = function () {
+          scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              // Poll if still running
+              if (response.summary.includes('- Running')) {
+                  $timeout(function () {
+                      $scope.pollForCompletion();
+                    }, 10000);
+              }
+              else{
+                $scope.task = response;
+              }
+          });
+      }
 
       function initialize() {
 
@@ -690,7 +704,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               $scope.complex = metadataService.isComplex();
               $scope.batch = metadataService.isBatch();
           });
-          $scope.task = response;          
+          $scope.task = response;
+          if($scope.task.summary.includes('- Running')){
+              $scope.pollForCompletion();
+          }
           if ($scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
             $scope.checkForAutomatedPromotionStatus(true);
           } else {
