@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.criteriaConfig = [];
 
     function initialize() {
-      aagService.getSAC().then(function (response) {
+      aagService.getSAC($scope.branch).then(function (response) {
           angular.forEach(response.content, function (configItem) {
               angular.forEach($scope.criteria, function (selectedItem) {
                   if(configItem.id === selectedItem.id){
