@@ -76,8 +76,8 @@ angular.module('singleConceptAuthoringApp')
         
       // Retrieve SAC items
       // GET /acceptance
-      function getSAC() {
-        return $http.get(apiEndpoint + 'criteria-items').then(function (response) {
+      function getSAC(branch) {
+        return $http.get(apiEndpoint + 'criteria-items/' + branch).then(function (response) {
           return response.data;
         }, function (error) {
         });
