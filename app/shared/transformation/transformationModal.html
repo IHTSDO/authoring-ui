@@ -36,12 +36,10 @@
         </div>
 
         <div class="col-md-6 p-t-20">
-          <label class="no-margin">Number of Concepts Per Task:</label>            
-          <select name="select-choice" class="form-control"
-            ng-options="number for number in conceptsPerTaskOptions"
-            ng-model="transformation.batchSize"         
-            >
-          </select>
+          <label class="no-margin">Number of Concepts Per Task:</label>
+          <input class="form-control" type="number"
+            ng-model="transformation.batchSize">            
+          </input>
         </div>
 
         <div class="col-md-6 p-t-20">
