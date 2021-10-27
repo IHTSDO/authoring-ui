@@ -27,7 +27,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
     };
 
     $scope.createTasks = function() {
-      var errors = $scope.checkPrerequisites();
+      var errors = $scope.checkPrerequisites().concat($scope.verifyBatchSize());
       if (errors.length > 0) {
         window.alert(errors.join('\n'));
         return;
@@ -71,6 +71,24 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       }
 
       return '';
+    }
+
+    $scope.verifyBatchSize = function () {
+      var error = [];
+      if ($scope.transformation.batchSize < 0 
+        || (!$scope.enableDrools && $scope.transformation.batchSize > 5000) 
+        || ($scope.enableDrools && $scope.transformation.batchSize > 500)) {
+        if ($scope.batchSize < 0) {
+          error.push('Number of Concepts Per Task must be greater than 0');
+        } else {
+          if ($scope.enableDrools) {
+            error.push('Drools validation is enabled therefore the number of concepts per task must be less than or equal to 500 to prevent extremely long running import tasks');
+          } else {
+            error.push('Number of Concepts Per Task must be less than or equal to 5000');
+          }
+        }        
+      }
+      return error;
     }
 
     $scope.checkPrerequisites = function () {
