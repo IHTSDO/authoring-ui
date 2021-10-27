@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
 
     $scope.projects = metadataService.getProjects();
     $scope.users = [];
-    $scope.conceptsPerTaskOptions = [5, 10, 15, 20, 25, 50, 100, 200, 500];
+    $scope.conceptsPerTaskOptions = [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, 5000, 10000];
     $scope.transformationRecipes = [];
 
     $scope.selectedFile = null;
@@ -26,8 +26,19 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       });
     };
 
+    $scope.toggleDroolsValidation = function() {
+      if ($scope.enableDrools) {
+        $scope.conceptsPerTaskOptions = [5, 10, 15, 20, 25, 50, 100, 200, 500];
+        if ($scope.transformation.batchSize > 500) {
+          $scope.transformation.batchSize = 500;
+        }
+      } else {
+        $scope.conceptsPerTaskOptions = [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, 5000, 10000];
+      }
+    }
+
     $scope.createTasks = function() {
-      var errors = $scope.checkPrerequisites().concat($scope.verifyBatchSize());
+      var errors = $scope.checkPrerequisites();
       if (errors.length > 0) {
         window.alert(errors.join('\n'));
         return;
@@ -71,24 +82,6 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       }
 
       return '';
-    }
-
-    $scope.verifyBatchSize = function () {
-      var error = [];
-      if ($scope.transformation.batchSize < 0 
-        || (!$scope.enableDrools && $scope.transformation.batchSize > 5000) 
-        || ($scope.enableDrools && $scope.transformation.batchSize > 500)) {
-        if ($scope.batchSize < 0) {
-          error.push('Number of Concepts Per Task must be greater than 0');
-        } else {
-          if ($scope.enableDrools) {
-            error.push('Drools validation is enabled therefore the number of concepts per task must be less than or equal to 500 to prevent extremely long running import tasks');
-          } else {
-            error.push('Number of Concepts Per Task must be less than or equal to 5000');
-          }
-        }        
-      }
-      return error;
     }
 
     $scope.checkPrerequisites = function () {
