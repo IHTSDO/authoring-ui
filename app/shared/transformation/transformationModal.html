@@ -37,9 +37,10 @@
 
         <div class="col-md-6 p-t-20">
           <label class="no-margin">Number of Concepts Per Task:</label>
-          <input class="form-control" type="number"
-            ng-model="transformation.batchSize">            
-          </input>
+          <select name="select-choice" class="form-control"
+            ng-options="number for number in conceptsPerTaskOptions"
+            ng-model="transformation.batchSize">
+          </select>
         </div>
 
         <div class="col-md-6 p-t-20">
@@ -53,7 +54,7 @@
 
         <div class="col-md-12 p-t-20">
           <label class="no-margin">Enable Drools Validation</label>            
-          <input class="checkbox-inline" type="checkbox" style="margin-top: 0px; width: 15px; min-height: 0px; margin-left: 5px; outline: none;" ng-model="enableDrools">
+          <input class="checkbox-inline" type="checkbox" ng-click="toggleDroolsValidation()" style="margin-top: 0px; width: 15px; min-height: 0px; margin-left: 5px; outline: none;" ng-model="enableDrools">
         </div>        
 
         <div class="col-md-6 p-t-20">         
