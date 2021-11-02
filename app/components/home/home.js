@@ -434,20 +434,22 @@ angular.module('singleConceptAuthoringApp.home', [
         };
 
         function addingTaskToList (newTask) {
-            if (loadingTask) {
-                var loadingTasksPoll = $interval(function () {
-                    if (!loadingTask) {
-                        if ($scope.tasks.filter(function (task) {
-                            return newTask.key === task.key;
-                          }).length === 0) {
-                            $scope.tasks.push(newTask);
+            if (newTask) {
+                if (loadingTask) {
+                    var loadingTasksPoll = $interval(function () {
+                        if (!loadingTask) {
+                            if ($scope.tasks.filter(function (task) {
+                                return newTask.key === task.key;
+                              }).length === 0) {
+                                $scope.tasks.push(newTask);
+                            }
+                            $interval.cancel(loadingTasksPoll);
                         }
-                        $interval.cancel(loadingTasksPoll);
-                    }
-                }, 100);
-            } else {
-                $scope.tasks.push(newTask);
-            }
+                    }, 100);
+                } else {
+                    $scope.tasks.push(newTask);
+                }
+            }            
         }
 
         $scope.isProjectsLoaded = function() {            

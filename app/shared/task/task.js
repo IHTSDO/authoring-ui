@@ -8,12 +8,14 @@ angular.module('singleConceptAuthoringApp')
     $scope.task = task;
     $scope.canDelete = canDelete;
     $scope.preferences = {};
-    $scope.newAssignee = task && task.assignee ? task.assignee : null; 
+    $scope.newAssignee = task && task.assignee ? task.assignee : null;
     $scope.mrcmValidation = {enable: false};
+    $scope.numberOfTaskOptions = [1, 2, 3, 4, 5];
 
     // if no task passed in, create empty object
     if (!$scope.task) {
       $scope.task = {};
+      $scope.task.numberOfTasks = 1;
     }
 
     ///////////////////////////////////////////
@@ -26,7 +28,7 @@ angular.module('singleConceptAuthoringApp')
 
       accountService.getUserPreferences().then(function (preferences) {
         $scope.preferences = preferences;
-        
+
         if(preferences.hasOwnProperty("lastProjectKey") && !$scope.task.key) {
           $scope.task.projectKey = $scope.preferences.lastProjectKey;
         }
@@ -38,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
             $scope.mrcmValidation.enable = response.enableMRCMValidation;
           }
         });
-      }      
+      }
     }
 
     // TODO Consider relaxing jshint to allow functions to be called pre
@@ -64,27 +66,53 @@ angular.module('singleConceptAuthoringApp')
         return;
       }
       $scope.msgError = null;
-      $scope.msgSuccess = 'Creating task...';
+      $scope.msgSuccess = 'Creating task' + ($scope.task.numberOfTasks === 1 ? '' : 's') + '...';
       $scope.disabled = true;
-      scaService.createTaskForProject($scope.task.projectKey, $scope.task).then(
-        function (response) {
-          if (openTask) {
-            $modalInstance.close();
-            $location.url('tasks/task/' + response.projectKey + '/' + response.key + '/edit');
-          } else {
-            // close modal
-            $modalInstance.close(response);
-          }
+      let count = 0;
 
-          $scope.preferences.lastProjectKey = $scope.task.projectKey;
-          accountService.saveUserPreferences($scope.preferences);
-          
-        }, function (error) {
-          $scope.disabled = false;
-          $scope.msgSuccess = '';
-          $scope.msgError = 'Error occurred when trying to create task: ' + error;
-        });
-
+      const createTask = function(task, summary, suffix) {
+        task.summary = summary + suffix;
+        scaService.createTaskForProject($scope.task.projectKey, task).then(
+          function (response) {
+            count++;
+            if (openTask) {
+              if ($scope.task.numberOfTasks === 1) {
+                $modalInstance.close();
+                $location.url('tasks/task/' + response.projectKey + '/' + response.key + '/edit');
+              } else {
+                if (count === $scope.task.numberOfTasks) {
+                  $modalInstance.close();
+                  $rootScope.$broadcast('reloadTasks');
+                }
+              }
+            } else {
+              if (count === $scope.task.numberOfTasks) {
+                if ($scope.task.numberOfTasks === 1) {
+                  // close modal
+                  $modalInstance.close(response);
+                } else {
+                  $modalInstance.close();
+                  $rootScope.$broadcast('reloadTasks');
+                }
+              }
+            }
+            if (count === 1) {
+              $scope.preferences.lastProjectKey = $scope.task.projectKey;
+              accountService.saveUserPreferences($scope.preferences);
+            }
+            if (count < $scope.task.numberOfTasks) {
+              createTask(task, summary, ' - ' + (count + 1));
+            }
+          }, function (error) {
+            $scope.disabled = false;
+            $scope.msgSuccess = '';
+            $scope.msgError = 'Error occurred when trying to create task: ' + error;
+          });
+      };
+      let task = {};
+      task.projectKey = $scope.task.projectKey;
+      task.description = $scope.task.description;
+      createTask(task, $scope.task.summary, $scope.task.numberOfTasks === 1 ? '' : ' - 1');
     };
 
     $scope.createAndOpenTask = function () {
@@ -111,21 +139,21 @@ angular.module('singleConceptAuthoringApp')
       if ($scope.newAssignee.username !== $scope.task.assignee.username) {
         let msg;
         if ($scope.newAssignee.username === $rootScope.accountDetails.login) {
-          msg = 'Do you really want to take over this task from ' + $scope.task.assignee.displayName + '?'; 
+          msg = 'Do you really want to take over this task from ' + $scope.task.assignee.displayName + '?';
         } else {
-          msg = 'Are you sure you want to assign this task to ' + $scope.newAssignee.displayName + '?';           
-        }       
-        modalService.confirm(msg).then(function () {        
+          msg = 'Are you sure you want to assign this task to ' + $scope.newAssignee.displayName + '?';
+        }
+        modalService.confirm(msg).then(function () {
           updatingTask();
         });
       } else {
         updatingTask();
-      }      
+      }
     };
 
     $scope.deleteTask = function() {
-      let msg = 'Are you sure you want to delete this task?';            
-      modalService.confirm(msg).then(function () {        
+      let msg = 'Are you sure you want to delete this task?';
+      modalService.confirm(msg).then(function () {
         $scope.msgSuccess = 'Deleting task...';
         $scope.disabled = true;
 
@@ -158,7 +186,7 @@ angular.module('singleConceptAuthoringApp')
             user.email = item.emailAddress;
             user.username = item.name;
             results.push(user);
-          }        
+          }
         });
 
         return results;
@@ -181,10 +209,10 @@ angular.module('singleConceptAuthoringApp')
         $scope.disabled = false;
         $scope.msgSuccess = '';
         $scope.msgError = 'Error occurred when trying to update task: ' + error;
-      });      
+      });
     }
-    
-    function isTaskAuthorOrReviewer(username) {      
+
+    function isTaskAuthorOrReviewer(username) {
       var exceptList = [];
       if ($scope.task.assignee) {
         exceptList.push($scope.task.assignee.username);
