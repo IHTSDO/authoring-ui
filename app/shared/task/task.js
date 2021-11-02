@@ -69,6 +69,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.msgSuccess = 'Creating task' + ($scope.task.numberOfTasks === 1 ? '' : 's') + '...';
       $scope.disabled = true;
       let count = 0;
+      let firstCreatedTask = null;
 
       const createTask = function(task, summary, suffix) {
         task.summary = summary + suffix;
@@ -76,14 +77,12 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             count++;
             if (openTask) {
-              if ($scope.task.numberOfTasks === 1) {
+              if (!firstCreatedTask) {
+                firstCreatedTask = response;
+              }
+              if (count === $scope.task.numberOfTasks) {
                 $modalInstance.close();
-                $location.url('tasks/task/' + response.projectKey + '/' + response.key + '/edit');
-              } else {
-                if (count === $scope.task.numberOfTasks) {
-                  $modalInstance.close();
-                  $rootScope.$broadcast('reloadTasks');
-                }
+                $location.url('tasks/task/' + firstCreatedTask.projectKey + '/' + firstCreatedTask.key + '/edit');
               }
             } else {
               if (count === $scope.task.numberOfTasks) {
