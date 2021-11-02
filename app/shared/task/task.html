@@ -23,6 +23,14 @@
                  placeholder="Enter task title">
             <br>
           </div>
+          <label ng-if="!task.key" for="taskTitle">Number of Tasks</label>          
+          <div ng-if="!task.key">
+            <select name="select-choice" class="form-control"
+              ng-options="number for number in numberOfTaskOptions"
+              ng-model="task.numberOfTasks">
+            </select>
+            <br>
+          </div>
           <div class="row" ng-if="task.key">
             <div class="col-md-6 no-padding">
               <div>
