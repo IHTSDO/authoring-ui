@@ -22,15 +22,7 @@
             <input autofocus="true" id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" ng-change="clearMessages()" type="text" class="form-control"
                  placeholder="Enter task title">
             <br>
-          </div>
-          <label ng-if="!task.key" for="taskTitle">Number of Tasks</label>          
-          <div ng-if="!task.key">
-            <select name="select-choice" class="form-control"
-              ng-options="number for number in numberOfTaskOptions"
-              ng-model="task.numberOfTasks">
-            </select>
-            <br>
-          </div>
+          </div>          
           <div class="row" ng-if="task.key">
             <div class="col-md-6 no-padding">
               <div>
@@ -55,16 +47,29 @@
             </div>
           </div>
 
-          <div ng-if="!task.key">
-            <label for="taskProject">Select Project</label>
-            <select id="taskProject" name="select-choice" class="form-control"
-                    ng-options="project.key as project.title for project in projects | orderBy: 'title'"
-                    ng-model="task.projectKey"
-                    ng-class="[{'task-color-black': task.key}] "
-                    ng-change="clearMessages()"
-                    ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"
-              >
-            </select>
+          <div class="row" ng-if="!task.key">
+            <div class="col-md-6 no-padding">
+              <div>
+                <label for="taskProject">Select Project</label>
+                <select id="taskProject" name="select-choice" class="form-control"
+                        ng-options="project.key as project.title for project in projects | orderBy: 'title'"
+                        ng-model="task.projectKey"
+                        ng-class="[{'task-color-black': task.key}] "
+                        ng-change="clearMessages()"
+                        ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"
+                  >
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 p-r-0">
+              <label for="taskTitle">Number of Tasks</label>          
+              <div>
+                <select name="select-choice" class="form-control"
+                  ng-options="number for number in numberOfTaskOptions"
+                  ng-model="task.numberOfTasks">
+                </select>                
+              </div>
+            </div>
           </div>
           
           <div ng-if="task.key" class="col-md-12 p-t-10 p-l-0 p-b-20">
