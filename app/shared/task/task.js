@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp')
               accountService.saveUserPreferences($scope.preferences);
             }
             if (count < $scope.task.numberOfTasks) {
-              createTask(task, summary, ' - ' + (count + 1));
+              createTask(task, summary, ' #' + (count + 1));
             }
           }, function (error) {
             $scope.disabled = false;
@@ -111,7 +111,7 @@ angular.module('singleConceptAuthoringApp')
       let task = {};
       task.projectKey = $scope.task.projectKey;
       task.description = $scope.task.description;
-      createTask(task, $scope.task.summary, $scope.task.numberOfTasks === 1 ? '' : ' - 1');
+      createTask(task, $scope.task.summary, $scope.task.numberOfTasks === 1 ? '' : ' #1');
     };
 
     $scope.createAndOpenTask = function () {
