@@ -37,7 +37,9 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.sac = null;
       $scope.creationDate = null;
       $scope.fullSac = [];
-
+      $scope.firstHalfManualSac = [];
+      $scope.secondHalfManualSac = [];
+        
       // initialize the header notification
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
@@ -91,6 +93,16 @@ angular.module('singleConceptAuthoringApp.project', [
                     angular.forEach(sac.criteriaItems, function (criteria) {                      
                       if (criteria.authoringLevel === "PROJECT") {
                         $scope.sac.push(criteria);                            
+                      }
+                    });
+                    angular.forEach($scope.sac, function (criteria) {                      
+                      if (criteria.manual && $scope.firstHalfManualSac.length < ($scope.sac.length/2)) {
+                        $scope.firstHalfManualSac.push(criteria);
+                      }
+                      else{
+                        if(criteria.manual){
+                            $scope.secondHalfManualSac.push(criteria);
+                        }
                       }
                     });
                   }                  
