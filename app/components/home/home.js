@@ -307,7 +307,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
             // check for project lock before continuing
             terminologyServerService.getBranch(projectBranch).then(function (response) {
-                if (!response.metadata || response.metadata && !response.metadata.lock) {
+                if (!response.locked) {
                     scaService.getUiStateForTask(task.projectKey, task.key, 'edit-panel')
                         .then(function (uiState) {
                             if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
@@ -340,7 +340,7 @@ angular.module('singleConceptAuthoringApp.home', [
         function redirectToConflicts(branchRoot, projectKey, taskKey) {
           // check for branch lock before continuing
           terminologyServerService.getBranch(branchRoot + '/' + projectKey).then(function (response) {
-            if (!response.metadata || response.metadata && !response.metadata.lock) {
+            if (!response.locked) {
               $location.url('tasks/task/' + projectKey + '/' + taskKey + '/conflicts');
             }
             else {
