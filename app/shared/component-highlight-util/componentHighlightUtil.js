@@ -178,10 +178,12 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function cleanRelationship(relationship) {
+      delete relationship.target.active;
       delete relationship.target.pt;
       delete relationship.target.fsn;
       delete relationship.target.moduleId;
       delete relationship.target.preferredSynonym;
+      delete relationship.type.active;
       delete relationship.type.pt;
       delete relationship.type.fsn;
       delete relationship.type.moduleId;        
