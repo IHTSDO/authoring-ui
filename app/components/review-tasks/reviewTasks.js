@@ -267,11 +267,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
         // check for project lock
         terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
-          if (!response.metadata || response.metadata && !response.metadata.lock) {
+          if (!response.locked) {
 
             // check for task lock
             terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey + '/' + task.key).then(function (response) {
-              if (!response.metadata || response.metadata && !response.metadata.lock) {
+              if (!response.locked) {
                 $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
               }
               else {

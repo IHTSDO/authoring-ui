@@ -260,7 +260,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function redirectToConflicts() {
       terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + $scope.projectKey).then(function (response) {
-        if (!response.metadata || response.metadata && !response.metadata.lock) {
+        if (!response.locked) {
           $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
         }
         else {

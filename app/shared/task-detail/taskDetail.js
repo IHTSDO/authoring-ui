@@ -495,7 +495,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         terminologyServerService.getBranch($scope.branch).then(function (response) {
 
           // if lock found, set rootscope variable and continue polling
-          if (response.metadata && response.metadata.lock) {            
+          if (response.locked) {            
             $rootScope.branchLocked = true;
             $timeout(function () {
               // Stop checking for lock if the task key not found
@@ -637,7 +637,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.viewConflicts = function () {
         terminologyServerService.getBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey).then(function (response) {
-          if (!response.metadata || response.metadata && !response.metadata.lock) {
+          if (!response.locked) {
             $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/conflicts');
           }
           else {
