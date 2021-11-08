@@ -362,7 +362,7 @@ angular.module('singleConceptAuthoringApp.project', [
       };
       $scope.mergeAndRebase = function (task) {
         terminologyServerService.getBranch($scope.branch).then(function (response) {
-          if (!response.metadata || response.metadata && !response.metadata.lock) {
+          if (!response.locked) {
             $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
           }
           else {
@@ -389,9 +389,9 @@ angular.module('singleConceptAuthoringApp.project', [
           // if response contains no flags, simply promote
           if (!warningsFound) {
             terminologyServerService.getBranch($scope.branch).then(function (response) {
-              if (!response.metadata || response.metadata && !response.metadata.lock) {
+              if (!response.locked) {
                 terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
-                  if (!response.metadata || response.metadata && !response.metadata.lock) {
+                  if (!response.locked) {
                     notificationService.sendMessage('Promoting project...');
                     scaService.promoteProject($routeParams.projectKey).then(function (response) {
                       if (response.status === 'CONFLICTS') {
@@ -447,9 +447,9 @@ angular.module('singleConceptAuthoringApp.project', [
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 terminologyServerService.getBranch($scope.branch).then(function (response) {
-                  if (!response.metadata || response.metadata && !response.metadata.lock) {
+                  if (!response.locked) {
                     terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
-                      if (!response.metadata || response.metadata && !response.metadata.lock) {
+                      if (!response.locked) {
                         notificationService.sendMessage('Promoting project...');
                         scaService.promoteProject($routeParams.projectKey).then(function (response) {
                           if (response.status === 'CONFLICTS') {
