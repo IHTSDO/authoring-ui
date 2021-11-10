@@ -24,13 +24,22 @@
             <br>
           </div>          
           <div class="row" ng-if="task.key">
-            <div class="col-md-6 no-padding">
+            <div class="col-md-4 no-padding">
               <div>
                 <label for="taskProject">Project</label>
                 <div class="">{{task.projectKey}}</div>
               </div>
             </div>
-            <div class="col-md-6 no-padding">
+            <div class="col-md-4 p-r-0" style="left: -30px;">
+              <label for="taskTitle">Line Item</label>          
+              <div>
+                <select name="select-choice" class="form-control">
+                    <option>COVID-19</option>
+                    <option>Quality Initiative Project</option>
+                </select>                
+              </div>
+            </div>
+            <div class="col-md-4 no-padding">
               <label for="taskAuthor">Author</label>
               <p ng-show="task.status === 'Promoted' || task.status === 'Completed'">{{task.assignee.displayName}}</p>
               <input ng-hide="task.status === 'Promoted' || task.status === 'Completed'" class="form-control" type="text" ng-model="newAssignee"
@@ -48,7 +57,7 @@
           </div>
 
           <div class="row" ng-if="!task.key">
-            <div class="col-md-6 no-padding">
+            <div class="col-md-4 no-padding">
               <div>
                 <label for="taskProject">Select Project</label>
                 <select id="taskProject" name="select-choice" class="form-control"
@@ -61,7 +70,16 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-6 p-r-0">
+            <div class="col-md-4 p-r-0">
+              <label for="taskTitle">Line Item</label>          
+              <div>
+                <select name="select-choice" class="form-control">
+                    <option>COVID-19</option>
+                    <option>Quality Initiative Project</option>
+                </select>                
+              </div>
+            </div>
+            <div class="col-md-4 p-r-0">
               <label for="taskTitle">Number of Tasks</label>          
               <div>
                 <select name="select-choice" class="form-control"

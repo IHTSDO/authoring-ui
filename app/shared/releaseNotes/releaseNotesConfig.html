@@ -1,0 +1,116 @@
+<div id="configModal" class="clearfix sac-modal">    
+  <div class="modal-header">
+    <div class="col-md-8">
+      <h4 class="modal-title">Release Notes Configuration</h4>
+    </div>
+    <div class="col-md-4">
+      <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
+    </div>
+  </div>
+  <div class="modal-body scroll-if-height">
+    <div class="col-md-12 no-padding">
+      <!-- Tab panes -->
+      <div class="tab-content col-md-12 no-padding m-t-10 ">
+          <div class=" col-md-12 no-padding">
+            <div class="form-group">              
+              <div class="col-md-12">
+                <div class="row" style="display:inline-flex; width:100%;">
+                    <div>
+                      <h4>Line Items</h4>
+                    </div>
+                </div>
+                <div class="col-md-6 no-padding" style="padding-left: 10px;">
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 1
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 2
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 3
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 4
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 5
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 6
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 no-padding" style="padding-left: 10px;">
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 7
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 8
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 9
+                    </div>
+                  </div>
+                  <div class="row" style="display:inline-flex; width:100%;">
+                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
+                    <div style="margin-top: 7px; font-size: 12px;">
+                        Line Item 10
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+  <div class="card-action clearfix" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
+  <hr>
+          <div class="pull-right">
+            <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-info no-margin"
+                ng-click="close()">Close Task Details </button>
+          </div>
+        </div>
+      </br> </br>
+    <div class="col-md-12 no-padding"> 
+      <!-- Display create only if no task supplied -->
+      <div class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-info no-margin"
+                ng-click="saveSac()">Save </button>
+      </div>
+        <div class="col-md-4"></div>
+      
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="close()">Cancel </button>
+      </div>
+    </div>
+  </div>
+</div>
