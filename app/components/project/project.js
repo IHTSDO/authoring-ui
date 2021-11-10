@@ -270,6 +270,36 @@ angular.module('singleConceptAuthoringApp.project', [
           });
         };
         
+      $scope.openReleaseNotesConfigModal = function () {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/releaseNotes/releaseNotesConfig.html',
+            controller: 'releaseNotesConfigCtrl',
+            resolve: {
+                branch: function() {
+                  return $scope.branch;
+                }
+              }
+          });
+
+          modalInstance.result.then(function () {
+          });
+      };
+        
+      $scope.openLineItemModal = function () {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/releaseNotes/lineItem.html',
+            controller: 'lineItemCtrl',
+            resolve: {
+                branch: function() {
+                  return $scope.branch;
+                }
+              }
+          });
+
+          modalInstance.result.then(function () {
+          });
+      };
+        
       $scope.refsetUpdate = function (name) {
           modalService.confirm('This will update the relevant refset/s, create a new task and redirect you to it.  Continue?').then(function () {
               templateService.refsetUpdate($scope.project.key, name).then(function (response) {

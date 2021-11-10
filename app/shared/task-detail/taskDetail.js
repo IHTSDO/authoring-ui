@@ -58,6 +58,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 });
             });
       }
+      
+      $scope.openLineItemModal = function () {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/releaseNotes/lineItem.html',
+            controller: 'lineItemCtrl',
+            resolve: {
+                branch: function() {
+                  return $scope.branch;
+                }
+              }
+          });
+
+          modalInstance.result.then(function () {
+          });
+      };
         
       $scope.acceptManualSac = function (id) {
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
