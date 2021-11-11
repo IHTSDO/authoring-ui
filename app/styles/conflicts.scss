@@ -125,6 +125,10 @@
      border-radius: 2px;
      transition: 240ms;
  }
+ .conflicts .nav.nav-tabs > li {
+	width: 50%;
+	text-align: center;
+}
  .conflicts .col-checkbox {
      width: 10%;
  }
