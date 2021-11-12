@@ -566,9 +566,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           if (!$scope.searchStr) {
             return;
           }
-          // Check min length for Traditional Medicine project
-          const isTraditionalMedicineProject = metadataService.isExtensionSet() && metadataService.getCurrentModuleId() === '895344001';
-          if (isTraditionalMedicineProject ? $scope.searchStr.length < 1 : $scope.searchStr.length < 3) {
+          // Check min length for Traditional Medicine/Korean project  
+          const selectedDialectName = $scope.dialects && $scope.userOptions.selectedDialect ? $scope.dialects[$scope.userOptions.selectedDialect] : '';        
+          const allowtOneCharSearch = metadataService.isExtensionSet() && (selectedDialectName === 'zh' || selectedDialectName === 'ko'); 
+          if (allowtOneCharSearch ? $scope.searchStr.length < 1 : $scope.searchStr.length < 3) {
             return;
           }        
         }
