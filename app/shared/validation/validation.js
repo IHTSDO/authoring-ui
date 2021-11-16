@@ -626,8 +626,19 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             scope.exceptionLoading = true;
             // filter out from AAG whitelist
-            getWhitelistCreationDate().then(function (creationDate) {                
-              aagService.getWhitelistItemsByBranchAndDate(scope.branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
+            getWhitelistCreationDate().then(function (creationDate) { 
+              let branch = '';
+              if(scope.viewFullListException && scope.task){
+                  branch =  scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
+                  branch =  branch.substr(0, branch.lastIndexOf("\/"));
+              }
+              else if(scope.viewFullListException && !scope.task){
+                  branch =  scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
+              }
+              else {
+                  branch = scope.branch;
+              }
+              aagService.getWhitelistItemsByBranchAndDate(branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
                 if(whitelistItems !== undefined){
                   let idList = [];
                   angular.forEach(whitelistItems, function (item) {
