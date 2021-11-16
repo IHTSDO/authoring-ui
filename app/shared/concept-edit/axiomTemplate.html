@@ -48,7 +48,7 @@
                   ng-click="toggleAxiomActive(axiom)"
                   ng-if="axiom.released && !isStatic"
                   ng-disabled="isInactivation  || isLockedModule(axiom.moduleId) && concept.released"
-                  class="btn-default editbuttons fa-sca fa-power-off small-buttons tooltips-bottom status-concept tooltips-light normal-case m-l-5">
+                  class="btn-default editbuttons fa-sca fa-power-off small-buttons normal-case m-l-5">
       <button ng-if="axiom.type === 'additional' && axiom.definitionStatus === 'FULLY_DEFINED'"
               ng-disabled="isStatic || isLockedModule(axiom.moduleId) || template"
               class="white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light offset-tooltip-right m-l-5"

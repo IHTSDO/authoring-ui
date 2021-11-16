@@ -1541,3 +1541,9 @@ button-link .bluehl .grey.darken-3 {
     padding-top: 0px;
     padding-bottom: 0px;
 }
+.status-concept.small-buttons.red.btn-default[disabled] {
+    color: #e92848;
+}
+.status-concept.small-buttons.green.btn-default[disabled] {
+    color: #4CAF50;
+}
