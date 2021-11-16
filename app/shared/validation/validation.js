@@ -642,16 +642,21 @@ angular.module('singleConceptAuthoringApp')
                 if(whitelistItems !== undefined){
                   let idList = [];
                   angular.forEach(whitelistItems, function (item) {
-                      angular.forEach(scope.assertionsWarning, function (assertion) {
+                      if(item.assertionFailureText !== null){
+                          item.failureText = item.assertionFailureText;
+                      }
+                      else{
+                          angular.forEach(scope.assertionsWarning, function (assertion) {
                           if(item.validationRuleId === assertion.assertionUuid){
                               item.failureText = assertion.assertionText;
                           }
-                      });
-                      angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
-                          if(item.validationRuleId === assertion.assertionUuid){
-                              item.failureText = assertion.assertionText;
-                          }
-                      });
+                          });
+                          angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                              if(item.validationRuleId === assertion.assertionUuid){
+                                  item.failureText = assertion.assertionText;
+                              }
+                          });
+                      }
                       idList.push(item.conceptId);
                   });
 
@@ -944,6 +949,7 @@ angular.module('singleConceptAuthoringApp')
                 whitelistItem.validationRuleId = failure.validationRuleId;
                 whitelistItem.branch = scope.branch;
                 whitelistItem.additionalFields = result[failure.componentId];
+                whitelistItem.assertionFailureText = failure.assertionText;
                 aagService.addToWhitelist(whitelistItem).then(function(respone) {
                   scope.allWhitelistItems.push(respone.data);
                   scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
@@ -1149,6 +1155,7 @@ angular.module('singleConceptAuthoringApp')
                   whitelistItem.conceptId = failure.conceptId;
                   whitelistItem.validationRuleId = failure.validationRuleId;
                   whitelistItem.branch = scope.branch;
+                  whitelistItem.assertionFailureText = failure.assertionText;
                   whitelistItem.additionalFields = responses.filter(function(item){
                     return item.hasOwnProperty(failure.componentId);
                   })[0][failure.componentId];
