@@ -1235,3 +1235,9 @@ background-color: #262e39;}
     border: none;
     color: #fff;
 }
+.sca-dark .status-concept.small-buttons.red.btn-default[disabled] {
+    color: #e92848;
+}
+.sca-dark .status-concept.small-buttons.green.btn-default[disabled] {
+    color: #4CAF50;
+}
