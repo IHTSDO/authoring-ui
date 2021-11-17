@@ -1971,7 +1971,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             moduleIds = moduleIds.filter(function(item, pos, self) {
                 return self.indexOf(item) == pos;
             });
-            console.log(moduleIds);
             let modules = metadataService.getallModules();
             angular.forEach(moduleIds, function(moduleId){
                 if(modules.filter(function (currentModule) {
@@ -1979,12 +1978,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }).length === 0){
                   terminologyServerService.getFullConcept(moduleId, scope.branch).then(function(response) {
                     let term = "";
-                    if(term.fsn){
-                        description = fsn.term;
+                    if(response.fsn){
+                        description = response.fsn.term;
                     }
                     else{
                         angular.forEach(response.descriptions, function(description){
-                            if(description.type === "FSN"){
+                            if(description.type === "FSN" && description.active){
                                 term = description.term;
                             }
                         })
