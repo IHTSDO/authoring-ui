@@ -1966,20 +1966,60 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           return !dialectFound ? true : false;
         }
+        
+        function checkModules(moduleIds){
+            moduleIds = moduleIds.filter(function(item, pos, self) {
+                return self.indexOf(item) == pos;
+            });
+            console.log(moduleIds);
+            let modules = metadataService.getallModules();
+            angular.forEach(moduleIds, function(moduleId){
+                if(modules.filter(function (currentModule) {
+                        return currentModule.id === moduleId;
+                    }).length === 0){
+                  terminologyServerService.getFullConcept(moduleId, scope.branch).then(function(response) {
+                    let term = "";
+                    if(term.fsn){
+                        description = fsn.term;
+                    }
+                    else{
+                        angular.forEach(response.descriptions, function(description){
+                            if(description.type === "FSN"){
+                                term = description.term;
+                            }
+                        })
+                    }
+                    metadataService.addExtensionModule(moduleId, term, true);
+                });
+              }
+            });
+            
+        }
 
         function setDefaultModuleId() {
+          let moduleIds = [];
           var moduleId = metadataService.getCurrentModuleId();
           if(!scope.concept.moduleId) {
             scope.concept.moduleId = moduleId;
+          }
+          else {
+              moduleIds.push(scope.concept.moduleId);
           }
           angular.forEach(scope.concept.descriptions, function (description) {
             if(!description.moduleId) {
               description.moduleId = moduleId;
             }
+            else {
+              moduleIds.push(description.moduleId);
+            }
+            
           });
           angular.forEach(scope.concept.classAxioms, function (axiom) {
             if(!axiom.moduleId) {
               axiom.moduleId = moduleId;
+            }
+            else {
+              moduleIds.push(axiom.moduleId);
             }
             angular.forEach(axiom.relationships, function (relationship) {
               if(!relationship.moduleId) {
@@ -1991,12 +2031,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if(!axiom.moduleId) {
               axiom.moduleId = moduleId;
             }
+            else {
+              moduleIds.push(axiom.moduleId);
+            }
             angular.forEach(axiom.relationships, function (relationship) {
               if(!relationship.moduleId) {
                 relationship.moduleId = moduleId;
               }
             });
           });
+          checkModules(moduleIds);
         }
 
         scope.setCaseSignificance = function (description, caseSignificance) {
