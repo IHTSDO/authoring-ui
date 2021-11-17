@@ -402,6 +402,7 @@ angular.module('singleConceptAuthoringApp')
               name: metadata.defaultModuleName
             }
           ],
+          additionalModules: [],
           shortname: metadata.shortname,
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguages: defaultLanguages,
@@ -470,6 +471,15 @@ angular.module('singleConceptAuthoringApp')
           return module.id === moduleId;
         }).length > 0;
     }
+      
+    function isAdditionalExtensionModule(moduleId) {
+      if (!extensionMetadata || !Array.isArray(extensionMetadata.additionalModules)) {
+        return false;
+      }
+      return extensionMetadata.additionalModules.filter(function (module) {
+          return module.id === moduleId;
+        }).length > 0;
+    }
 
     function isUsDialect(dialectId) {
       return dialectId === '900000000000509007';
@@ -500,12 +510,28 @@ angular.module('singleConceptAuthoringApp')
     // if released, return international edition, if not released
     function getModulesForModuleId(moduleId) {
       if (isExtensionModule(moduleId)) {
-
         return extensionMetadata.modules;
-      } else {
-
+      }
+      else if(isAdditionalExtensionModule(moduleId)){
+          return extensionMetadata.additionalModules;
+      }
+      else {
         return internationalMetadata.modules;
       }
+    }
+      
+    function getallModules() {
+        return internationalMetadata.modules.concat(extensionMetadata.modules).concat(extensionMetadata.additionalModules);
+    }
+      
+    function addExtensionModule(moduleId, moduleName, readOnly) {
+        extensionMetadata.additionalModules.push(
+            {
+                id: moduleId,
+                name: moduleName,
+                readOnly: readOnly
+            }
+        );
     }
 
     // setter for display name by module id
@@ -602,7 +628,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getLanguagesForModuleId(moduleId) {
-      if (isExtensionModule(moduleId) && extensionMetadata.languages !== null) {
+      if (isExtensionModule(moduleId) || isAdditionalExtensionModule(moduleId) && extensionMetadata.languages !== null) {
         return extensionMetadata.languages;
       } else {
         return internationalMetadata.languages;
@@ -945,6 +971,8 @@ angular.module('singleConceptAuthoringApp')
       getCurrentModuleId: getCurrentModuleId,
       getInternationalModuleId: getInternationalModuleId,
       getModulesForModuleId: getModulesForModuleId,
+      getallModules: getallModules,
+      addExtensionModule: addExtensionModule,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
