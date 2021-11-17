@@ -481,7 +481,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.toggleViewFullListExceptions = function () {
-            scope.viewFullListException = !scope.viewFullListException;
+            //scope.viewFullListException = !scope.viewFullListException;
             scope.allWhitelistItems = [];
             scope.exclusionsTableParams.reload();   
             checkWhitelist().then(function() {

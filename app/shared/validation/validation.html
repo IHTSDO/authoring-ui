@@ -136,12 +136,16 @@
   <!-- Exclusions table -->
   <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
     <div class="row">
-      <div class="col-md-4 p-10"><strong>{{exceptionLoading ? 'Loading...' : (viewFullListException ? 'Exceptions since last release' : 'Exceptions since last project promotion')}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}} </div>
+      <div class="col-md-4 p-10"><strong>{{exceptionLoading ? 'Loading...' : (viewFullListException ? 'Exceptions on all projects since last release' : 'Exceptions on this project since last promotion')}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}} </div>
       <div class="col-md-8 p-10">
         <button class="btn btn-default blue back-button pull-right m-l-10"
                 ng-click="toggleViewExclusions()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exceptions </button>
-        <button class="btn btn-default blue back-button pull-right m-l-10"
-                ng-click="toggleViewFullListExceptions()" ng-disabled="exceptionLoading"> Show {{viewFullListException ? 'Exceptions (on this project) since last project promotion' : 'Exceptions (on all projects) since last release'}} </button>        
+        <div class="switch pull-right white-text">
+          <label class="switch" style="margin-left:10px; margin-right:10px;"> This Project
+            <input type="checkbox" ng-model="viewFullListException" ng-disabled="exceptionLoading"
+                 ng-change="toggleViewFullListExceptions()">
+            <span class="lever" style="margin:12px;"></span> All Projects </label>
+        </div>     
         <button
           ng-if="exclusionsTableParams.total() != 0"
           class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case pull-right" style="background-color: #2196F3; margin-top: 9px;"
