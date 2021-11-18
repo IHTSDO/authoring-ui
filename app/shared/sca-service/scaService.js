@@ -409,10 +409,10 @@ angular.module('singleConceptAuthoringApp')
                       var classification = classifications[classifications.length - 1];
                       if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
                         msg += ': Changes found';
-                        url = '#/project/' + newNotification.project;
+                        url = '#/project/' + newNotification.project + '?expandClassification=true';
                       } else {
                         msg += ': No changes found';
-                        url = '#/project/' + newNotification.project;
+                        url = '#/project/' + newNotification.project + '?expandClassification=true';
                       }
 
                       notificationService.sendMessage(msg, 0, url);
@@ -477,7 +477,7 @@ angular.module('singleConceptAuthoringApp')
                   if (newNotification.task) {
                     url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
                   } else {
-                    url = '#/project/' + newNotification.project;
+                    url = '#/project/' + newNotification.project  + '?expandValidation=true';
                   }
                 }
 
