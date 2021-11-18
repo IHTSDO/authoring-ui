@@ -13,7 +13,6 @@ angular.module('singleConceptAuthoringApp')
 
         // timeout variable for current notification
         var timeout = null;
-
         var classificationResultsFound = false;
         var validationReportFound = false;
 
@@ -49,7 +48,13 @@ angular.module('singleConceptAuthoringApp')
 
           if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
             $route.reload();
-          } else {
+          } else if(classificationResultsFound){
+            $location.path(scope.notification.url).search('expandClassification', 'true');
+          }
+          else if(validationReportFound){
+            $location.path(scope.notification.url).search('expandValidation', 'true');
+          }
+          else{
             $location.path(scope.notification.url);
           }
 
