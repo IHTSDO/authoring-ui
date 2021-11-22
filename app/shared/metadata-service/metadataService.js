@@ -112,7 +112,7 @@ angular.module('singleConceptAuthoringApp')
       {id: 'OUTDATED', text: 'Outdated component', display: [6]},
       {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []},
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
-      {id: 'CLASSIFICATION_DERIVED_COMPONENT', text: 'Classification derived component', display: []},
+      {id: 'CLASSIFICATION_DERIVED_COMPONENT', text: 'Classification derived component', display: [6,10]},
       {id: 'MEANING_OF_COMPONENT_UNKNOWN', text: 'Meaning of component unknown', display: []}
     ];
     // var inactivationParent = '900000000000481005';
