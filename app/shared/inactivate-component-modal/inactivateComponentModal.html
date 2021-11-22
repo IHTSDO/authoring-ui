@@ -82,7 +82,6 @@
                 <textarea type="text" class="form-control no-padding-left" ng-model="association.type.text" readonly="true"></textarea>
               </div>
               <div class="col-md-6">
-
                 <textarea type="text" class="form-control no-padding-left"
                         ng-model="association.concept"
                         typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getTypeaheadConcepts($viewValue, true)"
@@ -90,6 +89,9 @@
                         typeahead-wait-ms="500"
                         typeahead-editable="false" typeahead-min-length="3"
                         placeholder="Type to select an associated concept..."></textarea>
+              </div>
+              <div class="col-md-1">
+                <span ng-if="inactivationReason.absenceHistoricalAssociationSupport">(optional)</span>
               </div>
               <div class="col-md-1" ng-if="(componentType === 'Concept' && inactivationReason.id === 'AMBIGUOUS') || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
@@ -197,7 +199,7 @@
       <div class=" col-md-6 right-button">
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
-                  ng-disabled="associationTargets.length > 0 && hasNoConceptTarget()"
+                  ng-disabled="associationTargets.length > 0 && hasNoConceptTarget() && inactivationReason.id !== 'MOVED_ELSEWHERE'"
                   ng-click="selectReason()"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>
