@@ -192,6 +192,26 @@ angular.module('singleConceptAuthoringApp')
             type: 'CONCEPT',
             activeOnly: true
           }
+        },
+        {
+          id: 'PARTIALLY_EQUIVALENT_TO',
+          conceptId: '1186924009',
+          text: 'PARTIALLY EQUIVALENT TO association reference set',
+          display: 10,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
+        },
+        {
+          id: 'POSSIBLY_REPLACED_BY',
+          conceptId: '1186921001',
+          text: 'POSSIBLY REPLACED BY association reference set',
+          display: 11,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
         }
       ];
     // var associationInactivationParent = '900000000000522004';
