@@ -48,6 +48,8 @@ angular.module('singleConceptAuthoringApp')
           association.type = null;
           if($scope.associationTargets.length === 1) {
             association.type = $scope.associationTargets[0];
+          } else {
+            delete association.concept;
           }
         }
       }
@@ -604,8 +606,7 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.addAssociation = function (index) {
-      if(typeof index !== 'undefined'
-        && $scope.inactivationReason) {
+      if(typeof index !== 'undefined' && $scope.inactivationReason && ($scope.inactivationReason.id == 'AMBIGUOUS' || $scope.inactivationReason.id == 'NOT_SEMANTICALLY_EQUIVALENT')) {
         $scope.associations.push({type: $scope.associationTargets[0], concept: null});
       } else {
         $scope.associations.push({type: null, concept: null});
