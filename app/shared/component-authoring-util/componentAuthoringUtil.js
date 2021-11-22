@@ -1061,15 +1061,15 @@ function getFsnDescriptionForConcept(concept) {
           errors.push('Concept moduleId must be set');
 
         }
-        var activeFsn = [];
-        for (var i = 0; i < concept.descriptions.length; i++) {
-          if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
-            activeFsn.push(concept.descriptions[i]);
-          }
-        }
-        if (activeFsn.length !== 1) {
-          errors.push('Concept must have exactly one active FSN');
-        }
+        // var activeFsn = [];
+        // for (var i = 0; i < concept.descriptions.length; i++) {
+        //   if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
+        //     activeFsn.push(concept.descriptions[i]);
+        //   }
+        // }
+        // if (activeFsn.length !== 1) {
+        //   errors.push('Concept must have exactly one active FSN');
+        // }
 
         // check descriptions
         for (var k = 0; k < concept.descriptions.length; k++) {
