@@ -110,7 +110,7 @@ angular.module('singleConceptAuthoringApp')
       {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},
       {id: 'LIMITED', text: 'Limited component', display: [9]},
       {id: 'OUTDATED', text: 'Outdated component', display: [6,11]},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []},
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: [6,12]},
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
       {id: 'CLASSIFICATION_DERIVED_COMPONENT', text: 'Classification derived component', display: [6,10]},
       {id: 'MEANING_OF_COMPONENT_UNKNOWN', text: 'Meaning of component unknown', display: []}
