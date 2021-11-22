@@ -258,13 +258,9 @@ angular.module('singleConceptAuthoringApp.project', [
               aagService.getBranchSAC($scope.branch, false).then(function (sac) {
                   $scope.sac = [];
                   $scope.fullSac = [];
+                  $scope.sortSacLists(sac);
                   if (sac && sac.criteriaItems) {
                     $scope.fullSac = sac.criteriaItems;
-                    angular.forEach(sac.criteriaItems, function (criteria) {                        
-                      if (criteria.authoringLevel === "PROJECT") {
-                        $scope.sac.push(criteria);
-                      }
-                    });
                   }                  
               });
           });
