@@ -79,7 +79,13 @@
             </div>
             <div class="row p-t-5" ng-repeat="association in associations">
               <div class="col-md-5">
-                <textarea type="text" class="form-control no-padding-left" ng-model="association.type.text" readonly="true"></textarea>
+                <textarea ng-if="associationTargets.length == 1" type="text" class="form-control no-padding-left" ng-model="association.type.text" readonly="true"></textarea>
+                <select class="form-control"
+                      ng-if="associationTargets.length > 1"
+                      ng-options="type as type.text for type in associationTargets"
+                      ng-model="association.type">
+                  <option value="" disabled>- Select an Association Type -</option>
+                </select>
               </div>
               <div class="col-md-6">
                 <textarea type="text" class="form-control no-padding-left"
@@ -93,7 +99,7 @@
               <div class="col-md-1">
                 <span ng-if="inactivationReason.absenceHistoricalAssociationSupport">(optional)</span>
               </div>
-              <div class="col-md-1" ng-if="(componentType === 'Concept' && inactivationReason.id === 'AMBIGUOUS') || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
+              <div class="col-md-1" ng-if="(componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
                       class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case inactivation-modal-buttons"> <span>Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
