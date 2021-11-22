@@ -105,7 +105,7 @@ angular.module('singleConceptAuthoringApp')
     // component inactivation metadata
     var conceptInactivationReasons = [
       {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
-      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [3]},
+      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [12], absenceHistoricalAssociationSupport: true},
       {id: 'DUPLICATE', text: 'Duplicate component', display: [7]},
       {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},
       {id: 'LIMITED', text: 'Limited component', display: [9]},
@@ -208,6 +208,16 @@ angular.module('singleConceptAuthoringApp')
           conceptId: '1186921001',
           text: 'POSSIBLY REPLACED BY association reference set',
           display: 11,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
+        },
+        {
+          id: 'ALTERNATIVE',
+          conceptId: '900000000000530003',
+          text: 'ALTERNATIVE association reference set',
+          display: 12,
           restrict: {
             type: 'CONCEPT',
             activeOnly: true
