@@ -660,45 +660,13 @@ angular.module('singleConceptAuthoringApp.project', [
       // on reload task broadcast, re-initialize
       $scope.$on('reloadTasks', function (event, data) {
         initialize();
-      });
-
-      // on open classification results from notification link
-      $scope.$on('toggleClassificationResults', function () {
-        setTimeout(function waitForClassificationContainerPresent() {
-          if ($scope.project
-            && $scope.project.latestClassificationJson) {
-             $scope.classificationCollapsed = false;
-          } else {
-            setTimeout(waitForClassificationContainerPresent, 500);
-          }
-        }, 500);
-      });
+      });      
 
       $scope.$on('promotion.completed', function (event, data) {
         if (data && data.project === $routeParams.projectKey && !data.task) {
           $scope.getProject();
         }
       });      
-
-      // on open validation report from notification link
-      $scope.$on('toggleValidationReport', function () {
-        setTimeout(function waitForValidationContainerPresent() {
-          if ( $scope.branch
-            && $scope.validationContainer
-            && $scope.validationContainer.report
-            && $scope.validationContainer.report.rvfValidationResult
-             ) {
-            scaService.getValidationForProject($scope.project.key).then(function (response) {
-              $scope.validationContainer = response;
-              $scope.validationCollapsed = true;
-            });
-          } else {
-            $scope.validationContainer = null;
-            setTimeout(waitForValidationContainerPresent, 500);
-          }
-        }, 500);
-
-      });
 
       //
       // Initialize on load
