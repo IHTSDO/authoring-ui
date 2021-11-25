@@ -521,7 +521,20 @@ angular.module('singleConceptAuthoringApp')
     }
       
     function getallModules() {
-        return internationalMetadata.modules.concat(extensionMetadata.modules).concat(extensionMetadata.additionalModules);
+        let allModules = [];
+        if (internationalMetadata && internationalMetadata.modules) {
+          allModules = allModules.concat(internationalMetadata.modules);
+        }
+        if (extensionMetadata) {
+          if (extensionMetadata.modules) {
+            allModules = allModules.concat(extensionMetadata.modules);
+          }
+          if (extensionMetadata.additionalModules) {
+            allModules = allModules.concat(extensionMetadata.additionalModules);
+          }
+        }
+        
+        return allModules;
     }
       
     function addExtensionModule(moduleId, moduleName, readOnly) {
