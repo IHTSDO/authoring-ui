@@ -39,7 +39,7 @@ angular.module('singleConceptAuthoringApp.projects', [
     
     hotkeys.bindTo($scope)
         .add({
-          combo: 'alt+n',
+          combo: 'alt+t',
           description: 'Create a New Task',
           callback: function() {$scope.openCreateTaskModal();}
         })
