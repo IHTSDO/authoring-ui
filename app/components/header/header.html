@@ -120,6 +120,12 @@
         <button class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple"
                 ng-click="openSettingsModal()"><i class="md md-settings f20"></i></button>
 
+      </li>
+      <li class="pull-right">
+        <button ng-disabled="!isProjectsLoaded()" class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple tooltips-bottom small-size-tooltip tooltips-light"
+                ng-click="openSearchProjectsModal()"><i class="md md-search f20"></i>
+                <span class="button-link">Search projects</span> </button>
+
       </li>      
       <li class="pull-right">
         <a id="profile_not_active" title="display name will link to profile services in later updates">

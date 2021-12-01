@@ -40,6 +40,17 @@ angular.module('singleConceptAuthoringApp')
           scope.notification = null;
         };
 
+        scope.isProjectsLoaded = function() {            
+            return metadataService.getProjects().length > 0;
+        };
+
+        scope.openSearchProjectsModal = function () {
+          $modal.open({
+              templateUrl: 'shared/project-search/projectSearch.html',
+              controller: 'projectSearchCtrl'
+          });
+        };
+
         scope.gotoNotificationLink = function () {
 
           // if on current page, reload to force any required refresh
