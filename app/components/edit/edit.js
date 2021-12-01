@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       callback: function() {if($scope.role !== 'REVIEWER'){$scope.validate();}}
     })
     .add({
-      combo: 'alt+n',
+      combo: 'alt+t',
       description: 'Create a new concept',
       callback: function() {if($scope.role !== 'REVIEWER'){$scope.createConcept(true);}}
     })
