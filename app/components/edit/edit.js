@@ -120,8 +120,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     })
     .add({
       combo: 'alt+t',
-      description: 'Create a new concept',
-      callback: function() {if($scope.role !== 'REVIEWER'){$scope.createConcept(true);}}
+      description: 'Create a New Task',
+      callback: function() {$scope.openCreateTaskModal();}
     })
     .add({
       combo: 'alt+e',
@@ -227,6 +227,27 @@ angular.module('singleConceptAuthoringApp.edit', [
       $rootScope.$broadcast('resetFillHeight');
       $scope.conceptsRendering = false;
     };
+    
+    $scope.openCreateTaskModal = function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/task/task.html',
+          controller: 'taskCtrl',
+          resolve: {
+            task: function () {
+              return null;
+            },
+            canDelete: function () {
+              return false;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (response) {
+          loadTasks();
+        }, function () {
+        });
+    };
+    
     $scope.goToConflicts = function () {
       scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
         .then(function (uiState) {
