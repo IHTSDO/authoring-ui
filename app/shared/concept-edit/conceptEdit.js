@@ -519,7 +519,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             })
           hotkeys.bindTo(scope)
           .add({
-            combo: 'alt+t',
+            combo: 'alt+m',
             description: 'View Concept in taxonomy',
             callback: function() {
               $rootScope.$broadcast('viewTaxonomy', {
@@ -529,6 +529,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               })
             }
+          })
+          hotkeys.bindTo(scope)
+          .add({
+            combo: 'alt+t',
+            description: 'Create a New Task',
+            callback: function() {scope.openCreateTaskModal();}
           })
           hotkeys.bindTo(scope)
           .add({
@@ -576,6 +582,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         }
+        
+        scope.openCreateTaskModal = function () {
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/task/task.html',
+              controller: 'taskCtrl',
+              resolve: {
+                task: function () {
+                  return null;
+                },
+                canDelete: function () {
+                  return false;
+                }
+              }
+            });
+
+            modalInstance.result.then(function (response) {
+              loadTasks();
+            }, function () {
+            });
+        };
 
         scope.$on('conceptFocusedFromKey', function (event, data) {
           if(scope.concept.conceptId === data.id){
