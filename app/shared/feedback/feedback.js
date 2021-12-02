@@ -208,6 +208,10 @@ angular.module('singleConceptAuthoringApp')
               callback: function() {
                 scope.selectNextConcept();
               }
+            }).add({
+              combo: 'alt+t',
+              description: 'Create a New Task',
+              callback: function() {$scope.openCreateTaskModal();}
             });
 
           // hotkeys.bindTo(scope)
@@ -222,6 +226,25 @@ angular.module('singleConceptAuthoringApp')
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
 
+          scope.openCreateTaskModal = function () {
+                var modalInstance = $modal.open({
+                  templateUrl: 'shared/task/task.html',
+                  controller: 'taskCtrl',
+                  resolve: {
+                    task: function () {
+                      return null;
+                    },
+                    canDelete: function () {
+                      return false;
+                    }
+                  }
+                });
+
+                modalInstance.result.then(function (response) {
+                  loadTasks();
+                }, function () {
+                });
+            };
           scope.role = null;
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
