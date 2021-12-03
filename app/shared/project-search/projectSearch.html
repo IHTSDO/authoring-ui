@@ -1,4 +1,4 @@
-<div id="taskSearchModal" class="clearfix">
+<div id="projectSearchModal" class="clearfix">
   <div class="modal-header clearfix">
     <button type="button" class="close" ng-click="close()">&times;</button>
     <h4 class="modal-title">Search Projects</h4>
@@ -22,7 +22,7 @@
       <table ng-table="projectsTableParams" template-pagination="utilities/data-table-pager.html"
          class="table table-full table-full-small">
         <tr ng-repeat="project in $data" class="clickable-row">
-          <td data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a class="tooltips-right"
+          <td style="padding: 10px;" data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a class="tooltips-right"
             ng-click="goToProject(project,true)">{{project.title}}
             <span>View Project Details</span> </a>
           </td>
@@ -32,7 +32,7 @@
           <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
           {{project.projectLead.displayName}}
           </td>
-          <td data-title="'Status'" sortable="'branchState'">
+          <td data-title="'Status'" ng-style="getBranchStateText(project) !== '??' && {'padding-top':'0px', 'padding-bottom':'0px'}" sortable="'branchState'">
             <span class="badge {{getBranchStateText(project)}}"
                   ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
           </td>
