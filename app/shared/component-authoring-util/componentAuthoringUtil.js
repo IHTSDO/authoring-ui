@@ -714,7 +714,9 @@ angular.module('singleConceptAuthoringApp')
                   // SYN en-GB matching acceptability of original description
                   if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
-                        addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                        if (!isTermGbFoundFn(synonymTermGbArr[i], concept)) {
+                          addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                        }                        
                       }
                     }                  
                 }
@@ -777,8 +779,10 @@ angular.module('singleConceptAuthoringApp')
                  
                   // SYN en-GB matching acceptability of original description
                   if (hasSynonymMatchingWords) {
-                      for (var i = 0; i < synonymTermGbArr.length; i++) {                     
-                        addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                      for (var i = 0; i < synonymTermGbArr.length; i++) {
+                        if (!isTermGbFoundFn(synonymTermGbArr[i], concept)) {
+                          addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
+                        }
                       }
                     }
                 }
