@@ -16,15 +16,6 @@
 
   <div ng-if="collectorUrl">
     <script type="text/javascript">
-      window.ATL_JQ_PAGE_PROPS = {
-        "triggerFunction": function (showCollectorDialog) {
-          jQuery("#myCustomTrigger").click(function (e) {
-            e.preventDefault();
-            showCollectorDialog();
-          });
-        }
-      };
-
       setInterval(function () {
         var downlink = navigator.connection.downlink;
         if (window.minNetworkConnection && downlink && window.minNetworkConnection !== 0 && downlink < window.minNetworkConnection) {
