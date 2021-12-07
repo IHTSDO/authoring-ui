@@ -223,6 +223,20 @@ angular
               $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
             }
 
+            // Register Issue collector after retreiving account details
+            window.ATL_JQ_PAGE_PROPS = {
+              "triggerFunction": function (showCollectorDialog) {
+                jQuery("#myCustomTrigger").click(function (e) {
+                  e.preventDefault();
+                  showCollectorDialog();
+                });
+              },
+              fieldValues: {
+                'fullname': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName,
+                'email': $rootScope.accountDetails.email
+              }
+            };
+
             // start connecting websocket after retrieving user information
             scaService.connectWebsocket();       
           }, 
