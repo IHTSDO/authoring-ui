@@ -381,7 +381,7 @@
       </div>
 -->
     
-      <div class="card " ng-show="userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD')">
+      <div class="card " ng-show="!$root.managedServiceUser && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))">
         <div class="card-header">
           <div class="card-title">
             <button
