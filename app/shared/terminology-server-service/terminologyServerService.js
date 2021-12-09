@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
 
       function updateBranchMetadata(branch, metadata) {
         var deferred = $q.defer();
-        $http.put(apiEndpoint + 'branches/' + branch, metadata).then(function (response) {          
+        $http.put(apiEndpoint + 'branches/' + branch + '/metadata-upsert', metadata).then(function (response) {          
           deferred.resolve(response.metadata);
         }, function (error) {          
           deferred.reject(error);
