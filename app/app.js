@@ -191,9 +191,7 @@ angular
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);
 
-        // Footer information
-        $("#copyright_text").html(features.copyrightNotice);
-
+        // Footer information        
         if(endpoints.scaUserGuideEndpoint) {
           $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint);
         }
