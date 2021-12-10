@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.project', [
             var defer = $q.defer();
             $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
                 defer.resolve();
-            });       
+            });
             return defer.promise;
           }
         ]
@@ -39,19 +39,19 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.fullSac = [];
       $scope.firstHalfManualSac = [];
       $scope.secondHalfManualSac = [];
-        
+
       // initialize the header notification
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
-        
+
       $scope.userRoles = [];
 
       var expandValidation = $location.search().expandValidation;
-      var expandClassification = $location.search().expandClassification;      
+      var expandClassification = $location.search().expandClassification;
       $scope.validationCollapsed = expandValidation ? !expandValidation : true;
-      $scope.classificationCollapsed = expandClassification ? !expandClassification : true;      
+      $scope.classificationCollapsed = expandClassification ? !expandClassification : true;
 
       hotkeys.bindTo($scope)
       .add({
@@ -71,26 +71,26 @@ angular.module('singleConceptAuthoringApp.project', [
            $rootScope.$broadcast('gotoNotificationLink', {});
         }
       });
-        
+
       $scope.sacSignedOff = function () {
           let value = true;
-          angular.forEach($scope.sac, function (criteria) {                      
+          angular.forEach($scope.sac, function (criteria) {
               if (criteria.complete === false) {
-                value = false;                       
+                value = false;
               }
             });
           return value;
       }
 
       $scope.getProject = function () {
-        scaService.getProjectForKey($routeParams.projectKey).then(function (response) { 
+        scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
           aagService.getBranchSAC(response.branchPath, false).then(function (sac) {
               aagService.getBranchCriteria(response.branchPath).then(function (criteria) {
                   $scope.fullSac = [];
                   if (sac && sac.criteriaItems) {
                     $scope.fullSac = sac.criteriaItems;
                     $scope.sortSacLists(sac);
-                  }                  
+                  }
                   if(criteria && criteria.creationDateLong && criteria.creationDateLong !== null){
                       $scope.creationDate = criteria.creationDateLong;
                   }
@@ -124,9 +124,9 @@ angular.module('singleConceptAuthoringApp.project', [
             }
           });
 
-          
 
-          terminologyServerService.getBranch(($scope.branch)).then(function(response) {            
+
+          terminologyServerService.getBranch(($scope.branch)).then(function(response) {
             if (response.hasOwnProperty('userRoles')) {
               $scope.userRoles = response.userRoles;
               permissionService.setRolesForBranch($scope.branch, response.userRoles);
@@ -173,15 +173,15 @@ angular.module('singleConceptAuthoringApp.project', [
             $scope.fullSac = [];
             if (sac && sac.criteriaItems) {
               $scope.fullSac = sac.criteriaItems;
-              angular.forEach(sac.criteriaItems, function (criteria) {                      
+              angular.forEach(sac.criteriaItems, function (criteria) {
                 if (criteria.authoringLevel === "PROJECT") {
-                  $scope.sac.push(criteria);                            
+                  $scope.sac.push(criteria);
                 }
               });
             }
           });
-        }        
-      });      
+        }
+      });
 
       // task creation from projects page
       $scope.openCreateTaskModal = function () {
@@ -202,7 +202,7 @@ angular.module('singleConceptAuthoringApp.project', [
         }, function () {
         });
       };
-        
+
       $scope.sortSacLists = function (sac){
           $scope.firstHalfManualSac = [];
           $scope.secondHalfManualSac = [];
@@ -223,7 +223,7 @@ angular.module('singleConceptAuthoringApp.project', [
           });
         };
       }
-        
+
       $scope.acceptManualSac = function (id) {
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch, false).then(function (sac) {
@@ -231,15 +231,15 @@ angular.module('singleConceptAuthoringApp.project', [
               });
           });
       };
-        
+
       $scope.unacceptManualSac = function (id) {
           aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch, false).then(function (sac) {
-                  $scope.sortSacLists(sac);                 
+                  $scope.sortSacLists(sac);
               });
           });
       };
-        
+
       $scope.openSACConfigModal = function () {
           var modalInstance = $modal.open({
             templateUrl: 'shared/sacconfig/sacconfig.html',
@@ -261,11 +261,11 @@ angular.module('singleConceptAuthoringApp.project', [
                   $scope.sortSacLists(sac);
                   if (sac && sac.criteriaItems) {
                     $scope.fullSac = sac.criteriaItems;
-                  }                  
+                  }
               });
           });
         };
-        
+
       $scope.refsetUpdate = function (name) {
           modalService.confirm('This will update the relevant refset/s, create a new task and redirect you to it.  Continue?').then(function () {
               templateService.refsetUpdate($scope.project.key, name).then(function (response) {
@@ -296,7 +296,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.validate = function () {
         checkPrerequisitesForValidation().then(function(message) {
           if (message) {
-            modalService.confirm(message).then(function () {        
+            modalService.confirm(message).then(function () {
               doValidate();
             });
           } else {
@@ -311,21 +311,21 @@ angular.module('singleConceptAuthoringApp.project', [
           let msg = null;
           if (response.latestClassificationJson) {
             let latestClassificationJson = response.latestClassificationJson;
-            if (latestClassificationJson.status === 'SAVED' &&  
+            if (latestClassificationJson.status === 'SAVED' &&
               (new Date(response.branchHeadTimestamp)).getTime() - (new Date(latestClassificationJson.saveDate)).getTime() < 1000) {
               msg = null;
             } else if ((new Date(latestClassificationJson.creationDate)).getTime() < response.branchHeadTimestamp) {
               msg = 'There are new changes on this project since the last classification. Do you still want to start a validation?';
             } else {
-              if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
+              if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound)
                 && latestClassificationJson.status !== 'SAVED') {
                   msg = 'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
-            } 
+            }
           } else {
             msg = 'Classification has not been run. Do you still want to start a validation?';
           }
-          deferred.resolve(msg);         
+          deferred.resolve(msg);
         });
         return deferred.promise;
       }
@@ -397,7 +397,7 @@ angular.module('singleConceptAuthoringApp.project', [
                                   msg += conflict.message;
                                   conflictCount++;
                                 });
-                              }                        
+                              }
                             });
                             if (msg.length > 0) {
                               notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
@@ -455,7 +455,7 @@ angular.module('singleConceptAuthoringApp.project', [
                                       msg += conflict.message;
                                       conflictCount++;
                                     });
-                                  }                        
+                                  }
                                 });
                                 if (msg.length > 0) {
                                   notificationService.sendError('Conflicts : ' + (conflictCount > 1 ?  ' \n' : '') + msg);
@@ -588,7 +588,7 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
-      $scope.convertReviewersToText = function (reviewers, property) {       
+      $scope.convertReviewersToText = function (reviewers, property) {
         if (reviewers) {
           var list = reviewers.map(a => a[property]);
           return list.join(', ');
@@ -599,7 +599,7 @@ angular.module('singleConceptAuthoringApp.project', [
        $scope.toggleProjectScheduledRebase = function () {
         $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
         notificationService.sendMessage('Updating Project Scheduled Rebase...');
-        scaService.updateProject($scope.project.key, {'projectScheduledRebaseDisabled': $scope.project.projectScheduledRebaseDisabled}).then(function (response) {         
+        scaService.updateProject($scope.project.key, {'projectScheduledRebaseDisabled': $scope.project.projectScheduledRebaseDisabled}).then(function (response) {
           notificationService.sendMessage('Project Scheduled Rebase successfully updated', 5000);
         }, function (error) {
           $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
@@ -610,16 +610,15 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.toggleProjectDroolsValidation = function () {
         $scope.project.projectDroolsValidationDisabled = !$scope.project.projectDroolsValidationDisabled;
         notificationService.sendMessage('Updating Project Drools Validation...');
-        var branch = {};
-        branch.metadata = {'enableDroolsInRVF': !$scope.project.projectDroolsValidationDisabled + ''}        
-        terminologyServerService.updateBranchMetadata($scope.branch, branch).then(function (response) {         
+        var metadata = {'enableDroolsInRVF': !$scope.project.projectDroolsValidationDisabled + ''}
+        terminologyServerService.updateBranchMetadata($scope.branch, metadata).then(function (response) {
           notificationService.sendMessage('Project Drools Validation has been ' + ($scope.project.projectDroolsValidationDisabled ? 'disabled' : 'enabled') + ' successfully', 5000);
         }, function (error) {
           $scope.project.projectDroolsValidationDisabled = !$scope.project.projectDroolsValidationDisabled;
           notificationService.sendError('Error udpating Project Drools Validation: ' + error);
         });
       };
-      
+
       // on load, retrieve tasks for project
       function initialize() {
         // initialize the project
@@ -660,13 +659,13 @@ angular.module('singleConceptAuthoringApp.project', [
       // on reload task broadcast, re-initialize
       $scope.$on('reloadTasks', function (event, data) {
         initialize();
-      });      
+      });
 
       $scope.$on('promotion.completed', function (event, data) {
         if (data && data.project === $routeParams.projectKey && !data.task) {
           $scope.getProject();
         }
-      });      
+      });
 
       //
       // Initialize on load
