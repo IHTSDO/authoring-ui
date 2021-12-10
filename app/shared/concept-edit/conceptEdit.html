@@ -362,6 +362,8 @@
                       class="form-control msd-elastic no-border-bottom desc"
                       ng-class="[{'template-editable' : description.template}]"
                       type="text"
+                      autocomplete-semantic-tag
+                      semantic-tag-on-select="updateDescription(description)"
                       placeholder="Description">
             </textarea>
 
@@ -374,6 +376,8 @@
                       class="form-control msd-elastic no-border-bottom desc"
                       ng-class="[{'template-editable' : description.template}]"
                       type="text"
+                      autocomplete-semantic-tag
+                      semantic-tag-on-select="updateDescription(description)"
                       placeholder="Description">
             </textarea>
 
