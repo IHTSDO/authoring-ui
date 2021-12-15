@@ -1460,7 +1460,11 @@ angular.module('singleConceptAuthoringApp')
       function doSearch (branch, params, config, tsv, searchTimestamp) {
         let deferred = $q.defer();
         if (params.termFilter && params.termFilter.includes(',')){
-          let conceptArray = params.termFilter.split(',');
+          let conceptArray = params.termFilter.split(',').map(function(item) {
+            return item.trim();
+          }).filter(function(item) {
+            return item != '';
+          });
           if (conceptArray.filter(function(item) {return item.substr(-2, 1) !== '0';}).length === 0) {
             params.conceptIds = conceptArray;
             delete params.termFilter;
