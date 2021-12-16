@@ -91,6 +91,7 @@ angular.module('singleConceptAuthoringApp')
       'staging scale',
       'state of matter',
       'substance',
+      'pattern',
       'transformation',
       'tumor staging',
       'unit of presentation',
