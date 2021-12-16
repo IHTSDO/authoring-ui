@@ -93,6 +93,7 @@ angular.module('singleConceptAuthoringApp')
       'substance',
       'pattern',
       'transformation',
+      'theoretical entity',
       'tumor staging',
       'unit of presentation',
       'product name',
