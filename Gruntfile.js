@@ -400,6 +400,11 @@ module.exports = function (grunt) {
           cwd: '.',
           src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
           dest: '<%= yeoman.dist %>'
+        }, {
+          expand: true,
+          cwd: '.',
+          src: '/node_modules/snomed-ecl-builder/output/*',
+          dest: '<%= yeoman.dist %>'
         }]
       },
       styles: {
