@@ -263,6 +263,22 @@
 
 <!-- endbuild -->
 
+<!-- Ecl Builder import -->
+<script type="text/javascript" src="node_modules/snomed-ecl-builder/output/ecl-builder.js"></script>
+<script>
+    function openEclBuilder(eclString, branch) {
+        console.log('ecl');
+        $("body").append("<ecl-builder id='ecl-builder' branch=" + branch + " api-url='/snowstorm/snomed-ct' ecl-string='" + eclString + "'></ecl-builder>");
+
+        const el = document.querySelector('ecl-builder');
+        el.addEventListener('output', e => {
+            $('#expandable-search').val(e.detail);
+            $('#expandable-search').focus();
+            $('#expandable-search').trigger('change');
+        });
+    }
+</script>
+
 <script type="text/javascript">
   // enable platform banner container (after angular has initialised its content)
   var platformBanner = document.querySelector("div.platformBanner");
