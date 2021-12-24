@@ -403,7 +403,7 @@ module.exports = function (grunt) {
         }, {
           expand: true,
           cwd: '.',
-          src: '/node_modules/snomed-ecl-builder/output/*',
+          src: 'node_modules/snomed-ecl-builder/output/*',
           dest: '<%= yeoman.dist %>'
         }]
       },
