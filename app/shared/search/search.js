@@ -1067,6 +1067,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // do nothing
         });
       };
+        
+      $scope.triggerEclBuilder = function () {
+          openEclBuilder($scope.escgExpr, $scope.branch);
+          $scope.$watch(
+            function() { return $('#expandable-search').val()},
+            function(newVal, oldVal) 
+              { 
+                  $scope.escgExpr = newVal;
+              }
+          );
+      }
 
       $scope.openTransformModal = function () {
         let transformConcepts = [];

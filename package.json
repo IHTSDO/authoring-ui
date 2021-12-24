@@ -36,6 +36,7 @@
     "load-grunt-tasks": "~3.1.0",
     "micromatch": "^4.0.4",
     "phantomjs": "~1.9",
+    "snomed-ecl-builder": "^1.0.1",
     "time-grunt": "~1.0.0",
     "vinyl-fs": "2.2.1"
   },
