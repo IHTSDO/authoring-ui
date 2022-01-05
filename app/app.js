@@ -57,6 +57,9 @@ angular
   .factory('httpRequestInterceptor', function () {
     return {
       request: function (config) {
+        if (config && config.headers && !config.headers.hasOwnProperty('Accept-Language')) {
+          config.headers['Accept-Language'] = 'en-us;q=0.8,en-gb;q=0.5';
+        }
         return config;
       }
     };
