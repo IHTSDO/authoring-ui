@@ -4214,7 +4214,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (axiom.active) {
                 for (var j = axiom.relationships.length - 1; j >= 0; j--) {
                   var rel = axiom.relationships[j];
-                  if (rel.active && rel.type.conceptId !== '116680003') {
+                  if (rel.active && rel.type.conceptId && rel.type.conceptId !== '116680003') {
                     if (typeof axiom.allowedAttributes !== 'undefined' && axiom.allowedAttributes.length !== 0) {
                       var found = axiom.allowedAttributes.filter(function(item){
                         return rel.type.conceptId === item.conceptId;
