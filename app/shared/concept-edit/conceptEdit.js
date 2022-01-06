@@ -3491,18 +3491,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationshipType = function (relationship, data, axiom) {
-            console.log(data);
-
-          if(data.concept) {
-            data.id = data.concept.conceptId;
-            data.pt = data.concept.preferredSynonym;
-            data.fsn = data.concept.fsn;
-          }
-
           // cancel if static
           if (scope.isStatic) {
             return;
           }
+
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.fsn = data.concept.fsn;
+          }
+          
           if(data.dataType){
               relationship.concreteValue = {};
               relationship.concreteValue.value = "";
@@ -3544,29 +3542,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // if target already specified, validate it
               if (relationship.target.conceptId) {
-                constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
+                constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
-                  scope.warnings = ['MRCM validation error: ' + relationship.target.pt + ' is not a valid target for attribute type ' + data.pt + '.'];
+                  terminologyServerService.findConcept(data.id, scope.branch).then(function(concept) {
+                    scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + concept.pt + '.'];
+                  });
                 });
               }
 
-              relationship.type.conceptId = data.id;
-              relationship.type.pt = data.pt;
-              relationship.type.fsn = data.fsn;
-              scope.isModified = true;
-
-              scope.computeAxioms(axiom.type);
-              autoSave();
+              terminologyServerService.findConcept(data.id, scope.branch).then(function(concept) {
+                relationship.type.conceptId = data.id;
+                relationship.type.pt = concept.pt;
+                relationship.type.fsn = data.fsn;
+                scope.isModified = true;
+  
+                scope.computeAxioms(axiom.type);
+                autoSave();
+              });              
             } else {
               scope.warnings = ['MRCM validation error: ' + data.fsn + ' is not a valid attribute.'];
             }
           } else {
-            relationship.type.conceptId = data.id;
-            relationship.type.pt = data.pt;
-            relationship.type.fsn = data.fsn;
-            scope.computeAxioms(axiom.type);
-            autoSave();
+            terminologyServerService.findConcept(data.id, scope.branch).then(function(concept) {
+              relationship.type.conceptId = data.id;
+              relationship.type.pt = concept.pt;
+              relationship.type.fsn = data.fsn;
+              scope.computeAxioms(axiom.type);
+              autoSave();
+            });            
           }
         };
 
