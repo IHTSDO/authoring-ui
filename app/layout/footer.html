@@ -2,7 +2,7 @@
 
   <ul class="nav navbar-nav navbar-left navbar-left-no-collapse identity-services">
 
-    <li><a href="http://www.snomed.org/" target="_blank" id="copyright_text"></a></li>
+    <li><a href="http://www.snomed.org/" target="_blank" id="copyright_text">Copyright © {{year}} SNOMED International</a></li>
     <li><a href="https://confluence.ihtsdotools.org/display/SIAPUG/SNOMED+International+Authoring+Platform+User+Guide"
            target="_blank" id="user_guide">User Guide</a></li>
     <li><a href="http://www.snomed.org/contact-us/" target="_blank" id="contact_us">Contact Us</a></li>
@@ -16,15 +16,7 @@
 
   <div ng-if="collectorUrl">
     <script type="text/javascript">
-      window.ATL_JQ_PAGE_PROPS = {
-        "triggerFunction": function (showCollectorDialog) {
-          jQuery("#myCustomTrigger").click(function (e) {
-            e.preventDefault();
-            showCollectorDialog();
-          });
-        }
-      };
-
+      $("#copyright_text").html('Copyright © '+ new Date().getFullYear() + ' SNOMED International');
       setInterval(function () {
         var downlink = navigator.connection.downlink;
         if (window.minNetworkConnection && downlink && window.minNetworkConnection !== 0 && downlink < window.minNetworkConnection) {

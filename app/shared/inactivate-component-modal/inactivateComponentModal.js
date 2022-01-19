@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, terminologyServerService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService) {
+  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, terminologyServerService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService, modalService) {
 
     // the selected tab
     $scope.actionTab = 1;
@@ -48,6 +48,8 @@ angular.module('singleConceptAuthoringApp')
           association.type = null;
           if($scope.associationTargets.length === 1) {
             association.type = $scope.associationTargets[0];
+          } else {
+            delete association.concept;
           }
         }
       }
@@ -287,60 +289,70 @@ angular.module('singleConceptAuthoringApp')
       if (!$scope.inactivationReason && !$scope.deletion) {
         window.alert('You must specify a reason for inactivation');
       } else {
+        if ($scope.inactivationReason && $scope.inactivationReason.id === 'AMBIGUOUS'
+            && $scope.associations.filter(function(item) { return item.type.id === 'POSSIBLY_EQUIVALENT_TO' }).length < 2) {
+              modalService.confirm('Only one POSSIBLY EQUIVALENT TO association reference set provided for Ambiguous inactivation reason. Do you want to proceed?').then(function () {
+                proceedInactivation();
+              });
+        } else {
+          proceedInactivation();
+        }
+      }        
+    };
 
-        let associationTarget = {};
+    function proceedInactivation() {
+      let associationTarget = {};
 
-        // FORMAT: associationTargets: {MOVED_FROM: ["139569002"]}
-        // validate and convert association targets
-        for (let i = 0; i < $scope.associations.length; i++) {
-            console.log($scope.associations);
-          // extract association for convenience
-          let association = $scope.associations[i];
+      // FORMAT: associationTargets: {MOVED_FROM: ["139569002"]}
+      // validate and convert association targets
+      for (let i = 0; i < $scope.associations.length; i++) {
+          console.log($scope.associations);
+        // extract association for convenience
+        let association = $scope.associations[i];
 
 
-          // if neither type nor concept specified
-          if (!association.concept || !$scope.deletion && !association.type) {
-            // Probably need to re-write this if-else statement as it is unused
-          }
+        // if neither type nor concept specified
+        if (!association.concept || !$scope.deletion && !association.type) {
+          // Probably need to re-write this if-else statement as it is unused
+        }
 
-          // if either field is blank, alert and return
+        // if either field is blank, alert and return
 //          else if (!association.type || !association.concept) {
 //            window.alert('You must specify both the association type and target');
 //            return;
 //          }
 
-          // add the association type/target
-          else {            
+        // add the association type/target
+        else {            
 
-            if(!association.type || association.type === null){
-                association.type = {id: ' '}
-            }
+          if(!association.type || association.type === null){
+              association.type = {id: ' '}
+          }
 
-            // if this type already specified, add to array
-            if (associationTarget.hasOwnProperty(association.type.id)) {
-              associationTarget[association.type.id].push(association.concept.concept.conceptId);
-            }
+          // if this type already specified, add to array
+          if (associationTarget.hasOwnProperty(association.type.id)) {
+            associationTarget[association.type.id].push(association.concept.concept.conceptId);
+          }
 
-            // otherwise, set this type to a single-element array containing
-            // this concept
-            else if(association.type.id){
-              associationTarget[association.type.id] = [association.concept.concept.conceptId];
-            }
+          // otherwise, set this type to a single-element array containing
+          // this concept
+          else if(association.type.id){
+            associationTarget[association.type.id] = [association.concept.concept.conceptId];
           }
         }
-
-        let results = {};
-        results.reason = $scope.inactivationReason;
-        results.associationTarget = associationTarget;
-        results.useFirstTarget = $scope.componentType === 'Concept' ? $scope.useFirstTargetSelection : false;
-        if($scope.deletion)
-        {
-            results.deletion = true;
-        }
-
-        $modalInstance.close(results);
       }
-    };
+
+      let results = {};
+      results.reason = $scope.inactivationReason;
+      results.associationTarget = associationTarget;
+      results.useFirstTarget = $scope.componentType === 'Concept' ? $scope.useFirstTargetSelection : false;
+      if($scope.deletion)
+      {
+          results.deletion = true;
+      }
+
+      $modalInstance.close(results);
+    }
 
     $scope.selectDeletion = function (reason) {
 
@@ -594,8 +606,7 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.addAssociation = function (index) {
-      if(typeof index !== 'undefined'
-        && $scope.inactivationReason) {
+      if(typeof index !== 'undefined' && $scope.inactivationReason && ($scope.inactivationReason.id == 'AMBIGUOUS' || $scope.inactivationReason.id == 'NOT_SEMANTICALLY_EQUIVALENT')) {
         $scope.associations.push({type: $scope.associationTargets[0], concept: null});
       } else {
         $scope.associations.push({type: null, concept: null});

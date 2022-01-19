@@ -2,8 +2,8 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$filter', '$q', '$routeParams', 'ngTableParams', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$route', 'modalService','scaService',
-    function ($rootScope, $filter, $q, $routeParams, NgTableParams, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $route, modalService, scaService) {
+  .directive('inactivation', ['$rootScope', '$filter', '$q', '$routeParams', 'ngTableParams', 'terminologyServerService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$route', 'modalService','scaService', 'crsService',
+    function ($rootScope, $filter, $q, $routeParams, NgTableParams, terminologyServerService, metadataService, inactivationService, notificationService, $timeout, $route, modalService, scaService, crsService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -940,6 +940,12 @@ angular.module('singleConceptAuthoringApp')
                           concept: scope.inactivationConcept                 
                         });
                         
+                        if (crsService.isCrsConcept(scope.inactivationConcept.conceptId)) {
+                          // update the crs concept
+                          terminologyServerService.getFullConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (updatedConcept) {
+                            crsService.saveCrsConcept(scope.inactivationConcept.conceptId, updatedConcept);
+                          });
+                        }
                         $rootScope.$broadcast('inactivation.inactivationCompleted');
                       });
                     }, function (error) {

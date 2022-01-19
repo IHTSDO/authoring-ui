@@ -1,0 +1,43 @@
+<div id="projectSearchModal" class="clearfix">
+  <div class="modal-header clearfix">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title">Search Projects</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12 no-padding">
+        <div>
+          <input autofocus="true"
+            type="text"
+            class="form-control"
+            ng-model="projectsTableParams.filter()['search']"                        
+            placeholder="Enter project's name or ID...">
+            <button style="position: absolute; right: 0px; top: 5px;" ng-show="projectsTableParams.filter()['search'] != undefined && projectsTableParams.filter()['search'] != ''" class="btn btn-default md md-close light-button transparent" ng-click="projectsTableParams.filter()['search'] = ''"></button>
+          <br>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive white">
+      <table ng-table="projectsTableParams" template-pagination="utilities/data-table-pager.html"
+         class="table table-full table-full-small">
+        <tr ng-repeat="project in $data" class="clickable-row">
+          <td style="padding: 10px;" data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a class="tooltips-right"
+            ng-click="goToProject(project,true)">{{project.title}}
+            <span>View Project Details</span> </a>
+          </td>
+          <td data-title="'Project Key'" sortable="'key'" filter="{ 'project': 'text' }">
+          {{project.key}}
+          </td>
+          <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
+          {{project.projectLead.displayName}}
+          </td>
+          <td data-title="'Status'" ng-style="getBranchStateText(project) !== '??' && {'padding-top':'0px', 'padding-bottom':'0px'}" sortable="'branchState'">
+            <span class="badge {{getBranchStateText(project)}}"
+                  ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

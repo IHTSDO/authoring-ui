@@ -30,7 +30,7 @@ angular.module('singleConceptAuthoringApp')
           args = date +'&page=0&size=10000'
       }
       else{
-          args = '';
+          args = '&page=0&size=10000';
       }
       $http.get(apiEndpoint + 'whitelist-items/' + branch + '?creationDate=' + args).then(function (response) {
         deferred.resolve(Array.isArray(response.data) ? response.data : []);

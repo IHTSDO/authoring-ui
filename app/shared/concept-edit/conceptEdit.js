@@ -181,7 +181,229 @@ angular.module('singleConceptAuthoringApp')
       scope.$on('$destroy', unregisterFn);
      }
   };
-});
+})
+
+// A customized version from typeahead bootstrap
+.directive('autocompleteSemanticTag', ['$compile', '$parse', '$timeout', '$document', '$position', 'metadataService',
+  function($compile, $parse, $timeout, $document, $position, metadataService) {
+
+    var HOT_KEYS = [9, 13, 27, 38, 40];
+
+    return {
+      require:'ngModel',
+      link:function (originalScope, element, attrs, modelCtrl) {
+
+        //minimal no of characters that needs to be entered before typeahead kicks-in
+        var minSearch = 1;
+
+        //model setter executed upon match selection
+        var $setModelValue = $parse(attrs.ngModel).assign;
+
+        var onSelectCallback = $parse(attrs.semanticTagOnSelect);
+
+        var hasFocus;
+
+        //create a child scope for the typeahead directive so we are not polluting original scope
+        //with typeahead-specific data (matches, query etc.)
+        var scope = originalScope.$new();
+        originalScope.$on('$destroy', function(){
+          scope.$destroy();
+        });
+
+        scope.allSemanticTags = [];
+        metadataService.getSemanticTags().forEach(function(element) {
+          scope.allSemanticTags.push({'label': element, 'value': element});
+        });
+
+        // WAI-ARIA
+        var popupId = 'typeahead-' + scope.$id + '-' + Math.floor(Math.random() * 10000);
+        element.attr({
+          'aria-autocomplete': 'list',
+          'aria-expanded': false,
+          'aria-owns': popupId
+        });
+
+        //pop-up element used to display matches
+        var popUpEl = angular.element('<div typeahead-popup></div>');
+        popUpEl.attr({
+          id: popupId,
+          matches: 'matches',
+          active: 'activeIdx',
+          select: 'select(activeIdx)',
+          query: 'query',
+          position: 'position'
+        });
+
+        var resetMatches = function() {
+          scope.matches = [];
+          scope.activeIdx = -1;
+          element.attr('aria-expanded', false);
+        };
+
+        var getMatchId = function(index) {
+          return popupId + '-option-' + index;
+        };
+
+        // Indicate that the specified match is the active (pre-selected) item in the list owned by this typeahead.
+        // This attribute is added or removed automatically when the `activeIdx` changes.
+        scope.$watch('activeIdx', function(index) {
+          if (index < 0) {
+            element.removeAttr('aria-activedescendant');
+          } else {
+            element.attr('aria-activedescendant', getMatchId(index));
+          }
+        });
+
+        var getMatchesAsync = function(inputValue) {
+          if (inputValue.includes('(')) {
+            var onCurrentRequest = (inputValue === modelCtrl.$viewValue);
+            if (onCurrentRequest && hasFocus) {
+                scope.activeIdx = -1;
+                scope.matches.length = 0;
+
+                let semanticTag = inputValue.substring(inputValue.lastIndexOf('(') + 1);
+                if (semanticTag && !semanticTag.endsWith(')')) {
+                  var filteredSemanticTags = scope.allSemanticTags.filter(function(item) {return item.value.indexOf(semanticTag) > -1});
+                  for (let i = 0; i < filteredSemanticTags.length; i++) {
+                    scope.matches.push({
+                      id: getMatchId(i),
+                      label: filteredSemanticTags[i].label, 
+                      value: filteredSemanticTags[i].value
+                    });
+                  }
+                } else {
+                  resetMatches();
+                }
+
+                scope.query = semanticTag;
+                //position pop-up with matches - we need to re-calculate its position each time we are opening a window
+                //with matches as a pop-up might be absolute-positioned and position of an input might have changed on a page
+                //due to other elements being rendered
+                scope.position = $position.position(element);
+                scope.position.top = scope.position.top + element.prop('offsetHeight');
+
+                element.attr('aria-expanded', true);
+                $timeout(function() { element[0].focus(); }, 0, false);
+            }
+          } else {
+            resetMatches();
+          }
+        };
+
+        resetMatches();
+
+        //we need to propagate user's query so we can higlight matches
+        scope.query = undefined;
+
+        //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later
+        var timeoutPromise;
+
+        var scheduleSearchWithTimeout = function(inputValue) {
+          timeoutPromise = $timeout(function () {
+            getMatchesAsync(inputValue);
+          }, 500);
+        };
+
+        var cancelPreviousTimeout = function() {
+          if (timeoutPromise) {
+            $timeout.cancel(timeoutPromise);
+          }
+        };
+
+        scope.select = function (activeIdx, timeoutInMs) {
+          var newModelValue = modelCtrl.$viewValue.substring(0, modelCtrl.$viewValue.lastIndexOf('(') + 1) + scope.matches[activeIdx].value + ')';          
+          $setModelValue(originalScope, newModelValue);
+          modelCtrl.$setValidity('editable', true);
+          modelCtrl.$setValidity('parse', true);
+          resetMatches();
+          onSelectCallback(originalScope, {});
+
+          //return focus to the input element if a match was selected via a mouse click event
+          // use timeout to avoid $rootScope:inprog error
+          $timeout(function() { element[0].focus(); }, typeof timeoutInMs == undefined ? 0 : timeoutInMs, true);
+        };
+
+        element.bind('keyup', function (evt) {
+          if (HOT_KEYS.indexOf(evt.which) !== -1) {
+            return;
+          }
+
+          hasFocus = true;
+          if (modelCtrl.$viewValue && modelCtrl.$viewValue.length >= minSearch) {
+            scheduleSearchWithTimeout(modelCtrl.$viewValue);
+          } else {
+            cancelPreviousTimeout();
+            resetMatches();
+          }
+
+          if (!modelCtrl.$viewValue) {
+            // Reset in case user had typed something previously.
+            modelCtrl.$setValidity('editable', true);
+            return inputValue;
+          } else {
+            modelCtrl.$setValidity('editable', false);
+            return undefined;
+          }
+        });
+
+        //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27)
+        element.bind('keydown', function (evt) {
+
+          //typeahead is open and an "interesting" key was pressed
+          if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
+            return;
+          }
+
+          // if there's nothing selected (i.e. focusFirst) and enter is hit, don't do anything
+          if (scope.activeIdx == -1 && (evt.which === 13 || evt.which === 9)) {
+            return;
+          }
+
+          evt.preventDefault();
+
+          if (evt.which === 40) {
+            scope.activeIdx = (scope.activeIdx + 1) % scope.matches.length;
+            scope.$digest();
+          } else if (evt.which === 38) {
+            scope.activeIdx = (scope.activeIdx > 0 ? scope.activeIdx : scope.matches.length) - 1;
+            scope.$digest();
+          } else if (evt.which === 13 || evt.which === 9) {
+            scope.$apply(function () {
+              scope.select(scope.activeIdx, 800);
+            });
+          } else if (evt.which === 27) {
+            evt.stopPropagation();
+            resetMatches();
+            scope.$digest();
+          }
+        });
+
+        element.bind('blur', function (evt) {
+          hasFocus = false;
+        });
+
+        // Keep reference to click handler to unbind it.
+        var dismissClickHandler = function (evt) {
+          if (element[0] !== evt.target) {
+            resetMatches();
+            scope.$digest();
+          }
+        };
+
+        $document.bind('click', dismissClickHandler);
+
+        originalScope.$on('$destroy', function(){
+          $document.unbind('click', dismissClickHandler);
+          // Prevent jQuery cache memory leak
+          popUpEl.remove();
+        });
+
+        var $popup = $compile(popUpEl)(scope);
+        element.after($popup);
+      }
+    };
+  }
+]);
 
 angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, terminologyServerService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter, hotkeys, batchEditingService, $window, accountService, componentHighlightUtil, browserService) {
     return {
@@ -519,7 +741,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             })
           hotkeys.bindTo(scope)
           .add({
-            combo: 'alt+t',
+            combo: 'alt+m',
             description: 'View Concept in taxonomy',
             callback: function() {
               $rootScope.$broadcast('viewTaxonomy', {
@@ -529,6 +751,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               })
             }
+          })
+          hotkeys.bindTo(scope)
+          .add({
+            combo: 'alt+t',
+            description: 'Create a New Task',
+            callback: function() {scope.openCreateTaskModal();}
           })
           hotkeys.bindTo(scope)
           .add({
@@ -576,6 +804,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             }
         }
+
+        scope.openCreateTaskModal = function () {
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/task/task.html',
+              controller: 'taskCtrl',
+              resolve: {
+                task: function () {
+                  return null;
+                },
+                canDelete: function () {
+                  return false;
+                }
+              }
+            });
+
+            modalInstance.result.then(function (response) {
+              loadTasks();
+            }, function () {
+            });
+        };
 
         scope.$on('conceptFocusedFromKey', function (event, data) {
           if(scope.concept.conceptId === data.id){
@@ -647,7 +895,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.templateTableParams.filter()['search'] = '';
           scope.templateTableParams.reload();
         }
-        
+
         //
         // Functionality for stashing and reapplying template, intended for use after cleanConcept invocations
         //
@@ -1166,7 +1414,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   return;
                 }
 
-                if (response.concept) {                  
+                if (response.concept) {
 
                   // if was created, add a requiresValidation flag for re-render triggering
                   // NOTE: Still unsure exactly why create is triggering a full re-render
@@ -1188,7 +1436,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
-                  
+
                   // if a template specified, store template/concept info
                   // store and re-apply the template (if present), cleaned during save
                   if (scope.template) {
@@ -1211,7 +1459,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
                     if (!scope.concept.released && scope.concept.active) {
                       browserService.getConceptAcrossMultipleExtensions(scope.concept.conceptId).then(function(response) {
-                        if (response) {                        
+                        if (response) {
                           for (var i in response.items) {
                             if (response.items[i].concept.fsn.term !== scope.concept.fsn) {
                               notificationService.sendWarning('The requested SCTID and FSN do not match, based on the latest published extension content.');
@@ -1282,11 +1530,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (!rel.deleted && rel.active) {
                   if (ids.indexOf(rel.type.conceptId) === -1) {
                     ids.push(rel.type.conceptId);
-                  }                  
+                  }
                   if (!rel.concrete && ids.indexOf(rel.target.conceptId) === -1) {
                     ids.push(rel.target.conceptId);
-                  } 
-                }                                     
+                  }
+                }
               });
             });
           };
@@ -1304,9 +1552,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return item !== concept.conceptId
               });
             });
-            
+
             // accept the version even its' target concepts do not exist in the branch yet
-            if (ids.length > 0) {                            
+            if (ids.length > 0) {
               $rootScope.$broadcast('acceptMerge', {
                 concept: scope.concept,
                 validationResults: scope.validation
@@ -1328,7 +1576,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.saving = false;
                 notificationService.clear();
                 return;
-              }              
+              }
               // store original concept id for CRS integration
               var originalConcept = angular.copy(scope.concept);
               scope.validateConcept(scope.concept).then(function () {
@@ -1339,7 +1587,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (Object.keys(scope.validation.errors).length > 0) {
                     scope.concept = originalConcept;
                     scope.saving = false;
-                  }              
+                  }
               });
             }
           });
@@ -1387,12 +1635,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // clean concept of any locally added information
             // store original concept id for CRS integration
-            var originalConcept = angular.copy(scope.concept);            
+            var originalConcept = angular.copy(scope.concept);
 
             scope.saving = true;
 
             // Inactivation are handled outside the concept componenet
-            if (scope.isInactivation) {              
+            if (scope.isInactivation) {
               scope.validateConcept(scope.concept).then(function () {
                 if (scope.validation && scope.validation.hasErrors) {
                   notificationService.sendError('Fix errors before continuing');
@@ -1403,7 +1651,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.saving = false;
                   scope.isModified = false;
                   $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
-                }                
+                }
               });
             } else {
               notificationService.sendMessage(scope.isSctid(scope.concept.conceptId) ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept');
@@ -1816,7 +2064,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.closeAndLoadNext = function() {
           scope.$emit('closeAndLoadNext', scope.concept);
-        };        
+        };
 
         /**
          * Function to toggle the definition status of the displayed concept,
@@ -1967,19 +2215,58 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return !dialectFound ? true : false;
         }
 
+        function checkModules(moduleIds){
+            moduleIds = moduleIds.filter(function(item, pos, self) {
+                return self.indexOf(item) == pos;
+            });
+            let modules = metadataService.getallModules();
+            angular.forEach(moduleIds, function(moduleId){
+                if(modules.filter(function (currentModule) {
+                        return currentModule.id === moduleId;
+                    }).length === 0){
+                  terminologyServerService.getFullConcept(moduleId, scope.branch).then(function(response) {
+                    let term = "";
+                    if(response.fsn){
+                        description = response.fsn.term;
+                    }
+                    else{
+                        angular.forEach(response.descriptions, function(description){
+                            if(description.type === "FSN" && description.active){
+                                term = description.term;
+                            }
+                        })
+                    }
+                    metadataService.addExtensionModule(moduleId, term, true);
+                });
+              }
+            });
+
+        }
+
         function setDefaultModuleId() {
+          let moduleIds = [];
           var moduleId = metadataService.getCurrentModuleId();
           if(!scope.concept.moduleId) {
             scope.concept.moduleId = moduleId;
+          }
+          else {
+              moduleIds.push(scope.concept.moduleId);
           }
           angular.forEach(scope.concept.descriptions, function (description) {
             if(!description.moduleId) {
               description.moduleId = moduleId;
             }
+            else {
+              moduleIds.push(description.moduleId);
+            }
+
           });
           angular.forEach(scope.concept.classAxioms, function (axiom) {
             if(!axiom.moduleId) {
               axiom.moduleId = moduleId;
+            }
+            else {
+              moduleIds.push(axiom.moduleId);
             }
             angular.forEach(axiom.relationships, function (relationship) {
               if(!relationship.moduleId) {
@@ -1991,12 +2278,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if(!axiom.moduleId) {
               axiom.moduleId = moduleId;
             }
+            else {
+              moduleIds.push(axiom.moduleId);
+            }
             angular.forEach(axiom.relationships, function (relationship) {
               if(!relationship.moduleId) {
                 relationship.moduleId = moduleId;
               }
             });
           });
+          checkModules(moduleIds);
         }
 
         scope.setCaseSignificance = function (description, caseSignificance) {
@@ -2244,11 +2535,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               angular.forEach(dialectIds, function (diaId) {
                 description.acceptabilityMap[diaId] = 'ACCEPTABLE';
               });
-  
+
               if (description.type === 'FSN') {
                 description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
               }
-  
+
               if (metadataService.isExtensionSet()) {
                 if (description.type === 'FSN') {
                   angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
@@ -2257,14 +2548,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }
                   });
                 } else {
-  
+
                   // Strip out US, GB dialects
                   delete description.acceptabilityMap['900000000000509007'];
                   delete description.acceptabilityMap['900000000000508004'];
                 }
               }
               autoSave();
-            });            
+            });
           }
 
           // if an unreleased description, no reason required
@@ -3200,18 +3491,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.dropAxiomRelationshipType = function (relationship, data, axiom) {
-            console.log(data);
-
-          if(data.concept) {
-            data.id = data.concept.conceptId;
-            data.pt = data.concept.preferredSynonym;
-            data.fsn = data.concept.fsn;
-          }
-
           // cancel if static
           if (scope.isStatic) {
             return;
           }
+
+          if(data.concept) {
+            data.id = data.concept.conceptId;
+            data.fsn = data.concept.fsn;
+          }
+          
           if(data.dataType){
               relationship.concreteValue = {};
               relationship.concreteValue.value = "";
@@ -3250,32 +3539,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   relationship.rangeMin = attribute.rangeMin;
                   relationship.rangeMax = attribute.rangeMax;
               }
-              
+
               // if target already specified, validate it
               if (relationship.target.conceptId) {
-                constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
+                constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
-                  scope.warnings = ['MRCM validation error: ' + relationship.target.pt + ' is not a valid target for attribute type ' + data.pt + '.'];
+                  terminologyServerService.findConcept(data.id, scope.branch).then(function(concept) {
+                    scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + concept.pt + '.'];
+                  });
                 });
               }
 
-              relationship.type.conceptId = data.id;
-              relationship.type.pt = data.pt;
-              relationship.type.fsn = data.fsn;
-              scope.isModified = true;
-
-              scope.computeAxioms(axiom.type);
-              autoSave();
+              terminologyServerService.findConcept(data.id, scope.branch).then(function(concept) {
+                relationship.type.conceptId = data.id;
+                relationship.type.pt = concept.pt;
+                relationship.type.fsn = data.fsn;
+                scope.isModified = true;
+  
+                scope.computeAxioms(axiom.type);
+                autoSave();
+              });              
             } else {
               scope.warnings = ['MRCM validation error: ' + data.fsn + ' is not a valid attribute.'];
             }
           } else {
-            relationship.type.conceptId = data.id;
-            relationship.type.pt = data.pt;
-            relationship.type.fsn = data.fsn;
-            scope.computeAxioms(axiom.type);
-            autoSave();
+            terminologyServerService.findConcept(data.id, scope.branch).then(function(concept) {
+              relationship.type.conceptId = data.id;
+              relationship.type.pt = concept.pt;
+              relationship.type.fsn = data.fsn;
+              scope.computeAxioms(axiom.type);
+              autoSave();
+            });            
           }
         };
 
@@ -3577,8 +3872,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             axiomIndex = scope.concept.gciAxioms.indexOf(axiom);
           }
           var elemID = axiom.type + '-axiom-relationship-type-' + scope.initializationTimeStamp + '-' + axiomIndex + '-' + rel.groupId + '-0';
-          $timeout(function () {                     
-            $('#' + elemID).focus();            
+          $timeout(function () {
+            $('#' + elemID).focus();
           }, 300);
         };
 
@@ -3848,7 +4143,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     extensionPreferredTerm = des.term;
                     count++;
                   }
-                });                
+                });
               }
             }
 
@@ -3923,7 +4218,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (axiom.active) {
                 for (var j = axiom.relationships.length - 1; j >= 0; j--) {
                   var rel = axiom.relationships[j];
-                  if (rel.active && rel.type.conceptId !== '116680003') {
+                  if (rel.active && rel.type.conceptId && rel.type.conceptId !== '116680003') {
                     if (typeof axiom.allowedAttributes !== 'undefined' && axiom.allowedAttributes.length !== 0) {
                       var found = axiom.allowedAttributes.filter(function(item){
                         return rel.type.conceptId === item.conceptId;
@@ -3935,7 +4230,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }
                   }
                 }
-              }              
+              }
             }
           }
 
@@ -4072,7 +4367,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var semanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
           var semanticTagFromFsn = null;
-          if (description.type === 'FSN') {
+          if (description.type === 'FSN' && semanticTagTattern.exec(description.term)) {
             semanticTagFromFsn = semanticTagTattern.exec(description.term)[1];
           }
 
@@ -4669,17 +4964,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }, 1000);
         };
-          
+
         scope.looseJsonParse = function (obj) {
             return Function('"use strict";return (' + obj + ')')();
         }
-        
+
         function isNumeric(str) {
           if (typeof str != "string") return false
           return !isNaN(str) &&
                  !isNaN(parseFloat(str))
         }
-          
+
         scope.updateConcreteValue = function (relationship) {
             scope.warnings = [];
             console.log(relationship);

@@ -21,13 +21,13 @@
               </a>
 
             <ul>
-              <li><a ng-href="#/">My Tasks</a>
+              <li class="no-padding"><a ng-href="#/"><div>My Tasks</div></a>
               </li>
-              <li><a ng-href="#/review-tasks">Review Tasks</a>
+              <li class="no-padding"><a ng-href="#/review-tasks"><div>Review Tasks</div></a>
               </li>
-              <li><a ng-href="#/my-projects">My Projects</a>
+              <li class="no-padding"><a ng-href="#/my-projects"><div>My Projects</div></a>
               </li>
-              <li><a ng-href="#/projects">All Projects</a>
+              <li class="no-padding"><a ng-href="#/projects"><div>All Projects</div></a>
               </li>
               <li ng-click="openBrowser()">TS Browser
               </li>
@@ -119,6 +119,12 @@
       <li class="pull-right">
         <button class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple"
                 ng-click="openSettingsModal()"><i class="md md-settings f20"></i></button>
+
+      </li>
+      <li class="pull-right">
+        <button ng-disabled="!isProjectsLoaded()" class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple tooltips-bottom small-size-tooltip tooltips-light"
+                ng-click="openSearchProjectsModal()"><i class="md md-search f20"></i>
+                <span class="button-link">Search projects</span> </button>
 
       </li>      
       <li class="pull-right">

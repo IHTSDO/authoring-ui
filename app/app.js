@@ -57,6 +57,9 @@ angular
   .factory('httpRequestInterceptor', function () {
     return {
       request: function (config) {
+        if (config && config.headers && !config.headers.hasOwnProperty('Accept-Language')) {
+          config.headers['Accept-Language'] = 'en-us;q=0.8,en-gb;q=0.5';
+        }
         return config;
       }
     };
@@ -191,9 +194,7 @@ angular
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);
 
-        // Footer information
-        $("#copyright_text").html(features.copyrightNotice);
-
+        // Footer information        
         if(endpoints.scaUserGuideEndpoint) {
           $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint);
         }
@@ -222,6 +223,20 @@ angular
             } else {
               $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
             }
+
+            // Register Issue collector after retreiving account details
+            window.ATL_JQ_PAGE_PROPS = {
+              "triggerFunction": function (showCollectorDialog) {
+                jQuery("#myCustomTrigger").click(function (e) {
+                  e.preventDefault();
+                  showCollectorDialog();
+                });
+              },
+              fieldValues: {
+                'fullname': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName,
+                'email': $rootScope.accountDetails.email
+              }
+            };
 
             // start connecting websocket after retrieving user information
             scaService.connectWebsocket();       

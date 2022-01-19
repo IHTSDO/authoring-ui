@@ -37,26 +37,38 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       }
       
       $scope.markBranchAsComplex = function () {
+        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.task = response;
           terminologyServerService.markBranchAsComplex($scope.branch, !$scope.complex).then(function (response) {
-              var branchMetadata = metadataService.getBranchMetadata();
-              if (!response.metadata) {
-                delete branchMetadata.metadata;
-              } else {
-                branchMetadata.metadata = response.metadata;
-              }
-              metadataService.setBranchMetadata(branchMetadata);
-              $scope.complex = metadataService.isComplex();
-              aagService.getBranchSAC($scope.branch).then(function (sac) {
-                  $scope.sac = [];
-                  if (sac && sac.criteriaItems) {
-                    angular.forEach(sac.criteriaItems, function (criteria) {
-                      if (criteria.authoringLevel === "TASK") {
-                        $scope.sac.push(criteria);                  
-                      }
-                    }); 
-                  }                
-                });
-            });
+            var branchMetadata = metadataService.getBranchMetadata();
+            if (!response.metadata) {
+              delete branchMetadata.metadata;
+            } else {
+              branchMetadata.metadata = response.metadata;
+            }
+            metadataService.setBranchMetadata(branchMetadata);
+            $scope.complex = metadataService.isComplex();              
+            aagService.getBranchSAC($scope.branch).then(function (sac) {
+                $scope.sac = [];
+                if (sac && sac.criteriaItems) {
+                  angular.forEach(sac.criteriaItems, function (criteria) {
+                    if (criteria.authoringLevel === "TASK") {
+                      if ($scope.complex && criteria.id.includes('task-review-changes') && $scope.task.status === 'Review Completed' && !criteria.complete) {
+                        aagService.acceptBranchSAC($scope.branch, criteria.id).then(function() {
+                          criteria.complete = true;
+                          $scope.sac.push(criteria);
+                        }, function() {
+                          $scope.sac.push(criteria);
+                        });                                                 
+                      } else {
+                        $scope.sac.push(criteria);
+                      }                                          
+                    }
+                  }); 
+                }                
+              });
+          });          
+        });
       }
       
       $scope.openLineItemModal = function () {
