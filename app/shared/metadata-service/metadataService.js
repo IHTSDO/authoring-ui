@@ -10,8 +10,6 @@ angular.module('singleConceptAuthoringApp')
 
     var namespaces = [];
 
-    var mrcmAttributeDomainMembers = [];
-
     var ungroupedAttributes = [];
 
     var myProjects = [];
@@ -93,7 +91,9 @@ angular.module('singleConceptAuthoringApp')
       'staging scale',
       'state of matter',
       'substance',
+      'pattern',
       'transformation',
+      'theoretical entity',
       'tumor staging',
       'unit of presentation',
       'product name',
@@ -107,13 +107,15 @@ angular.module('singleConceptAuthoringApp')
     // component inactivation metadata
     var conceptInactivationReasons = [
       {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
-      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [3]},
+      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [12], absenceHistoricalAssociationSupport: true},
       {id: 'DUPLICATE', text: 'Duplicate component', display: [7]},
       {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},
-      {id: 'LIMITED', text: 'Limited component', display: [9]},
-      {id: 'OUTDATED', text: 'Outdated component', display: [6]},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
+      //{id: 'LIMITED', text: 'Limited component', display: [9]},
+      {id: 'OUTDATED', text: 'Outdated component', display: [6,11]},
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: [6,12]},
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
+      {id: 'CLASSIFICATION_DERIVED_COMPONENT', text: 'Classification derived component', display: [6,10]},
+      {id: 'MEANING_OF_COMPONENT_UNKNOWN', text: 'Meaning of component unknown', display: []}
     ];
     // var inactivationParent = '900000000000481005';
 
@@ -188,6 +190,36 @@ angular.module('singleConceptAuthoringApp')
           conceptId: '900000000000528000',
           text: 'WAS A association reference set',
           display: 9,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
+        },
+        {
+          id: 'PARTIALLY_EQUIVALENT_TO',
+          conceptId: '1186924009',
+          text: 'PARTIALLY EQUIVALENT TO association reference set',
+          display: 10,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
+        },
+        {
+          id: 'POSSIBLY_REPLACED_BY',
+          conceptId: '1186921001',
+          text: 'POSSIBLY REPLACED BY association reference set',
+          display: 11,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
+        },
+        {
+          id: 'ALTERNATIVE',
+          conceptId: '900000000000530003',
+          text: 'ALTERNATIVE association reference set',
+          display: 12,
           restrict: {
             type: 'CONCEPT',
             activeOnly: true
@@ -402,6 +434,7 @@ angular.module('singleConceptAuthoringApp')
               name: metadata.defaultModuleName
             }
           ],
+          additionalModules: [],
           shortname: metadata.shortname,
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguages: defaultLanguages,
@@ -470,6 +503,15 @@ angular.module('singleConceptAuthoringApp')
           return module.id === moduleId;
         }).length > 0;
     }
+      
+    function isAdditionalExtensionModule(moduleId) {
+      if (!extensionMetadata || !Array.isArray(extensionMetadata.additionalModules)) {
+        return false;
+      }
+      return extensionMetadata.additionalModules.filter(function (module) {
+          return module.id === moduleId;
+        }).length > 0;
+    }
 
     function isUsDialect(dialectId) {
       return dialectId === '900000000000509007';
@@ -500,12 +542,41 @@ angular.module('singleConceptAuthoringApp')
     // if released, return international edition, if not released
     function getModulesForModuleId(moduleId) {
       if (isExtensionModule(moduleId)) {
-
         return extensionMetadata.modules;
-      } else {
-
+      }
+      else if(isAdditionalExtensionModule(moduleId)){
+          return extensionMetadata.additionalModules;
+      }
+      else {
         return internationalMetadata.modules;
       }
+    }
+      
+    function getallModules() {
+        let allModules = [];
+        if (internationalMetadata && internationalMetadata.modules) {
+          allModules = allModules.concat(internationalMetadata.modules);
+        }
+        if (extensionMetadata) {
+          if (extensionMetadata.modules) {
+            allModules = allModules.concat(extensionMetadata.modules);
+          }
+          if (extensionMetadata.additionalModules) {
+            allModules = allModules.concat(extensionMetadata.additionalModules);
+          }
+        }
+        
+        return allModules;
+    }
+      
+    function addExtensionModule(moduleId, moduleName, readOnly) {
+        extensionMetadata.additionalModules.push(
+            {
+                id: moduleId,
+                name: moduleName,
+                readOnly: readOnly
+            }
+        );
     }
 
     // setter for display name by module id
@@ -602,7 +673,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getLanguagesForModuleId(moduleId) {
-      if (isExtensionModule(moduleId) && extensionMetadata.languages !== null) {
+      if (isExtensionModule(moduleId) || isAdditionalExtensionModule(moduleId) && extensionMetadata.languages !== null) {
         return extensionMetadata.languages;
       } else {
         return internationalMetadata.languages;
@@ -945,6 +1016,8 @@ angular.module('singleConceptAuthoringApp')
       getCurrentModuleId: getCurrentModuleId,
       getInternationalModuleId: getInternationalModuleId,
       getModulesForModuleId: getModulesForModuleId,
+      getallModules: getallModules,
+      addExtensionModule: addExtensionModule,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,

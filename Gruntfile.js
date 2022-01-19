@@ -89,6 +89,10 @@ module.exports = function (grunt) {
                 connect.static('./bower_components')
               ),
               connect().use(
+                '/node_modules',
+                connect.static('./node_modules')
+              ),
+              connect().use(
                 '/app/styles',
                 connect.static('./app/styles')
               ),
@@ -107,6 +111,10 @@ module.exports = function (grunt) {
               connect().use(
                 '/bower_components',
                 connect.static('./bower_components')
+              ),
+              connect().use(
+                '/node_modules',
+                connect.static('./node_modules')
               ),
               connect.static(appConfig.app)
             ];
@@ -391,6 +399,11 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '.',
           src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
+          dest: '<%= yeoman.dist %>'
+        }, {
+          expand: true,
+          cwd: '.',
+          src: 'node_modules/snomed-ecl-builder/output/*',
           dest: '<%= yeoman.dist %>'
         }]
       },

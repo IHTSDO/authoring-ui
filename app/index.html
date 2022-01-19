@@ -224,6 +224,7 @@
 <script src="shared/model-diagramming/drawModelSca.js"></script>
 <script src="shared/task/task.js"></script>
 <script src="shared/task/taskSearch.js"></script>
+<script src="shared/project-search/projectSearch.js"></script>
 <script src="shared/user-preferences/userPreferences.js"></script>
 <script src="shared/project-taxonomy/projectTaxonomy.js"></script>
 <script src="shared/taxonomy-tree/taxonomyTree.js"></script>
@@ -263,6 +264,22 @@
 <script src="utilities/layoutHandler.js"></script>
 
 <!-- endbuild -->
+
+<!-- Ecl Builder import -->
+<script type="text/javascript" src="node_modules/snomed-ecl-builder/output/ecl-builder.js"></script>
+<script>
+    function openEclBuilder(eclString, branch) {
+        console.log('ecl');
+        $("body").append("<ecl-builder id='ecl-builder' branch=" + branch + " api-url='/snowstorm/snomed-ct' ecl-string='" + eclString + "'></ecl-builder>");
+
+        const el = document.querySelector('ecl-builder');
+        el.addEventListener('output', e => {
+            $('#expandable-search').val(e.detail);
+            $('#expandable-search').focus();
+            $('#expandable-search').trigger('change');
+        });
+    }
+</script>
 
 <script type="text/javascript">
   // enable platform banner container (after angular has initialised its content)

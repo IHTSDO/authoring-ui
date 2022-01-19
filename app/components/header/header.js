@@ -13,7 +13,6 @@ angular.module('singleConceptAuthoringApp')
 
         // timeout variable for current notification
         var timeout = null;
-
         var classificationResultsFound = false;
         var validationReportFound = false;
 
@@ -41,29 +40,36 @@ angular.module('singleConceptAuthoringApp')
           scope.notification = null;
         };
 
+        scope.isProjectsLoaded = function() {            
+            return metadataService.getProjects().length > 0;
+        };
+
+        scope.openSearchProjectsModal = function () {
+          $modal.open({
+              templateUrl: 'shared/project-search/projectSearch.html',
+              controller: 'projectSearchCtrl'
+          });
+        };
+
         scope.gotoNotificationLink = function () {
 
           // if on current page, reload to force any required refresh
           // NOTE Want to handle cases where # is supplied or not supplied
           // (really shouldn't be, but is in many cases)
 
-          if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
-            $route.reload();
-          } else {
+          if(classificationResultsFound){
+            $location.path(scope.notification.url).search('expandClassification', 'true');
+          }
+          else if(validationReportFound){
+            $location.path(scope.notification.url).search('expandValidation', 'true');
+          }
+          else if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
+            $route.reload();            
+          }
+          else{
             $location.path(scope.notification.url);
           }
-
-          if (classificationResultsFound) {
-            $timeout(function () {
-              $rootScope.$broadcast('toggleClassificationResults', {});
-            }, 1500);
-          }
-
-          if (validationReportFound) {
-            $timeout(function () {
-              $rootScope.$broadcast('toggleValidationReport', {});
-            }, 1500);
-          }
+          scope.clearNotification();          
         };
 
         scope.$on('gotoNotificationLink', function (event, notification) {

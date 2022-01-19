@@ -950,7 +950,13 @@ button[disabled] .project-icon {
     line-height: 30px;
 }
 .project-main-buttons button:hover {
+    color: #009cd7
+}
+
+.cyan.darken-1:hover {
     background-color: #0097a7;
+    color: #fff;
+    border-color: transparent;
 }
 .project-main-buttons button:disabled {
     background-color: #fff ;

@@ -481,7 +481,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.toggleViewFullListExceptions = function () {
-            scope.viewFullListException = !scope.viewFullListException;
+            //scope.viewFullListException = !scope.viewFullListException;
             scope.allWhitelistItems = [];
             scope.exclusionsTableParams.reload();   
             checkWhitelist().then(function() {
@@ -626,21 +626,37 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             scope.exceptionLoading = true;
             // filter out from AAG whitelist
-            getWhitelistCreationDate().then(function (creationDate) {                
-              aagService.getWhitelistItemsByBranchAndDate(scope.branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
+            getWhitelistCreationDate().then(function (creationDate) { 
+              let branch = '';
+              if(scope.viewFullListException && scope.task){
+                  branch =  scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
+                  branch =  branch.substr(0, branch.lastIndexOf("\/"));
+              }
+              else if(scope.viewFullListException && !scope.task){
+                  branch =  scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
+              }
+              else {
+                  branch = scope.branch;
+              }
+              aagService.getWhitelistItemsByBranchAndDate(branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
                 if(whitelistItems !== undefined){
                   let idList = [];
                   angular.forEach(whitelistItems, function (item) {
-                      angular.forEach(scope.assertionsWarning, function (assertion) {
+                      if(item.assertionFailureText !== null){
+                          item.failureText = item.assertionFailureText;
+                      }
+                      else{
+                          angular.forEach(scope.assertionsWarning, function (assertion) {
                           if(item.validationRuleId === assertion.assertionUuid){
                               item.failureText = assertion.assertionText;
                           }
-                      });
-                      angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
-                          if(item.validationRuleId === assertion.assertionUuid){
-                              item.failureText = assertion.assertionText;
-                          }
-                      });
+                          });
+                          angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                              if(item.validationRuleId === assertion.assertionUuid){
+                                  item.failureText = assertion.assertionText;
+                              }
+                          });
+                      }
                       idList.push(item.conceptId);
                   });
 
@@ -933,6 +949,7 @@ angular.module('singleConceptAuthoringApp')
                 whitelistItem.validationRuleId = failure.validationRuleId;
                 whitelistItem.branch = scope.branch;
                 whitelistItem.additionalFields = result[failure.componentId];
+                whitelistItem.assertionFailureText = failure.assertionText;
                 aagService.addToWhitelist(whitelistItem).then(function(respone) {
                   scope.allWhitelistItems.push(respone.data);
                   scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
@@ -1138,6 +1155,7 @@ angular.module('singleConceptAuthoringApp')
                   whitelistItem.conceptId = failure.conceptId;
                   whitelistItem.validationRuleId = failure.validationRuleId;
                   whitelistItem.branch = scope.branch;
+                  whitelistItem.assertionFailureText = failure.assertionText;
                   whitelistItem.additionalFields = responses.filter(function(item){
                     return item.hasOwnProperty(failure.componentId);
                   })[0][failure.componentId];

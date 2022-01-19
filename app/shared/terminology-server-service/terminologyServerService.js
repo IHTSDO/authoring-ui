@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
 
       function updateBranchMetadata(branch, metadata) {
         var deferred = $q.defer();
-        $http.put(apiEndpoint + 'branches/' + branch, metadata).then(function (response) {          
+        $http.put(apiEndpoint + 'branches/' + branch + '/metadata-upsert', metadata).then(function (response) {          
           deferred.resolve(response.metadata);
         }, function (error) {          
           deferred.reject(error);
@@ -1459,7 +1459,17 @@ angular.module('singleConceptAuthoringApp')
 
       function doSearch (branch, params, config, tsv, searchTimestamp) {
         let deferred = $q.defer();
-
+        if (params.termFilter && params.termFilter.includes(',')){
+          let conceptArray = params.termFilter.split(',').map(function(item) {
+            return item.trim();
+          }).filter(function(item) {
+            return item != '';
+          });
+          if (conceptArray.filter(function(item) {return item.substr(-2, 1) !== '0';}).length === 0) {
+            params.conceptIds = conceptArray;
+            delete params.termFilter;
+          }
+        }
         $http.post(apiEndpoint + branch + '/concepts/search', params, config).then(function (response) {
             if (tsv) {
               deferred.resolve(response);
