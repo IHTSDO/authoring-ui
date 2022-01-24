@@ -106,12 +106,12 @@ angular.module('singleConceptAuthoringApp')
 
     // component inactivation metadata
     var conceptInactivationReasons = [
-      {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
+      {id: 'AMBIGUOUS', text: 'Ambiguous', display: [4]},
       {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [12], absenceHistoricalAssociationSupport: true},
-      {id: 'DUPLICATE', text: 'Duplicate component', display: [7]},
-      {id: 'ERRONEOUS', text: 'Erroneous component', display: [6]},
+      {id: 'DUPLICATE', text: 'Duplicate', display: [7]},
+      {id: 'ERRONEOUS', text: 'Erroneous', display: [6]},
       //{id: 'LIMITED', text: 'Limited component', display: [9]},
-      {id: 'OUTDATED', text: 'Outdated component', display: [6,11]},
+      {id: 'OUTDATED', text: 'Outdated', display: [6,11]},
       {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: [6,12]},
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
       {id: 'CLASSIFICATION_DERIVED_COMPONENT', text: 'Classification derived component', display: [6,10]},
