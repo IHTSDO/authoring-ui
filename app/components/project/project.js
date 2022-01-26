@@ -21,8 +21,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', 'templateService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, notificationService, $location, ngTableParams, accountService, promotionService, templateService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'rnmService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', 'templateService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, rnmService, notificationService, $location, ngTableParams, accountService, promotionService, templateService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -39,6 +39,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.fullSac = [];
       $scope.firstHalfManualSac = [];
       $scope.secondHalfManualSac = [];
+      $scope.lineItems = [];
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -95,6 +96,19 @@ angular.module('singleConceptAuthoringApp.project', [
                       $scope.creationDate = criteria.creationDateLong;
                   }
                 });
+          });
+          //rnmService.getBranchLineItems(response.branchPath).then(function (lineItems) {
+          rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
+              if (lineItems) {
+                angular.forEach(lineItems, function (item) {
+                  if (item.children && item.children.length > 0) {
+                    angular.forEach(item.children, function (child) {
+                        $scope.lineItems.push(child);
+                    });
+                  }
+                });
+                console.log($scope.lineItems);
+              }
           });
 
           // set the local project and branch for use by containers (classification/validation)
@@ -273,6 +287,9 @@ angular.module('singleConceptAuthoringApp.project', [
             resolve: {
                 branch: function() {
                   return $scope.branch;
+                },
+                lineItems: function() {
+                  return $scope.lineItems;
                 }
               }
           });
@@ -281,13 +298,22 @@ angular.module('singleConceptAuthoringApp.project', [
           });
       };
         
-      $scope.openLineItemModal = function () {
+      $scope.openLineItemModal = function (id) {
+          let item = {};
+          angular.forEach($scope.lineItems, function (lineItem) {
+            if (lineItem.id === id) {
+              item = lineItem;
+            }
+          });
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
             controller: 'lineItemCtrl',
             resolve: {
                 branch: function() {
                   return $scope.branch;
+                },
+                lineItem: function() {
+                  return item;
                 }
               }
           });
