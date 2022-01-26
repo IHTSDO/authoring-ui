@@ -83,6 +83,7 @@
                 <select class="form-control"
                       ng-if="associationTargets.length > 1"
                       ng-options="type as type.text for type in associationTargets"
+                      ng-change="switchHistoricalAssociationType(association.type)"
                       ng-model="association.type">
                   <option value="" disabled>- Select an Association Type -</option>
                 </select>
@@ -105,6 +106,9 @@
                 <button type="button" ng-click="removeAssociation($index)"
                       class="btn-default add-buttons md fa fa-minus button-width-minus tooltips-left tooltips-light normal-case"> <span>Remove Association</span></button>
               </div>
+            </div>
+            <div ng-if="partiallyEquivalentToAssociationFound" class="row">
+                <i class="col-md-12">The historical association is PARTIALLY EQUIVALENT TO. Therefore two or more associations must be added.</i>
             </div>
           </div>
         </div>
@@ -205,7 +209,7 @@
       <div class=" col-md-6 right-button">
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
-                  ng-disabled="associationTargets.length > 0 && hasNoConceptTarget() && inactivationReason.id !== 'MOVED_ELSEWHERE'"
+                  ng-disabled="checkAssociationPartiallyEquivalentTo() || (associationTargets.length > 0 && hasNoConceptTarget() && inactivationReason.id !== 'MOVED_ELSEWHERE' && inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED')"
                   ng-click="selectReason()"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>
