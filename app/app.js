@@ -129,7 +129,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, aagService, spellcheckService, AppConstants) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, aagService, rnmService, spellcheckService, AppConstants) {
 
     $window.ga('create', 'UA-41892858-21', 'auto');
     // track pageview on state change
@@ -184,6 +184,7 @@ angular
 
         scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
         aagService.setEndpoint('..' + AppConstants.AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT);
+        rnmService.setEndpoint('../release-notes/');
         spellcheckService.setEndpoint(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'spelling/check');
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         crsService.setCrsEndpoint(endpoints['crsEndpoint']);

@@ -19,76 +19,20 @@
                       <h4>Line Items</h4>
                     </div>
                 </div>
-                <div class="col-md-6 no-padding" style="padding-left: 10px;">
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 1
+                  <div ng-repeat="item in lineItems" class="col-md-6 no-padding" style="padding-left: 10px;">
+                      <div class="row" style="display:inline-flex; width:100%;">
+                        <div ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;"></div>
+                        <div style="margin-top: 7px; font-size: 12px;">
+                            {{item.title}}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 2
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 3
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 4
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 5
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 6
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 no-padding" style="padding-left: 10px;">
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 7
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 8
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="fa fa-check-square pull-right" style="color: green; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 9
-                    </div>
-                  </div>
-                  <div class="row" style="display:inline-flex; width:100%;">
-                    <div class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; padding-top:8px; padding-bottom:8px; padding-right:10px; margin-left: -1px;"></div>
-                    <div style="margin-top: 7px; font-size: 12px;">
-                        Line Item 10
-                    </div>
-                  </div>
                 </div>
               </div>
           </div>
         </div>
       </div>      
     </div>
-  </div>
   <div class="modal-footer clearfix">
   <div class="card-action clearfix" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
   <hr>

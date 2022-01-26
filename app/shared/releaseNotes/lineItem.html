@@ -1,15 +1,16 @@
 <div id="configModal" class="clearfix sac-modal">    
   <div class="modal-header">
     <div class="col-md-8">
-      <h4 class="modal-title">Line Item: COVID-19</h4>
+      <h4 class="modal-title">{{lineItem.title}}</h4>
     </div>
     <div class="col-md-4">
       <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
   </div>
-  <div class="modal-body scroll-if-height">  
-    <div class="col-md-12 no-padding release-notes" style="height: 600px">
-        <text-angular ng-model="text" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+  <div class="modal-body">  
+    <div class="col-md-12 no-padding release-notes">
+        <div id="editor">
+        </div>
     </div>
   </div>
   <div class="modal-footer clearfix">
@@ -37,3 +38,5 @@
     </div>
   </div>
 </div>
+<script>
+</script>

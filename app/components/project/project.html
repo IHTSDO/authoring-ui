@@ -381,7 +381,7 @@
       </div>
 -->
     
-      <div class="card " ng-show="!$root.managedServiceUser && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))">
+      <div class="card " ng-show="!$root.managedServiceUser">
         <div class="card-header">
           <div class="card-title">
             <button
@@ -403,21 +403,11 @@
         <div ng-show="releaseNotesCollapsed === false">
             <div class="card-content clearfix">
                 <div class="row task-details project-main-buttons">
-                    <div class="col-md-3">
-                        <button ng-click="openLineItemModal()" class="btn btn-border cyan darken-1 editingtask"> 
-                            <span class="md fa-sca fa-clipboard cyan darken-2 iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Quality Inititiative Project - 21</span> 
-                        </button>
-                    </div>
-                    <div class="col-md-1">
-                    </div>
-                    <div class="col-md-3">
-                        <button ng-click="openLineItemModal()" class="btn btn-border green darken-1 editingtask"> 
+                    <div ng-repeat="item in lineItems"class="col-md-3">
+                        <button ng-click="openLineItemModal(item.id)" class="btn btn-border editingtask" style="color: #666"> 
                             <span class="md fa-sca fa-clipboard iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px; background-color: #2d7130"></span> <span class="button-link">COVID-19 - 11</span> 
+    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{item.title}}</span> 
                         </button>
-                    </div>
-                    <div class="col-md-2">
                     </div>
                 </div>
             </div>
