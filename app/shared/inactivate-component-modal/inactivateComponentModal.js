@@ -283,6 +283,20 @@ angular.module('singleConceptAuthoringApp')
        return false;
     };
 
+    $scope.partiallyEquivalentToAssociationFound = false;
+    $scope.checkAssociationPartiallyEquivalentTo = function () {
+      let count = 0;
+      $scope.partiallyEquivalentToAssociationFound = false;
+      for (let i = 0; i < $scope.associations.length; i++) {
+        let association = $scope.associations[i];
+        if(association.type && association.type.id == 'PARTIALLY_EQUIVALENT_TO') {
+          $scope.partiallyEquivalentToAssociationFound = true;
+          count++;
+        }
+      }
+      return $scope.partiallyEquivalentToAssociationFound ? count < 2 : false;
+    };
+
     $scope.selectReason = function () {
 
       // NOTE: associationTarget is optional
@@ -605,11 +619,29 @@ angular.module('singleConceptAuthoringApp')
       $modalInstance.dismiss();
     };
 
+    $scope.switchHistoricalAssociationType = function(type){
+      console.log(type);
+      if ($scope.associations.length != 0) {
+        for (let i = 0; i < $scope.associations.length; i++) {
+          $scope.associations[i].type = type;
+        }
+      }
+    };
+
     $scope.addAssociation = function (index) {
       if(typeof index !== 'undefined' && $scope.inactivationReason && ($scope.inactivationReason.id == 'AMBIGUOUS' || $scope.inactivationReason.id == 'NOT_SEMANTICALLY_EQUIVALENT')) {
         $scope.associations.push({type: $scope.associationTargets[0], concept: null});
       } else {
-        $scope.associations.push({type: null, concept: null});
+        let type = null;
+        if ($scope.associations.length != 0) {
+          for (let i = 0; i < $scope.associations.length; i++) {
+            if ($scope.associations[i].type) {
+              type = $scope.associations[i].type;
+              break;
+            }
+          }
+        }
+        $scope.associations.push({type: type, concept: null});
       }
     };
 
