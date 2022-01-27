@@ -424,6 +424,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     reviewConcept.term = concept.pt;
                   }
+                  reviewConcept.descriptions = concept.descriptions;
                   angular.forEach(feedbackList, function (feedback) {
                     if (reviewConcept.conceptId === feedback.id) {
                       reviewConcept.messages = feedback.messages;
