@@ -1068,7 +1068,7 @@ function getFsnDescriptionForConcept(concept) {
           errors.push('Concept must have at least one description');
 
         }
-        if (concept.active && checkClassAxiomRelationships(concept)) {
+        if ((!concept.conceptId || concept.conceptId !== '138875005') && concept.active && checkClassAxiomRelationships(concept)) {
           errors.push('Concept must have at least one axiom');
 
         }
