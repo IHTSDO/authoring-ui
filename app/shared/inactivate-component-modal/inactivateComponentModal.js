@@ -666,10 +666,8 @@ angular.module('singleConceptAuthoringApp')
     }
 
     $scope.inactivationReason = $scope.reasons ? $scope.reasons[0] : null;
-
     // construct the associations array and add a blank row
     $scope.associations = [];
-    $scope.addAssociation();
 
     // display flags
     $scope.descendantsLoading = true;
@@ -678,7 +676,46 @@ angular.module('singleConceptAuthoringApp')
     // flag for whether a stated parent-child relationship exists for this
     // concept (disable inactivation)
     $scope.statedChildFound = false;
-
-    $scope.updateAssociations($scope.inactivationReason);
+    
+    if($scope.componentType === 'Concept' && !$scope.deletion && $scope.concept && ! $scope.concept.active) {
+      let foundReasons = $scope.reasons.filter(function(reason) {return reason.id === $scope.concept.inactivationIndicator});
+      if (foundReasons.length !== 0) {
+        $scope.inactivationReason = foundReasons[0];
+        $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
+        if ($scope.concept.associationTargets) {
+          var allCocnceptTargets = [];
+          for (const property in $scope.concept.associationTargets) {
+            allCocnceptTargets = allCocnceptTargets.concat($scope.concept.associationTargets[property]);
+          }
+          terminologyServerService.searchAllConcepts(metadataService.getBranch(), allCocnceptTargets.join(','), null, 0, 50, null, true, true).then(function(response) {
+            var conceptIdToConceptMap = response.items.reduce(function(map, obj) {
+                map[obj.concept.conceptId] = obj;
+                return map;
+            }, {});
+            for (const property in $scope.concept.associationTargets) {
+              let foundAssociationTargets = $scope.associationTargets.filter(function(item) {return item.id === property});
+              if (foundAssociationTargets.length !== 0) {                
+                for (let i = 0; i < $scope.concept.associationTargets[property].length; i++) {
+                  if (conceptIdToConceptMap[$scope.concept.associationTargets[property][i]]) {
+                    $scope.associations.push({type: foundAssociationTargets[0], concept:  conceptIdToConceptMap[$scope.concept.associationTargets[property][i]]});
+                  }                  
+                }              
+              }
+            }
+            if ($scope.associations.length === 0) {
+              $scope.addAssociation();
+            }           
+          });
+        } else {
+          $scope.addAssociation();          
+        }       
+      } else {
+        $scope.addAssociation();
+        $scope.updateAssociations($scope.inactivationReason);        
+      }
+    } else {
+      $scope.addAssociation();
+      $scope.updateAssociations($scope.inactivationReason);      
+    }
   })
 ;
