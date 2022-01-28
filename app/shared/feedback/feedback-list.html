@@ -232,6 +232,15 @@
                 </label>
               </div>
         </script>
+        <script type="text/ng-template" id="ng-table/headers/checkboxInferred.html">
+          <div class="checkbox">
+            <label class="filled">
+              <input type="checkbox" ng-model="booleanObj.checkedInferred" ng-change="selectAll(actionTab, booleanObj.checkedInferred)"
+             id="select_all_inferred"
+             name="filter-checkbox" value=""/>
+            </label>
+          </div>
+    </script>
         <div class="no-padding m-b-10 paging col-md-12 ">
           <ul class="pager">
             <!--      <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default pull-left">&laquo; Previous</button>-->
@@ -310,7 +319,7 @@
           <table show-filter="false" ng-table="conceptsClassifiedTableParams"
                 template-pagination="utilities/review-table-pager.html"
                 class="table feedback-table concepts-classified" drop-channel="feedbackConcept">
-            <div class="m-10 ">
+            <div class="col-md-10 m-10 no-padding">
               <input class=" input-filter form-control ng-scope ng-valid ng-touched"
                     placeholder="Filter concepts"
                     ng-model="conceptsClassifiedSearchStr"
@@ -318,8 +327,27 @@
                     ng-change="reloadConceptsClassified(conceptsClassifiedSearchStr)"
                     ng-model-options="{debounce: 500}" ui-on-drop="null">
             </div>
+            <div class="col-md-1 no-padding" ng-hide="feedbackContainer.review.conceptsClassified.length === 0">            
+              <div class="pull-right p-5" style="padding-right: 0px; padding-top: 15px;">              
+                <button
+                  class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
+                  ng-click="addMultipleToEdit(actionTab)">
+                  <div class="md md-edit "></div>
+                  <span>Show selected in edit panel</span>
+                </button>
+                
+              </div>
+            </div>
             <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
             <tr ng-repeat="concept in conceptsClassified">
+              <td class="col-checkbox col-md-1 no-padding "
+                header="'ng-table/headers/checkboxInferred.html'">
+                <div class="checkbox">
+                  <label class="filled">
+                    <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
+                  </label>
+                </div>
+              </td>
               <td class=" " data-title="'Concept'" sortable="'term'"
                   filter="{ 'term': 'text' }"
                   ui-draggable="true" drag="concept"
@@ -329,7 +357,7 @@
                   class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                   <button
                     class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="addToEdit(concept); viewConceptInTaxonomy(concept)" ng-mouseover="setTooltipPosition($event);"
+                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-mouseover="setTooltipPosition($event);"
                     ng-class="[{'disable' : concept.viewed}]">
                   <div
                       class="md md-edit "></div>
@@ -338,7 +366,7 @@
               <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                   <button
                     class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="addToEdit(concept);viewConceptInTaxonomy(concept)" ng-mouseover="setTooltipPosition($event);"
+                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-mouseover="setTooltipPosition($event);"
                     ng-class="[{'disable' : concept.viewed}]">
                   <div
                       class="md md-edit "></div>
