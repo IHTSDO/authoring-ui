@@ -275,8 +275,13 @@
                         ng-change="resetRelTargetConcept(rel)"></select>
 
               </td>
-              <td data-title="'Association'" sortable="'refsetName'">
-                {{convertToTextFromCode(rel.refsetName)}}
+              <td data-title="'Association'" sortable="'refsetName'">                
+                <textarea style="padding-top: 13px; padding-left: 0px; padding-right: 0px; height: 40px;" ng-if="getAssociationsForReason(rel.inactivationIndicator).length == 1" type="text" class="form-control no-padding" readonly="true">{{convertToTextFromCode(rel.refsetName)}}</textarea>
+                <select class="form-control"
+                      ng-if="getAssociationsForReason(rel.inactivationIndicator).length > 1"
+                      ng-options="type.id as convertToTextFromCode(type.id) for type in getAssociationsForReason(rel.inactivationIndicator)"                      
+                      ng-model="rel.refsetName">
+                </select>
               </td>
               <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
@@ -342,7 +347,12 @@
 
               </td>
               <td data-title="'Association'" sortable="'refsetName'">
-                {{convertToTextFromCode(rel.refsetName)}}
+                <textarea style="padding-top: 13px; padding-left: 0px; padding-right: 0px; height: 40px;" ng-if="getAssociationsForReason(rel.inactivationIndicator).length == 1" type="text" class="form-control no-padding" readonly="true">{{convertToTextFromCode(rel.refsetName)}}</textarea>
+                <select class="form-control"
+                      ng-if="getAssociationsForReason(rel.inactivationIndicator).length > 1"
+                      ng-options="type.id as convertToTextFromCode(type.id) for type in getAssociationsForReason(rel.inactivationIndicator)"                      
+                      ng-model="rel.refsetName">
+                </select>
               </td>
               <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
