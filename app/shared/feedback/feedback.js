@@ -634,16 +634,22 @@ angular.module('singleConceptAuthoringApp')
             return false;
           };
 
-          scope.conceptExistsInInferredList = function (concept) {            
-            for (var i = 0; i < scope.feedbackContainer.review.conceptsClassified.length; i++) {
-              var reviewConcept = scope.feedbackContainer.review.conceptsClassified[i];
-              if (concept.conceptId === reviewConcept.conceptId) {
-                return true;
+          scope.setDisableLoadingProjectTaxonomy = function(disable) {
+            scope.disableLoadingProjectTaxonomy = disable;
+          };
+
+          scope.conceptExistsInInferredList = function (concept) {
+            if (!scope.disableLoadingProjectTaxonomy) {
+              for (var i = 0; i < scope.feedbackContainer.review.conceptsClassified.length; i++) {
+                var reviewConcept = scope.feedbackContainer.review.conceptsClassified[i];
+                if (concept.conceptId === reviewConcept.conceptId) {
+                  return true;
+                }
               }
             }            
+                        
             return false;
-          };
-          
+          };          
 
           scope.$on('approveAndLoadNext', function (event, concept) {
             approveAndLoadNext(concept);
@@ -711,6 +717,7 @@ angular.module('singleConceptAuthoringApp')
 
           function closeAllConcepts () {
             scope.viewedConcepts = [];
+            feebackProjectTaxonomyViewList = [];
             // mark as unviewed in ToReview list
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
               item.viewed = false;
@@ -914,6 +921,10 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 item.selected = isChecked;
               });
+            } else if (actionTab === 3) {
+              angular.forEach(scope.conceptsClassified, function (item) {
+                item.selected = isChecked;
+              });
             }
           };
 
@@ -1113,7 +1124,14 @@ angular.module('singleConceptAuthoringApp')
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
-                  conceptsToAdd.push(item.conceptId);
+                  conceptsToAdd.push(item);
+                }
+              });
+            } else if (actionTab === 3) {
+              scope.setDisableLoadingProjectTaxonomy(true);
+              angular.forEach(scope.conceptsClassified, function (item) {
+                if (item.selected === true && !item.viewed) {
+                  conceptsToAdd.push(item);
                 }
               });
             }
