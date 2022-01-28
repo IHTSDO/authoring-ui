@@ -66,16 +66,7 @@ angular.module('singleConceptAuthoringApp')
               item.type.conceptId.toLowerCase().indexOf(scope.tableFilter.toLowerCase()) > -1 ||
               item.type.fsn.toLowerCase().indexOf(scope.tableFilter.toLowerCase()) > -1;
           }
-
-          function assocFilter(item) {
-            for (var i = 0; i < scope.associationTargets.length; i++) {
-              if (item.referenceSetId === scope.associationTargets[i].conceptId) {
-                return true;
-              }
-            }
-            return false;
-          }
-
+          
           function parseAssocs(list) {
 
             console.debug('parseAssocs', list);
@@ -1410,29 +1401,21 @@ angular.module('singleConceptAuthoringApp')
           }
 
           scope.resetRelTargetConcept = function (rel) {
-            if (rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
-              rel.newTargetFsn = '';
-              rel.newTargetId = '';
-            } else {
-              if (scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
+            var associations = scope.getAssociationsForReason(rel.inactivationIndicator);            
+            if(associations.length !== 0) {
+              rel.refsetName = associations[0].id;
+              if (!rel.newTargetId && scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
                 rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
                 rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
-              } else {
-                rel.newTargetFsn = '';
-                rel.newTargetId = '';
-              }             
-            }
-
-            var associations = scope.getAssociationsForReason(rel.inactivationIndicator);
-            if(associations.length == 1) {
-              rel.refsetName = associations[0].id;
+              }
             } else {
               rel.refsetName = '';
+              rel.newTargetFsn = '';
+              rel.newTargetId = '';
             }
           }
 
           scope.updateRefTarget = function (rel) {
-            console.log('updating');
             for (var j = 0; j < scope.associationTargets.length; j++) {
               if (rel.refsetName === scope.associationTargets[j].text) {
                 rel.refsetSaveable = scope.associationTargets[j].id;
@@ -1444,7 +1427,7 @@ angular.module('singleConceptAuthoringApp')
           scope.updateDescRefAssocTarget = function (rel) {
             if(rel.inactivationIndicator === 'NOT_SEMANTICALLY_EQUIVALENT') {
               rel.refsetName = 'REFERS_TO';
-              if (scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
+              if (!rel.newTargetId && scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
                 rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
                 rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
               } else {
@@ -1458,11 +1441,13 @@ angular.module('singleConceptAuthoringApp')
             }            
           };
 
-          scope.hasNoConceptTarget = function () {           
-            for (var i = 0; i < scope.affectedConceptAssocs.length; i++) {
-              var concept = scope.affectedConceptAssocs[i];
-              if ((!concept.newTargetId || !concept.newTargetFsn || !concept.refsetName) 
-                && concept.inactivationIndicator !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY') {
+          scope.hasNoConceptTarget = function () {
+            let hasHistAssocTargets = scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0;           
+            for (let i = 0; i < scope.affectedConceptAssocs.length; i++) {
+              var concept = scope.affectedConceptAssocs[i];              
+              var associations = scope.getAssociationsForReason(concept.inactivationIndicator);
+              if ((hasHistAssocTargets && associations.length !== 0 && (!concept.newTargetId || !concept.newTargetFsn || !concept.refsetName))
+                  || (!hasHistAssocTargets && concept.refsetName && !concept.newTargetId)) {
                 return true;
               }
             }
