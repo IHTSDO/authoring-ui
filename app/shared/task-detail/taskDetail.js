@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'permissionService', 'modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, permissionService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'rnmService', 'permissionService', 'modalService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, rnmService, permissionService, modalService) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -21,6 +21,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.complex = false;
       $scope.batch = false;
       $scope.sacSet = false;
+      $scope.lineItems = [];
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -71,12 +72,23 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       }
       
+      rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
+          if (lineItems) {
+            angular.forEach(lineItems, function (item) {
+                $scope.lineItems.push(item);
+            });
+            console.log($scope.lineItems);
+          }
+      });
+      
       $scope.openLineItemModal = function (id) {
           let item = {};
           angular.forEach($scope.lineItems, function (lineItem) {
-            if (lineItem.id === id) {
-              item = lineItem;
-            }
+            angular.forEach(lineItem.children, function (child) {
+                if (child.id === id) {
+                  item = child;
+                }
+              });
           });
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
