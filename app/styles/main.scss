@@ -33,26 +33,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "light.scss";
 @import "dark.scss";
 
-
-.release-notes.ta-scroll-window{
-    height:500px;
-}
-
-.ta-root > .ta-scroll-window.form-control{
-    height:500px;
-}
-
-.theme-blue .focussed .ta-bind{
-    height:500px;
-}
-
-.ta-bind {
-    height:500px;
-}
-
-.modal-body .ta-scroll-window .ng-touched{
-    height:500px;
-}
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
