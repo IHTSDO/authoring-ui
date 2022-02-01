@@ -297,9 +297,11 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.openLineItemModal = function (id) {
           let item = {};
           angular.forEach($scope.lineItems, function (lineItem) {
-            if (lineItem.id === id) {
-              item = lineItem;
-            }
+            angular.forEach(lineItem.children, function (child) {
+                if (child.id === id) {
+                  item = child;
+                }
+              });
           });
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
