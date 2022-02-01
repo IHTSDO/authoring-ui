@@ -38,18 +38,6 @@
             </div>
           </div>
         </li>
-        <li>
-          <div class="timeline-badge" style="top: -4px;"> <i class="icon-circle theme-border"></i> </div>
-          <div class="timeline-panel">
-            <div class="timeline-heading">
-              <label class="control-label">Line Item:</label>
-              <div class="row">
-                <h4 class="width-fix timeline-title task-detail task-detail-description col-md-3" style="padding-left: 0px;">COVID-19</h4>
-                <div ng-click="openLineItemModal()" class="md fa-sca fa-edit col-md-2" style="margin-right: 5px; padding-left: 0px; top: -5px; left: -10px; color:#00a6e5"></div>
-              </div>
-            </div>
-          </div>
-        </li>
         <li ng-show="isCrsTask">
           <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
@@ -93,6 +81,10 @@
     <div class="p-l-15 p-r-15">
       <button class="btn btn-default cyan darken-1 editingtask" ng-click="updateTask()"
               ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
+    </div>
+    <div class="p-l-15 p-r-15">
+      <button class="btn btn-default pink1 review" ng-click="openLineItemModal()"
+              ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard pink darken-2 iconbase"></span> <span class="button-link">Edit Line Item</span> </button>
     </div>
     <hr>
     <div class="p-l-15 p-r-15" ng-if="role === 'UNDEFINED'">
