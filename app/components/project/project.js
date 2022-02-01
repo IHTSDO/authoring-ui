@@ -101,11 +101,7 @@ angular.module('singleConceptAuthoringApp.project', [
           rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
               if (lineItems) {
                 angular.forEach(lineItems, function (item) {
-                  if (item.children && item.children.length > 0) {
-                    angular.forEach(item.children, function (child) {
-                        $scope.lineItems.push(child);
-                    });
-                  }
+                    $scope.lineItems.push(item);
                 });
                 console.log($scope.lineItems);
               }

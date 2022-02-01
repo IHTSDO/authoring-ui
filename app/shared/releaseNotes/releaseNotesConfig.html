@@ -19,14 +19,22 @@
                       <h4>Line Items</h4>
                     </div>
                 </div>
-                  <div ng-repeat="item in lineItems" class="col-md-6 no-padding" style="padding-left: 10px;">
-                      <div class="row" style="display:inline-flex; width:100%;">
-                        <div ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;"></div>
-                        <div style="margin-top: 7px; font-size: 12px;">
-                            {{item.title}}
+                  <div ng-repeat="item in lineItems">
+                        <div class="row" style="display:inline-flex; width:100%;">
+                          <div style="margin-top: 10px; font-size: 16px; margin-left: 10px;">
+                              {{item.title}}
+                          </div>
                         </div>
-                      </div>
+                        <div ng-repeat="lineItem in item.children" class="col-md-6 no-padding" style="padding-left: 10px;">
+                          <div class="row" style="display:inline-flex; width:100%;">
+                            <div ng-click="toggleSac(criteria.id)" class="fa fa-check-square pull-right" style="color: grey; font-size:20px; padding-top:8px; padding-bottom:8px; padding-right:10px; cursor: default;"></div>
+                            <div style="margin-top: 7px; font-size: 12px;">
+                                {{lineItem.title}}
+                            </div>
+                          </div>
+                        </div>
                     </div>
+                  
                 </div>
               </div>
           </div>
