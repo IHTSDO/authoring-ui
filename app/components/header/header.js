@@ -231,6 +231,10 @@ angular.module('singleConceptAuthoringApp')
         scope.openReporting = function() {
           window.open('/reporting/');
         };
+          
+        scope.openReleaseNotes = function() {
+          window.open('/release-notes-management/');
+        };
 
         scope.openMRCM = function() {
           if(metadataService.isExtensionSet()) {
