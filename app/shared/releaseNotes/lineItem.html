@@ -1,7 +1,16 @@
 <div id="configModal" class="clearfix sac-modal">    
   <div class="modal-header">
-    <div class="col-md-8">
+    <div ng-if="lineItem.title" class="col-md-8">
       <h4 class="modal-title">{{lineItem.title}}</h4>
+    </div>
+    <div ng-if="!lineItem.title" class="col-md-8" style="margin-left: -10px;">
+      <h4 class="modal-title">Line Item:</h4>
+      <select name="select-choice" class="form-control"
+                ng-options="lineItem.title for lineItem in lineItems"
+                ng-model="lineItem"
+                ng-change=""
+                style="margin-top:10px;">
+      </select>
     </div>
     <div class="col-md-4">
       <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>

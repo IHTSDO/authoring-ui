@@ -83,13 +83,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       
       $scope.openLineItemModal = function (id) {
           let item = {};
+          let items = [];
           angular.forEach($scope.lineItems, function (lineItem) {
             angular.forEach(lineItem.children, function (child) {
+                items.push(child);
                 if (child.id === id) {
                   item = child;
                 }
               });
           });
+          
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
             controller: 'lineItemCtrl',
@@ -99,6 +102,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 },
                 lineItem: function() {
                   return item;
+                },
+                lineItems: function() {
+                  return items;
                 }
               }
           });
