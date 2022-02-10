@@ -118,7 +118,7 @@
                                                                                                               || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' 
                                                                                                               || inactivationReason.id === 'OUTDATED')">
           <div class="checkbox download-checkbox">
-            <input type="checkbox" ng-model="useFirstTargetSelection" ng-change="updateCheckboxSelection()"/>
+            <input type="checkbox" ng-model="useFirstTarget.selected" ng-checked="useFirstTarget.selected"/>
             <span style="top: 0px;left: 25px; position: absolute;">Use First Target</span>         
           </div>          
         </div>
