@@ -8,11 +8,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.descendants = null;
     
-    $scope.useFirstTargetSelection = true;
-
-    $scope.updateCheckboxSelection = function() {
-      $scope.useFirstTargetSelection = !$scope.useFirstTargetSelection;
-    };
+    $scope.useFirstTarget = {selected: false};    
 
     $scope.filterByInactivationReason = function () {
       return function (item) {
@@ -22,7 +18,8 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.updateAssociations = function (inactivationReason) {
       $scope.inactivationReason = inactivationReason;
-      $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
+      $scope.useFirstTarget = {selected: false};
+      $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());      
 
       if ($scope.associationTargets.length === 0) {
         $scope.associations = [];
@@ -31,14 +28,8 @@ angular.module('singleConceptAuthoringApp')
            $scope.addAssociation(0);
         }
 
-        if ($scope.componentType === 'Concept') {
-          if ($scope.inactivationReason.id !== 'AMBIGUOUS'
-            && $scope.associations.length > 1) {
-            $scope.associations = [$scope.associations[0]];
-            $scope.useFirstTargetSelection = false;
-          } else {
-            $scope.useFirstTargetSelection = true;
-          }           
+        if ($scope.componentType === 'Concept' && $scope.inactivationReason.id !== 'AMBIGUOUS' && $scope.associations.length > 1) {
+          $scope.associations = [$scope.associations[0]];           
         }
 
         //Association type will be automatically populated if there is only one option
@@ -359,7 +350,7 @@ angular.module('singleConceptAuthoringApp')
       let results = {};
       results.reason = $scope.inactivationReason;
       results.associationTarget = associationTarget;
-      results.useFirstTarget = $scope.componentType === 'Concept' ? $scope.useFirstTargetSelection : false;
+      results.useFirstTarget = $scope.componentType === 'Concept' ? $scope.useFirstTarget.selected : false;
       if($scope.deletion)
       {
           results.deletion = true;
@@ -619,9 +610,11 @@ angular.module('singleConceptAuthoringApp')
       $modalInstance.dismiss();
     };
 
-    $scope.switchHistoricalAssociationType = function(type){
-      console.log(type);
+    $scope.switchHistoricalAssociationType = function(type){      
       if ($scope.associations.length != 0) {
+        if ($scope.isReplacedByHistoricalAssocPresent()) {
+          $scope.associations = [$scope.associations[0]];
+        }
         for (let i = 0; i < $scope.associations.length; i++) {
           $scope.associations[i].type = type;
         }
