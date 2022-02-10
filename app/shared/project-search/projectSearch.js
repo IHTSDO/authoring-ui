@@ -1,7 +1,19 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .controller('projectSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, notificationService, metadataService) {
+  .controller('projectSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, notificationService, metadataService, scaService) {
     $scope.projects = metadataService.getProjects();
+
+    // Update branch state in case its state has been changed
+    scaService.getProjects(true).then(function (response) {      
+      angular.forEach(response, function (c1) {
+        angular.forEach($scope.projects, function (c2) {
+          if (c1.key == c2.key && c2.branchState != c1.branchState) {
+            c2.branchState = c1.branchState;
+          }
+        });
+      });
+      metadataService.setProjects(response);
+    });
 
     $scope.projectsTableParams = new ngTableParams({
       page: 1,
