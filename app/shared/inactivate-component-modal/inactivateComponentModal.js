@@ -652,6 +652,18 @@ angular.module('singleConceptAuthoringApp')
       }
     };
 
+    $scope.isReplacedByHistoricalAssocPresent = function () {
+      if ($scope.associations.length != 0) {
+        for (let i = 0; i < $scope.associations.length; i++) {
+          if ($scope.associations[i].type && ($scope.associations[i].type.id === 'REPLACED_BY')) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    };
+
     ////////////////////////////////////
     // Initialization
     ////////////////////////////////////

@@ -100,7 +100,7 @@
               <div class="col-md-1">
                 <span ng-if="inactivationReason.absenceHistoricalAssociationSupport">(optional)</span>
               </div>
-              <div class="col-md-1" ng-if="association.type.id !== 'REPLACED_BY' && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
+              <div class="col-md-1" ng-if="!isReplacedByHistoricalAssocPresent() && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
                       class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case inactivation-modal-buttons"> <span>Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
@@ -113,7 +113,10 @@
           </div>
         </div>
     
-        <div class="col-sm-12 m-t-10" ng-if="componentType === 'Concept' && associationTargets.length > 0 && inactivationReason.id === 'AMBIGUOUS'">
+        <div class="col-sm-12 m-t-10" ng-if="!isReplacedByHistoricalAssocPresent() && componentType === 'Concept' && associationTargets.length > 0 && (inactivationReason.id === 'AMBIGUOUS' 
+                                                                                                              || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' 
+                                                                                                              || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' 
+                                                                                                              || inactivationReason.id === 'OUTDATED')">
           <div class="checkbox download-checkbox">
             <input type="checkbox" ng-model="useFirstTargetSelection" ng-change="updateCheckboxSelection()"/>
             <span style="top: 0px;left: 25px; position: absolute;">Use First Target</span>         
