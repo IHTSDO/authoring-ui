@@ -100,7 +100,7 @@
               <div class="col-md-1">
                 <span ng-if="inactivationReason.absenceHistoricalAssociationSupport">(optional)</span>
               </div>
-              <div class="col-md-1" ng-if="(componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
+              <div class="col-md-1" ng-if="association.type.id !== 'REPLACED_BY' && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
                       class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case inactivation-modal-buttons"> <span>Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
@@ -108,7 +108,7 @@
               </div>
             </div>
             <div ng-if="partiallyEquivalentToAssociationFound" class="row">
-                <i class="col-md-12">The historical association is PARTIALLY EQUIVALENT TO. Therefore two or more associations must be added.</i>
+                <label class="col-md-12">The historical association is PARTIALLY EQUIVALENT TO. Please specify two or more associations.</label>
             </div>
           </div>
         </div>
