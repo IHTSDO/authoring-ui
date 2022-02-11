@@ -160,8 +160,12 @@ angular.module('singleConceptAuthoringApp')
           }
 
           scope.zoomPercentage = 100;
-        }
+        };
         
+        scope.downloadDiagram = function(type) {
+          scope.$broadcast("download-diagram", {type: type})
+        };
+
         scope.$watch(function () {
             return savedListService.savedList;
           },

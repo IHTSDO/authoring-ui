@@ -37,6 +37,16 @@ angular.module('singleConceptAuthoringApp')
                 }, 1000);
             }
         }, true);
+
+        scope.$on('download-diagram', function (event, data) {
+          if (data.type === 'png') {
+            saveAsPng();
+          }
+          if (data.type === 'svg') {
+            saveAsSvg();
+          }
+        });
+        
         scope.$watch('view', function(newVal, oldVal){
 
             if(scope.view !== 'snf')
@@ -968,7 +978,7 @@ angular.module('singleConceptAuthoringApp')
 
         }
 
-        function saveAsPng(svg) {
+        function saveAsPng() {
           //Create PNG Image
           //Get the svg
           //Create the canvas element
@@ -977,13 +987,24 @@ angular.module('singleConceptAuthoringApp')
           document.body.appendChild(canvas);
 
           //Load the canvas element with our svg
-          canvg(document.getElementById('canvas'), svg);
+          canvg(document.getElementById('canvas'), scope.backupSvgCode);
 
           //Save the svg to png
-          Canvas2Image.saveAsPNG(canvas);
+          Canvas2Image.saveAsPNG(canvas, null, null, "diagram-" + scope.concept.conceptId);
 
           //Clear the canvas
           canvas.width = canvas.width;
+          document.body.removeChild(canvas);
+        }
+
+        function saveAsSvg() {
+          var b64 = Base64.encode(scope.backupSvgCode);
+          var downloadLink = document.createElement("a");
+          downloadLink.href = 'data:image/svg+xml;base64,\n' + b64;
+          downloadLink.download = "diagram-"+ scope.concept.conceptId +".svg";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
         }
       }
     };
