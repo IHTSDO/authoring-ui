@@ -5,7 +5,18 @@
     </div>
     <div class="no-padding" ng-class="[{'col-md-4' : !isSctid(concept.conceptId), 'col-md-5' : isSctid(concept.conceptId)}]">
       <div class="p-4">
-        <button  ng-if="isSctid(concept.conceptId)" type="button"
+        <div dropdown style="display: inline-block;" class=" m-r-5">
+          <button ng-if="isSctid(concept.conceptId)" type="button"
+                  class= "btn btn-default btn-round widget-button tooltips-bottom medium-size-tooltip lighten-2 blue"
+                  dropdown-toggle>
+            <i class="fa fa-download"></i> <span>Download diagram</span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="single-button" style="top: unset; min-width: 70px;">
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="downloadDiagram('png')">PNG</a></li>
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="downloadDiagram('svg')">SVG</a></li>
+          </ul>
+        </div>
+        <button ng-if="isSctid(concept.conceptId)" type="button"
                 class= "btn btn-round widget-button tooltips-bottom medium-size-tooltip white m-r-5"
                  ng-click="clone(concept)">
           <i class="md md-content-copy"></i> <span> Clone this concept </span>

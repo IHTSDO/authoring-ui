@@ -65,6 +65,7 @@ module.exports = function(config) {
       'bower_components/sockjs-client/dist/sockjs.js',
       'bower_components/stompjs/lib/stomp.min.js',
       'bower_components/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js',
+      'bower_components/js-base64/base64.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/components/*.js",
