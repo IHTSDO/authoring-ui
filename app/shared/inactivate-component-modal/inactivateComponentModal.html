@@ -8,7 +8,7 @@
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Deleting: {{concept.fsn}}</h4>
   </div>  
-  <div class="modal-body">
+  <div class="modal-body scroll-if-height">
     <div class="alert alert-warning" ng-if="referenceSetAssociations && referenceSetAssociations.length !== 0">There are some existing reference sets using this concept as referenced component. Please check Refset Associations tab before inactivating the concept.</div>
     <div class="row classification-report">
       <ul class="nav nav-tabs" role="tablist">
@@ -51,7 +51,7 @@
         <div ng-if="!deletion" >
           <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
             <div class="col-md-12">
-              <label> Select Inactivation Reason </label>
+              <label style="margin-bottom: 0px;"> Select Inactivation Reason </label>
             </div>
             <div class="col-md-12">
               <div class="radio" ng-repeat="reason in reasons" >

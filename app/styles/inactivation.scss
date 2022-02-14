@@ -94,6 +94,17 @@ a.approve-button {
   box-shadow: inset 0 -1px 0 #ddd;
 }
 
+#inactivateComponentModal .radio {
+  margin-bottom: 5px;
+}
+
+#inactivateComponentModal .modal-body {
+  max-height: 76vh;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 #inactivateComponentModal [type=text].form-control[readonly]:focus {
   box-shadow: inset 0 -2px 0 #00a6e5;
 }
