@@ -212,7 +212,9 @@
       <div class=" col-md-6 right-button">
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
-                  ng-disabled="checkAssociationPartiallyEquivalentTo() || (associationTargets.length > 0 && hasNoConceptTarget() && inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED')"
+                  ng-disabled="checkAssociationPartiallyEquivalentTo() 
+                              || (inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED' && associationTargets.length > 0 && hasNoConceptTarget())
+                              || (((inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED') && hasHistAssocType() && hasNoConceptTarget()))"
                   ng-click="selectReason()"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>
