@@ -269,6 +269,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       $scope.branchLocked = false;
                     });
                   }
+                  if($scope.lineItem){
+                      rnmService.promoteBranchLineItem($scope.branch, $scope.lineItem.id).then(function (lineItem) {
+                      });
+                  }
                 }, function (error) {
                   $scope.promoting = false;
                   $rootScope.branchLocked = false;

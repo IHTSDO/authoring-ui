@@ -40,6 +40,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.firstHalfManualSac = [];
       $scope.secondHalfManualSac = [];
       $scope.lineItems = [];
+      $scope.globalLineItems = [];
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -97,12 +98,16 @@ angular.module('singleConceptAuthoringApp.project', [
                   }
                 });
           });
-          rnmService.getBranchLineItems(response.branchPath).then(function (lineItems) {
+          rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
               if (lineItems) {
                 angular.forEach(lineItems, function (item) {
-                    $scope.lineItems.push(item);
+                    $scope.globalLineItems.push(item);
                 });
-                console.log($scope.lineItems);
+              }
+          });
+          rnmService.getBranchLineItems(response.branchPath).then(function (lineItems) {
+              if (lineItems) {
+                $scope.lineItems = lineItems;
               }
           });
 
@@ -284,7 +289,7 @@ angular.module('singleConceptAuthoringApp.project', [
                   return $scope.branch;
                 },
                 lineItems: function() {
-                  return $scope.lineItems;
+                  return $scope.globalLineItems;
                 }
               }
           });
@@ -297,12 +302,9 @@ angular.module('singleConceptAuthoringApp.project', [
           let item = {};
           let items = [];
           angular.forEach($scope.lineItems, function (lineItem) {
-            angular.forEach(lineItem.children, function (child) {
-                items.push(child);
-                if (child.id === id) {
-                  item = child;
-                }
-              });
+            if (lineItem.id === id) {
+              item = lineItem;
+            }
           });
           
           var modalInstance = $modal.open({
@@ -317,6 +319,9 @@ angular.module('singleConceptAuthoringApp.project', [
                 },
                 lineItems: function() {
                   return items;
+                },
+                globalLineItems: function() {
+                  return $scope.globalLineItems;
                 }
               }
           });
