@@ -469,6 +469,10 @@ angular.module('singleConceptAuthoringApp.project', [
                           }
                         });
                       }
+                      if($scope.lineItems){
+                        rnmService.promoteBranchLineItems($scope.branch).then(function (lineItem) {
+                          });
+                      }
                     });
                   }
                   else {
@@ -527,6 +531,10 @@ angular.module('singleConceptAuthoringApp.project', [
                               }
                             });
                           } else {
+                            if($scope.lineItems){
+                                rnmService.promoteBranchLineItems($scope.branch).then(function (lineItem) {
+                                  });
+                              }
                             $scope.getProject();
                           }
                         });
