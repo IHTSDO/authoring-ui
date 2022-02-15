@@ -274,10 +274,10 @@ angular.module('singleConceptAuthoringApp')
        return false;
     };
 
-    $scope.hasNoHistAssocType = function () {            
-      for (let i = 0; i < scope.associations.length; i++) {
-        var association = scope.associations[i];
-        if (!association.type.id) {
+    $scope.hasHistAssocType = function () {            
+      for (let i = 0; i < $scope.associations.length; i++) {
+        var association = $scope.associations[i];
+        if (association.type && association.type.id) {
           return true;
         }
       }
@@ -632,7 +632,7 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.addAssociation = function (index) {
-      if(typeof index !== 'undefined' && $scope.inactivationReason && ($scope.inactivationReason.id == 'AMBIGUOUS' || $scope.inactivationReason.id == 'NOT_SEMANTICALLY_EQUIVALENT')) {
+      if(typeof index !== 'undefined' && $scope.inactivationReason && ($scope.inactivationReason.id == 'AMBIGUOUS' || $scope.inactivationReason.id == 'MOVED_ELSEWHERE' || $scope.inactivationReason.id == 'NOT_SEMANTICALLY_EQUIVALENT')) {
         $scope.associations.push({type: $scope.associationTargets[0], concept: null});
       } else {
         let type = null;
