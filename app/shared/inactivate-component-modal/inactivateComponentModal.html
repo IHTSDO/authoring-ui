@@ -102,9 +102,9 @@
               </div>
               <div class="col-md-1" ng-if="!isReplacedByHistoricalAssocPresent() && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED' || inactivationReason.id === 'MOVED_ELSEWHERE')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
-                      class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case inactivation-modal-buttons"> <span>Add Association</span></button>
+                      class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-bottom offset-tooltip-right medium-size-tooltip tooltips-light normal-case inactivation-modal-buttons"> <span style="width: 100px; margin-left: -91px;">Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
-                      class="btn-default add-buttons md fa fa-minus button-width-minus tooltips-left tooltips-light normal-case"> <span>Remove Association</span></button>
+                      class="btn-default add-buttons md fa fa-minus button-width-minus tooltips-bottom offset-tooltip-right medium-size-tooltip tooltips-light normal-case"> <span style="width: 122px; margin-left: -112px;">Remove Association</span></button>
               </div>
             </div>
             <div ng-if="partiallyEquivalentToAssociationFound" class="row">
