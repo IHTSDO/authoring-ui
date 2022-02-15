@@ -18,6 +18,24 @@ angular.module('singleConceptAuthoringApp')
         });
     }
     
+    // Update Line Item for a branch
+    // PUT {branch, lineItem}
+    function updateBranchLineItem(branch, lineItem) {
+        return $http.put(apiEndpoint + branch + '/lineitems/' + lineItem.id, lineItem).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+    }
+    
+    // Create Line Item for a branch
+    // POST {branch, lineItem}
+    function createBranchLineItem(branch, lineItem) {
+        return $http.post(apiEndpoint + branch + '/lineitems/', lineItem).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+    }
+    
     // Retrieve Subjects for a branch
     // GET {branch}
     function getBranchSubjects(branch) {
@@ -33,7 +51,9 @@ angular.module('singleConceptAuthoringApp')
     return {
       setEndpoint: setEndpoint,
       getBranchLineItems: getBranchLineItems,
-      getBranchSubjects: getBranchSubjects
+      getBranchSubjects: getBranchSubjects,
+      updateBranchLineItem: updateBranchLineItem,
+      createBranchLineItem: createBranchLineItem
     };
 
   })

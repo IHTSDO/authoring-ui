@@ -22,6 +22,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.batch = false;
       $scope.sacSet = false;
       $scope.lineItems = [];
+      $scope.globalLineItems = [];
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -72,27 +73,39 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       }
       
-      rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
+      rnmService.getBranchLineItems($scope.branch).then(function (lineItems) {
           if (lineItems) {
             angular.forEach(lineItems, function (item) {
                 $scope.lineItems.push(item);
             });
-            console.log($scope.lineItems);
+            if($scope.lineItems.length === 1){
+                $scope.lineItem = $scope.lineItems[0];
+            }
+          }
+      });
+        
+      rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
+          if (lineItems) {
+            angular.forEach(lineItems, function (item) {
+                $scope.globalLineItems.push(item);
+            });
           }
       });
       
       $scope.openLineItemModal = function (id) {
+          console.log(id);
           let item = {};
-          let items = [];
+          let globalItems = [];
           angular.forEach($scope.lineItems, function (lineItem) {
+            if (lineItem.id === id) {
+              item = lineItem;
+            }
+          });
+          angular.forEach($scope.globalLineItems, function (lineItem) {
             angular.forEach(lineItem.children, function (child) {
-                items.push(child);
-                if (child.id === id) {
-                  item = child;
-                }
+                globalItems.push(child);
               });
           });
-          
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
             controller: 'lineItemCtrl',
@@ -104,12 +117,25 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   return item;
                 },
                 lineItems: function() {
-                  return items;
+                  return $scope.lineItems;
+                },
+                globalLineItems: function() {
+                  return globalItems;
                 }
               }
           });
 
           modalInstance.result.then(function () {
+              rnmService.getBranchLineItems($scope.branch).then(function (lineItems) {
+                  if (lineItems) {
+                    angular.forEach(lineItems, function (item) {
+                        $scope.lineItems.push(item);
+                    });
+                    if($scope.lineItems.length === 1){
+                        $scope.lineItem = $scope.lineItems[0];
+                    }
+                  }
+              });
           });
       };
         

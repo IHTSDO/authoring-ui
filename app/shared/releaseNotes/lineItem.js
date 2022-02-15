@@ -1,16 +1,18 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, aagService, branch, lineItem, lineItems) {
+  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems) {
 
     // scope variables
     $scope.branch = branch;
     $scope.lineItem = lineItem;
     $scope.lineItems = lineItems;
+    $scope.globalLineItems = globalLineItems;
+    var quill;
 
     function initialize() {
         $timeout(function () {
-            var quill = new Quill('#editor', {
+            quill = new Quill('#editor', {
                 theme: 'snow'
               });
             if(lineItem.content){
@@ -18,6 +20,32 @@ angular.module('singleConceptAuthoringApp')
             };
           }, 100);
         
+    }
+    
+    $scope.save = function () {
+        $scope.lineItem.content = quill.getText();
+        if(!$scope.lineItem.id){
+            rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
+              $scope.lineItem = response;
+              $modalInstance.close();
+            });
+        }
+        else{
+            rnmService.updateBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
+              $modalInstance.close();
+            });
+        }
+    }
+    
+    $scope.selectLineItem = function (lineItem) {
+        delete lineItem.id;
+        delete lineItem.content;
+        delete lineItem.sourceBranch;
+        delete lineItem.promotedBranch;
+        delete lineItem.start;
+        delete lineItem.end;
+        delete lineItem.released;
+        $scope.lineItem = lineItem;
     }
 
     // closes the modal instance (if applicable)
