@@ -5,10 +5,16 @@
     </div>
     <div ng-if="!lineItem.title" class="col-md-8" style="margin-left: -10px;">
       <h4 class="modal-title">Line Item:</h4>
-      <select name="select-choice" class="form-control"
+      <select ng-if="!globalLineItems" name="select-choice" class="form-control"
                 ng-options="lineItem.title for lineItem in lineItems"
                 ng-model="lineItem"
-                ng-change=""
+                ng-change="selectLineItem(lineItem)"
+                style="margin-top:10px;">
+      </select>
+      <select ng-if="globalLineItems" name="select-choice" class="form-control"
+                ng-options="lineItem.title for lineItem in globalLineItems"
+                ng-model="lineItem"
+                ng-change="selectLineItem(lineItem)"
                 style="margin-top:10px;">
       </select>
     </div>
@@ -35,7 +41,7 @@
       <!-- Display create only if no task supplied -->
       <div class="col-md-4">
         <button type="button" class="col-md-12 btn btn-info no-margin"
-                ng-click="saveSac()">Save </button>
+                ng-click="save()">Save </button>
       </div>
         <div class="col-md-4"></div>
       

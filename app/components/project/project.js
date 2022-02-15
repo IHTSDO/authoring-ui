@@ -97,8 +97,7 @@ angular.module('singleConceptAuthoringApp.project', [
                   }
                 });
           });
-          //rnmService.getBranchLineItems(response.branchPath).then(function (lineItems) {
-          rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
+          rnmService.getBranchLineItems(response.branchPath).then(function (lineItems) {
               if (lineItems) {
                 angular.forEach(lineItems, function (item) {
                     $scope.lineItems.push(item);
