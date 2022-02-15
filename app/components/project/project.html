@@ -403,18 +403,11 @@
         <div ng-show="releaseNotesCollapsed === false">
             <div class="card-content clearfix">
                 <div class="row task-details project-main-buttons">
-                    <div ng-repeat="item in lineItems">
-                        <div class="row" style="display:inline-flex; width:100%;">
-                          <div style="margin-top: 10px; font-size: 16px; margin-left: 15px;">
-                              {{item.title}}
-                          </div>
-                        </div>
-                        <div ng-repeat="lineItem in item.children"class="col-md-3">
-                        <button ng-click="openLineItemModal(lineItem.id)" class="btn btn-border editingtask" style="color: #666"> 
-                            <span class="md fa-sca fa-clipboard iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{lineItem.title}}</span> 
-                        </button>
-                        </div>
+                    <div ng-repeat="lineItem in lineItems"class="col-md-3">
+                    <button ng-click="openLineItemModal(lineItem.id)" class="btn btn-border editingtask" style="color: #666"> 
+                        <span class="md fa-sca fa-clipboard iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
+font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{lineItem.title}}</span> 
+                    </button>
                     </div>
                 </div>
             </div>
