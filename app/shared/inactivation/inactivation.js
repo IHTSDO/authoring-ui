@@ -1339,6 +1339,22 @@ angular.module('singleConceptAuthoringApp')
             rowsAccepted += row.accepted ? 1 : -1;
           };
 
+          scope.removeAssociation = function (row, isAssocConcept) {
+            if (isAssocConcept) {
+              const index = scope.affectedConceptAssocs.indexOf(row);
+              if (index > -1) {
+                scope.affectedConceptAssocs.splice(index, 1);
+                scope.assocsConceptTableParams.reload();
+              }
+            } else {
+              const index = scope.affectedDescToConceptAssocs.indexOf(row);
+              if (index > -1) {
+                scope.affectedDescToConceptAssocs.splice(index, 1);
+                scope.assocsDescToConceptTableParams.reload();
+              }
+            }
+          };
+
           scope.isComplete = function () {
             return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.gciRelsTableParams.total() + scope.assocsConceptTableParams.total() + scope.assocsDescToConceptTableParams.total();
           };
