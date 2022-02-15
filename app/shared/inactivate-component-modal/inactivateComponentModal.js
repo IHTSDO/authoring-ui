@@ -274,6 +274,16 @@ angular.module('singleConceptAuthoringApp')
        return false;
     };
 
+    $scope.hasNoHistAssocType = function () {            
+      for (let i = 0; i < scope.associations.length; i++) {
+        var association = scope.associations[i];
+        if (!association.type.id) {
+          return true;
+        }
+      }
+      return false;
+    };
+
     $scope.partiallyEquivalentToAssociationFound = false;
     $scope.checkAssociationPartiallyEquivalentTo = function () {
       let count = 0;

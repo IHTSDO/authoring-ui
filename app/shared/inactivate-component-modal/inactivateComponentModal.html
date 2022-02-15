@@ -100,7 +100,7 @@
               <div class="col-md-1">
                 <span ng-if="inactivationReason.absenceHistoricalAssociationSupport">(optional)</span>
               </div>
-              <div class="col-md-1" ng-if="!isReplacedByHistoricalAssocPresent() && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
+              <div class="col-md-1" ng-if="!isReplacedByHistoricalAssocPresent() && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED' || inactivationReason.id === 'MOVED_ELSEWHERE')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
                 <button type="button" ng-click="addAssociation($index)"
                       class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case inactivation-modal-buttons"> <span>Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
@@ -212,7 +212,7 @@
       <div class=" col-md-6 right-button">
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
-                  ng-disabled="checkAssociationPartiallyEquivalentTo() || (associationTargets.length > 0 && hasNoConceptTarget() && inactivationReason.id !== 'MOVED_ELSEWHERE' && inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED')"
+                  ng-disabled="checkAssociationPartiallyEquivalentTo() || (associationTargets.length > 0 && hasNoConceptTarget() && inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED')"
                   ng-click="selectReason()"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>
