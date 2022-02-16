@@ -36,10 +36,19 @@ angular.module('singleConceptAuthoringApp')
         });
     } 
     
-    // Create Line Item for a branch
+    // Promote Line Item for a branch
     // POST {branch, lineItem}
     function promoteBranchLineItem(branch, id) {
         return $http.post(apiEndpoint + branch + '/lineitems/' + id + '/promote').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+    }
+    
+    // Promote multiple Line Items for a branch
+    // POST {branch, lineItem}
+    function promoteBranchLineItems(branch, id) {
+        return $http.post(apiEndpoint + branch + '/lineitems/promote').then(function (response) {
           return response.data;
         }, function (error) {
         });
@@ -63,7 +72,8 @@ angular.module('singleConceptAuthoringApp')
       getBranchSubjects: getBranchSubjects,
       updateBranchLineItem: updateBranchLineItem,
       createBranchLineItem: createBranchLineItem,
-      promoteBranchLineItem: promoteBranchLineItem
+      promoteBranchLineItem: promoteBranchLineItem,
+      promoteBranchLineItems: promoteBranchLineItems
     };
 
   })
