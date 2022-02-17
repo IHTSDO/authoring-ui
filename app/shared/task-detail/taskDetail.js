@@ -92,10 +92,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
       });
       
-      $scope.openLineItemModal = function (id) {
-          console.log(id);
+      $scope.openLineItemModal = function (id) {=
           let item = {};
           let globalItems = [];
+          let readOnly = false;
+          if($scope.role !== 'AUTHOR'){
+              readOnly = true;
+          }
           angular.forEach($scope.lineItems, function (lineItem) {
             if (lineItem.id === id) {
               item = lineItem;
@@ -121,6 +124,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 },
                 globalLineItems: function() {
                   return globalItems;
+                },
+                readOnly: function() {
+                  return readOnly;
                 }
               }
           });

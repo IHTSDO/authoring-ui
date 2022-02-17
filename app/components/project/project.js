@@ -301,6 +301,10 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.openLineItemModal = function (id) {
           let item = {};
           let items = [];
+          let readOnly = false;
+          if(!$scope.userRoles.includes('PROJECT_MANAGER')) {
+             readOnly = true;
+          }
           angular.forEach($scope.lineItems, function (lineItem) {
             if (lineItem.id === id) {
               item = lineItem;
@@ -322,6 +326,9 @@ angular.module('singleConceptAuthoringApp.project', [
                 },
                 globalLineItems: function() {
                   return $scope.globalLineItems;
+                },
+                readOnly: function() {
+                  return readOnly;
                 }
               }
           });
