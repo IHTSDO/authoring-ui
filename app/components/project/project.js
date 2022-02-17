@@ -41,6 +41,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.secondHalfManualSac = [];
       $scope.lineItems = [];
       $scope.globalLineItems = [];
+      $scope.releaseNotesDisabled = false;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -160,6 +161,8 @@ angular.module('singleConceptAuthoringApp.project', [
               metadataService.setModuleName(response.conceptId, response.fsn);
             });
           }
+            
+          $scope.releaseNotesDisabled = metadataService.isExtensionSet();
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning = $scope.project.validationStatus && ($scope.project.validationStatus === 'SCHEDULED' || $scope.project.validationStatus === 'QUEUED' || $scope.project.validationStatus === 'RUNNING');
