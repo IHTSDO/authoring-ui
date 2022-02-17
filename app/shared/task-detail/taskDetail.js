@@ -23,6 +23,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.sacSet = false;
       $scope.lineItems = [];
       $scope.globalLineItems = [];
+      $scope.releaseNotesDisabled = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -49,7 +50,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               branchMetadata.metadata = response.metadata;
             }
             metadataService.setBranchMetadata(branchMetadata);
-            $scope.complex = metadataService.isComplex();              
+            $scope.complex = metadataService.isComplex();
             aagService.getBranchSAC($scope.branch).then(function (sac) {
                 $scope.sac = [];
                 if (sac && sac.criteriaItems) {
@@ -92,7 +93,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
       });
       
-      $scope.openLineItemModal = function (id) {=
+      $scope.openLineItemModal = function (id) {
           let item = {};
           let globalItems = [];
           let readOnly = false;
@@ -795,6 +796,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               $scope.batch = metadataService.isBatch();
           });
           $scope.task = response;
+          console.log(metadataService.isExtensionSet());
+          $scope.releaseNotesDisabled = metadataService.isExtensionSet();
           if($scope.task.summary.includes('- Running')){
               $scope.pollForCompletion();
           }
