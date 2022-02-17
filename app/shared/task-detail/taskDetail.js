@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.sacSet = false;
       $scope.lineItems = [];
       $scope.globalLineItems = [];
-      $scope.releaseNotesDisabled = false;
+      $scope.releaseNotesDisabled = true;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
