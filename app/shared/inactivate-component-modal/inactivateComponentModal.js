@@ -627,7 +627,10 @@ angular.module('singleConceptAuthoringApp')
     $scope.switchHistoricalAssociationType = function(type){      
       if ($scope.associations.length != 0) {
         if ($scope.isReplacedByHistoricalAssocPresent() || $scope.isNoRequiredHistoricalAssocPresent()) {
-          $scope.associations = [$scope.associations[0]];
+          if ($scope.isNoRequiredHistoricalAssocPresent()) {
+            $scope.associations[0].concept = null;
+          }
+          $scope.associations = [$scope.associations[0]];          
         }
         for (let i = 0; i < $scope.associations.length; i++) {
           $scope.associations[i].type = type;
