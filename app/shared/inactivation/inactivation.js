@@ -1420,9 +1420,14 @@ angular.module('singleConceptAuthoringApp')
             var associations = scope.getAssociationsForReason(rel.inactivationIndicator);            
             if(associations.length !== 0) {
               rel.refsetName = associations[0].id;
-              if (!rel.newTargetId && scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
-                rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
-                rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+              if (!rel.refsetName) {
+                rel.newTargetFsn = '';
+                rel.newTargetId = '';
+              } else {
+                if (rel.refsetName && (!rel.newTargetId || !rel.newTargetFsn) && scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
+                  rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
+                  rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+                }
               }
             } else {
               rel.refsetName = '';
@@ -1430,6 +1435,18 @@ angular.module('singleConceptAuthoringApp')
               rel.newTargetId = '';
             }
           }
+
+          scope.switchHistoricalAssociationType = function(rel) {
+            if (rel.refsetName) {
+              if (!rel.newTargetId && scope.histAssocTargets && scope.histAssocTargets.concepts && scope.histAssocTargets.concepts.length !== 0) {
+                rel.newTargetFsn = scope.histAssocTargets.concepts[0].fsn;
+                rel.newTargetId = scope.histAssocTargets.concepts[0].conceptId;
+              }
+            } else {
+              rel.newTargetFsn = '';
+              rel.newTargetId = '';
+            }
+          };
 
           scope.updateRefTarget = function (rel) {
             for (var j = 0; j < scope.associationTargets.length; j++) {
@@ -1462,8 +1479,8 @@ angular.module('singleConceptAuthoringApp')
             for (let i = 0; i < scope.affectedConceptAssocs.length; i++) {
               var concept = scope.affectedConceptAssocs[i];              
               var associations = scope.getAssociationsForReason(concept.inactivationIndicator);
-              if ((hasHistAssocTargets && associations.length !== 0 && (!concept.newTargetId || !concept.newTargetFsn || !concept.refsetName))
-                  || (!hasHistAssocTargets && concept.refsetName && !concept.newTargetId)) {
+              if ((hasHistAssocTargets && associations.length !== 0 && (concept.refsetName && (!concept.newTargetId || !concept.newTargetFsn)))
+                  || (!hasHistAssocTargets && concept.refsetName && (!concept.newTargetId || !concept.newTargetFsn))) {
                 return true;
               }
             }
@@ -1509,7 +1526,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.convertToTextFromCode = function (code) {
             if(!code) {
-              return '';
+              return 'No association required';
             }
 
             var text = code.replace(/_/g, " ");
