@@ -41,7 +41,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.secondHalfManualSac = [];
       $scope.lineItems = [];
       $scope.globalLineItems = [];
-      $scope.releaseNotesDisabled = false;
+      $scope.releaseNotesDisabled = true;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
