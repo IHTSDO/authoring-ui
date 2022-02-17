@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems) {
+  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly) {
 
     // scope variables
     $scope.branch = branch;
     $scope.lineItem = lineItem;
     $scope.lineItems = lineItems;
     $scope.globalLineItems = globalLineItems;
+    $scope.readOnly = readOnly;
     var quill;
 
     function initialize() {
@@ -17,6 +18,9 @@ angular.module('singleConceptAuthoringApp')
               });
             if(lineItem.content){
                 quill.setText(lineItem.content);
+                if(readOnly){
+                    quill.enable(false);
+                }
             };
           }, 100);
         
