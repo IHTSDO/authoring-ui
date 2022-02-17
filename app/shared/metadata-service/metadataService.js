@@ -107,15 +107,15 @@ angular.module('singleConceptAuthoringApp')
     // component inactivation metadata
     var conceptInactivationReasons = [
       {id: 'AMBIGUOUS', text: 'Ambiguous concept', display: [4]},
-      {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere', display: [12]},
+      {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere', display: [12,1]},
       {id: 'DUPLICATE', text: 'Duplicate concept', display: [7]},
       {id: 'ERRONEOUS', text: 'Erroneous concept', display: [6]},
       //{id: 'LIMITED', text: 'Limited component', display: [9]},
-      {id: 'OUTDATED', text: 'Outdated concept', display: [6,11]},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: [6,12]},
+      {id: 'OUTDATED', text: 'Outdated concept', display: [1,6,11]},
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: [1,6,12]},
       //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
       {id: 'CLASSIFICATION_DERIVED_COMPONENT', text: 'Classification derived concept', display: [6,10]},
-      {id: 'MEANING_OF_COMPONENT_UNKNOWN', text: 'Meaning of concept unknown', display: []}
+      {id: 'MEANING_OF_COMPONENT_UNKNOWN', text: 'Meaning of concept unknown', display: [1]}
     ];
     // var inactivationParent = '900000000000481005';
 
@@ -126,6 +126,15 @@ angular.module('singleConceptAuthoringApp')
     // activeOnly - if true, only active components
     var associationInactivationReasons =
       [
+        {
+          id: 'REPLACED_BY',
+          conceptId: '900000000000526001',
+          text: 'REPLACED BY association reference set',
+          display: 6,
+          restrict: {
+            activeOnly: true
+          }
+        },        
         {
           id: 'MOVED_FROM',
           conceptId: '900000000000525002',
@@ -159,16 +168,8 @@ angular.module('singleConceptAuthoringApp')
           restrict: {
             type: 'CONCEPT'
           }
-        },
-        {
-          id: 'REPLACED_BY',
-          conceptId: '900000000000526001',
-          text: 'REPLACED BY association reference set',
-          display: 6,
-          restrict: {
-            activeOnly: true
-          }
-        },
+        }
+        ,
         {
           id: 'SAME_AS',
           conceptId: '900000000000527005',
@@ -220,6 +221,16 @@ angular.module('singleConceptAuthoringApp')
           conceptId: '900000000000530003',
           text: 'ALTERNATIVE association reference set',
           display: 12,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
+        },
+        {
+          id: '',
+          conceptId: '',
+          text: 'No association required',
+          display: 1,
           restrict: {
             type: 'CONCEPT',
             activeOnly: true

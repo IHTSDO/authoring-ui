@@ -28,7 +28,8 @@ angular.module('singleConceptAuthoringApp')
            $scope.addAssociation(0);
         }
 
-        if ($scope.componentType === 'Concept' && $scope.inactivationReason.id !== 'AMBIGUOUS' && $scope.associations.length > 1) {
+        if ($scope.componentType === 'Concept' && $scope.associations.length > 1
+            && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
           $scope.associations = [$scope.associations[0]];           
         }
 
@@ -37,8 +38,11 @@ angular.module('singleConceptAuthoringApp')
           // extract association for convenience
           let association = $scope.associations[i];
           association.type = null;
-          if($scope.associationTargets.length === 1) {
+          if($scope.associationTargets.length !== 0) {
             association.type = $scope.associationTargets[0];
+            if (association.type.id === '') {
+              delete association.concept;
+            }
           } else {
             delete association.concept;
           }
@@ -622,7 +626,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.switchHistoricalAssociationType = function(type){      
       if ($scope.associations.length != 0) {
-        if ($scope.isReplacedByHistoricalAssocPresent()) {
+        if ($scope.isReplacedByHistoricalAssocPresent() || $scope.isNoRequiredHistoricalAssocPresent()) {
           $scope.associations = [$scope.associations[0]];
         }
         for (let i = 0; i < $scope.associations.length; i++) {
@@ -632,8 +636,10 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.addAssociation = function (index) {
-      if(typeof index !== 'undefined' && $scope.inactivationReason && ($scope.inactivationReason.id == 'AMBIGUOUS' || $scope.inactivationReason.id == 'MOVED_ELSEWHERE' || $scope.inactivationReason.id == 'NOT_SEMANTICALLY_EQUIVALENT')) {
-        $scope.associations.push({type: $scope.associationTargets[0], concept: null});
+      if(typeof index !== 'undefined' && $scope.inactivationReason) {
+        if ($scope.associationTargets.length !== 0) {
+          $scope.associations.push({type: $scope.associationTargets[0], concept: null});
+        }        
       } else {
         let type = null;
         if ($scope.associations.length != 0) {
@@ -667,6 +673,18 @@ angular.module('singleConceptAuthoringApp')
       return false;
     };
 
+    $scope.isNoRequiredHistoricalAssocPresent = function () {
+      if ($scope.associations.length != 0) {
+        for (let i = 0; i < $scope.associations.length; i++) {
+          if ($scope.associations[i].type && $scope.associations[i].type.id === '') {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    };
+
     ////////////////////////////////////
     // Initialization
     ////////////////////////////////////
@@ -692,6 +710,7 @@ angular.module('singleConceptAuthoringApp')
     // concept (disable inactivation)
     $scope.statedChildFound = false;
     
+    // Edit inactive concept 
     if($scope.componentType === 'Concept' && !$scope.deletion && $scope.concept && ! $scope.concept.active) {
       let foundReasons = $scope.reasons.filter(function(reason) {return reason.id === $scope.concept.inactivationIndicator});
       if (foundReasons.length !== 0) {

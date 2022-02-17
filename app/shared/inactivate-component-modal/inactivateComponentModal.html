@@ -84,12 +84,12 @@
                       ng-if="associationTargets.length > 1"
                       ng-options="type as type.text for type in associationTargets"
                       ng-change="switchHistoricalAssociationType(association.type)"
-                      ng-model="association.type">
-                  <option value="" disabled>- Select an Association Type -</option>
+                      ng-model="association.type">                  
                 </select>
               </div>
               <div class="col-md-6">
                 <textarea type="text" class="form-control no-padding-left"
+                        ng-disabled="!association.type.id"
                         ng-model="association.concept"
                         typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getTypeaheadConcepts($viewValue, true)"
                         typeahead-focus-first="false"
@@ -100,8 +100,8 @@
               <div class="col-md-1">
                 <span ng-if="inactivationReason.absenceHistoricalAssociationSupport">(optional)</span>
               </div>
-              <div class="col-md-1" ng-if="!isReplacedByHistoricalAssocPresent() && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED' || inactivationReason.id === 'MOVED_ELSEWHERE')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
-                <button type="button" ng-click="addAssociation($index)"
+              <div class="col-md-1" ng-if="!isReplacedByHistoricalAssocPresent() && !isNoRequiredHistoricalAssocPresent() && (componentType === 'Concept' && (inactivationReason.id === 'AMBIGUOUS' || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED' || inactivationReason.id === 'MOVED_ELSEWHERE')) || (componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT')">
+                <button type="button" ng-click="addAssociation()"
                       class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-bottom offset-tooltip-right medium-size-tooltip tooltips-light normal-case inactivation-modal-buttons"> <span style="width: 100px; margin-left: -91px;">Add Association</span></button>
                 <button type="button" ng-click="removeAssociation($index)"
                       class="btn-default add-buttons md fa fa-minus button-width-minus tooltips-bottom offset-tooltip-right medium-size-tooltip tooltips-light normal-case"> <span style="width: 122px; margin-left: -112px;">Remove Association</span></button>
@@ -113,10 +113,11 @@
           </div>
         </div>
     
-        <div class="col-sm-12 m-t-10" ng-if="!isReplacedByHistoricalAssocPresent() && componentType === 'Concept' && associationTargets.length > 0 && (inactivationReason.id === 'AMBIGUOUS' 
+        <div class="col-sm-12 m-t-10" ng-if="!isReplacedByHistoricalAssocPresent() && !isNoRequiredHistoricalAssocPresent() && componentType === 'Concept' && associationTargets.length > 0 && (inactivationReason.id === 'AMBIGUOUS' 
                                                                                                               || inactivationReason.id === 'CLASSIFICATION_DERIVED_COMPONENT' 
                                                                                                               || inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' 
-                                                                                                              || inactivationReason.id === 'OUTDATED')">
+                                                                                                              || inactivationReason.id === 'OUTDATED'
+                                                                                                              || inactivationReason.id === 'MOVED_ELSEWHERE')">
           <div class="checkbox download-checkbox">
             <input type="checkbox" ng-model="useFirstTarget.selected" ng-checked="useFirstTarget.selected"/>
             <span style="top: 0px;left: 25px; position: absolute;">Use First Target</span>         
@@ -212,9 +213,10 @@
       <div class=" col-md-6 right-button">
         <button type="button"
                   class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
-                  ng-disabled="checkAssociationPartiallyEquivalentTo() 
-                              || (inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED' && associationTargets.length > 0 && hasNoConceptTarget())
-                              || (((inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED') && hasHistAssocType() && hasNoConceptTarget()))"
+                  ng-disabled="(checkAssociationPartiallyEquivalentTo() 
+                                || (inactivationReason.id !== 'NONCONFORMANCE_TO_EDITORIAL_POLICY' && inactivationReason.id !== 'OUTDATED' && associationTargets.length > 0 && hasNoConceptTarget())
+                                || (((inactivationReason.id === 'NONCONFORMANCE_TO_EDITORIAL_POLICY' || inactivationReason.id === 'OUTDATED') && hasHistAssocType() && hasNoConceptTarget())))
+                                && !isNoRequiredHistoricalAssocPresent()"
                   ng-click="selectReason()"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>

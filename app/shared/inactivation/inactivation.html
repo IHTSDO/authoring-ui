@@ -280,7 +280,8 @@
                 <select class="form-control"
                       ng-if="getAssociationsForReason(rel.inactivationIndicator).length > 1"
                       ng-options="type.id as convertToTextFromCode(type.id) for type in getAssociationsForReason(rel.inactivationIndicator)"                      
-                      ng-model="rel.refsetName">
+                      ng-model="rel.refsetName"
+                      ng-change="switchHistoricalAssociationType(rel)">
                 </select>
               </td>
               <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
@@ -288,7 +289,7 @@
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
                      ui-on-drop="dropAssociationTarget(rel, $data)">
               <textarea type="text" class="form-control inactivation-value" ng-model="rel.newTargetFsn"
-                        ng-disabled="rel.inactivationIndicator === 'NONCONFORMANCE_TO_EDITORIAL_POLICY'"
+                        ng-disabled="!rel.refsetName"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
