@@ -4255,9 +4255,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // function to update description and autoSave if indicated
-        scope.updateDescription = function (description, keepSCTID, descriptionTypeChange) {
-          if (!keepSCTID) delete description.descriptionId;
+        scope.updateDescription = function (description, descriptionTypeChange) {
           if (!description) return;
+          if(!terminologyServerService.isSctid(description.descriptionId)) {
+            delete description.descriptionId;
+          }
 
           // run spellchecker
           if(description.term !== null && description.term !== '' && !metadataService.isSpellcheckDisabled()){
