@@ -106,9 +106,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             }
           });
           angular.forEach($scope.globalLineItems, function (lineItem) {
-            angular.forEach(lineItem.children, function (child) {
-                globalItems.push(child);
-              });
+            if(lineItem.title === "Content Development Activity"){
+                angular.forEach(lineItem.children, function (child) {
+                    globalItems.push(child);
+                });
+            }
           });
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',

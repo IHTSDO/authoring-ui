@@ -102,7 +102,9 @@ angular.module('singleConceptAuthoringApp.project', [
           rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
               if (lineItems) {
                 angular.forEach(lineItems, function (item) {
-                    $scope.globalLineItems.push(item);
+                    if(item.title === "Content Development Activity"){
+                        $scope.globalLineItems.push(item);
+                    }
                 });
               }
           });
