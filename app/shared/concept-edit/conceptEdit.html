@@ -408,7 +408,7 @@
           <div class="pull-left typeid">
             <select ng-disabled="description.released || isStatic || isLockedModule(description.moduleId) || showInferredRels"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
-                    ng-model="description.type" ng-change="updateDescription(description, false, true)" name="select-type"
+                    ng-model="description.type" ng-change="updateDescription(description, true)" name="select-type"
                     id="select-type-choice" class="form-control color_{{(relationship.groupId%2==0)?'even':'odd'}}" ui-on-drop="">
             </select>
           </div>
