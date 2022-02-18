@@ -1355,6 +1355,13 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.existOnlyOneHistAsscForConcept = function (conceptId) {
+            if (scope.affectedConceptAssocs.length !== 0) {
+              return scope.affectedConceptAssocs.filter(function(item) {return conceptId === item.conceptId;}).length === 1;
+            }
+            return false;
+          };
+
           scope.isComplete = function () {
             return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.gciRelsTableParams.total() + scope.assocsConceptTableParams.total() + scope.assocsDescToConceptTableParams.total();
           };
