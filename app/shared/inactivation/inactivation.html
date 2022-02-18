@@ -317,7 +317,7 @@
                 </a>
               </td>
               <td>
-                <button ng-disabled="rel.accepted || finalizing" class="btn btn-round btn-default red base"
+                <button ng-disabled="rel.accepted || finalizing || existOnlyOneHistAsscForConcept(rel.conceptId)" class="btn btn-round btn-default red base"
                         ng-click="removeAssociation(rel,true)">
                   <div
                     class="md fa-sca fa-minus "></div>
