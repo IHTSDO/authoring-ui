@@ -10,6 +10,8 @@
   </div>  
   <div class="modal-body scroll-if-height">
     <div class="alert alert-warning" ng-if="referenceSetAssociations && referenceSetAssociations.length !== 0">There are some existing reference sets using this concept as referenced component. Please check Refset Associations tab before inactivating the concept.</div>
+    <div class="alert alert-warning" ng-if="componentType === 'Description' && contextLanguageRefSetAssociations.length !== 0 && !checkingContextLanguageRefSetAssociations">This description is referenced in following context based language reference set: {{getcontextLanguageRefSetAssociationsText()}}.</div>
+    <div class="alert alert-info" ng-if="componentType === 'Description' && checkingContextLanguageRefSetAssociations">Checking the context based language reference set against this description...</div>
     <div class="row classification-report">
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" ng-class="{active : actionTab === 1}" class=""> <a
