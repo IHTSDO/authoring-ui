@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, terminologyServerService, componentType, reasons, associationTargets, conceptId, concept, branch, deletion, $routeParams, $q, metadataService, modalService) {
+  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, terminologyServerService, componentType, reasons, associationTargets, conceptId, concept, description, branch, deletion, $routeParams, $q, metadataService, modalService) {
 
     // the selected tab
     $scope.actionTab = 1;
@@ -60,6 +60,7 @@ angular.module('singleConceptAuthoringApp')
     // be as well)
     $scope.conceptId = conceptId;
     $scope.concept = concept;
+    $scope.description = description;
     $scope.branch = branch;
     $scope.associationTargets = associationTargets;
     $scope.originalAssocs = associationTargets;
@@ -688,6 +689,10 @@ angular.module('singleConceptAuthoringApp')
       return false;
     };
 
+    $scope.getcontextLanguageRefSetAssociationsText = function() {
+      return $scope.contextLanguageRefSetAssociations.map(function(elem) { return elem.refsetId + ' |' + (elem.fsn ? elem.fsn : elem.label) + '|'; }).join(',');
+    }
+
     ////////////////////////////////////
     // Initialization
     ////////////////////////////////////
@@ -704,6 +709,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.inactivationReason = $scope.reasons ? $scope.reasons[0] : null;
     // construct the associations array and add a blank row
     $scope.associations = [];
+    $scope.contextLanguageRefSetAssociations = [];
 
     // display flags
     $scope.descendantsLoading = true;
@@ -753,6 +759,35 @@ angular.module('singleConceptAuthoringApp')
     } else {
       $scope.addAssociation();
       $scope.updateAssociations($scope.inactivationReason);      
+    }
+
+    if ($scope.componentType === 'Description' && $scope.description && $scope.description.active) {
+      $scope.checkingContextLanguageRefSetAssociations = true;
+      $scope.contextLanguageRefSetAssociations = [];
+      let optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+      if (optionalLanguageRefsets.length !== 0) {
+        $scope.contextLanguageRefSetAssociations = optionalLanguageRefsets.filter(function(item) {return Object.keys($scope.description.acceptabilityMap).includes(item.refsetId)});
+        if ($scope.contextLanguageRefSetAssociations.length !== 0) {
+          const allRefsetIdStr = $scope.contextLanguageRefSetAssociations.map(function(elem) { return elem.refsetId;}).join(',');        
+          // Get FSNs for context based language refset
+          terminologyServerService.searchAllConcepts($scope.branch, allRefsetIdStr, null, 0, 50, null, true, true).then(function (response) {
+            if(response.items.length !== 0) {
+              for (let i = 0; i < response.items.length; i++) {
+                for (let j = 0; j < $scope.contextLanguageRefSetAssociations.length; j++) {
+                  if (response.items[i].concept.conceptId === $scope.contextLanguageRefSetAssociations[j].refsetId) {
+                    $scope.contextLanguageRefSetAssociations[j]['fsn'] = response.items[i].concept.fsn;
+                  }
+                }                
+              }
+            }
+            $scope.checkingContextLanguageRefSetAssociations = false;
+          });
+        } else {
+          $scope.checkingContextLanguageRefSetAssociations = false;
+        }
+      } else {
+        $scope.checkingContextLanguageRefSetAssociations = false;
+      }
     }
   })
 ;

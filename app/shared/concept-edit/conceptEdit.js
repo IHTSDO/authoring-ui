@@ -2600,7 +2600,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // reactivate the description before selecting a reason
               description.active = true;
 
-              selectInactivationReason('Description', inactivateDescriptionReasons, inactivateAssociationReasons, null, null, null).then(function (results) {
+              selectInactivationReason('Description', inactivateDescriptionReasons, inactivateAssociationReasons, null, null, scope.branch, false, description).then(function (results) {
 
                 notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
@@ -3115,7 +3115,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 ////////////////////////////////
 
 // deactivation modal for reason s elect
-        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, concept, branch, deletion) {
+        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, concept, branch, deletion, description) {
 
           var popups = document.querySelectorAll('.popover');
           if (popups) {
@@ -3146,6 +3146,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               },
               concept: function () {
                 return concept;
+              },
+              description: function () {
+                return description;
               },
               branch: function () {
                 return branch;
