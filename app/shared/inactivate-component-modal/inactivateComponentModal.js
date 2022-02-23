@@ -765,7 +765,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.checkingContextLanguageRefSetAssociations = true;
       $scope.contextLanguageRefSetAssociations = [];
       let optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-      if (optionalLanguageRefsets.length !== 0) {
+      if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
         $scope.contextLanguageRefSetAssociations = optionalLanguageRefsets.filter(function(item) {return Object.keys($scope.description.acceptabilityMap).includes(item.refsetId)});
         if ($scope.contextLanguageRefSetAssociations.length !== 0) {
           const allRefsetIdStr = $scope.contextLanguageRefSetAssociations.map(function(elem) { return elem.refsetId;}).join(',');        
