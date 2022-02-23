@@ -16,8 +16,9 @@ angular.module('singleConceptAuthoringApp')
             quill = new Quill('#editor', {
                 theme: 'snow'
               });
-            if(lineItem.content){
-                quill.setText(lineItem.content);
+            var converter = new showdown.Converter();
+            if($scope.lineItem.content){
+                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml($scope.lineItem.content));
                 if(readOnly){
                     quill.enable(false);
                 }
@@ -27,7 +28,8 @@ angular.module('singleConceptAuthoringApp')
     }
     
     $scope.save = function () {
-        $scope.lineItem.content = quill.getText();
+        var converter = new showdown.Converter();
+        $scope.lineItem.content = converter.makeMarkdown(quill.root.innerHTML);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
               $scope.lineItem = response;
