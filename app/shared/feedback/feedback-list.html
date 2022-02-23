@@ -357,7 +357,7 @@
                   class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                   <button
                     class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-mouseover="setTooltipPosition($event);"
+                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept,'inferred'); viewConceptInTaxonomy(concept); clearFeedback()" ng-mouseover="setTooltipPosition($event);"
                     ng-class="[{'disable' : concept.viewed}]">
                   <div
                       class="md md-edit "></div>
@@ -366,7 +366,7 @@
               <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
                   <button
                     class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-mouseover="setTooltipPosition($event);"
+                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept,'inferred'); viewConceptInTaxonomy(concept); clearFeedback()" ng-mouseover="setTooltipPosition($event);"
                     ng-class="[{'disable' : concept.viewed}]">
                   <div
                       class="md md-edit "></div>
