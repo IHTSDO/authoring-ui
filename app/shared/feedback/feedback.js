@@ -1056,15 +1056,18 @@ angular.module('singleConceptAuthoringApp')
           };
          
           // function to add a concept to viewed list from tables
-          scope.addToEdit = function (item) {
+          scope.addToEdit = function (item, tabName) {
             // if viewed, ignore
             if (!item.viewed) {
               notificationService.sendMessage('Loading concept ' + item.conceptId);
-              item.viewed = true;
-              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
-                item.read = true;
-                item.modifiedSinceReview = false;
-              });
+              if (!tabName || tabName !== 'inferred') {
+                item.viewed = true;
+                scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
+                  item.read = true;
+                  item.modifiedSinceReview = false;
+                });
+              }
+              
               addToEditHelper(item.conceptId).then(function (response) {
                 if (scope.role === 'REVIEWER') {
                   // set focus on the selected concept
@@ -1089,6 +1092,10 @@ angular.module('singleConceptAuthoringApp')
                 fsn: concept.term
               }
             });
+          };
+          scope.clearFeedback = function() {
+            scope.viewedFeedback = [];
+            scope.subjectConcepts = [];
           };
 
           // additional function to add based on concept id alone
@@ -1129,6 +1136,7 @@ angular.module('singleConceptAuthoringApp')
               });
             } else if (actionTab === 3) {
               scope.setDisableLoadingProjectTaxonomy(true);
+              scope.clearFeedback();
               angular.forEach(scope.conceptsClassified, function (item) {
                 if (item.selected === true && !item.viewed) {
                   conceptsToAdd.push(item);
