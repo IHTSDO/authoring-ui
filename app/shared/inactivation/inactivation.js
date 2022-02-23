@@ -1355,6 +1355,14 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.addAssociation = function (row, index) {       
+            var rowCopy = angular.copy(row);
+            rowCopy.newTargetFsn = '';
+            rowCopy.newTargetId = '';
+            scope.affectedConceptAssocs.splice(index + 1, 0, rowCopy);
+            scope.assocsConceptTableParams.reload();
+          };
+
           scope.existOnlyOneHistAsscForConcept = function (conceptId) {
             if (scope.affectedConceptAssocs.length !== 0) {
               return scope.affectedConceptAssocs.filter(function(item) {return conceptId === item.conceptId;}).length === 1;
