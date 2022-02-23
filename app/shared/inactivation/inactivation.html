@@ -317,11 +317,14 @@
                 </a>
               </td>
               <td>
-                <button ng-disabled="rel.accepted || finalizing || existOnlyOneHistAsscForConcept(rel.conceptId)" class="btn btn-round btn-default red base"
+                <button ng-hide="rel.accepted || finalizing || existOnlyOneHistAsscForConcept(rel.conceptId)" class="btn btn-round btn-default red base"
                         ng-click="removeAssociation(rel,true)">
-                  <div
-                    class="md fa-sca fa-minus "></div>
-
+                  <div class="md fa-sca fa-minus "></div>
+                </button>
+                <button ng-style="!rel.accepted && !finalizing && !existOnlyOneHistAsscForConcept(rel.conceptId) && {'margin-left':'8px'}" 
+                        ng-hide="rel.accepted || finalizing || !rel.refsetName || rel.refsetName === 'REPLACED_BY' || rel.refsetName === 'SAME_AS'" class="btn btn-round btn-default green base"
+                        ng-click="addAssociation(rel,$index)">
+                  <div class="md fa-sca fa-plus "></div>
                 </button>
               </td>
             </tr>
