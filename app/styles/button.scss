@@ -625,6 +625,16 @@ button.fsn-title-button {
     background-color: #c2185b;
     color: #fff;
 }
+.release-notes.btn-default:hover {
+    background-color: #e5980cbf;
+    color: #fff;
+}
+
+.release-notes.btn-default {
+    background-color: #f3a71ce0;
+    color: #fff;
+}
+
 .task-details .button-link[disabled] {
     background-color: rgb(233, 30, 99);
 }
