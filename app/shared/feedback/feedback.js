@@ -878,6 +878,17 @@ angular.module('singleConceptAuthoringApp')
             return deleted;
           };
 
+          scope.isActiveDescriptionOnInactiveConcept = function(concept) {
+            if (concept && !concept.active && concept.descriptions) {
+              for (let i =0; i < concept.descriptions.length; i++) {
+                  if (concept.descriptions[i].active && !concept.descriptions[i].effectiveTime) {
+                    return true;
+                  }
+              }
+            }
+            return false;
+          }
+
           scope.checkDeletedConceptById = function (conceptId) {
             return scope.deletedConceptIds.includes(conceptId);
           }
