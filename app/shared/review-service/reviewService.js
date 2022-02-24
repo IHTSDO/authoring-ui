@@ -419,6 +419,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(response, function (concept) {
               angular.forEach(review.concepts, function (reviewConcept) {
                 if (concept.conceptId === reviewConcept.conceptId) {
+                  reviewConcept.active = concept.active;
                   if (useFSN) {
                     reviewConcept.term = concept.fsn;
                   } else {
