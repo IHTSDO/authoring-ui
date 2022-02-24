@@ -1,7 +1,7 @@
 <div id="configModal" class="clearfix sac-modal">    
   <div class="modal-header">
     <div ng-if="lineItem.title" class="col-md-8">
-      <h4 class="modal-title">{{lineItem.title}}</h4>
+      <h4 class="modal-title" style="margin-left: -15px;">{{lineItem.title}}</h4>
     </div>
     <div ng-if="!lineItem.title" class="col-md-8" style="margin-left: -10px;">
       <h4 class="modal-title">Line Item:</h4>
@@ -10,16 +10,18 @@
                 ng-model="lineItem"
                 ng-change="selectLineItem(lineItem)"
                 style="margin-top:10px;">
+          <option value="" disabled selected>Please select a catagory</option>
       </select>
       <select ng-if="globalLineItems" name="select-choice" class="form-control"
                 ng-options="lineItem.title for lineItem in globalLineItems"
                 ng-model="lineItem"
                 ng-change="selectLineItem(lineItem)"
                 style="margin-top:10px;">
+          <option value="" disabled selected>Please select a catagory</option>
       </select>
     </div>
     <div class="col-md-4">
-      <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
+      <button type="button" style="margin-right: -20px;" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
   </div>
   <div class="modal-body">  
