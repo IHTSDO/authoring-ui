@@ -185,6 +185,10 @@
     width: 10%;
     padding-right: 0px;
 }
+
+.feedback .scroll-if-height { 
+    height: 82vh;
+}
 .h-45 {
     height: 45px;
 }
@@ -657,6 +661,7 @@ strong {
     border: 1px #ddd solid;
     background-color: #fff;
     display: block;
+    height: 79vh;
 }
 .border-right {
     border-right: #ddd 1px solid
@@ -737,11 +742,14 @@ strong {
    width: 25%;
 }
 .feedback-table tbody {
-    max-height: 535px;
+    max-height: 440px;
     overflow-y: auto;
     overflow-x: hidden;
     display: block;
-    padding-bottom: 30px;
+    padding-bottom: 45px;
+}
+.feedback-table.table {
+    margin-bottom: 0px;
 }
 .feedback-table thead,
 .feedback-table tbody tr {
@@ -754,7 +762,7 @@ strong {
 }
 @media screen and (max-height: 768px) {
     .feedback-table tbody {
-        max-height: 220px;
+        max-height: 330px;
     }
 }
 .feedback-header-main .editable-field .btn {
