@@ -12,12 +12,10 @@ angular.module('singleConceptAuthoringApp')
     // Retrieve Line Items for a branch
     // GET {branch}
     function getBranchLineItems(branch) {
-//        return $http.get(apiEndpoint + branch + '/lineitems').then(function (response) {
-//          return response.data;
-//        }, function (error) {
-//        });
-        var promise = $q.defer().promise;
-        return promise;
+        return $http.get(apiEndpoint + branch + '/lineitems').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
     }
     
     // Update Line Item for a branch
@@ -41,23 +39,19 @@ angular.module('singleConceptAuthoringApp')
     // Promote Line Item for a branch
     // POST {branch, lineItem}
     function promoteBranchLineItem(branch, id) {
-//        return $http.post(apiEndpoint + branch + '/lineitems/' + id + '/promote').then(function (response) {
-//          return response.data;
-//        }, function (error) {
-//        });
-        var promise = $q.defer().promise;
-        return promise;
+        return $http.post(apiEndpoint + branch + '/lineitems/' + id + '/promote').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
     }
     
     // Promote multiple Line Items for a branch
     // POST {branch, lineItem}
     function promoteBranchLineItems(branch, id) {
-//        return $http.post(apiEndpoint + branch + '/lineitems/promote').then(function (response) {
-//          return response.data;
-//        }, function (error) {
-//        });
-        var promise = $q.defer().promise;
-        return promise;
+        return $http.post(apiEndpoint + branch + '/lineitems/promote').then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
     }
     
     // Retrieve Subjects for a branch
