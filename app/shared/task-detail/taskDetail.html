@@ -82,14 +82,12 @@
       <button class="btn btn-default cyan darken-1 editingtask" ng-click="updateTask()"
               ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
     </div>
-<!--
     <div ng-if="!releaseNotesDisabled" class="p-l-15 p-r-15">
       <button ng-if="!lineItem" class="btn btn-default release-notes" ng-click="openLineItemModal()"
               ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">Add Release Note</span> </button>
       <button ng-if="lineItem" class="btn btn-default release-notes" ng-click="openLineItemModal(lineItem.id)"
               ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">Edit: {{lineItem.title}}</span> </button>
     </div>
--->
     <hr>
     <div class="p-l-15 p-r-15" ng-if="role === 'UNDEFINED'">
       <div class="alert alert-danger text-center">
