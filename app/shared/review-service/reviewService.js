@@ -434,22 +434,22 @@ angular.module('singleConceptAuthoringApp')
                   });
                 }
               });
-              angular.forEach(review.conceptsClassified, function (reviewConcept) {
-                if (concept.conceptId === reviewConcept.conceptId) {                  
-                  angular.forEach(feedbackList, function (feedback) {
-                    if (reviewConcept.conceptId === feedback.id) {
-                      reviewConcept.messages = feedback.messages;
-                      reviewConcept.viewDate = feedback.viewDate;
-                    }
-                  });
-                }
-              });
             });
             deferred.resolve();
           });
 
           return deferred.promise;
         };
+
+        // populate feedback for classified concepts
+        angular.forEach(review.conceptsClassified, function (reviewConcept) {          
+          angular.forEach(feedback, function (item) {
+            if (reviewConcept.conceptId === item.id) {
+              reviewConcept.messages = item.messages;
+              reviewConcept.viewDate = item.viewDate;
+            }
+          });
+        });
 
         var i, j, temparray, chunk = 50;
         var promises = [];

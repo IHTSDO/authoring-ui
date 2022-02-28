@@ -889,6 +889,18 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
 
+          scope.isUnreadFeedbackFoundFromInferredTab = function() {
+            var flag = false;
+            if(scope.feedbackContainer.review) {
+              angular.forEach(scope.feedbackContainer.review.conceptsClassified, function(classifiedConcept) {
+                if (classifiedConcept.hasOwnProperty('read') && classifiedConcept.read !== 'absent' && !classifiedConcept.read) {
+                  flag = true;
+                }
+              });
+            }
+            return flag;
+          }
+
           scope.checkDeletedConceptById = function (conceptId) {
             return scope.deletedConceptIds.includes(conceptId);
           }
@@ -1067,17 +1079,15 @@ angular.module('singleConceptAuthoringApp')
           };
          
           // function to add a concept to viewed list from tables
-          scope.addToEdit = function (item, tabName) {
+          scope.addToEdit = function (item) {
             // if viewed, ignore
             if (!item.viewed) {
               notificationService.sendMessage('Loading concept ' + item.conceptId);
-              if (!tabName || tabName !== 'inferred') {
-                item.viewed = true;
-                scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
-                  item.read = true;
-                  item.modifiedSinceReview = false;
-                });
-              }
+              item.viewed = true;
+              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
+                item.read = true;
+                item.modifiedSinceReview = false;
+              });
               
               addToEditHelper(item.conceptId).then(function (response) {
                 if (scope.role === 'REVIEWER') {
@@ -1544,13 +1554,49 @@ angular.module('singleConceptAuthoringApp')
                     item.selected = scope.booleanObj.checkedReviewed;
                     conceptsReviewed.push(item);
                   }
+                });
 
-                  // populate term to the classified concepts
-                  angular.forEach(scope.feedbackContainer.review.conceptsClassified, function (reviewConcept) {
-                    if (item.conceptId === reviewConcept.conceptId && item.term) {
-                      reviewConcept.term = item.term;		  
+                angular.forEach(scope.feedbackContainer.review.conceptsClassified, function (item) {
+                  var lastViewed = new Date(item.viewDate);
+                  var lastUpdated = new Date(item.lastUpdatedTime);
+
+                  // set follow up request flag to false (overwritten below)
+                  item.requestFollowup = false;
+                  if (lastUpdated > lastViewed) {
+                    item.modifiedSinceReview = true;
+                  }
+                  // if no feedback on this concept
+                  if (!item.messages || item.messages.length === 0) {
+                    item.read = 'absent'; // provide dummy value for sorting by
+                                          // alphabetical value
+                  }
+                  // otherwise, process feedback
+                  else {
+                    var lastFeedback = new Date(item.messages[item.messages.length - 1].creationDate);
+                    // cycle over all concepts to check for follow up request
+                    // condition met if another user has left feedback with the
+                    // flag later than the last feedback left by current user
+                    if (lastFeedback > lastViewed) {
+                      item.read = false;
                     }
-                  });
+
+                    else if (isNaN(lastViewed.getTime())) {
+                      item.read = false;
+                    }
+                    else {
+                      item.read = true;
+                    }
+                    for (var i = 0; i < item.messages.length; i++) {
+                      // if own feedback, break
+                      if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
+                        break;
+                      }
+                      // if another's feedback, check for flag
+                      if (item.messages[i].feedbackRequested) {
+                        item.requestFollowup = true;
+                      }
+                    }
+                  }
                 });
 
                 // Check read or unread status
@@ -1657,7 +1703,27 @@ angular.module('singleConceptAuthoringApp')
                   // multiple concept feedbacks are viewed
                   message.conceptName = concept.term;
                   viewedFeedback.push(message);
-                  console.log(viewedFeedback);
+                });
+
+                // mark read if unread is indicated
+                if (!concept.read) {
+                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
+                    concept.read = true;
+
+                  });
+                }
+              }
+            });
+
+            angular.forEach(scope.conceptsClassified, function (concept) {
+
+              // if concept is in selected list and has messages, add them
+              if (conceptIds.indexOf(concept.conceptId) !== -1 && concept.messages && concept.messages.length > 0) {
+                angular.forEach(concept.messages, function (message) {
+                  // attach the concept name to the message for display when
+                  // multiple concept feedbacks are viewed
+                  message.conceptName = concept.term;
+                  viewedFeedback.push(message);
                 });
 
                 // mark read if unread is indicated
@@ -2113,8 +2179,16 @@ angular.module('singleConceptAuthoringApp')
               const acceptLanguageValue = getAcceptLanguageValue(scope.selectedLanguage);
               const useFSN = scope.selectedLanguage && (scope.selectedLanguage.id === '900000000000509007' ||scope.selectedLanguage.id === '900000000000509007-fsn');
               reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey, acceptLanguageValue, useFSN).then(function (review) {
-                // Do not reload classified concepts.
-                review.conceptsClassified = scope.feedbackContainer.review.conceptsClassified;
+                // Re-popualte FSNs for classified concepts if already loaded.                
+                console.log(scope.feedbackContainer.review.conceptsClassified);
+                angular.forEach(scope.feedbackContainer.review.conceptsClassified, function(item1) {
+                  angular.forEach(review.conceptsClassified, function(item2) {
+                    if (item1.conceptId === item2.conceptId && item1.term) {
+                      item2.term = item1.term;
+                    }                  
+                  });
+                });
+
                 scope.feedbackContainer.review = review;
                 notificationService.sendMessage('Feedback Submitted', 5000, null);
               }, function (error) {
