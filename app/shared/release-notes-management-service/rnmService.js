@@ -45,6 +45,15 @@ angular.module('singleConceptAuthoringApp')
         });
     }
     
+    // Delete Line Item for a branch
+    // DELETE {branch, lineItem}
+    function deleteBranchLineItem(branch, id) {
+        return $http.delete(apiEndpoint + branch + '/lineitems/' + id).then(function (response) {
+          return response.data;
+        }, function (error) {
+        });
+    }
+    
     // Promote multiple Line Items for a branch
     // POST {branch, lineItem}
     function promoteBranchLineItems(branch, id) {
@@ -73,7 +82,8 @@ angular.module('singleConceptAuthoringApp')
       updateBranchLineItem: updateBranchLineItem,
       createBranchLineItem: createBranchLineItem,
       promoteBranchLineItem: promoteBranchLineItem,
-      promoteBranchLineItems: promoteBranchLineItems
+      promoteBranchLineItems: promoteBranchLineItems,
+      deleteBranchLineItem: deleteBranchLineItem
     };
 
   })
