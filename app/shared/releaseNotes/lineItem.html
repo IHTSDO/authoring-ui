@@ -40,20 +40,20 @@
         </div>
       </br> </br>
     <div class="col-md-12 no-padding"> 
-      <!-- Display create only if no task supplied -->
+      
+      <div class="col-md-4">
+        <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="close()">Close </button>
+      </div>
+      <div ng-if="!lineItem.title" class="col-md-4">
+      </div>
+      <div ng-if="lineItem.title" class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-danger no-margin" ng-click="delete()">Delete</button>
+      </div>
       <div class="col-md-4">
         <button type="button" class="col-md-12 btn btn-info no-margin"
                 ng-click="save()">Save </button>
       </div>
-        <div class="col-md-4"></div>
-      
-      <!-- Cancel always appears -->
-      <div class="col-md-4">
-        <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-warning no-margin"
-                ng-click="close()">Cancel </button>
-      </div>
     </div>
   </div>
 </div>
-<script>
-</script>

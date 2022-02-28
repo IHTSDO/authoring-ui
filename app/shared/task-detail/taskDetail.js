@@ -136,13 +136,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           modalInstance.result.then(function () {
               rnmService.getBranchLineItems($scope.branch).then(function (lineItems) {
-                  if (lineItems) {
+                  if (lineItems && lineItems.length > 0) {
                     angular.forEach(lineItems, function (item) {
                         $scope.lineItems.push(item);
                     });
                     if($scope.lineItems.length === 1){
                         $scope.lineItem = $scope.lineItems[0];
                     }
+                  }
+                  else{
+                      $scope.lineItems = [];
+                      delete $scope.lineItem;
                   }
               });
           });
