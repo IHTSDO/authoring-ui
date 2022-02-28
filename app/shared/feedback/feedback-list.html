@@ -64,11 +64,13 @@
            data-toggle="tab">Approved
         <div class="badge pull-right pink darken-1 numbers ">{{feedbackContainer.review.conceptsReviewed.length}} </div>
         </a> </li>
-      <li role="presentation border-right"> <a
-           ng-click="actionTab=3; loadFsnForConceptsClassified();"
+      <li role="presentation border-right">
+        
+        <a ng-click="actionTab=3; loadFsnForConceptsClassified();"
            aria-controls="home"
            role="tab"
            data-toggle="tab">Inferred
+           <div class="tooltips-bottom normal-case" ng-show="isUnreadFeedbackFoundFromInferredTab()" style="position: absolute; top: -5px; left: 5px;"><i class="fa fa-envelope" style="color: #f06292;" aria-hidden="true"></i><span style="width: 100px; left: 0px; margin-left: -43px;">Unread feedback</span></div>
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsClassified.length }} </div>
         </a> </li>
     </ul>
@@ -359,19 +361,43 @@
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                   ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
               <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
-                  class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
+                  class=" col-md-4 no-padding"><div class="pull-right pull-right-margin m-r-5 clear-position">
+                  <button ng-show="concept.messages.length > 0"
+                      class="pull-right btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
+                    <div ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></div> <span> View/submit feedback for concept</span>
+                  </button>
+                  <button
+                    class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
+                    ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 " ng-mouseover="setTooltipPosition($event);">
+                    <div class="fa-sca fa-comment  "></div>
+                    <span>View/submit feedback for concept</span>
+                  </button>
+                  <button
+                    ng-hide="subjectConcepts.length > 0 "
+                    class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
+                    ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
+                    <div
+                      class="fa-sca fa-comment  "></div> <span>View/submit feedback for concept</span> 
+                  </button>
                   <button
                     class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept,'inferred'); viewConceptInTaxonomy(concept); clearFeedback()" ng-mouseover="setTooltipPosition($event);"
+                    ng-click="setDisableLoadingProjectTaxonomy(false); selectConcept(concept,['selectConceptForFeedback','addToEdit']); viewConceptInTaxonomy(concept);" ng-mouseover="setTooltipPosition($event);"
                     ng-class="[{'disable' : concept.viewed}]">
                   <div
                       class="md md-edit "></div>
                   <span>Add to Edit Panel</span> </button>
                 </div></td>
               <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding"><div class="pull-right m-r-5 clear-position">
+                <button ng-show="concept.messages.length > 0"
+                  class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
+                  ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
+                  <div ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></div> 
+                  <span> View/submit feedback for concept</span>
+                </button>
                   <button
                     class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
-                    ng-click="setDisableLoadingProjectTaxonomy(false); addToEdit(concept,'inferred'); viewConceptInTaxonomy(concept); clearFeedback()" ng-mouseover="setTooltipPosition($event);"
+                    ng-click="setDisableLoadingProjectTaxonomy(false); selectConcept(concept,['selectConceptForFeedback','addToEdit']); viewConceptInTaxonomy(concept);" ng-mouseover="setTooltipPosition($event);"
                     ng-class="[{'disable' : concept.viewed}]">
                   <div
                       class="md md-edit "></div>
