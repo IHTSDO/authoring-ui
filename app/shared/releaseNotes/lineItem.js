@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly) {
+  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly, modalService) {
 
     // scope variables
     $scope.branch = branch;
@@ -42,6 +42,15 @@ angular.module('singleConceptAuthoringApp')
             });
         }
     }
+    
+    $scope.delete = function () {
+      let msg = 'Are you sure you want to delete this release note?';
+            modalService.confirm(msg).then(function () {
+                rnmService.deleteBranchLineItem($scope.branch, $scope.lineItem.id).then(function (response) {
+                  $modalInstance.close();
+                });
+            });
+        };
     
     $scope.selectLineItem = function (lineItem) {
         delete lineItem.id;
