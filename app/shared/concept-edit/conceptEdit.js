@@ -5686,6 +5686,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var originalConcept = angular.copy(scope.originalConcept)
             terminologyServerService.cleanConcept(currentConcept);
             terminologyServerService.cleanConcept(originalConcept);
+            scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);            
 
             componentHighlightUtil.runComparison(null, null, currentConcept, originalConcept).then(function (response){
               var newConcept = response.concept;
@@ -5808,6 +5809,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // on load, load the deleted components if any
           if(scope.highlightChanges) {
             loadDeletedComponents();
+          } else {
+            if (scope.isFeedback && !scope.originalConcept) {
+              terminologyServerService.getFullConceptAtDate(scope.concept.conceptId, scope.branch, null, '-').then(function (response) {
+                  var currentConcept = angular.copy(scope.concept);
+                  var originalConcept = angular.copy(response)
+                  terminologyServerService.cleanConcept(currentConcept);
+                  terminologyServerService.cleanConcept(originalConcept);
+                  scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);
+              });
+            }
           }
 
           // adjust for all textareas covered by Angular Elastic
