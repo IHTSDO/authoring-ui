@@ -79,6 +79,7 @@ angular.module('singleConceptAuthoringApp')
           scope.inactiveDescriptions = {};
           scope.loadingTermForClassifiedConcepts = false;
           scope.loadingTermForConcepts = false;
+          scope.releaseNotesDisabled = true;
           scope.languages = [];
           scope.lineItems = [];
           var users = [];
@@ -2194,7 +2195,10 @@ angular.module('singleConceptAuthoringApp')
           function initialize() {
             initLanguagesDropdown();
             getUsers(0,50);
-            getBranchLineItems();
+            scope.releaseNotesDisabled = metadataService.isExtensionSet();
+            if (!scope.releaseNotesDisabled) {
+              getBranchLineItems();
+            }            
           }
 
           initialize();
