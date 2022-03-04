@@ -39,6 +39,7 @@ angular.module('singleConceptAuthoringApp')
           scope.allWhitelistItems = [];
           scope.viewFullListException = false;
           scope.exceptionLoading = false;
+          scope.issueType = {type: ''};
 
           // highlighting map
           scope.styles = {};
@@ -173,7 +174,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user modification
                   var orderedData = scope.assertionsFailed.filter(function (assertionFailed) {
-                    return assertionFailed.filteredCount > 0;
+                    return assertionFailed.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'author' ? assertionFailed.authorIssue : !assertionFailed.authorIssue));
                   });
 
                   params.total(orderedData.length);
@@ -219,7 +220,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // filter by user modification
                 var orderedData = scope.assertionsWarning.filter(function (assertionWarning) {
-                  return assertionWarning.filteredCount > 0;
+                  return assertionWarning.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'author' ? assertionWarning.authorIssue : !assertionWarning.authorIssue));
                 });
 
                 params.total(orderedData.length);
@@ -726,10 +727,32 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
             
-            checkWhitelist().then(function() {
-              initViewableFlagForFailures();
-              scope.reloadTables();
-              deferred.resolve();
+            scaService.getAuthorIssueItems().then(
+              function(data) {
+                if (data.length > 0) {
+                  angular.forEach(scope.assertionsFailed, function (instance) {
+                    if (data.includes(instance.assertionUuid)) {
+                      instance.authorIssue = true;
+                    }
+                  });
+                  angular.forEach(scope.assertionsWarning, function (instance) {
+                    if (data.includes(instance.assertionUuid)) {
+                      instance.authorIssue = true;
+                    }
+                  });
+                }
+                checkWhitelist().then(function() {
+                  initViewableFlagForFailures();
+                  scope.reloadTables();
+                  deferred.resolve();
+                });
+              },
+              function() {
+                checkWhitelist().then(function() {
+                  initViewableFlagForFailures();
+                  scope.reloadTables();
+                  deferred.resolve();
+                });
             });
 
             return deferred.promise;
