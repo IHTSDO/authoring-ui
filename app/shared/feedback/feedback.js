@@ -34,8 +34,8 @@ angular.module('singleConceptAuthoringApp')
         }
     };
   })
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService', 'localStorageService', 'aagService', 
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService, localStorageService, aagService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$modal', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService', 'localStorageService', 'aagService', 'rnmService',
+    function ($rootScope, NgTableParams, $q, $modal, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService, localStorageService, aagService, rnmService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -80,6 +80,7 @@ angular.module('singleConceptAuthoringApp')
           scope.loadingTermForClassifiedConcepts = false;
           scope.loadingTermForConcepts = false;
           scope.languages = [];
+          scope.lineItems = [];
           var users = [];
           var sendingConceptToReview = false;
 
@@ -128,6 +129,17 @@ angular.module('singleConceptAuthoringApp')
               scope.selectedLanguage = result.selectedLanguage;
             }
             scope.onLanguageChange(scope.selectedLanguage);
+          }          
+
+          function getBranchLineItems() {
+            rnmService.getBranchLineItems(scope.branch).then(function (lineItems) {
+                if (lineItems) {
+                  angular.forEach(lineItems, function (item) {
+                      scope.lineItems.push(item);
+                  });
+                }
+                scope.lineItemTableParams.reload();
+            });
           }          
 
           scope.onLanguageChange = function(language) {
@@ -467,6 +479,51 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+
+          // declare table parameters
+          scope.lineItemTableParams = new NgTableParams({
+              page: 1,
+              count: 10
+            },
+            {
+              filterDelay: 50,
+              total: scope.lineItems.length,
+              getData: function ($defer, params) {              
+                params.total(scope.lineItems.length);
+                $defer.resolve(scope.lineItems);
+              }
+            }
+          );
+
+          scope.openLineItemModal = function (id) {
+            let item = {};
+            angular.forEach(scope.lineItems, function (lineItem) {
+              if (lineItem.id === id) {
+                item = lineItem;
+              }
+            });            
+            $modal.open({
+              templateUrl: 'shared/releaseNotes/lineItem.html',
+              controller: 'lineItemCtrl',
+              resolve: {
+                  branch: function() {
+                    return scope.branch;
+                  },
+                  lineItem: function() {
+                    return item;
+                  },
+                  lineItems: function() {
+                    return scope.lineItems;
+                  },
+                  globalLineItems: function() {
+                    return [];
+                  },
+                  readOnly: function() {
+                    return true;
+                  }
+                }
+            });
+          };
 
           // functions to reload both tables
           scope.reloadConceptsToReview = function (searchStr) {
@@ -2137,6 +2194,7 @@ angular.module('singleConceptAuthoringApp')
           function initialize() {
             initLanguagesDropdown();
             getUsers(0,50);
+            getBranchLineItems();
           }
 
           initialize();
