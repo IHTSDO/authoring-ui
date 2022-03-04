@@ -1706,6 +1706,18 @@ angular.module('singleConceptAuthoringApp')
               return error;
             }
           );
+        },
+
+        getAuthorIssueItems: function () {
+          var deferred = $q.defer();
+
+          // get the list
+          $http.get(apiEndpoint + 'author-issue-items').then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject('Error retrieving author issue items');
+          });
+          return deferred.promise;
         }
 
       };
