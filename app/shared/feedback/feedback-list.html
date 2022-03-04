@@ -73,6 +73,14 @@
            <div class="tooltips-bottom normal-case" ng-show="isUnreadFeedbackFoundFromInferredTab()" style="position: absolute; top: -5px; left: 5px;"><i class="fa fa-envelope" style="color: #f06292;" aria-hidden="true"></i><span style="width: 100px; left: 0px; margin-left: -43px;">Unread feedback</span></div>
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsClassified.length }} </div>
         </a> </li>
+      <li role="presentation border-right">
+          <a ng-click="actionTab=4"
+             aria-controls="home"
+             role="tab"
+             data-toggle="tab"
+             style="padding-right: 0px;">Release Note
+          <div class="badge pull-right pink darken-1 numbers">{{lineItems.length}}</div>
+          </a> </li>
     </ul>
     <!--Tab panes -->
     <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review">
@@ -406,6 +414,25 @@
             </tr>
           </table>
         </div>
+      </div>
+      <!--Release Notes-->
+      <div role="tabpanel" ng-if="actionTab === 4" class="p-l-5">
+        <!-- No results display banner -->
+        <div class="ng-table-no-results" ng-if="lineItems.length === 0"> No line items. </div>
+        <table show-filter="false" ng-table="lineItemTableParams"
+               ng-show="lineItems.length > 0"
+               template-pagination="utilities/review-table-pager.html"
+               class="table feedback-table">
+          <tr ng-repeat="lineItem in $data">
+            <td class="col-md-8" data-title="'Catagory'"><div>{{lineItem.title}}</div></td>
+            <td class=" col-md-3"><div class="pull-right m-r-5 clear-position">
+                <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2  normal-case" ng-mouseover="setTooltipPosition($event);"
+                  ng-click="openLineItemModal(lineItem.id)">
+                <div class="md md-edit"></div>
+                <span>View line item</span> </button>
+              </div></td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
