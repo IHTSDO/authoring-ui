@@ -36,7 +36,7 @@
       <div class="col-md-1"></div>
     </div>
   </div>
-  <div class="row work-list-tabs feedback-lists p-b-20" ng-if="feedbackContainer.review">
+  <div class="row work-list-tabs feedback-lists p-b-20" ng-class="[{'four-tabs' : !releaseNotesDisabled}]" ng-if="feedbackContainer.review">
     <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
       <div class="m-10">Loading review...</div>
     </div>
@@ -73,7 +73,7 @@
            <div class="tooltips-bottom normal-case" ng-show="isUnreadFeedbackFoundFromInferredTab()" style="position: absolute; top: -5px; left: 5px;"><i class="fa fa-envelope" style="color: #f06292;" aria-hidden="true"></i><span style="width: 100px; left: 0px; margin-left: -43px;">Unread feedback</span></div>
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsClassified.length }} </div>
         </a> </li>
-      <li role="presentation border-right">
+      <li role="presentation border-right" ng-show="!releaseNotesDisabled">
           <a ng-click="actionTab=4"
              aria-controls="home"
              role="tab"

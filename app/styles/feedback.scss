@@ -667,6 +667,9 @@ strong {
     border-right: #ddd 1px solid
 }
 .work-list-tabs .nav > li {
+    width: 33.3333%;
+}
+.work-list-tabs.four-tabs .nav > li {
     width: 25%;
 }
 .work-list-tabs .nav > li > a {
