@@ -2227,7 +2227,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   terminologyServerService.getFullConcept(moduleId, scope.branch).then(function(response) {
                     let term = "";
                     if(response.fsn){
-                        term = response.fsn.term;
+                        term = response.fsn;
                     }
                     else{
                         angular.forEach(response.descriptions, function(description){
