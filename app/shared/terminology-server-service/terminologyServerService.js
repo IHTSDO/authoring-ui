@@ -2418,6 +2418,16 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+      function retrieveSemanticTags() {
+        var deferred = $q.defer();        
+        $http.get(apiEndpoint + 'validation-maintenance/semantic-tags').then(function (response) {
+          deferred.resolve(response.data);
+        }).then(function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2526,7 +2536,8 @@ angular.module('singleConceptAuthoringApp')
         cleanDescription: cleanDescription,
         cleanRelationship: cleanRelationship,
         setEndpoint: setEndpoint,
-        getEndpoint: getEndpoint
+        getEndpoint: getEndpoint,
+        retrieveSemanticTags: retrieveSemanticTags
       };
     }
 
