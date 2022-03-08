@@ -179,7 +179,6 @@ angular
       // Success block -- config properties retrieved
       function (response) {
         var endpoints = response.endpoints;
-        var features = response.features
         $rootScope.endpoints = endpoints;
 
         scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
@@ -284,6 +283,18 @@ angular
               accountService.saveUserPreferences(appliedPreferences).then(function() {});
             })
           });
+        });
+
+        ///////////////////////////////////////////
+        // load semantic tags
+        ///////////////////////////////////////////
+        terminologyServerService.retrieveSemanticTags().then(function (response) {
+          if(response.length !== 0) {
+            response.sort(function (a, b) {
+              return a.localeCompare(b);
+            });            
+          }
+          metadataService.setSemanticTags(response);
         });
 
         ///////////////////////////////////////////

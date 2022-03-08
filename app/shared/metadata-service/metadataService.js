@@ -14,6 +14,8 @@ angular.module('singleConceptAuthoringApp')
 
     var myProjects = [];
 
+    var semanticTags = [];
+
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
@@ -35,74 +37,6 @@ angular.module('singleConceptAuthoringApp')
     function getSnomedCtRootId() {
       return snomedCtRootId;
     }
-
-    var semanticTags = [
-      'administration method',
-      'assessment scale',
-      'attribute',
-      'basic dose form',
-      'body structure',
-      'cell structure',
-      'cell',
-      'clinical drug',
-      'core metadata concept',
-      'disorder',
-      'disposition',
-      'dose form',
-      'environment / location',
-      'environment',
-      'ethnic group',
-      'event',
-      'finding',
-      'foundation metadata concept',
-      'geographic location',
-      'inactive concept',
-      'intended site',
-      'life style',
-      'link assertion',
-      'linkage concept',
-      'medicinal product',
-      'medicinal product form',
-      'metadata',
-      'morphologic abnormality',
-      'namespace concept',
-      'navigational concept',
-      'number',
-      'observable entity',
-      'occupation',
-      'organism',
-      'OWL metadata concept',
-      'person',
-      'physical force',
-      'physical object',
-      'procedure',
-      'product',
-      'qualifier value',
-      'racial group',
-      'record artifact',
-      'regime/therapy',
-      'religion/philosophy',
-      'release characteristic',
-      'role',
-      'situation',
-      'social concept',
-      'special concept',
-      'specimen',
-      'staging scale',
-      'state of matter',
-      'substance',
-      'pattern',
-      'transformation',
-      'theoretical entity',
-      'tumor staging',
-      'unit of presentation',
-      'product name',
-      'packaged clinical drug',
-      'real clinical drug',
-      'real medicinal product',
-      'real packaged clinical drug',
-      'supplier'
-    ];
 
     // component inactivation metadata
     var conceptInactivationReasons = [
@@ -755,6 +689,10 @@ angular.module('singleConceptAuthoringApp')
       return descriptionInactivationReasons;
     }
 
+    function setSemanticTags(tags) {
+      semanticTags = tags;
+    }
+
     function getSemanticTags() {
       return semanticTags;
     }
@@ -1080,6 +1018,7 @@ angular.module('singleConceptAuthoringApp')
       setMrcmAttributeDomainMembers: setMrcmAttributeDomainMembers,
       setUngroupedAttributes: setUngroupedAttributes,
       isUngroupedAttribute: isUngroupedAttribute,
+      setSemanticTags: setSemanticTags,
       getSemanticTags: getSemanticTags,
       getDropdownLanguages: getDropdownLanguages,
       getOptionalLanguageRefsets: getOptionalLanguageRefsets
