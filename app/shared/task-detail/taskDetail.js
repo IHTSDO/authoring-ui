@@ -283,8 +283,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     });
                   }
                   if($scope.lineItem){
-                      $scope.lineItem.content = $scope.lineItem.content.slice(0, -4);
-                      $scope.lineItem.content = $scope.lineItem.content + ' : ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '/n/n';
+                      $scope.lineItem.content = $scope.lineItem.content.slice(0, -2);
+                      $scope.lineItem.content = $scope.lineItem.content + ' : ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName;
                       rnmService.updateBranchLineItem($scope.branch, $scope.lineItem).then(function (lineItem){
                           rnmService.promoteBranchLineItem($scope.branch, $scope.lineItem.id).then(function (lineItem) {
                             });
