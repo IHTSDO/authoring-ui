@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('lineItemCtrl', function ($scope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly, modalService) {
+  .controller('lineItemCtrl', function ($scope, $compile, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly, modalService) {
 
     // scope variables
     $scope.branch = branch;
