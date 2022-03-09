@@ -10,14 +10,14 @@
                 ng-model="lineItem"
                 ng-change="selectLineItem(lineItem)"
                 style="margin-top:10px;">
-          <option value="" disabled selected>Please select a catagory</option>
+          <option value="" disabled selected>Please select a category</option>
       </select>
       <select ng-if="globalLineItems" name="select-choice" class="form-control"
                 ng-options="lineItem.title for lineItem in globalLineItems"
                 ng-model="lineItem"
                 ng-change="selectLineItem(lineItem)"
                 style="margin-top:10px;">
-          <option value="" disabled selected>Please select a catagory</option>
+          <option value="" disabled selected>Please select a category</option>
       </select>
     </div>
     <div class="col-md-4">
@@ -30,26 +30,17 @@
         </div>
     </div>
   </div>
-  <div class="modal-footer clearfix">
-  <div class="card-action clearfix" ng-show="task.status === 'Promoted' || task.status === 'Completed'">
-  <hr>
-          <div class="pull-right">
-            <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-info no-margin"
-                ng-click="close()">Close Task Details </button>
-          </div>
-        </div>
-      </br> </br>
-    <div class="col-md-12 no-padding"> 
-      
-      <div class="col-md-4" ng-style="readOnly && {'float':'right'}">
+  <div class="modal-footer clearfix" ng-if="!readOnly">    
+    <div class="col-md-12 no-padding">
+      <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-warning no-margin" ng-click="close()">Cancel </button>
       </div>
       <div ng-if="!lineItem.id" class="col-md-4">
       </div>
-      <div ng-if="lineItem.id && !readOnly" class="col-md-4">
+      <div ng-if="lineItem.id" class="col-md-4">
         <button type="button" class="col-md-12 btn btn-danger no-margin" ng-click="delete()">Delete</button>
       </div>
-      <div class="col-md-4" ng-if="!readOnly">
+      <div class="col-md-4">
         <button type="button" class="col-md-12 btn btn-info no-margin" ng-click="save()">Save </button>
       </div>
     </div>
