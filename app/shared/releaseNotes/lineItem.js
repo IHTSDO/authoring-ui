@@ -9,7 +9,10 @@ angular.module('singleConceptAuthoringApp')
     $scope.lineItems = lineItems;
     $scope.globalLineItems = globalLineItems;
     $scope.readOnly = readOnly;
-    var quill;
+    if(lineItem.content){
+        $scope.original = lineItem.content;
+    }
+    let quill;
 
     function initialize() {
         $timeout(function () {
@@ -28,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
     }
     
     $scope.save = function () {
-        var converter = new showdown.Converter();
+        let converter = new showdown.Converter();
         $scope.lineItem.content = converter.makeMarkdown(quill.root.innerHTML);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
@@ -65,7 +68,18 @@ angular.module('singleConceptAuthoringApp')
 
     // closes the modal instance (if applicable)
     $scope.close = function () {
-      $modalInstance.close();
+      let converter = new showdown.Converter();
+      if($scope.original && $scope.original !== converter.makeMarkdown(quill.root.innerHTML)){
+          let msg = 'There are unsaved changes, are you sure you want to quit?';
+            modalService.confirm(msg).then(function () {
+                $modalInstance.close();
+            });
+      }
+      else{
+          $modalInstance.close();
+      }
+      
+      
     };
     initialize();
     
