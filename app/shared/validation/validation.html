@@ -40,9 +40,8 @@
   </div>
   <div class="validation-report report-table" ng-show="!isCollapsed && (validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE')">
     <div role="tabpanel" class="">
-      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && failedAssertionsTableParams.total() === 0 && warningAssertionsTableParams.total() === 0"> No validation results to display </div>
-      <div class="row" ng-if="viewTop && validationContainer.report && (failedAssertionsTableParams.total() !== 0 || warningAssertionsTableParams.total() !== 0)">
-        <div class="col-md-2 pull-right">         
+      <div class="row" ng-if="viewTop && validationContainer.report">
+        <div class="col-md-2 m-r-5 pull-right">         
           <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="form-control pull-right">
             <option value="">All</option>
             <option value="technical">Technical Issues</option>
@@ -51,6 +50,7 @@
           <label for="issue-type" class="pull-right p-r-10" style="padding-top: 6px;">View: </label>
         </div>                
       </div>
+      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && failedAssertionsTableParams.total() === 0 && warningAssertionsTableParams.total() === 0"> No validation results to display </div>      
       <div class="table-responsive white" ng-show="viewTop && failedAssertionsTableParams.total() > 0">
         <table
           ng-table="failedAssertionsTableParams" template-pagination="utilities/data-table-pager.html"
