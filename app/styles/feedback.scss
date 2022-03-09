@@ -271,6 +271,12 @@ section thead input {
     vertical-align: middle;
     line-height: 12px
 }
+.feedback .release-note .table > thead > tr > th {
+    height: 34px;
+}
+.feedback-lists .release-note .table > tbody > tr > td {
+    height: 27px;
+}
 .feedback .table > thead > tr > th:first-child {
     padding-left: 0px;
 }
@@ -682,6 +688,30 @@ strong {
     box-shadow: none;
     background-color: #fff;
     color: #d53072;
+}
+@media screen and (min-width: 1200px) {
+    .work-list-tabs.four-tabs .nav-tabs > li > a {
+        padding: 10px 0px;
+    }
+    .work-list-tabs.four-tabs .nav-tabs > li > a .badge {
+        margin-right: 0px;
+    }
+}
+@media screen and (min-width: 1400px) {
+    .work-list-tabs.four-tabs .nav-tabs > li > a {
+        padding: 10px 3px;
+    }
+    .work-list-tabs.four-tabs .nav-tabs > li > a .badge {
+        margin-right: 0px;
+    }
+}
+@media screen and (min-width: 1700px) {
+    .work-list-tabs.four-tabs .nav-tabs > li > a {
+        padding: 10px 5px;
+    }
+    .work-list-tabs.four-tabs .nav-tabs > li > a .badge {
+        margin-right: 5px;
+    }
 }
 .work-list-tabs .nav-tabs > li > a:hover {
     box-shadow: none;
