@@ -713,6 +713,18 @@ strong {
         margin-right: 5px;
     }
 }
+@media screen and (min-width: 2000px) {
+    .work-list-tabs.four-tabs .nav-tabs > li > a {
+        width: 100%;
+    }
+    .work-list-tabs.four-tabs .nav-tabs > li > a,    
+    .work-list-tabs.four-tabs .nav-tabs > li > a .badge {
+        float: none !important;
+    }
+    .work-list-tabs.four-tabs .nav-tabs > li > a .badge {
+        margin-left: 10px;
+    }
+}
 .work-list-tabs .nav-tabs > li > a:hover {
     box-shadow: none;
     color: #d53072;
