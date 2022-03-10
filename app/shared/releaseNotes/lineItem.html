@@ -30,8 +30,8 @@
         </div>
     </div>
   </div>
-  <div class="modal-footer clearfix" ng-if="!readOnly">    
-    <div class="col-md-12 no-padding">
+  <div class="modal-footer clearfix" ng-style="readOnly && {'padding-top': '0px'}">    
+    <div class="col-md-12 no-padding" ng-if="!readOnly">
       <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-warning no-margin" ng-click="close()">Cancel </button>
       </div>
