@@ -5811,12 +5811,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             loadDeletedComponents();
           } else {
             if (scope.isFeedback && !scope.originalConcept) {
-              terminologyServerService.getFullConceptAtDate(scope.concept.conceptId, scope.branch, null, '-').then(function (response) {
-                  var currentConcept = angular.copy(scope.concept);
-                  var originalConcept = angular.copy(response)
-                  terminologyServerService.cleanConcept(currentConcept);
-                  terminologyServerService.cleanConcept(originalConcept);
-                  scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);
+              terminologyServerService.getFullConceptAtDate(scope.concept.conceptId, scope.branch, null, '-').then(function (originalConcept) {
+                  terminologyServerService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(currentConcept){
+                    terminologyServerService.cleanConcept(currentConcept);
+                    terminologyServerService.cleanConcept(originalConcept);
+                    scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);
+                  });                  
               });
             }
           }
