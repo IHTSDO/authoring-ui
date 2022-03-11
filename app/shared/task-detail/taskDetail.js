@@ -115,6 +115,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
             controller: 'lineItemCtrl',
+            backdrop: readOnly ? '' : 'static',
+            keyboard: readOnly ? true: false,
             resolve: {
                 branch: function() {
                   return $scope.branch;
