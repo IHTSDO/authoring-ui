@@ -306,6 +306,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.openLineItemModal = function (id) {
           let item = {};
           let items = [];
+          let globalItems = [];
           let readOnly = false;
           if(!$scope.userRoles.includes('PROJECT_MANAGER')) {
              readOnly = true;
@@ -315,10 +316,20 @@ angular.module('singleConceptAuthoringApp.project', [
               item = lineItem;
             }
           });
-          
+          angular.forEach($scope.globalLineItems, function (lineItem) {
+            if(lineItem.title === "Content Development Activity"){
+                angular.forEach(lineItem.children, function (child) {
+                  if ($scope.lineItems.filter(function(item) {return item.title === child.title}).length == 0) {
+                    globalItems.push(child);
+                  }                    
+                });
+            }
+          });
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
             controller: 'lineItemCtrl',
+            backdrop: readOnly ? '' : 'static',
+            keyboard: readOnly ? true: false,
             resolve: {
                 branch: function() {
                   return $scope.branch;
@@ -330,7 +341,7 @@ angular.module('singleConceptAuthoringApp.project', [
                   return items;
                 },
                 globalLineItems: function() {
-                  return $scope.globalLineItems;
+                  return globalItems;
                 },
                 readOnly: function() {
                   return readOnly;
