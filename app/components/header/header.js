@@ -231,6 +231,8 @@ angular.module('singleConceptAuthoringApp')
         scope.openReporting = function() {
           if ($rootScope.currentTask) {
             window.open('/reporting/' + $rootScope.currentTask.branchPath);
+          } else if (window.location.href.indexOf('project/') > -1) {
+            window.open('/reporting/' + metadataService.getBranchRoot());
           } else {
             window.open('/reporting/');
           }
