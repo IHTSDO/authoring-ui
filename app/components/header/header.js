@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
           scope.notification = null;
         };
 
-        scope.isProjectsLoaded = function() {            
+        scope.isProjectsLoaded = function() {
             return metadataService.getProjects().length > 0;
         };
 
@@ -64,12 +64,12 @@ angular.module('singleConceptAuthoringApp')
             $location.path(scope.notification.url).search('expandValidation', 'true');
           }
           else if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
-            $route.reload();            
+            $route.reload();
           }
           else{
             $location.path(scope.notification.url);
           }
-          scope.clearNotification();          
+          scope.clearNotification();
         };
 
         scope.$on('gotoNotificationLink', function (event, notification) {
@@ -199,7 +199,7 @@ angular.module('singleConceptAuthoringApp')
         scope.gotoMyProjects = function() {
           $location.url('my-projects');
         };
-          
+
         scope.gotoTemplates = function() {
           window.open('/template-management/', '_blank');
         };
@@ -229,9 +229,13 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.openReporting = function() {
-          window.open('/reporting/');
+          if ($rootScope.currentTask) {
+            window.open('/reporting/' + $rootScope.currentTask.branchPath);
+          } else {
+            window.open('/reporting/');
+          }
         };
-          
+
         scope.openReleaseNotes = function() {
           window.open('/release-notes-management/');
         };
