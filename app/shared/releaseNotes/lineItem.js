@@ -9,6 +9,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.lineItems = lineItems;
     $scope.globalLineItems = globalLineItems;
     $scope.readOnly = readOnly;
+    $scope.lineItemContentFound = false;
     if(lineItem.content){
         $scope.original = lineItem.content;
     }
@@ -21,11 +22,17 @@ angular.module('singleConceptAuthoringApp')
               });
             var converter = new showdown.Converter();
             if($scope.lineItem.content){
+                $scope.lineItemContentFound = true;
                 quill.clipboard.dangerouslyPasteHTML(converter.makeHtml($scope.lineItem.content));
                 if(readOnly){
                     quill.enable(false);
                 }
-            };
+            };            
+            quill.root.addEventListener('keydown', evt => {
+              $timeout(function (){
+                $scope.lineItemContentFound = quill.root.innerHTML !== '<p><br></p>';
+              }, 0);
+            });
           }, 100);
         
     }
