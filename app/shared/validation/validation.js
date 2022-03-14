@@ -174,7 +174,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user modification
                   var orderedData = scope.assertionsFailed.filter(function (assertionFailed) {
-                    return assertionFailed.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'author' ? assertionFailed.authorIssue : !assertionFailed.authorIssue));
+                    return assertionFailed.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionFailed.technicalIssue : !assertionFailed.technicalIssue));
                   });
 
                   params.total(orderedData.length);
@@ -220,7 +220,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // filter by user modification
                 var orderedData = scope.assertionsWarning.filter(function (assertionWarning) {
-                  return assertionWarning.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'author' ? assertionWarning.authorIssue : !assertionWarning.authorIssue));
+                  return assertionWarning.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionWarning.technicalIssue : !assertionWarning.technicalIssue));
                 });
 
                 params.total(orderedData.length);
@@ -727,17 +727,17 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
             
-            scaService.getAuthorIssueItems().then(
+            scaService.getTechnicalIssueItems().then(
               function(data) {
                 if (data.length > 0) {
                   angular.forEach(scope.assertionsFailed, function (instance) {
                     if (data.includes(instance.assertionUuid)) {
-                      instance.authorIssue = true;
+                      instance.technicalIssue = true;
                     }
                   });
                   angular.forEach(scope.assertionsWarning, function (instance) {
                     if (data.includes(instance.assertionUuid)) {
-                      instance.authorIssue = true;
+                      instance.technicalIssue = true;
                     }
                   });
                 }

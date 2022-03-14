@@ -1708,14 +1708,14 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
-        getAuthorIssueItems: function () {
+        getTechnicalIssueItems: function () {
           var deferred = $q.defer();
 
           // get the list
-          $http.get(apiEndpoint + 'author-issue-items').then(function (response) {
+          $http.get(apiEndpoint + 'technical-issue-items').then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
-            deferred.reject('Error retrieving author issue items');
+            deferred.reject('Error retrieving technical issue items');
           });
           return deferred.promise;
         }
