@@ -41,7 +41,7 @@ angular.module('singleConceptAuthoringApp')
     // component inactivation metadata
     var conceptInactivationReasons = [
       {id: 'AMBIGUOUS', text: 'Ambiguous concept', display: [4]},
-      {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere', display: [12,1]},
+      //{id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere', display: [12,1]},
       {id: 'DUPLICATE', text: 'Duplicate concept', display: [7]},
       {id: 'ERRONEOUS', text: 'Erroneous concept', display: [6]},
       //{id: 'LIMITED', text: 'Limited component', display: [9]},
