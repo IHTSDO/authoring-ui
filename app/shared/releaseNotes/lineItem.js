@@ -39,7 +39,9 @@ angular.module('singleConceptAuthoringApp')
     
     $scope.save = function () {
         let converter = new showdown.Converter();
-        $scope.lineItem.content = converter.makeMarkdown(quill.root.innerHTML);
+        let content = quill.root.innerHTML;
+        content = content.replaceAll('<strong> ', ' <strong>').replaceAll(' </strong>',  '</strong> ');
+        $scope.lineItem.content = converter.makeMarkdown(content);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
               $scope.lineItem = response;
