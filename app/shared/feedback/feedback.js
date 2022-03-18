@@ -932,6 +932,8 @@ angular.module('singleConceptAuthoringApp')
               scope.styles[concept.conceptId] = {};
               scope.styles[concept.conceptId].conceptStyle = {'style' : 'redhl'};
               scope.styles[concept.conceptId].isDeleted = true;
+            } else if (!deleted && scope.deletedConceptIds.includes(concept.conceptId)) {
+              scope.deletedConceptIds.splice(scope.deletedConceptIds.indexOf(concept.conceptId), 1);              
             }
             return deleted;
           };
