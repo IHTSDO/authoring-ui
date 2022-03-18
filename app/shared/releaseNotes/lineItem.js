@@ -28,8 +28,8 @@ angular.module('singleConceptAuthoringApp')
                     quill.enable(false);
                 }
             };            
-            quill.root.addEventListener('keydown', evt => {
-              $timeout(function (){
+            quill.root.addEventListener('keyup', evt => {
+              $timeout(function () {
                 $scope.lineItemContentFound = quill.root.innerHTML !== '<p><br></p>';
               }, 0);
             });
@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.save = function () {
         let converter = new showdown.Converter();
         let content = quill.root.innerHTML;
-        content = content.replaceAll('<strong> ', ' <strong>').replaceAll(' </strong>',  '</strong> ');
+        content = content.replaceAll('<strong> ', ' <strong>').replaceAll(' </strong>', '</strong> ');
         $scope.lineItem.content = converter.makeMarkdown(content);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
