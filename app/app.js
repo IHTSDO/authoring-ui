@@ -52,7 +52,8 @@ angular
     'singleConceptAuthoringApp.transformModal',
     'singleConceptAuthoringApp.transformationModal',
     'singleConceptAuthoringApp.uploadBatch',
-    'singleConceptAuthoringApp.owlAxiomExpressionModal'
+    'singleConceptAuthoringApp.owlAxiomExpressionModal',
+    'singleConceptAuthoringApp.descriptorRefsetModal'
   ])
   .factory('httpRequestInterceptor', function () {
     return {
