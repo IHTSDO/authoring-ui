@@ -1014,6 +1014,24 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getMembersByRefsetAndReferencedComponent(refsetId, referencedComponentId, branch, active) {
+        var deferred = $q.defer();
+        var params = '&limit=1000';
+        if (typeof active !== 'undefined') {
+          params += '&active=' + active;
+        }
+        $http.get(apiEndpoint + branch + '/members?referenceSet=' + refsetId  + '&referencedComponentId=' + referencedComponentId + params).then(function (response) {
+          if (response.data.total === 0) {
+            deferred.resolve([]);
+          } else {
+            deferred.resolve(response.data.items);
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       function getReferenceSetsByReferencedComponent(conceptId, branch) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + 'browser/' + branch + '/members?referencedComponentId=' + conceptId + '&limit=1000').then(function (response) {
@@ -2487,6 +2505,7 @@ angular.module('singleConceptAuthoringApp')
         getMembersByTargetComponent: getMembersByTargetComponent,
         getReferenceSetMembersForBranch: getReferenceSetMembersForBranch,
         getMembersByReferencedComponent: getMembersByReferencedComponent,
+        getMembersByRefsetAndReferencedComponent: getMembersByRefsetAndReferencedComponent,
         getReferenceSetsByReferencedComponent: getReferenceSetsByReferencedComponent,
         getGciExpressionsFromTarget: getGciExpressionsFromTarget,
 

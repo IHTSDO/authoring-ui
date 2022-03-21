@@ -1,0 +1,48 @@
+<div class="clearfix" id="test">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title" ng-if="loading">Loading</h4>
+    <h4 class="modal-title" ng-if="!loading">Descriptor refset members of {{conceptId}} |{{conceptFSN}}| </h4>
+  </div>
+  <div class="modal-body" ng-if="!loading">
+    <div class="col-xs-12 no-padding">
+      <div class="alert alert-danger" ng-if="errorMsg">{{errorMsg}}</div>
+      <div class="ng-table-no-results" ng-show="members.length === 0"> No members found</div>
+      <table ng-table="descriptorRefsetMemberTableParams" ng-show="members.length !== 0" template-pagination="utilities/data-table-pager.html"
+             class="table table-full p-5">
+        <tr ng-repeat="member in $data" class="clickable-row">
+          <td data-title="'Member ID'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'memberId': 'text' }">{{member.memberId}}
+          </td>
+          <td data-title="'Effective Time'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'effectiveTime': 'text' }">{{member.effectiveTime}}
+          </td>
+          <td data-title="'Active'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'active': 'number' }">{{member.active}}
+          </td>
+          <td data-title="'Module ID'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'moduleId': 'number' }">{{member.moduleId}}
+          </td>
+          <td data-title="'Attribute Description'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'attributeDescriptionFsn	': 'text' }">{{member.additionalFields.attributeDescriptionFsn.term}}
+          </td>
+          <td data-title="'Attribute Type'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'attributeTypeFsn	': 'text' }">{{member.additionalFields.attributeTypeFsn.term}}
+          </td>
+          <td data-title="'Attribute Order'" header-class="'header-tooltips'"
+              header-title="'Click to sort'" filter="{ 'attributeOrder': 'number' }">{{member.additionalFields.attributeOrder}}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer" ng-if="!loading">
+    <div class="row no-padding no-gutter">
+      <div class="col-md-10"></div>
+      <div class="col-md-2">
+        <button type="button" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="cancel()">Cancel </button>
+      </div>
+    </div>
+  </div>
+</div>

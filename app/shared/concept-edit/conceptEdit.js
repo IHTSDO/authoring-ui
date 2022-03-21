@@ -267,7 +267,7 @@ angular.module('singleConceptAuthoringApp')
                   for (let i = 0; i < filteredSemanticTags.length; i++) {
                     scope.matches.push({
                       id: getMatchId(i),
-                      label: filteredSemanticTags[i].label, 
+                      label: filteredSemanticTags[i].label,
                       value: filteredSemanticTags[i].value
                     });
                   }
@@ -311,7 +311,7 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.select = function (activeIdx, timeoutInMs) {
-          var newModelValue = modelCtrl.$viewValue.substring(0, modelCtrl.$viewValue.lastIndexOf('(') + 1) + scope.matches[activeIdx].value + ')';          
+          var newModelValue = modelCtrl.$viewValue.substring(0, modelCtrl.$viewValue.lastIndexOf('(') + 1) + scope.matches[activeIdx].value + ')';
           $setModelValue(originalScope, newModelValue);
           modelCtrl.$setValidity('editable', true);
           modelCtrl.$setValidity('parse', true);
@@ -3503,7 +3503,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             data.id = data.concept.conceptId;
             data.fsn = data.concept.fsn;
           }
-          
+
           if(data.dataType){
               relationship.concreteValue = {};
               relationship.concreteValue.value = "";
@@ -3559,10 +3559,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.type.pt = concept.pt;
                 relationship.type.fsn = data.fsn;
                 scope.isModified = true;
-  
+
                 scope.computeAxioms(axiom.type);
                 autoSave();
-              });              
+              });
             } else {
               scope.warnings = ['MRCM validation error: ' + data.fsn + ' is not a valid attribute.'];
             }
@@ -3573,7 +3573,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.type.fsn = data.fsn;
               scope.computeAxioms(axiom.type);
               autoSave();
-            });            
+            });
           }
         };
 
@@ -4592,6 +4592,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               },
               gciAxioms: function () {
                 return scope.concept.gciAxioms;
+              }
+            }
+          });
+        };
+
+        scope.viewDescriptor = function() {
+          $modal.open({
+            templateUrl: 'shared/descriptor-refset/descriptorRefset.html',
+            controller: 'descriptorRefsetModalCtrl',
+            size: 'large',
+            resolve: {
+              branch: function () {
+                return scope.branch;
+              },
+              conceptId: function () {
+                return scope.concept.conceptId;
+              },
+              conceptFSN: function() {
+                return scope.concept.fsn;
               }
             }
           });
@@ -5686,7 +5705,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var originalConcept = angular.copy(scope.originalConcept)
             terminologyServerService.cleanConcept(currentConcept);
             terminologyServerService.cleanConcept(originalConcept);
-            scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);            
+            scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);
 
             componentHighlightUtil.runComparison(null, null, currentConcept, originalConcept).then(function (response){
               var newConcept = response.concept;
@@ -5816,7 +5835,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     terminologyServerService.cleanConcept(currentConcept);
                     terminologyServerService.cleanConcept(originalConcept);
                     scope.isConceptUnChanged = JSON.stringify(currentConcept) === JSON.stringify(originalConcept);
-                  });                  
+                  });
               });
             }
           }
