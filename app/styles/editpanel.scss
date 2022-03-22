@@ -1503,6 +1503,14 @@ button-link .bluehl .grey.darken-3 {
     top: 23px;
     width: 162px;
 }
+.concept-title ul.dashboard-link-list.caret-down li:hover ul {
+    top: -240px;
+}
+.concept-title ul.dashboard-link-list.caret-down li ul:after {
+    bottom: unset;
+    border-bottom: unset;
+    border-top: 6px solid #4fc3f7;
+}
 .concept-title ul.dashboard-link-list li ul li[disabled] {    
     background-color: #424249;
     color: #76747c;
