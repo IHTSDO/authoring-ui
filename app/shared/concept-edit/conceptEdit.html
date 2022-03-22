@@ -204,9 +204,9 @@
                               ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
                     </textarea>
           </div>
-          <ul class="dashboard-link-list">
+          <ul class="dashboard-link-list" ng-mouseleave="hoverOut($event)">
             <li>
-              <div class="home-link pointerbtn-link withoutripple" ng-init="isCollapsed = false">
+              <div class="home-link pointerbtn-link withoutripple"  ng-mouseover="hoverIn($event)" ng-init="isCollapsed = false">
                 <span><i class="btn-default editbuttons small-buttons 0 darken-4 toggle-buttons fa-sca fa-caret-up"
                           ng-class="[{'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"
                           ng-click="collapse(concept)"></i></span>

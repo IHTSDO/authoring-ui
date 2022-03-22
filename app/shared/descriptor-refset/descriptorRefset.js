@@ -60,6 +60,9 @@ angular.module('singleConceptAuthoringApp.descriptorRefsetModal', [])
                 item.additionalFields.attributeTypeFsn = {term : item.additionalFields.attributeType};
               }
             });
+            $scope.members.sort(function (a, b) {
+              return parseInt(a.additionalFields.attributeOrder) - parseInt(b.additionalFields.attributeOrder);
+            });            
             $scope.descriptorRefsetMemberTableParams.reload();
             $scope.loading = false;
           });

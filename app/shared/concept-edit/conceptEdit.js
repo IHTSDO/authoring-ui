@@ -5535,6 +5535,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         });
 
+        scope.hoverIn = function(event) {
+          let windowHeight = window.innerHeight;
+          if (windowHeight - event.screenY < 285) {
+            var element = angular.element(event.currentTarget);
+            $(element[0]).closest('ul').addClass('caret-down');
+          }
+        };
+
+        scope.hoverOut = function(event){
+          var element = angular.element(event.currentTarget);
+          $(element[0]).removeClass('caret-down');
+        };
 //
 // camelCaseText -> Camel Case Text conversion
 //
