@@ -115,7 +115,7 @@ angular.module('singleConceptAuthoringApp')
 
           normaliseSnowstormConcept(response.data);
 
-          deferred.resolve({concept: response.data, validationResults: validationResults});
+          deferred.resolve({concept: response.data, validationResults: validationResults, descriptorsCreated: response.headers("Descriptors") != null && response.headers("Descriptors").length !== 0});
         }, function (error) {
           if (error && error.status === 400) {
             var validationResults = [];
