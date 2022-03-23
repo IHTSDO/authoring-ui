@@ -1,7 +1,7 @@
 angular.module('singleConceptAuthoringApp.descriptorRefsetModal', [])
-  .controller('descriptorRefsetModalCtrl', function ($scope, $modalInstance, ngTableParams, $filter, terminologyServerService, branch, conceptId, conceptFSN) {
+  .controller('descriptorRefsetModalCtrl', function ($scope, $modalInstance, ngTableParams, $filter, terminologyServerService, branch, conceptId, title) {
 
-    $scope.conceptFSN = conceptFSN;
+    $scope.title = title;
     $scope.conceptId = conceptId;
     $scope.branch = branch;
     $scope.loading = true;

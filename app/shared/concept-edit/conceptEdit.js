@@ -1481,6 +1481,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   scope.computeRelationshipGroups();
 
+                  // open descriptor refset members automatically
+                  if (response.descriptorsCreated) {
+                    let title = 'Descriptors created: If the following information is not correct or should be modified, please raise a support ticket for the technical team.';
+                    scope.viewDescriptor(title);
+                  }
 
                   // broadcast event to any listeners (currently task detail, crs concept list,
                   // conflict/feedback resolved lists)
@@ -4597,7 +4602,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        scope.viewDescriptor = function() {
+        scope.viewDescriptor = function(title) {
           $modal.open({
             templateUrl: 'shared/descriptor-refset/descriptorRefset.html',
             controller: 'descriptorRefsetModalCtrl',
@@ -4609,8 +4614,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               conceptId: function () {
                 return scope.concept.conceptId;
               },
-              conceptFSN: function() {
-                return scope.concept.fsn;
+              title: function() {
+                return title ? title : 'Descriptor refset members of ' + scope.concept.conceptId +  ' |' + scope.concept.fsn + '|';
               }
             }
           });
