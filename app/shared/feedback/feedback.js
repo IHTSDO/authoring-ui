@@ -115,8 +115,8 @@ angular.module('singleConceptAuthoringApp')
             let foundInCache = false;
             let result = metadataService.getDropdownLanguages();
             scope.languages = result.languages;
-            
-            if (localStorageService.get($rootScope.accountDetails.login + '-review-selected-language-id')) {              
+
+            if (localStorageService.get($rootScope.accountDetails.login + '-review-selected-language-id')) {
               const cachedLanguageId = localStorageService.get($rootScope.accountDetails.login + '-review-selected-language-id');
               let language = scope.languages.filter(function(item) {
                 return item.id === cachedLanguageId;
@@ -124,13 +124,13 @@ angular.module('singleConceptAuthoringApp')
               if (language) {
                 foundInCache = true;
                 scope.selectedLanguage = language;
-              } 
+              }
             }
             if (!foundInCache) {
               scope.selectedLanguage = result.selectedLanguage;
             }
             scope.onLanguageChange(scope.selectedLanguage);
-          }          
+          }
 
           function getBranchLineItems() {
             rnmService.getBranchLineItems(scope.branch).then(function (lineItems) {
@@ -141,14 +141,14 @@ angular.module('singleConceptAuthoringApp')
                 }
                 scope.lineItemTableParams.reload();
             });
-          }          
+          }
 
           scope.onLanguageChange = function(language) {
             scope.selectedLanguage = language;
             localStorageService.set($rootScope.accountDetails.login + '-review-selected-language-id', language.id);
             const acceptLanguageValue = getAcceptLanguageValue(language);
             const useFSN = (language && (language.id === '900000000000509007' ||language.id === '900000000000509007-fsn')) || !scope.isExtensionSet() || scope.useInternationalLanguageRefsets();
-            
+
             feedbackContainerDone = false;
             scope.loadingTermForConcepts = true;
             reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey, acceptLanguageValue, useFSN).then(function (review) {
@@ -160,20 +160,20 @@ angular.module('singleConceptAuthoringApp')
               scope.loadingTermForConcepts = false;
             }, function (error) {
                scope.feedbackContainer.review = {errorMsg: error};
-            }); 
+            });
           };
 
           function getAcceptLanguageValue(language) {
             let acceptLanguageValue = "";
             if (scope.isExtensionSet()
               && !scope.useInternationalLanguageRefsets()
-              && language.id !== '900000000000509007-fsn' 
+              && language.id !== '900000000000509007-fsn'
               && language.id !== '900000000000509007-pt') {
               if (language) {
                 acceptLanguageValue = metadataService.getExtensionAcceptLanguageValueByDialectId(language.id);
               } else {
                 acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getCurrentModuleId());
-              }                            
+              }
             } else {
               acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(metadataService.getInternationalModuleId());
             }
@@ -296,12 +296,12 @@ angular.module('singleConceptAuthoringApp')
                     }
                   }
                 });
-              } 
+              }
               else {
                 if (poll) {
                   $interval.cancel(poll);
                 }
-              }             
+              }
             }, 10000);
           };
 
@@ -489,7 +489,7 @@ angular.module('singleConceptAuthoringApp')
             {
               filterDelay: 50,
               total: scope.lineItems.length,
-              getData: function ($defer, params) {              
+              getData: function ($defer, params) {
                 params.total(scope.lineItems.length);
                 $defer.resolve(scope.lineItems);
               }
@@ -502,7 +502,7 @@ angular.module('singleConceptAuthoringApp')
               if (lineItem.id === id) {
                 item = lineItem;
               }
-            });            
+            });
             $modal.open({
               templateUrl: 'shared/releaseNotes/lineItem.html',
               controller: 'lineItemCtrl',
@@ -605,6 +605,54 @@ angular.module('singleConceptAuthoringApp')
             scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
             scope.conceptsToReviewTableParams.reload();
           };
+          scope.download = function() {
+            if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
+              notificationService.sendMessage('No concepts to download.', 10000);
+            } else {
+              var clonedConcepts = angular.copy(scope.feedbackContainer.review.conceptsToReview);
+              var data = [];
+              data.push({
+                'conceptId': 'Concept ID',
+                'conceptFsn': 'Term'
+              });
+              clonedConcepts.forEach(function(item) {
+                data.push({
+                  'conceptId': item.conceptId,
+                  'conceptFsn': scope.isDeletedConcept(item) ? 'Deleted concept' : item.term
+                });
+              })
+              scope.dlcDialog(convertToCSV(data), 'Concepts_' + (new Date()).getTime());
+            }
+          };
+
+          scope.dlcDialog = (function (data, fileName) {
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            return function (data, fileName) {
+              var
+                blob = new Blob([data], {type: 'text/tab-separated-values'}),
+                url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = fileName;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+          }());
+
+          function convertToCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += '\t';
+                    line += array[i][index];
+                }
+                str += line + '\r\n';
+            }
+            return str;
+          }
+
           // controls to allow author to view only concepts with feedeback
           scope.viewOnlyConceptsWithFeedback = false;
           scope.toggleOnlyConceptsWithFeedback = function () {
@@ -681,14 +729,14 @@ angular.module('singleConceptAuthoringApp')
             }
 
           };
-          
-          scope.conceptExistsInToReviewList = function (concept) {            
+
+          scope.conceptExistsInToReviewList = function (concept) {
             for (var i = 0; i < scope.feedbackContainer.review.conceptsToReview.length; i++) {
               var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
               if (concept.conceptId === reviewConcept.conceptId) {
                 return true;
               }
-            }            
+            }
             return false;
           };
 
@@ -704,10 +752,10 @@ angular.module('singleConceptAuthoringApp')
                   return true;
                 }
               }
-            }            
-                        
+            }
+
             return false;
-          };          
+          };
 
           scope.$on('approveAndLoadNext', function (event, concept) {
             approveAndLoadNext(concept);
@@ -770,7 +818,7 @@ angular.module('singleConceptAuthoringApp')
               addToEditHelper(data.conceptId).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
               });
-            }            
+            }
           });
 
           function closeAllConcepts () {
@@ -790,7 +838,7 @@ angular.module('singleConceptAuthoringApp')
               item.viewed = false;
             });
           }
-          
+
           function closeAndLoadNext(concept) {
             let conceptInToReviewFound = false;
             let conceptInReviewedFound = false;
@@ -820,11 +868,11 @@ angular.module('singleConceptAuthoringApp')
                   break;
                 }
               }
-            }           
+            }
 
             if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
-              let conceptArr = conceptInToReviewFound ? scope.feedbackContainer.review.conceptsToReview : 
-                                                        (conceptInReviewedFound ? scope.feedbackContainer.review.conceptsReviewed : 
+              let conceptArr = conceptInToReviewFound ? scope.feedbackContainer.review.conceptsToReview :
+                                                        (conceptInReviewedFound ? scope.feedbackContainer.review.conceptsReviewed :
                                                                                   scope.feedbackContainer.review.conceptsClassified);
               for (let i = 0; i < conceptArr.length; i++) {
                 let reviewConcept = conceptArr[i];
@@ -833,7 +881,7 @@ angular.module('singleConceptAuthoringApp')
                   // remove from viewed concepts list
                   for (let i = 0; i < scope.viewedConcepts.length; i++) {
                     if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
-                      scope.viewedConcepts.splice(i, 1);                      
+                      scope.viewedConcepts.splice(i, 1);
                       break;
                     }
                   }
@@ -842,8 +890,8 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // load next concept            
-            if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {              
+            // load next concept
+            if (conceptInToReviewFound || conceptInReviewedFound || conceptInClassifiedFound) {
               let activeTableParam = conceptInToReviewFound ? scope.conceptsToReviewTableParams : (conceptInReviewedFound ? scope.conceptsReviewedTableParams : scope.conceptsClassifiedTableParams);
               let totalPage = Math.ceil(activeTableParam.total()/activeTableParam.count());
               let currentPage = activeTableParam.page();
@@ -853,19 +901,19 @@ angular.module('singleConceptAuthoringApp')
                 activeTableParam.page(currentPage + 1);
                 activeTableParam.reload();
               }
-              
+
               let conceptArr = conceptInToReviewFound ? scope.conceptsToReviewViewed : (conceptInReviewedFound ? scope.conceptsReviewedViewed : scope.conceptsClassified);
               let nextConcept = conceptArr[elementPos + 1];
               let found = false;
-              angular.forEach(scope.viewedConcepts, function (viewConcept) {                  
+              angular.forEach(scope.viewedConcepts, function (viewConcept) {
                   if (nextConcept.conceptId === viewConcept.conceptId) {
                     found = true;
-                  }                  
+                  }
               });
               if (!found && !scope.isDeletedConcept(nextConcept)) {
                 scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
               }
-            }            
+            }
           }
 
           function approveAndLoadNext(concept) {
@@ -927,13 +975,13 @@ angular.module('singleConceptAuthoringApp')
           scope.deletedConceptIds = [];
           scope.isDeletedConcept = function(concept) {
             var deleted = !concept.term;
-            if (deleted && !scope.deletedConceptIds.includes(concept.conceptId)) {              
+            if (deleted && !scope.deletedConceptIds.includes(concept.conceptId)) {
               scope.deletedConceptIds.push(concept.conceptId);
               scope.styles[concept.conceptId] = {};
               scope.styles[concept.conceptId].conceptStyle = {'style' : 'redhl'};
               scope.styles[concept.conceptId].isDeleted = true;
             } else if (!deleted && scope.deletedConceptIds.includes(concept.conceptId)) {
-              scope.deletedConceptIds.splice(scope.deletedConceptIds.indexOf(concept.conceptId), 1);              
+              scope.deletedConceptIds.splice(scope.deletedConceptIds.indexOf(concept.conceptId), 1);
             }
             return deleted;
           };
@@ -967,9 +1015,9 @@ angular.module('singleConceptAuthoringApp')
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
             if (sendingConceptToReview) return;
-            
+
             sendingConceptToReview = true;
-            
+
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
               scope.task = task;
               if (scope.task.status === 'Review Completed') {
@@ -1059,7 +1107,7 @@ angular.module('singleConceptAuthoringApp')
 
           // the scope variable containing the map of concept -> [style map]
           scope.styles = {};
-        
+
           scope.getCaseSignificanceDisplayText = function (description) {
             switch (description.caseSignificance) {
               case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
@@ -1072,7 +1120,7 @@ angular.module('singleConceptAuthoringApp')
                 return '??';
             }
           };
-            
+
           scope.getAcceptabilityTooltipText = function (description, dialectId) {
             if (!description || !dialectId) {
               return null;
@@ -1120,12 +1168,12 @@ angular.module('singleConceptAuthoringApp')
                     });
                 }, 1000);
 
-                scope.styles[conceptId] = result.styles;                
+                scope.styles[conceptId] = result.styles;
                 scope.inactiveDescriptions[conceptId] = result.inactiveDescriptions;
                 scope.viewedConcepts.push(result.concept);
 
                 deferred.resolve(result.concept);
-              });              
+              });
             });
             return deferred.promise;
           }
@@ -1137,7 +1185,7 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           };
-         
+
           // function to add a concept to viewed list from tables
           scope.addToEdit = function (item) {
             // if viewed, ignore
@@ -1148,7 +1196,7 @@ angular.module('singleConceptAuthoringApp')
                 item.read = true;
                 item.modifiedSinceReview = false;
               });
-              
+
               addToEditHelper(item.conceptId).then(function (response) {
                 if (scope.role === 'REVIEWER') {
                   // set focus on the selected concept
@@ -1253,9 +1301,9 @@ angular.module('singleConceptAuthoringApp')
                             }
                             return true;
                           });
-            
+
             for (var i = 0; i < conceptsToAdd.length; i++) {
-              if (!scope.isDeletedConcept(conceptsToAdd[i])) {  
+              if (!scope.isDeletedConcept(conceptsToAdd[i])) {
                 conceptsToAdd[i].viewed = true;
                 addToEditHelper(conceptsToAdd[i].conceptId).then(function (response) {
                   notificationService.sendMessage('Concept: ' + response.conceptId + ' loaded', 5000);
@@ -1489,7 +1537,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           function updateReviewChangesFlagForSACTask(completed) {
-            aagService.getBranchSAC(scope.branch).then(function (sac) {   
+            aagService.getBranchSAC(scope.branch).then(function (sac) {
               if (sac && sac.criteriaItems) {
                 angular.forEach(sac.criteriaItems, function (criteria) {
                   if (criteria.authoringLevel === "TASK" && criteria.id.includes('task-review-changes')) {
@@ -1502,11 +1550,11 @@ angular.module('singleConceptAuthoringApp')
                         console.log('Task review-changes has been updated to ' + completed);
                       });
                     }
-                    
+
                     return;
                   }
-                }); 
-              }         
+                });
+              }
             });
           }
 
@@ -1696,13 +1744,13 @@ angular.module('singleConceptAuthoringApp')
               let feedbackWindow = document.getElementById("feedback-window");
               const windowHeight = jQuery(window).height();
               let availableHeight = windowHeight - newValue - 200;
-              if (feedbackChat) {                
+              if (feedbackChat) {
                 feedbackChat.style.maxHeight = (availableHeight > 175 ? availableHeight : 175) + 'px';
               }
-              if (feedbackWindow) {                
+              if (feedbackWindow) {
                 feedbackWindow.style.height = (availableHeight > 166 ? availableHeight : 166) + 'px';
                 jQuery(feedbackWindow).find('.ta-scroll-window').css('height', availableHeight > 166 ? (availableHeight - 70) + 'px' : '63%');
-              }               
+              }
           }, true);
 
           // check all request
@@ -1830,7 +1878,7 @@ angular.module('singleConceptAuthoringApp')
               terminologyServerService.getFullConceptAtDate(concept.conceptId, scope.branch, null, '-').then(function (response) {
                 scope.viewedConcepts.push(response);
                 notificationService.clear();
-              },           
+              },
               function() {
                 notificationService.sendMessage('The selected concept was created and deleted in this task, it cannot be loaded anymore.');
               }
@@ -1926,10 +1974,10 @@ angular.module('singleConceptAuthoringApp')
                   }
                 }
               }
-              
+
               return response.items;
             });
-          };          
+          };
 
           /**
            * Creates an image object with data source
@@ -2104,20 +2152,20 @@ angular.module('singleConceptAuthoringApp')
           };
 
           var alreadyLoadedFsnForConceptsClassified = false;
-          scope.loadFsnForConceptsClassified = function() {            
-            if (alreadyLoadedFsnForConceptsClassified || !scope.feedbackContainer.review || scope.feedbackContainer.review.conceptsClassified.length === 0) {             
+          scope.loadFsnForConceptsClassified = function() {
+            if (alreadyLoadedFsnForConceptsClassified || !scope.feedbackContainer.review || scope.feedbackContainer.review.conceptsClassified.length === 0) {
               return;
             }
 
             scope.loadingTermForClassifiedConcepts = true;
-            
+
             var fetchTermForClassifiedConcepts = function (branch, idList, conceptsClassified, acceptLanguageValue, useFSN) {
               var deferred = $q.defer();
               terminologyServerService.bulkRetrieveFullConcept(idList, branch, acceptLanguageValue).then(function (response) {
-                angular.forEach(response, function (concept) {                  
+                angular.forEach(response, function (concept) {
                   angular.forEach(conceptsClassified, function (reviewConcept) {
-                    if (concept.conceptId === reviewConcept.conceptId) {                      
-                      reviewConcept.term = useFSN ? concept.fsn : concept.pt;		  
+                    if (concept.conceptId === reviewConcept.conceptId) {
+                      reviewConcept.term = useFSN ? concept.fsn : concept.pt;
                     }
                   });
                 });
@@ -2131,7 +2179,7 @@ angular.module('singleConceptAuthoringApp')
             for(var index = 0; index < scope.feedbackContainer.review.conceptsClassified.length; index++) {
               idList.push(scope.feedbackContainer.review.conceptsClassified[index].conceptId);
             }
-            
+
             var i, j, temparray, chunk = 50;
             var promises = [];
             const acceptLanguageValue = getAcceptLanguageValue(scope.selectedLanguage);
@@ -2146,11 +2194,11 @@ angular.module('singleConceptAuthoringApp')
               alreadyLoadedFsnForConceptsClassified = true;
               scope.loadingTermForClassifiedConcepts = false;
               scope.conceptsClassifiedTableParams.reload();
-            });         
+            });
           };
 
           scope.$on('setExtensionMetadata', function (event, data) {
-            initLanguagesDropdown();        
+            initLanguagesDropdown();
           });
 
           scope.$on('viewProjectTaxonomy', function (event, data) {
@@ -2164,10 +2212,10 @@ angular.module('singleConceptAuthoringApp')
           function removeConceptFromProjectTaxonomyViewList(conceptId) {
             var i = feebackProjectTaxonomyViewList.length
             while (i--) {
-              if (conceptId === feebackProjectTaxonomyViewList[i]) { 
+              if (conceptId === feebackProjectTaxonomyViewList[i]) {
                 feebackProjectTaxonomyViewList.splice(i,1);
-              } 
-            } 
+              }
+            }
           }
 
           scope.setTooltipPosition = function ($event) {
@@ -2235,17 +2283,17 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              
+
               const acceptLanguageValue = getAcceptLanguageValue(scope.selectedLanguage);
               const useFSN = scope.selectedLanguage && (scope.selectedLanguage.id === '900000000000509007' ||scope.selectedLanguage.id === '900000000000509007-fsn');
               reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey, acceptLanguageValue, useFSN).then(function (review) {
-                // Re-popualte FSNs for classified concepts if already loaded.                
+                // Re-popualte FSNs for classified concepts if already loaded.
                 console.log(scope.feedbackContainer.review.conceptsClassified);
                 angular.forEach(scope.feedbackContainer.review.conceptsClassified, function(item1) {
                   angular.forEach(review.conceptsClassified, function(item2) {
                     if (item1.conceptId === item2.conceptId && item1.term) {
                       item2.term = item1.term;
-                    }                  
+                    }
                   });
                 });
 
@@ -2253,7 +2301,7 @@ angular.module('singleConceptAuthoringApp')
                 notificationService.sendMessage('Feedback Submitted', 5000, null);
               }, function (error) {
                  scope.feedbackContainer.review = {errorMsg: error};
-              });              
+              });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
@@ -2274,7 +2322,7 @@ angular.module('singleConceptAuthoringApp')
             scope.releaseNotesDisabled = metadataService.isExtensionSet();
             if (!scope.releaseNotesDisabled) {
               getBranchLineItems();
-            }            
+            }
           }
 
           initialize();
