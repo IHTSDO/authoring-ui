@@ -264,7 +264,7 @@
             </li>
             <li ng-if="(role === 'REVIEWER' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">              
               <button type="button" ng-click="download()"
-                class="btn btn-default blue">Download <i class="md md-file-download"></i> </button>
+                class="btn btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right">Download <i class="md md-file-download"></i> <span>Download all concepts for review</span></button>
             </li>
           </ul>
         </div>
