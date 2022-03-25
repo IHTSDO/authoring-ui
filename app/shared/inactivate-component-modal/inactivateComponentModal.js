@@ -7,8 +7,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.actionTab = 1;
 
     $scope.descendants = null;
-    
-    $scope.useFirstTarget = {selected: false};    
+
+    $scope.useFirstTarget = {selected: false};
 
     $scope.filterByInactivationReason = function () {
       return function (item) {
@@ -19,18 +19,39 @@ angular.module('singleConceptAuthoringApp')
     $scope.updateAssociations = function (inactivationReason) {
       $scope.inactivationReason = inactivationReason;
       $scope.useFirstTarget = {selected: false};
-      $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());      
+      $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
 
       if ($scope.associationTargets.length === 0) {
         $scope.associations = [];
       } else {
+
+        // use the original historical association targets for the exsiting inactive concept
+        if($scope.componentType === 'Concept' && !$scope.deletion && $scope.concept && ! $scope.concept.active && ($scope.associations.length === 0 || !$scope.associations[0].type.id)) {
+          $scope.associations = [];
+          if ($scope.unmodifiedAssociations && $scope.unmodifiedAssociations.length !== 0 && $scope.associationTargets.length !== 0 && $scope.associationTargets[0].id) {            
+              for (let i = 0; i < $scope.unmodifiedAssociations.length; i++) {
+                $scope.associations.push({type: $scope.associationTargets[0], concept: $scope.unmodifiedAssociations[i].concept});
+              }
+          }
+
+          if ($scope.componentType === 'Concept' && $scope.associations.length > 1
+            && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
+            $scope.associations = [$scope.associations[0]];
+          }
+
+          if ($scope.associations.length === 0) {
+            $scope.addAssociation(0);
+          }
+          return;
+        }
+
         if ($scope.associations.length === 0) {
            $scope.addAssociation(0);
         }
 
         if ($scope.componentType === 'Concept' && $scope.associations.length > 1
             && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
-          $scope.associations = [$scope.associations[0]];           
+          $scope.associations = [$scope.associations[0]];
         }
 
         //Association type will be automatically populated if there is only one option
@@ -151,7 +172,7 @@ angular.module('singleConceptAuthoringApp')
     function isConceptExistingInAssociations (conceptId) {
       if ($scope.associations && $scope.associations.length !== 0) {
         for (var i = 0; i < $scope.associations.length; i++) {
-          if ($scope.associations[i].concept 
+          if ($scope.associations[i].concept
               && $scope.associations[i].concept.concept.conceptId === conceptId) {
             return true;
           }
@@ -279,7 +300,7 @@ angular.module('singleConceptAuthoringApp')
        return false;
     };
 
-    $scope.hasHistAssocType = function () {            
+    $scope.hasHistAssocType = function () {
       for (let i = 0; i < $scope.associations.length; i++) {
         var association = $scope.associations[i];
         if (association.type && association.type.id) {
@@ -317,7 +338,7 @@ angular.module('singleConceptAuthoringApp')
         } else {
           proceedInactivation();
         }
-      }        
+      }
     };
 
     function proceedInactivation() {
@@ -343,7 +364,7 @@ angular.module('singleConceptAuthoringApp')
 //          }
 
         // add the association type/target
-        else {            
+        else {
 
           if(!association.type || association.type === null){
               association.type = {id: ' '}
@@ -428,7 +449,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.inboundRelationshipsLoading = true;
       // get the concept relationships again (all)
       terminologyServerService.searchConcepts($scope.branch,'', '*: *' + ' = ' + conceptId, 0, 10000, false, false, true).then(function (response) {
-       
+
         // initialize the arrays
         $scope.inboundRelationships = [];
         $scope.children = [];
@@ -473,14 +494,14 @@ angular.module('singleConceptAuthoringApp')
                 var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
                   return item.sourceFsn === inboundRelationship.sourceFsn;
                 }).length !== 0;
-                
+
                 // push to inbound relationships
                 if (!found)
                 {
                   $scope.inboundRelationships.push(item);
                   $scope.inboundRelationshipsTotal++;
                 }
-                
+
                 $scope.children.push(item);
               }
             });
@@ -492,12 +513,12 @@ angular.module('singleConceptAuthoringApp')
               getHistoricalAssociations().then(function(affectedAssociations) {
                 $scope.inboundRelationships = $scope.inboundRelationships.concat(affectedAssociations);
                 $scope.inboundRelationshipsTotal += affectedAssociations.length;
-                $scope.inboundRelationshipsLoading = false;              
-                $scope.tableParamsInboundRelationships.reload();    
+                $scope.inboundRelationshipsLoading = false;
+                $scope.tableParamsInboundRelationships.reload();
               })
             }
             else {
-              $scope.inboundRelationshipsLoading = false;              
+              $scope.inboundRelationshipsLoading = false;
               $scope.tableParamsInboundRelationships.reload();
             }
           });
@@ -516,29 +537,29 @@ angular.module('singleConceptAuthoringApp')
                 let newItem = angular.copy(item);
                 newItem.refsetPt = response.referenceSets[item.refsetId].pt.term;
                 $scope.referenceSetAssociations.push(newItem);
-              }              
+              }
             });
             $scope.tableParamsReferenceSetAssociations.reload();
-          }  
+          }
       });
     }
 
     function getHistoricalAssociations() {
       let deferred = $q.defer();
-      var affectedAssociations = [];  
+      var affectedAssociations = [];
       terminologyServerService.getHistoricalAssociationMembers($scope.conceptId, $scope.branch).then(function (response) {
         let affectedAssociationsTotal = Array.isArray(response) ? response.length : response.total;
         var affectedDescriptionIds = [];
-        if (affectedAssociationsTotal !== 0) {                
+        if (affectedAssociationsTotal !== 0) {
           angular.forEach(response.items, function (item) {
             if (item.active) {
               // Historical concepts found
               if (item.referencedComponent) {
                 item.sourceFsn = item.referencedComponent.term;
                 item.source = [];
-                item.source.fsn = item.referencedComponent.term;                    
+                item.source.fsn = item.referencedComponent.term;
                 item.characteristicType = 'STATED_RELATIONSHIP';
-    
+
                 var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
                   return item.sourceFsn === inboundRelationship.sourceFsn;
                 }).length !== 0;
@@ -551,10 +572,10 @@ angular.module('singleConceptAuthoringApp')
               }
               else {
                 affectedDescriptionIds.push(item.referencedComponentId);
-              }                    
+              }
             }
           });
-        }              
+        }
 
         // Historical associations found
         if (affectedDescriptionIds.length > 0) {
@@ -562,7 +583,7 @@ angular.module('singleConceptAuthoringApp')
           for (var i = 0; i < affectedDescriptionIds.length; i++) {
             terminologyServerService.getDescriptionProperties(affectedDescriptionIds[i], $scope.branch).then(function (description) {
               var conceptIds = [];
-              conceptIds.push(description.conceptId);                      
+              conceptIds.push(description.conceptId);
               count++;
               if (count === affectedDescriptionIds.length) {
                 // bulk call for concept ids
@@ -571,32 +592,32 @@ angular.module('singleConceptAuthoringApp')
                     var item = {};
                     item.sourceFsn = concept.fsn.term;
                     item.source = [];
-                    item.source.fsn = concept.fsn.term;                    
+                    item.source.fsn = concept.fsn.term;
                     item.characteristicType = 'STATED_RELATIONSHIP';
-        
+
                     var found = $scope.inboundRelationships.filter(function(inboundRelationship) {
                         return item.sourceFsn === inboundRelationship.sourceFsn;
-                      }).length !== 0 
+                      }).length !== 0
                       && $scope.affectedAssociations.filter(function(inboundRelationship) {
                         return item.sourceFsn === inboundRelationship.sourceFsn;
-                      }).length !== 0;                    
-                    
+                      }).length !== 0;
+
                     // push to inbound relationships
                     if (!found)
                     {
-                      affectedAssociations.push(item);                      
+                      affectedAssociations.push(item);
                     }
                   });
-                     
+
                   deferred.resolve(affectedAssociations);
-                });                      
+                });
               }
             });
-          }                
+          }
         }
-        else {          
+        else {
           deferred.resolve(affectedAssociations);
-        }                             
+        }
       });
 
       return deferred.promise;
@@ -625,13 +646,13 @@ angular.module('singleConceptAuthoringApp')
       $modalInstance.dismiss();
     };
 
-    $scope.switchHistoricalAssociationType = function(type){      
+    $scope.switchHistoricalAssociationType = function(type){
       if ($scope.associations.length != 0) {
         if ($scope.isReplacedByHistoricalAssocPresent() || $scope.isNoRequiredHistoricalAssocPresent()) {
           if ($scope.isNoRequiredHistoricalAssocPresent()) {
             $scope.associations[0].concept = null;
           }
-          $scope.associations = [$scope.associations[0]];          
+          $scope.associations = [$scope.associations[0]];
         }
         for (let i = 0; i < $scope.associations.length; i++) {
           $scope.associations[i].type = type;
@@ -643,7 +664,7 @@ angular.module('singleConceptAuthoringApp')
       if(typeof index !== 'undefined' && $scope.inactivationReason) {
         if ($scope.associationTargets.length !== 0) {
           $scope.associations.push({type: $scope.associationTargets[0], concept: null});
-        }        
+        }
       } else {
         let type = null;
         if ($scope.associations.length != 0) {
@@ -697,6 +718,34 @@ angular.module('singleConceptAuthoringApp')
     // Initialization
     ////////////////////////////////////
 
+    function initializeHistoricalAssocs() {
+      $scope.associations = [];
+      var allCocnceptTargets = [];
+      for (const property in $scope.concept.associationTargets) {
+        allCocnceptTargets = allCocnceptTargets.concat($scope.concept.associationTargets[property]);
+      }
+      terminologyServerService.searchAllConcepts(metadataService.getBranch(), allCocnceptTargets.join(','), null, 0, 50, null, true, true).then(function(response) {
+        var conceptIdToConceptMap = response.items.reduce(function(map, obj) {
+            map[obj.concept.conceptId] = obj;
+            return map;
+        }, {});
+        for (const property in $scope.concept.associationTargets) {
+          let foundAssociationTargets = $scope.associationTargets.filter(function(item) {return item.id === property});
+          if (foundAssociationTargets.length !== 0) {
+            for (let i = 0; i < $scope.concept.associationTargets[property].length; i++) {
+              if (conceptIdToConceptMap[$scope.concept.associationTargets[property][i]]) {
+                $scope.associations.push({type: foundAssociationTargets[0], concept:  conceptIdToConceptMap[$scope.concept.associationTargets[property][i]]});
+              }
+            }
+            $scope.unmodifiedAssociations = angular.copy($scope.associations);
+          }
+        }
+        if ($scope.associations.length === 0) {
+          $scope.addAssociation();
+        }
+      });
+    }
+
     // selected reason
     if(componentType === 'Concept') {
       $scope.reasons.sort(function(a, b) {
@@ -718,47 +767,25 @@ angular.module('singleConceptAuthoringApp')
     // flag for whether a stated parent-child relationship exists for this
     // concept (disable inactivation)
     $scope.statedChildFound = false;
-    
-    // Edit inactive concept 
+
+    // Edit inactive concept
     if($scope.componentType === 'Concept' && !$scope.deletion && $scope.concept && ! $scope.concept.active) {
       let foundReasons = $scope.reasons.filter(function(reason) {return reason.id === $scope.concept.inactivationIndicator});
       if (foundReasons.length !== 0) {
         $scope.inactivationReason = foundReasons[0];
         $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
         if ($scope.concept.associationTargets) {
-          var allCocnceptTargets = [];
-          for (const property in $scope.concept.associationTargets) {
-            allCocnceptTargets = allCocnceptTargets.concat($scope.concept.associationTargets[property]);
-          }
-          terminologyServerService.searchAllConcepts(metadataService.getBranch(), allCocnceptTargets.join(','), null, 0, 50, null, true, true).then(function(response) {
-            var conceptIdToConceptMap = response.items.reduce(function(map, obj) {
-                map[obj.concept.conceptId] = obj;
-                return map;
-            }, {});
-            for (const property in $scope.concept.associationTargets) {
-              let foundAssociationTargets = $scope.associationTargets.filter(function(item) {return item.id === property});
-              if (foundAssociationTargets.length !== 0) {                
-                for (let i = 0; i < $scope.concept.associationTargets[property].length; i++) {
-                  if (conceptIdToConceptMap[$scope.concept.associationTargets[property][i]]) {
-                    $scope.associations.push({type: foundAssociationTargets[0], concept:  conceptIdToConceptMap[$scope.concept.associationTargets[property][i]]});
-                  }                  
-                }              
-              }
-            }
-            if ($scope.associations.length === 0) {
-              $scope.addAssociation();
-            }           
-          });
+          initializeHistoricalAssocs();
         } else {
-          $scope.addAssociation();          
-        }       
+          $scope.addAssociation();
+        }
       } else {
         $scope.addAssociation();
-        $scope.updateAssociations($scope.inactivationReason);        
+        $scope.updateAssociations($scope.inactivationReason);
       }
     } else {
       $scope.addAssociation();
-      $scope.updateAssociations($scope.inactivationReason);      
+      $scope.updateAssociations($scope.inactivationReason);
     }
 
     if ($scope.componentType === 'Description' && $scope.description && $scope.description.active) {
@@ -768,7 +795,7 @@ angular.module('singleConceptAuthoringApp')
       if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
         $scope.contextLanguageRefSetAssociations = optionalLanguageRefsets.filter(function(item) {return Object.keys($scope.description.acceptabilityMap).includes(item.refsetId)});
         if ($scope.contextLanguageRefSetAssociations.length !== 0) {
-          const allRefsetIdStr = $scope.contextLanguageRefSetAssociations.map(function(elem) { return elem.refsetId;}).join(',');        
+          const allRefsetIdStr = $scope.contextLanguageRefSetAssociations.map(function(elem) { return elem.refsetId;}).join(',');
           // Get FSNs for context based language refset
           terminologyServerService.searchAllConcepts($scope.branch, allRefsetIdStr, null, 0, 50, null, true, true).then(function (response) {
             if(response.items.length !== 0) {
@@ -777,7 +804,7 @@ angular.module('singleConceptAuthoringApp')
                   if (response.items[i].concept.conceptId === $scope.contextLanguageRefSetAssociations[j].refsetId) {
                     $scope.contextLanguageRefSetAssociations[j]['fsn'] = response.items[i].concept.fsn;
                   }
-                }                
+                }
               }
             }
             $scope.checkingContextLanguageRefSetAssociations = false;
