@@ -324,6 +324,20 @@ angular.module('singleConceptAuthoringApp')
       return $scope.partiallyEquivalentToAssociationFound ? count < 2 : false;
     };
 
+    $scope.possiblyReplacedByAssociationFound = false;
+    $scope.checkAssociationPossiblyReplacedBy = function () {
+      let count = 0;
+      $scope.possiblyReplacedByAssociationFound = false;
+      for (let i = 0; i < $scope.associations.length; i++) {
+        let association = $scope.associations[i];
+        if(association.type && association.type.id == 'POSSIBLY_REPLACED_BY') {
+          $scope.possiblyReplacedByAssociationFound = true;
+          count++;
+        }
+      }
+      return $scope.possiblyReplacedByAssociationFound ? count < 2 : false;
+    };
+
     $scope.selectReason = function () {
 
       // NOTE: associationTarget is optional
