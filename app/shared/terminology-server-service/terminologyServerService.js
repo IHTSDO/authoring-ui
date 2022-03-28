@@ -1848,6 +1848,21 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
+        
+      function getCodeSystem (codeSystemShortName) {
+        if(!codeSystemShortName) {
+          console.error('Error retrieving versions: code system is not defined');
+          return null;
+        }
+          
+        let url = apiEndpoint + 'codesystems/';
+          
+        return $http.get(url + codeSystemShortName).then(function (response) {
+          return response.data;
+        }, function (error) {
+          return null;
+        });
+      }
 
 
       //////////////////////////////////////////////////////
@@ -2530,6 +2545,7 @@ angular.module('singleConceptAuthoringApp')
 
         // Terminology Server Administrative Services
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
+        getCodeSystem: getCodeSystem,
 
         // merge-review functionality
         getMergeReview: getMergeReview,

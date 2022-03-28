@@ -1195,6 +1195,41 @@ angular.module('singleConceptAuthoringApp')
 
         },
 
+// Initiate validation for a branch
+// POST /branches/{branch}/validation
+        startValidationForBranch: function (branch) {
+          console.log(branch);
+          if (!branch) {
+            console.error('Must specify branch to start validation');
+            return {};
+          }
+
+          // POST call takes no data
+          return $http.post(apiEndpoint + 'branches/' + branch + '/validation', {}).then(function (response) {
+            return response.data;
+          }, function (error) {
+            console.error('Error getting validation for branch ' + branch);
+            throw error.data.statusMessage;
+          });
+        },
+          
+// Get validation for a branch
+// GET /branches/{branch}/validation
+        getValidationForBranch: function (branch) {
+          if (!branch) {
+            console.error('Must specify branch to get latest validation results');
+            return {};
+          }
+
+          return $http.get(apiEndpoint + 'branches/' + branch + '/validation').then(function (response) {
+            return response.data;
+          }, function (error) {
+            console.error('Error getting validation for branch ' + branch);
+            return null;
+          });
+
+        },
+
 //////////////////////////////////////////
 // Update Status
 //////////////////////////////////////////
