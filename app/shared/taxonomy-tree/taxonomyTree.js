@@ -111,7 +111,11 @@ angular.module('singleConceptAuthoringApp')
 
               if (!children || children.length === 0) {
                 console.error('Could not retrieve children for node', node);
-                node.isLeafInferred = true;
+                if (scope.statedFlag) {
+                  node.isLeafStated = true;
+                } else {
+                  node.isLeafInferred = true;
+                }                
                 return;
               }
 
@@ -302,7 +306,7 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleNode = function (node, nodeScope) {
 
           // check that node has children
-          if (node.isLeafInferred) {
+          if ((!scope.statedFlag && node.isLeafInferred) || (scope.statedFlag && node.isLeafStated)) {
             return;
           }
 
@@ -312,14 +316,14 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // if node open, has children, but no children loaded
-          if (!nodeScope.collapsed && node.focusParent && node.focusParent === true && !node.isLeafInferred && (!node.parent)) {
+          if (!nodeScope.collapsed && node.focusParent && node.focusParent === true &&  ((!scope.statedFlag && !node.isLeafInferred) || (scope.statedFlag && !node.isLeafStated)) && (!node.parent)) {
             node.focusParent = false;
             node.collapsed = false;
             scope.getAndSetParents(node, true).then(function (array) {
               scope.terminologyTree = array;
             });
           }
-          else if (!nodeScope.collapsed && !node.isLeafInferred && (!node.children || node.children.length === 0)) {
+          else if (!nodeScope.collapsed && ((!scope.statedFlag && !node.isLeafInferred) || (scope.statedFlag && !node.isLeafStated)) && (!node.children || node.children.length === 0)) {
             scope.getAndSetChildren(node);
           }
 
@@ -330,7 +334,7 @@ angular.module('singleConceptAuthoringApp')
           if (!node) {
             return;
           }
-          if (node.isLeafInferred) {
+          if (node.isLeafInferred || node.isLeafStated) {
             return 'glyphicon glyphicon-minus';
           } else if (collapsed) {
             return 'glyphicon glyphicon-chevron-right';
@@ -402,7 +406,7 @@ angular.module('singleConceptAuthoringApp')
             if (scope.view) {
               // if concept supplied has leaf inferred property, start constructing trees
               // NOTE: Specifically checked at this field is used for display
-              if (scope.concept.hasOwnProperty('isLeafInferred')) {
+              if (scope.concept.hasOwnProperty('isLeafInferred') || scope.concept.hasOwnProperty('isLeafStated')) {
                 scope.constructRootTrees(scope.concept);
               }
 
@@ -415,7 +419,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
             else {
-              if (scope.concept.hasOwnProperty('isLeafInferred')) {
+              if (scope.concept.hasOwnProperty('isLeafInferred') || scope.concept.hasOwnProperty('isLeafStated')) {
                 scope.getAndSetChildren(scope.concept);
                 scope.getAndSetParents(scope.concept, false).then(function (array) {
                   scope.terminologyTree = array;

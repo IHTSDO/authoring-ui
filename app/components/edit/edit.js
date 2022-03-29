@@ -1068,6 +1068,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }     
 
         delete clonedConcept.isLeafInferred;
+        delete clonedConcept.isLeafStated;
         delete clonedConcept.effectiveTime;
         delete clonedConcept.preferredSynonym;        
 
