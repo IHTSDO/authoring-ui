@@ -182,7 +182,7 @@ angular.module('singleConceptAuthoringApp')
       //{id: 'PENDING_MOVE', text: 'Pending move'},
       {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]},
       {id: 'OUTDATED', text: 'Outdated component', display: []},
-      {id: 'DESCRIPTION_ERROR', text: 'Description error', display: []},
+      {id: 'GRAMMATICAL_DESCRIPTION_ERROR', text: 'Grammatical description error', display: []},
       {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
 
     ];
