@@ -47,7 +47,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getNewDescription(moduleId, language) {
-        
+
         if (!moduleId) {
           moduleId = metadataService.getCurrentModuleId();
         }
@@ -71,12 +71,6 @@ angular.module('singleConceptAuthoringApp')
 
       function getNewFsn(moduleId, initial, language) {
         // add FSN acceptability and type
-        if(language && language !== null){
-           var lang = language;
-        }
-        else{
-            var lang = metadataService.getDefaultLanguageForModuleId(null);
-        }
         var desc = getNewDescription(moduleId);
         desc.type = 'FSN';
 
@@ -94,7 +88,7 @@ angular.module('singleConceptAuthoringApp')
           desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial, desc.lang);
         }
 
-        
+
 
 
         return desc;
@@ -192,7 +186,19 @@ angular.module('singleConceptAuthoringApp')
 
 
           // add FSN description
-          concept.descriptions.push(getNewFsn(moduleId, true, 'en'));
+          concept.descriptions.push(getNewFsn(moduleId, true));
+
+          // add addtional FSN descriptions
+          const additionalFSNs = metadataService.getAdditionalFSNs();
+          for (let i = 0; i < additionalFSNs.length; i++) {
+            var newFsn = getNewFsn(moduleId, true);
+            newFsn.lang = additionalFSNs[i].language;
+            newFsn.acceptabilityMap = {};
+            for (let j = 0; j < additionalFSNs[i].dialectIds.length; j++) {
+              newFsn.acceptabilityMap[additionalFSNs[i].dialectIds[j]] = 'PREFERRED';
+            }
+            concept.descriptions.push(newFsn);
+          }
 
           // add a Preferred Term
           concept.descriptions.push(getNewPt(moduleId, true, 'en'));
@@ -222,9 +228,9 @@ angular.module('singleConceptAuthoringApp')
           'active': true,
           'released': false,
           'moduleId': moduleId,
-          'relationships': []       
+          'relationships': []
         };
-          
+
         if(!blank){
             var isARel = getNewIsaRelationship(moduleId);
             // Remove unused properties
@@ -236,8 +242,8 @@ angular.module('singleConceptAuthoringApp')
             // add IsA relationship
             axiom.relationships.push(isARel);
         }
-        
-        
+
+
 
         return axiom;
       }
@@ -450,7 +456,7 @@ angular.module('singleConceptAuthoringApp')
                     delete pt.descriptionId;
                     return concept;
                 }
-                
+
               }
 
             }
@@ -613,11 +619,11 @@ angular.module('singleConceptAuthoringApp')
                   var words = synonymMatchingWords[match];
                   var i = words.length
                   while (i--) {
-                    if(dialectMatchingWords[match] === words[i]) { 
+                    if(dialectMatchingWords[match] === words[i]) {
                       words.splice(i, 1);
-                    } 
-                  }                  
-                }                
+                    }
+                  }
+                }
               }
               for (var key in synonymMatchingWords) {
                 if (synonymMatchingWords[key].length === 0) {
@@ -653,10 +659,10 @@ angular.module('singleConceptAuthoringApp')
               termUs = description.term;
             }
 
-            // check duplicate GB term 
+            // check duplicate GB term
             var isTermGbFoundFn = function (termGb, concept) {
               return concept.descriptions.filter(function(description) {
-                  return description.term && description.term.trim() === termGb.trim() 
+                  return description.term && description.term.trim() === termGb.trim()
                         && description.acceptabilityMap.hasOwnProperty('900000000000508004')
                         && description.active
                         && (description.acceptabilityMap['900000000000508004'] === 'PREFERRED' || description.acceptabilityMap['900000000000508004'] === 'ACCEPTABLE');
@@ -669,7 +675,7 @@ angular.module('singleConceptAuthoringApp')
               for (var match in dialectMatchingWords) {
                 termGb = termGb.replace(match, dialectMatchingWords[match]);
               }
-            }            
+            }
 
             // replace original words with the suggested synonym spellings
             var synonymTermGbArr = [];
@@ -680,7 +686,7 @@ angular.module('singleConceptAuthoringApp')
                     var tempTermGb = termUs.replace(match, words[i].trim()).trim();
                     if (!isTermGbFoundFn(tempTermGb, concept)) {
                       synonymTermGbArr.push(tempTermGb);
-                    }                    
+                    }
                   }
               }
             }
@@ -700,7 +706,7 @@ angular.module('singleConceptAuthoringApp')
                   if (!isTemplateConcept) {
                     if (hasDialectMatchingWords && !isTermGbFoundFn(termGb, concept)) {
                       addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
-                    }                    
+                    }
 
                     if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
@@ -725,20 +731,20 @@ angular.module('singleConceptAuthoringApp')
                   if (!description.acceptabilityMap['900000000000509007']) {
                     description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                   }
-                                    
+
                   if (hasDialectMatchingWords && !isTermGbFoundFn(termGb, concept)) {
                     delete description.acceptabilityMap['900000000000508004'];
                     addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                   }
-                  
+
                   // SYN en-GB matching acceptability of original description
                   if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
                         if (!isTermGbFoundFn(synonymTermGbArr[i], concept)) {
                           addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
-                        }                        
+                        }
                       }
-                    }                  
+                    }
                 }
 
                 // else, leave unchanged
@@ -759,16 +765,16 @@ angular.module('singleConceptAuthoringApp')
                     var newDescription = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
                     if (!hasDialectMatchingWords) {
                       newDescription.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-                    }  
+                    }
                     if (hasDialectMatchingWords && !isTermGbFoundFn(termGb, concept)) {
                       // SYN en-GB preferred
                       addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                     }
-                    if (hasSynonymMatchingWords) {                                          
+                    if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
                         if (!isTermGbFoundFn(synonymTermGbArr[i], concept)) {
                           addDialectDescription(concept, description, 'SYNONYM', synonymTermGbArr[i], '900000000000508004', 'ACCEPTABLE');
-                        }                        
+                        }
                       }
                     }
                   }
@@ -791,12 +797,12 @@ angular.module('singleConceptAuthoringApp')
                   if (!description.acceptabilityMap['900000000000509007']) {
                     description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                   }
-                                    
+
                   if (hasDialectMatchingWords  && !isTermGbFoundFn(termGb, concept)) {
                     delete description.acceptabilityMap['900000000000508004'];
                     addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                   }
-                 
+
                   // SYN en-GB matching acceptability of original description
                   if (hasSynonymMatchingWords) {
                       for (var i = 0; i < synonymTermGbArr.length; i++) {
@@ -1041,7 +1047,7 @@ function getFsnDescriptionForConcept(concept) {
             hasIsARelationship = true;
           }
         });
-        
+
         if (!hasIsARelationship) {
           errors.push((type === 'gci'? 'General Concept Inclusion' : 'Axiom') + ' must have at least one IS A relationship');
         }
@@ -1111,14 +1117,14 @@ function getFsnDescriptionForConcept(concept) {
            for (var l = 0; l < concept.classAxioms.length; l++) {
             errors = errors.concat(checkAxiomComplete(concept.classAxioms[l], 'additional'));
           }
-        }       
+        }
 
         // check GCI
         if (concept.gciAxioms) {
           for (var m = 0; m < concept.gciAxioms.length; m++) {
             errors = errors.concat(checkAxiomComplete(concept.gciAxioms[m], 'gci'));
           }
-        }        
+        }
 
         // strip any duplicate messages
         for (var i = 0; i < errors.length; i++) {
