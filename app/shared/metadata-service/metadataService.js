@@ -390,7 +390,8 @@ angular.module('singleConceptAuthoringApp')
           dependencyRelease: metadata.dependencyRelease,
           codeSystemShortName : metadata.codeSystemShortName,
           useInternationalLanguageRefsets: (metadata.useInternationalLanguageRefsets ? true : false),
-          optionalLanguageRefsets: metadata.optionalLanguageRefsets
+          optionalLanguageRefsets: metadata.optionalLanguageRefsets,
+          additionalFSNs: metadata.additionalFSNs 
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -639,6 +640,10 @@ angular.module('singleConceptAuthoringApp')
       } else {
         return internationalMetadata.defaultLanguages ? internationalMetadata.defaultLanguages : internationalMetadata.languages[0];
       }
+    }
+
+    function getAdditionalFSNs() {
+      return extensionMetadata && extensionMetadata.additionalFSNs ? extensionMetadata.additionalFSNs : [];
     }
 
     function getAcceptLanguageValueForModuleId(moduleId) {
@@ -968,6 +973,7 @@ angular.module('singleConceptAuthoringApp')
       getallModules: getallModules,
       addExtensionModule: addExtensionModule,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
+      getAdditionalFSNs: getAdditionalFSNs,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getDialectDefaultsForModuleId: getDialectDefaultsForModuleId,

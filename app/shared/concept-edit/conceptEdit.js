@@ -4807,7 +4807,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if no previously published state, get a new (blank) concept
           if (scope.concept.conceptId === 'unsaved' || !scope.concept.conceptId) {
 
-            scope.concept = componentAuthoringUtil.getNewConcept(scope.branch);
+            scope.concept = componentAuthoringUtil.getNewConcept();
             scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
             scope.isModified = false;
 
