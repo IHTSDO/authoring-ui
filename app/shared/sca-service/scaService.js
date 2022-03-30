@@ -1066,6 +1066,24 @@ angular.module('singleConceptAuthoringApp')
           });
 
         },
+          
+        // Start classification for a branch
+        // POST /branches/{branch}/classification
+        startClassificationForBranch: function (branch) {
+          if (!branch) {
+            console.error('Must specify branch to start classification');
+            return {};
+          }
+
+          // POST call takes no data
+          return $http.post(apiEndpoint + 'branches/' + branch + '/classifications', {}).then(function (response) {
+            return response.data;
+          }, function (error) {
+            console.error('Error getting classification for branch ' + branch);
+            return null;
+          });
+
+        },
 
         // Clear classification status cache for task
         // POST /projects/{projectKey}/tasks/{taskKey}/classification/status/cache-evict

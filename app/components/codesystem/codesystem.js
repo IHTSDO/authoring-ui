@@ -91,6 +91,14 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
                     $scope.validationContainer = response;
                   });
+                  terminologyServerService.getClassificationsForBranchRoot(codeSystem.branchPath).then(function (classifications) {                   
+                    if (!classifications || classifications.length === 0) {
+                    } else {
+                      $scope.classificationContainer = classifications[classifications.length - 1];
+                      console.log($scope.classificationContainer);
+                    }
+                  });
+                  
                   let metadata = response;
                   response.branchPath = response.path;
                   metadataService.setBranchMetadata(response);
@@ -205,7 +213,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       // classify the codesystem
       $scope.classify = function () {
         notificationService.sendMessage('Starting classification for codesystem...');
-        scaService.startClassificationForProject($scope.project.key).then(function (response) {
+        scaService.startClassificationForBranch($scope.codeSystem.branchPath).then(function (response) {
 
           notificationService.sendMessage('Classification running', 10000);
           $scope.classificationContainer = response;
@@ -220,15 +228,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       // validate the project
       $scope.validate = function () {
-//        checkPrerequisitesForValidation().then(function(message) {
-//          if (message) {
-//            modalService.confirm(message).then(function () {
-//              doValidate();
-//            });
-//          } else {
             doValidate();
-          //}
-        //});
       };
 
 //      function checkPrerequisitesForValidation() {
