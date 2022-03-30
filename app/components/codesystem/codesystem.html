@@ -53,11 +53,11 @@
         <div class="card-header">
           <div class="card-title">
             <button
-              ng-disabled="!project.latestClassificationJson.status"
+              ng-disabled="!classificationContainer"
               ng-click="classificationCollapsed = !classificationCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
               <span class="project-subtitle"
-                ng-class="{'report-text' : project.latestClassificationJson.status === 'COMPLETED'}">Classification Results</span>
+                ng-class="{'report-text' : classificationContainer.status === 'COMPLETED'}">Classification Results</span>
             </button>
             <span class="project-icon green pull-right"><span class="md md-notifications"></span></span>
             <span class="arrow-green pull-right"></span>
@@ -70,7 +70,7 @@
 
         <div ng-show="classificationCollapsed === false">
           <div class="card-content clearfix">
-            <div classification classification-container="project.latestClassificationJson" branch="branch"
+            <div classification classification-container="classificationContainer" branch="branch"
                  editable="true"></div>
           </div>
 
