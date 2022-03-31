@@ -1,0 +1,60 @@
+<div class="row no-gutter sca-container">
+  <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
+       src="'shared/sidebar/sidebar.html'"></div>
+
+  <div class="sca-content col-lg-9 col-md-9 col-sm-9  dash-tables pull-right">
+    <section class="tables-data">
+      <div class="card">
+
+        <div class="row card-title">
+          <div class="p-l-15">
+            <h3 class="table-title ">
+              <div class="p-20 pull-left" style="padding-left: 5px; padding-right: 5px;">All Code Systems</div>
+            </h3>
+          </div>
+          <div class="col-md-3">
+            <div class="table-search">
+              <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
+                     placeholder="Search All Code Systems" autofocus/>
+            </div>
+          </div>
+          <div class="col-md-2">
+              <select ng-if="typeDropdown.length > 2" id="taskProject" name="select-choice" class="form-control"
+                        ng-options="type for type in typeDropdown | orderBy: 'title'"
+                        ng-model="selectedType.type"
+                        ng-change="refreshTable()"
+                        style="margin-top:10px;">
+              </select>
+          </div>
+        </div>
+
+        <div class="table-responsive white">
+
+
+          <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small">
+            <tr ng-repeat="codesystem in $data" class="clickable-row">
+
+              <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }"><a class="tooltips-right"
+                                                                                                 ng-href="#/codesystem/{{codesystem.shortName}}">{{codesystem.name}}
+                <span>View Code System Details</span> </a>
+              </td>
+              <td data-title="'Code System Key'" sortable="'shortName'" filter="{ 'shortName': 'text' }">
+                {{codesystem.shortName}}
+              </td>
+              <td data-title="'Version'" sortable="'latestVersion.version'" filter="{ 'latestVersion.version': 'text' }">
+                {{codesystem.latestVersion.version}}
+              </td>
+              <td data-title="'Dependant Version'" sortable="'dependantVersionEffectiveTime'" filter="{ 'dependantVersionEffectiveTime': 'text' }">
+                {{codesystem.dependantVersionEffectiveTime}}
+              </td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+</div>
+
