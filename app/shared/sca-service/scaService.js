@@ -372,7 +372,7 @@ angular.module('singleConceptAuthoringApp')
                 task: "WRPAS-98" (omitted for project)
                 */
               case 'Classification':
-                msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : newNotification.project ? 'project ' + newNotification.project : 'code system ' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
+                msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : newNotification.project ? 'project ' + newNotification.project : 'code system ' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
 
                 // retrieve the latest classification
                 // set url and broadcast classification complete to taskDetail.js or project.js
@@ -404,7 +404,7 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/project/' + newNotification.project;
                       notificationService.sendMessage(msg, 0, url);
                     } else {
-                      url = '#/codesystem/' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
+                      url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
                       notificationService.sendMessage(msg, 0, url);
                     }
                   }
@@ -457,7 +457,7 @@ angular.module('singleConceptAuthoringApp')
                 var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                 });
-                msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  newNotification.project ? 'project ' + newNotification.project : 'code system ' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
+                msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  newNotification.project ? 'project ' + newNotification.project : 'code system ' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
 
                 // do not supply a url (button link) for FAILED status
                 if (event !== 'FAILED') {
@@ -466,7 +466,7 @@ angular.module('singleConceptAuthoringApp')
                   } else if (newNotification.project) {
                     url = '#/project/' + newNotification.project;
                   } else {
-                    url = '#/codesystem/' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
+                    url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
                   }
                 }
 
