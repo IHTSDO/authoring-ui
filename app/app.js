@@ -300,6 +300,13 @@ angular
         });
 
         ///////////////////////////////////////////
+        // load code systems
+        ///////////////////////////////////////////
+        terminologyServerService.getAllCodeSystems().then(function (response) {        
+          metadataService.setCodeSystems(response.items);
+        });
+
+        ///////////////////////////////////////////
         // Binding shortcut
         ///////////////////////////////////////////
         hotkeys.bindTo($rootScope)

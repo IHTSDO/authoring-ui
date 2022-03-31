@@ -18,32 +18,24 @@
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
-        <button class="btn btn-border tooltips-bottom xlarge-size-tooltip " ng-click="classify()"
-            ng-disabled="project.latestClassificationJson.status && ((project.latestClassificationJson.status === 'SCHEDULED' || project.latestClassificationJson.status === 'RUNNING') && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
+        <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="classify()"
+            ng-disabled="classificationRunning">
             <div
               class="project-icon green pull-left">
               <div class="md md-notifications"></div>
             </div>
             Classify
-            <span>Run classification against this project</span>
+            <span>Run classification against this code system</span>
           </button>
-           <button class="btn btn-border tooltips-bottom xlarge-size-tooltip m-l-5" ng-click="validate()"
+           <button class="btn btn-border tooltips-bottom offset-tooltip-right xxlarge-size-tooltip m-l-5" ng-click="validate()"
             ng-disabled="validationRunning">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
               <div class="md md-school"></div>
             </div>
             Validate
-            <span>Run validation against this project</span>
+            <span>Run validation against this code system</span>
           </button>
-        </div>
-        <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectDroolsValidationDisabled !== undefined" style="margin-top: 15px; margin-bottom: 15px;">
-          <div><button class="btn btn-default transparent pull-right no-padding"             
-            ng-disabled="!userRoles.includes('ADMIN')"
-            ng-class="[{'md-check-box' : !project.projectDroolsValidationDisabled}, {'md-check-box-outline-blank' : project.projectDroolsValidationDisabled}]"
-            ng-click="toggleProjectDroolsValidation()" />
-          </div>     
-          <div><p class="pull-right">Drools validation in RVF enabled</p></div>
         </div>
       </div>      
 </div>
@@ -71,7 +63,7 @@
         <div ng-show="classificationCollapsed === false">
           <div class="card-content clearfix">
             <div classification classification-container="classificationContainer" branch="branch"
-                 editable="false"></div>
+            read-only="true"></div>
           </div>
 
         </div>
@@ -98,8 +90,8 @@
         
         <div ng-show="!validationCollapsed">
           <div class="card-content clearfix">
-            <div validation validation-container="validationContainer" branch="branch"
-                 editable="true" show-title="false" lastPromotion="project.lastPromotion"></div>
+            <div validation validation-container="validationContainer" branch="branch" 
+             is-code-system="true" show-title="false" overriden-labels="{'exceptionLabel1':'Exceptions on since last release', 'exceptionLabel2':'All exceptions', 'exceptionLabel3':'Latest exceptions', 'exceptionLabel4':'All exceptions'}"></div>
           </div>
         </div>
       </div>
@@ -112,9 +104,9 @@
           <div class="card-title">
             <button
               ng-disabled="!projects.length || projects.length === 0"
-              ng-init="tasksCollapsed = true"
-              ng-click="tasksCollapsed = !tasksCollapsed" type="button"
-              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : tasksCollapsed, 'md-keyboard-arrow-down' : !tasksCollapsed}]">
+              ng-init="projectsCollapsed = true"
+              ng-click="projectsCollapsed = !projectsCollapsed" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : projectsCollapsed, 'md-keyboard-arrow-down' : !projectsCollapsed}]">
               <span class="project-subtitle"
                 ng-class="{'report-text' : tasks.length > 0}">Codesystem Projects</span>
             </button>
@@ -126,9 +118,9 @@
           </div>
         </div>
 
-        <div class="table-responsive white m-b-40" ng-show="!tasksCollapsed">
+        <div class="table-responsive white m-b-40" ng-show="!projectsCollapsed">
 
-          <table ng-table="taskTableParams" template-pagination="utilities/data-table-pager.html"
+          <table ng-table="projectTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data">
 
