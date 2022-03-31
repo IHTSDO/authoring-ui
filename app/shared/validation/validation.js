@@ -21,7 +21,7 @@ angular.module('singleConceptAuthoringApp')
 
           // the task (optional)
           task: '=?',
-            
+
           // date the branch was last promoted (optional)
           lastPromotion: '=?',
 
@@ -121,12 +121,12 @@ angular.module('singleConceptAuthoringApp')
 
             return status;
           };
-          
+
           function covertToUTCTime(dateTime) {
             if (!dateTime) {
               return;
             }
-           
+
             var utcTime = new Date(dateTime + ' UTC');
             return $filter('date')(utcTime, "yyyy-MM-ddTHH:mm:ss'Z'","UTC");
           }
@@ -215,7 +215,7 @@ angular.module('singleConceptAuthoringApp')
                         // if viewing task report and instance is not user modified or validation failure is excluded, return false
                         if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
                           return false;
-                        }                        
+                        }
 
                         return true;
                       });
@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
                       failure.referencedComponentType = 'Description';
                       if (description && description.term) {
                         failure.detail = failure.detail.replace(matchInfo[0], '\"' + description.term + '\"');
-                      }                      
+                      }
 
                       if (++failuresPrepared === scope.failures.length) {
                         deferred.resolve();
@@ -404,7 +404,7 @@ angular.module('singleConceptAuthoringApp')
                   params.total(0); // resolving empty array does not actually set total to 0
                   $defer.resolve([]);
                 } else {
-                  
+
                   // filter by user modification
                   var orderedData = scope.failures.filter(function (failure) {
                     return scope.viewFullReport || failure.isBranchModification;
@@ -414,7 +414,7 @@ angular.module('singleConceptAuthoringApp')
                   if (scope.warningAssertion) {
                     orderedData = orderedData.filter(function (failure) {
                       return scope.allWhitelistItems.filter(function(item) {
-                        return item.validationRuleId === failure.validationRuleId && failure.componentId === item.componentId; 
+                        return item.validationRuleId === failure.validationRuleId && failure.componentId === item.componentId;
                       }).length === 0;
                     });
                   } else {
@@ -459,15 +459,15 @@ angular.module('singleConceptAuthoringApp')
                   });
                 });
 
-                var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN'; 
+                var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
                 validationService.getValidationFailureExclusions().then(function (exclusions) {
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
                       if (!failure.hasOwnProperty('branchRoot') || failure['branchRoot'] === branchRoot || failure['branchRoot'].includes(branchRoot) || branchRoot.includes(failure['branchRoot'])) {
                         orderedData.push(failure);
-                      }                      
+                      }
                     });
-                  }                 
+                  }
 
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
@@ -490,20 +490,20 @@ angular.module('singleConceptAuthoringApp')
           scope.toggleViewFullListExceptions = function () {
             //scope.viewFullListException = !scope.viewFullListException;
             scope.allWhitelistItems = [];
-            scope.exclusionsTableParams.reload();   
+            scope.exclusionsTableParams.reload();
             checkWhitelist().then(function() {
               scope.exclusionsTableParams.reload();
               setTimeout(function(){
                 angular.element(document.activeElement).trigger('blur');
               });
-            });                     
+            });
           };
 
           var dlcDialog = (function (data, fileName) {
             // create the hidden element
             var a = document.createElement('a');
             document.body.appendChild(a);
-    
+
             return function (data, fileName) {
               var
                 blob = new Blob([data], {type: 'text/tab-separated-values'}),
@@ -528,7 +528,7 @@ angular.module('singleConceptAuthoringApp')
             }
             return str;
           }
-          
+
           scope.downloadExceptions = function () {
             var data = [];
             data.push({
@@ -548,9 +548,9 @@ angular.module('singleConceptAuthoringApp')
                 'creationDate': item.creationDate,
                 'user': item.userId
               });
-            })                        
+            })
             dlcDialog(convertToCSV(data), 'Exceptions_' + (new Date()).getTime());
-          };                    
+          };
 
           scope.reloadTables = function () {
             if (scope.viewTop) {
@@ -576,7 +576,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.userModifiedConceptIds = [];
-            
+
           scope.generateWhitelistFields = function(whitelistItems){
               let idList = [];
               angular.forEach(whitelistItems, function (item) {
@@ -585,11 +585,13 @@ angular.module('singleConceptAuthoringApp')
                             item.failureText = assertion.assertionText;
                         }
                     });
-                    angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                    if (scope.validationContainer.report) {
+                      angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
                         if(item.validationRuleId === assertion.assertionUuid){
                             item.failureText = assertion.assertionText;
                         }
-                    });
+                      });
+                    }
                     idList.push(item.conceptId);
                 });
                 terminologyServerService.bulkGetConceptUsingPOST(idList, scope.branch).then(function (concepts) {
@@ -603,7 +605,7 @@ angular.module('singleConceptAuthoringApp')
                   });
                 scope.reloadTables();
                 });
-            
+
             return whitelistItems
           }
 
@@ -611,7 +613,9 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             if (scope.viewFullListException || scope.isCodeSystem) {
               let codeSystemShortname;
-              if (scope.task) {
+              if (scope.isCodeSystem) {
+                codeSystemShortname = $routeParams.codeSystem;
+              } else if (scope.task) {
                 codeSystemShortname = metadataService.getProjectForKey(scope.task.projectKey).codeSystem.shortName;
               } else {
                 codeSystemShortname = metadataService.getBranchMetadata().codeSystem.shortName;
@@ -622,14 +626,14 @@ angular.module('singleConceptAuthoringApp')
                     deferred.resolve(scope.viewFullListException ? response.data.items[0].importDate : response.data.items[response.data.items.length-1].importDate);
                   } else {
                     deferred.resolve(response.data.items[response.data.items.length-1].importDate);
-                  }                  
+                  }
                 }
               });
             } else {
               terminologyServerService.getLastPromotionTimeToMain(scope.branch).then(function(promotionDate) {
                 deferred.resolve(promotionDate);
               });
-            }            
+            }
             return deferred.promise;
           }
 
@@ -637,7 +641,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             scope.exceptionLoading = true;
             // filter out from AAG whitelist
-            getWhitelistCreationDate().then(function (creationDate) { 
+            getWhitelistCreationDate().then(function (creationDate) {
               let branch = '';
               if(scope.viewFullListException && !scope.isCodeSystem && scope.task){
                   branch = scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
@@ -662,11 +666,13 @@ angular.module('singleConceptAuthoringApp')
                               item.failureText = assertion.assertionText;
                           }
                           });
-                          angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
+                          if (scope.validationContainer.report) {
+                            angular.forEach(scope.validationContainer.report.rvfValidationResult.TestResult.assertionspassed, function (assertion) {
                               if(item.validationRuleId === assertion.assertionUuid){
                                   item.failureText = assertion.assertionText;
                               }
-                          });
+                            });
+                          }
                       }
                       idList.push(item.conceptId);
                   });
@@ -682,7 +688,7 @@ angular.module('singleConceptAuthoringApp')
                     scope.allWhitelistItems = whitelistItems;
                     angular.forEach(scope.assertionsWarning, function (assertion) {
                       if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
-                          assertion.isBranchModification = false;                  
+                          assertion.isBranchModification = false;
                           angular.forEach(assertion.firstNInstances, function (instance) {
 
                             // store the unmodified text to preserve original data
@@ -697,7 +703,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                     scope.exceptionLoading = false;
-                    deferred.resolve();                    
+                    deferred.resolve();
                   });
                 }
               }, function() {
@@ -713,7 +719,7 @@ angular.module('singleConceptAuthoringApp')
             // set the viewable flags for all returned failure instances
             angular.forEach(scope.assertionsFailed, function (assertion) {
               if(assertion.failureCount !== -1) {
-                assertion.isBranchModification = false;                    
+                assertion.isBranchModification = false;
                 angular.forEach(assertion.firstNInstances, function (instance) {
 
                   // store the unmodified text to preserve original data
@@ -731,12 +737,12 @@ angular.module('singleConceptAuthoringApp')
 
           function initFailures() {
 
-            var deferred = $q.defer();         
+            var deferred = $q.defer();
 
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
-            
+
             scaService.getTechnicalIssueItems().then(
               function(data) {
                 if (data.length > 0) {
@@ -774,6 +780,12 @@ angular.module('singleConceptAuthoringApp')
           scope.$watch('validationContainer', function (newVal, oldVal) {
 
             if (!scope.validationContainer || !scope.validationContainer.report) {
+              if (scope.branch) {
+                checkWhitelist().then(function() {
+                  scope.exclusionsTableParams.reload();
+                });
+              }
+              
               return;
             }
 
@@ -781,7 +793,7 @@ angular.module('singleConceptAuthoringApp')
             if (failuresInitialized) {
               return;
             }
-            failuresInitialized = true;            
+            failuresInitialized = true;
 
             notificationService.sendMessage('Retrieving traceability information ...');
             terminologyServerService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
@@ -867,10 +879,10 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
               promises.push(getConceptIdForFailure(instance));
               var obj = {
-                conceptId: instance.conceptId,                       
+                conceptId: instance.conceptId,
               };
               objArray.push(obj);
-            });                 
+            });
 
             $q.all(promises).then(function () {
                // skip if no concept ids
@@ -891,9 +903,9 @@ angular.module('singleConceptAuthoringApp')
                   conceptFsn : 'FSN'
                 });
                 var fileName = 'validation_' + (new Date()).getTime();
-                scope.dlcDialog(convertToCSV(objArray), fileName);        
+                scope.dlcDialog(convertToCSV(objArray), fileName);
               });
-              } 
+              }
             });
           };
 
@@ -969,7 +981,7 @@ angular.module('singleConceptAuthoringApp')
               validationService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText).then(function () {
                 scope.reloadTables();
               });
-            }            
+            }
           };
 
 // exclude a single failure, with optional commit
@@ -989,14 +1001,14 @@ angular.module('singleConceptAuthoringApp')
                   failure.isUserExclusion = true;
                   scope.resetUserExclusionFlag();
                 });
-              });                           
+              });
             }
           };
 
           function getAdditionalFieldsAsString(branch, componentId) {
             var deferred = $q.defer();
             var SCTID_PATTERN = new RegExp("\\d{6,20}$");
-            var UUID_PATTERN = new RegExp("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");            
+            var UUID_PATTERN = new RegExp("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
             if (SCTID_PATTERN.test(componentId)){
               switch (componentId.substr(-2, 1)) {
                 case "0":
@@ -1005,7 +1017,7 @@ angular.module('singleConceptAuthoringApp')
                   });
                   break;
                 case "1":
-                  terminologyServerService.getDescriptionProperties(componentId, branch).then(function(desc) {                    
+                  terminologyServerService.getDescriptionProperties(componentId, branch).then(function(desc) {
                     deferred.resolve({[componentId]: getStatusCode(desc.active) + ',' + desc.moduleId + ',' + desc.conceptId + ',' + desc.lang + ',' + desc.typeId + ',' + desc.term + ',' + getCaseSignificanceId(desc.caseSignificance)});
                   });
                   break;
@@ -1016,17 +1028,17 @@ angular.module('singleConceptAuthoringApp')
                   break;
                 default:
                   deferred.resolve({[componentId]: ''});
-                  break;        
-              }        
+                  break;
+              }
             } else if (UUID_PATTERN.test(componentId)) {
               terminologyServerService.getMemberProperties(componentId, branch + '/').then(function(member) {
                 var result = getStatusCode(member.active) + ',' + member.moduleId + ',' + member.refsetId + ',' + member.referencedComponentId;
-                for (var key in Object.keys(member.additionalFields)) {                 
+                for (var key in Object.keys(member.additionalFields)) {
                   result += (',' + member.additionalFields[key]);
                 }
                 deferred.resolve({[componentId]: result});
               });
-              
+
             } else {
               deferred.resolve({[componentId]: ''});
             }
@@ -1060,10 +1072,10 @@ angular.module('singleConceptAuthoringApp')
 
           scope.resetUserExclusionFlag = function() {
             angular.forEach(scope.assertionsWarning, function (assertion) {
-              if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){                                   
+              if(assertion.failureCount > 0 && assertion.testType === 'DROOL_RULES'){
                   angular.forEach(assertion.firstNInstances, function (instance) {
                     instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-                      return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId; 
+                      return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId;
                     }).length !== 0;
                   });
               }
@@ -1107,13 +1119,13 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
 
-          scope.editConcept = function (failure) {           
-            
+          scope.editConcept = function (failure) {
+
             // Already loaded check
-            if(scope.viewedConcepts 
+            if(scope.viewedConcepts
               && scope.viewedConcepts.length > 0
               && scope.viewedConcepts.filter(function(item) { return item.conceptId === failure.conceptId; }).length === 1) {
-              notificationService.sendWarning('Concept already loaded');              
+              notificationService.sendWarning('Concept already loaded');
               return;
             }
 
@@ -1176,14 +1188,14 @@ angular.module('singleConceptAuthoringApp')
 
             if (scope.warningAssertion){
               var promises = [];
-              angular.forEach(failuresToAddWhiteList, function (failure) {                
+              angular.forEach(failuresToAddWhiteList, function (failure) {
                 failure.isUserExclusion = true;
                 promises.push(getAdditionalFieldsAsString(scope.branch,failure.componentId));
               });
               $q.all(promises).then(function (responses) {
                 promises = [];
                 angular.forEach(failuresToAddWhiteList, function (failure) {
-                  var whitelistItem = {};                
+                  var whitelistItem = {};
                   whitelistItem.componentId = failure.componentId;
                   whitelistItem.conceptId = failure.conceptId;
                   whitelistItem.validationRuleId = failure.validationRuleId;
@@ -1203,18 +1215,18 @@ angular.module('singleConceptAuthoringApp')
                   });
                   scope.resetUserExclusionFlag()
                 });
-              });              
+              });
             } else {
               accountService.getAccount().then(function (accountDetails) {
                 // get the user name
                 var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
                 var branchRoot = metadataService.isExtensionSet() ? metadataService.getBranchRoot().split('/').pop() : 'MAIN';
-  
+
                 // set the local flag to false to ensure immediate removal
-                angular.forEach(failuresToAddWhiteList, function (failure) {                
+                angular.forEach(failuresToAddWhiteList, function (failure) {
                   failure.isUserExclusion = true;
-                });              
-  
+                });
+
                 // add the exclusion and update tables
                 // NOTE: Must use the unmodified detail, not the referenced component modified detail
                 validationService.addValidationFailuresExclusion(scope.assertionFailureViewed.assertionUuid,
@@ -1222,7 +1234,7 @@ angular.module('singleConceptAuthoringApp')
                   failuresToAddWhiteList,
                   userName,
                   branchRoot).then(function () {
-  
+
                   scope.reloadTables();
                 });
               });
