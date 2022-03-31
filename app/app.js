@@ -39,6 +39,7 @@ angular
     'singleConceptAuthoringApp.project',
     'singleConceptAuthoringApp.codesystem',
     'singleConceptAuthoringApp.projects',
+    'singleConceptAuthoringApp.codesystems',
     'singleConceptAuthoringApp.myProjects',
     'singleConceptAuthoringApp.reviewTasks',
     'singleConceptAuthoringApp.projectMerge',
