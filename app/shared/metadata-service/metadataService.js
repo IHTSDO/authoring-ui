@@ -712,9 +712,18 @@ angular.module('singleConceptAuthoringApp')
       return codeSystems;
     }
 
-    function getCodeSystenForGivenBranch (branch) {
+    function getCodeSystenForGivenBranch(branch) {
       if (codeSystems.length !== 0) {
         let filter = codeSystems.filter(function(item) {return item.branchPath === branch});
+        if (filter.length !== 0) return filter[0];
+      }
+
+      return null;
+    }
+
+    function getCodeSystenForGivenShortname(shortname) {
+      if (codeSystems.length !== 0) {
+        let filter = codeSystems.filter(function(item) {return item.shortName === shortname});
         if (filter.length !== 0) return filter[0];
       }
 
@@ -1048,6 +1057,7 @@ angular.module('singleConceptAuthoringApp')
       setCodeSystems: setCodeSystems,
       getCodeSystems: getCodeSystems,
       getCodeSystenForGivenBranch: getCodeSystenForGivenBranch,
+      getCodeSystenForGivenShortname: getCodeSystenForGivenShortname,
       getDropdownLanguages: getDropdownLanguages,
       getOptionalLanguageRefsets: getOptionalLanguageRefsets
     };
