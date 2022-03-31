@@ -351,7 +351,7 @@ angular.module('singleConceptAuthoringApp')
 
             // set limit to 1 million to ensure all results downloaded
             terminologyServerService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
-              var fileName = 'classifier_' + $routeParams.taskKey;
+              var fileName = 'classifier_' + ($routeParams.taskKey ? $routeParams.taskKey : ($routeParams.projectKey ? $routeParams.projectKey : ($routeParams.codeSystem ? $routeParams.codeSystem : "")));
               scope.dlcDialog(data.data, fileName);
             });
           };
