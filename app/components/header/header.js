@@ -213,7 +213,6 @@ angular.module('singleConceptAuthoringApp')
           accountService.getUserPreferences().then(function (response) {
               scope.userPreferences = response;
               if(window.location.href.indexOf("task/") > -1) {
-                  console.log($rootScope.currentTask);
                   window.open('/browser/?perspective=full&conceptId1=138875005&edition=' + $rootScope.currentTask.branchPath.substring(0, $rootScope.currentTask.branchPath.lastIndexOf('/')) + '&release=' + $rootScope.currentTask.key, '_blank');
                 }
               else if(window.location.href.indexOf("project/") > -1) {
@@ -226,6 +225,15 @@ angular.module('singleConceptAuthoringApp')
                   window.open('/browser/?perspective=full&conceptId1=138875005', '_blank');
               }
           });
+        };
+
+        scope.openDailyBuild = function() {
+          if(window.location.href.indexOf("codesystem/") > -1) {
+            var codeSystem = metadataService.getCodeSystenForGivenShortname($routeParams.codeSystem);
+            window.open('https://dev-dailybuild.ihtsdotools.org/?perspective=full&conceptId1=138875005&edition=' + codeSystem.branchPath, '_blank');
+          } else {
+            window.open('https://dev-dailybuild.ihtsdotools.org/', '_blank');
+          }
         };
 
         scope.openReporting = function() {
