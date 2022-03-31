@@ -18,13 +18,17 @@ angular.module('singleConceptAuthoringApp')
           branch: '=branch',
 
           // the task (optional)
-          task : '=?'
+          task : '=?',
+
+          readOnly : '=?'
         },
         templateUrl: 'shared/classification/classification.html',
 
         link: function (scope, element, attrs, linkCtrl) {
 
           scope.editable = attrs.editable === 'true';
+
+          scope.readOnly = attrs.readOnly === 'true';
 
           // local concept-edit and model list
           scope.viewedConcepts = [];

@@ -23,15 +23,21 @@ angular.module('singleConceptAuthoringApp')
           task: '=?',
             
           // date the branch was last promoted (optional)
-          lastPromotion: '=?'
+          lastPromotion: '=?',
+
+          // overriden labbels (optional)
+          overridenLabels: '=?',
+
+          // code systesm flag
+          isCodeSystem: '=?'
         },
         templateUrl: 'shared/validation/validation.html',
 
         link: function (scope, element, attrs, linkCtrl) {
 
-
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
+          scope.isCodeSystem = attrs.isCodeSystem === 'true';
           scope.displayStatus = '';
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
@@ -603,16 +609,20 @@ angular.module('singleConceptAuthoringApp')
 
           function getWhitelistCreationDate() {
             var deferred = $q.defer();
-            if (scope.viewFullListException) {
-              let projectShortname;
+            if (scope.viewFullListException || scope.isCodeSystem) {
+              let codeSystemShortname;
               if (scope.task) {
-                projectShortname = metadataService.getProjectForKey(scope.task.projectKey).codeSystem.shortName;
+                codeSystemShortname = metadataService.getProjectForKey(scope.task.projectKey).codeSystem.shortName;
               } else {
-                projectShortname = metadataService.getBranchMetadata().codeSystem.shortName;
+                codeSystemShortname = metadataService.getBranchMetadata().codeSystem.shortName;
               }
-              terminologyServerService.getAllCodeSystemVersionsByShortName(projectShortname).then(function(response) {
+              terminologyServerService.getAllCodeSystemVersionsByShortName(codeSystemShortname).then(function(response) {
                 if (response.data.items && response.data.items.length > 0) {
-                  deferred.resolve(response.data.items[response.data.items.length-1].importDate);
+                  if (scope.isCodeSystem) {
+                    deferred.resolve(scope.viewFullListException ? response.data.items[0].importDate : response.data.items[response.data.items.length-1].importDate);
+                  } else {
+                    deferred.resolve(response.data.items[response.data.items.length-1].importDate);
+                  }                  
                 }
               });
             } else {
@@ -629,12 +639,12 @@ angular.module('singleConceptAuthoringApp')
             // filter out from AAG whitelist
             getWhitelistCreationDate().then(function (creationDate) { 
               let branch = '';
-              if(scope.viewFullListException && scope.task){
-                  branch =  scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
-                  branch =  branch.substr(0, branch.lastIndexOf("\/"));
+              if(scope.viewFullListException && !scope.isCodeSystem && scope.task){
+                  branch = scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
+                  branch = branch.substr(0, branch.lastIndexOf("\/"));
               }
-              else if(scope.viewFullListException && !scope.task){
-                  branch =  scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
+              else if(scope.viewFullListException && !scope.isCodeSystem && !scope.task){
+                  branch = scope.branch.substr(0, scope.branch.lastIndexOf("\/"));
               }
               else {
                   branch = scope.branch;

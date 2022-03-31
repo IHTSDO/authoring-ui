@@ -1864,6 +1864,16 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+      function getAllCodeSystems () {
+        let url = apiEndpoint + 'codesystems';
+          
+        return $http.get(url).then(function (response) {
+          return response.data;
+        }, function (error) {
+          return null;
+        });
+      }
+
 
       //////////////////////////////////////////////////////
       // Branch Functions
@@ -2545,6 +2555,7 @@ angular.module('singleConceptAuthoringApp')
 
         // Terminology Server Administrative Services
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
+        getAllCodeSystems: getAllCodeSystems,
         getCodeSystem: getCodeSystem,
 
         // merge-review functionality

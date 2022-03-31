@@ -7,7 +7,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/codesystem/:projectKey', {
+      .when('/codesystem/:codeSystem', {
         controller: 'CodesystemCtrl',
         templateUrl: 'components/codesystem/codesystem.html',
         resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
@@ -24,33 +24,23 @@ angular.module('singleConceptAuthoringApp.codesystem', [
   .controller('CodesystemCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'rnmService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', 'templateService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
     function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, rnmService, notificationService, $location, ngTableParams, accountService, promotionService, templateService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
 
-      $rootScope.pageTitle = 'Code System/' + $routeParams.projectKey;
+      $rootScope.pageTitle = 'Code System/' + $routeParams.codeSystem;
 
-      // project and project branch
-      $scope.projectBranch = null;
       $scope.codeSystem = null;
       $scope.branch = null;
-      $scope.project = {};
       $scope.projects = [];
 
       // initialize the containers
       $scope.validationContainer = null;
       $scope.classificationContainer = null;
-      $scope.conflictsContainer = null;
-      $scope.creationDate = null;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
-      $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
 
-      $scope.userRoles = [];
-
-      var expandValidation = $location.search().expandValidation;
-      var expandClassification = $location.search().expandClassification;
-      $scope.validationCollapsed = expandValidation ? !expandValidation : true;
-      $scope.classificationCollapsed = expandClassification ? !expandClassification : true;
+      $scope.validationCollapsed = $location.search().expandValidation ? !$location.search().expandValidation : true;
+      $scope.classificationCollapsed = $location.search().expandClassification ? !$location.search().expandClassification : true;
 
       hotkeys.bindTo($scope)
       .add({
@@ -71,18 +61,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         }
       });
 
-      $scope.sacSignedOff = function () {
-          let value = true;
-          angular.forEach($scope.sac, function (criteria) {
-              if (criteria.complete === false) {
-                value = false;
-              }
-            });
-          return value;
-      }
-      
       $scope.getCodeSystem = function () {
-          terminologyServerService.getCodeSystem($routeParams.projectKey).then(function (codeSystem) {
+          terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
               terminologyServerService.getBranch(codeSystem.branchPath).then(function (response) {
                   $scope.branch = codeSystem.branchPath;
                   $scope.codeSystem = codeSystem;
@@ -90,41 +70,34 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   scaService.getProjects().then(function (projects) {
                     angular.forEach(projects, function (project) {
                       let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
-                      console.log(path);
                       if(path === $scope.codeSystem.branchPath){
                           $scope.projects.push(project);
                       }
                     });
-                    console.log($scope.projects);
-//                    angular.forEach($scope.tasks, function (task) {
-//                      task.authorKey = task.assignee ? task.assignee.displayName : '';
-//                    });
-                    $scope.taskTableParams.reload();
+                    $scope.projectTableParams.reload();
                   });
-                  if (codeSystem.dependantVersionEffectiveTime) {
-                    $scope.project.lastRebaseTime =  codeSystem.dependantVersionEffectiveTime;
-                  }
+
+                  response.branchPath = response.path;
+                  response.codeSystem = codeSystem;
+                  metadataService.setBranchMetadata(response);
+
                   scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
                     $scope.validationContainer = response;
+                    $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
                   });
-                  terminologyServerService.getClassificationsForBranchRoot(codeSystem.branchPath).then(function (classifications) {                   
-                    if (!classifications || classifications.length === 0) {
-                    } else {
+                  terminologyServerService.getClassificationsForBranchRoot(codeSystem.branchPath).then(function (classifications) {
+                    if (classifications && classifications.length !== 0) {
                       $scope.classificationContainer = classifications[classifications.length - 1];
-                      console.log($scope.classificationContainer);
+                      $rootScope.classificationRunning = $scope.classificationContainer.status === 'RUNNING' || $scope.classificationContainer.status === 'SCHEDULED' || $scope.classificationContainer.status === 'BUILDING';
                     }
                   });
-                  
-                  let metadata = response;
-                  response.branchPath = response.path;
-                  metadataService.setBranchMetadata(response);
               });
           });
-          
+
       }
 
-      $scope.$on('reloadProject', function (event, data) {
-        if (!data || data.project === $routeParams.projectKey) {
+      $scope.$on('reloadCodeSystem', function (event, data) {
+        if (!data || data.branchPath === $scope.codeSystem.branchPath) {
           $scope.getCodeSystem();
         }
       });
@@ -148,7 +121,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         }, function () {
         });
       };
-        
+
       // classify the codesystem
       $scope.classify = function () {
         notificationService.sendMessage('Starting classification for codesystem...');
@@ -186,7 +159,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       // tasks table params
       // declare table parameters
-      $scope.taskTableParams = new ngTableParams({
+      $scope.projectTableParams = new ngTableParams({
           page: 1,
           count: 10,
           sorting: {updated: 'desc', name: 'asc'}
@@ -226,7 +199,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           }
         }
       );
-        
+
       $scope.getBranchStateText = function (project) {
           if (!project) {
             return null;
@@ -248,21 +221,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               return '??';
           }
         };
-        
+
       $scope.viewProject = function (project) {
         $location.url('project/' + project.key);
-      };
-
-      $scope.toggleProjectDroolsValidation = function () {
-        $scope.project.projectDroolsValidationDisabled = !$scope.project.projectDroolsValidationDisabled;
-        notificationService.sendMessage('Updating Project Drools Validation...');
-        var metadata = {'enableDroolsInRVF': !$scope.project.projectDroolsValidationDisabled + ''}
-        terminologyServerService.updateBranchMetadata($scope.branch, metadata).then(function (response) {
-          notificationService.sendMessage('Project Drools Validation has been ' + ($scope.project.projectDroolsValidationDisabled ? 'disabled' : 'enabled') + ' successfully', 5000);
-        }, function (error) {
-          $scope.project.projectDroolsValidationDisabled = !$scope.project.projectDroolsValidationDisabled;
-          notificationService.sendError('Error udpating Project Drools Validation: ' + error);
-        });
       };
 
       // on load, retrieve tasks for project
@@ -271,7 +232,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         $scope.getCodeSystem();
 
         // Get uiState for project
-        scaService.getUiStateForUser($routeParams.projectKey + '-merge-review-id').then(function (mergeReviewId) {
+        scaService.getUiStateForUser($routeParams.codeSystem + '-merge-review-id').then(function (mergeReviewId) {
           if (mergeReviewId) {
             var viewedMergePoll = null;
 
@@ -281,7 +242,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   $rootScope.rebaseRunning = true;
                 } else {
                   $rootScope.rebaseRunning = false;
-                  scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review-id');
+                  scaService.deleteUiStateForUser($routeParams.codeSystem + '-merge-review-id');
                   viewedMergePoll = $interval.cancel(viewedMergePoll);
                 }
               });
@@ -290,16 +251,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         });
       }
 
-      // on reload task broadcast, re-initialize
-      $scope.$on('reloadTasks', function (event, data) {
-        initialize();
-      });
-
       //
       // Initialize on load
       //
       initialize();
-
-
-
     }]);

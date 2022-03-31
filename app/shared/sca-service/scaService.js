@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'terminologyServerService', '$timeout', '$window',
-    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, terminologyServerService, $timeout, $window) {
+  .service('scaService', ['$http', '$rootScope','$routeParams', '$location', '$q', '$interval', 'notificationService', 'terminologyServerService', '$timeout', '$window', 'metadataService',
+    function ($http, $rootScope, $routeParams, $location, $q, $interval, notificationService, terminologyServerService, $timeout, $window, metadataService) {
 
       var apiEndpoint = null;
 
       function setEndpoint(url) {
         apiEndpoint = url;
       }
-      
+
       //
       // Modified concept list utility functions
       //
@@ -137,7 +137,7 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
-        
+
       function getDialectMatches(words) {
         var deferred = $q.defer();
         var wordsStr = '';
@@ -220,7 +220,7 @@ angular.module('singleConceptAuthoringApp')
         }, intervalTime);
 
         return deferred.promise;
-      }        
+      }
 
       function pollForGetTaskRebaseStatus(projectKey, taskKey, intervalTime) {
         var deferred = $q.defer();
@@ -276,20 +276,20 @@ angular.module('singleConceptAuthoringApp')
         }, intervalTime);
 
         return deferred.promise;
-      }      
+      }
 
       var stompClient;
 
-      var stompFailureCallback = function () { 
+      var stompFailureCallback = function () {
           stompClient.disconnect();
-          setTimeout(function() {            
+          setTimeout(function() {
             stompConnect();
           }, 5000);
           console.log('STOMP: Reconecting in 5 seconds');
       };
-        
+
       var subscriptionHandler = function(message) {
-            
+
           var newNotification = JSON.parse(message.body)
           var msg = null;
           var url = null;
@@ -327,17 +327,17 @@ angular.module('singleConceptAuthoringApp')
                   msg += ' for ' + newNotification.task;
                   if(!$routeParams.taskKey || newNotification.task !== $routeParams.taskKey) {
                     url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
-                    notificationService.sendMessage(msg, 0, url); 
+                    notificationService.sendMessage(msg, 0, url);
                   } else {
                     notificationService.sendMessage(msg, 0);
-                  }                       
+                  }
                 } else {
                   msg += ' for ' + newNotification.project;
                   if(!$routeParams.projectKey || newNotification.project !== $routeParams.projectKey) {
                     url = '#/project/' + newNotification.project;
-                    notificationService.sendMessage(msg, 0, url); 
+                    notificationService.sendMessage(msg, 0, url);
                   } else {
-                    notificationService.sendMessage(msg, 0); 
+                    notificationService.sendMessage(msg, 0);
                   }
                 }
                 $rootScope.$broadcast('promotion.completed', {project: newNotification.project, task: newNotification.task});
@@ -361,7 +361,7 @@ angular.module('singleConceptAuthoringApp')
                 }
                 msg = newNotification.event + ' feedback for task ' + newNotification.task;
                 url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
-                notificationService.sendMessage(msg, 0, url); 
+                notificationService.sendMessage(msg, 0, url);
                 break;
 
               /*
@@ -372,57 +372,44 @@ angular.module('singleConceptAuthoringApp')
                 task: "WRPAS-98" (omitted for project)
                 */
               case 'Classification':
-                msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
+                msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : newNotification.project ? 'project ' + newNotification.project : 'code system ' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
 
                 // retrieve the latest classification
                 // set url and broadcast classification complete to taskDetail.js or project.js
-                if (newNotification.task) {
-                  terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {                   
-                    if (!classifications || classifications.length === 0) {
-                      msg += ' but no classifications could be retrieved';
-                      notificationService.sendError(msg);
-                      return;
+                if (!newNotification.task && newNotification.project) {
+                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
+                } else if (!newNotification.task && !newNotification.project) {
+                  $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
+                }
+                terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
+                  if (!classifications || classifications.length === 0) {
+                    msg += ' but no classifications could be retrieved';
+                    notificationService.sendError(msg);
+                    return;
+                  } else {
+                    // assign results to the classification container (note,
+                    // chronological order, use last value)
+                    var classification = classifications[classifications.length - 1];
+                    if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
+                      msg += ' - Changes found';
                     } else {
-                      // assign results to the classification container (note,
-                      // chronological order, use last value)
-                      var classification = classifications[classifications.length - 1];
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
-                      if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                        msg += ' - Changes found';                              
-                      } else {
-                        msg += ' - No changes found';                              
-                      }
+                      msg += ' - No changes found';
+                    }
 
+                    if (newNotification.task) {
+                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                       notificationService.sendMessage(msg, 0, url);
                       $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
-                    }
-                  });
-                } else if (newNotification.project) {
-                  terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
-                    if (!classifications || classifications.length === 0) {
-                      msg += ' but no classifications could be retrieved';
-                      notificationService.sendError(msg);
-                      return;
+                    } else if (newNotification.project) {
+                      url = '#/project/' + newNotification.project;
+                      notificationService.sendMessage(msg, 0, url);
                     } else {
-                      // assign results to the classification container (note,
-                      // chronological order, use last value)
-                      var classification = classifications[classifications.length - 1];
-                      if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                        msg += ': Changes found';
-                        url = '#/project/' + newNotification.project;
-                      } else {
-                        msg += ': No changes found';
-                        url = '#/project/' + newNotification.project;
-                      }
-
+                      url = '#/codesystem/' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
                       notificationService.sendMessage(msg, 0, url);
                     }
-                  });
+                  }
+                });
 
-                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
-                } else {
-                  console.error('Classification notification could not be processed', newNotification);
-                }                
                 break;
 
               /*
@@ -454,7 +441,7 @@ angular.module('singleConceptAuthoringApp')
                 } else {
                   url = '#/project/' + newNotification.project;
                   $rootScope.$broadcast('reloadProject', {project: newNotification.project});
-                }                
+                }
                 break;
 
               /*
@@ -470,23 +457,27 @@ angular.module('singleConceptAuthoringApp')
                 var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                 });
-                msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  'project ' + newNotification.project);
+                msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  newNotification.project ? 'project ' + newNotification.project : 'code system ' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
 
                 // do not supply a url (button link) for FAILED status
                 if (event !== 'FAILED') {
                   if (newNotification.task) {
                     url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
-                  } else {
+                  } else if (newNotification.project) {
                     url = '#/project/' + newNotification.project;
+                  } else {
+                    url = '#/codesystem/' + getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
                   }
                 }
 
                 if (newNotification.task) {
                   $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
+                } else if (newNotification.project) {
+                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
                 } else {
-                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});                  
+                  $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
                 }
-                                
+                notificationService.sendMessage(msg, 0, url);
                 break;
 
               /*
@@ -496,17 +487,17 @@ angular.module('singleConceptAuthoringApp')
                 project: "WRPAS"
                 task: "WRPAS-98" (omitted for project)
                 */
-              case 'BranchHead':                 
+              case 'BranchHead':
                   $rootScope.$broadcast('reloadSAC', {project: newNotification.project,  task: newNotification.task});
                   break;
-                
+
               case 'AuthorChange':
                 var msg = newNotification.event;
                 if (newNotification.task) {
                   url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                 } else {
                   url = '#/project/' + newNotification.project;
-                } 
+                }
 
                 notificationService.sendMessage(msg, 0, url);
                 break;
@@ -535,13 +526,13 @@ angular.module('singleConceptAuthoringApp')
         if (!username) {
           $http.get(apiEndpoint + 'main').then(function() {
             stompFailureCallback();
-          });                   
+          });
         } else {
           stompClient.subscribe('/topic/user/' + $rootScope.accountDetails.login + '/notifications', subscriptionHandler, {id : 'sca-subscription-id-' + $rootScope.accountDetails.login});
         }
       }
 
-      function stompConnect() { 
+      function stompConnect() {
         let sockJsProtocols = ["websocket"]
         if (stompClient && stompClient !== null) {
             stompClient.disconnect();
@@ -551,9 +542,9 @@ angular.module('singleConceptAuthoringApp')
         stompClient = Stomp.over(socketProvider);
         stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
       }
-      
+
       return {
-        setEndpoint: setEndpoint,  
+        setEndpoint: setEndpoint,
         getDialectMatches: getDialectMatches,
         getSuggestionMatches: getSuggestionMatches,
 
@@ -1066,7 +1057,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
         },
-          
+
         // Start classification for a branch
         // POST /branches/{branch}/classification
         startClassificationForBranch: function (branch) {
@@ -1090,7 +1081,7 @@ angular.module('singleConceptAuthoringApp')
         clearClassificationStatusCacheForTask: function (projectKey, taskKey) {
           var deferred = $q.defer();
           if (!projectKey) {
-            deferred.reject('Must specify projectKey');            
+            deferred.reject('Must specify projectKey');
           }
           if (!taskKey) {
             deferred.reject('Must specify taskKe');
@@ -1113,8 +1104,8 @@ angular.module('singleConceptAuthoringApp')
         clearClassificationStatusCacheForProject: function (projectKey) {
           var deferred = $q.defer();
           if (!projectKey) {
-            deferred.reject('Must specify projectKey');            
-          }          
+            deferred.reject('Must specify projectKey');
+          }
 
           // POST call takes no data
           $http.post(apiEndpoint + 'projects/' + projectKey + '/classifications/status/cache-evict', {}).then(
@@ -1230,7 +1221,7 @@ angular.module('singleConceptAuthoringApp')
             throw error.data.statusMessage;
           });
         },
-          
+
 // Get validation for a branch
 // GET /branches/{branch}/validation
         getValidationForBranch: function (branch) {
@@ -1498,7 +1489,7 @@ angular.module('singleConceptAuthoringApp')
 // Rebase the project from MAIN
         rebaseProject: function (projectKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {            
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {
             pollForGetProjectRebaseStatus(projectKey, 1000).then(function (result) {
               deferred.resolve(result);
             }, function (error) {
@@ -1509,7 +1500,7 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendError('Error rebasing Project: ' + projectKey);
             deferred.reject(error);
           });
-          return deferred.promise;         
+          return deferred.promise;
         },
 // POST /projects/{projectKey}/tasks/{taskKey}/promote
 // Promote the task to the Project
@@ -1533,7 +1524,7 @@ angular.module('singleConceptAuthoringApp')
 // Proceed Automation Promotion the task to the Project
         proceedAutomatePromotion: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote', {}).then(function (response) {           
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote', {}).then(function (response) {
             deferred.resolve();
           }, function (error) {
             if (error.status === 504) {
@@ -1579,7 +1570,7 @@ angular.module('singleConceptAuthoringApp')
 // Rebase the task from the project
         rebaseTask: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {            
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
             pollForGetTaskRebaseStatus(projectKey, taskKey, 1000).then(function (result) {
               if(result.status === 'CONFLICTS'){
                   var message = result.message.substring(1, result.message.length -1);
@@ -1635,9 +1626,9 @@ angular.module('singleConceptAuthoringApp')
           });
         },
 
-        connectWebsocket: function () {          
+        connectWebsocket: function () {
           stompConnect();
-        },        
+        },
 
         getTaskAttachments: function (projectKey, taskKey) {
           var deferred = $q.defer();
@@ -1684,7 +1675,7 @@ angular.module('singleConceptAuthoringApp')
         },
 
         saveSelectedLanguegeForUser : function (seletedLanguage) {
-          var deferred = $q.defer();          
+          var deferred = $q.defer();
           $http.post(apiEndpoint + 'ui-state/' + $rootScope.accountDetails.login + '-' + '-default-language', seletedLanguage).then(function (response) {
             deferred.resolve();
           }, function (error) {
@@ -1707,7 +1698,7 @@ angular.module('singleConceptAuthoringApp')
             }
           });
           return deferred.promise;
-        },        
+        },
 
         getUsers : function (offset) {
           var deferred = $q.defer();
@@ -1722,7 +1713,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject('Error retrieving users');
             }
           });
-          return deferred.promise;          
+          return deferred.promise;
         },
 
         searchUsers : function (username, projectKeys, issueKey, maxResults, startAt) {
@@ -1731,8 +1722,8 @@ angular.module('singleConceptAuthoringApp')
           params += '&projectKeys=' + projectKeys;
           params += '&issueKey=' + issueKey;
           params += '&maxResults=' + maxResults;
-          params += '&startAt=' + startAt; 
-          
+          params += '&startAt=' + startAt;
+
           // get the list
           $http.get(apiEndpoint + 'users/search?' + params).then(function (response) {
             deferred.resolve(response.data);

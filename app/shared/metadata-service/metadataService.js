@@ -16,6 +16,8 @@ angular.module('singleConceptAuthoringApp')
 
     var semanticTags = [];
 
+    var codeSystems = [];
+
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
@@ -702,6 +704,23 @@ angular.module('singleConceptAuthoringApp')
       return semanticTags;
     }
 
+    function setCodeSystems(list) {
+      codeSystems = list;
+    }
+
+    function getCodeSystems() {
+      return codeSystems;
+    }
+
+    function getCodeSystenForGivenBranch (branch) {
+      if (codeSystems.length !== 0) {
+        let filter = codeSystems.filter(function(item) {return item.branchPath === branch});
+        if (filter.length !== 0) return filter[0];
+      }
+
+      return null;
+    }
+
     //
     // Cached project retrieval functions
     //
@@ -1026,6 +1045,9 @@ angular.module('singleConceptAuthoringApp')
       isUngroupedAttribute: isUngroupedAttribute,
       setSemanticTags: setSemanticTags,
       getSemanticTags: getSemanticTags,
+      setCodeSystems: setCodeSystems,
+      getCodeSystems: getCodeSystems,
+      getCodeSystenForGivenBranch: getCodeSystenForGivenBranch,
       getDropdownLanguages: getDropdownLanguages,
       getOptionalLanguageRefsets: getOptionalLanguageRefsets
     };
