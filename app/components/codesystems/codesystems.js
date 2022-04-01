@@ -164,34 +164,40 @@ angular.module('singleConceptAuthoringApp.codesystems', [
     // Initialization:  get codesystems
     function initialize() {
         notificationService.sendMessage('Loading Code Systems...');
-        $scope.codesystems = metadataService.getCodeSystems();      
+        $scope.codesystems = [];
+        scaService.getProjects().then(function (projects) {
+            angular.forEach(metadataService.getCodeSystems(), function(codesystem) {
+              angular.forEach(projects, function (project) {
+                let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
+                if(path === codesystem.branchPath && !$scope.codesystems.includes(codesystem)){
+                    $scope.codesystems.push(codesystem);
+                    return
+                }
+              });
 
-        if (!$scope.codesystems || $scope.codesystems.length === 0) {
-          $scope.codesystems = [];
-          return;
-        }
-
-        var anyInternationalProjectPresent = false;
-        angular.forEach($scope.codesystems, function(codesystem) {
-          if (!codesystem.maintainerType) {
-            anyInternationalProjectPresent = true;
-          }
-          if(codesystem && codesystem.maintainerType && codesystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(codesystem.maintainerType)){
-              $scope.typeDropdown.push(codesystem.maintainerType);
-          }
-        });
-        if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
-          $scope.typeDropdown.splice(1, 0, 'International');
-        }
-        accountService.getUserPreferences().then(function (preferences) {
-            $scope.preferences = preferences;
-
-            if(preferences.hasOwnProperty("selectedType")) {
-              $scope.selectedType.type = $scope.preferences.selectedType;
+            });
+            var anyInternationalProjectPresent = false;
+            angular.forEach($scope.codesystems, function(codesystem) {
+              if (!codesystem.maintainerType) {
+                anyInternationalProjectPresent = true;
+              }
+              if(codesystem && codesystem.maintainerType && codesystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(codesystem.maintainerType)){
+                  $scope.typeDropdown.push(codesystem.maintainerType);
+              }
+            });
+            if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
+              $scope.typeDropdown.splice(1, 0, 'International');
             }
-            notificationService.sendMessage('Code Systems loaded.', 5000);
-            $scope.tableParams.reload();
-          });
+            accountService.getUserPreferences().then(function (preferences) {
+                $scope.preferences = preferences;
+
+                if(preferences.hasOwnProperty("selectedType")) {
+                  $scope.selectedType.type = $scope.preferences.selectedType;
+                }
+                notificationService.sendMessage('Code Systems loaded.', 5000);
+                $scope.tableParams.reload();
+              });
+        });
     }
 
 

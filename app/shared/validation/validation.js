@@ -573,6 +573,9 @@ angular.module('singleConceptAuthoringApp')
 
           // controls for viewing full vs. task report
           scope.viewFullReport = false;
+          if (scope.isCodeSystem) {
+              scope.viewFullReport = true;
+          }
           scope.toggleFullReport = function () {
             scope.viewFullReport = !scope.viewFullReport;
             scope.reloadTables();

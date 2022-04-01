@@ -32,7 +32,7 @@
               class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip m-l-10 ">
       <div>{{viewExclusions ? 'Hide' : 'Show'}} Exceptions </div>
       <span ng-if="viewExclusions">Hide Exceptions</span> <span ng-if="!viewExclusions">Display Exceptions</span> </button>
-      <button ng-if="validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE'" ng-show="!isCollapsed" ng-click="toggleFullReport()"
+      <button ng-if="!isCodeSystem && validationContainer.executionStatus == 'COMPLETED' || !isCodeSystem && validationContainer.executionStatus == 'STALE'" ng-show="!isCollapsed" ng-click="toggleFullReport()"
               class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip offset-tooltip-left">
       <div>{{viewFullReport ? 'Show ' + (taskKey ? 'Task' : 'Project') + ' Report' : 'Show Full Report'}} </div>
       <span ng-if="viewFullReport">View only concepts modified in {{taskKey ? 'task' : 'project'}}</span> <span ng-if="!viewFullReport">View all validation errors in {{taskKey ? 'task' : 'project'}}</span> </button>
