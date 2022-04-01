@@ -25,8 +25,8 @@ angular.module('singleConceptAuthoringApp')
           // date the branch was last promoted (optional)
           lastPromotion: '=?',
 
-          // overriden labbels (optional)
-          overridenLabels: '=?',
+          // overridden labbels (optional)
+          overriddenLabels: '=?',
 
           // code systesm flag
           isCodeSystem: '=?'
@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // get the human-readable execution status
-            var status = scope.validationContainer.executionStatus.toLowerCase().replace(/\w\S*/g, function (txt) {
+            var status = scope.validationContainer.executionStatus.toLowerCase().replaceAll('_', ' ').replace(/\w\S*/g, function (txt) {
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
 
