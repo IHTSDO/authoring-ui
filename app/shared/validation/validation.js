@@ -315,8 +315,10 @@ angular.module('singleConceptAuthoringApp')
                   angular.forEach(concepts.items, function (concept) {
                     scope.idNameMap[concept.id] = concept.fsn.term;
                   });
+                  let semanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
                   angular.forEach(scope.failures, function (failure) {
                     failure.conceptFsn = scope.idNameMap[failure.conceptId];
+                    failure.semanticTag = semanticTagTattern.exec(failure.conceptFsn)[1];
                   });
 
                   deferred.resolve();
@@ -452,6 +454,7 @@ angular.module('singleConceptAuthoringApp')
                     assertionUuid: item.validationRuleId,
                     branchRoot: item.branch,
                     conceptFsn: item.conceptFsn,
+                    semanticTag: item.semanticTag,
                     conceptId: item.conceptId,
                     componentId: item.componentId,
                     timestamp: new Date(item.creationDate).getTime(),

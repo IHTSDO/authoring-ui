@@ -131,6 +131,7 @@
             <td header-title="'Click to sort'" data-title="'Concept Id'" sortable="'conceptId'"> {{failure.conceptId}} <span class="tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="failure.referencedComponentId"> ({{failure.referencedComponentId}}) <span>{{failure.referencedComponentType}}</span></span></td>
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
+            <td header-title="'Click to sort'" data-title="'Semantic Tag'" sortable="'semanticTag'" style="min-width: 115px;">{{failure.semanticTag}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
             <td data-header="'excludeheader.html'"><button ng-if="whitelistEnabled && warningAssertion" type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
               Exceptions </button></td>
