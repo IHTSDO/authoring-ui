@@ -648,6 +648,11 @@ angular.module('singleConceptAuthoringApp')
       return extensionMetadata && extensionMetadata.additionalFSNs ? extensionMetadata.additionalFSNs : [];
     }
 
+    function isAdditionalFSN(description) {
+      return extensionMetadata && extensionMetadata.additionalFSNs 
+              && extensionMetadata.additionalFSNs.filter(function (item) {return item.language === description.lang && item.dialectIds.filter(value => Object.keys(description.acceptabilityMap).includes(value)).length !== 0;}).length !== 0;
+    }
+
     function getAcceptLanguageValueForModuleId(moduleId) {
 
       if (isExtensionModule(moduleId) && extensionMetadata.acceptLanguageMap !== null) {
@@ -1002,6 +1007,7 @@ angular.module('singleConceptAuthoringApp')
       addExtensionModule: addExtensionModule,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getAdditionalFSNs: getAdditionalFSNs,
+      isAdditionalFSN: isAdditionalFSN,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getDialectDefaultsForModuleId: getDialectDefaultsForModuleId,
