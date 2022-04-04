@@ -4337,7 +4337,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is the FSN, apply defaults (if new) and check if a
           // matching PT should be generated
-          else if (description.type === 'FSN') {
+          else if (description.type === 'FSN' && !metadataService.isAdditionalFSN(description)) {
 
             // if a new FSN (determined by no effective time)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
