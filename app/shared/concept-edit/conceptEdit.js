@@ -4282,7 +4282,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // re-populate language and acceptabilityMap
           if (descriptionTypeChange && metadataService.isExtensionSet()) {
             if (description.type === 'FSN') {
-              let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true, 'en');
+              let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true);
               description.lang = newFsn.lang;
               description.acceptabilityMap = newFsn.acceptabilityMap;
             } else {
@@ -4313,6 +4313,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }
                 });
               }
+            }
+
+            // remove all optional language refsets
+            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();        
+            if (optionalLanguageRefsets) {
+              for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+                delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
+              }          
             }
           }
 
