@@ -230,9 +230,9 @@ angular.module('singleConceptAuthoringApp')
         scope.openDailyBuild = function() {
           if(window.location.href.indexOf("codesystem/") > -1) {
             var codeSystem = metadataService.getCodeSystenForGivenShortname($routeParams.codeSystem);
-            window.open('https://dev-dailybuild.ihtsdotools.org/?perspective=full&conceptId1=138875005&edition=' + codeSystem.branchPath, '_blank');
+            window.open($rootScope.endpoints.dailyBuildEndpoint + '?perspective=full&conceptId1=138875005&edition=' + codeSystem.branchPath, '_blank');
           } else {
-            window.open('https://dev-dailybuild.ihtsdotools.org/', '_blank');
+            window.open($rootScope.endpoints.dailyBuildEndpoint, '_blank');
           }
         };
 
