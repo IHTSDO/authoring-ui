@@ -2293,7 +2293,7 @@ angular.module('singleConceptAuthoringApp')
         cleanConcept(copy, true);
 
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', copy).then(function (response) {
+        $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + (projectKey ? '/' + projectKey : '') + (taskKey ? '/' + taskKey : '') + '/validate/concept', copy).then(function (response) {
 
           // TODO Remove this once WRP-2912 addressed
           // remove any duplicate values

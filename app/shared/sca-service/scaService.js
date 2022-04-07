@@ -672,27 +672,29 @@ angular.module('singleConceptAuthoringApp')
 
         // get a specific task for a project
         getTaskForProject: function (projectKey, taskKey) {
+          var deferred = $q.defer();
           if (!projectKey) {
             console.error('Must specify projectKey to get a task for project');
-            return {};
+            deferred.resolve({});
           }
           if (!taskKey) {
             console.error('Must specify taskKey to get a task for project');
           }
-          return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
             function (response) {
 
               // temporary check to verify authentication on Edit component
               // will later be replaced by accountService call in app.js
 //            $rootScope.accountDetails = response.data.assignee;
 
-              return response.data;
+              deferred.resolve(response.data);
             }, function (error) {
               if (error.status === 403) {
                 $location.path('/login');
               }
             }
           );
+          return deferred.promise;
         },
 
         /////////////////////////////////////
