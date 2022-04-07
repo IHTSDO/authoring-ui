@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         // check assignee second
-        else if (accountDetails.login === task.assignee.username) {
+        else if (task.assignee && accountDetails.login === task.assignee.username) {
           deferred.resolve('AUTHOR');
         }
 

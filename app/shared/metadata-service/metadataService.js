@@ -566,7 +566,12 @@ angular.module('singleConceptAuthoringApp')
 
       // otherwise, match for project: BRANCH_ROOT/pKey
       else {
-        return branchMetadata.branchPath.match(/(.*)\/[^\/]+$/)[1];
+        if(branchMetadata.codeSystem && branchMetadata.codeSystem.branchPath){
+            return branchMetadata.codeSystem.branchPath
+        }
+        else{
+            return branchMetadata.branchPath.match(/(.*)\/[^\/]+$/)[1];
+        }
       }
     }
 
