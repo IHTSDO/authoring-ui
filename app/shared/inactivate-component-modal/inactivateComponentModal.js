@@ -57,48 +57,42 @@ angular.module('singleConceptAuthoringApp')
       } else {
 
         // use the original historical association targets for the exsiting inactive concept
-        if($scope.componentType === 'Concept' && !$scope.deletion && $scope.concept && ($scope.associations.length === 0 || ($scope.associations[0].type && !$scope.associations[0].type.id))) {
+        if($scope.componentType === 'Concept' && !$scope.deletion && $scope.concept && $scope.unmodifiedAssociations.length !== 0) {
           $scope.associations = [];
-          if ($scope.unmodifiedAssociations.length !== 0 && $scope.associationTargets.length !== 0 && $scope.associationTargets[0].id) {
+          if ($scope.associationTargets.length !== 0 && $scope.associationTargets[0].id) {
               for (let i = 0; i < $scope.unmodifiedAssociations.length; i++) {
                 $scope.associations.push({type: $scope.associationTargets[0], concept: $scope.unmodifiedAssociations[i].concept});
               }
           }
 
-          if ($scope.componentType === 'Concept' && $scope.associations.length > 1
-            && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
+          if ($scope.componentType === 'Concept' && $scope.associations.length > 1 && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
             $scope.associations = [$scope.associations[0]];
           }
 
           if ($scope.associations.length === 0) {
             $scope.addAssociation(0);
+          }         
+        } else {
+          if ($scope.associations.length === 0) {
+            $scope.addAssociation(0);
           }
-          return;
-        }
-
-        if ($scope.associations.length === 0) {
-           $scope.addAssociation(0);
-        }
-
-        if ($scope.componentType === 'Concept' && $scope.associations.length > 1
-            && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
-          $scope.associations = [$scope.associations[0]];
-        }
-
-        //Association type will be automatically populated if there is only one option
-        for (let i = 0; i < $scope.associations.length; i++) {
-          // extract association for convenience
-          let association = $scope.associations[i];
-          association.type = null;
-          if($scope.associationTargets.length !== 0) {
-            association.type = $scope.associationTargets[0];
-            if (association.type.id === '') {
-              delete association.concept;
-            }
-          } else {
+  
+          if ($scope.componentType === 'Concept' && $scope.associations.length > 1
+              && ($scope.inactivationReason.id === 'DUPLICATE' || $scope.inactivationReason.id === 'ERRONEOUS' || $scope.associationTargets[0].id === '' || $scope.associationTargets[0].id === 'REPLACED_BY')) {
+            $scope.associations = [$scope.associations[0]];
+          }
+  
+          //Association type will be automatically populated if there is only one option
+          for (let i = 0; i < $scope.associations.length; i++) {
+            // extract association for convenience
+            let association = $scope.associations[i];
+            association.type = null;
             delete association.concept;
+            if($scope.associationTargets.length !== 0) {
+              association.type = $scope.associationTargets[0];              
+            }
           }
-        }
+        }        
       }
     };
 
@@ -631,17 +625,24 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.switchHistoricalAssociationType = function(type){
       if ($scope.associations.length != 0) {
-        if ($scope.isReplacedByHistoricalAssocPresent() || $scope.isNoRequiredHistoricalAssocPresent()) {
+        if ($scope.isReplacedByHistoricalAssocPresent() || $scope.isSameAsHistoricalAssocPresent() || $scope.isNoRequiredHistoricalAssocPresent()) {
           if ($scope.isNoRequiredHistoricalAssocPresent()) {
             $scope.associations[0].concept = null;
           }
           $scope.associations = [$scope.associations[0]];
         }
         for (let i = 0; i < $scope.associations.length; i++) {
-          $scope.associations[i].type = type;                    
+          $scope.associations[i].type = type;
         }
-        if (!$scope.isNoRequiredHistoricalAssocPresent() && $scope.unmodifiedAssociations.length !== 0 && !$scope.associations[0].concept) {
-          $scope.associations[0].concept = $scope.unmodifiedAssociations[0].concept;
+        if (!$scope.isNoRequiredHistoricalAssocPresent() && $scope.unmodifiedAssociations.length !== 0) {
+          if ($scope.isReplacedByHistoricalAssocPresent() || $scope.isSameAsHistoricalAssocPresent()) {
+            $scope.associations[0].concept = $scope.unmodifiedAssociations[0].concept;
+          } else {
+            $scope.associations = [];
+            for (let i = 0; i < $scope.unmodifiedAssociations.length; i++) {
+              $scope.associations.push({type: type, concept: $scope.unmodifiedAssociations[i].concept});
+            }
+          }         
         }
       }
     };
@@ -689,13 +690,27 @@ angular.module('singleConceptAuthoringApp')
       if ($scope.associations.length === 0) {
         $scope.unmodifiedAssociations = [];
         $scope.addAssociation(0);
-      }
+      } else {
+        $scope.unmodifiedAssociations = angular.copy($scope.associations);
+      }      
     };
 
     $scope.isReplacedByHistoricalAssocPresent = function () {
       if ($scope.associations.length != 0) {
         for (let i = 0; i < $scope.associations.length; i++) {
           if ($scope.associations[i].type && ($scope.associations[i].type.id === 'REPLACED_BY')) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    };
+
+    $scope.isSameAsHistoricalAssocPresent = function () {
+      if ($scope.associations.length != 0) {
+        for (let i = 0; i < $scope.associations.length; i++) {
+          if ($scope.associations[i].type && ($scope.associations[i].type.id === 'SAME_AS')) {
             return true;
           }
         }
