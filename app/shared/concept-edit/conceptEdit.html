@@ -76,10 +76,10 @@
           <div class="copy-to-clipboard" ng-if="isSctid(concept.conceptId) && concept.fsn">
             <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
             <ul class="dropdown-menu">
-                <li><a ng-click="copyToClipboard(concept.conceptId)">Copy ConceptId</a></li>
+                <li><a ng-click="copyToClipboard(concept.conceptId)">Copy Concept ID</a></li>
                 <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>
-                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and ConceptId</a></li>
-                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy Term and ConceptId</a></li>
+                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy Concept ID and FSN</a></li>
+                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy Concept ID and PT</a></li>
             </ul>
           </div>
       </div>
