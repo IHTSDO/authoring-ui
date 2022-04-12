@@ -41,7 +41,7 @@
         <button type="button" class="col-md-12 btn btn-danger no-margin" ng-click="delete()">Delete</button>
       </div>
       <div class="col-md-4">
-        <button type="button" class="col-md-12 btn btn-info no-margin" ng-disabled="!lineItemContentFound || !lineItem.title" ng-click="save()">Save </button>
+        <button type="button" class="col-md-12 btn btn-info no-margin" ng-disabled="lineItemContentUnChanged || !lineItem.title" ng-click="save()">Save </button>
       </div>
     </div>
   </div>

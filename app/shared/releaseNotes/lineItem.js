@@ -9,11 +9,18 @@ angular.module('singleConceptAuthoringApp')
     $scope.lineItems = lineItems;
     $scope.globalLineItems = globalLineItems;
     $scope.readOnly = readOnly;
-    $scope.lineItemContentFound = false;
+    $scope.lineItemContentUnChanged = true;
     if(lineItem.content){
         $scope.original = lineItem.content;
     }
     let quill;
+
+    function checkLineItemContentUnChanged() {
+      $timeout(function () {
+        var converter = new showdown.Converter();
+        $scope.lineItemContentUnChanged = quill.root.innerHTML === '<p><br></p>' || ($scope.original && $scope.original === converter.makeMarkdown(quill.root.innerHTML));
+      }, 0);
+    }
 
     function initialize() {
         $timeout(function () {
@@ -22,21 +29,23 @@ angular.module('singleConceptAuthoringApp')
               });
             var converter = new showdown.Converter();
             if($scope.lineItem.content){
-                $scope.lineItemContentFound = true;
                 quill.clipboard.dangerouslyPasteHTML(converter.makeHtml($scope.lineItem.content));
                 if(readOnly){
                     quill.enable(false);
                 }
-            };            
+            };
             quill.root.addEventListener('keyup', evt => {
-              $timeout(function () {
-                $scope.lineItemContentFound = quill.root.innerHTML !== '<p><br></p>';
-              }, 0);
+              checkLineItemContentUnChanged();
+            });
+            quill.root.addEventListener('paste', evt => {
+              checkLineItemContentUnChanged();
+            });
+            quill.root.addEventListener('cut', evt => {
+              checkLineItemContentUnChanged();
             });
           }, 100);
-        
     }
-    
+
     $scope.save = function () {
         let converter = new showdown.Converter();
         let content = quill.root.innerHTML;
@@ -54,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
             });
         }
     }
-    
+
     $scope.delete = function () {
       let msg = 'Are you sure you want to delete this release note?';
             modalService.confirm(msg).then(function () {
@@ -63,7 +72,7 @@ angular.module('singleConceptAuthoringApp')
                 });
             });
         };
-    
+
     $scope.selectLineItem = function (lineItem) {
         delete lineItem.id;
         delete lineItem.content;
@@ -87,9 +96,8 @@ angular.module('singleConceptAuthoringApp')
       else{
           $modalInstance.close();
       }
-      
-      
     };
+
     initialize();
-    
+
   });
