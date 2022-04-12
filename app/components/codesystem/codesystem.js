@@ -65,6 +65,10 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
               terminologyServerService.getBranch(codeSystem.branchPath).then(function (response) {
                   $scope.branch = codeSystem.branchPath;
+                  if(codeSystem.dependantVersionEffectiveTime && codeSystem.dependantVersionEffectiveTime != ''){
+                    let date = codeSystem.dependantVersionEffectiveTime.toString();
+                    codeSystem.dependantVersionEffectiveTime = [date.slice(0, 4), date.slice(4,6), date.slice(6,8)].join('-');
+                  }
                   $scope.codeSystem = codeSystem;
                   // get the project task list
                   scaService.getProjects().then(function (projects) {
