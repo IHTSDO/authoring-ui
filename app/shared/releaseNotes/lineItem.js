@@ -43,6 +43,9 @@ angular.module('singleConceptAuthoringApp')
             quill.root.addEventListener('cut', evt => {
               checkLineItemContentUnChanged();
             });
+            quill.on('text-change', function(delta, oldDelta, source) {
+              checkLineItemContentUnChanged();
+            });
           }, 100);
     }
 
