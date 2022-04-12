@@ -122,7 +122,7 @@
 
           <table ng-table="projectTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
-            <tr ng-repeat="project in $data">
+            <tr ng-repeat="project in $data" class="min-table-row">
 
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
                 <a class="tooltips-right"
