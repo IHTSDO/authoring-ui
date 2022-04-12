@@ -170,6 +170,10 @@ angular.module('singleConceptAuthoringApp.codesystems', [
               angular.forEach(projects, function (project) {
                 let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
                 if(path === codesystem.branchPath && !$scope.codesystems.includes(codesystem)){
+                    if(codesystem.dependantVersionEffectiveTime && codesystem.dependantVersionEffectiveTime != ''){
+                        let date = codesystem.dependantVersionEffectiveTime.toString()
+                        codesystem.dependantVersionEffectiveTime = [date.slice(0, 4), date.slice(4,6), date.slice(6,8)].join('-');
+                    }
                     $scope.codesystems.push(codesystem);
                     return
                 }
