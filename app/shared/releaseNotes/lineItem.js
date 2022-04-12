@@ -26,10 +26,18 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function initialize() {
+        let toolbarOptions = [
+  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+  ['bold', 'italic', 'link'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  ['clean']]  ;
         $timeout(function () {
             quill = new Quill('#editor', {
-                theme: 'snow'
-              });
+              modules: {
+                toolbar: toolbarOptions
+              },
+              theme: 'snow'
+            });
             var converter = new showdown.Converter();
             if($scope.lineItem.content){
                 quill.clipboard.dangerouslyPasteHTML(converter.makeHtml($scope.lineItem.content));
@@ -55,7 +63,6 @@ angular.module('singleConceptAuthoringApp')
     $scope.save = function () {
         let converter = new showdown.Converter();
         let content = quill.root.innerHTML;
-        content = content.replaceAll('<strong> ', ' <strong>').replaceAll(' </strong>', '</strong> ');
         $scope.lineItem.content = converter.makeMarkdown(content);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
