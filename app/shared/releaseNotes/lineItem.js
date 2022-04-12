@@ -10,8 +10,11 @@ angular.module('singleConceptAuthoringApp')
     $scope.globalLineItems = globalLineItems;
     $scope.readOnly = readOnly;
     $scope.lineItemContentUnChanged = true;
+    $scope.lineItemContentFound = false;
+    $scope.new = true;
     if(lineItem.content){
         $scope.original = lineItem.content;
+        $scope.new = false;
     }
     let quill;
 
