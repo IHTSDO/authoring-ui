@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
               if (searchStr) {
                 mydata = $scope.projects.filter(function (item) {
-                  return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                  return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
                     item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||

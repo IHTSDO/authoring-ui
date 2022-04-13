@@ -124,7 +124,7 @@
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data" class="min-table-row">
 
-              <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
+              <td header-title="'Click to sort'" data-title="'Name'" sortable="'title'" filter="{ 'title': 'text' }">
                 <a class="tooltips-right"
                    ng-click="viewProject(project)"> {{project.title}}<span>Open Project</span></a>
               </td>
