@@ -126,7 +126,7 @@
 
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'title'" filter="{ 'title': 'text' }">
                 <a class="tooltips-right"
-                   ng-click="viewProject(project)"> {{project.title}}<span>Open Project</span></a>
+                   ng-href="#/project/{{project.key}}/"> {{project.title}}<span>Open Project</span></a>
               </td>
                <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
                 {{project.key}}
