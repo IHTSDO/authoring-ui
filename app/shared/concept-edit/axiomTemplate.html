@@ -127,7 +127,7 @@
                               typeahead-on-select="setAxiomRelationshipTypeConcept(relationship, $item, axiom.type, relationship.groupId, $parent.$parent.$parent.$index, $index)"
                               typeahead-editable="false"
                               typeahead-min-length="0"
-                              typeahead-select-on-exact-no-ajax="true">
+                              typeahead-auto-select-if-only-one-match="true">
                     </textarea>
 
                   <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom"
@@ -181,12 +181,12 @@
                                 ng-keyup="enterListener({event: $event})" type="text" ng-model="relationship.target.fsn"
                                 ng-readonly="relationship.effectiveTime || isStatic || (template && !relationship.targetSlot.slotName) || isLockedModule(axiom.moduleId) || relationship.deleted"
                                 class="resizable-text relationship msd-elastic no-border-bottom"
-                                typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
+                                typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL, axiom, relationship, $parent.$parent.$parent.$index, $index)"
                                 typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                                 typeahead-wait-ms="700"
                                 typeahead-on-select="setAxiomRelationshipTargetConcept(relationship, $item, axiom, relationship.groupId, $parent.$parent.$parent.$index, $index)"
                                 typeahead-editable="false" typeahead-min-length="3"
-                                typeahead-select-on-exact-with-ajax="true">
+                                typeahead-hide-dropdown-if-only-one-match="true">
                       </textarea>
                       <span ng-show="relationship.target.conceptId">{{relationship.target.conceptId}}</span>
                   </div>

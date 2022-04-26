@@ -100,9 +100,9 @@ angular.module('singleConceptAuthoringApp')
             }, 0);
           };
 
-          var selectOnExactWithAjax = attrs.typeaheadSelectOnExactWithAjax ? scope.$eval(attrs.typeaheadSelectOnExactWithAjax) : false;
+          var hideDropdownIfOnlyOneMatch = attrs.typeaheadHideDropdownIfOnlyOneMatch ? scope.$eval(attrs.typeaheadHideDropdownIfOnlyOneMatch) : false;
           var typeaheadMinLength = attrs.typeaheadMinLength ? parseInt(attrs.typeaheadMinLength) : 0;
-          if (selectOnExactWithAjax && element[0].value.length >= typeaheadMinLength) {
+          if (hideDropdownIfOnlyOneMatch && element[0].value.length >= typeaheadMinLength) {
             var count = 0;
             var maxCount = 20;
             $timeout(function waitUntilTypeaheadTrigger() {
@@ -112,8 +112,10 @@ angular.module('singleConceptAuthoringApp')
                   if (!scope[attrs.typeaheadLoading]){
                     var typeaheadDropdown = $(element).next();
                     var children = $(typeaheadDropdown).children(); ;
-                    if (children.length === 1){
-                      selectFirstItem();
+                    if (children.length === 1) {
+                      typeaheadDropdown[0].style.display = "none";
+                    } else {
+                      typeaheadDropdown[0].style.display = 'block';
                     }
                   }
                   else {
@@ -129,8 +131,8 @@ angular.module('singleConceptAuthoringApp')
             }, 100);
           }
 
-          var selectOnExactNoAjax = attrs.typeaheadSelectOnExactNoAjax ? scope.$eval(attrs.typeaheadSelectOnExactNoAjax) : false;
-          if (selectOnExactNoAjax) {
+          var autoSelectIfOnlyOneMatch = attrs.typeaheadAutoSelectIfOnlyOneMatch ? scope.$eval(attrs.typeaheadAutoSelectIfOnlyOneMatch) : false;
+          if (autoSelectIfOnlyOneMatch) {
             $timeout(function() {
               var typeaheadDropdown = $(element).next();
               var children = $(typeaheadDropdown).children(); ;
@@ -524,7 +526,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
-        scope.getConceptsForValueTypeahead = constraintService.getConceptsForValueTypeahead;
         scope.crsFilter = crsService.crsFilter;
         scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
 
@@ -625,6 +626,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         } else {
           scope.disableRemoveConcept = false;
         }
+
+        scope.getConceptsForValueTypeahead = function(attributeId, termFilter, branch, escgExpr, axiom, relationship, parentIndex, itemIndex) {
+          var promise = constraintService.getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr);
+          if (relationship) {
+            promise.then(function(results) {
+              if (results.length === 1) {
+                scope.setAxiomRelationshipTargetConcept(relationship, results[0], axiom, relationship.groupId, parentIndex, itemIndex)
+              }
+            });
+          }
+          
+          return promise;
+        } ;
 
         scope.enterListener = function(event){
             event = event.event
