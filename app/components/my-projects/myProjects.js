@@ -11,8 +11,9 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       .when('/my-projects', {
         controller: 'MyProjectsCtrl',
         templateUrl: 'components/my-projects/myProjects.html',
-        resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
+        resolve: ['terminologyServerService', 'metadataService', 'permissionService', '$q', function(terminologyServerService, metadataService, permissionService, $q) {
             var defer = $q.defer();
+            permissionService.setRolesForBranch(null, []);
             $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
                 defer.resolve();
             });       

@@ -10,8 +10,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       .when('/codesystem/:codeSystem', {
         controller: 'CodesystemCtrl',
         templateUrl: 'components/codesystem/codesystem.html',
-        resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
+        resolve: ['terminologyServerService', 'metadataService', 'permissionService', '$q', function(terminologyServerService, metadataService, permissionService, $q) {
             var defer = $q.defer();
+            permissionService.setRolesForBranch(null, []);
             $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
                 defer.resolve();
             });
@@ -84,6 +85,12 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   response.branchPath = response.path;
                   response.codeSystem = codeSystem;
                   metadataService.setBranchMetadata(response);
+
+                  if (response.hasOwnProperty('userRoles')) {
+                    permissionService.setRolesForBranch($scope.branch, response.userRoles);
+                  } else {
+                    permissionService.setRolesForBranch($scope.branch, []);
+                  }
 
                   scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
                     $scope.validationContainer = response;
