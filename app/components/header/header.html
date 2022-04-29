@@ -136,7 +136,7 @@
       <li class="pull-right">
         <a id="profile_not_active" title="display name will link to profile services in later updates">
           <span ng-if="accountDetails === null">Logged in as unknown user</span>
-          <span ng-if="accountDetails !== null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
+          <span ng-if="accountDetails !== null" id="accountDetails" popover-class="accountDetails" popover-append-to-body="true" popover-template="'rolePopoverTemplate.html'" popover-placement="bottom" popover-trigger="click: click" >{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
         </a>
       </li>
       <li class="pull-right">
@@ -144,4 +144,12 @@
       </li>
     </ul>
   </div>
+  <script type="text/ng-template" id="rolePopoverTemplate.html">
+    <div class= "col-md-12 row">
+      <div><span class="w600">RBAC Roles</span>: <span ng-style="rbacRoles.length === 0 && {'font-style':'italic'}">{{rbacRoles.length !== 0 ? rbacRoles : 'No roles found'}}</span></div>
+      <br>
+      <div><span class="w600">IMS Roles</span>: <span ng-style="imsRoles.length === 0 && {'font-style':'italic'}">{{imsRoles.length !== 0 ? imsRoles : 'No roles found'}}</span></div>
+    </div>    
+  </script>
 </nav>
+

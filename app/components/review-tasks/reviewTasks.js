@@ -11,8 +11,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       .when('/review-tasks', {
         controller: 'ReviewTasksCtrl',
         templateUrl: 'components/review-tasks/reviewTasks.html',
-        resolve: ['terminologyServerService', 'metadataService', '$q', function(terminologyServerService, metadataService, $q) {
+        resolve: ['terminologyServerService', 'metadataService', 'permissionService', '$q', function(terminologyServerService, metadataService, permissionService, $q) {
           var defer = $q.defer();
+          permissionService.setRolesForBranch(null, []);
           $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
               defer.resolve();
           });       

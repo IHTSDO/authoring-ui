@@ -1,14 +1,15 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('permissionService', [
-    function () {
+  .service('permissionService', ['$rootScope',
+    function ($rootScope) {
       this.branch = null;
       this.roles = [];
 
       function setRolesForBranch(branch, roles) {
         this.branch = branch;
         this.roles = roles;
+        $rootScope.userRoles = roles;
       }
 
       function getRolesForBranch(branch) {

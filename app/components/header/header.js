@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', '$routeParams', 'accountService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService, $routeParams, accountService) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', '$routeParams', 'accountService', 'permissionService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService, $routeParams, accountService, permissionService) {
     return {
       restrict: '',
       transclude: false,
@@ -15,6 +15,8 @@ angular.module('singleConceptAuthoringApp')
         var timeout = null;
         var classificationResultsFound = false;
         var validationReportFound = false;
+        scope.imsRoles = '';
+        scope.rbacRoles = '';
 
         // template selection
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
@@ -261,6 +263,36 @@ angular.module('singleConceptAuthoringApp')
               window.open('/mrcm/');
           }
         };
+
+        scope.$watch('accountDetails', function () {
+          if ($rootScope.accountDetails) {
+            let roles = [];
+            angular.forEach($rootScope.accountDetails.roles, function (role) {
+              roles.push(role.replace('ROLE_', '').toLowerCase());
+            });
+            scope.imsRoles = roles.join(', ');
+          }
+        });
+
+        scope.$watch('userRoles', function () {
+          if ($rootScope.userRoles) {
+            let roles = []; 
+            angular.forEach($rootScope.userRoles, function (role) {
+              roles.push(role.toLowerCase());
+            });           
+            scope.rbacRoles = roles.join(', ');
+          }
+        }, true);
+
+        $('body').on('mouseup', function(e) {
+          if(!$(e.target).closest('.popover').length) {
+              $('.popover').each(function(){
+                if ($(this).hasClass("in") && $(this).hasClass("accountDetails") ) {
+                  document.getElementById('accountDetails').click();
+                }                
+              });
+          }
+        });
       }
     };
   }]);
