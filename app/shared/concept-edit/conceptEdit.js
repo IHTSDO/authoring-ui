@@ -2587,7 +2587,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 activeFsn.push(scope.concept.descriptions[i]);
               }
             }
-            if (activeFsn.length !== 1) {
+            if (activeFsn.length === 0) {
               scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
               description.active = true;
             }
@@ -2609,7 +2609,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 innerActiveFsn.push(scope.concept.descriptions[j]);
               }
             }
-            if (innerActiveFsn.length !== 1) {
+            if (innerActiveFsn.length === 0) {
               scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
 
               // reactivate the description, inactivation aborted
