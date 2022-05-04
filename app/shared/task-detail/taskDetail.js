@@ -24,6 +24,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.lineItems = [];
       $scope.globalLineItems = [];
       $scope.releaseNotesDisabled = true;
+      $scope.releaseNotesCollapsed = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -92,13 +93,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             });
           }
       });
-      
+        
       $scope.openLineItemModal = function (id) {
           let item = {};
+          let items = [];
           let globalItems = [];
           let readOnly = false;
-          if($scope.role !== 'AUTHOR'){
-              readOnly = true;
+          if(!$scope.userRoles.includes('AUTHOR')) {
+             readOnly = true;
           }
           angular.forEach($scope.lineItems, function (lineItem) {
             if (lineItem.id === id) {
@@ -108,7 +110,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           angular.forEach($scope.globalLineItems, function (lineItem) {
             if(lineItem.title === "Content Development Activity"){
                 angular.forEach(lineItem.children, function (child) {
+                  if ($scope.lineItems.filter(function(item) {return item.title === child.title}).length == 0) {
                     globalItems.push(child);
+                  }                    
                 });
             }
           });
@@ -125,7 +129,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   return item;
                 },
                 lineItems: function() {
-                  return $scope.lineItems;
+                  return items;
                 },
                 globalLineItems: function() {
                   return globalItems;
@@ -139,6 +143,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           modalInstance.result.then(function () {
               rnmService.getBranchLineItems($scope.branch).then(function (lineItems) {
                   if (lineItems && lineItems.length > 0) {
+                    $scope.lineItems = [];
                     angular.forEach(lineItems, function (item) {
                         $scope.lineItems.push(item);
                     });
@@ -284,14 +289,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       $scope.branchLocked = false;
                     });
                   }
-                  if($scope.lineItem){
-                      $scope.lineItem.content = $scope.lineItem.content.slice(0, -2);
-                      $scope.lineItem.content = $scope.lineItem.content + ' : ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName;
-                      rnmService.updateBranchLineItem($scope.branch, $scope.lineItem).then(function (lineItem){
-                          rnmService.promoteBranchLineItem($scope.branch, $scope.lineItem.id).then(function (lineItem) {
-                            });
+                  if($scope.lineItems){
+                      angular.forEach($scope.lineItems, function (lineItem){
+                          lineItem.content = lineItem.content.slice(0, -2);
+                          lineItem.content = lineItem.content + ' : ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName;
+                          rnmService.updateBranchLineItem($scope.branch, lineItem).then(function (lineItem){
+                              rnmService.promoteBranchLineItem($scope.branch, lineItem.id).then(function (lineItem) {
+                                });
+                          });
                       });
-                      
                   }
                 }, function (error) {
                   $scope.promoting = false;
