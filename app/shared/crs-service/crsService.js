@@ -646,8 +646,16 @@ angular.module('singleConceptAuthoringApp')
         crsEndpoint = endpoint;
       }
 
+      function getCrsEndpoint() {
+        return crsEndpoint;
+      }
+
       function setUSCrsEndpoint(endpoint) {
         usCrsEndpoint = endpoint;
+      }
+
+      function getUSCrsEndpoint() {
+        return usCrsEndpoint;
       }
 //
 // Function exposure
@@ -670,7 +678,9 @@ angular.module('singleConceptAuthoringApp')
         requestClarification: requestClarification,
         hasRequestPendingClarification: hasRequestPendingClarification,
         setCrsEndpoint: setCrsEndpoint,
-        setUSCrsEndpoint: setUSCrsEndpoint
+        getCrsEndpoint: getCrsEndpoint,
+        setUSCrsEndpoint: setUSCrsEndpoint,
+        getUSCrsEndpoint: getUSCrsEndpoint
       };
     }
   )

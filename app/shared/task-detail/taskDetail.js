@@ -794,6 +794,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           });
       }
 
+      function getCRSRequests() {
+        scaService.getCRSRequests($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+          $scope.crsConcepts = response;
+        });
+      }
+
       function initialize() {
 
         // retrieve the task
@@ -815,7 +821,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               $scope.batch = metadataService.isBatch();
           });
           $scope.task = response;
-          console.log(metadataService.isExtensionSet());
           $scope.releaseNotesDisabled = metadataService.isExtensionSet();
           if($scope.task.summary.includes('- Running')){
               $scope.pollForCompletion();
@@ -838,6 +843,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
             $scope.isCrsTask = true;
             $scope.crsConcepts = crsService.getCrsConcepts();
+          } else {
+            getCRSRequests();
           }
         });
 
@@ -848,6 +855,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
         });
       }
+
+      $scope.$on('reloadCRSRequests', function (event, data) {
+        getCRSRequests();
+      });
 
       $scope.$on('reloadTask', function (event, data) {
         if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {

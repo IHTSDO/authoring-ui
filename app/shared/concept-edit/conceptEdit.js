@@ -515,6 +515,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.extensionNamespace = '';
         scope.modelVisible = true;
         scope.totalTemplate = 0;
+        scope.allowConceptPromotion = false;
 
         // utility function pass-thrus
         scope.isSctid = terminologyServerService.isSctid;
@@ -4643,6 +4644,47 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
+        scope.requestPromotion = function() {
+          if (!componentAuthoringUtil.checkComponentsReleased(scope.concept)) {
+            notificationService.sendError('Could not request promotion for this concept as there are unpublished changes');
+            return;
+          }
+
+          let project = metadataService.getProjectForKey($routeParams.projectKey);
+          if (!project || !project.codeSystem) {
+            notificationService.sendError('Could not determine the code system for project key ' + $routeParams.projectKey);
+            return;
+          }
+
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/concept-promotion-modal/conceptPromotionModal.html',
+            controller: 'conceptPromotionModalCtrl',            
+            resolve: {
+              branch: function () {
+                return scope.branch;
+              },
+              concept: function () {
+                return scope.concept;
+              }
+            }
+          });
+          modalInstance.result.then(function (result) {
+            notificationService.sendMessage('Requesting a promotion for concpet ' + scope.concept.fsn + '...');
+            scaService.requestConceptPromotion(scope.concept.conceptId, result.withDependencies, $routeParams.projectKey, $routeParams.taskKey).then(function(location) {            
+              var requestId = location.substr(location.lastIndexOf('/') + 1);
+              notificationService.sendMessage('Successfully created a new CRS request with ID ' + requestId);
+              scaService.saveCRSRequest($routeParams.projectKey, $routeParams.taskKey, requestId, crsService.getCrsEndpoint() + '#/requests/view/' + requestId).then(function() {
+                $rootScope.$broadcast('reloadCRSRequests'); 
+              });
+            }, function(error) {
+              console.log(error);
+              notificationService.sendError(error);
+            });
+          }, function () {
+            // do nothing
+          });
+        };
+
         scope.revertAxiom = function (axiom) {
           modalService.confirm('The axiom will be reverted to the previously published version. Do you want to proceed?').then(function () {
             notificationService.sendMessage('Reverting axiom to the previously published version...');
@@ -5948,6 +5990,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }, 1000);
 
+          // on load, check concept promotion condition
+          if (metadataService.isExtensionSet() && scope.concept.released && scope.concept.moduleId === metadataService.getCurrentModuleId()) {
+            terminologyServerService.findConcept(scope.concept.conceptId, 'MAIN').then(function(response) {
+              // do nothing
+            }, function (error) {
+              if(error && error.status === 404) {
+                scope.allowConceptPromotion = true;
+              }
+            });
+          }
+
           // on load, check if a modified, unsaved version of this concept
           // exists -- only applies to task level, safety check
           if ($routeParams.taskKey && scope.autosave === true) {
@@ -5965,4 +6018,3 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
     };
   }
 );
-

@@ -1,0 +1,34 @@
+<div class="clearfix">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Promote concept {{concept.conceptId + ' |' + concept.fsn + '|'}}</h4>
+  </div>
+  <div class="modal-body">
+    <div class="alert alert-info" ng-if="!checkingDependenciesDone">Checking dependencies against this concept...</div>
+    <div ng-if="checkingDependenciesDone">
+      <div class="alert alert-info" ng-show="dependencies.length === 0">No dependencies found</div>
+      <table ng-show="dependencies.length !== 0" ng-table="tableParamsDependencies" template-pagination="utilities/data-table-pager.html" class="table table-full-small">
+        <tr ng-repeat="item in $data">
+          <td data-title="'Concept ID'"> {{item.conceptId}} </td>
+          <td data-title="'FSN'"> {{item.fsn.term}} </td>
+        </tr>
+      </table>
+    </div>    
+  </div>
+  <div class="modal-footer" ng-if="checkingDependenciesDone">
+    <div class="row col-md-12 no-padding top-modal">     
+      <div class=" col-md-4 left-button">
+        <button type="button" class="btn btn-default col-md-12 cancel-action-btn  no-padding" ng-click="cancel()">Cancel</button>
+      </div>
+      <div ng-if="dependencies.length !== 0" class=" col-md-4 right-button">
+        <button type="button" class="btn btn-default col-md-12 p-10 complete-action-btn no-padding" ng-click="continue(false)">Continue without Dependencies</button>
+      </div>
+      <div ng-if="dependencies.length !== 0" class=" col-md-4 right-button">
+        <button type="button" class="btn btn-default col-md-12 p-10 complete-action-btn no-padding" ng-click="continue(true)">Continue with Dependencies</button>
+      </div>
+      <div ng-if="dependencies.length === 0" class=" col-md-4 pull-right">
+        <button type="button" class="btn btn-default col-md-12 p-10 complete-action-btn no-padding" ng-click="continue(false)">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -218,6 +218,7 @@
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
                 <li ng-click="viewDescriptor()">View Descriptor</li>
+                <li ng-click="requestPromotion()" ng-if="role === 'AUTHOR' && !isStatic && allowConceptPromotion">Request Promotion</li>
               </ul>
             </li>
           </ul>
