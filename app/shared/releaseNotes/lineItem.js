@@ -13,7 +13,6 @@ angular.module('singleConceptAuthoringApp')
     $scope.lineItemContentFound = false;
     $scope.new = true;
     if(lineItem.content){
-        $scope.original = lineItem.content;
         $scope.new = false;
     }
     let quill;
@@ -41,6 +40,7 @@ angular.module('singleConceptAuthoringApp')
             var converter = new showdown.Converter();
             if($scope.lineItem.content){
                 quill.clipboard.dangerouslyPasteHTML(converter.makeHtml($scope.lineItem.content));
+                $scope.original = converter.makeMarkdown(quill.root.innerHTML);
                 if(readOnly){
                     quill.enable(false);
                 }
