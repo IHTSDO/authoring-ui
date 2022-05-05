@@ -85,8 +85,8 @@
     <div ng-if="!releaseNotesDisabled" class="p-l-15 p-r-15">
       <button ng-repeat="lineItem in lineItems" class="btn btn-default release-notes" ng-click="openLineItemModal(lineItem.id)"
               ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">Edit: {{lineItem.title}}</span> </button>
-      <button class="btn btn-default release-notes" ng-click="openLineItemModal()" style="width:90%;"
-              ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">Add Release Note</span> </button>
+      <button class="btn btn-default release-notes" ng-click="openLineItemModal()" style="width:100%;"
+              ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-plus iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">Add Release Note</span> </button>
     </div>
 
     <hr>
