@@ -53,6 +53,42 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getCRSRequests(projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+        // get the list
+        $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/crs-request-list').then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          if (error.status === 404) {
+            deferred.resolve([]);
+          } else {
+            deferred.reject('Error retrieving CRS request list');
+          }
+        });
+        return deferred.promise;
+      }
+     
+      function saveCRSRequest(projectKey, taskKey, requestId, requestUrl) {
+        var deferred = $q.defer();
+
+        getCRSRequests(projectKey, taskKey).then(function (list) {
+          if (list.filter(function(item) { return item.crsId === requestId; }).length === 0) {
+            list.push({crsId : requestId, requestUrl: requestUrl});
+            $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/crs-request-list', list).then(function (revisedList) {
+              deferred.resolve(revisedList);
+            }, function (error) {
+              deferred.reject('Unexpected error updating the list of CRS requests for this task');
+            });
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       function removeModifiedConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
 
@@ -547,6 +583,8 @@ angular.module('singleConceptAuthoringApp')
         setEndpoint: setEndpoint,
         getDialectMatches: getDialectMatches,
         getSuggestionMatches: getSuggestionMatches,
+        saveCRSRequest: saveCRSRequest,
+        getCRSRequests: getCRSRequests,
 
         /////////////////////////////////////
         // authoring-projects calls
@@ -1763,6 +1801,32 @@ angular.module('singleConceptAuthoringApp')
           }, function (error) {
             deferred.reject('Error retrieving technical issue items');
           });
+          return deferred.promise;
+        },
+
+        requestConceptPromotion: function(conceptId, includeDependecies, projectKey, taskKey) {
+          var deferred = $q.defer();
+          var requestBody = {};
+          requestBody.projectKey = projectKey;
+          requestBody.taskKey = taskKey;
+          requestBody.conceptId = conceptId;
+          requestBody.includeDependencies = includeDependecies;
+  
+          $http.post(apiEndpoint + "request-concept-promotion", requestBody).then(function (response) {            
+            var locHeader = response.headers('Location');            
+            deferred.resolve(locHeader);
+          }, function (error) {              
+              if (error && error.data && error.data.message) {
+                var message = JSON.parse(error.data.message);
+                if (typeof message === 'object') {
+                  deferred.reject(message.message);
+                } else {
+                  deferred.reject(message);
+                }
+              }
+              deferred.reject(error.statusText);
+          });
+  
           return deferred.promise;
         }
 

@@ -1067,6 +1067,49 @@ function getFsnDescriptionForConcept(concept) {
           return false
       };
 
+      function checkComponentsReleased(concept) {
+        if (!concept.released) {
+          return false
+
+        }
+        
+        // check descriptions
+        for (var k = 0; k < concept.descriptions.length; k++) {
+          if (!concept.descriptions[k].released) {
+            return false;
+          }
+        }
+
+        // check relationships
+        if(concept.relationships){
+            for (var j = 0; j < concept.relationships.length; j++) {
+              if (!concept.relationships[j].released) {
+                return false;
+              }              
+            }
+        }
+
+        // check Additional Axiom
+        if (concept.classAxioms) {
+           for (var l = 0; l < concept.classAxioms.length; l++) {
+            if (!concept.classAxioms[l].released) {
+              return false;
+            }
+          }
+        }
+
+        // check GCI
+        if (concept.gciAxioms) {
+          for (var m = 0; m < concept.gciAxioms.length; m++) {
+            if (!concept.gciAxioms[m].released) {
+              return false;
+            }            
+          }
+        }
+        
+        return true;
+      }
+
       function checkConceptComplete(concept) {
         var errors = [];
 
@@ -1155,6 +1198,7 @@ function getFsnDescriptionForConcept(concept) {
         applyMinimumFields: applyMinimumFields,
         hasMinimumFields: hasMinimumFields,
         checkConceptComplete : checkConceptComplete,
+        checkComponentsReleased: checkComponentsReleased,
 
         // equality functions
         isComponentsEqual: isComponentsEqual,
