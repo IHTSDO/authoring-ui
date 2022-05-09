@@ -146,7 +146,7 @@
   </div>
   <script type="text/ng-template" id="rolePopoverTemplate.html">
     <div class= "col-md-12 row">
-      <div><span class="w600">RBAC Roles</span>: <span ng-style="rbacRoles.length === 0 && {'font-style':'italic'}">{{rbacRoles.length !== 0 ? rbacRoles : 'No roles found'}}</span></div>
+      <div><span class="w600">RBAC Roles</span>: <span ng-style="(rbacRoles.length === 0 || !projectOrCodeSystemFound) && {'font-style':'italic'}">{{projectOrCodeSystemFound ? (rbacRoles.length !== 0 ? rbacRoles : 'No roles found') : 'Please select project or task to view your RBAC permissions'}}</span></div>
       <br>
       <div><span class="w600">IMS Roles</span>: <span ng-style="imsRoles.length === 0 && {'font-style':'italic'}">{{imsRoles.length !== 0 ? imsRoles : 'No roles found'}}</span></div>
     </div>    

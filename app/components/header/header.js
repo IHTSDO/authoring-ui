@@ -15,6 +15,7 @@ angular.module('singleConceptAuthoringApp')
         var timeout = null;
         var classificationResultsFound = false;
         var validationReportFound = false;
+        scope.projectOrCodeSystemFound = false;
         scope.imsRoles = '';
         scope.rbacRoles = '';
 
@@ -275,6 +276,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         scope.$watch('userRoles', function () {
+          scope.projectOrCodeSystemFound = $routeParams.projectKey || $routeParams.codeSystem;
           if ($rootScope.userRoles) {
             let roles = []; 
             angular.forEach($rootScope.userRoles, function (role) {
