@@ -25,7 +25,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function initialize() {
-        let toolbarOptions = [
+        let toolbarOptions = $scope.readOnly ? false : [
   [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
   ['bold', 'italic', 'link'],
   [{ 'list': 'ordered'}, { 'list': 'bullet' }],
