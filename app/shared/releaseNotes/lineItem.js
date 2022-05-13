@@ -25,11 +25,20 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function initialize() {
+
+      // Register new string method which will be used in saving release note
+        String.prototype.replaceRecursive = function (pattern, what) {
+          var newstr = this.replace(pattern, what);
+          if (newstr == this)
+              return newstr;
+          return newstr.replace(pattern, what);
+        };
+
         let toolbarOptions = $scope.readOnly ? false : [
-  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-  ['bold', 'italic', 'link'],
-  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-  ['clean']]  ;
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          ['bold', 'italic', 'link'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['clean']];
         $timeout(function () {
             quill = new Quill('#editor', {
               modules: {
@@ -62,7 +71,14 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.save = function () {
         let converter = new showdown.Converter();
-        let content = quill.root.innerHTML;
+        let content = quill.root.innerHTML.replace('<span class="ql-cursor">﻿</span>',''); // Remove cursor        
+
+        // rerverse the whitespace. For example: '<strong> test</strong>' -> ' <strong>test</strong>'
+        content = content.replaceRecursive(/\<\w+\>\s+/g, function (wm, m) { return  wm.substring(wm.lastIndexOf('>') + 1) + wm.substring(0, wm.indexOf('>') + 1);});
+
+        // rerverse the whitespace. For example: '<strong>test </strong>' -> '<strong>test</strong> '
+        content = content.replaceRecursive(/\s+\<(\/.*?)\>/g, function (wm) {return wm.substring(wm.indexOf('<')) + wm.substring(0, wm.indexOf('<'));});
+
         $scope.lineItem.content = converter.makeMarkdown(content);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
