@@ -1295,6 +1295,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 if ($scope.dialects.hasOwnProperty(gbDialectId)) {
                   delete $scope.dialects[gbDialectId];
                 }
+
+                // Remove Context Based Language Refsets if any
+                var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+                console.log(optionalLanguageRefsets);
+                if (optionalLanguageRefsets) {
+                  for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+                    delete $scope.dialects[optionalLanguageRefsets[i].refsetId];
+                  }
+                }
               }
 
               scaService.getSelectedLanguegeForUser().then(function (data){
