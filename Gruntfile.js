@@ -9,6 +9,9 @@
 
 module.exports = function (grunt) {
 
+  var os = require('os');
+  os.tmpDir = os.tmpdir;
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
