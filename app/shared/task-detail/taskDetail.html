@@ -136,9 +136,9 @@
               ng-click="proceedAutomatePromotion()"> <span class="md md-archive purple darken-2 iconbase"></span> <span class="button-link">Begin Promotion Automation</span> </button>
       <div ng-if="!releaseNotesDisabled">
       <button class="btn btn-default release-notes" ng-click="openLineItemModal()" style="width:100%;"
-              ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || role !== 'AUTHOR'"> <span class="fa fa-plus iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">Add Release Note</span> </button>
+              ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || role !== 'AUTHOR'"> <span class="fa fa-plus iconbase"></span> <span class="button-link">Add Release Note</span> </button>
       <button ng-repeat="lineItem in lineItems" class="btn btn-default release-notes" ng-click="openLineItemModal(lineItem.id)"
-              ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="background-color: #e5980cbf; padding-top: 10px;"></span> <span class="button-link">{{role === 'AUTHOR' ? 'Edit' : 'View' }}: {{lineItem.title}}</span> </button>
+              ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="padding-top: 10px;"></span> <span class="button-link">{{role === 'AUTHOR' ? 'Edit' : 'View' }}: {{lineItem.title}}</span> </button>
     </div>
     </div>
     
