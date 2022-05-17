@@ -99,7 +99,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           let items = [];
           let globalItems = [];
           let readOnly = false;
-          if(!$scope.userRoles.includes('AUTHOR')) {
+          if(!$scope.userRoles.includes('AUTHOR') || $scope.role !== 'AUTHOR') {
              readOnly = true;
           }
           angular.forEach($scope.lineItems, function (lineItem) {
