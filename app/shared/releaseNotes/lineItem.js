@@ -48,7 +48,9 @@ angular.module('singleConceptAuthoringApp')
             });
             var converter = new showdown.Converter();
             if($scope.lineItem.content){
-                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml($scope.lineItem.content));
+                let html = converter.makeHtml($scope.lineItem.content);
+                let content = html.endsWith('\n<p><br></p>') ? html + '\n<p><br></p>' : html;
+                quill.clipboard.dangerouslyPasteHTML(content);
                 $scope.original = converter.makeMarkdown(quill.root.innerHTML);
                 if(readOnly){
                     quill.enable(false);
