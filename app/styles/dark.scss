@@ -432,15 +432,25 @@ h4.timeline-title {
 .sca-dark .task-details .review.btn-default[disabled],
 .sca-dark .task-details .promote.btn-default[disabled],
 .sca-dark .task-details .auto-promote.btn-default[disabled],
+.sca-dark .task-details .release-notes.btn-default[disabled],
 .sca-dark .task-details .editingtask.btn-default[disabled] span,
 .sca-dark .task-details .classify.btn-default[disabled] span,
 .sca-dark .task-details .validate.btn-default[disabled] span,
 .sca-dark .task-details .review.btn-default[disabled] span,
 .sca-dark .task-details .promote.btn-default[disabled] span,
-.sca-dark .task-details .auto-promote.btn-default[disabled] span{
+.sca-dark .task-details .auto-promote.btn-default[disabled] span,
+.sca-dark .task-details .release-notes.btn-default[disabled] span,
+.sca-dark .task-details .release-notes.btn-default[disabled] span.fa-plus,
+.sca-dark .task-details .release-notes.btn-default[disabled] span.fa-clipboard {
     border-color: #525463;
     color: #262e39;
     background-color: #525463;
+}
+
+.sca-dark .task-details .release-notes.btn-default span.fa-clipboard,
+.sca-dark .task-details .release-notes.btn-default span.fa-plus {
+    color: #e5980cbf;
+    background-color: transparent;
 }
 
 /*colors */

@@ -179,6 +179,10 @@
     color: #1976D2;
     background-color: transparent;
 }
+.sca-light .purple.darken-2 {
+    color: #ba68c8;
+    background-color: transparent;
+}
 /*colors */
 
 .sca-light .purple.lighten-2 {
@@ -270,12 +274,17 @@
 .sca-light .task-details .green {
     background-color: transparent;
 }
+.sca-light .task-details .release-notes.btn-default span {
+    background-color:transparent;
+    color: #e5980cbf;
+}
 .sca-light .task-details .editingtask.btn-default,
 .sca-light .task-details .classify.btn-default,
 .sca-light .task-details .validate.btn-default,
 .sca-light .task-details .review.btn-default,
 .sca-light .task-details .promote.btn-default,
-.sca-light .task-details .auto-promote.btn-default {
+.sca-light .task-details .auto-promote.btn-default,
+.sca-light .task-details .release-notes.btn-default {
     background-color: #fff;
     border: 1px solid #e6e6e6;
 }
@@ -284,7 +293,8 @@
 .sca-light .task-details .validate.btn-default:hover,
 .sca-light .task-details .review.btn-default:hover,
 .sca-light .task-details .promote.btn-default:hover,
-.sca-light .task-details .auto-promote.btn-default:hover{
+.sca-light .task-details .auto-promote.btn-default:hover,
+.sca-light .task-details .release-notes.btn-default:hover{
     background-color: transparent;
 }
 .sca-light .task-details .editingtask.btn-default[disabled],
@@ -293,12 +303,14 @@
 .sca-light .task-details .review.btn-default[disabled],
 .sca-light .task-details .promote.btn-default[disabled],
 .sca-light .task-details .auto-promote.btn-default[disabled],
+.sca-light .task-details .release-notes.btn-default[disabled],
 .sca-light .task-details .editingtask.btn-default[disabled] span,
 .sca-light .task-details .classify.btn-default[disabled] span,
 .sca-light .task-details .validate.btn-default[disabled] span,
 .sca-light .task-details .review.btn-default[disabled] span,
 .sca-light .task-details .promote.btn-default[disabled] span,
-.sca-light .task-details .auto-promote.btn-default[disabled] span {
+.sca-light .task-details .auto-promote.btn-default[disabled] span,
+.sca-light .task-details .release-notes.btn-default[disabled] span {
    background-color: #fff;
    color: #737373;
 }

@@ -123,11 +123,18 @@ button.widget-toolbar {
 .task-details .validate.btn-default[disabled],
 .task-details .review.btn-default[disabled],
 .task-details .promote.btn-default[disabled],
-.task-details .auto-promote.btn-default[disabled] {
+.task-details .auto-promote.btn-default[disabled],
+.task-details .release-notes.btn-default[disabled] {
     background-color: #d8d8d8 ;
     border-color: #d8d8d8 ;
     color: #737373
 }
+.task-details .release-notes.btn-default span.fa-clipboard,
+.task-details .release-notes.btn-default span.fa-plus {
+    background-color: #e5980cbf; 
+    padding-top: 10px;
+}
+
 .classification-btn .btn-default[disabled] span {
     color: #737373 ;
     background-color: #d8d8d8
