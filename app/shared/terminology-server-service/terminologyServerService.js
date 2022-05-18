@@ -1277,18 +1277,22 @@ angular.module('singleConceptAuthoringApp')
       // Browser Functions
       //////////////////////////
       function browserStructureConversion(data) {
-        return {
-          active: data.active,
-          concept: {
+        if (data.fields) {
+          return data;
+        } else {
+          return {
             active: data.active,
-            conceptId: data.id,
-            definitionStatus: data.definitionStatus,
-            fsn: data.fsn ? data.fsn.term : data.fsn,
-            preferredSynonym: data.pt ? data.pt.term : data.pt,
-            moduleId: data.moduleId,
-            term: data.pt ? data.pt.term : data.pt
-          }
-        };
+            concept: {
+              active: data.active,
+              conceptId: data.id,
+              definitionStatus: data.definitionStatus,
+              fsn: data.fsn ? data.fsn.term : data.fsn,
+              preferredSynonym: data.pt ? data.pt.term : data.pt,
+              moduleId: data.moduleId,
+              term: data.pt ? data.pt.term : data.pt
+            }
+          };
+        }
       }
 
       function searchAllConcepts(branch, termFilter, escgExpr, offset, limit, syn, lang, activeFilter, tsv, definitionStatus, view, conceptIdList, searchAfter, searchTimestamp, termActive, preferredOrAcceptableIn) {

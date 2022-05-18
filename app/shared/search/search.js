@@ -282,7 +282,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         // temp array for tracking duplicate ids
         let tempIds = [];
-        console.log($scope.storedResults);
+        
         // cycle over all results
         for (let i = 0; i < $scope.storedResults.length; i++) {
 
@@ -677,11 +677,16 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             }
             if (!results) {
               notificationService.sendError('Unexpected error searching for concepts', 10000);
+            } else {
+              if (results.items && results.items.length !== 0 && results.items[0].fields) {
+                $scope.searchStatus = 'The operation is not supported';
+                return
+              }
             }
+
             if(results.searchAfter){
                 $scope.searchAfter = results.searchAfter;
             }
-              console.log($scope.searchAfter);
 
             $scope.loadPerformed = true;
 
