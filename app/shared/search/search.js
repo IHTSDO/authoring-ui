@@ -679,7 +679,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               notificationService.sendError('Unexpected error searching for concepts', 10000);
             } else {
               if (results.items && results.items.length !== 0 && results.items[0].fields) {
-                $scope.searchStatus = 'The operation is not supported';
+                $scope.searchStatus = 'This operation is not supported in the Authoring Platform, please use the TS browser';
                 return
               }
             }

@@ -187,7 +187,7 @@
       </div>
   </div>
 
-  <div class="col-md-12 text-center" ng-if="searchStatus">{{searchStatus}}</div>
+  <div class="col-md-12" ng-class="{'text-center' : !searchStatus.startsWith('This operation is not supported in the Authoring Platform')}" ng-if="searchStatus">{{searchStatus}}</div>
 
 
   <div class="row no-padding" ng-if="results.length > 0">
