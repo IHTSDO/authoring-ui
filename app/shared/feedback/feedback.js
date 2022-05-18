@@ -521,6 +521,9 @@ angular.module('singleConceptAuthoringApp')
                   },
                   readOnly: function() {
                     return true;
+                  },
+                  all: function() {
+                    return false;
                   }
                 }
             });

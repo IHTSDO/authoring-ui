@@ -136,6 +136,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 },
                 readOnly: function() {
                   return readOnly;
+                },
+                all: function() {
+                  return false;
                 }
               }
           });
