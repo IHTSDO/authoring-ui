@@ -236,6 +236,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.descriptionSeachStatus = 'active';
                   $scope.isEscgMode = true;
                   $scope.templateMode = false;
+                  $scope.userOptions.searchType = null;
                   $scope.userOptions.statedSelection = 'inferred';
                 }
                 else if ($scope.searchMode === 'Switch to Template') {
@@ -257,7 +258,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.isEscgMode = true;
               $scope.userOptions.statedSelection = 'inferred';
               $scope.templateMode = false;
-              $scope.userOptions.searchType = 1;
+              $scope.userOptions.searchType = null;
               $scope.searchType = 'Active Only';
               $scope.selectedLanguageRefsets = [];
             }
@@ -510,15 +511,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         let activeFilter = null;
 
-        switch($scope.userOptions.searchType) {
-          case 1:
-            activeFilter = true;
-            break;
-
-          case 2:
-            activeFilter = false;
-            break;
-        }
+        if (!$scope.escgExpr) {
+          switch($scope.userOptions.searchType) {
+            case 1:
+              activeFilter = true;
+              break;
+  
+            case 2:
+              activeFilter = false;
+              break;
+          }
+        }        
 
         let fsnSearchFlag = !metadataService.isExtensionSet() ||
           $scope.userOptions.selectedDialect === usModel.dialectId ||
@@ -601,15 +604,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         let activeFilter = null;
 
-        switch($scope.userOptions.searchType) {
-          case 1:
-            activeFilter = true;
-            break;
-
-          case 2:
-            activeFilter = false;
-            break;
-        }
+        if (!$scope.escgExpr) {
+          switch($scope.userOptions.searchType) {
+            case 1:
+              activeFilter = true;
+              break;
+  
+            case 2:
+              activeFilter = false;
+              break;
+          }
+        }        
 
         // set the return synonym flag to true for extensions
         // TODO Later this will be toggle-able between extension synonym and fsn
