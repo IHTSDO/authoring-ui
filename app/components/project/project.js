@@ -304,11 +304,14 @@ angular.module('singleConceptAuthoringApp.project', [
           });
       };
         
-      $scope.openLineItemModal = function (id) {
+      $scope.openLineItemModal = function (id, all) {
           let item = {};
-          let items = [];
+          let items = $scope.lineItems;
           let globalItems = [];
           let readOnly = false;
+          if (all){
+              readOnly = true;
+          }
           if(!$scope.userRoles.includes('PROJECT_MANAGER')) {
              readOnly = true;
           }
@@ -346,6 +349,9 @@ angular.module('singleConceptAuthoringApp.project', [
                 },
                 readOnly: function() {
                   return readOnly;
+                },
+                all: function() {
+                    return all;
                 }
               }
           });

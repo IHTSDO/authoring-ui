@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('lineItemCtrl', function ($scope, $compile, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly, modalService) {
+  .controller('lineItemCtrl', function ($scope, $compile, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, readOnly, all, modalService) {
 
     // scope variables
     $scope.branch = branch;
@@ -12,6 +12,9 @@ angular.module('singleConceptAuthoringApp')
     $scope.lineItemContentUnChanged = true;
     $scope.lineItemContentFound = false;
     $scope.new = true;
+    $scope.all = all;
+    console.log(all);
+    console.log($scope.lineItems);
     if(lineItem.content){
         $scope.new = false;
     }
@@ -56,6 +59,14 @@ angular.module('singleConceptAuthoringApp')
                     quill.enable(false);
                 }
             };
+            if($scope.all){
+                let content = '';
+                angular.forEach($scope.lineItems, function (item) {
+                    content = content + '**' + item.title + ':**\n\n';
+                    content = content + item.content + '\n\n<br>';
+                });
+                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml(content));
+            }
             quill.root.addEventListener('keyup', evt => {
               checkLineItemContentUnChanged();
             });

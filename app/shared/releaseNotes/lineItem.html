@@ -1,9 +1,9 @@
 <div id="configModal" class="clearfix sac-modal">    
   <div class="modal-header">
-    <div ng-if="!new" class="col-md-8">
+    <div ng-if="!new && !all" class="col-md-8">
       <h4 class="modal-title" style="margin-left: -15px;">{{lineItem.title}}</h4>
     </div>
-    <div ng-if="new" class="col-md-8" style="margin-left: -10px;">
+    <div ng-if="new && !all" class="col-md-8" style="margin-left: -10px;">
       <h4 class="modal-title">Line Item:</h4>
       <select ng-if="!globalLineItems" name="select-choice" class="form-control"
                 ng-options="lineItem.title for lineItem in lineItems"
@@ -19,6 +19,9 @@
                 style="margin-top:10px;">
           <option value="" disabled selected>Please select a category</option>
       </select>
+    </div>
+    <div ng-if="all" class="col-md-8">
+      <h4 class="modal-title" style="margin-left: -15px;">All Project Release Notes:</h4>
     </div>
     <div class="col-md-4">
       <button type="button" style="margin-right: -20px;" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>

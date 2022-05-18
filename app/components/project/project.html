@@ -388,8 +388,14 @@
               ng-init="releaseNotesCollapsed = true"
               ng-click="releaseNotesCollapsed = !releaseNotesCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : releaseNotesCollapsed, 'md-keyboard-arrow-down' : !releaseNotesCollapsed}]">
-                <span class="project-subtitle">Release Notes<!--<i ng-if="userRoles.includes('PROJECT_MANAGER')" class="md md-settings f20" style="color: #00acc1; margin-left: 5px;" ng-click="openReleaseNotesConfigModal(); $event.stopPropagation()"></i>-->
-                <div class="btn btn-default btn-round m-l-10" style="background-color: #6bb86b;"  ng-click="openLineItemModal(); $event.stopPropagation()"> <i class="md fa-sca fa-plus"></i></span>
+                <span class="project-subtitle">Release Notes
+                    <div class="btn btn-default btn-round m-l-10" style="background-color: #6bb86b;"  ng-click="openLineItemModal(); $event.stopPropagation()">
+                        <i class="md fa-sca fa-plus"></i>
+                    </div>
+                    <div class="btn btn-default btn-round m-l-10" style="background-color: #00a4e4;"  ng-click="openLineItemModal(null, true); $event.stopPropagation()">
+                        <i class="md fa-sca fa-info"></i>
+                    </div>
+                </span>
             </button>
             <span class="project-icon pull-right"><span class="fa fa-clipboard" style="font-size: 24px;
     text-align: center;
