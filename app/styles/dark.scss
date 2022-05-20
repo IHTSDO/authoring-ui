@@ -404,7 +404,8 @@ h4.timeline-title {
 .sca-dark .task-details .validate.btn-default,
 .sca-dark .task-details .review.btn-default,
 .sca-dark .task-details .promote.btn-default,
-.sca-dark .task-details .auto-promote.btn-default{
+.sca-dark .task-details .auto-promote.btn-default,
+.sca-dark .task-details .release-notes.btn-default{
     border: 1px solid #262e39;
 }
 .sca-dark .task-details .editingtask.btn-default:hover,
@@ -412,7 +413,8 @@ h4.timeline-title {
 .sca-dark .task-details .validate.btn-default:hover,
 .sca-dark .task-details .review.btn-default:hover,
 .sca-dark .task-details .promote.btn-default:hover,
-.sca-dark .task-details .auto-promote.btn-default:hover{
+.sca-dark .task-details .auto-promote.btn-default:hover,
+.sca-dark .task-details .release-notes.btn-default:hover{
     color: #eee;
     background-color: transparent;
     border: 1px solid #1f2731;
@@ -488,6 +490,9 @@ h4.timeline-title {
     color: #e94281;
     background-color: transparent;
 }
+.sca-dark .cyan.darken-1 {
+    color: #0097a7;
+}
 .sca-dark .green.darken-1 {
     color: #4CAF50;
     background-color: transparent;
@@ -504,9 +509,11 @@ h4.timeline-title {
     color: #009cd7;
     background-color: #262e39;
 }
-.sca-dark .blue.darken-1 {
-    color: #009cd7;
-    background-color: #262e39;
+.sca-dark .purple.darken-1 {
+    color: #7b1fa2;
+}
+.sca-dark .release-notes.btn-default {
+    color: #e5980cbf;
 }
 .sca-dark .navbar-default .btn-link {
     color: #737373;
