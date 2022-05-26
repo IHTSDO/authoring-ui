@@ -55,17 +55,18 @@ angular.module('singleConceptAuthoringApp')
                 let content = html.endsWith('\n<p><br></p>') ? html + '\n<p><br></p>' : html;
                 quill.clipboard.dangerouslyPasteHTML(content);
                 $scope.original = converter.makeMarkdown(quill.root.innerHTML);
-                if(readOnly){
-                    quill.enable(false);
-                }
+                
             };
-            if($scope.all){
+            if($scope.all) {
                 let content = '';
                 angular.forEach($scope.lineItems, function (item) {
                     content = content + '**' + item.title + ':**\n\n';
                     content = content + item.content + '\n\n<br>';
                 });
-                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml(content));
+                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml(content));                
+            }
+            if(readOnly) {
+              quill.enable(false);
             }
             quill.root.addEventListener('keyup', evt => {
               checkLineItemContentUnChanged();
