@@ -2475,6 +2475,18 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function donateConcept(branch, sourceBranch, conceptId, includeDependencies) {
+        var deferred = $q.defer();
+        var queryParams = '?sourceBranch=' + encodeURIComponent(sourceBranch) + '&ecl=' + conceptId + '&includeDependencies=' + includeDependencies;
+        $http.post(apiEndpoint + branch + '/concepts/donate' + queryParams, null).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2587,7 +2599,8 @@ angular.module('singleConceptAuthoringApp')
         cleanRelationship: cleanRelationship,
         setEndpoint: setEndpoint,
         getEndpoint: getEndpoint,
-        retrieveSemanticTags: retrieveSemanticTags
+        retrieveSemanticTags: retrieveSemanticTags,
+        donateConcept: donateConcept
       };
     }
 

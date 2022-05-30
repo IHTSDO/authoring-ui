@@ -1682,6 +1682,7 @@ angular.module('singleConceptAuthoringApp')
                 content: null,
                 issueKey: attachment.issueKey,
                 ticketKey: attachment.ticketKey,
+                organization: attachment.organization,
                 emptyContent: false,
                 error: null
               };

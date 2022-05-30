@@ -4669,7 +4669,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
           modalInstance.result.then(function (result) {
-            notificationService.sendMessage('Requesting a promotion for concpet ' + scope.concept.fsn + '...');
+            notificationService.sendMessage('Requesting a promotion for concept ' + scope.concept.fsn + '...');
             scaService.requestConceptPromotion(scope.concept.conceptId, result.withDependencies, $routeParams.projectKey, $routeParams.taskKey).then(function(location) {            
               var requestId = location.substr(location.lastIndexOf('/') + 1);
               notificationService.sendMessage('Successfully created a new CRS request with ID ' + requestId);

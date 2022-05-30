@@ -797,9 +797,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           });
       }
 
+      function filterDuplicatedCRSRequests() {
+        if ($scope.crsConcepts.length !== 0) {
+          $scope.crsConcepts = $scope.crsConcepts.filter((value, index, self) =>
+            index === self.findIndex((t) => (
+              t.crsId === value.crsId
+            ))
+          );
+        }
+      }
+
       function getCRSRequests() {
         scaService.getCRSRequests($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
           $scope.crsConcepts = response;
+          filterDuplicatedCRSRequests();          
         });
       }
 
@@ -846,6 +857,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
             $scope.isCrsTask = true;
             $scope.crsConcepts = crsService.getCrsConcepts();
+            filterDuplicatedCRSRequests();
           } else {
             getCRSRequests();
           }
@@ -861,6 +873,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.$on('reloadCRSRequests', function (event, data) {
         getCRSRequests();
+      });
+
+      $scope.$on('initialiseCrsConceptsComplete', function (event, data) {
+        $scope.crsConcepts = crsService.getCrsConcepts();
+        filterDuplicatedCRSRequests();
       });
 
       $scope.$on('reloadTask', function (event, data) {
