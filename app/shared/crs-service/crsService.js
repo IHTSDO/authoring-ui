@@ -278,12 +278,16 @@ angular.module('singleConceptAuthoringApp')
         var donatedConcepts = [];
         var organization = JSON.parse(attachment.organization);
         var codeSystem = metadataService.getCodeSystenForGivenShortname(organization.value);
-        console.log(codeSystem);
         if (!codeSystem) {
           notificationService.sendError('Could not find code system for ' + organization.value);
           return;
         }
-        terminologyServerService.donateConcept(destinationBranch, codeSystem.branchPath, attachment.content.conceptId, attachment.content.definitionOfChanges.summary.endsWith('dependecies')).then(function(response) {
+        if (!codeSystem.latestVersion) {
+          notificationService.sendError('Latest version not found against code system ' + organization.value);
+          return;
+        }
+        
+        terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, attachment.content.definitionOfChanges.summary.endsWith('dependecies')).then(function(response) {
           angular.forEach(response, function (concept) {
             donatedConceptIds.push(concept.conceptId);
           });
@@ -315,6 +319,8 @@ angular.module('singleConceptAuthoringApp')
             });
             deferred.resolve(donatedConcepts);
           });
+        }, function (error) {
+          deferred.reject(error.data.message);
         });
         return deferred.promise;
       }
@@ -400,9 +406,11 @@ angular.module('singleConceptAuthoringApp')
             });
             deferred.resolve(currentTaskConcepts);
           }, function (error) {
-            deferred.reject('Error creating template concepts: ' + error);
+            deferred.reject('Error creating concepts: ' + error);
           });
-        }, deferred.reject('Could not load attachments'));
+        }, function() {
+          deferred.reject('Could not load attachments');
+        });
         return deferred.promise;
       }
 
@@ -441,7 +449,8 @@ angular.module('singleConceptAuthoringApp')
                 initializeCrsTask().then(function () {
                   getBulkCrsRequestsStatus();
                   deferred.resolve(currentTaskConcepts);
-                }, function () {
+                }, function (error) {
+                  notificationService.sendError(error);
                   // NOTE: Must resolve to prevent blocking in edit.js
                   deferred.resolve([]);
                 });
