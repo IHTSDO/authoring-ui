@@ -1,4 +1,4 @@
-<div id="configModal" class="clearfix sac-modal">    
+<div id="configModal" class="clearfix release-note-modal">
   <div class="modal-header">
     <div ng-if="!new && !all" class="col-md-8">
       <h4 class="modal-title" style="margin-left: -15px;">{{lineItem.title}}</h4>
@@ -27,7 +27,7 @@
       <button type="button" style="margin-right: -20px;" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
   </div>
-  <div class="modal-body">  
+  <div class="modal-body scroll-if-height">  
     <div class="col-md-12 no-padding release-notes">
         <div id="editor">
         </div>
