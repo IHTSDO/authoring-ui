@@ -115,6 +115,16 @@
       </button>
     </div>
 
+    <div class="col-md-6" ng-show="isExtension && templateMode">
+      <div ng-dropdown-multiselect=""
+        checkboxes="true" 
+        options="languageRefsetOptions" 
+        selected-model="selectedLanguageRefsets" 
+        extra-settings="languageRefsetMultiselectSettings" 
+        translation-texts="languageRefsetMultiselectTranslationTexts"
+        events="languageRefsetMultiselectEvents"></div>
+    </div>
+
     <div class="col-md-6 pull-right">
       <button type="button" class="btn btn-default btn-primary col-md-12 text-center  ng-click-active search-type btn-blue"
               title="Search Mode"
@@ -128,7 +138,7 @@
   </div>
 
   <div class="row search-filter" ng-if="isExtension && !isEscgMode">
-    <div class="col-md-6">      
+    <div class="col-md-6" ng-show="!templateMode">
       <div ng-dropdown-multiselect="" 
         class="p-t-5"
         checkboxes="true" 
@@ -138,7 +148,7 @@
         translation-texts="languageRefsetMultiselectTranslationTexts"
         events="languageRefsetMultiselectEvents"></div>
     </div>
-    <div class="col-md-6 z-index-1">
+    <div class="col-md-6 z-index-1  pull-right">
       <div class="col-md-5 filter-label">
         <label class="pull-right m-t-10">Filter by :</label>
       </div>
