@@ -37,11 +37,13 @@
               </li>
               <li ng-click="openReporting()">Reporting Platform
               </li>
-              <li ng-click="openMRCM()">MRCM 
+              <li ng-click="openMRCM()">MRCM
               </li>
               <li ng-click="gotoTemplates()">Template Management
               </li>
-              <li ng-click="openReleaseNotes()">Release Notes 
+              <li ng-click="openReleaseNotes()">Release Notes
+              </li>
+              <li ng-click="openValidationBrowser()">Validation Browser
               </li>
             </ul>
           </li>
@@ -132,7 +134,7 @@
                 ng-click="openSearchProjectsModal()"><i class="md md-search f20"></i>
                 <span class="button-link">Search projects</span> </button>
 
-      </li>      
+      </li>
       <li class="pull-right">
         <a id="profile_not_active" title="display name will link to profile services in later updates">
           <span ng-if="accountDetails === null">Logged in as unknown user</span>
@@ -149,7 +151,7 @@
       <div><span class="w600">RBAC Roles</span>: <span ng-style="(rbacRoles.length === 0 || !projectOrCodeSystemFound) && {'font-style':'italic'}">{{projectOrCodeSystemFound ? (rbacRoles.length !== 0 ? rbacRoles : 'No roles found') : 'Please select project or task to view your RBAC permissions'}}</span></div>
       <br>
       <div><span class="w600">IMS Roles</span>: <span ng-style="imsRoles.length === 0 && {'font-style':'italic'}">{{imsRoles.length !== 0 ? imsRoles : 'No roles found'}}</span></div>
-    </div>    
+    </div>
   </script>
 </nav>
 
