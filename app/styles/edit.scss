@@ -104,7 +104,10 @@ button.widget-toolbar {
     margin: 0;
     padding: 0;
 }
-
+.task-detail-tab.scroll-if-height {
+    height: auto;
+    max-height: 80vh;
+}
 .task-detail.task-detail-description a {
     color: #2196F3;
 }
