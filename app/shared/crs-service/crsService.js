@@ -288,8 +288,8 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendError(message);
           deferred.reject(message);
         }
-        
-        terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, attachment.content.definitionOfChanges.summary.endsWith('dependecies')).then(function(response) {
+        let includeDependencies = /^Content\spromotion\sof+\s\d+\sand\sdependency:/.test(attachment.content.definitionOfChanges.summary);
+        terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, includeDependencies).then(function(response) {
           angular.forEach(response, function (concept) {
             donatedConceptIds.push(concept.conceptId);
           });
