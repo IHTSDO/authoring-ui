@@ -4645,8 +4645,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.requestPromotion = function() {
+          if(scope.concept.released === true && hasUnpublishedChanges()) {
+            scope.errors = ['This concept has unpublished changes, and therefore cannot be promoted. Please revert these changes and try again.'];
+            return;
+          }
+
           if (!componentAuthoringUtil.checkComponentsReleased(scope.concept)) {
-            notificationService.sendError('Could not request promotion for this concept as there are unpublished changes');
+            scope.errors = ['This concept has unreleased components, and therefore cannot be promoted.'];
             return;
           }
 
