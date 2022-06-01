@@ -279,12 +279,14 @@ angular.module('singleConceptAuthoringApp')
         var organization = JSON.parse(attachment.organization);
         var codeSystem = metadataService.getCodeSystenForGivenShortname(organization.value);
         if (!codeSystem) {
-          notificationService.sendError('Could not find code system for ' + organization.value);
-          return;
+          let message = 'Could not find code system for ' + organization.value;
+          notificationService.sendError(message);
+          deferred.reject(message);
         }
         if (!codeSystem.latestVersion) {
-          notificationService.sendError('Latest version not found against code system ' + organization.value);
-          return;
+          let message = 'The latest version not found against code system ' + organization.value;
+          notificationService.sendError(message);
+          deferred.reject(message);
         }
         
         terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, attachment.content.definitionOfChanges.summary.endsWith('dependecies')).then(function(response) {
@@ -451,8 +453,7 @@ angular.module('singleConceptAuthoringApp')
                   deferred.resolve(currentTaskConcepts);
                 }, function (error) {
                   notificationService.sendError(error);
-                  // NOTE: Must resolve to prevent blocking in edit.js
-                  deferred.resolve([]);
+                  deferred.reject(error);
                 });
               }
             });
