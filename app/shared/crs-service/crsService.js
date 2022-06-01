@@ -398,14 +398,20 @@ angular.module('singleConceptAuthoringApp')
             saveCrsConceptsUiState();
 
             $rootScope.$broadcast('initialiseCrsConceptsComplete');
+            
             // open all concepts in editing
+            let conceptsToOpen = [];
             angular.forEach(currentTaskConcepts, function (concept) {
               if (concept.saved) {
-                $rootScope.$broadcast('editConcept', {
-                  conceptId : concept.conceptId
-                });
+                conceptsToOpen.push(concept.conceptId);
               }
             });
+            if (conceptsToOpen.length !== 0) {
+              $rootScope.$broadcast('editConcepts', {
+                items : conceptsToOpen
+              });
+            }          
+            
             deferred.resolve(currentTaskConcepts);
           }, function (error) {
             deferred.reject('Error creating concepts: ' + error);

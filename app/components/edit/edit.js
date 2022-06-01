@@ -859,6 +859,55 @@ angular.module('singleConceptAuthoringApp.edit', [
 //
 // Editing Notifications
 //
+    // Allow openning muiltiple concepts at the same time
+    let queue = [];
+    let processingConceptId = null;
+    let conceptLoaded = false;
+    $scope.$on('editConcepts', function (event, data) {
+      if (data.items) {
+        queue = queue.concat(data.items);        
+      }
+    });    
+
+    $scope.$watch(function () {
+      return queue;
+    }, function (newValue, oldValue) {
+      if (queue.length > 0) {
+        setTimeout(function waitForConceptLoadCompletely() {
+          if (queue.length > 0 || !conceptLoaded) {
+            if(!processingConceptId) {
+              processingConceptId = queue.shift();
+              $scope.$broadcast('editConcept', {conceptId: processingConceptId, loadFromTermServer: true});
+            }
+
+            conceptLoaded = false;
+            angular.forEach($scope.concepts, function(concept) {
+              if (concept.conceptId === processingConceptId) {
+                conceptLoaded = true;
+              }
+            });
+
+            if (conceptLoaded) {
+              if (queue.length > 0) {
+                processingConceptId = queue.shift();
+                $scope.$broadcast('editConcept', {conceptId: processingConceptId, loadFromTermServer: true});
+                conceptLoaded = false;
+              }
+
+              if (queue.length === 0) {
+                if (!conceptLoaded) {
+                  setTimeout(waitForConceptLoadCompletely, 200);
+                } else {
+                  processingConceptId = null;
+                }
+              }
+            } else {
+              setTimeout(waitForConceptLoadCompletely, 200);
+            }
+          }
+        });
+      }
+    }, true);
 
     $scope.conceptLoading = false;
 
