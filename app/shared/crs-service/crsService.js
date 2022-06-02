@@ -288,42 +288,53 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendError(message);
           deferred.reject(message);
         }
-        let includeDependencies = /^Content\spromotion\sof+\s\d+\sand\sdependency:/.test(attachment.content.definitionOfChanges.summary);
-        terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, includeDependencies).then(function(response) {
-          angular.forEach(response, function (concept) {
-            donatedConceptIds.push(concept.conceptId);
-          });
-          terminologyServerService.bulkRetrieveFullConcept(donatedConceptIds, destinationBranch).then(function(concepts) {
-            angular.forEach(concepts, function (fullConcept) {
-              donatedConcepts.push({
-                // the id fields (for convenience)
-                conceptId: fullConcept.conceptId,
-                fsn: fullConcept.fsn,
-                preferredSynonym: fullConcept.preferredSynonym,
+        // Set author flag - batch-change: true
+        var metadata = {'authorFlags': {'batch-change': 'true'}};
+        terminologyServerService.updateBranchMetadata(destinationBranch, metadata).then(function (response) {
+          var branchMetadata = metadataService.getBranchMetadata();
+          branchMetadata.metadata = response;
+          metadataService.setBranchMetadata(branchMetadata);
 
-                // the request url
-                requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
-
-                // the ticket ids
-                crsId: attachment.issueKey,
-                scaId: attachment.ticketKey,
-
-                // the freshly retrieved concept with definition changes appended
-                concept: fullConcept,
-
-                // the original JSON
-                conceptJson: attachment,
-                saved: true,
-
-                isNewConcept: false,
-                requiresCreation: false
-              });
+          let includeDependencies = /^Content\spromotion\sof+\s\d+\sand\sdependency:/.test(attachment.content.definitionOfChanges.summary);
+          terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, includeDependencies).then(function(response) {
+            angular.forEach(response, function (concept) {
+              donatedConceptIds.push(concept.conceptId);
             });
-            deferred.resolve(donatedConcepts);
+            terminologyServerService.bulkRetrieveFullConcept(donatedConceptIds, destinationBranch).then(function(concepts) {
+              angular.forEach(concepts, function (fullConcept) {
+                donatedConcepts.push({
+                  // the id fields (for convenience)
+                  conceptId: fullConcept.conceptId,
+                  fsn: fullConcept.fsn,
+                  preferredSynonym: fullConcept.preferredSynonym,
+
+                  // the request url
+                  requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
+
+                  // the ticket ids
+                  crsId: attachment.issueKey,
+                  scaId: attachment.ticketKey,
+
+                  // the freshly retrieved concept with definition changes appended
+                  concept: fullConcept,
+
+                  // the original JSON
+                  conceptJson: attachment,
+                  saved: true,
+
+                  isNewConcept: false,
+                  requiresCreation: false
+                });
+              });
+              deferred.resolve(donatedConcepts);
+            });
+          }, function (error) {
+            deferred.reject(error.data.message);
           });
         }, function (error) {
-          deferred.reject(error.data.message);
+          console.error('Failed to set author flag');
         });
+
         return deferred.promise;
       }
 
@@ -398,7 +409,7 @@ angular.module('singleConceptAuthoringApp')
             saveCrsConceptsUiState();
 
             $rootScope.$broadcast('initialiseCrsConceptsComplete');
-            
+
             // open all concepts in editing
             let conceptsToOpen = [];
             angular.forEach(currentTaskConcepts, function (concept) {
@@ -410,8 +421,8 @@ angular.module('singleConceptAuthoringApp')
               $rootScope.$broadcast('editConcepts', {
                 items : conceptsToOpen
               });
-            }          
-            
+            }
+
             deferred.resolve(currentTaskConcepts);
           }, function (error) {
             deferred.reject('Error creating concepts: ' + error);
