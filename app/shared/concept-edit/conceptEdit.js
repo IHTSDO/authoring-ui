@@ -529,17 +529,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
         scope.crsFilter = crsService.crsFilter;
         scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
+        scope.isDonatedConcept = crsService.getCrsConcepts().filter(function(concept) { 
+          return concept.conceptId === scope.concept.conceptId 
+                && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
+                && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
 
         var conceptsMap = {};
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
         var semanticTags = metadataService.getSemanticTags();
-        var internationalMetadata = metadataService.getInternationalMetadata();
-        var isDonatedConcept = crsService.getCrsConcepts().filter(function(concept) { 
-          return concept.conceptId === scope.concept.conceptId 
-                && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
-                && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
+        var internationalMetadata = metadataService.getInternationalMetadata();        
 
         //var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
         var originalConceptId = null;
@@ -5512,7 +5512,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!componenetId || !terminologyServerService.isSctid(componenetId)) return false;
 
           var partitionIdentifier = componenetId.slice(componenetId.length - 3, componenetId.length - 2)
-          if (isDonatedConcept && !metadataService.isExtensionSet()
+          if (scope.isDonatedConcept && !metadataService.isExtensionSet()
               && partitionIdentifier === '1' /* Long format */) {
             var namespaceId = componenetId.slice(componenetId.length - 10, componenetId.length - 3);
             var namespace = metadataService.getNamespaceById(parseInt(namespaceId));
