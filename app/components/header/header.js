@@ -240,10 +240,13 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.openReporting = function() {
-          if ($rootScope.currentTask && $routeParams.taskKey) {
+          if(window.location.href.indexOf("task/") > -1) {
             window.open('/reporting/' + $rootScope.currentTask.branchPath);
-          } else if (window.location.href.indexOf('project/') > -1) {
-            window.open('/reporting/' + metadataService.getBranchRoot());
+          } else if(window.location.href.indexOf("project/") > -1) {
+            window.open('/reporting/' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey);
+          } else if(window.location.href.indexOf("codesystem/") > -1) {
+            var codeSystem = metadataService.getCodeSystenForGivenShortname($routeParams.codeSystem);
+            window.open('/reporting/' + codeSystem.branchPath);
           } else {
             window.open('/reporting/');
           }
