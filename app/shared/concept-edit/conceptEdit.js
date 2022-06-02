@@ -536,6 +536,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
         var semanticTags = metadataService.getSemanticTags();
         var internationalMetadata = metadataService.getInternationalMetadata();
+        var isDonatedConcept = crsService.getCrsConcepts().filter(function(concept) { 
+          return concept.conceptId === scope.concept.conceptId 
+                && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
+                && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
 
         //var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
         var originalConceptId = null;
@@ -4650,11 +4654,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if (!componentAuthoringUtil.checkComponentsReleased(scope.concept)) {
-            scope.errors = ['This concept has unreleased components, and therefore cannot be promoted.'];
-            return;
-          }
-
           let project = metadataService.getProjectForKey($routeParams.projectKey);
           if (!project || !project.codeSystem) {
             notificationService.sendError('Could not determine the code system for project key ' + $routeParams.projectKey);
@@ -5508,6 +5507,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           return '';
         }
+
+        scope.isDonatedComponent = function(componenetId) {
+          if (!componenetId || !terminologyServerService.isSctid(componenetId)) return false;
+
+          var partitionIdentifier = componenetId.slice(componenetId.length - 3, componenetId.length - 2)
+          if (isDonatedConcept && !metadataService.isExtensionSet()
+              && partitionIdentifier === '1' /* Long format */) {
+            var namespaceId = componenetId.slice(componenetId.length - 10, componenetId.length - 3);
+            var namespace = metadataService.getNamespaceById(parseInt(namespaceId));
+            if (namespace) {
+              return true;
+            }
+          }
+          return false; 
+        };
 
 //////////////////////////////////////////////////////////////////////////
 // CHeck for Promoted Task -- must be static
