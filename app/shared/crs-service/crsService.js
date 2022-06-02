@@ -295,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
           branchMetadata.metadata = response;
           metadataService.setBranchMetadata(branchMetadata);
 
-          let includeDependencies = /^Content\spromotion\sof+\s\d+\sand\sdependency:/.test(attachment.content.definitionOfChanges.summary);
+          let includeDependencies = /^Content\spromotion\sof+\s\d+\s+\|+.*\|\s+and\sdependency:/.test(attachment.content.definitionOfChanges.summary);
           terminologyServerService.donateConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, includeDependencies).then(function(response) {
             angular.forEach(response, function (concept) {
               donatedConceptIds.push(concept.conceptId);
