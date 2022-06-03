@@ -6011,13 +6011,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // on load, check concept promotion condition
           if (metadataService.isExtensionSet() && scope.concept.released && scope.concept.moduleId === metadataService.getCurrentModuleId()) {
-            terminologyServerService.findConcept(scope.concept.conceptId, 'MAIN').then(function(response) {
-              // do nothing
-            }, function (error) {
-              if(error && error.status === 404) {
-                scope.allowConceptPromotion = true;
-              }
-            });
+            scope.allowConceptPromotion = true;
           }
 
           // on load, check if a modified, unsaved version of this concept

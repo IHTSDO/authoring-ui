@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.continue = function (withDependencies) {
       let results = {};
-      results.withDependencies = withDependencies;      
+      results.withDependencies = withDependencies;
       $modalInstance.close(results);
     };
 
@@ -56,24 +56,10 @@ angular.module('singleConceptAuthoringApp')
       });
       terminologyServerService.searchConcepts($scope.branch, null, ecl, null, 100, false, null, true).then(function(response) {
         if (response && response.items) {
-          let ancestors = [];
-          angular.forEach(response.items, function(item) {
-            ancestors.push(item.conceptId);
-          });
-          if (ancestors.length !== 0) {
-            // check against MAIN to detect the dependent concepts
-            terminologyServerService.searchAllConcepts('MAIN', ancestors.join(','), null, null, ancestors.length, null, null, true, false, null, 'stated').then(function(result){
-              let conceptsExistingInMAIN = result.items.map(function(item) { return item.concept.conceptId });
-              $scope.dependencies = response.items.filter(function(item) { return conceptsExistingInMAIN.indexOf(item.conceptId) === -1 });
-              $scope.checkingDependenciesDone = true;
-              $scope.tableParamsDependencies.reload();
-            });
-          } else {
-            $scope.checkingDependenciesDone = true;
-          }
-        } else {
-          $scope.checkingDependenciesDone = true;
+          $scope.dependencies = response.items.filter(function(item) { return item.active && item.moduleId == concept.moduleId});          
         }
+        $scope.checkingDependenciesDone = true;
+        $scope.tableParamsDependencies.reload();
       });
     }
 
