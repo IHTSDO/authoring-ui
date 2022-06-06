@@ -256,10 +256,6 @@ angular.module('singleConceptAuthoringApp')
           window.open('/release-notes-management/');
         };
 
-        scope.openValidationBrowser = function() {
-          window.open('/validation-browser/');
-        };
-
         scope.openMRCM = function() {
           if(metadataService.isExtensionSet()) {
             let date = metadataService.getPreviousRelease();
@@ -285,10 +281,10 @@ angular.module('singleConceptAuthoringApp')
         scope.$watch('userRoles', function () {
           scope.projectOrCodeSystemFound = $routeParams.projectKey || $routeParams.codeSystem;
           if ($rootScope.userRoles) {
-            let roles = [];
+            let roles = []; 
             angular.forEach($rootScope.userRoles, function (role) {
               roles.push(role.toLowerCase());
-            });
+            });           
             scope.rbacRoles = roles.join(', ');
           }
         }, true);
@@ -298,7 +294,7 @@ angular.module('singleConceptAuthoringApp')
               $('.popover').each(function(){
                 if ($(this).hasClass("in") && $(this).hasClass("accountDetails") ) {
                   document.getElementById('accountDetails').click();
-                }
+                }                
               });
           }
         });
