@@ -6010,7 +6010,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, 1000);
 
           // on load, check concept promotion condition
-          if (metadataService.isExtensionSet() && scope.concept.released && scope.concept.moduleId === metadataService.getCurrentModuleId()) {
+          if (metadataService.isExtensionSet() && scope.concept.active && scope.concept.released && scope.concept.moduleId === metadataService.getCurrentModuleId()) {
             scope.allowConceptPromotion = true;
           }
 
