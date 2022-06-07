@@ -2047,12 +2047,18 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // Must create/load branch first as it's required by promotion concepts (if any) - need a destination branch to store the donated concepts
         loadBranch($scope.task.branchPath).then(function () {
-          crsService.setTask($scope.task).then(function () {
-            initializeTaskDetails();
-          }, function (error) {
-            console.error('Unexpected error checking CRS status. Error: ' + error);
-            initializeTaskDetails();
-          });
+          getRoleForTask().then(function() {
+            if ($scope.role === 'AUTHOR') {
+              crsService.setTask($scope.task).then(function () {
+                initializeTaskDetails();
+              }, function (error) {
+                console.error('Unexpected error checking CRS status. Error: ' + error);
+                initializeTaskDetails();
+              });
+            } else {
+              initializeTaskDetails();
+            }
+          });                   
         });        
       }, function (error) {
         notificationService.sendError('Unexpected error: ' + error);
@@ -2060,7 +2066,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     function initializeTaskDetails() {
-      $q.all([setExtensionDefaultModuleName(), getRoleForTask()]).then(function() {
+      setExtensionDefaultModuleName().then(function() {
         if ($scope.role === 'AUTHOR') {
           if ($routeParams.mode === 'edit' && metadataService.isExtensionSet() && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue === 'true') {
             terminologyServerService.branchUpgradeIntegrityCheck($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {
