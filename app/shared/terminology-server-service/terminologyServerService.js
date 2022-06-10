@@ -97,6 +97,16 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function setAuthorFlag(branch, requestBody) {
+        var deferred = $q.defer();
+        $http.post(apiEndpoint + 'branches/' + branch + '/actions/set-author-flag', requestBody).then(function (response) {          
+          deferred.resolve(response.data);
+        }, function (error) {          
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       /////////////////////////////////////
       // Terminology Server Concept Retrieval Methods
       /////////////////////////////////////
@@ -2501,6 +2511,7 @@ angular.module('singleConceptAuthoringApp')
         getConceptPreferredTerm: getConceptPreferredTerm,
         updateConcept: updateConcept,
         updateBranchMetadata: updateBranchMetadata,
+        setAuthorFlag: setAuthorFlag,
         bulkUpdateConcept: bulkUpdateConcept,
         bulkValidateConcepts: bulkValidateConcepts,
         createConcept: createConcept,
