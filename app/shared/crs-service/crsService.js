@@ -289,10 +289,9 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject(message);
         }
         // Set author flag - batch-change: true
-        var metadata = {'authorFlags': {'batch-change': 'true'}};
-        terminologyServerService.updateBranchMetadata(destinationBranch, metadata).then(function (response) {
+        terminologyServerService.setAuthorFlag(destinationBranch, {name: 'batch-change', value: true}).then(function (response) {
           var branchMetadata = metadataService.getBranchMetadata();
-          branchMetadata.metadata = response;
+          branchMetadata.metadata = response.metadata;
           metadataService.setBranchMetadata(branchMetadata);
 
           let includeDependencies = /^Content\spromotion\sof+\s\d+\s+\|+.*\|\s+and\sdependency:/.test(attachment.content.definitionOfChanges.summary);
