@@ -791,7 +791,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.exclusionsTableParams.reload();
                 });
               }
-              
+
               return;
             }
 
@@ -861,7 +861,8 @@ angular.module('singleConceptAuthoringApp')
                 isUserExclusion: instance.isUserExclusion,
                 validationRuleId: assertionFailure.assertionUuid,
                 assertionText: assertionFailure.assertionText,
-                componentId: instance.componentId
+                componentId: instance.componentId,
+                fullComponent: instance.fullComponent
               };
 
               objArray.push(obj);
@@ -993,62 +994,26 @@ angular.module('singleConceptAuthoringApp')
 // exclude a single failure, with optional commit
           scope.excludeFailure = function (failure) {
             if (scope.warningAssertion){
-              getAdditionalFieldsAsString(scope.branch, failure.componentId).then(function(result) {
-                var whitelistItem = {};
-                whitelistItem.componentId = failure.componentId;
-                whitelistItem.conceptId = failure.conceptId;
-                whitelistItem.validationRuleId = failure.validationRuleId;
-                whitelistItem.branch = scope.branch;
-                whitelistItem.additionalFields = result[failure.componentId];
-                whitelistItem.assertionFailureText = failure.assertionText;
-                aagService.addToWhitelist(whitelistItem).then(function(respone) {
-                  scope.allWhitelistItems.push(respone.data);
-                  scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
-                  failure.isUserExclusion = true;
-                  scope.resetUserExclusionFlag();
-                });
+              var whitelistItem = constructWhitelistItem(scope.branch, failure);
+              aagService.addToWhitelist(whitelistItem).then(function(respone) {
+                scope.allWhitelistItems.push(respone.data);
+                scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+                failure.isUserExclusion = true;
+                scope.resetUserExclusionFlag();
               });
             }
           };
+          
+          function constructWhitelistItem(branch, failure) {
+            var whitelistItem = {};
+            whitelistItem.componentId = failure.componentId;
+            whitelistItem.conceptId = failure.conceptId;
+            whitelistItem.validationRuleId = failure.validationRuleId;
+            whitelistItem.branch = branch;
+            whitelistItem.assertionFailureText = failure.assertionText;
+            whitelistItem.additionalFields = failure.fullComponent;
 
-          function getAdditionalFieldsAsString(branch, componentId) {
-            var deferred = $q.defer();
-            var SCTID_PATTERN = new RegExp("\\d{6,20}$");
-            var UUID_PATTERN = new RegExp("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-            if (SCTID_PATTERN.test(componentId)){
-              switch (componentId.substr(-2, 1)) {
-                case "0":
-                  terminologyServerService.getConceptProperties(componentId, branch).then(function(concept) {
-                    deferred.resolve({[componentId]: getStatusCode(concept.active) + ',' + concept.moduleId + ',' + getDefinitionStatusId(concept.definitionStatus)});
-                  });
-                  break;
-                case "1":
-                  terminologyServerService.getDescriptionProperties(componentId, branch).then(function(desc) {
-                    deferred.resolve({[componentId]: getStatusCode(desc.active) + ',' + desc.moduleId + ',' + desc.conceptId + ',' + desc.lang + ',' + desc.typeId + ',' + desc.term + ',' + getCaseSignificanceId(desc.caseSignificance)});
-                  });
-                  break;
-                case "2":
-                  terminologyServerService.getRelationshipProperties(componentId, branch).then(function(rel) {
-                    deferred.resolve({[componentId]: getStatusCode(rel.active) + ',' + rel.moduleId + ',' + rel.sourceId + ',' + rel.destinationId + ',' + rel.groupId + ',' + rel.typeId + ',' + getCharacteristicTypeId(rel.characteristicTypeId)});
-                  });
-                  break;
-                default:
-                  deferred.resolve({[componentId]: ''});
-                  break;
-              }
-            } else if (UUID_PATTERN.test(componentId)) {
-              terminologyServerService.getMemberProperties(componentId, branch + '/').then(function(member) {
-                var result = getStatusCode(member.active) + ',' + member.moduleId + ',' + member.refsetId + ',' + member.referencedComponentId;
-                for (var key in Object.keys(member.additionalFields)) {
-                  result += (',' + member.additionalFields[key]);
-                }
-                deferred.resolve({[componentId]: result});
-              });
-
-            } else {
-              deferred.resolve({[componentId]: ''});
-            }
-            return deferred.promise;
+            return whitelistItem;
           }
 
           function getCaseSignificanceId(caseSignificance) {
@@ -1192,36 +1157,22 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            if (scope.warningAssertion){
+            if (scope.warningAssertion) {
               var promises = [];
               angular.forEach(failuresToAddWhiteList, function (failure) {
                 failure.isUserExclusion = true;
-                promises.push(getAdditionalFieldsAsString(scope.branch,failure.componentId));
+                var whitelistItem = constructWhitelistItem(scope.branch, failure);
+                promises.push(aagService.addToWhitelist(whitelistItem));
               });
-              $q.all(promises).then(function (responses) {
-                promises = [];
-                angular.forEach(failuresToAddWhiteList, function (failure) {
-                  var whitelistItem = {};
-                  whitelistItem.componentId = failure.componentId;
-                  whitelistItem.conceptId = failure.conceptId;
-                  whitelistItem.validationRuleId = failure.validationRuleId;
-                  whitelistItem.branch = scope.branch;
-                  whitelistItem.assertionFailureText = failure.assertionText;
-                  whitelistItem.additionalFields = responses.filter(function(item){
-                    return item.hasOwnProperty(failure.componentId);
-                  })[0][failure.componentId];
-                  promises.push(aagService.addToWhitelist(whitelistItem));
+              $q.all(promises).then(function (results) {
+                results.forEach(function(item, current, array) {
+                  scope.allWhitelistItems.push(item.data);
+                  if (current === array.length - 1){
+                      scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+                  }
                 });
-                $q.all(promises).then(function (results) {
-                  results.forEach(function(item, current, array) {
-                    scope.allWhitelistItems.push(item.data);
-                    if (current === array.length - 1){
-                        scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
-                    }
-                  });
-                  scope.resetUserExclusionFlag()
-                });
-              });
+                scope.resetUserExclusionFlag()
+              });              
             } else {
               accountService.getAccount().then(function (accountDetails) {
                 // get the user name
