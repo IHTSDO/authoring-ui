@@ -127,6 +127,10 @@ angular.module('singleConceptAuthoringApp')
     }
 
     $scope.getTypeaheadConcepts = function(searchStr, inactivationIndication) {
+      var patt = new RegExp('^\\d+\\s\\|.*\\|$');
+      if (patt.test(searchStr)) {
+        searchStr = searchStr.substring(0, searchStr.indexOf(' '));
+      }
       return terminologyServerService.searchAllConcepts(metadataService.getBranch(), searchStr, null, 0, 50, null, true, true).then(function (response) {
         let descendants = [];
 
