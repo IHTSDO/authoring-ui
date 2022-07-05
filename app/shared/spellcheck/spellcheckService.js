@@ -56,9 +56,19 @@ angular.module('singleConceptAuthoringApp')
 
     function checkSpelling(term) {
       var deferred = $q.defer();
-      var suggestions = null;
       term = term.replace(/[()]/g, "");
-      var tokenizedWords = term ? term.toLowerCase().split(/[\s/]+/) : [];
+      var tokenizedWords = term ? term.split(/[\s/]+/) : [];
+      
+      // Ignore all upper case words
+      tokenizedWords = tokenizedWords.filter(function (item) {
+          return item !== item.toUpperCase();
+      });
+
+      // convert to lowerver case and remove punctuation
+      for (let i = 0; i < tokenizedWords.length; i++) {
+        tokenizedWords[i] = tokenizedWords[i].replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]$/g,"").toLowerCase();
+      }
+
       getSuggestions(tokenizedWords).then(function (suggestions) {
         angular.forEach(tokenizedWords, function (word) {
           if (suggestions.hasOwnProperty(word)) {
