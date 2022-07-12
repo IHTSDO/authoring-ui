@@ -102,7 +102,12 @@ angular.module('singleConceptAuthoringApp')
             });
 
             if (status && status === 'Stale') {
-              return status;
+              if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
+                var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
+                return status + ' ' + covertToUTCTime(endTime);
+              } else {
+                return status;
+              }              
             }
 
             if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
