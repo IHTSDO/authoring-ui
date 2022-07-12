@@ -61,7 +61,7 @@
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs"> </div>
       <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding word-break"ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> <a ng-href="{{item.requestUrl}}" target="_blank"> Content Request #{{item.conceptJson.issueKey}} </a> </div>
-      <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs"> <a ng-href="{{item.requestUrl}}" target="_blank">
+      <div class="no-padding  col-lg-3 col-md-3 hidden-sm hidden-xs"> <a ng-href="{{item.requestUrl}}" target="_blank">
         <button
             class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right">
         <div class="fa fa-folder-open-o"></div>
@@ -75,7 +75,17 @@
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
         <div class="md md-warning"></div>
         <span>Save Status Uncertain</span> </button>
-        {{item.saved}}, {{item.warning}} </div>
+        <button ng-if="!item.saved  || item.deleted"
+                class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom small-size-tooltip"
+                ng-click="rejectCrsRequest(item)">
+        <div class="md md-remove-circle-outline"></div>
+        <span>Reject</span> </button>
+
+        <button ng-disabled="isPendingForClarification(item)"
+                class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right"
+                ng-click="pendingRequest(item)">
+        <div class="glyphicon glyphicon-hourglass"></div>
+        <span>CRS Pending Clarification</span> </button> </div>
     </div>
   </div>
 </div>
