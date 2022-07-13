@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="col-md-2">
-              <select ng-if="typeDropdown.length > 2" name="select-choice" class="form-control"
+              <select ng-if="typeDropdown.length > 2" name="select-choice" class="table-search form-control"
                         ng-options="type for type in typeDropdown | orderBy: 'title'"
                         ng-model="selectedType.type"
                         ng-change="refreshTable()"
