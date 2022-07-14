@@ -78,9 +78,10 @@ angular.module('singleConceptAuthoringApp')
             let found = false;
             angular.forEach(concept.classAxioms, function(axiom){
                 angular.forEach(axiom.relationships, function (axiomRel){
-                  if(axiomRel.type.conceptId === crsRelationship.type.conceptId &&
-                     axiomRel.target.conceptId === crsRelationship.target.conceptId &&
-                     axiomRel.groupId === crsRelationship.groupId){
+                  if(axiomRel.type.conceptId === crsRelationship.type.conceptId 
+                    && ((axiomRel.target && crsRelationship.target && axiomRel.target.conceptId === crsRelationship.target.conceptId)
+                        || (axiomRel.concreteValue && crsRelationship.concreteValue && axiomRel.concreteValue.valueWithPrefix === crsRelationship.concreteValue.valueWithPrefix))
+                    && axiomRel.groupId === crsRelationship.groupId){
                       found = true;
                       axiomRel.definitionOfChanges = crsRelationship.definitionOfChanges;
                   }
