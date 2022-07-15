@@ -37,6 +37,15 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       }
     }
 
+    $scope.updateDroolsValidation = function() {
+      if ($scope.transformation.recipe === 'description-inactivate-tsv') {
+        $scope.enableDrools = true;
+      } else {
+        $scope.enableDrools = false;
+      }
+      $scope.toggleDroolsValidation();
+    }
+
     $scope.createTasks = function() {
       var errors = $scope.checkPrerequisites();
       if (errors.length > 0) {
