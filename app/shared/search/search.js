@@ -244,11 +244,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.isEscgMode = false;
                   $scope.templateMode = true;
                   $scope.userOptions.statedSelection = 'stated';
+                  $scope.userOptions.searchType = 1;
                 }
                 else {
                   $scope.searchMode = 'Switch to ECL';
                   $scope.isEscgMode = false;
                   $scope.templateMode = false;
+                  $scope.userOptions.searchType = 1;
+                  $scope.searchType = 'Active Only';
                 }
             }
         else{
@@ -266,6 +269,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.searchMode = 'Switch to ECL';
               $scope.isEscgMode = false;
               $scope.templateMode = false;
+              $scope.userOptions.searchType = 1;
+              $scope.searchType = 'Active Only';
             }
         }
 
