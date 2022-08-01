@@ -41,8 +41,8 @@
   <div class="validation-report report-table" ng-show="!isCollapsed && (validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE')">
     <div role="tabpanel" class="">
       <div class="row" ng-if="viewTop && validationContainer.report">
-        <div class="col-md-2 m-r-5 pull-right">         
-          <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="form-control pull-right">
+        <div class="col-md-2 m-r-5 m-b-5 m-t-5 pull-right">         
+          <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="table-search form-control pull-right">
             <option value="">All</option>
             <option value="technical">Technical Issues</option>
             <option value="author">Author Issues</option>
