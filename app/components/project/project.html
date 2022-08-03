@@ -412,7 +412,7 @@
         <div ng-show="releaseNotesCollapsed === false">
             <div class="card-content clearfix">
                 <div class="row task-details project-main-buttons">
-                    <div ng-repeat="lineItem in lineItems"class="col-md-3">
+                    <div ng-repeat="lineItem in lineItems | orderBy : 'title'"class="col-md-3">
                     <button ng-click="openLineItemModal(lineItem.id)" class="btn btn-border editingtask" style="color: #666"> 
                         <span class="md fa-sca fa-clipboard iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
 font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{lineItem.title}}</span> 
