@@ -16,27 +16,27 @@
         </div>
 
         <div class="col-md-6">
-          <label class="no-margin">Select Project:</label>
+          <label class="no-margin">Select Project:</label>            
           <select name="select-choice" class="form-control"
             ng-options="project.key as project.title for project in projects | orderBy: 'title'"
-            ng-model="transformation.projectKey"
+            ng-model="transformation.projectKey"        
             >
           </select>
         </div>
 
         <div class="col-md-6 p-t-20">
           <label class="no-margin">Select Assignee:</label>
-          <input class="form-control" type="text"
+          <input class="form-control" type="text" 
             ng-model="transformation.assignee"
-            typeahead="user as user.displayName for user in getUsersForTypeahead(transformation.reviewer) | filter:{displayName:$viewValue}">
+            typeahead="user as user.displayName for user in getUsersForTypeahead(transformation.reviewer) | filter:{displayName:$viewValue}">                 
           </input>
         </div>
 
         <div class="col-md-6 p-t-20">
-          <label class="no-margin">Select Reviewer:</label>
-          <input class="form-control" type="text"
+          <label class="no-margin">Select Reviewer:</label>            
+          <input class="form-control" type="text" 
             ng-model="transformation.reviewer"
-            typeahead="user as user.displayName for user in getUsersForTypeahead(transformation.assignee) | filter:{displayName:$viewValue}">
+            typeahead="user as user.displayName for user in getUsersForTypeahead(transformation.assignee) | filter:{displayName:$viewValue}">                 
           </input>
         </div>
 
@@ -49,21 +49,20 @@
         </div>
 
         <div class="col-md-6 p-t-20">
-          <label class="no-margin">Select Import Type:</label>
+          <label class="no-margin">Select Import Type:</label>            
           <select name="select-choice" class="form-control"
             ng-options="recipe.key as recipe.title for recipe in transformationRecipes"
-            ng-model="transformation.recipe"
-            ng-change="updateDroolsValidation()"
+            ng-model="transformation.recipe"        
             >
           </select>
         </div>
 
         <div class="col-md-12 p-t-20">
-          <label class="no-margin">Enable Drools Validation</label>
+          <label class="no-margin">Enable Drools Validation</label>            
           <input class="checkbox-inline" type="checkbox" ng-click="toggleDroolsValidation()" style="margin-top: 0px; width: 15px; min-height: 0px; margin-left: 5px; outline: none;" ng-model="enableDrools">
-        </div>
+        </div>        
 
-        <div class="col-md-6 p-t-20">
+        <div class="col-md-6 p-t-20">         
           <label class="btn btn-default btn-file btn-primary button-link sca-light-text" id="translation-batch-file-label">
             {{selectedFile ==  null? 'Select Batch File' : 'File Selected: ' + selectedFile.name}}
             <input type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this)" class="invisible">
@@ -75,7 +74,7 @@
 
   <!--Footer-->
   <div class="modal-footer">
-    <div class="row no-padding no-gutter">
+    <div class="row no-padding no-gutter">           
       <!-- Cancel always appears -->
       <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-warning no-margin"
@@ -86,6 +85,6 @@
         <button type="button" ng-disabled="uploading || checkPrerequisites().length !== 0" class="col-md-12 btn btn-info no-margin"
                 ng-click="createTasks()">Create Tasks</button>
       </div>
-    </div>
+    </div>    
   </div>
 </div>
