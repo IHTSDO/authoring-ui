@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
                 //let content = html.endsWith('\n<p><br></p>') ? html + '\n<p><br></p>' : html;
                 quill.clipboard.dangerouslyPasteHTML(html);
                 $scope.original = converter.makeMarkdown(quill.root.innerHTML);
-                
+
             };
             if($scope.all) {
                 let content = '';
@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
                     content = content + '**' + item.title + ':**\n\n';
                     content = content + item.content + '\n\n<br>';
                 });
-                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml(content));                
+                quill.clipboard.dangerouslyPasteHTML(converter.makeHtml(content));
             }
             if(readOnly) {
               quill.enable(false);
@@ -85,11 +85,8 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.save = function () {
         let converter = new showdown.Converter();
-        let content = quill.root.innerHTML
-        content = converter.makeMarkdown(content);
-        let div = document.createElement("div");
-        div.innerHTML = content;
-        $scope.lineItem.content = div.textContent || div.innerText || "";
+        let content = quill.root.innerHTML;
+        $scope.lineItem.content = converter.makeMarkdown(content);
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
               $scope.lineItem = response;
