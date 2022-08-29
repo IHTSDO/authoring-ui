@@ -52,8 +52,8 @@ angular.module('singleConceptAuthoringApp')
             var converter = new showdown.Converter();
             if($scope.lineItem.content){
                 let html = converter.makeHtml($scope.lineItem.content);
-                //let content = html.endsWith('\n<p><br></p>') ? html + '\n<p><br></p>' : html;
-                quill.clipboard.dangerouslyPasteHTML(html);
+                let content = html.endsWith('\n<p><br></p>') ? html + '\n<p><br></p>' : html;
+                quill.clipboard.dangerouslyPasteHTML(content);
                 $scope.original = converter.makeMarkdown(quill.root.innerHTML);
 
             };
@@ -85,8 +85,17 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.save = function () {
         let converter = new showdown.Converter();
-        let content = quill.root.innerHTML;
-        $scope.lineItem.content = converter.makeMarkdown(content);
+        let content = quill.root.innerHTML.replace('<span class="ql-cursor">﻿</span>',''); // Remove cursor
+
+        // rerverse the whitespace. For example: '<strong> test</strong>' -> ' <strong>test</strong>'
+        content = content.replaceRecursive(/\<\w+\>\s+/g, function (wm, m) { return  wm.substring(wm.lastIndexOf('>') + 1) + wm.substring(0, wm.indexOf('>') + 1);});
+
+        // rerverse the whitespace. For example: '<strong>test </strong>' -> '<strong>test</strong> '
+        content = content.replaceRecursive(/\s+\<(\/.*?)\>/g, function (wm) {return wm.substring(wm.indexOf('<')) + wm.substring(0, wm.indexOf('<'));});
+
+        content = converter.makeMarkdown(content);
+
+        $scope.lineItem.content = content;
         if(!$scope.lineItem.id){
             rnmService.createBranchLineItem($scope.branch, $scope.lineItem).then(function (response) {
               $scope.lineItem = response;
