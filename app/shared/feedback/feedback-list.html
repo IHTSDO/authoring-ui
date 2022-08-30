@@ -257,10 +257,13 @@
             <!--      <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default pull-left">&laquo; Previous</button>-->
             
             <li>
-              <button ng-if="role === 'AUTHOR'" type="button" ng-click="toggleViewOnlyConceptsWithFeedback()"
-                      class="btn-review-feedback"> <span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span> <span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span> </button>
-              <button ng-if="role === 'REVIEWER' && task.status === 'In Review'" type="button"
-                      ng-click="toggleOnlyConceptsWithFeedback()" class="btn-review-feedback"> <span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span> <span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span> </button>
+              <button ng-if="role === 'AUTHOR' || (role === 'REVIEWER' && task.status === 'In Review')" type="button" 
+                      ng-click="toggleViewConcepts()"
+                      class="btn-review-feedback"> 
+                        <span ng-if="viewConceptsMode === 'Without Feedback'">View All Concepts</span>
+                        <span ng-if="viewConceptsMode === 'All'">Show Only Concepts With Feedback</span>
+                        <span ng-if="viewConceptsMode === 'With Feedback'">Show Only Concepts Without Feedback</span>
+              </button>
             </li>
             <li ng-if="(role === 'REVIEWER' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">              
               <button type="button" ng-click="download()"

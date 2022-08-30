@@ -342,28 +342,29 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   // filter based on presence of feedback if requested
-                  if (scope.viewOnlyConceptsWithFeedback) {
-
+                  if (scope.viewConceptsMode !== 'All') {
                     var newData = [];
                     angular.forEach(myData, function (item) {
-                      if (item.messages && item.messages.length > 0) {
+                      if (scope.viewConceptsMode === 'With Feedback' && item.messages && item.messages.length > 0) {
+                        newData.push(item);
+                      } else if (scope.viewConceptsMode === 'Without Feedback' && (!item.messages || item.messages.length === 0)) {
                         newData.push(item);
                       }
-                      myData = newData;
-
-                      // set viewed flag based on current viewed list
-                      angular.forEach(scope.viewedConcepts, function (viewedConcept) {
-                        if (viewedConcept.conceptId === item.conceptId) {
-                          item.viewed = true;
-                        } else {
-                          item.viewed = false;
-                        }
-                      });
                     });
+                    myData = newData;
                   }
 
-                  // hard set the new total
+                  // set viewed flag based on current viewed list
+                  angular.forEach(myData, function (item) {
+                    item.viewed = false;
+                    angular.forEach(scope.viewedConcepts, function (viewedConcept) {
+                      if (viewedConcept.conceptId === item.conceptId) {
+                        item.viewed = true;
+                      }
+                    });
+                  });
 
+                  // hard set the new total
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
 
                   params.total(myData.length);
@@ -602,12 +603,19 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          // controls to allow author to view only concepts with feedeback
-          scope.viewOnlyConceptsWithFeedback = true;
-          scope.toggleViewOnlyConceptsWithFeedback = function () {
-            scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
+          // controls to allow to view only concepts with feedeback
+          scope.viewConceptsMode = 'All';
+          scope.toggleViewConcepts = function () {
+            if (scope.viewConceptsMode === 'With Feedback') {
+              scope.viewConceptsMode = 'Without Feedback';
+            } else if (scope.viewConceptsMode === 'Without Feedback') {
+              scope.viewConceptsMode = 'All';
+            } else {
+              scope.viewConceptsMode = 'With Feedback';
+            }
             scope.conceptsToReviewTableParams.reload();
           };
+
           scope.download = function() {
             if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
               notificationService.sendMessage('No concepts to download.', 10000);
@@ -656,12 +664,6 @@ angular.module('singleConceptAuthoringApp')
             return str;
           }
 
-          // controls to allow author to view only concepts with feedeback
-          scope.viewOnlyConceptsWithFeedback = false;
-          scope.toggleOnlyConceptsWithFeedback = function () {
-            scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
-            scope.conceptsToReviewTableParams.reload();
-          };
           function updateReviewedListUiState() {
             var conceptIds = [];
             angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
