@@ -692,7 +692,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isGciAxiomPresent = function(conceptId) {
           if (conceptId) {
             let concept = conceptsMap[conceptId];
-            return concept && concept.hasOwnProperty('gciAxioms') ? concept.gciAxioms.length !== 0 && concept.gciAxioms.filter(function (axiom) { return axiom.active;}).length !== 0 : false;
+            return concept && concept.hasOwnProperty('gciAxioms') && concept.definitionStatus !== 'FULLY_DEFINED' ? concept.gciAxioms.length !== 0 && concept.gciAxioms.filter(function (axiom) { return axiom.active;}).length !== 0 : false;
           }
           else {
             return (scope.concept.hasOwnProperty('gciAxioms') && scope.concept.definitionStatus !== 'FULLY_DEFINED') ? scope.concept.gciAxioms.length !== 0 && scope.concept.gciAxioms.filter(function (axiom) { return axiom.active;}).length !== 0 : false;
