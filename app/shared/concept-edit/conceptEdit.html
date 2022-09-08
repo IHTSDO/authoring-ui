@@ -155,7 +155,7 @@
             <span ng-if="!isStatic">Delete Unpublished Concept</span>
           </button>
           <button type="button"
-                  ng-class="[{green : concept.active && !isLockedModule(concept.moduleId)}, {red: !concept.active && !isLockedModule(concept.moduleId)}]"
+                  ng-class="[{green : concept.active}, {red: !concept.active}]"
                   ng-click="toggleConceptActive(concept)"
                   ng-if="concept.released || isMerge"
                   ng-disabled="isInactivation || isStatic || isMerge || isIntegrityCheckView || isLockedModule(concept.moduleId)"
