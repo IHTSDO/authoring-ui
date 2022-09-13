@@ -145,7 +145,7 @@
   </div>
 
   <!-- Exclusions table -->
-  <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
+  <div class="row m-t-15 no-gutter table-responsive white" ng-show="viewExclusions">
     <div class="row">
       <div class="col-md-4 p-10" style="margin-top: 9px;">
           <strong>{{exceptionLoading ? 'Loading...' : (viewFullListException ? (overriddenLabels && overriddenLabels.exceptionLabel2 ? overriddenLabels.exceptionLabel2 :'Exceptions on all projects since last release') : (overriddenLabels && overriddenLabels.exceptionLabel1? overriddenLabels.exceptionLabel1 : 'Exceptions on this project since last promotion'))}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}} 
