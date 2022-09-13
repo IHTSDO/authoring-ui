@@ -1201,7 +1201,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       //Function to bulk get concepts
-      function bulkGetConceptUsingPOST(conceptIdList, branch) {
+      function bulkGetConceptUsingPOST(conceptIdList, branch, limit) {
         var deferred = $q.defer();
         if (conceptIdList.length === 0) {
           deferred.resolve({"items": []});
@@ -1210,6 +1210,9 @@ angular.module('singleConceptAuthoringApp')
         var body = {
             "conceptIds": conceptIdList,
             "limit": 1000
+        }
+        if (limit) {
+          body["limit"] = limit;
         }
         $http.post(apiEndpoint + branch + '/concepts/search', body).then(function (response) {
           deferred.resolve(response.data);
