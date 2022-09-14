@@ -260,9 +260,9 @@
               <button ng-if="role === 'AUTHOR' || (role === 'REVIEWER' && task.status === 'In Review')" type="button" 
                       ng-click="toggleViewConcepts()"
                       class="btn-review-feedback"> 
-                        <span ng-if="viewConceptsMode === 'Without Feedback'">View All Concepts</span>
-                        <span ng-if="viewConceptsMode === 'All'">Show Only Concepts With Feedback</span>
-                        <span ng-if="viewConceptsMode === 'With Feedback'">Show Only Concepts Without Feedback</span>
+                        <span ng-if="viewConceptsMode === 'Without Feedback'">Switch to view all concepts</span>
+                        <span ng-if="viewConceptsMode === 'All'">Switch to view only concepts with feedback</span>
+                        <span ng-if="viewConceptsMode === 'With Feedback'">Switch to view only concepts without feedback</span>
               </button>
             </li>
             <li ng-if="(role === 'REVIEWER' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">              
