@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('crsConceptList', function ($rootScope, $q, scaService, metadataService, crsService, notificationService, modalService) {
+  .directive('crsConceptList', function ($rootScope, accountService, crsService, notificationService, modalService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -14,6 +14,7 @@ angular.module('singleConceptAuthoringApp')
       link: function (scope) {
 
         scope.crsConcepts = [];
+        scope.role = null;
         scope.getCrsConcepts = crsService.getCrsConcepts;
         scope.getCrsEmptyRequests = crsService.getCrsEmptyRequests;
 
@@ -66,8 +67,19 @@ angular.module('singleConceptAuthoringApp')
           });
         };
 
+        scope.deleteConcept = function(concept) {
+          crsService.deleteCrsConcept(concept.conceptId);
+          scope.crsConcepts = scope.getCrsConcepts();
+        };
+
         function initialize() {
           scope.crsConcepts = scope.getCrsConcepts();
+          if (scope.crsConcepts.length !== 0) {
+            accountService.getRoleForTask(scope.task).then(function (role) {
+              scope.role = role;
+              console.log(scope.role);
+            });
+          }          
         }
 
         initialize();
@@ -80,11 +92,6 @@ angular.module('singleConceptAuthoringApp')
           initialize();
         });
 
-        scope.deleteConcept = function(concept) {
-          crsService.deleteCrsConcept(concept.conceptId);
-          scope.crsConcepts = scope.getCrsConcepts();
-        };
-        
       }
     };
   })

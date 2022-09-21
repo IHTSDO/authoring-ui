@@ -342,7 +342,7 @@ angular.module('singleConceptAuthoringApp')
 // Stores the CRS Concept list in UI State
 //
       function saveCrsConceptsUiState() {
-        scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
+        scaService.saveSharedUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
       }
 
 // Reject a CRS concept by Authoring user
@@ -437,7 +437,7 @@ angular.module('singleConceptAuthoringApp')
 //
 // Gets the CRS concepts for task, initializing UI states on first attempt
 // NOTE: This function MUST resolve to avoid blocking edit-view initialization
-      function setTask(task) {
+      function setTask(task, isTaskAuthor) {
         var deferred = $q.defer();
 
         // set the local task variable for use by other functions
@@ -457,7 +457,7 @@ angular.module('singleConceptAuthoringApp')
           $timeout(function () {
 
             // check if this task has previously been initialized
-            scaService.getUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function (concepts) {
+            getCrsConceptsForTask(task.projectKey, task.key).then(function (concepts) {
 
               // if already initialized, simply return
               if (concepts) {
@@ -465,17 +465,33 @@ angular.module('singleConceptAuthoringApp')
                 getBulkCrsRequestsStatus();
                 deferred.resolve(concepts);
               } else {
-                initializeCrsTask().then(function () {
-                  getBulkCrsRequestsStatus();
-                  deferred.resolve(currentTaskConcepts);
-                }, function (error) {
-                  notificationService.sendError(error);
-                  deferred.reject(error);
-                });
+                if (isTaskAuthor) {
+                  initializeCrsTask().then(function () {
+                    getBulkCrsRequestsStatus();
+                    deferred.resolve(currentTaskConcepts);
+                  }, function (error) {
+                    notificationService.sendError(error);
+                    deferred.reject(error);
+                  });
+                }                
               }
             });
           }, timeDelay);
         }
+        return deferred.promise;
+      }
+
+      function getCrsConceptsForTask(projectKey, taskKey) {
+        var deferred = $q.defer();
+        scaService.getSharedUiStateForTask(projectKey, taskKey, 'crs-concepts').then(function (concepts) {        
+          if (concepts) {
+            deferred.resolve(concepts);
+          } else {
+            scaService.getUiStateForTask(projectKey, taskKey, 'crs-concepts').then(function (response) {
+              deferred.resolve(response);
+            });
+          }
+        });
         return deferred.promise;
       }
 
