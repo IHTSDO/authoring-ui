@@ -2048,8 +2048,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         // Must create/load branch first as it's required by promotion concepts (if any) - need a destination branch to store the donated concepts
         loadBranch($scope.task.branchPath).then(function () {
           getRoleForTask().then(function() {
-            if ($scope.role === 'AUTHOR') {
-              crsService.setTask($scope.task).then(function () {
+            if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER') {
+              crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
                 initializeTaskDetails();
               }, function (error) {
                 console.error('Unexpected error checking CRS status. Error: ' + error);

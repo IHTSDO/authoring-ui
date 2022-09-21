@@ -44,6 +44,7 @@
         <span>Reject</span> </button>
 
         <button ng-disabled="isPendingForClarification(item)"
+                ng-if="role === 'AUTHOR'"
                 class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right"
                 ng-click="pendingRequest(item)">
         <div class="glyphicon glyphicon-hourglass"></div>
@@ -82,6 +83,7 @@
         <span>Reject</span> </button>
 
         <button ng-disabled="isPendingForClarification(item)"
+                ng-if="role === 'AUTHOR'"
                 class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right"
                 ng-click="pendingRequest(item)">
         <div class="glyphicon glyphicon-hourglass"></div>
