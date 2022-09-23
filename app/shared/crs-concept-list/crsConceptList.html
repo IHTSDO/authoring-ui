@@ -37,7 +37,7 @@
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom offset-tooltip-right ">
         <div class="md md-warning"></div>
         <span>Save Status Uncertain</span> </button>
-        <button ng-if="!item.saved  || item.deleted"
+        <button ng-if="(!item.saved  || item.deleted) && role === 'AUTHOR'"
                 class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom small-size-tooltip"
                 ng-click="rejectCrsRequest(item)">
         <div class="md md-remove-circle-outline"></div>
@@ -76,7 +76,7 @@
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
         <div class="md md-warning"></div>
         <span>Save Status Uncertain</span> </button>
-        <button ng-if="!item.saved  || item.deleted"
+        <button ng-if="(!item.saved  || item.deleted) && role === 'AUTHOR'"
                 class="btn btn-default saved-list-buttons btn-reject pull-left tooltips-bottom small-size-tooltip"
                 ng-click="rejectCrsRequest(item)">
         <div class="md md-remove-circle-outline"></div>
