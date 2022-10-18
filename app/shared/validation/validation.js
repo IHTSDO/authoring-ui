@@ -28,8 +28,14 @@ angular.module('singleConceptAuthoringApp')
           // overridden labbels (optional)
           overriddenLabels: '=?',
 
-          // code systesm flag
-          isCodeSystem: '=?'
+          // code systesm flag (optional)
+          isCodeSystem: '=?',
+
+          // flag to hide exception list (optional)
+          hideExceptions: '=?',
+
+          // flag to disable whitelist function (optional)
+          whitelistDisabled: '=?'
         },
         templateUrl: 'shared/validation/validation.html',
 
@@ -38,6 +44,7 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.isCodeSystem = attrs.isCodeSystem === 'true';
+          scope.hideExceptions = attrs.hideExceptions === 'true';
           scope.displayStatus = '';
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
@@ -46,6 +53,7 @@ angular.module('singleConceptAuthoringApp')
           scope.viewFullListException = false;
           scope.exceptionLoading = false;
           scope.issueType = {type: ''};
+          var isWhitelistDisable = attrs.whitelistDisabled === 'true';
 
           // highlighting map
           scope.styles = {};
@@ -107,7 +115,7 @@ angular.module('singleConceptAuthoringApp')
                 return status + ' ' + covertToUTCTime(endTime);
               } else {
                 return status;
-              }              
+              }
             }
 
             if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
@@ -418,7 +426,7 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   // filter by user exclusion
-                  if (scope.warningAssertion) {
+                  if (scope.isWarningAssertion) {
                     orderedData = orderedData.filter(function (failure) {
                       return scope.allWhitelistItems.filter(function(item) {
                         return item.validationRuleId === failure.validationRuleId && failure.componentId === item.componentId;
@@ -768,18 +776,30 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
                 }
-                checkWhitelist().then(function() {
+                if (!scope.hideExceptions) {
+                  checkWhitelist().then(function() {
+                    initViewableFlagForFailures();
+                    scope.reloadTables();
+                    deferred.resolve();
+                  });
+                } else {
                   initViewableFlagForFailures();
                   scope.reloadTables();
                   deferred.resolve();
-                });
+                }
               },
               function() {
-                checkWhitelist().then(function() {
+                if (!scope.hideExceptions) {
+                  checkWhitelist().then(function() {
+                    initViewableFlagForFailures();
+                    scope.reloadTables();
+                    deferred.resolve();
+                  });
+                } else {
                   initViewableFlagForFailures();
                   scope.reloadTables();
                   deferred.resolve();
-                });
+                }
             });
 
             return deferred.promise;
@@ -842,17 +862,14 @@ angular.module('singleConceptAuthoringApp')
           }, true); // make sure to check object inequality, not reference!
 
 
-          scope.viewFailures = function (assertionFailure, warningAssertion) {
+          scope.viewFailures = function (assertionFailure, isWarningAssertion) {
             scope.assertionFailureViewed = assertionFailure;
             scope.viewTop = false;
-            scope.warningAssertion = warningAssertion;
+            scope.isWarningAssertion = isWarningAssertion;
             scope.failuresLoading = true;
+            scope.isWhitelistEnabled = isWarningAssertion && !isWhitelistDisable;
 
-            var objArray = [];
-
-            if (warningAssertion) {
-              scope.whitelistEnabled = true;
-            }
+            var objArray = [];            
 
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
@@ -998,7 +1015,7 @@ angular.module('singleConceptAuthoringApp')
 
 // exclude a single failure, with optional commit
           scope.excludeFailure = function (failure) {
-            if (scope.warningAssertion){
+            if (scope.isWarningAssertion){
               var whitelistItem = constructWhitelistItem(scope.branch, failure);
               aagService.addToWhitelist(whitelistItem).then(function(respone) {
                 scope.allWhitelistItems.push(respone.data);
@@ -1008,7 +1025,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           };
-          
+
           function constructWhitelistItem(branch, failure) {
             var whitelistItem = {};
             whitelistItem.componentId = failure.componentId;
@@ -1162,7 +1179,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            if (scope.warningAssertion) {
+            if (scope.isWarningAssertion) {
               var promises = [];
               angular.forEach(failuresToAddWhiteList, function (failure) {
                 failure.isUserExclusion = true;
@@ -1177,7 +1194,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 scope.resetUserExclusionFlag()
-              });              
+              });
             } else {
               accountService.getAccount().then(function (accountDetails) {
                 // get the user name
