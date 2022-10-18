@@ -33,6 +33,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       // initialize the containers
       $scope.validationContainer = null;
+      $scope.dailyBuildValidationContainer = null;
       $scope.classificationContainer = null;
 
       // initialize the header notification
@@ -41,6 +42,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       $rootScope.rebaseRunning = false;
 
       $scope.validationCollapsed = $location.search().expandValidation ? !$location.search().expandValidation : true;
+      $scope.dailyBuildValidationCollapsed = true;
       $scope.classificationCollapsed = $location.search().expandClassification ? !$location.search().expandClassification : true;
 
       hotkeys.bindTo($scope)
@@ -93,6 +95,32 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   }
 
                   scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
+                    if (response.dailyBuildReport) {
+                      if (response.dailyBuildReport.rvfValidationResult && response.dailyBuildReport.rvfValidationResult.TestResult) {
+                        if (response.dailyBuildReport.rvfValidationResult.TestResult.assertionsFailed) {
+                          response.dailyBuildReport.rvfValidationResult.TestResult.assertionsFailed = response.dailyBuildReport.rvfValidationResult.TestResult.assertionsFailed.filter(function(item) {
+                            return item.testType !== 'TRACEABILITY';
+                          });
+                        }
+                        if (response.dailyBuildReport.rvfValidationResult.TestResult.assertionsWarning) {
+                          response.dailyBuildReport.rvfValidationResult.TestResult.assertionsWarning = response.dailyBuildReport.rvfValidationResult.TestResult.assertionsWarning.filter(function(item) {
+                            return item.testType !== 'TRACEABILITY';
+                          });
+                        }
+                      }
+                      $scope.dailyBuildValidationContainer = {
+                        'executionStatus': response.dailyBuildReport.status && response.dailyBuildReport.status === 'COMPLETE' ? 'COMPLETED' : response.dailyBuildReport.status,
+                        'report': response.dailyBuildReport
+                      };
+                      if (response.dailyBuildRvfUrl) {
+                        $scope.dailyBuildValidationContainer.rvfUrl = response.dailyBuildRvfUrl;
+                      }
+                      delete response.dailyBuildReport;
+                    } else {
+                      $scope.dailyBuildValidationContainer = {
+                        'executionStatus': 'NOT_TRIGGERED'
+                      };
+                    }
                     $scope.validationContainer = response;
                     $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
                   });

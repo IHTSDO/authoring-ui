@@ -99,6 +99,33 @@
         </div>
       </div>
 
+      <!--- Daily Build Validation Results -->
+      <div class="card">
+
+        <div class="card-header">
+          <div class="card-title">
+            <button ng-disabled="!dailyBuildValidationContainer"                    
+                    ng-click="dailyBuildValidationCollapsed = !dailyBuildValidationCollapsed"
+                    type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !dailyBuildValidationCollapsed, 'md-keyboard-arrow-right' : dailyBuildValidationCollapsed}]">
+              <span class="project-subtitle" ng-class="{'report-text' : validationContainer}">Daily Build Validation Results</span>
+            </button>
+
+            <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
+            <span class="arrow-purple pull-right"></span>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        
+        <div ng-show="!dailyBuildValidationCollapsed">
+          <div class="card-content clearfix">
+            <div validation validation-container="dailyBuildValidationContainer" branch="branch" 
+             is-code-system="true" whitelist-disabled="true" show-title="false" editable="true" hide-exceptions="true"></div>
+          </div>
+        </div>
+      </div>
+
 
       <div class="card">
         <!-- Projects in codesystem -->
