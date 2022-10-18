@@ -155,10 +155,20 @@ angular.module('singleConceptAuthoringApp')
                 });
                 if (matchingProjects.length > 0) {
                   return matchingProjects[0].title;
-                } else {
-                  return null;
                 }
             }
+            var codeSystems = metadataService.getCodeSystems();
+            if(codeSystems)
+            {
+                var matchingCodeSystems = codeSystems.filter(function (el) {
+                  return el.shortName === titleSection;
+                });
+                if (matchingCodeSystems.length > 0) {
+                  return matchingCodeSystems[0].name + ' Code System';
+                }
+            }
+            
+            return null;
           }
         };
 
