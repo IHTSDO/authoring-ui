@@ -116,6 +116,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                         $scope.dailyBuildValidationContainer.rvfUrl = response.dailyBuildRvfUrl;
                       }
                       delete response.dailyBuildReport;
+                      delete response.dailyBuildRvfUrl;
                     } else {
                       $scope.dailyBuildValidationContainer = {
                         'executionStatus': 'NOT_TRIGGERED'
