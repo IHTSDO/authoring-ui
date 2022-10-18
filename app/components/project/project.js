@@ -25,8 +25,6 @@ angular.module('singleConceptAuthoringApp.project', [
   .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'terminologyServerService', 'aagService', 'rnmService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', 'templateService', '$q', '$timeout','hotkeys','$interval', 'permissionService','modalService',
     function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, terminologyServerService, aagService, rnmService, notificationService, $location, ngTableParams, accountService, promotionService, templateService, $q, $timeout,hotkeys,$interval, permissionService, modalService) {
 
-      $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
-
       // project and project branch
       $scope.projectBranch = null;
       $scope.project = null;
@@ -88,6 +86,29 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                    
+          // detect code system for given branch
+          const allCodeSystems = metadataService.getCodeSystems();
+          if (allCodeSystems && allCodeSystems.length !== 0) {
+            for (let i = 0; i < allCodeSystems.length; i++) {
+              if (response.branchPath.startsWith('MAIN/SNOMEDCT-')
+                  && allCodeSystems[i].branchPath.startsWith('MAIN/SNOMEDCT-')
+                  && response.branchPath.startsWith(allCodeSystems[i].branchPath)) {
+                $scope.codeSystemShortname = allCodeSystems[i].shortName;
+                break;
+              }
+            }
+            if (!$scope.codeSystemShortname) {
+              for (let i = 0; i < allCodeSystems.length; i++) {
+                if (allCodeSystems[i].branchPath === 'MAIN') {
+                  $scope.codeSystemShortname = allCodeSystems[i].shortName;
+                  break;
+                }
+              }
+            }
+            $rootScope.pageTitle = 'Project/<a href="#codesystem&#47;'+ $scope.codeSystemShortname + '" target="_blank">' + $scope.codeSystemShortname + '/' + $routeParams.projectKey;
+          }
+
           aagService.getBranchSAC(response.branchPath, false).then(function (sac) {
               aagService.getBranchCriteria(response.branchPath).then(function (criteria) {
                   $scope.fullSac = [];
