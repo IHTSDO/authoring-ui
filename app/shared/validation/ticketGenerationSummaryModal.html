@@ -1,0 +1,29 @@
+<div class="clearfix">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Summary</h4>
+  </div>
+  <div class="modal-body">
+        <span>{{newFailureJiraAssociations.length}} JIRA ticket(s) have been created successfully</span>
+        <div ng-repeat="association in newFailureJiraAssociations" class="row" style="display:inline-flex; width:100%;">
+          <a ng-href="{{association.jiraUrl}}" target="_blank">{{association.jiraUrl}}</a>
+        </div>
+        <div ng-if="duplicatedFailureJiraAssociations.length !== 0 || errors.length !== 0">
+          <div class="error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">Errors:</div></div>
+          <div class="pl-5"  ng-repeat="duplicateJiraAssociation in duplicatedFailureJiraAssociations">
+              <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created (<a ng-href="{{failure.jiraUrl}}" target="_blank">{{duplicateJiraAssociation.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
+          </div>
+          <div class="pl-5" ng-repeat="error in errors">
+            <p>{{error}}</p>
+        </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <div class="row col-md-12 no-padding top-modal">
+      <div class="col-md-9"></div>
+      <div class="col-md-3">
+        <button type="button" class=" col-md-12 btn btn-warning no-margin" ng-click="cancel()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

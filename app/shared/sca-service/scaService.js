@@ -1829,6 +1829,38 @@ angular.module('singleConceptAuthoringApp')
           });
   
           return deferred.promise;
+        },
+
+        getRVFFailureTicketAssociations: function(reportRunId) {
+          var deferred = $q.defer();
+
+          // get the list
+          $http.get(apiEndpoint + 'validation-reports/' + reportRunId + '/failure-jira-associations').then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject('Error retrieving Jira ticket');
+          });
+          return deferred.promise;
+        },
+
+        raiseRVFJiraTickets: function(branch, reportRunId, assertionIds) {
+          var deferred = $q.defer();
+
+          $http.post(apiEndpoint + "branches/" + branch + '/validation-reports/' + reportRunId + '/failure-jira-associations', assertionIds).then(function (response) {            
+            deferred.resolve(response);
+          }, function (error) {
+              if (error && error.data && error.data.message) {
+                var message = JSON.parse(error.data.message);
+                if (typeof message === 'object') {
+                  deferred.reject(message.message);
+                } else {
+                  deferred.reject(message);
+                }
+              }
+              deferred.reject(error.statusText);
+          });
+  
+          return deferred.promise;
         }
 
       };

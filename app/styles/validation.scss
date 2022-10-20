@@ -70,3 +70,28 @@
   .validation-report.report-table tbody tr > td.button-column {
       width: 115px;
   }
+  .jira-ticket-generation-modal .modal-body .table > tbody > tr > td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 4px;
+    padding-left: 4px;
+    line-height: 1.4;
+  }
+  .jira-ticket-generation-modal .modal-body .table > thead tr > th {
+      padding-top: 0px;
+  }
+  .jira-ticket-generation-modal .modal-body .table > thead tr > th input[type=checkbox] {
+    padding-top: 27px;
+    padding-left: 8px;
+    outline: none;
+    margin-top: 0px;
+  }
+  .jira-ticket-generation-modal .modal-body .table > thead tr > th input[type=checkbox]:checked:before{
+    position: absolute;
+    top: unset;       
+    margin-top: -1px;
+    margin-left: 31px;
+  }
+  .jira-ticket-generation-modal .modal-body .checkbox input[type=checkbox] {
+    margin-top: 7px;
+  }

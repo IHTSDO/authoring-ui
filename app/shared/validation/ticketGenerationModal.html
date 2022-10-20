@@ -1,0 +1,44 @@
+<div class="clearfix jira-ticket-generation-modal">
+  <!-- for ng-table checkboxes -->
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
+           id="select_all_techanical_failures"
+           name="filter-checkbox" value=""/>
+  </script>
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Raise Jira Tickets</h4>
+  </div>
+  <div class="modal-body scroll-if-height">
+    <div class="alert alert-info" ng-if="loadingFailureTicketAssocication">Loading...</div>
+    <div>
+      <table ng-show="!loadingFailureTicketAssocication" ng-table="failedAssertionsTableParams" template-pagination="utilities/data-table-pager.html" class="table table-full-small">
+        <tr ng-repeat="failure in $data">
+          <td header-title="'Click to select all'" header="'ng-table/headers/checkboxHeader.html'">
+              <div class="checkbox">
+              <label class="filled">
+                <input type="checkbox" ng-if="!failure.jiraUrl" ng-model="failure.selected">
+              </label>
+            </div>
+          </td>
+          <td data-title="'Type'" header-title="'Click to sort'" sortable="'testType'"> {{failure.testType.replace('DROOL_RULES', 'DROOLS')}} </td>
+          <td data-title="'Assertion ID'" style="width: 22%;" header-title="'Click to sort'" sortable="'assertionUuid'"> {{failure.assertionUuid}} </td>
+          <td data-title="'Assertion Text'" header-title="'Click to sort'" sortable="'assertionText'"> {{failure.assertionText}} </td>
+          <td data-title="'Total Failures'" style="width: 10%;" header-title="'Click to sort'" sortable="'failureCount'"> {{failure.failureCount}} </td>
+          <td data-title="'JIRA Link'" style="width: 8%;" header-title="'Click to sort'" sortable="'jiraUrl'"><a ng-href="{{failure.jiraUrl}}" target="_blank">{{failure.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="row col-md-12 no-padding top-modal">
+      <div class="col-md-3">
+        <button type="button" class="col-md-12 btn btn-info no-margin" ng-click="generateTickets()">Generate</button>
+      </div>
+      <div class="col-md-6"></div>
+      <div class="col-md-3">
+        <button type="button" class=" col-md-12 btn btn-warning no-margin" ng-click="cancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -21,7 +21,7 @@
   </script>
   <div class="row validation-header reports-header">
     <div class="col-md-4 ">
-      <div class="p-t-10 p-l-5">Validation Report: {{getStatusText()}} <span ng-if="validationContainer.rvfUrl"> | Report URL: <a href="{{validationContainer.rvfUrl}}" target="_blank"><i class="md md-launch"></i></a></span></div>  
+      <div class="p-t-10 p-l-5">Validation Report: {{getStatusText()}} <span ng-if="validationContainer.rvfUrl"> | Report URL: <a href="{{validationContainer.rvfUrl}}" target="_blank"><i class="md md-launch"></i></a></span></div>
     </div>
     <div class="col-md-3 "> </div>
     <div class="col-md-5 ">
@@ -41,16 +41,17 @@
   <div class="validation-report report-table" ng-show="!isCollapsed && (validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE')">
     <div role="tabpanel" class="">
       <div class="row" ng-if="viewTop && validationContainer.report">
-        <div class="col-md-2 m-r-5 m-b-5 m-t-5 pull-right">         
+        <div class="col-md-3 m-r-5 m-b-5 m-t-5 pull-right">
+          <button ng-if="isRaiseJiraTicketDisabled()" ng-click="openRaiseTicketModal()" class="btn btn-primary pull-right m-l-20"><div>Raise Tickets</div></button>
           <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="table-search form-control pull-right">
             <option value="">All</option>
             <option value="technical">Technical Issues</option>
             <option value="author">Author Issues</option>
           </select>
           <label for="issue-type" class="pull-right p-r-10" style="padding-top: 6px; color: inherit;">View: </label>
-        </div>                
+        </div>
       </div>
-      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && failedAssertionsTableParams.total() === 0 && warningAssertionsTableParams.total() === 0"> No validation results to display </div>      
+      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && failedAssertionsTableParams.total() === 0 && warningAssertionsTableParams.total() === 0"> No validation results to display </div>
       <div class="table-responsive white" ng-show="viewTop && failedAssertionsTableParams.total() > 0">
         <table
           ng-table="failedAssertionsTableParams" template-pagination="utilities/data-table-pager.html"
@@ -147,13 +148,13 @@
   <div class="row m-t-15 no-gutter table-responsive white" ng-show="viewExclusions && !isCollapsed">
     <div class="row">
       <div class="col-md-4 p-10" style="margin-top: 9px;">
-          <strong>{{exceptionLoading ? 'Loading...' : (viewFullListException ? (overriddenLabels && overriddenLabels.exceptionLabel2 ? overriddenLabels.exceptionLabel2 :'Exceptions on all projects since last release') : (overriddenLabels && overriddenLabels.exceptionLabel1? overriddenLabels.exceptionLabel1 : 'Exceptions on this project since last promotion'))}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}} 
+          <strong>{{exceptionLoading ? 'Loading...' : (viewFullListException ? (overriddenLabels && overriddenLabels.exceptionLabel2 ? overriddenLabels.exceptionLabel2 :'Exceptions on all projects since last release') : (overriddenLabels && overriddenLabels.exceptionLabel1? overriddenLabels.exceptionLabel1 : 'Exceptions on this project since last promotion'))}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}}
           <button
           ng-if="exclusionsTableParams.total() != 0"
           class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case" style="background-color: #2196F3; margin-left:10px;"
           ng-click="downloadExceptions()"> <span> Download Exceptions </span> </button>
       </div>
-      
+
       <div class="col-md-8 p-10">
         <button class="btn btn-default blue back-button pull-right m-l-10"
                 ng-click="toggleViewExclusions()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exceptions </button>
@@ -162,9 +163,9 @@
             <input type="checkbox" ng-model="viewFullListException" ng-disabled="exceptionLoading"
                  ng-change="toggleViewFullListExceptions()">
             <span class="lever" style="margin:12px;"></span> {{overriddenLabels && overriddenLabels.exceptionLabel4 ? overriddenLabels.exceptionLabel4 : 'All Projects'}} </label>
-        </div>     
-        
-      </div>      
+        </div>
+
+      </div>
     </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
            class="table">
