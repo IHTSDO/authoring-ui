@@ -4,19 +4,21 @@
     <h4 class="modal-title">Summary</h4>
   </div>
   <div class="modal-body">
-        <span>{{newFailureJiraAssociations.length}} JIRA ticket(s) have been created successfully</span>
-        <div ng-repeat="association in newFailureJiraAssociations" class="row" style="display:inline-flex; width:100%;">
+      <div class="col-md-12">      
+        <div class="btn btn-round green" style="color: white;"><i class="md md-done"></i></div>&nbsp;<span>{{newFailureJiraAssociations.length}} JIRA ticket(s) have been created successfully</span>
+        <div ng-repeat="association in newFailureJiraAssociations" class="row p-l-30" style="display:inline-flex; width:100%;">
           <a ng-href="{{association.jiraUrl}}" target="_blank">{{association.jiraUrl}}</a>
         </div>
         <div ng-if="duplicatedFailureJiraAssociations.length !== 0 || errors.length !== 0">
-          <div class="error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">Errors:</div></div>
-          <div class="pl-5"  ng-repeat="duplicateJiraAssociation in duplicatedFailureJiraAssociations">
-              <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created (<a ng-href="{{failure.jiraUrl}}" target="_blank">{{duplicateJiraAssociation.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
+          <div class="btn btn-round red" style="color: white;"><i class="md md-clear"></i></div>&nbsp;<span>Errors</span>
+          <div class="row p-l-25"  ng-repeat="duplicateJiraAssociation in duplicatedFailureJiraAssociations">
+              <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created (<a ng-href="{{duplicateJiraAssociation.jiraUrl}}" target="_blank">{{duplicateJiraAssociation.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
           </div>
-          <div class="pl-5" ng-repeat="error in errors">
+          <div class="row p-l-25" ng-repeat="error in errors">
             <p>{{error}}</p>
+          </div>
         </div>
-      </div>
+      </div>      
   </div>
   <div class="modal-footer">
     <div class="row col-md-12 no-padding top-modal">
