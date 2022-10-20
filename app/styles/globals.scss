@@ -369,6 +369,13 @@ td select {
     height: auto;
 }
 
+.jira-ticket-generation-modal .modal-body.scroll-if-height{
+    overflow: auto;
+    max-height: 65vh;
+    padding-top: 0px;
+    height: auto;
+}
+
 .header-alerts {
     position: absolute;
     top: 0;

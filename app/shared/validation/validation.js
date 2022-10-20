@@ -35,7 +35,10 @@ angular.module('singleConceptAuthoringApp')
           hideExceptions: '=?',
 
           // flag to disable whitelist function (optional)
-          whitelistDisabled: '=?'
+          whitelistDisabled: '=?',
+
+          // flag to disable Raise Tickets feature  (optional)
+          raiseJiraTicketsDisabled: '=?'
         },
         templateUrl: 'shared/validation/validation.html',
 
@@ -54,7 +57,7 @@ angular.module('singleConceptAuthoringApp')
           scope.exceptionLoading = false;
           scope.issueType = {type: ''};
           var isWhitelistDisable = attrs.whitelistDisabled === 'true';
-
+          var isRaiseJiraTicketsForceDisabled = attrs.raiseJiraTicketsDisabled === 'true';
           // highlighting map
           scope.styles = {};
 
@@ -897,8 +900,7 @@ angular.module('singleConceptAuthoringApp')
             }, function () {
               scope.failureTableParams.reload();
             });
-          }
-          ;
+          };
 
           scope.downloadFailures = function(assertionFailure) {
             var objArray = [];
@@ -977,6 +979,37 @@ angular.module('singleConceptAuthoringApp')
           scope.selectAll = function (selectAllActive) {
             angular.forEach(scope.failures, function (failure) {
               failure.selected = selectAllActive;
+            });
+          };
+
+          scope.isRaiseJiraTicketDisabled = function() {
+            let technicalFailedAssertions = scope.assertionsFailed.filter(function (assertionFailed) {
+              return assertionFailed.technicalIssue;
+            });
+            let metadata = metadataService.getBranchMetadata()['metadata'];
+            console.log(metadata);
+            return !isRaiseJiraTicketsForceDisabled && metadata['enableRvfTicketGeneration'] === 'true' && technicalFailedAssertions.length !==0;
+          };
+
+          scope.openRaiseTicketModal = function() {
+            $modal.open({
+              templateUrl: 'shared/validation/ticketGenerationModal.html',
+              controller: 'ticketGenerationModalCtrl',
+              size: 'large',
+              resolve: {
+                branch: function () {
+                  return scope.branch;
+                },
+                reportRunId: function () {
+                  return scope.validationContainer.report.rvfValidationResult.validationConfig.runId;
+                },
+                failedAssertions: function () {                 
+                  let technicalFailedAssertions = scope.assertionsFailed.filter(function (assertionFailed) {
+                    return assertionFailed.technicalIssue;
+                  });
+                  return technicalFailedAssertions;
+                }
+              }
             });
           };
 
