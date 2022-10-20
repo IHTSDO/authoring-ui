@@ -65,6 +65,7 @@ angular.module('singleConceptAuthoringApp')
               $modal.open({
                 templateUrl: 'shared/validation/ticketGenerationSummaryModal.html',
                 controller: 'ticketGenerationSummaryModalCtrl',
+                size: 'medium',
                 resolve: {
                   data: function () {
                     return response.data;

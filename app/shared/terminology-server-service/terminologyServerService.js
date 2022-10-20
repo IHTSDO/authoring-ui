@@ -1898,7 +1898,7 @@ angular.module('singleConceptAuthoringApp')
 
 //    https://dev-term.ihtsdotools.org/snowowl/snomed-ct/v2/branches/MAIN/WRPAS/WRPAS-72/
       function getBranch(branch) {
-        return $http.get(apiEndpoint + 'branches/' + branch).then(function (response) {
+        return $http.get(apiEndpoint + 'branches/' + branch + '?includeInheritedMetadata=true').then(function (response) {
           return response.data;
         }, function (response) {
           return response;

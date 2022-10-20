@@ -42,13 +42,13 @@
     <div role="tabpanel" class="">
       <div class="row" ng-if="viewTop && validationContainer.report">
         <div class="col-md-3 m-r-5 m-b-5 m-t-5 pull-right">
-          <button ng-if="isRaiseJiraTicketDisabled()" ng-click="openRaiseTicketModal()" class="btn btn-primary pull-right m-l-20"><div>Raise Tickets</div></button>
           <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="table-search form-control pull-right">
             <option value="">All</option>
             <option value="technical">Technical Issues</option>
             <option value="author">Author Issues</option>
           </select>
           <label for="issue-type" class="pull-right p-r-10" style="padding-top: 6px; color: inherit;">View: </label>
+          <button ng-if="isRaiseJiraTicketDisabled()" ng-click="openRaiseTicketModal()" class="btn btn-default btn-green pull-right m-r-15"><div>Raise Tickets</div></button>
         </div>
       </div>
       <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && failedAssertionsTableParams.total() === 0 && warningAssertionsTableParams.total() === 0"> No validation results to display </div>

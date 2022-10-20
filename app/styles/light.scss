@@ -2,6 +2,12 @@
 .sca-light .pager .btn-default.blue {
     color: #474747;
 }
+.sca-light .btn.btn-default.btn-green {
+    color: #fff;
+}
+.sca-light .btn.btn-default.btn-green:active:focus {
+    color: #333;
+}
 .sca-light .reports-header .btn-default,
 .sca-light .reports-header .btn-default:hover
 {color:#fff}

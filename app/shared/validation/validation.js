@@ -987,7 +987,6 @@ angular.module('singleConceptAuthoringApp')
               return assertionFailed.technicalIssue;
             });
             let metadata = metadataService.getBranchMetadata()['metadata'];
-            console.log(metadata);
             return !isRaiseJiraTicketsForceDisabled && metadata['enableRvfTicketGeneration'] === 'true' && technicalFailedAssertions.length !==0;
           };
 
