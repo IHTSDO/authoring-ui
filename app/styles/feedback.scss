@@ -862,3 +862,17 @@ strong {
 .feedback .project-taxonomy-panel .progress{
     height: 1.5px;
 }
+.sidebar-dropdown{
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap; 
+    border-radius: 0px;
+}
+.sidebar-dropdown:hover {
+    text-decoration: none;
+    background-color: #eee;
+}
