@@ -1849,13 +1849,9 @@ angular.module('singleConceptAuthoringApp')
           $http.post(apiEndpoint + "branches/" + branch + '/validation-reports/' + reportRunId + '/failure-jira-associations', assertionIds).then(function (response) {            
             deferred.resolve(response);
           }, function (error) {
+            console.log(error);
               if (error && error.data && error.data.message) {
-                var message = JSON.parse(error.data.message);
-                if (typeof message === 'object') {
-                  deferred.reject(message.message);
-                } else {
-                  deferred.reject(message);
-                }
+                deferred.reject(error.data.message);
               }
               deferred.reject(error.statusText);
           });
