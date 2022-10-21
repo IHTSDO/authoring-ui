@@ -745,7 +745,8 @@ angular.module('singleConceptAuthoringApp')
             //
             // prepare concepts from affected concepts map and affected concept associations
             //
-            var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
+            var clonedAffectedConcepts = angular.copy(scope.affectedConcepts);
+            var conceptArray = $.map(clonedAffectedConcepts, function (value, index) {
               return [value];
             });
 
