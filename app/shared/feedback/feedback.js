@@ -342,12 +342,12 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   // filter based on presence of feedback if requested
-                  if (scope.viewConceptsMode !== 'All') {
+                  if (scope.viewConceptsMode !== 'All concepts') {
                     var newData = [];
                     angular.forEach(myData, function (item) {
-                      if (scope.viewConceptsMode === 'With Feedback' && item.messages && item.messages.length > 0) {
+                      if (scope.viewConceptsMode === 'Concepts with feedback' && item.messages && item.messages.length > 0) {
                         newData.push(item);
-                      } else if (scope.viewConceptsMode === 'Without Feedback' && (!item.messages || item.messages.length === 0)) {
+                      } else if (scope.viewConceptsMode === 'Concepts without feedback' && (!item.messages || item.messages.length === 0)) {
                         newData.push(item);
                       }
                     });
@@ -415,6 +415,19 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     myData = scope.feedbackContainer.review.conceptsClassified;
                   }
+                  
+                  // filter based on presence of feedback if requested
+                  if (scope.viewConceptsMode !== 'All concepts') {
+                    var newData = [];
+                    angular.forEach(myData, function (item) {
+                      if (scope.viewConceptsMode === 'Concepts with feedback' && item.messages && item.messages.length > 0) {
+                        newData.push(item);
+                      } else if (scope.viewConceptsMode === 'Concepts without feedback' && (!item.messages || item.messages.length === 0)) {
+                        newData.push(item);
+                      }
+                    });
+                    myData = newData;
+                  }
                   // hard set the new total
 
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
@@ -458,6 +471,19 @@ angular.module('singleConceptAuthoringApp')
                     });
                   } else {
                     myData = scope.feedbackContainer.review.conceptsReviewed;
+                  }
+                  
+                  // filter based on presence of feedback if requested
+                  if (scope.viewConceptsMode !== 'All concepts') {
+                    var newData = [];
+                    angular.forEach(myData, function (item) {
+                      if (scope.viewConceptsMode === 'Concepts with feedback' && item.messages && item.messages.length > 0) {
+                        newData.push(item);
+                      } else if (scope.viewConceptsMode === 'Concepts without feedback' && (!item.messages || item.messages.length === 0)) {
+                        newData.push(item);
+                      }
+                    });
+                    myData = newData;
                   }
 
                   // hard set the new total
@@ -604,16 +630,12 @@ angular.module('singleConceptAuthoringApp')
           };
 
           // controls to allow to view only concepts with feedeback
-          scope.viewConceptsMode = 'All';
-          scope.toggleViewConcepts = function () {
-            if (scope.viewConceptsMode === 'With Feedback') {
-              scope.viewConceptsMode = 'Without Feedback';
-            } else if (scope.viewConceptsMode === 'Without Feedback') {
-              scope.viewConceptsMode = 'All';
-            } else {
-              scope.viewConceptsMode = 'With Feedback';
-            }
+          scope.viewConceptsMode = 'All concepts';
+          scope.setViewConcepts = function (value) {
+            scope.viewConceptsMode = value;
             scope.conceptsToReviewTableParams.reload();
+            scope.conceptsReviewedTableParams.reload();
+            scope.conceptsClassifiedTableParams.reload();
           };
 
           scope.download = function() {
