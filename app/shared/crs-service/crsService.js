@@ -473,7 +473,9 @@ angular.module('singleConceptAuthoringApp')
                     notificationService.sendError(error);
                     deferred.reject(error);
                   });
-                }                
+                } else {
+                  deferred.resolve();
+                }
               }
             });
           }, timeDelay);

@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('ticketGenerationModalCtrl', function ($scope, $modal, $modalInstance, $filter, modalService, scaService, ngTableParams, branch, reportRunId, failedAssertions) {
+  .controller('ticketGenerationModalCtrl', function ($scope, $modal, $modalInstance, $filter, modalService, scaService, notificationService, ngTableParams, branch, reportRunId, failedAssertions) {
 
     $scope.branch = branch;
     $scope.reportRunId = reportRunId;
@@ -74,7 +74,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }, function (error) {
               generatingTicketModalInstance.close();
-
+              modalService.message('Error', error);
             }
           );
         });
