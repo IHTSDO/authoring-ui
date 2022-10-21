@@ -81,7 +81,7 @@
       padding-top: 0px;
   }
   .jira-ticket-generation-modal .modal-body .table > thead tr > th input[type=checkbox] {
-    padding-top: 27px;
+    min-height: 0px;
     padding-left: 8px;
     outline: none;
     margin-top: 0px;
@@ -93,5 +93,5 @@
     margin-left: 31px;
   }
   .jira-ticket-generation-modal .modal-body .checkbox input[type=checkbox] {
-    margin-top: 7px;
+    margin-top: 4px;
   }

@@ -1,6 +1,6 @@
 <div class="clearfix jira-ticket-generation-modal">
   <!-- for ng-table checkboxes -->
-  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+  <script type="text/ng-template" id="ng-table/headers/jiraTicketcheckboxHeader.html">
     <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
            id="select_all_techanical_failures"
            name="filter-checkbox" value=""/>
@@ -14,9 +14,9 @@
     <div>
       <table ng-show="!loadingFailureTicketAssocication" ng-table="failedAssertionsTableParams" template-pagination="utilities/data-table-pager.html" class="table table-full-small">
         <tr ng-repeat="failure in $data">
-          <td header-title="'Click to select all'" header="'ng-table/headers/checkboxHeader.html'">
+          <td header-title="'Click to select all'" header="'ng-table/headers/jiraTicketcheckboxHeader.html'">
               <div class="checkbox">
-              <label class="filled">
+              <label class="filled" style="min-height: 15px;">
                 <input type="checkbox" ng-if="!failure.jiraUrl" ng-model="failure.selected">
               </label>
             </div>
