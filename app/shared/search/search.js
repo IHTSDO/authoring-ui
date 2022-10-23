@@ -84,7 +84,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // user controls
       $scope.userOptions = {
         groupByConcept: true,
-        searchType: 1,
+        searchType: 'Active Only',
         selectedDialect: '',
         defintionSelection: '',
         statedSelection: 'inferred',
@@ -193,37 +193,25 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.isEscgMode = false;
       $scope.templateMode = false;
       $scope.escgExpr = null;
-      $scope.searchMode = 'Switch to ECL';
+      $scope.searchMode = 'Text';
 
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
         $scope.processResults();
 
       };
-
-      $scope.toggleSearchType = function () {
-        if ($scope.searchType === 'Active and Inactive') {
-          $scope.searchType = 'Active Only';
-          $scope.userOptions.searchType = 1;
-        }
-        else if ($scope.searchType === 'Active Only') {
-          $scope.searchType = 'Inactive Only';
-          $scope.userOptions.searchType = 2;
-        }
-        else {
-          $scope.searchType = 'Active and Inactive';
-          $scope.userOptions.searchType = 0;
-        }
+      
+      $scope.setsearchType = function (value){
+        $scope.userOptions.searchType = value;
         $scope.newSearch();
-        // $scope.processResults();
-      };
+      }
 
       $scope.toggleDescriptionStatus = function () {
         $scope.descriptionSeachStatus = $scope.descriptionSeachStatus === 'active' ? 'inactive' : 'active';
         $scope.newSearch();
       };
 
-      $scope.toggleSearchMode = function () {
+      $scope.toggleSearchMode = function (value) {
         $scope.escgExpr = '';
         $scope.searchStr = '';
         $scope.results = [];
@@ -231,49 +219,46 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.loadPerformed = false;
         if(metadataService.isTemplatesEnabled())
             {
-                if ($scope.searchMode === 'Switch to ECL') {
-                  $scope.searchMode = 'Switch to Template';
+                if (value === 'Ecl') {
+                  $scope.searchMode = 'Ecl';
                   $scope.descriptionSeachStatus = 'active';
                   $scope.isEscgMode = true;
                   $scope.templateMode = false;
-                  $scope.userOptions.searchType = null;
+                  $scope.userOptions.searchType = 'Active Only';
                   $scope.userOptions.statedSelection = 'inferred';
                 }
-                else if ($scope.searchMode === 'Switch to Template') {
-                  $scope.searchMode = 'Switch to Text';
+                else if (value === 'Template') {
+                  $scope.searchMode = 'Template';
                   $scope.isEscgMode = false;
                   $scope.templateMode = true;
                   $scope.userOptions.statedSelection = 'stated';
-                  $scope.userOptions.searchType = 1;
+                  $scope.userOptions.searchType = 'Active Only' ;
                 }
                 else {
-                  $scope.searchMode = 'Switch to ECL';
+                  $scope.searchMode = 'Text';
                   $scope.isEscgMode = false;
                   $scope.templateMode = false;
-                  $scope.userOptions.searchType = 1;
+                  $scope.userOptions.searchType = 'Active Only';
                   $scope.searchType = 'Active Only';
                 }
             }
         else{
-            if ($scope.searchMode === 'Switch to ECL') {
-              $scope.searchMode = 'Switch to Text';
+            if (value === 'Ecl') {
+              $scope.searchMode = 'Ecl';
               $scope.descriptionSeachStatus = 'active';
               $scope.isEscgMode = true;
               $scope.userOptions.statedSelection = 'inferred';
               $scope.templateMode = false;
-              $scope.userOptions.searchType = null;
-              $scope.searchType = 'Active Only';
+              $scope.userOptions.searchType = 'Active only';
               $scope.selectedLanguageRefsets = [];
             }
             else {
-              $scope.searchMode = 'Switch to ECL';
+              $scope.searchMode = 'Text';
               $scope.isEscgMode = false;
               $scope.templateMode = false;
-              $scope.userOptions.searchType = 1;
-              $scope.searchType = 'Active Only';
+              $scope.userOptions.searchType = 'Active Only';
             }
         }
-
         $scope.newSearch();
       };
 
@@ -316,12 +301,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         }
 
-        if ($scope.userOptions.searchType === 1) {
+        if ($scope.userOptions.searchType === 'Active Only') {
           $scope.results = displayedResults.filter(function (item) {
             return item.concept.active === true;
           });
         }
-        else if ($scope.userOptions.searchType === 2) {
+        else if ($scope.userOptions.searchType === 'Inactive only') {
           $scope.results = displayedResults.filter(function (item) {
             return item.concept.active === false;
           });
@@ -518,11 +503,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         if (!$scope.escgExpr) {
           switch($scope.userOptions.searchType) {
-            case 1:
+            case 'Acrive only':
               activeFilter = true;
               break;
   
-            case 2:
+            case 'Inactive only':
               activeFilter = false;
               break;
           }
@@ -611,11 +596,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         if (!$scope.escgExpr) {
           switch($scope.userOptions.searchType) {
-            case 1:
+            case 'Acrive only':
               activeFilter = true;
               break;
   
-            case 2:
+            case 'Inactive only':
               activeFilter = false;
               break;
           }
@@ -1138,13 +1123,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           let activeFilter = null;
 
           switch($scope.userOptions.searchType) {
-            case 1:
-            activeFilter = true;
-            break;
-
-            case 2:
-            activeFilter = false;
-            break;
+            case 'Acrive only':
+              activeFilter = true;
+              break;
+  
+            case 'Inactive only':
+              activeFilter = false;
+              break;
           }
 
           terminologyServerService.searchAllConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, 0, 10000, false, acceptLanguageValue, activeFilter, false, $scope.userOptions.defintionSelection, $scope.userOptions.statedSelection, $scope.batchIdList).then(function (response) {
