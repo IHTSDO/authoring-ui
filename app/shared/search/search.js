@@ -206,8 +206,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.newSearch();
       }
 
-      $scope.toggleDescriptionStatus = function () {
-        $scope.descriptionSeachStatus = $scope.descriptionSeachStatus === 'active' ? 'inactive' : 'active';
+      $scope.setDescriptionStatus = function (status) {
+        $scope.descriptionSeachStatus = status;
+        console.log($scope.descriptionSeachStatus);
         $scope.newSearch();
       };
 
