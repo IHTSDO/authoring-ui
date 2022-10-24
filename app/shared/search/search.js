@@ -219,8 +219,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.loadPerformed = false;
         if(metadataService.isTemplatesEnabled())
             {
-                if (value === 'Ecl') {
-                  $scope.searchMode = 'Ecl';
+                if (value === 'ECL') {
+                  $scope.searchMode = 'ECL';
                   $scope.descriptionSeachStatus = 'active';
                   $scope.isEscgMode = true;
                   $scope.templateMode = false;
@@ -243,8 +243,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 }
             }
         else{
-            if (value === 'Ecl') {
-              $scope.searchMode = 'Ecl';
+            if (value === 'ECL') {
+              $scope.searchMode = 'ECL';
               $scope.descriptionSeachStatus = 'active';
               $scope.isEscgMode = true;
               $scope.userOptions.statedSelection = 'inferred';
