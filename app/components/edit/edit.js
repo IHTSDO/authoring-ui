@@ -1110,9 +1110,15 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
 
+        // cloning an inactive concept will have no classAxioms
+        if (!clonedConcept.active && clonedConcept.classAxioms.length === 0) {
+          clonedConcept.classAxioms.push(componentAuthoringUtil.getNewAxiom());
+        }
+
         clonedConcept.conceptId = terminologyServerService.createGuid();
         clonedConcept.fsn = null;
         clonedConcept.released = false;
+        clonedConcept.active = true;
 
         if (!isCoreModule(isExtension, internationalMetadata, clonedConcept.moduleId)) {
           clonedConcept.moduleId = metadataService.getCurrentModuleId();
@@ -1122,10 +1128,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         delete clonedConcept.isLeafStated;
         delete clonedConcept.effectiveTime;
         delete clonedConcept.preferredSynonym;
+        delete clonedConcept.associationTargets;
+        delete clonedConcept.inactivationIndicator;
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
-        console.log(clonedConcept);
         $scope.conceptLoading = false;
 
         var successMsg = 'Concept ' + response.fsn + ' successfully cloned';
