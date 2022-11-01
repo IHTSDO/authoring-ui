@@ -1824,13 +1824,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   var subjectConceptIds = [];
                   subjectConceptIds.push(scope.concept.conceptId);
                   scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, message, subjectConceptIds, false);
-                  scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey);
                   reviewedListIds.splice(i,1);
                   break;
                 }
               }
               scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', reviewedListIds) ;
             }
+            if (scope.task.status === 'Review Completed') {
+              scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey);
+            }            
           });
         }
 
