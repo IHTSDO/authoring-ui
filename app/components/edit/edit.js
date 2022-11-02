@@ -1067,6 +1067,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             axiom.axiomId = null;
             axiom.released = false;
             axiom.effectiveTime = null;
+            axiom.active = true;
 
             // Set module Id if it's not a core module
             if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
@@ -1091,6 +1092,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             axiom.axiomId = null;
             axiom.released = false;
             axiom.effectiveTime = null;
+            axiom.active = true;
 
             // Set module Id if it's not a core module
             if (!isCoreModule(isExtension, internationalMetadata, axiom.moduleId)) {
@@ -1110,7 +1112,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
 
-        // cloning an inactive concept will have no classAxioms
+        // cloning an inactive concept if it has no classAxioms, then add a new axiom to it
         if (!clonedConcept.active && clonedConcept.classAxioms.length === 0) {
           clonedConcept.classAxioms.push(componentAuthoringUtil.getNewAxiom());
         }
