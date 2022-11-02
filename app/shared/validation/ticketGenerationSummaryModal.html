@@ -5,16 +5,16 @@
   </div>
   <div class="modal-body">
       <div class="col-md-12">      
-        <div class="btn btn-round green" style="color: white;"><i class="md md-done"></i></div>&nbsp;<span>{{newFailureJiraAssociations.length}} JIRA ticket(s) have been created successfully</span>
-        <div ng-repeat="association in newFailureJiraAssociations" class="row p-l-30" style="display:inline-flex; width:100%;">
+        <div class="btn btn-round green" style="color: white;"><i class="md md-done"></i></div>&nbsp;<span class="p-l-10">{{newFailureJiraAssociations.length}} JIRA ticket(s) have been created successfully</span>
+        <div ng-repeat="association in newFailureJiraAssociations" class="row p-l-40" style="display:inline-flex; width:100%;">
           <a ng-href="{{association.jiraUrl}}" target="_blank">{{association.jiraUrl}}</a>
         </div>
         <div ng-if="duplicatedFailureJiraAssociations.length !== 0 || errors.length !== 0">
-          <div class="btn btn-round red" style="color: white;"><i class="md md-clear"></i></div>&nbsp;<span>Errors</span>
-          <div class="row p-l-25"  ng-repeat="duplicateJiraAssociation in duplicatedFailureJiraAssociations">
+          <div class="btn btn-round red" style="color: white;"><i class="md md-clear"></i></div>&nbsp;<span class="p-l-10">Errors</span>
+          <div class="row p-l-35"  ng-repeat="duplicateJiraAssociation in duplicatedFailureJiraAssociations">
               <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created (<a ng-href="{{duplicateJiraAssociation.jiraUrl}}" target="_blank">{{duplicateJiraAssociation.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
           </div>
-          <div class="row p-l-25" ng-repeat="error in errors">
+          <div class="row p-l-35" ng-repeat="error in errors">
             <p>{{error}}</p>
           </div>
         </div>
