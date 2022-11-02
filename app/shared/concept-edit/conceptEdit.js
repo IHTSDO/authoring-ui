@@ -3995,7 +3995,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // groups defined)
           var maxGroup = -1;
           angular.forEach(axiom.relationships, function (rel) {
-            maxGroup = parseInt(rel.groupId);
+            if(parseInt(rel.groupId) > maxGroup) {
+              maxGroup = parseInt(rel.groupId);
+            }             
           });
           var newGroup = maxGroup + 1;
 
