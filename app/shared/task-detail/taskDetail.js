@@ -536,7 +536,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                   var reviewedListIds = response;
                   if (reviewedListIds && reviewedListIds.length > 0) {
-                    modalService.confirm('There are ' + reviewedListIds.length + ' approved concepts in the review. Cancelling will reset all concepts to unapproved and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review. Are you sure you want to cancel this review?').then(function () {
+                    modalService.confirm('There are ' + reviewedListIds.length + ' approved concepts in the review. Cancelling will reset all concepts to unapproved and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review. Are you sure you want to cancel this review?', 'font-size: 14px;line-height: 1.7;').then(function () {
                       reviewService.cancelReview($scope.task).then(function () {
                         notificationService.sendMessage('Review Cancelled', 2000);
                       });

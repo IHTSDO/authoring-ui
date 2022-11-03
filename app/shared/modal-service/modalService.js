@@ -2,12 +2,13 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp').service('modalService', function ($modal, $q, hotkeys) {
   return {
-    confirm: function (message) {
+    confirm: function (message, style) {
       var deferred = $q.defer();
       var modalInstance = $modal.open({
         templateUrl: 'shared/modal-service/modalConfirm.html',
-        controller: function ($scope, $modalInstance, message) {
+        controller: function ($scope, $modalInstance, message, style) {
           $scope.message = message;
+          $scope.style = style;
           hotkeys.bindTo($scope)
             .add({
               combo: 'return',
@@ -24,6 +25,9 @@ angular.module('singleConceptAuthoringApp').service('modalService', function ($m
         resolve: {
           message: function () {
             return message;
+          },
+          style: function () {
+            return style;
           }
         }
       });
