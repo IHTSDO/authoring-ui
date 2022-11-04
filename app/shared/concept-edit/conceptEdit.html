@@ -1,8 +1,6 @@
 
 <div class="edits editing-form darken-3 grey">
-  <i class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip unpublished-concept" ng-if="getExtensionNamespace() !== ''">
-     <span >Concept from {{extensionNamespace}}</span>
-  </i>
+  
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0 || inactivatingConceptError || deletingConeceptError">
     <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = [] ; inactivatingConceptError = false; deletingConeceptError = false;"
@@ -82,6 +80,9 @@
                 <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy PT and Concept ID</a></li>
             </ul>
           </div>
+          <i ng-if="getExtensionNamespace() != ''" class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip promoted-concept" style="z-index: 1; bottom: -2px;">
+            <span >Concept promoted from {{extensionNamespace}}</span>
+         </i>
       </div>
 
       <!-- concept name -->
