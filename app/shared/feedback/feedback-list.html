@@ -425,11 +425,11 @@
       </div>
     </div>
   </div>
-  <div class="col-md-12 m-t-10 load-performed" ng-if="(role === 'REVIEWER' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">
+  <div class="col-md-12 m-t-10 load-performed m-b-40" ng-if="(role === 'REVIEWER' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">
     <button type="button" class="col-md-8 btn btn-success dropdown-toggle" data-toggle="dropdown">
         <span>{{viewConceptsMode}}</span>&nbsp;<span class="caret"></span>
     </button>
-    <ul class="dropdown-menu" role="menu">
+    <ul class="dropdown-menu" style="margin-left: 15px;" role="menu">
         <li>
             <div class="sidebar-dropdown" ng-click="setViewConcepts('All concepts')">All</div>
         </li>
