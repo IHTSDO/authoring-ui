@@ -370,7 +370,7 @@ angular.module('singleConceptAuthoringApp')
                       failure.referencedComponentId = matchInfo[1];
                       failure.referencedComponentType = 'Description';
                       if (description && description.term) {
-                        failure.detail = failure.detail.replace(matchInfo[0], '\"' + description.term + '\"');
+                        failure.detail = failure.detail.replace(matchInfo[0].trim(), '\"' + description.term + '\"');
                       }
 
                       if (++failuresPrepared === scope.failures.length) {
