@@ -162,6 +162,22 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         });
       };
 
+      $scope.upgrade = function() {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/upgrade-modal/upgradeModal.html',
+          controller: 'upgradeModalCtrl',
+          resolve: {
+            codeSystem: function () {
+              return $scope.codeSystem;
+            }
+          }
+        });
+
+        modalInstance.result.then(function () {
+        }, function () {
+        });
+      }
+
       // classify the codesystem
       $scope.classify = function () {
         notificationService.sendMessage('Starting classification for codesystem...');
