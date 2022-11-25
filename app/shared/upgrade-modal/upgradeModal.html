@@ -1,0 +1,55 @@
+<div id="promoteModal" class="clearfix">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Upgrade {{codeSystem.name}} To New International Release</h4>
+  </div>
+  <div class="modal-body">
+    <div class="checkbox m-b-15" style="margin-top: 0px;">
+      <label class="filled">
+        <input type="checkbox" ng-model="classificationComplete" ui-on-drop="" style="margin-top: 10px;">&nbsp;
+        Classification complete and clean
+      </label>
+    </div>
+    <div class="checkbox m-b-15">
+      <label class="filled">
+        <input type="checkbox" ng-model="validationComplete" ui-on-drop="" style="margin-top: 10px;">&nbsp;
+        Validation complete
+      </label>
+    </div>
+    <div class="checkbox m-b-15">
+      <label class="filled">
+        <input type="checkbox" ng-model="projectsPromoted" ui-on-drop="" style="margin-top: 10px;">&nbsp;
+        All projects promoted
+      </label>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div>
+          <label for="upgradeVersionSelection">Select Version</label>
+          <select id="upgradeVersionSelection" name="select-choice" class="form-control"
+                  ng-options="version.effectiveDate as version.version for version in versions | orderBy: '-effectiveDate'"
+                  ng-model="selectedVersion"                  
+            >
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="row no-padding no-gutter"> 
+      <!-- If has a key, option to delete task -->
+      <div class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-warning no-margin"
+          ng-disabled="!classificationComplete || !validationComplete || !projectsPromoted || !selectedVersion"
+          ng-click="upgrade()">Upgrade</button>
+      </div>
+      <div class="col-md-4"></div>
+      
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" class=" col-md-12 btn btn-info no-margin"
+          ng-click="cancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
