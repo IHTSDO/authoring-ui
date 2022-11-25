@@ -1830,9 +1830,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
               scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', reviewedListIds) ;
             }
-            if (scope.task.status === 'Review Completed') {
-              scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey);
-            }            
+            scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              if (response && response.status === 'Review Completed') {
+                scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  scope.task = response.data;
+                });
+              }
+            });
           });
         }
 
