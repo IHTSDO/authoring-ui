@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('upgradeModalCtrl', function ($scope, $modalInstance, terminologyServerService, codeSystem) {
+  .controller('upgradeModalCtrl', function ($scope, $modalInstance, $location, terminologyServerService, codeSystem, modalService) {
 
     $scope.codeSystem = codeSystem;
 
@@ -15,7 +15,12 @@ angular.module('singleConceptAuthoringApp')
     /////////////////////////////////////////
 
     $scope.upgrade = function() {
-      $modalInstance.close();
+      modalService.confirm('Do you really want to upgrade ' + $scope.codeSystem.name + ' to new ' + $scope.selectedVersion.version + ' version?').then(function () {
+        $location.url('codesystem/' + $scope.codeSystem.shortName + '/upgrade/' + $scope.selectedVersion.version);
+        $modalInstance.close();
+      }, function () {
+        // do nothing
+      });
     };
 
     $scope.cancel = function () {

@@ -19,6 +19,19 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             return defer.promise;
           }
         ]
+      })
+      .when('/codesystem/:codeSystem/upgrade/:newDependantVersion', {
+        controller: 'UpgradeCtrl',
+        templateUrl: 'shared/upgrade/upgrade.html',
+        resolve: ['terminologyServerService', 'metadataService', 'permissionService', '$q', function(terminologyServerService, metadataService, permissionService, $q) {
+            var defer = $q.defer();
+            permissionService.setRolesForBranch(null, []);
+            $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
+                defer.resolve();
+            });
+            return defer.promise;
+          }
+        ]
       });
   })
 
@@ -90,6 +103,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
                   if (response.hasOwnProperty('userRoles')) {
                     permissionService.setRolesForBranch($scope.branch, response.userRoles);
+                    $scope.userRoles = response.userRoles;
                   } else {
                     permissionService.setRolesForBranch($scope.branch, []);
                   }
