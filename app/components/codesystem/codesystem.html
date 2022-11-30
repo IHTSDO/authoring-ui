@@ -18,7 +18,7 @@
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
-          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="upgrade()"
+          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && userRoles.includes('ADMIN')" class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="upgrade()"
             ng-disabled="classificationRunning">
             <div
               class="project-icon amber pull-left">
@@ -26,7 +26,7 @@
             </div>
             Upgrade
           </button>
-        <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="classify()"
+          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="classify()"
             ng-disabled="classificationRunning">
             <div
               class="project-icon green pull-left">

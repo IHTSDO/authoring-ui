@@ -1814,7 +1814,7 @@ angular.module('singleConceptAuthoringApp')
           requestBody.includeDependencies = includeDependecies;
   
           $http.post(apiEndpoint + "request-concept-promotion", requestBody).then(function (response) {            
-            var locHeader = response.headers('Location');            
+            var locHeader = response.headers('Location');
             deferred.resolve(locHeader);
           }, function (error) {              
               if (error && error.data && error.data.message) {
@@ -1856,6 +1856,28 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject(error.statusText);
           });
   
+          return deferred.promise;
+        },
+
+        upgradeCodeSystem: function(codeSystem, newDependantVersion) {
+          var deferred = $q.defer();          
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/upgrade/' + newDependantVersion).then(function (response) {
+            var locHeader = response.headers('Location');            
+            deferred.resolve(locHeader);
+          }, function (error) {
+            deferred.reject(error);
+          });
+  
+          return deferred.promise;
+        },
+
+        getCodeSystemUpgradeJob: function(jobId) {
+          var deferred = $q.defer();
+          $http.get(apiEndpoint + 'codesystems/upgrade/' + jobId).then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject(error);
+          });
           return deferred.promise;
         }
 

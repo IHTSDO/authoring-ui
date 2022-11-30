@@ -1,0 +1,53 @@
+<section class="tables-data upgrade">
+  <div class="row no-gutter no-padding">
+    <div ng-if="fiveOFour" class="loading-merges amber">
+      <div class="all-done">
+        <div class="md md-sync"></div>
+      </div>
+      <h3>Your upgarde will complete successfully but is taking longer than usual. Please navigate away and continue your work.</h3>
+    </div>
+
+    <div class="loading-merges blue darken-1" ng-if="upgradingText">
+      <div class="clock">
+        <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+          <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
+            <animatetransform attributeName="transform"
+       dur="2s"
+       type="rotate"
+       from="0 50 50"
+       to="360 50 50"
+       repeatCount="indefinite" />
+          </line>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
+            <animatetransform attributeName="transform"
+       dur="15s"
+       type="rotate"
+       from="0 50 50"
+       to="360 50 50"
+       repeatCount="indefinite" />
+          </line>
+        </svg>
+      </div>
+      <h3>{{upgradingText}}</h3>
+    </div>
+    <div class="loading-merges darken-1" ng-if="upgradeStatus"
+      ng-class="[{green : upgradeStatus === 'Upgrade completed'},
+                {red : upgradeStatus === 'Failed upgrade' || upgradeStatus === 'Failed pre-integrity check'},
+                {amber : upgradeStatus === 'Upgrade completed with integrity failures'}]">      
+      <div class="all-done" ng-if="upgradeStatus === 'Upgrade completed'">
+        <div class="md md-done"></div>
+      </div>
+      <h3>{{upgradeStatus}}</h3>
+      <div class="row">
+        <button class="btn btn-default blue btn-center"
+              ng-click="back()">       
+        <span class="button-link">Back</span>
+      </button>
+      </div>
+      
+    </div>
+
+  </div>
+</section>
