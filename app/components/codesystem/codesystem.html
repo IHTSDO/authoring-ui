@@ -2,7 +2,7 @@
   <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right dash-tables ">
+  <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right dash-tables " ng-show="codeSystem">
 
     <div class="page-header row p-b-5">
       <div class="col-md-4 no-padding">
@@ -18,16 +18,17 @@
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
-          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && userRoles.includes('ADMIN')" class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="upgrade()"
-            ng-disabled="classificationRunning">
+          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && userRoles.includes('ADMIN')" class="btn btn-border tooltips-bottom xxxlarge-size-tooltip offset-tooltip-right" ng-click="upgrade()"
+            ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion">
             <div
               class="project-icon amber pull-left">
               <div class="md md-file-upload"></div>
             </div>
             Upgrade
+            <span ng-if="upgradedToLastestDependantVersion">This extension was upgraded to the latest International release. No upgarde available</span>
           </button>
           <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="classify()"
-            ng-disabled="classificationRunning">
+            ng-disabled="classificationRunning || codeSystemUpgradeRunning">
             <div
               class="project-icon green pull-left">
               <div class="md md-notifications"></div>
@@ -36,7 +37,7 @@
             <span>Run classification against this code system</span>
           </button>
            <button class="btn btn-border tooltips-bottom offset-tooltip-right xxlarge-size-tooltip m-l-5" ng-click="validate()"
-            ng-disabled="validationRunning">
+            ng-disabled="validationRunning || codeSystemUpgradeRunning">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
               <div class="md md-school"></div>

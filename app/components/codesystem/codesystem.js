@@ -51,6 +51,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
+      $rootScope.codeSystemUpgradeRunning = false;
       $rootScope.validationRunning = false;
       $rootScope.rebaseRunning = false;
 
@@ -86,6 +87,19 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     codeSystem.dependantVersionEffectiveTime = [date.slice(0, 4), date.slice(4,6), date.slice(6,8)].join('-');
                   }
                   $scope.codeSystem = codeSystem;
+
+                  // check wheter or not the latest dependant version was upgraded
+                  terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
+                    if (response.data.items && response.data.items.length > 0) {
+                      var versions = response.data.items.sort(function (a, b) {
+                        return b.effectiveDate - a.effectiveDate;
+                      });
+                      if (versions[0].version === codeSystem.dependantVersionEffectiveTime) {
+                        $scope.upgradedToLastestDependantVersion = true;
+                      }
+                    }
+                  });
+
                   // get the project task list
                   scaService.getProjects().then(function (projects) {
                     angular.forEach(projects, function (project) {
@@ -296,6 +310,27 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         $location.url('project/' + project.key);
       };
 
+      function waitForCodeSystemUpgradeToComplete(jobId) {
+        var deferred = $q.defer();
+        $timeout(function () {
+          scaService.getCodeSystemUpgradeJob(jobId).then(function (data) {
+            // if review is ready, get the details
+            if (data && (data.status === 'COMPLETED' || data.status === 'FAILED')) {
+              deferred.resolve(data);
+            } else {
+              waitForCodeSystemUpgradeToComplete(jobId).then(function (pollResults) {
+                deferred.resolve(pollResults);
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }, 5000);
+        return deferred.promise;
+      }
+
       // on load, retrieve tasks for project
       function initialize() {
         // initialize the project
@@ -317,6 +352,20 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                 }
               });
             }, 2000);
+          }
+        });
+
+        // check if any upgarde is running
+        scaService.getSharedUiStateForTask($routeParams.codeSystem, $routeParams.codeSystem, 'code-system-upgrade-job').then(function(response){
+          if (response && response.jobId) {
+            scaService.getCodeSystemUpgradeJob(response.jobId).then(function (upgradeJob) {
+              if (upgradeJob.status === 'RUNNING') {
+                $rootScope.codeSystemUpgradeRunning = true;
+                waitForCodeSystemUpgradeToComplete(response.jobId).then(function() {
+                  $rootScope.codeSystemUpgradeRunning = false;
+                });
+              }
+            });
           }
         });
       }

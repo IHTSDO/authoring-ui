@@ -3,30 +3,36 @@
 angular.module('singleConceptAuthoringApp')
   .controller('UpgradeCtrl', function ($scope, $rootScope, $routeParams, $location, $q, $timeout, terminologyServerService, scaService, notificationService) {
     $rootScope.pageTitle = 'Code System/<a href="#codesystem&#47;'+ $routeParams.codeSystem + '" target="_blank">' + $routeParams.codeSystem + '/Upgrade';
+    // clear task-related information
+    $rootScope.classificationRunning = false;
+    $rootScope.validationRunning = false;
+    $rootScope.codeSystemUpgradeRunning = false;
 
     $scope.upgradingText = null;
     $scope.upgradeStatus = null;
+
     var newDependantVersion = parseInt($routeParams.newDependantVersion.split('-').join(''));
 
-    $scope.back = function() {
+    $scope.gotBackToCodeSystem = function() {
       $location.url('codesystem/' + $routeParams.codeSystem);
     };
 
     function proceedCodeSystemUpgrade(codeSystem) {
-      $scope.upgradingText = 'Checking pre-integrity...';
+      $scope.upgradingText = 'Checking pre-integrity..., please wait';
       terminologyServerService.branchIntegrityCheck(codeSystem.branchPath).then(function(response) {
         if (response && response.empty == false) {
-          $scope.upgradeStatus = 'Failed pre-integrity check'
+          $scope.upgradeStatus = 'FAILED_PRE-INTEGRITY';
           $scope.upgradingText = null;
         } else {
-          $scope.upgradingText = 'Upgrading code system...';
+          $scope.upgradingText = 'Upgrading code system..., please wait';
+          $rootScope.codeSystemUpgradeRunning = true;
           scaService.upgradeCodeSystem($routeParams.codeSystem, newDependantVersion).then(function(location) {
             var jobId = location.substr(location.lastIndexOf('/') + 1);
             scaService.saveSharedUiStateForTask($routeParams.codeSystem, $routeParams.codeSystem, 'code-system-upgrade-job', {jobId: jobId});
             waitAndDoPostIntegrityCheck(codeSystem, jobId);
           }, function(error) {
             $scope.upgradingText = null;
-            $scope.upgradeStatus = 'Failed upgrade';
+            $scope.upgradeStatus = 'FAILED_UPGRADE';
             if (error.message) {
               notificationService.sendError(error.message);
             }
@@ -39,29 +45,30 @@ angular.module('singleConceptAuthoringApp')
 
     function waitAndDoPostIntegrityCheck(codeSystem, jobId) {
       waitForCodeSystemUpgradeToComplete(jobId).then(function(upgradeJob) {
+        $rootScope.codeSystemUpgradeRunning = false;
         if (upgradeJob.status === 'COMPLETED') {
           doPostIntegrityCheck(codeSystem);
         } else {
           $scope.upgradingText = null;
-          $scope.upgradeStatus = 'Failed upgrade';
+          $scope.upgradeStatus = 'FAILED_UPGRADE';
           if (upgradeJob.errorMessage) {
             notificationService.sendError(upgradeJob.errorMessage);
           }
-        }                    
+        }
       });
     }
 
     function doPostIntegrityCheck(codeSystem) {
-      $scope.upgradingText = 'Checking post-integrity...';
+      $scope.upgradingText = 'Checking post-integrity..., please wait';
       terminologyServerService.branchIntegrityCheck(codeSystem.branchPath).then(function(response) {
         if (response && response.empty == false) {
-          $scope.upgradeStatus = 'Upgrade completed with integrity failures';
+          $scope.upgradeStatus = 'COMPLETED_WITH_INTEGRITY_FAILURES';
         } else {
-          $scope.upgradeStatus = 'Upgrade completed';
+          $scope.upgradeStatus = 'COMPLETED';
         }
         $scope.upgradingText = null;
       });
-    }    
+    }
 
     function waitForCodeSystemUpgradeToComplete(jobId) {
       var deferred = $q.defer();
@@ -94,16 +101,17 @@ angular.module('singleConceptAuthoringApp')
         }
 
         if (codeSystem.dependantVersionEffectiveTime === newDependantVersion) {
-          notificationService.sendError('The code system has been upgraded to ' + $routeParams.newDependantVersion + ' version.');
+          notificationService.sendError('The code system has been upgraded to the ' + $routeParams.newDependantVersion + ' International Edition.');
         } else if (codeSystem.dependantVersionEffectiveTime > newDependantVersion) {
-          notificationService.sendError('The new dependant version must be after the extensions current dependency release date.');
+          notificationService.sendError('The new dependant version must be after the current dependency release date.');
         } else {
           scaService.getSharedUiStateForTask($routeParams.codeSystem, $routeParams.codeSystem, 'code-system-upgrade-job').then(function(response){
             if (response && response.jobId) {
               scaService.getCodeSystemUpgradeJob(response.jobId).then(function (upgradeJob) {
                 if (upgradeJob.status === 'RUNNING') {
-                  $scope.upgradingText = 'Upgrading code system...';
+                  $scope.upgradingText = 'Upgrading code system..., please wait';
                   $scope.upgradeStatus = null;
+                  $rootScope.codeSystemUpgradeRunning = true;
                   waitAndDoPostIntegrityCheck(codeSystem, response.jobId);
                 } else {
                   proceedCodeSystemUpgrade(codeSystem);
@@ -112,7 +120,7 @@ angular.module('singleConceptAuthoringApp')
             } else {
               proceedCodeSystemUpgrade(codeSystem);
             }
-          });          
+          });
         }
       }, function(error) {
         notificationService.sendError('Code System not found.');

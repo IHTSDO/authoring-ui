@@ -33,18 +33,29 @@
       <h3>{{upgradingText}}</h3>
     </div>
     <div class="loading-merges darken-1" ng-if="upgradeStatus"
-      ng-class="[{green : upgradeStatus === 'Upgrade completed'},
-                {red : upgradeStatus === 'Failed upgrade' || upgradeStatus === 'Failed pre-integrity check'},
-                {amber : upgradeStatus === 'Upgrade completed with integrity failures'}]">      
-      <div class="all-done" ng-if="upgradeStatus === 'Upgrade completed'">
-        <div class="md md-done"></div>
+      ng-class="[{green : upgradeStatus === 'COMPLETED'},
+                {red : upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'},
+                {amber : upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'}]">      
+      <div ng-if="upgradeStatus === 'COMPLETED'">
+        <div class="all-done">
+          <div class="md md-done"></div>
+        </div>
+        <h3>Upgrade was successful. Please remember to rebase your projects.</h3>
       </div>
-      <h3>{{upgradeStatus}}</h3>
+
+      <h3 ng-if="upgradeStatus === 'FAILED_UPGRADE'">The upgrade failed, please contact technical support.</h3>
+      <h3 ng-if="upgradeStatus === 'FAILED_PRE-INTEGRITY'">Pre-integrity check failed, please contact technical support.</h3>
+      <h3 ng-if="upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'">Upgrade completed with Integrity Failures. You will now need to rebase your Master project, resolve these issues and promote them before you can continue authoring.</h3>
+      
       <div class="row">
-        <button class="btn btn-default blue btn-center"
-              ng-click="back()">       
-        <span class="button-link">Back</span>
-      </button>
+        <div class="col col-md-4"></div>
+        <div class="col col-md-4" style="text-align: center;">
+          <button class="btn btn-default blue" ng-click="gotBackToCodeSystem()">       
+            <span ng-if="upgradeStatus === 'COMPLETED' || upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" class="button-link">Continue</span>
+            <span ng-if="upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'" class="button-link">Close</span>
+          </button>
+        </div>
+        <div class="col col-md-4"></div>        
       </div>
       
     </div>
