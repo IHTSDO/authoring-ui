@@ -262,6 +262,10 @@ content: '';
 .offset-tooltip-right.xxlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -235px;
 }
+.offset-tooltip-right.xxxlarge-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -400px;
+}
+.offset-tooltip-right.xxxlarge-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.xxlarge-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.small-size-tooltip.tooltips-bottom span:after {
@@ -429,7 +433,13 @@ content: '';
 .xxlarge-size-tooltip.tooltips-bottom span {
     width: 255px;
 }
+.xxxlarge-size-tooltip.tooltips-bottom span {
+    width: 445px;
+}
 .xxlarge-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -130px;
+}
+.xxxlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -130px;
 }
 .xxlarge-size-tooltip.tooltips-bottom.triangle-redhl:hover span {

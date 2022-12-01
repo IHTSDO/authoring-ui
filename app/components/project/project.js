@@ -45,6 +45,7 @@ angular.module('singleConceptAuthoringApp.project', [
       // initialize the header notification
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
+      $rootScope.codeSystemUpgradeRunning = false;
       $scope.browserLink = '..';
       $rootScope.rebaseRunning = false;
 

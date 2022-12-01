@@ -70,7 +70,14 @@
         <button type="button"
                 class="btn btn-round-sm btn-default pull-left tooltips-right normalcase indicator_green header-nav-button">
           <div class="md md-notifications "></div>
-          <span>Classification Running </span>
+          <span>Classification Running</span>
+        </button>
+      </li>
+      <li ng-if="codeSystemUpgradeRunning">
+        <button type="button"
+                class="btn btn-round-sm btn-default pull-left tooltips-right normalcase amber header-nav-button">
+          <div class="md md-file-upload"></div>
+          <span>Code System Upgrading</span>
         </button>
       </li>
       <li ng-if="automatedPromotionInQueued">

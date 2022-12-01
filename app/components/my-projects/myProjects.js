@@ -28,6 +28,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     // clear task-related i nformation
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $rootScope.codeSystemUpgradeRunning = false;
     $scope.preferences = {};
 
     // TODO Placeholder, as we only have the one tab at the moment
