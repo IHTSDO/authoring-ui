@@ -35,29 +35,29 @@
     <div class="loading-merges" ng-if="upgradeStatus"
       ng-class="[{'green': upgradeStatus === 'COMPLETED'},
                 {'red darken-1' : upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'},
-                {'amber lighten-1': upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'}]">      
+                {'amber': upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'}]">
       <div ng-if="upgradeStatus === 'COMPLETED'">
         <div class="all-done">
           <div class="md md-done"></div>
         </div>
-        <h3>Upgrade was successful. Please remember to rebase your projects.</h3>
+        <h3 style="line-height: 1.7; margin-top: 0;">Upgrade was successful. Please remember to rebase your projects.</h3>
       </div>
 
-      <h3 ng-if="upgradeStatus === 'FAILED_UPGRADE'">The upgrade failed, please contact technical support.</h3>
-      <h3 ng-if="upgradeStatus === 'FAILED_PRE-INTEGRITY'">Pre-integrity check failed, please contact technical support.</h3>
-      <h3 ng-if="upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" style="padding-left: 200px; padding-right: 200px;line-height: 1.6;">Upgrade completed with Integrity Failures. You will now need to rebase your Master project, resolve these issues and promote them before you can continue authoring.</h3>
-      
-      <div class="row">
+      <h3 ng-if="upgradeStatus === 'FAILED_UPGRADE'" style="line-height: 1.7;">The upgrade failed, please contact technical support.</h3>
+      <h3 ng-if="upgradeStatus === 'FAILED_PRE-INTEGRITY'" style="line-height: 1.7;">Pre-integrity check failed, please contact technical support.</h3>
+      <h3 ng-if="upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" style="line-height: 1.7;">Upgrade completed with Integrity Failures. You will now need to rebase your Master project, <br/>resolve these issues and promote them before you can continue authoring.</h3>
+
+      <div class="row m-t-20">
         <div class="col col-md-4"></div>
         <div class="col col-md-4" style="text-align: center;">
-          <button class="btn btn-default blue" ng-click="gotBackToCodeSystem()">       
-            <span ng-if="upgradeStatus === 'COMPLETED' || upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" class="button-link">Continue</span>
-            <span ng-if="upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'" class="button-link">Close</span>
+          <button class="btn btn-default blue" ng-click="gotBackToCodeSystem()" style="padding: 8px 15px;">
+            <span ng-if="upgradeStatus === 'COMPLETED' || upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" class="button-link" style="font-weight: 500;">Continue</span>
+            <span ng-if="upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'" class="button-link" style="font-weight: 500;">Close</span>
           </button>
         </div>
-        <div class="col col-md-4"></div>        
+        <div class="col col-md-4"></div>
       </div>
-      
+
     </div>
 
   </div>
