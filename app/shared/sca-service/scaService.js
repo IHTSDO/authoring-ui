@@ -1859,9 +1859,13 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        upgradeCodeSystem: function(codeSystem, newDependantVersion) {
-          var deferred = $q.defer();          
-          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/upgrade/' + newDependantVersion).then(function (response) {
+        upgradeCodeSystem: function(codeSystem, newDependantVersion, selectedProjectKey) {
+          var deferred = $q.defer();
+          var queryParam = '';
+          if (selectedProjectKey) {
+            queryParam = '?generateEn_GbLanguageRefsetDelta=true&projectKey=' + selectedProjectKey;
+          }          
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/upgrade/' + newDependantVersion + queryParam).then(function (response) {
             var locHeader = response.headers('Location');            
             deferred.resolve(locHeader);
           }, function (error) {

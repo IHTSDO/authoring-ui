@@ -25,10 +25,28 @@
     <div class="row">
       <div class="col-md-12">
         <div>
-          <label for="upgradeVersionSelection">Select Version</label>
+          <label for="upgradeVersionSelection">Select version</label>
           <select id="upgradeVersionSelection" name="select-choice" class="form-control"
                   ng-options="version as version.version for version in versions | orderBy: '-effectiveDate'"
                   ng-model="selectedVersion"
+            >
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="checkbox m-b-15 m-t-15">
+      <label class="filled" style="padding-left: 15px;">
+        Copy the EN-GB acceptability&nbsp;&nbsp;
+        <input type="checkbox" ng-model="copyEnGb" ui-on-drop="" style="margin-top: 10px;margin-left: 5px;">        
+      </label>
+    </div>
+    <div class="row" ng-if="copyEnGb">
+      <div class="col-md-12">
+        <div>
+          <label for="projectSelection">Select project to create task</label>
+          <select id="projectSelection" name="select-choice" class="form-control"
+                  ng-options="project.key as project.title for project in projects"
+                  ng-model="selectedProject"
             >
           </select>
         </div>

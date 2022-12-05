@@ -26,7 +26,8 @@ angular.module('singleConceptAuthoringApp')
         } else {
           $scope.upgradingText = 'Upgrading code system, please wait...';
           $rootScope.codeSystemUpgradeRunning = true;
-          scaService.upgradeCodeSystem($routeParams.codeSystem, newDependantVersion).then(function(location) {
+          var selectedProjectKey = $location.search().projectKey;
+          scaService.upgradeCodeSystem($routeParams.codeSystem, newDependantVersion, selectedProjectKey).then(function(location) {
             var jobId = location.substr(location.lastIndexOf('/') + 1);
             scaService.saveSharedUiStateForTask($routeParams.codeSystem, $routeParams.codeSystem, 'code-system-upgrade-job', {jobId: jobId});
             waitAndDoPostIntegrityCheck(codeSystem, jobId);
