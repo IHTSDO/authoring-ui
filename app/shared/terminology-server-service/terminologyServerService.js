@@ -1770,7 +1770,7 @@ angular.module('singleConceptAuthoringApp')
       function getTraceabilityForBranch(branch, conceptId, activityType, brief) {
         console.log(brief);
         var deferred = $q.defer();
-        var params = 'size=50000';
+        var params = 'size=500';
         if(branch) {
           params += '&onBranch=' + branch;
         }
