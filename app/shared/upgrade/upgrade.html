@@ -45,12 +45,23 @@
 
       <h3 ng-if="upgradeStatus === 'FAILED_UPGRADE'" style="line-height: 1.7;">The upgrade failed, please contact technical support.</h3>
       <h3 ng-if="upgradeStatus === 'FAILED_PRE-INTEGRITY'" style="line-height: 1.7;">Pre-integrity check failed, please contact technical support.</h3>
-      <h3 ng-if="upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" style="line-height: 1.7;">Upgrade completed with Integrity Failures. You will now need to rebase your Master project, <br/>resolve these issues and promote them before you can continue authoring.</h3>
+      <div ng-if="upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'">
+        <h3 style="line-height: 1.7;">Upgrade completed with integrity failures. Before you can continue authoring, please complete the following steps:</h3>
+        <div class="row">
+          <div class="col col-md-5"></div>
+          <div class="col col-md-7" style="font-size: 18px;">
+            <span>&#8226; Rebase your master project</span><br/>
+            <span>&#8226; Create a task to resolve the integrity issues</span><br/>
+            <span>&#8226; Promote your task to project</span>
+          </div>
+        </div>
+      </div>
+
 
       <div class="row m-t-20">
         <div class="col col-md-4"></div>
         <div class="col col-md-4" style="text-align: center;">
-          <button class="btn btn-default blue" ng-click="gotBackToCodeSystem()" style="padding: 8px 15px;">
+          <button class="btn deep-purple lighten-1" ng-click="gotBackToCodeSystem()" style="padding: 8px 20px;">
             <span ng-if="upgradeStatus === 'COMPLETED' || upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" class="button-link" style="font-weight: 500;">Continue</span>
             <span ng-if="upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'" class="button-link" style="font-weight: 500;">Close</span>
           </button>

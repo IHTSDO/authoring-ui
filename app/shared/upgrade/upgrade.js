@@ -18,13 +18,13 @@ angular.module('singleConceptAuthoringApp')
     };
 
     function proceedCodeSystemUpgrade(codeSystem) {
-      $scope.upgradingText = 'Checking pre-integrity..., please wait';
+      $scope.upgradingText = 'Checking pre-integrity, please wait...';
       terminologyServerService.branchIntegrityCheck(codeSystem.branchPath).then(function(response) {
         if (response && response.empty == false) {
           $scope.upgradeStatus = 'FAILED_PRE-INTEGRITY';
           $scope.upgradingText = null;
         } else {
-          $scope.upgradingText = 'Upgrading code system..., please wait';
+          $scope.upgradingText = 'Upgrading code system, please wait...';
           $rootScope.codeSystemUpgradeRunning = true;
           scaService.upgradeCodeSystem($routeParams.codeSystem, newDependantVersion).then(function(location) {
             var jobId = location.substr(location.lastIndexOf('/') + 1);
@@ -59,7 +59,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function doPostIntegrityCheck(codeSystem) {
-      $scope.upgradingText = 'Checking post-integrity..., please wait';
+      $scope.upgradingText = 'Checking post-integrity, please wait...';
       terminologyServerService.branchIntegrityCheck(codeSystem.branchPath).then(function(response) {
         if (response && response.empty == false) {
           $scope.upgradeStatus = 'COMPLETED_WITH_INTEGRITY_FAILURES';
@@ -109,7 +109,7 @@ angular.module('singleConceptAuthoringApp')
             if (response && response.jobId) {
               scaService.getCodeSystemUpgradeJob(response.jobId).then(function (upgradeJob) {
                 if (upgradeJob.status === 'RUNNING') {
-                  $scope.upgradingText = 'Upgrading code system..., please wait';
+                  $scope.upgradingText = 'Upgrading code system, please wait...';
                   $scope.upgradeStatus = null;
                   $rootScope.codeSystemUpgradeRunning = true;
                   waitAndDoPostIntegrityCheck(codeSystem, response.jobId);

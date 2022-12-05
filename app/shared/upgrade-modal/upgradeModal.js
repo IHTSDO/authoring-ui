@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
     /////////////////////////////////////////
 
     $scope.upgrade = function() {
-      modalService.confirm('Do you really want to upgrade the ' + $scope.codeSystem.name + ' to the new ' + $scope.selectedVersion.version + ' International Edition??').then(function () {
+      modalService.confirm('Do you really want to upgrade the ' + $scope.codeSystem.name + ' to the new ' + $scope.selectedVersion.version + ' International Edition?').then(function () {
         $location.url('codesystem/' + $scope.codeSystem.shortName + '/upgrade/' + $scope.selectedVersion.version);
         $modalInstance.close();
       }, function () {
