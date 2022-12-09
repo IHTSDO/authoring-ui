@@ -230,7 +230,9 @@
         <div ng-show="!validationCollapsed">
           <div class="card-content clearfix">
             <div validation validation-container="validationContainer" branch="branch"
-                 editable="true" show-title="false" lastPromotion="project.lastPromotion"></div>
+                 editable="true" show-title="false" lastPromotion="project.lastPromotion"
+                 allow-whitelist-warning="true" allow-whitelist-error="{{userRoles.includes('ADMIN')}}"
+                 ></div>
           </div>
         </div>
       </div>
