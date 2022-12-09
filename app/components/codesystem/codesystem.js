@@ -57,6 +57,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.validationCollapsed = $location.search().expandValidation ? !$location.search().expandValidation : true;
       $scope.dailyBuildValidationCollapsed = true;
+      $scope.exceptionListCollapsed = true;
       $scope.classificationCollapsed = $location.search().expandClassification ? !$location.search().expandClassification : true;
 
       hotkeys.bindTo($scope)

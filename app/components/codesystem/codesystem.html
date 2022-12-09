@@ -8,7 +8,7 @@
       <div class="col-md-4 no-padding">
         <h1 class="p-l-15">
           {{codeSystem.name}} : {{codeSystem.shortName}}
-        </h1>    
+        </h1>
         <div class="col-md-12 no-padding" ng-if="codeSystem.latestVersion">
           <p class="p-l-15 m-b-0 promotion-box">Last published: {{codeSystem.latestVersion.version}}</p>
         </div>
@@ -46,7 +46,7 @@
             <span>Run validation against this code system</span>
           </button>
         </div>
-      </div>      
+      </div>
 </div>
     <div class="row project-page">
       <!-- Classification Results -->
@@ -83,7 +83,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="!validationContainer"                    
+            <button ng-disabled="!validationContainer"
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !validationCollapsed, 'md-keyboard-arrow-right' : validationCollapsed}]">
@@ -96,11 +96,11 @@
             <div class="clearfix"></div>
           </div>
         </div>
-        
+
         <div ng-show="!validationCollapsed">
           <div class="card-content clearfix">
-            <div validation validation-container="validationContainer" branch="branch" 
-             is-code-system="true" show-title="false" editable="true" overridden-labels="{'exceptionLabel1':'Exceptions since last release', 'exceptionLabel2':'All exceptions', 'exceptionLabel3':'Latest exceptions', 'exceptionLabel4':'All exceptions'}"></div>
+            <div validation validation-container="validationContainer" branch="branch"
+             is-code-system="true" allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" allow-whitelist-error="{{userRoles.includes('ADMIN')}}" editable="true" hide-exceptions="true"></div>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="!dailyBuildValidationContainer"                    
+            <button ng-disabled="!dailyBuildValidationContainer"
                     ng-click="dailyBuildValidationCollapsed = !dailyBuildValidationCollapsed"
                     type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !dailyBuildValidationCollapsed, 'md-keyboard-arrow-right' : dailyBuildValidationCollapsed}]">
@@ -123,12 +123,38 @@
             <div class="clearfix"></div>
           </div>
         </div>
-        
+
         <div ng-show="!dailyBuildValidationCollapsed">
           <div class="card-content clearfix">
-            <div validation validation-container="dailyBuildValidationContainer" branch="branch" 
-             is-code-system="true" whitelist-disabled="true" show-title="false" editable="true" hide-exceptions="true"
-             raise-jira-tickets-disabled="true"></div>
+            <div validation validation-container="dailyBuildValidationContainer" branch="branch"
+             is-code-system="true" allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" allow-whitelist-error="{{userRoles.includes('ADMIN')}}"  editable="true" hide-exceptions="true" raise-jira-tickets-disabled="true"></div>
+          </div>
+        </div>
+      </div>
+
+      <!--- Exception list -->
+      <div class="card">
+
+        <div class="card-header">
+          <div class="card-title">
+            <button
+                    ng-click="exceptionListCollapsed = !exceptionListCollapsed"
+                    type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !dailyBuildValidationCollapsed, 'md-keyboard-arrow-right' : dailyBuildValidationCollapsed}]">
+              <span class="project-subtitle" ng-class="{'report-text' : validationContainer}">Exceptions</span>
+            </button>
+
+            <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-list"></span></span>
+            <span class="arrow-purple pull-right"></span>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <div ng-show="!exceptionListCollapsed">
+          <div class="card-content clearfix">
+            <div ng-if="branch" exceptions branch="branch" is-code-system="true"
+                overridden-labels="{'exceptionLabel1':'Exceptions since last release', 'exceptionLabel2':'All exceptions', 'exceptionLabel3':'Latest exceptions', 'exceptionLabel4':'All exceptions'}"></div>
           </div>
         </div>
       </div>
