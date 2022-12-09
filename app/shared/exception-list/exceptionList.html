@@ -1,0 +1,66 @@
+<section class="tables-data">
+  <!-- for ng-table checkboxes -->
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+    <input type="checkbox" ng-model="checkAll" ng-class="[{'project' : !task}]" ng-change="selectAll(checkAll)" title="Select Concepts"
+           id="select_all_failures"
+           name="filter-checkbox" value=""/>
+  </script>
+  <script type="text/ng-template" id="excludeheader.html">
+    <button type="button" ng-click="excludeFailures()"
+            class="btn btn-default back-button"
+            ng-if="isWhitelistEnabled">
+            Add selected to Exceptions
+    </button>
+  </script>
+  <script type="text/ng-template" id="editheader.html">
+    <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
+            class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
+            <span
+              class="md md-edit"></span>
+    </button>
+  </script>
+
+  <!-- Exception table -->
+  <div class="row m-t-15 no-gutter table-responsive white">
+    <div class="row">
+      <div class="col-md-4 p-10" style="margin-top: 9px;">
+          <strong>{{exceptionLoading ? 'Loading...' :
+                                    (viewFullListException ?
+                                    (overriddenLabels && overriddenLabels.exceptionLabel2 ? overriddenLabels.exceptionLabel2 :'Exceptions on all projects since last release') :
+                                    (overriddenLabels && overriddenLabels.exceptionLabel1? overriddenLabels.exceptionLabel1 : 'Exceptions on this project since last promotion'))}}</strong>{{exceptionLoading ? '' : (': ' + exclusionsTableParams.total())}}
+          <button
+          ng-if="exclusionsTableParams.total() != 0"
+          class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case" style="background-color: #2196F3; margin-left:10px;"
+          ng-click="downloadExceptions()"> <span> Download Exceptions </span> </button>
+      </div>
+
+      <div class="col-md-8 p-10">
+        <div class="switch pull-right white-text">
+          <label class="switch" style="margin-left:10px; margin-right:10px;"> {{overriddenLabels && overriddenLabels.exceptionLabel3 ? overriddenLabels.exceptionLabel3 : 'This Project'}}
+            <input type="checkbox" ng-model="viewFullListException" ng-disabled="exceptionLoading"
+                 ng-change="toggleViewFullListExceptions()">
+            <span class="lever" style="margin:12px;"></span> {{overriddenLabels && overriddenLabels.exceptionLabel4 ? overriddenLabels.exceptionLabel4 : 'All Projects'}} </label>
+        </div>
+
+      </div>
+    </div>
+    <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
+           class="table">
+      <tr ng-repeat="failure in $data">
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'"> {{failure.conceptId}} </td>
+        <td class="col-md-3" header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
+            ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Component ID'" sortable="'componentId'"> {{failure.componentId}} </td>
+        <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'"> {{failure.failureText}} </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}} </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
+        <td class="button-column"><button
+            title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
+            type="button" class="btn btn-round btn-default blue"> <i
+              class="md md-close"></i>
+          <div class="ripple-wrapper"></div>
+          </button></td>
+      </tr>
+    </table>
+  </div>
+</section>
