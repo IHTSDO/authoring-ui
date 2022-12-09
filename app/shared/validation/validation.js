@@ -178,12 +178,8 @@ angular.module('singleConceptAuthoringApp')
                     if(assertionFailed.failureCount !== -1){
                         var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
 
-                          // if viewing task report and instance is not user modified, return false
-                          if (!scope.viewFullReport && !instance.isBranchModification) {
-                            return false;
-                          }
-                          // if validation failure is excluded, return false
-                          if (validationService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
+                          // if viewing task report and instance is not user modified, return false                          
+                          if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
                             return false;
                           }
 
@@ -716,41 +712,17 @@ angular.module('singleConceptAuthoringApp')
                         });
                     });
                     scope.allWhitelistItems = whitelistItems;
-                    angular.forEach(scope.assertionsWarning, function (assertion) {
-                      if(assertion.failureCount > 0){
-                          assertion.isBranchModification = false;
-                          angular.forEach(assertion.firstNInstances, function (instance) {
-
-                            // store the unmodified text to preserve original data
-                            instance.detailUnmodified = instance.detail;
-
-                            // detect if instance references user modified concepts
-                            if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                              instance.isBranchModification = true;
-                              assertion.isBranchModification = true;
-                            }
-                          });
-                      }
-                    });
-                    angular.forEach(scope.assertionsFailed, function (assertion) {
-                      if(assertion.failureCount > 0){
-                          assertion.isBranchModification = false;
-                          angular.forEach(assertion.firstNInstances, function (instance) {
-
-                            // store the unmodified text to preserve original data
-                            instance.detailUnmodified = instance.detail;
-
-                            // detect if instance references user modified concepts
-                            if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                              instance.isBranchModification = true;
-                              assertion.isBranchModification = true;
-                            }
-                          });
-                      }
-                    });
+                    initViewableFlagForFailures();
+                    scope.resetUserExclusionFlag();
                     scope.exceptionLoading = false;
                     deferred.resolve();
                   });
+                } else {
+                  scope.allWhitelistItems = [];
+                  initViewableFlagForFailures();
+                  scope.resetUserExclusionFlag();
+                  scope.exceptionLoading = false;
+                  deferred.resolve();
                 }
               }, function() {
                 scope.exceptionLoading = false;
@@ -763,23 +735,39 @@ angular.module('singleConceptAuthoringApp')
 
           function initViewableFlagForFailures() {
             // set the viewable flags for all returned failure instances
-            angular.forEach(scope.assertionsFailed, function (assertion) {
-              if(assertion.failureCount !== -1) {
-                assertion.isBranchModification = false;
-                angular.forEach(assertion.firstNInstances, function (instance) {
+            angular.forEach(scope.assertionsWarning, function (assertion) {
+              if(assertion.failureCount > 0){
+                  assertion.isBranchModification = false;
+                  angular.forEach(assertion.firstNInstances, function (instance) {
 
-                  // store the unmodified text to preserve original data
-                  instance.detailUnmodified = instance.detail;
+                    // store the unmodified text to preserve original data
+                    instance.detailUnmodified = instance.detail;
 
-                  // detect if instance references user modified concepts
-                  if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                    instance.isBranchModification = true;
-                    assertion.isBranchModification = true;
-                  }
-                });
+                    // detect if instance references user modified concepts
+                    if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                      instance.isBranchModification = true;
+                      assertion.isBranchModification = true;
+                    }
+                  });
               }
             });
-          }
+            angular.forEach(scope.assertionsFailed, function (assertion) {
+              if(assertion.failureCount > 0){
+                  assertion.isBranchModification = false;
+                  angular.forEach(assertion.firstNInstances, function (instance) {
+
+                    // store the unmodified text to preserve original data
+                    instance.detailUnmodified = instance.detail;
+
+                    // detect if instance references user modified concepts
+                    if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                      instance.isBranchModification = true;
+                      assertion.isBranchModification = true;
+                    }
+                  });
+              }
+            });
+          }            
 
           function initFailures() {
 
@@ -803,30 +791,18 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
                 }
-                if (!scope.hideExceptions) {
-                  checkWhitelist().then(function() {
-                    initViewableFlagForFailures();
-                    scope.reloadTables();
-                    deferred.resolve();
-                  });
-                } else {
+                checkWhitelist().then(function() {
                   initViewableFlagForFailures();
                   scope.reloadTables();
                   deferred.resolve();
-                }
+                });
               },
               function() {
-                if (!scope.hideExceptions) {
-                  checkWhitelist().then(function() {
-                    initViewableFlagForFailures();
-                    scope.reloadTables();
-                    deferred.resolve();
-                  });
-                } else {
+                checkWhitelist().then(function() {
                   initViewableFlagForFailures();
                   scope.reloadTables();
                   deferred.resolve();
-                }
+                });
             });
 
             return deferred.promise;
@@ -892,7 +868,6 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$on('removeExceptionFromWhitelist', function(event, data) {
             checkWhitelist().then(function() {
-              scope.resetUserExclusionFlag();
               scope.reloadTables();
             });
           });
@@ -1083,15 +1058,17 @@ angular.module('singleConceptAuthoringApp')
 
 // exclude a single failure, with optional commit
           scope.excludeFailure = function (failure) {
-            var whitelistItem = constructWhitelistItem(scope.branch, failure);
-            aagService.addToWhitelist(whitelistItem).then(function(respone) {
-              scope.allWhitelistItems.push(respone.data);
-              scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
-              failure.isUserExclusion = true;
-              scope.resetUserExclusionFlag();
-              $rootScope.$broadcast('reloadExceptions');
-            });
-
+            if(failure.validationRuleId) {
+              var whitelistItem = constructWhitelistItem(scope.branch, failure);
+              aagService.addToWhitelist(whitelistItem).then(function(respone) {
+                scope.allWhitelistItems.push(respone.data);
+                scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+                scope.resetUserExclusionFlag();
+                $rootScope.$broadcast('reloadExceptions');
+              });
+            } else {
+              notificationService.sendError('No assertion uuid found for the failure');
+            }
           };
 
           function constructWhitelistItem(branch, failure) {
@@ -1231,7 +1208,6 @@ angular.module('singleConceptAuthoringApp')
 
             var promises = [];
             angular.forEach(failuresToAddWhiteList, function (failure) {
-              failure.isUserExclusion = true;
               var whitelistItem = constructWhitelistItem(scope.branch, failure);
               promises.push(aagService.addToWhitelist(whitelistItem));
             });

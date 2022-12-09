@@ -195,6 +195,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.codeSystemShortname = null;
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
+    $scope.userRoles = [];
 
     // utility function pass-thrus
     $scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
@@ -1684,6 +1685,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
             if (response.hasOwnProperty('userRoles')) {
               permissionService.setRolesForBranch($scope.branch, response.userRoles);
+              $scope.userRoles = response.userRoles;
             } else {
               permissionService.setRolesForBranch($scope.branch, []);
             }

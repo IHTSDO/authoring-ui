@@ -313,7 +313,8 @@
 
       <!-- validation report -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
-        <div validation task="task" validation-container="validationContainer" branch="targetBranch" editable="true"></div>
+        <div validation task="task" validation-container="validationContainer" branch="targetBranch" editable="true"
+            allow-whitelist-warning="true" allow-whitelist-error="{{userRoles.includes('ADMIN')}}"></div>
       </div>
 
     </div>
