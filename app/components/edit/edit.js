@@ -1707,6 +1707,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
           if (response.hasOwnProperty('userRoles')) {
             permissionService.setRolesForBranch($scope.branch, response.userRoles);
+            $scope.userRoles = response.userRoles;
           } else {
             permissionService.setRolesForBranch($scope.branch, []);
           }
