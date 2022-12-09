@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
         notificationService.sendMessage('Loading Code Systems...');
         $scope.codesystems = [];
         scaService.getProjects().then(function (projects) {
-            angular.forEach(metadataService.getCodeSystems(), function(codesystem) {
+            angular.forEach(angular.copy(metadataService.getCodeSystems()), function(codesystem) {
               angular.forEach(projects, function (project) {
                 let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
                 if(path === codesystem.branchPath && !$scope.codesystems.includes(codesystem)){
