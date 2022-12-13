@@ -1,9 +1,11 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('upgradeModalCtrl', function ($scope, $modalInstance, $location, terminologyServerService, codeSystem, modalService, metadataService) {
+  .controller('upgradeModalCtrl', function ($scope, $modalInstance, $location, terminologyServerService, codeSystem, enGbLanguageRefsetPresent, modalService, metadataService) {
 
     $scope.codeSystem = codeSystem;
+
+    $scope.enGbLanguageRefsetPresent = enGbLanguageRefsetPresent;
 
     $scope.versions = [];
 

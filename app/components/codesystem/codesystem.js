@@ -112,6 +112,16 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     $scope.projectTableParams.reload();
                   });
 
+                  // check if the EN-GB language refset presents 
+                  if (response.metadata && response.metadata.requiredLanguageRefsets) {
+                    for (let i = 0; i < response.metadata.requiredLanguageRefsets.length; i++) {
+                      if (response.metadata.requiredLanguageRefsets[i]['en'] === '900000000000508004') {
+                        $scope.enGbLanguageRefsetPresent = true; 
+                        break;
+                      }
+                    }
+                  }
+
                   response.branchPath = response.path;
                   response.codeSystem = codeSystem;
                   metadataService.setBranchMetadata(response);
@@ -198,6 +208,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           resolve: {
             codeSystem: function () {
               return $scope.codeSystem;
+            },
+            enGbLanguageRefsetPresent: function() {
+              return $scope.enGbLanguageRefsetPresent;
             }
           }
         });
@@ -356,7 +369,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           }
         });
 
-        // check if any upgarde is running
+        // check if any upgrade is running
         scaService.getSharedUiStateForTask($routeParams.codeSystem, $routeParams.codeSystem, 'code-system-upgrade-job').then(function(response){
           if (response && response.jobId) {
             scaService.getCodeSystemUpgradeJob(response.jobId).then(function (upgradeJob) {
