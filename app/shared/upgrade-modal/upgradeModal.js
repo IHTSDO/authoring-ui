@@ -67,6 +67,9 @@ angular.module('singleConceptAuthoringApp')
       if (!$scope.selectedProject && $scope.projects.length !== 0) {
         $scope.selectedProject = $scope.projects[0].key;
       }
+      if ($scope.enGbLanguageRefsetPresent) {
+        $scope.copyEnGb = true;
+      }
     }
 
     initialize();
