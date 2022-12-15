@@ -3038,7 +3038,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.removeAxiomRelationship = function (relationship, axiom) {
-          var index = axiom.relationships.indexOf(relationship);
+          var index = axiom.relationships.indexOf(relationship);         
           if (index !== -1) {
             axiom.relationships.splice(index, 1);
             if (axiom.relationships.length === 0) {
@@ -3056,10 +3056,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               axiom.relationships.push(isaRel);
             }
             if(scope.template || scope.concept.template) {
-              templateService.replaceLexicalValues(scope.concept, scope.template ? scope.template : scope.concept.template, scope.branch).then(function(concept) {
+              templateService.replaceLexicalValues(scope.concept, scope.template ? scope.template : scope.concept.template, scope.branch, true).then(function(concept) {
                 scope.concept = concept;
                 scope.computeAxioms(axiom.type);
                 autoSave();
+
+                // check if the groupId in the template still exists in the axiom.
+                if (relationship.template) {
+                  
+                  var found = false;
+                  axiom.relationships.forEach(function (rel) {
+                    if (rel.groupId === relationship.groupId) {
+                      found = true;
+                    }
+                  });
+                  if (!found) {
+                    var templateGroupId = relationship.template.groupId;
+                    if (!scope.template.removedGroupIds) {
+                      scope.template.removedGroupIds = [];
+                    }
+                    scope.template.removedGroupIds.push(templateGroupId);
+                    templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template)
+                  }
+                }
               });
             } else {
               scope.computeAxioms(axiom.type);
