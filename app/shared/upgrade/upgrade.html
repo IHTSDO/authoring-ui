@@ -35,7 +35,7 @@
     <div class="loading-merges" ng-if="upgradeStatus"
       ng-class="[{'green': upgradeStatus === 'COMPLETED'},
                 {'red darken-1' : upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'},
-                {'amber': upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'}]">
+                {'grey': upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'}]">
       <div ng-if="upgradeStatus === 'COMPLETED'">
         <div class="all-done">
           <div class="md md-done"></div>
