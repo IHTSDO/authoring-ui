@@ -274,7 +274,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function replaceLexicalValues(concept, template, branch) {
+    function replaceLexicalValues(concept, template, branch, skipApplyingTemplateToConcept) {
       var deferred = $q.defer();
       let templeteConceptComplete = isTemplateComplete(concept);
       if (!templeteConceptComplete) {
@@ -299,7 +299,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
           }
-          
+
           concept.definitionStatus = response.definitionStatus;
           if (concept.classAxioms && concept.classAxioms.length !== 0) {
             let definedAxiom = false;
@@ -320,7 +320,9 @@ angular.module('singleConceptAuthoringApp')
               // do nothing
             }
           }
-          applyTemplateToConcept(concept, template);
+          if (!skipApplyingTemplateToConcept) {
+            applyTemplateToConcept(concept, template);
+          }
           deferred.resolve(concept);
         });
       }
@@ -511,7 +513,7 @@ angular.module('singleConceptAuthoringApp')
 
           // create concept from the concept template
           var tc = angular.copy(template.conceptOutline);
-          
+
           // store template details against each component
           angular.forEach(tc.descriptions, function (d) {
             d.template = angular.copy(d);
@@ -556,9 +558,11 @@ angular.module('singleConceptAuthoringApp')
           // by default, template concepts are Fully Defined
           if (template.conceptOutline.definitionStatus !== undefined) {
             tc.definitionStatus = template.conceptOutline.definitionStatus;
+            tc.classAxioms[0].definitionStatus = template.conceptOutline.definitionStatus;
           }
           else {
             tc.definitionStatus = 'PRIMITIVE';
+            tc.classAxioms[0].definitionStatus = 'PRIMITIVE';
           }
 
           if (typeof template.conceptOutline.moduleId !== 'undefined') {
@@ -576,7 +580,7 @@ angular.module('singleConceptAuthoringApp')
                 let rel = relAndDescMap.classAxioms[0].relationships[i];
                 if (typeof tcRel.targetSlot !== 'undefined'
                   && typeof rel.targetSlot !== 'undefined'
-                  && tcRel.targetSlot.slotName === rel.targetSlot.slotName 
+                  && tcRel.targetSlot.slotName === rel.targetSlot.slotName
                   && typeof rel.target !== 'undefined'
                   && typeof rel.target.conceptId !== 'undefined')
                   return true
@@ -678,9 +682,11 @@ angular.module('singleConceptAuthoringApp')
       conceptCopy.templateMessages = [];
       if (template.conceptOutline.definitionStatus !== undefined) {
         conceptCopy.definitionStatus = template.conceptOutline.definitionStatus;
+        conceptCopy.classAxioms[0].definitionStatus = template.conceptOutline.definitionStatus;
       }
       else {
         conceptCopy.definitionStatus = 'PRIMITIVE';
+        conceptCopy.classAxioms[0].definitionStatus = 'PRIMITIVE';
       }
 
       initializeTemplate(template).then(function () {
@@ -850,6 +856,30 @@ angular.module('singleConceptAuthoringApp')
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles, branch) {
       var deferred = $q.defer();
 
+      // re-calculate groupId if any group has been removed
+      if (template.removedGroupIds && template.removedGroupIds.length !== 0 && terminologyServerService.isSctid(concept.conceptId)) {
+        template.conceptOutline.classAxioms[0].relationships = template.conceptOutline.classAxioms[0].relationships.filter(function(rel) {
+          return !template.removedGroupIds.includes(rel.groupId);
+        });       
+
+        // re-calculate groupId
+        var groupIds = [];
+        for (let i = 0; i < template.conceptOutline.classAxioms[0].relationships.length; i++) {
+          var groupId = template.conceptOutline.classAxioms[0].relationships[i].groupId;
+          if (!groupIds.includes(groupId)) {
+            groupIds.push(groupId);
+          }
+        }
+        groupIds.sort(function (a, b) {
+          return parseInt(a) - parseInt(b);
+        });
+       
+        angular.forEach(template.conceptOutline.classAxioms[0].relationships, function(rel) {
+          var index = groupIds.indexOf(rel.groupId);
+          rel.newGroupId = index;
+        });
+      }
+
       // reset all template variables
       concept.templateMessages = [];
       if (!concept.conceptId) {
@@ -882,7 +912,7 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(concept.classAxioms[0].relationships, function (r) {
 
           // check for target slot
-          if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
+          if (rt.targetSlot && r.active && (rt.newGroupId ? rt.newGroupId === r.groupId : r.groupId === rt.groupId) && r.type.conceptId === rt.type.conceptId) {
             matchFound = true;
             r.template = rt;
             if (applyStyles) {
@@ -898,7 +928,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // otherwise, check specified target concept id
-          else if (r.active && r.groupId === rt.groupId && r.type && rt.type && r.target && rt.target && r.type.conceptId === rt.type.conceptId && r.target.conceptId === rt.target.conceptId) {
+          else if (r.active && (rt.newGroupId ? rt.newGroupId === r.groupId : r.groupId === rt.groupId) && r.type && rt.type && r.target && rt.target && r.type.conceptId === rt.type.conceptId && r.target.conceptId === rt.target.conceptId) {
 
             matchFound = true;
             r.template = rt;
@@ -1338,9 +1368,9 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         deferred.reject('Failed to retrieve Transformation Recipes: ' + error.message);
       });
-      
+
       return deferred.promise;
-    }    
+    }
 
     function getTransformationJob(branchPath, recipe, jobId) {
       var deferred = $q.defer();
@@ -1350,7 +1380,7 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         deferred.reject('Failed to retrieve Transformation Job: ' + error.message);
       });
-      
+
       return deferred.promise;
     }
 
@@ -1362,7 +1392,7 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         deferred.reject('Failed to retrieve Transformation Job result: ' + error.message);
       });
-      
+
       return deferred.promise;
     }
 
@@ -1406,7 +1436,7 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
-    
+
     function refsetUpdate(project, name){
       var deferred = $q.defer();
       let config = {
@@ -1443,7 +1473,7 @@ angular.module('singleConceptAuthoringApp')
       updateTargetSlot: updateTargetSlot,
       replaceLexicalValues: replaceLexicalValues,
 
-      // utility functions      
+      // utility functions
       relationshipHasTargetSlot: relationshipHasTargetSlot,
       relationshipInLogicalModel: relationshipInLogicalModel,
       isOptionalAttribute: isOptionalAttribute,
