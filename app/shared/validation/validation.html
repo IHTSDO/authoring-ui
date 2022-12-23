@@ -7,9 +7,11 @@
   </script>
   <script type="text/ng-template" id="excludeheader.html">
     <button type="button" ng-click="excludeFailures()"
+            ng-disabled="savingExceptions"
             class="btn btn-default back-button"
             ng-if="isWhitelistEnabled">
-            Add selected to Exceptions
+            <i ng-if="savingExceptions" class="md-spin md-loop"></i>
+            {{!savingExceptions ? 'Add selected to Exceptions' : 'Adding selected to Exceptions'}}            
     </button>
   </script>
   <script type="text/ng-template" id="editheader.html">
