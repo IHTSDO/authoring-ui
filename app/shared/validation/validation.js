@@ -1211,6 +1211,7 @@ angular.module('singleConceptAuthoringApp')
               var whitelistItem = constructWhitelistItem(scope.branch, failure);
               promises.push(aagService.addToWhitelist(whitelistItem));
             });
+            scope.savingExceptions = true;
             $q.all(promises).then(function (results) {
               results.forEach(function(item, current, array) {
                 scope.allWhitelistItems.push(item.data);
@@ -1220,6 +1221,7 @@ angular.module('singleConceptAuthoringApp')
               });
               scope.resetUserExclusionFlag();
               $rootScope.$broadcast('reloadExceptions');
+              scope.savingExceptions = false;
             });
           };
 
