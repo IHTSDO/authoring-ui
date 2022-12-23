@@ -40,7 +40,10 @@
         <div class="all-done">
           <div class="md md-done"></div>
         </div>
-        <h3 style="line-height: 1.7; margin-top: 0;">Upgrade was successful. Please remember to rebase your projects.</h3>
+        <h3 style="line-height: 1.7; margin-top: 0;">Upgrade was successful. 
+                                                <br/> Please remember to rebase your projects. 
+                                                <br/> A ticket has been raised to update your Daily Build. 
+                                                <br/> Your Daily Build will be unavailable until it has been reconfigured with your new dependant version.</h3>
       </div>
 
       <h3 ng-if="upgradeStatus === 'FAILED_UPGRADE'" style="line-height: 1.7;">The upgrade failed, please contact technical support.</h3>
@@ -61,7 +64,7 @@
       <div class="row m-t-20">
         <div class="col col-md-4"></div>
         <div class="col col-md-4" style="text-align: center;">
-          <button class="btn deep-purple lighten-1" ng-click="gotBackToCodeSystem()" style="padding: 8px 20px;">
+          <button class="btn btn-default blue darken-2" ng-click="gotBackToCodeSystem()" style="padding: 8px 20px;">
             <span ng-if="upgradeStatus === 'COMPLETED' || upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'" class="button-link" style="font-weight: 500;">Continue</span>
             <span ng-if="upgradeStatus === 'FAILED_UPGRADE' || upgradeStatus === 'FAILED_PRE-INTEGRITY'" class="button-link" style="font-weight: 500;">Close</span>
           </button>
