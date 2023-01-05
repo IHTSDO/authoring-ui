@@ -1381,20 +1381,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // NOTE: Needed for CRS integration
           var originalConceptId = scope.concept.conceptId;
 
-          // clean the concept for terminology server-ready save
-          terminologyServerService.cleanConcept(scope.concept, keepTempIds);
-
           var saveFn = null;
-          if (!scope.concept.conceptId || crsService.requiresCreation(scope.concept.conceptId) || !scope.isSctid(scope.concept.conceptId)) {
+          if (!originalConceptId || crsService.requiresCreation(originalConceptId) || !scope.isSctid(originalConceptId)) {
             saveFn = terminologyServerService.createConcept;
           } else {
             saveFn = terminologyServerService.updateConcept;
           }
 
+          let clonedConcept = angular.copy(scope.concept);
+
+          // clean the concept for terminology server-ready save
+          terminologyServerService.cleanConcept(clonedConcept, keepTempIds);
+
           saveFn(
             $routeParams.projectKey,
             $routeParams.taskKey,
-            scope.concept,
+            clonedConcept,
             validate
           ).then(function (response) {
               if (response) {
