@@ -94,6 +94,7 @@ angular.module('singleConceptAuthoringApp')
 
     ///////////////////////////////////////////
     function initialize() {
+      $scope.requireEnGBImport = $location.search().projectKey && $location.search().projectKey.trim() !== '';
       notificationService.clear();
       terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
         if (codeSystem.userRoles && !codeSystem.userRoles.includes('ADMIN')) {
