@@ -50,11 +50,12 @@
       <div ng-if="upgradeStatus === 'COMPLETED_WITH_INTEGRITY_FAILURES'">
         <h3 style="line-height: 1.7;">Upgrade completed with integrity failures. Before you can continue authoring, please complete the following steps:</h3>
         <div class="row">
-          <div class="col col-md-5"></div>
-          <div class="col col-md-7" style="font-size: 18px;">
+          <div class="col" ng-class="[{'col-md-5': !requireEnGBImport},{'col-md-2': requireEnGBImport}]"></div>
+          <div class="col" ng-class="[{'col-md-7': !requireEnGBImport},{'col-md-10': requireEnGBImport}]" style="font-size: 18px;">
             <span>&#8226; Rebase your master project</span><br/>
             <span>&#8226; Create a task to resolve the integrity issues</span><br/>
-            <span>&#8226; Promote your task to project</span>
+            <span>&#8226; Promote your task to project</span><br/>
+            <span ng-if="requireEnGBImport">&#8226; If you chose to add en-gb language reference set entries, please be aware that those need to be added manually after resolving the integrity issues</span>
           </div>
         </div>
       </div>
