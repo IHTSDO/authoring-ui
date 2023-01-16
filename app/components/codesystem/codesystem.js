@@ -112,11 +112,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     $scope.projectTableParams.reload();
                   });
 
-                  // check if the EN-GB language refset presents 
+                  // check if the EN-GB language refset presents
                   if (response.metadata && response.metadata.requiredLanguageRefsets) {
                     for (let i = 0; i < response.metadata.requiredLanguageRefsets.length; i++) {
                       if (response.metadata.requiredLanguageRefsets[i]['en'] === '900000000000508004') {
-                        $scope.enGbLanguageRefsetPresent = true; 
+                        $scope.enGbLanguageRefsetPresent = true;
                         break;
                       }
                     }
@@ -135,18 +135,6 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
                   scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
                     if (response.dailyBuildReport) {
-                      if (response.dailyBuildReport.rvfValidationResult && response.dailyBuildReport.rvfValidationResult.TestResult) {
-                        if (response.dailyBuildReport.rvfValidationResult.TestResult.assertionsFailed) {
-                          response.dailyBuildReport.rvfValidationResult.TestResult.assertionsFailed = response.dailyBuildReport.rvfValidationResult.TestResult.assertionsFailed.filter(function(item) {
-                            return item.testType !== 'TRACEABILITY';
-                          });
-                        }
-                        if (response.dailyBuildReport.rvfValidationResult.TestResult.assertionsWarning) {
-                          response.dailyBuildReport.rvfValidationResult.TestResult.assertionsWarning = response.dailyBuildReport.rvfValidationResult.TestResult.assertionsWarning.filter(function(item) {
-                            return item.testType !== 'TRACEABILITY';
-                          });
-                        }
-                      }
                       $scope.dailyBuildValidationContainer = {
                         'executionStatus': response.dailyBuildReport.status && response.dailyBuildReport.status === 'COMPLETE' ? 'COMPLETED' : response.dailyBuildReport.status,
                         'report': response.dailyBuildReport
