@@ -4311,7 +4311,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // function to update description and autoSave if indicated
-        scope.updateDescription = function (description, descriptionTypeChange) {
+        scope.updateDescription = function (description, typeChanged, languageChanged) {
           if (!description) return;
           if(!terminologyServerService.isSctid(description.descriptionId)) {
             delete description.descriptionId;
@@ -4327,8 +4327,39 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
           }
 
+          // update Acceptability Map if the language changed
+          if (languageChanged && metadataService.isExtensionSet()) {
+            const dialects = scope.getDialectIdsForDescription(description);
+            const dialectDefaults = metadataService.getDialectDefaultsForModuleId(description.moduleId);
+            const readOnly = metadataService.getReadOnlyDialectsForModuleId(description.moduleId);
+            const defaultLanguages = metadataService.getDefaultLanguageForModuleId(description.moduleId);
+            for (let i = 0; i < dialects.length; i++) {
+              if (scope.getDialectsForDescription(description)[dialects[i]].indexOf(description.lang) > -1 && scope.isOptionalLanguageRefsetPresent(dialects[i])) {
+                description.acceptabilityMap[dialects[i]] = 'PREFERRED';
+                var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
+                  return item !== description && item.active && item.acceptabilityMap[dialects[i]] === 'PREFERRED' && item.type === 'SYNONYM';
+                }).length > 0;
+
+                if(havingPreferredSynonym) {
+                  description.acceptabilityMap[dialects[i]] = 'ACCEPTABLE';
+                }
+              }
+              if ((defaultLanguages.includes(description.lang) &&  dialectDefaults[dialects[i]] === 'false') || readOnly[dialects[i]] === 'true') {
+                delete description.acceptabilityMap[dialects[i]];
+              } 
+            }
+
+            // remove all optional language refsets
+            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();        
+            if (optionalLanguageRefsets) {
+              for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+                delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
+              }
+            }
+          }
+
           // re-populate language and acceptabilityMap
-          if (descriptionTypeChange && metadataService.isExtensionSet()) {
+          if (typeChanged && metadataService.isExtensionSet()) {
             if (description.type === 'FSN') {
               // Check addtional FSN descriptions
               let foundMatchingAdditionalFSN = false;
@@ -4381,7 +4412,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (optionalLanguageRefsets) {
               for (let i = 0; i < optionalLanguageRefsets.length; i++) {
                 delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
-              }          
+              }
             }
           }
 
