@@ -84,7 +84,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // user controls
       $scope.userOptions = {
         groupByConcept: true,
-        searchType: 'Active Only',
+        searchType: 'Active only',
         selectedDialect: '',
         defintionSelection: '',
         statedSelection: 'inferred',
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.descriptionSeachStatus = 'active';
                   $scope.isEscgMode = true;
                   $scope.templateMode = false;
-                  $scope.userOptions.searchType = 'Active Only';
+                  $scope.userOptions.searchType = 'Active only';
                   $scope.userOptions.statedSelection = 'inferred';
                 }
                 else if (value === 'Template') {
@@ -233,13 +233,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.isEscgMode = false;
                   $scope.templateMode = true;
                   $scope.userOptions.statedSelection = 'stated';
-                  $scope.userOptions.searchType = 'Active Only' ;
+                  $scope.userOptions.searchType = 'Active only' ;
                 }
                 else {
                   $scope.searchMode = 'Text';
                   $scope.isEscgMode = false;
                   $scope.templateMode = false;
-                  $scope.userOptions.searchType = 'Active Only';
+                  $scope.userOptions.searchType = 'Active only';
                   $scope.searchType = 'Active Only';
                 }
             }
@@ -257,7 +257,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.searchMode = 'Text';
               $scope.isEscgMode = false;
               $scope.templateMode = false;
-              $scope.userOptions.searchType = 'Active Only';
+              $scope.userOptions.searchType = 'Active only';
             }
         }
         $scope.newSearch();
@@ -302,7 +302,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         }
 
-        if ($scope.userOptions.searchType === 'Active Only') {
+        if ($scope.userOptions.searchType === 'Active only') {
           $scope.results = displayedResults.filter(function (item) {
             return item.concept.active === true;
           });
@@ -504,7 +504,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         if (!$scope.escgExpr) {
           switch($scope.userOptions.searchType) {
-            case 'Acrive only':
+            case 'Active only':
               activeFilter = true;
               break;
   
@@ -597,7 +597,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         if (!$scope.escgExpr) {
           switch($scope.userOptions.searchType) {
-            case 'Acrive only':
+            case 'Active only':
               activeFilter = true;
               break;
   
@@ -1124,7 +1124,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           let activeFilter = null;
 
           switch($scope.userOptions.searchType) {
-            case 'Acrive only':
+            case 'Active only':
               activeFilter = true;
               break;
   
