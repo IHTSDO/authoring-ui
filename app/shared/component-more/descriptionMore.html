@@ -7,7 +7,7 @@
         <div class="lang-id pull-left">
             <label class="control-label">Lang.</label>
             <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic || isLockedModule(description.moduleId) || description.released"
-              ng-model="description.lang" ng-change="updateDescription(description)"
+              ng-model="description.lang" ng-change="updateDescription(description, false, true)"
               ng-options="language as language for language in getAvailableLanguages(description.moduleId)"></select>
     </div>
     <div class="time pull-left ">
