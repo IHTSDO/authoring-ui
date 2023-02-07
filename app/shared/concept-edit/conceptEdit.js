@@ -4330,9 +4330,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // re-populate language and acceptabilityMap
           if (descriptionTypeChange && metadataService.isExtensionSet()) {
             if (description.type === 'FSN') {
-              let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true);
-              description.lang = newFsn.lang;
-              description.acceptabilityMap = newFsn.acceptabilityMap;
+              // Check addtional FSN descriptions
+              let foundMatchingAdditionalFSN = false;
+              const additionalFSNs = metadataService.getAdditionalFSNs();
+              for (let i = 0; i < additionalFSNs.length; i++) {
+                if (additionalFSNs[i].language === description.lang) {
+                  for (let j = 0; j < additionalFSNs[i].dialectIds.length; j++) {
+                    description.acceptabilityMap[additionalFSNs[i].dialectIds[j]] = 'PREFERRED';
+                  }
+                  foundMatchingAdditionalFSN = true;
+                }
+              }
+              if (!foundMatchingAdditionalFSN) {
+                let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true);
+                description.lang = newFsn.lang;
+                description.acceptabilityMap = newFsn.acceptabilityMap;
+              }              
             } else {
               let newDescriptions = [];
               angular.forEach(metadataService.getDefaultLanguageForModuleId(description.moduleId), function(language){
