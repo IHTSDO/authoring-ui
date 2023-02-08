@@ -529,8 +529,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
         scope.crsFilter = crsService.crsFilter;
         scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
-        scope.isDonatedConcept = crsService.getCrsConcepts().filter(function(concept) { 
-          return concept.conceptId === scope.concept.conceptId 
+        scope.isDonatedConcept = crsService.getCrsConcepts().filter(function(concept) {
+          return concept.conceptId === scope.concept.conceptId
                 && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
                 && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
 
@@ -539,7 +539,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
         var semanticTags = metadataService.getSemanticTags();
-        var internationalMetadata = metadataService.getInternationalMetadata();        
+        var internationalMetadata = metadataService.getInternationalMetadata();
 
         //var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
         var originalConceptId = null;
@@ -641,7 +641,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             });
           }
-          
+
           return promise;
         } ;
 
@@ -2164,8 +2164,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //
 
 // get the avialable languages for this module id
-        scope.getAvailableLanguages = function (moduleId) {
-          return metadataService.getLanguagesForModuleId(moduleId);
+        scope.getAvailableLanguages = function (description) {
+          const additionalFSNs = metadataService.getAdditionalFSNs();
+          let additionalLanguages = [];
+          angular.forEach(additionalFSNs, function(item) {
+            additionalLanguages.push(item.language);
+          });
+
+          let languages = metadataService.getLanguagesForModuleId(description.moduleId);
+          languages = languages.filter(function(item) {
+            return item === 'en' || description.type !== 'FSN' || (description.type === 'FSN' && additionalLanguages.includes(item));
+          });
+          return languages;
         };
 
 // get the available modules based on whether this is an extension element
@@ -2403,7 +2413,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // for extensions with multiple default languages
           if (metadataService.isExtensionSet() && metadataService.getDefaultLanguageForModuleId(moduleId).length >= 1) {
             var dialects = metadataService.getDialectsForModuleId(moduleId);
-            angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language){
+            angular.forEach(metadataService.getDefaultLanguageForModuleId(moduleId), function(language) {
                 description = componentAuthoringUtil.getNewDescription(moduleId, language);
 
                 let matchingDialects = [];
@@ -3040,7 +3050,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.removeAxiomRelationship = function (relationship, axiom) {
-          var index = axiom.relationships.indexOf(relationship);         
+          var index = axiom.relationships.indexOf(relationship);
           if (index !== -1) {
             axiom.relationships.splice(index, 1);
             if (axiom.relationships.length === 0) {
@@ -3065,7 +3075,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // check if the groupId in the template still exists in the axiom.
                 if (relationship.template) {
-                  
+
                   var found = false;
                   axiom.relationships.forEach(function (rel) {
                     if (rel.groupId === relationship.groupId) {
@@ -4022,7 +4032,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(axiom.relationships, function (rel) {
             if(parseInt(rel.groupId) > maxGroup) {
               maxGroup = parseInt(rel.groupId);
-            }             
+            }
           });
           var newGroup = maxGroup + 1;
 
@@ -4336,21 +4346,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             for (let i = 0; i < dialects.length; i++) {
               if (scope.getDialectsForDescription(description)[dialects[i]].indexOf(description.lang) > -1 && scope.isOptionalLanguageRefsetPresent(dialects[i])) {
                 description.acceptabilityMap[dialects[i]] = 'PREFERRED';
-                var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
-                  return item !== description && item.active && item.acceptabilityMap[dialects[i]] === 'PREFERRED' && item.type === 'SYNONYM';
-                }).length > 0;
-
-                if(havingPreferredSynonym) {
+                let preferredTermExisting = false;
+                if (description.type === 'SYNONYM') {
+                  preferredTermExisting = scope.concept.descriptions.filter(function (item) {
+                    return item !== description && item.active && item.acceptabilityMap[dialects[i]] === 'PREFERRED' && item.type === 'SYNONYM';
+                  }).length > 0;
+                } else if (description.type === 'TEXT_DEFINITION') {
+                  preferredTermExisting= scope.concept.descriptions.filter(function (item) {
+                    return item !== description && item.active && item.acceptabilityMap[dialects[i]] === 'PREFERRED' && item.type === 'TEXT_DEFINITION';
+                  }).length > 0;
+                }
+                if(preferredTermExisting) {
                   description.acceptabilityMap[dialects[i]] = 'ACCEPTABLE';
                 }
               }
               if ((defaultLanguages.includes(description.lang) &&  dialectDefaults[dialects[i]] === 'false') || readOnly[dialects[i]] === 'true') {
                 delete description.acceptabilityMap[dialects[i]];
-              } 
+              }
             }
 
             // remove all optional language refsets
-            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();        
+            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
             if (optionalLanguageRefsets) {
               for (let i = 0; i < optionalLanguageRefsets.length; i++) {
                 delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
@@ -4358,86 +4374,128 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
 
-          // re-populate language and acceptabilityMap
-          if (typeChanged && metadataService.isExtensionSet()) {
-            if (description.type === 'FSN') {
-              // Check addtional FSN descriptions
-              let foundMatchingAdditionalFSN = false;
-              const additionalFSNs = metadataService.getAdditionalFSNs();
-              for (let i = 0; i < additionalFSNs.length; i++) {
-                if (additionalFSNs[i].language === description.lang) {
-                  for (let j = 0; j < additionalFSNs[i].dialectIds.length; j++) {
-                    description.acceptabilityMap[additionalFSNs[i].dialectIds[j]] = 'PREFERRED';
+          // re-populate language and acceptabilityMap if the description type changed
+          if (typeChanged) {
+            if (metadataService.isExtensionSet()) {
+              if (description.type === 'FSN') {
+                // Check addtional FSN descriptions
+                let foundMatchingAdditionalFSN = false;
+                const additionalFSNs = metadataService.getAdditionalFSNs();
+                for (let i = 0; i < additionalFSNs.length; i++) {
+                  if (additionalFSNs[i].language === description.lang) {
+                    for (let j = 0; j < additionalFSNs[i].dialectIds.length; j++) {
+                      description.acceptabilityMap[additionalFSNs[i].dialectIds[j]] = 'PREFERRED';
+                    }
+                    foundMatchingAdditionalFSN = true;
                   }
-                  foundMatchingAdditionalFSN = true;
                 }
-              }
-              if (!foundMatchingAdditionalFSN) {
-                let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true);
-                description.lang = newFsn.lang;
-                description.acceptabilityMap = newFsn.acceptabilityMap;
-              }              
-            } else {
-              let newDescriptions = [];
-              angular.forEach(metadataService.getDefaultLanguageForModuleId(description.moduleId), function(language){
-                newDescriptions.push(componentAuthoringUtil.getNewDescription(description.moduleId, language));
-              });
-              if (newDescriptions.length !== 0) {
-                description.lang = newDescriptions[0].lang;
-                description.acceptabilityMap = newDescriptions[0].acceptabilityMap;
-
+                if (!foundMatchingAdditionalFSN) {
+                  let newFsn = componentAuthoringUtil.getNewFsn(description.moduleId, true);
+                  description.lang = newFsn.lang;
+                  description.acceptabilityMap = newFsn.acceptabilityMap;
+                }
+              } else if (description.type === 'SYNONYM' || description.type === 'TEXT_DEFINITION') {
+                // if the current language is still applicable after swithching the type then keep the acceptability map,
+                // otherwise the language needs to be changed
+                const readOnly = metadataService.getReadOnlyDialectsForModuleId(description.moduleId);
+                const dialectDefaults = metadataService.getDialectDefaultsForModuleId(description.moduleId);
+                const defaultLanguages = metadataService.getDefaultLanguageForModuleId(description.moduleId);
+                const dialects = metadataService.getDialectsForModuleId(description.moduleId);
                 let matchingDialects = [];
-                let dialects = metadataService.getDialectsForModuleId(description.moduleId);
+                for (var key in dialects) {
+                  if (Object.keys(description.acceptabilityMap).includes(key) && dialects[key].indexOf(description.lang) !== -1) {
+                    matchingDialects.push(key);
+                  }
+                }
+
+                // language needs to be changed as the description SYNONYM does not accept the current acceptability map
+                if (matchingDialects.length === 0) {
+                  let newDescriptions = [];
+                  angular.forEach(metadataService.getDefaultLanguageForModuleId(description.moduleId), function(language){
+                    newDescriptions.push(componentAuthoringUtil.getNewDescription(description.moduleId, language));
+                  });
+                  if (newDescriptions.length !== 0) {
+                    let foundMatchingLanguage = false;
+                    for (let i = 0; i < newDescriptions.length; i++) {
+                      if (newDescriptions[i].lang === description.lang) {
+                        foundMatchingLanguage = true;
+                        description.acceptabilityMap = newDescriptions[0].acceptabilityMap;
+                      }
+                    }
+                    if (!foundMatchingLanguage) {
+                      description.lang = newDescriptions[0].lang;
+                      description.acceptabilityMap = newDescriptions[0].acceptabilityMap;
+                    }
+                  }
+                }
+
+                matchingDialects = [];
                 for (var key in dialects) {
                   if (dialects[key].indexOf(description.lang) !== -1) {
                     matchingDialects.push(key);
                   }
                 }
-                angular.forEach(matchingDialects, function(dialect){
-                    var havingPreferredSynonym = scope.concept.descriptions.filter(function (item) {
-                        return item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
-                      }).length > 0;
-
-                    if(havingPreferredSynonym) {
-                      if(metadataService.getDialectDefaultsForModuleId(description.moduleId)[dialect] !== "false"){
-                          description.acceptabilityMap[dialect] = 'ACCEPTABLE';
-                      }
-                    }
+                angular.forEach(matchingDialects, function(dialect) {
+                  description.acceptabilityMap[dialect] = 'PREFERRED';
+                  let preferredTermExisting = false;
+                  if (description.type === 'SYNONYM') {
+                    preferredTermExisting = scope.concept.descriptions.filter(function (item) {
+                      return item !== description && item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'SYNONYM';
+                    }).length > 0;
+                  } else if (description.type === 'TEXT_DEFINITION') {
+                    preferredTermExisting= scope.concept.descriptions.filter(function (item) {
+                      return item !== description && item.active && item.acceptabilityMap[dialect] === 'PREFERRED' && item.type === 'TEXT_DEFINITION';
+                    }).length > 0;
+                  }
+                  if(preferredTermExisting) {
+                    description.acceptabilityMap[dialect] = 'ACCEPTABLE';
+                  }
+                  if ((defaultLanguages.includes(description.lang) &&  dialectDefaults[dialect] === 'false') || readOnly[dialect] === 'true') {
+                    delete description.acceptabilityMap[dialect];
+                  }
                 });
+
+                if (description.type === 'TEXT_DEFINITION') {
+                  description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
+                }
+              }
+
+              // remove all optional language refsets
+              const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+              if (optionalLanguageRefsets) {
+                for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+                  delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
+                }
+              }
+            } else {
+              // if this is a new TEXT_DEFINITION, apply defaults
+              // sensitivity is correctly set
+              if (description.type === 'TEXT_DEFINITION') {
+                var descDialects = scope.getDialectIdsForDescription(description);
+                angular.forEach(descDialects, function (dialectId) {
+                  description.acceptabilityMap[dialectId] = 'PREFERRED';
+                  var havingPreferredTextDefinition = scope.concept.descriptions.filter(function (item) {
+                    return item !== description && item.active && item.acceptabilityMap[dialectId] === 'PREFERRED' && item.type === 'TEXT_DEFINITION';
+                  }).length > 0;
+
+                  if(havingPreferredTextDefinition) {
+                    description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
+                  }
+                });
+                description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
               }
             }
-
-            // remove all optional language refsets
-            const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();        
-            if (optionalLanguageRefsets) {
-              for (let i = 0; i < optionalLanguageRefsets.length; i++) {
-                delete description.acceptabilityMap[optionalLanguageRefsets[i].refsetId];
-              }
-            }
-          }
-
-          // if this is a new TEXT_DEFINITION, apply defaults
-          // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId) && descriptionTypeChange) {
-            var descDialects = scope.getDialectIdsForDescription(description);
-            angular.forEach(descDialects, function (dialectId) {
-              if (!metadataService.isExtensionSet()
-                  || (metadataService.isExtensionSet() && (descDialects.length <= 2 || description.lang === scope.dialects[dialectId]))) {
-                description.acceptabilityMap[dialectId] = 'PREFERRED';
-              }
-            });
-            description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
           // if a new description (determined by blank term), ensure sensitivity
           // do not modify acceptability map
-          else if (!description.caseSignificance && !description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
+          if (!description.caseSignificance && !description.effectiveTime && (description.type === 'SYNONYM' || description.type === 'FSN') && !metadataService.isLockedModule(description.moduleId)) {
             description.caseSignificance = 'CASE_INSENSITIVE';
           }
 
           // if this is the FSN, apply defaults (if new) and check if a
           // matching PT should be generated
-          else if (description.type === 'FSN' && !metadataService.isAdditionalFSN(description)) {
+          if (description.type === 'FSN' && !metadataService.isAdditionalFSN(description)) {
 
             // if a new FSN (determined by no effective time)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
@@ -4735,7 +4793,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var modalInstance = $modal.open({
             templateUrl: 'shared/concept-promotion-modal/conceptPromotionModal.html',
-            controller: 'conceptPromotionModalCtrl',            
+            controller: 'conceptPromotionModalCtrl',
             resolve: {
               branch: function () {
                 return scope.branch;
@@ -4747,11 +4805,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           modalInstance.result.then(function (result) {
             notificationService.sendMessage('Requesting a promotion for concept ' + scope.concept.fsn + '...');
-            scaService.requestConceptPromotion(scope.concept.conceptId, result.withDependencies, $routeParams.projectKey, $routeParams.taskKey).then(function(location) {            
+            scaService.requestConceptPromotion(scope.concept.conceptId, result.withDependencies, $routeParams.projectKey, $routeParams.taskKey).then(function(location) {
               var requestId = location.substr(location.lastIndexOf('/') + 1);
               notificationService.sendMessage('Successfully created a new CRS request with ID ' + requestId);
               scaService.saveCRSRequest($routeParams.projectKey, $routeParams.taskKey, requestId, crsService.getCrsEndpoint() + '#/requests/view/' + requestId).then(function() {
-                $rootScope.$broadcast('reloadCRSRequests'); 
+                $rootScope.$broadcast('reloadCRSRequests');
               });
             }, function(error) {
               console.log(error);
@@ -5593,7 +5651,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return true;
             }
           }
-          return false; 
+          return false;
         };
 
 //////////////////////////////////////////////////////////////////////////
