@@ -1988,7 +1988,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                     else if(($(this).find('.description-more').length != 0
                               || $(this).find('.concept-more').length != 0
                               || $(this).find('.axiom-more').length != 0
-                              || $(this).find('.relationship-more').length != 0)
+                              || $(this).find('.relationship-more').length != 0
+                              || $(this).find('.optional-language-addition-form').length != 0)
                            && !$(e.target).hasClass('more-button-width')
                            && $(this).hasClass("in")) {
                       var elm = $(this).find("[component-id]");

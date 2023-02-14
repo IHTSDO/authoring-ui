@@ -1299,7 +1299,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
                 // Remove Context Based Language Refsets if any
                 var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-                console.log(optionalLanguageRefsets);
                 if (optionalLanguageRefsets) {
                   for (let i = 0; i < optionalLanguageRefsets.length; i++) {
                     delete $scope.dialects[optionalLanguageRefsets[i].refsetId];

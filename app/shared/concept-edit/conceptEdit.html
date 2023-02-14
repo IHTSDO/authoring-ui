@@ -355,7 +355,7 @@
           </div>
           
           <!-- Term -->
-          <div class="pull-left description no-padding lang-ref-set-{{dialectLength - getUnSelectedOptionalLanguageRefsetsLength()}}"
+          <div class="pull-left description no-padding lang-ref-set-{{dialectLength - getUnSelectedOptionalLanguageRefsetsLength()}} {{getOptionalLanguageRefsetsButtonAddVisibility()}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
@@ -424,7 +424,7 @@
 
             <!-- button for each dialect key -->
             <div ng-repeat="dialectId in getDialectIdsForDescription(description)">
-              <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1 && isOptionalLanguageRefsetPresent(dialectId)">
+              <div ng-if="getDialectsForDescription(description)[dialectId].indexOf(description.lang) > -1 && isOptionalLanguageRefsetPresent(description, dialectId)">
                   <button type="button"
                           class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                           ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId)) || showInferredRels || checkReadOnlyDialect(description.moduleId,dialectId)"
@@ -438,8 +438,18 @@
                     ng-class="componentStyles[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{componentStyles[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
               </div>
             </div>
-          </div>
 
+            <button id="btn-add-optinal-language-{{initializationTimeStamp}}-{{$index}}" 
+                  ng-if="!isStatic && !showInferredRels && allowAddingOptionalLanguageRefsetForDescripion(description)"
+                  class="btn btn-default add-optional-language-refset-btn transparent fa-sca fa-plus small-buttons pull-left green xlarge-size-tooltip tooltips-bottom offset-tooltip-right"
+                  style="font-size: 12px;padding-left: 5px; margin-top: 4px;"
+                  popover-template="'shared/concept-edit/optionalLanguegeRefsetAddition.html'"
+                  popover-placement="bottom"
+                  popover-append-to-body="true"
+                  popover-class="optional-language-addition-popover">
+            <span>Add New Optional Lanaguage Refset</span>
+          </button>           
+          </div>
 
           <div ng-show="!isStatic && !showInferredRels">
 
