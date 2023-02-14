@@ -262,11 +262,15 @@ content: '';
 .offset-tooltip-right.xxlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -235px;
 }
+.offset-tooltip-right.xlarge-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -182px;
+}
 .offset-tooltip-right.xxxlarge-size-tooltip.tooltips-bottom:hover span {
     margin-left: -400px;
 }
 .offset-tooltip-right.xxxlarge-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.xxlarge-size-tooltip.tooltips-bottom span:after,
+.offset-tooltip-right.xlarge-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after,
 .offset-tooltip-right.small-size-tooltip.tooltips-bottom span:after {
     left: 92%;

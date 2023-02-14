@@ -516,6 +516,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.modelVisible = true;
         scope.totalTemplate = 0;
         scope.allowConceptPromotion = false;
+        scope.descriptionIndexToOptionalLanguagesMap = {};
 
         // utility function pass-thrus
         scope.isSctid = terminologyServerService.isSctid;
@@ -1499,6 +1500,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // ensure descriptions & relationships are sorted
                   sortDescriptions();
                   sortRelationships();
+                  constructOptionalLanguageForDescriptions();
 
                   scope.computeRelationshipGroups();
 
@@ -2194,7 +2196,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getDialectIdsForDescription = function (description, FSN) {
           let dialectLength = 0;
           let dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
-          angular.forEach(scope.getAvailableLanguages(description.moduleId), function(language){
+          angular.forEach(scope.getAvailableLanguages(description), function(language){
               let count = 0;
               angular.forEach(dialects, function(dialect){
                   if(dialect.indexOf(language) > -1)
@@ -2214,17 +2216,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getUnSelectedOptionalLanguageRefsetsLength = function() {
-          var unSelecteLanguageCount = 0
-          var userPreferences = accountService.getCachedUserPreferences();
+          var unSelecteLanguageCount = 0;
           var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-          if (userPreferences && userPreferences.optionalLanguageRefsets && optionalLanguageRefsets) {
-            var count = optionalLanguageRefsets.filter(function(item) {
-              return userPreferences.optionalLanguageRefsets.indexOf(item.refsetId) > -1;
-            }).length;
+          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
+            let count = 0;
+            for (const property in scope.descriptionIndexToOptionalLanguagesMap) {
+              if (scope.descriptionIndexToOptionalLanguagesMap[property].length > count) {
+                count = scope.descriptionIndexToOptionalLanguagesMap[property].length;
+              }
+            }
 
             unSelecteLanguageCount = optionalLanguageRefsets.length - count;
           }
           return unSelecteLanguageCount;
+        }
+
+        scope.getOptionalLanguageRefsetsButtonAddVisibility = function() {
+          var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
+            var selectedLanguageCount = 0;
+            for (const property in scope.descriptionIndexToOptionalLanguagesMap) {
+              if (scope.descriptionIndexToOptionalLanguagesMap[property].length > selectedLanguageCount) {
+                selectedLanguageCount = scope.descriptionIndexToOptionalLanguagesMap[property].length;
+              }
+            }
+            if (selectedLanguageCount < optionalLanguageRefsets.length) {
+              return 'btn-add-option-language-visible';
+            }
+          }
+          return 'btn-add-option-language-invisible';
         }
 
         scope.getDialectsForDescription = function (description, FSN) {
@@ -2235,27 +2255,70 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return !scope.hideInactive || d.active;
         };
 
-        scope.isOptionalLanguageRefsetPresent = function(dialectId) {
-          var userPreferences = accountService.getCachedUserPreferences();
+        scope.isOptionalLanguageRefsetPresent = function(description, dialectId) {
           const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-
           let dialectFound = false;
+          let index = scope.concept.descriptions.indexOf(description);
 
           // if dialectId is not an optional language refset, then return TRUE
-          // else checking where or not it is selected in User Preference
-          if (optionalLanguageRefsets && userPreferences.optionalLanguageRefsets) {
+          // else checking where or not it is specified.
+          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
             for (let i =0; i < optionalLanguageRefsets.length; i++) {
               if (optionalLanguageRefsets[i].refsetId === dialectId) {
                 dialectFound = true;
-                if (userPreferences.optionalLanguageRefsets.indexOf(dialectId) > -1) {
+                if ((description.acceptabilityMap && description.acceptabilityMap[dialectId])
+                 || (scope.descriptionIndexToOptionalLanguagesMap[index] && scope.descriptionIndexToOptionalLanguagesMap[index].includes(dialectId))) {
                   return true;
                 }
               }
             }
           }
 
-          return !dialectFound ? true : false;
-        }
+          return !dialectFound;
+        };
+
+        scope.allowAddingOptionalLanguageRefsetForDescripion = function(description) {
+          return scope.getAvailableOptionalLanguageRefsetsForDescripion(description).length !== 0;
+        };
+
+        scope.getAvailableOptionalLanguageRefsetsForDescripion = function(description) {
+          const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+          const dialects = scope.getDialectsForDescription(description)
+          let index = scope.concept.descriptions.indexOf(description);
+          let availableOptionalLanguageRefsets = [];
+          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
+            for (let i =0; i < optionalLanguageRefsets.length; i++) {
+              if (dialects[optionalLanguageRefsets[i].refsetId].indexOf(description.lang) > -1
+                && (!scope.descriptionIndexToOptionalLanguagesMap[index] || !scope.descriptionIndexToOptionalLanguagesMap[index].includes(optionalLanguageRefsets[i].refsetId))) {
+                  availableOptionalLanguageRefsets.push(optionalLanguageRefsets[i].refsetId);
+              }
+            }
+          }
+
+          return availableOptionalLanguageRefsets;
+        };
+
+        scope.addOptionalLanguageRefsetToDescripion = function(description, dialectId) {
+          if (!description.acceptabilityMap) {
+            description.acceptabilityMap = {};
+          }
+          description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
+
+          let index = scope.concept.descriptions.indexOf(description);
+          if (!scope.descriptionIndexToOptionalLanguagesMap[index]) {
+            scope.descriptionIndexToOptionalLanguagesMap[index] = [];
+          }
+          scope.descriptionIndexToOptionalLanguagesMap[index].push(dialectId);
+
+          autoSave();
+          // Close pop-over
+          $timeout(function () {
+            const elemetId = 'btn-add-optinal-language-' + scope.initializationTimeStamp + '-' + index;
+            if (document.getElementById(elemetId)) {
+              document.getElementById(elemetId).click();
+            }
+          }, 0);
+        };
 
         function checkModules(moduleIds){
             moduleIds = moduleIds.filter(function(item, pos, self) {
@@ -2450,7 +2513,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // if in range, add after the specified afterIndex
                 else {
                   scope.concept.descriptions.splice(afterIndex + 1, 0, description);
-                  afterIndex++;
+
+                  // shift the current index in the map for the optional language refsets
+                  let keys = Object.keys(scope.descriptionIndexToOptionalLanguagesMap);
+                  keys.sort();
+                  for (let i = keys.length - 1; i >= 0; i--) {
+                    if (parseInt(keys[i]) > afterIndex) {
+                      scope.descriptionIndexToOptionalLanguagesMap[parseInt(keys[i]) +  1] = scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
+                      delete scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
+                    }
+                  }
+
                   autoSave();
                 }
             })
@@ -2465,6 +2538,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if in range, add after the specified afterIndex
             else {
               scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+
+              // shift the current index in the map for the optional language refsets
+              let keys = Object.keys(scope.descriptionIndexToOptionalLanguagesMap);
+              keys.sort();
+              for (let i = keys.length - 1; i >= 0; i--) {
+                if (parseInt(keys[i]) > afterIndex) {
+                  scope.descriptionIndexToOptionalLanguagesMap[parseInt(keys[i]) +  1] = scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
+                  delete scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
+                }
+              }
               autoSave();
             }
           }
@@ -2484,6 +2567,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             if(scope.isBatch === true){
               scope.updateConceptReference({concept: scope.concept});
+            }
+
+            // delete from the map and shift the current index in the map for the optional language refsets
+            delete scope.descriptionIndexToOptionalLanguagesMap[index];
+            let keys = Object.keys(scope.descriptionIndexToOptionalLanguagesMap);
+            keys.sort();
+            for (let i = 0; i < keys.length; i++) {
+              if (parseInt(keys[i]) >= index) {
+                scope.descriptionIndexToOptionalLanguagesMap[parseInt(keys[i]) -  1] = scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
+                delete scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
+              }
             }
           } else {
             console.error('Error removing description; description not found');
@@ -2808,12 +2902,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // returns the name of a dialect given its refset id
-        function getShortDialectName(id) {
+        scope.getShortDialectName = function(id) {
           if (!scope.dialects || !scope.dialects[id]) {
             return '??';
           }
           return scope.dialects[id].substring(scope.dialects[id].indexOf("-") + 1);
-        }
+        };
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
 
@@ -2847,7 +2941,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
-            return getShortDialectName(dialectId) + ':N';
+            return scope.getShortDialectName(dialectId) + ':N';
           }
 
           // retrieve the value (or null if does not exist) and return
@@ -2856,7 +2950,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // return the specified abbreviation, or 'N' for Not Acceptable if no
           // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
-          return getShortDialectName(dialectId) + ':' + (displayText ? displayText : 'N');
+          return scope.getShortDialectName(dialectId) + ':' + (displayText ? displayText : 'N');
 
           //return scope.acceptabilityAbbrs[acceptability];
         };
@@ -4344,7 +4438,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             const readOnly = metadataService.getReadOnlyDialectsForModuleId(description.moduleId);
             const defaultLanguages = metadataService.getDefaultLanguageForModuleId(description.moduleId);
             for (let i = 0; i < dialects.length; i++) {
-              if (scope.getDialectsForDescription(description)[dialects[i]].indexOf(description.lang) > -1 && scope.isOptionalLanguageRefsetPresent(dialects[i])) {
+              if (scope.getDialectsForDescription(description)[dialects[i]].indexOf(description.lang) > -1) {
                 description.acceptabilityMap[dialects[i]] = 'PREFERRED';
                 let preferredTermExisting = false;
                 if (description.type === 'SYNONYM') {
@@ -5847,6 +5941,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isModified = !crsContainer.saved;
         }
 
+        function constructOptionalLanguageForDescriptions() {
+          scope.descriptionIndexToOptionalLanguagesMap = {};
+          const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
+            for (let i = 0; i < optionalLanguageRefsets.length; i++) {
+              let dialect = optionalLanguageRefsets[i].refsetId;
+              for (let j = 0; j < scope.concept.descriptions.length; j++) {
+                let desc = scope.concept.descriptions[j];
+                if (desc.active && desc.acceptabilityMap.hasOwnProperty(dialect)) {
+                  let index = scope.concept.descriptions.indexOf(desc);
+                  if (!scope.descriptionIndexToOptionalLanguagesMap[index]) {
+                    scope.descriptionIndexToOptionalLanguagesMap[index] = [];
+                  }
+                  scope.descriptionIndexToOptionalLanguagesMap[index].push(dialect);
+                }
+              }
+            }
+          }
+        }
+
         function loadModifiedConcept() {
           var deferred = $q.defer();
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
@@ -6070,6 +6184,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             }
           }
+
+          constructOptionalLanguageForDescriptions();
 
           // adjust for all textareas covered by Angular Elastic
           // see https://github.com/monospaced/angular-elastic
