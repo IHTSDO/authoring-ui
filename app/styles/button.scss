@@ -865,6 +865,10 @@ button.fsn-title-button {
     background-color: #388E3C;
     color: #fff;
 }
+.btn-default.green.base:focus {
+    background-color: #4CAF50;
+    color: #fff;
+}
 .btn-default.indigo.lighten-2:hover,
 .btn-default.indigo.lighten-2:active {
     background-color: #3f51b5;

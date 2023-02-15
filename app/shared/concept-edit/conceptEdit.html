@@ -1,6 +1,6 @@
 
 <div class="edits editing-form darken-3 grey">
-  
+
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0 || inactivatingConceptError || deletingConeceptError">
     <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = [] ; inactivatingConceptError = false; deletingConeceptError = false;"
@@ -90,7 +90,7 @@
 
 
         <button type="button" class="btn-default grey darken-4 fsn-title-button pull-right" ng-class="[{'conceptFocus' : hasFocus}]">
-          <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   
+          <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}
             <span ng-show="componentStyles.isNew"><strong>- New Concept</strong></span>
             <span ng-show="componentStyles.isDeleted"><strong>- Deleted Concept</strong></span>
           </span>
@@ -347,13 +347,13 @@
                   ng-click="toggleCaseSignificance(description)">
 
             <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
-            <span class="{{getCaseSignificanceDisplayText(description)}}"></span>            
+            <span class="{{getCaseSignificanceDisplayText(description)}}"></span>
           </button>
           <div ng-if="isFeedback && componentStyles[description.descriptionId + '-caseSignificance'].style !== ''"
             class="tooltips-bottom tooltips-light medium-size-tooltip case-significance"
             ng-class="componentStyles[description.descriptionId + '-caseSignificance'].style"><span>{{componentStyles[description.descriptionId + '-caseSignificance'].message}}</span>
           </div>
-          
+
           <!-- Term -->
           <div class="pull-left description no-padding lang-ref-set-{{dialectLength - getUnSelectedOptionalLanguageRefsetsLength()}} {{getOptionalLanguageRefsetsButtonAddVisibility()}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
@@ -438,17 +438,16 @@
                     ng-class="componentStyles[description.descriptionId + '-acceptability-' + dialectId].style"><span>{{componentStyles[description.descriptionId + '-acceptability-' + dialectId].message}}</span></div>
               </div>
             </div>
-
-            <button id="btn-add-optinal-language-{{initializationTimeStamp}}-{{$index}}" 
-                  ng-if="!isStatic && !showInferredRels && allowAddingOptionalLanguageRefsetForDescripion(description)"
-                  class="btn btn-default add-optional-language-refset-btn transparent fa-sca fa-plus small-buttons pull-left green xlarge-size-tooltip tooltips-bottom offset-tooltip-right"
-                  style="font-size: 12px;padding-left: 5px; margin-top: 4px;"
-                  popover-template="'shared/concept-edit/optionalLanguegeRefsetAddition.html'"
-                  popover-placement="bottom"
-                  popover-append-to-body="true"
-                  popover-class="optional-language-addition-popover">
-            <span>Add New Optional Lanaguage Refset</span>
-          </button>           
+            <button id="btn-add-optional-language-{{initializationTimeStamp}}-{{$index}}"
+              ng-if="!isStatic && !showInferredRels && contextBasedEditingEnabled && allowAddingOptionalLanguageRefsetForDescripion(description)"
+              class="btn btn-default add-optional-language-refset-btn transparent fa-sca fa-plus small-buttons pull-left green xlarge-size-tooltip tooltips-bottom offset-tooltip-right"
+              style="font-size: 12px;padding-left: 5px; margin-top: 4px;"
+              popover-template="'shared/concept-edit/optionalLanguegeRefsetAddition.html'"
+              popover-placement="bottom"
+              popover-append-to-body="true"
+              popover-class="optional-language-addition-popover">
+              <span>Add New Optional Lanaguage Refset</span>
+            </button>
           </div>
 
           <div ng-show="!isStatic && !showInferredRels">

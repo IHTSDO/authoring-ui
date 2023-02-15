@@ -492,7 +492,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         highlightChanges: '@?',
 
-        disableRemoveConcept: '=?'
+        disableRemoveConcept: '=?',
+
+        enableContextBasedEditing: '=?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -517,6 +519,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.totalTemplate = 0;
         scope.allowConceptPromotion = false;
         scope.descriptionIndexToOptionalLanguagesMap = {};
+        scope.contextBasedEditingEnabled = false;
 
         // utility function pass-thrus
         scope.isSctid = terminologyServerService.isSctid;
@@ -879,6 +882,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.isStatic = false;
           }
 
+        }, true);
+
+        scope.$watch(function () {
+          return scope.enableContextBasedEditing;
+        }, function (newValue, oldValue) {
+          scope.contextBasedEditingEnabled = newValue;
         }, true);
 
         scope.templateTableParams = new ngTableParams({
@@ -2233,7 +2242,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getOptionalLanguageRefsetsButtonAddVisibility = function() {
           var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
+          if (scope.contextBasedEditingEnabled && optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
             var selectedLanguageCount = 0;
             for (const property in scope.descriptionIndexToOptionalLanguagesMap) {
               if (scope.descriptionIndexToOptionalLanguagesMap[property].length > selectedLanguageCount) {
@@ -2313,9 +2322,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
           // Close pop-over
           $timeout(function () {
-            const elemetId = 'btn-add-optinal-language-' + scope.initializationTimeStamp + '-' + index;
-            if (document.getElementById(elemetId)) {
-              document.getElementById(elemetId).click();
+            const elementId = 'btn-add-optional-language-' + scope.initializationTimeStamp + '-' + index;
+            if (document.getElementById(elementId)) {
+              document.getElementById(elementId).click();
             }
           }, 0);
         };
@@ -2907,6 +2916,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return '??';
           }
           return scope.dialects[id].substring(scope.dialects[id].indexOf("-") + 1);
+        };
+
+        scope.getOptionalLanguageDialectName = function(dialectId) {
+          const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+          let dialectName = '';
+          if (optionalLanguageRefsets) {
+            for (let i =0; i < optionalLanguageRefsets.length; i++) {
+              if (optionalLanguageRefsets[i].refsetId === dialectId) {
+                dialectName = optionalLanguageRefsets[i].label;
+              }
+            }
+          }
+          return dialectName;
         };
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {

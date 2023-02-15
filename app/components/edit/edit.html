@@ -186,6 +186,13 @@
       <span>Hide all concept models</span></button>
     <!-- Edit View: No model -- Task View Only -->
 
+    <!-- Edit View: Enable/Disable Context based editing  -->
+    <button ng-if="taskKey && (thisView === 'edit-default' || thisView === 'edit-no-sidebar' || thisView === 'edit-no-model') && isOptionalLanguageRefsetPresent()" type="button"
+            class="btn btn-default widget-toolbar green base tooltips-right tooltips-light normal-case white-backgrounnd"
+            ng-click="toggleContextBasedEditing()">
+      <div class="md" ng-class="[{'md-event-available' : enableContextBasedEditing, 'md-event-busy' : !enableContextBasedEditing}]"></div>
+      <span>Toggle context based editing</span></button>
+
 
   </div>
   <style>
@@ -202,13 +209,13 @@
   </style>
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
-      
+
     <!-- sidebar -->
     <div ng-include src="'shared/sidebar-edit/sidebarEdit.html'"
         ng-show="$root.showSidebarEdit && mode !== 'validate'  && mode !== 'classify' && mode !== 'conflicts' && thisView !== 'integrityCheck' && thisView !== 'edit-no-sidebar'"
         class="editpanel sca-column">
     </div>
-  <div class="row no-gutter">  
+  <div class="row no-gutter">
 
     <!-- Default edit view -->
     <div ng-if="thisView === 'edit-default' && mode === 'edit'">
@@ -247,6 +254,7 @@
                    ui-state-update-fn="updateEditListUiState()"
                    enable-project-taxonomy="true"
                    highlight-changes="true"
+                   enable-context-based-editing="enableContextBasedEditing"
               >
               </div>
             </div>
@@ -276,7 +284,7 @@
     </div>
 
     <!-- Edit view with no model -->
-    <div ng-if="thisView === 'edit-no-model' && mode === 'edit'">
+    <div ng-if="thisView === 'edit-no-model' && mode === 'edit'" class="edit-no-model">
 
       <!-- concepts-->
       <div class="pull-right no-padding hide-scroll" ng-class="getLayoutWidths('modelsAndConcepts')"
@@ -295,6 +303,7 @@
             <div concept-edit concept="concepts[$index]" id="concept-edit-{{concept.conceptId}}"
                  branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
                  highlight-changes="true"
+                 enable-context-based-editing="enableContextBasedEditing"
             >
             </div>
           </div>

@@ -196,6 +196,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
     $scope.userRoles = [];
+    $scope.enableContextBasedEditing = false;
 
     // utility function pass-thrus
     $scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
@@ -227,7 +228,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
     $scope.renderingComplete = function () {
-
       $rootScope.$broadcast('resetFillHeight');
       $scope.conceptsRendering = false;
     };
@@ -533,6 +533,10 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
       }
 
+      if ($scope.thisView !== 'edit-default' && $scope.thisView !== 'edit-no-sidebar' && $scope.thisView !== 'edit-no-model') {
+        $scope.enableContextBasedEditing = false;
+      }
+
       // Clear data
       editProjectTaxonomyViewList = [];
 
@@ -541,6 +545,23 @@ angular.module('singleConceptAuthoringApp.edit', [
       // set layout based on view
       setDefaultLayout();
 
+    };
+
+    $scope.toggleContextBasedEditing = function() {
+      if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
+        $scope.enableContextBasedEditing = !$scope.enableContextBasedEditing;
+      } else {
+        $scope.enableContextBasedEditing = false;
+      }
+    }
+
+    $scope.isOptionalLanguageRefsetPresent = function() {
+      const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
+      if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
+        return true;
+      }
+
+      return false;
     };
 
     //////////////////////////////
@@ -868,9 +889,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     let conceptLoaded = false;
     $scope.$on('editConcepts', function (event, data) {
       if (data.items) {
-        queue = queue.concat(data.items);        
+        queue = queue.concat(data.items);
       }
-    });    
+    });
 
     $scope.$watch(function () {
       return queue;
@@ -2062,7 +2083,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // Must create/load branch first as it's required by promotion concepts (if any) - need a destination branch to store the donated concepts
         loadBranch($scope.task.branchPath).then(function () {
-          
+
           // detect code system for given branch
           const allCodeSystems = metadataService.getCodeSystems();
           if (allCodeSystems && allCodeSystems.length !== 0) {
@@ -2094,8 +2115,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             } else {
               initializeTaskDetails();
             }
-          });                   
-        });        
+          });
+        });
       }, function (error) {
         notificationService.sendError('Unexpected error: ' + error);
       });
