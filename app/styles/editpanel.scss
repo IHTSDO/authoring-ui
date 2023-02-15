@@ -584,6 +584,40 @@ select {
     .editing-form .acceptability {
         width: 22%;
     }
+    .edit-no-model .editing-form .description.lang-ref-set-1 {
+        width: 74%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-1.btn-add-option-language-visible {
+        width: 73%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-2 {
+        width: 68%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-2.btn-add-option-language-visible {
+        width: 67%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-3 {
+        width: 63%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-3.btn-add-option-language-visible {
+        width: 62%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-4 {
+        width: 57%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-4.btn-add-option-language-visible {
+        width: 56%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-5 {
+        width: 52%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-5.btn-add-option-language-visible {
+        width: 51%;
+    }    
+    .edit-no-model .editing-form .typeid,
+    .edit-no-model .editing-form .button-width-acceptability {
+        width: 5%;
+    }
     .white-text {
         color: #fff
     }
@@ -687,6 +721,40 @@ select {
     }
     .editing-form .button-width-acceptability {
         width: 6.5%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-1 {
+        width: 77%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-1.btn-add-option-language-visible {
+        width: 76%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-2 {
+        width: 73%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-2.btn-add-option-language-visible {
+        width: 72%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-3 {
+        width: 68%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-3.btn-add-option-language-visible {
+        width: 67%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-4 {
+        width: 64%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-4.btn-add-option-language-visible {
+        width: 63%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-5 {
+        width: 59%;
+    }
+    .edit-no-model .editing-form .description.lang-ref-set-5.btn-add-option-language-visible {
+        width: 58%;
+    }    
+    .edit-no-model .editing-form .typeid,
+    .edit-no-model .editing-form .button-width-acceptability {
+        width: 4%;
     }
 }
 /* form widths */
@@ -1603,11 +1671,15 @@ button-link .bluehl .grey.darken-3 {
     display: block;
     color: #fff;
     padding: 8px 13px;
+    font-size: 12px;
 }
 .popover.optional-language-addition-popover {
     background-color: transparent;
     border: none;
     box-shadow: none;
+}
+.popover.optional-language-addition-popover .popover-inner {
+   margin-left: -100px;
 }
 .popover.optional-language-addition-popover.bottom > .arrow:after {
     border-bottom-color: #616161;
