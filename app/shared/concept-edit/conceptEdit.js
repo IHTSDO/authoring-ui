@@ -1,41 +1,40 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('typeaheadFocus', function () {
-    return {
-      require: 'ngModel',
-      link: function (scope, element, attr, ngModel) {
+.directive('typeaheadFocus', function () {
+  return {
+    require: 'ngModel',
+    link: function (scope, element, attr, ngModel) {
 
-        //trigger the popup on 'click' because 'focus'
-        //is also triggered after the item selection
-        element.bind('click', function () {
+      //trigger the popup on 'click' because 'focus'
+      //is also triggered after the item selection
+      element.bind('click', function () {
 
 
-          var viewValue = ngModel.$viewValue;
+        var viewValue = ngModel.$viewValue;
 
-          //restore to null value so that the typeahead can detect a change
-          if (ngModel.$viewValue === ' ') {
-            ngModel.$setViewValue(null);
-          }
+        //restore to null value so that the typeahead can detect a change
+        if (ngModel.$viewValue === ' ') {
+          ngModel.$setViewValue(null);
+        }
 
-          //force trigger the popup
-          ngModel.$setViewValue(' ');
+        //force trigger the popup
+        ngModel.$setViewValue(' ');
 
-          //set the actual value in case there was already a value in the input
-          ngModel.$setViewValue(viewValue || ' ');
-        });
+        //set the actual value in case there was already a value in the input
+        ngModel.$setViewValue(viewValue || ' ');
+      });
 
-        //compare function that treats the empty space as a match
-        scope.emptyOrMatch = function (actual, expected) {
-          if (expected === ' ') {
-            return true;
-          }
-          return actual ? actual.toString().toLowerCase().indexOf(expected.toLowerCase()) > -1 : false;
-        };
-      }
-    };
-  })
-
+      //compare function that treats the empty space as a match
+      scope.emptyOrMatch = function (actual, expected) {
+        if (expected === ' ') {
+          return true;
+        }
+        return actual ? actual.toString().toLowerCase().indexOf(expected.toLowerCase()) > -1 : false;
+      };
+    }
+  };
+})
 .directive('customAutofocus', function($timeout) {
   return{
          restrict: 'A',
@@ -1357,7 +1356,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (!results.warnings[validationResult.componentId]) {
                     results.warnings[validationResult.componentId] = [];
                   }
-                  results.warnings[validationResult.componentId].push(validationResult.message);
+                  results.warnings[validationResult.componentId].push(replaceConceptIdByLink(validationResult.message));
                 }
               }
               else if (validationResult.severity === 'ERROR') {
@@ -1365,7 +1364,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (!results.errors[validationResult.componentId]) {
                   results.errors[validationResult.componentId] = [];
                 }
-                results.errors[validationResult.componentId].push(validationResult.message);
+                results.errors[validationResult.componentId].push(replaceConceptIdByLink(validationResult.message));
               }
             });
 
@@ -1425,7 +1424,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                         if (!results.warnings[validationResult.componentId]) {
                           results.warnings[validationResult.componentId] = [];
                         }
-                        results.warnings[validationResult.componentId].push(validationResult.message);
+                        results.warnings[validationResult.componentId].push(replaceConceptIdByLink(validationResult.message));
                       }
                     }
                     else if (validationResult.severity === 'ERROR') {
@@ -1433,7 +1432,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       if (!results.errors[validationResult.componentId]) {
                         results.errors[validationResult.componentId] = [];
                       }
-                      results.errors[validationResult.componentId].push(validationResult.message);
+                      results.errors[validationResult.componentId].push(replaceConceptIdByLink(validationResult.message));
                     }
                   });
 
@@ -1546,6 +1545,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
 
            return deferred.promise;
+        }
+
+        function replaceConceptIdByLink(text) {
+          const numbers = text.match(/\d+/g);
+          if (numbers) {
+            for (let i = 0; i < numbers.length; i++) {
+              let id = numbers[i];
+              if (scope.isSctid(id) && id.substr(-2, 1) === '0') {
+                let link = '<a ng-click="openConceptFromId(\''+ id +'\')">' + id + '</a>';
+                text = text.replaceAll(id, link);
+              }
+            }
+          }
+
+          return text;
         }
 
         scope.acceptConceptVersion = function() {
@@ -5893,6 +5907,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var words = name.match(/[A-Za-z][a-z]*/g);
 
           return words.map(capitalize).join(' ');
+        };
+
+        scope.openConceptFromId = function (conceptId) {
+          if (!conceptId) {
+            return;
+          }
+          $rootScope.$broadcast('editConcept', {conceptId: conceptId, noSwitchView: true});
         };
 
         scope.openConceptTarget = function (rel){
