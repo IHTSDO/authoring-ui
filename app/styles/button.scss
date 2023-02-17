@@ -1047,8 +1047,10 @@ button.tooltips-right.normal-case span {
     border-radius:4px;
 }
 
-.validation.orange a{
-    color:#00008b;
+.validation.orange a,
+.validation.red a{
+    text-decoration:underline;
+    color: inherit;
 }
 
 //.validation.red strong{color:#db5760}
