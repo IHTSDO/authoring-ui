@@ -548,12 +548,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.toggleContextBasedEditing = function() {
-      if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
+      if ($scope.role === 'AUTHOR' && ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model' || $scope.thisView === 'feedback')) {
         $scope.enableContextBasedEditing = !$scope.enableContextBasedEditing;
       } else {
         $scope.enableContextBasedEditing = false;
       }
-    }
+    };
 
     $scope.isOptionalLanguageRefsetPresent = function() {
       const optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
