@@ -187,8 +187,8 @@
     <!-- Edit View: No model -- Task View Only -->
 
     <!-- Edit View: Enable/Disable Context based editing  -->
-    <button ng-if="taskKey && role === 'AUTHOR' && (thisView === 'edit-default' || thisView === 'edit-no-sidebar' || thisView === 'edit-no-model') && isOptionalLanguageRefsetPresent()" type="button"
-            class="btn btn-default widget-toolbar green base tooltips-right tooltips-light normal-case white-backgrounnd"
+    <button ng-if="taskKey && role === 'AUTHOR' && (thisView === 'edit-default' || thisView === 'edit-no-sidebar' || thisView === 'edit-no-model' || thisView === 'feedback') && isOptionalLanguageRefsetPresent()" type="button"
+            class="btn btn-default widget-toolbar blue tooltips-right tooltips-light normal-case white-backgrounnd hide-concept-model-btn"
             ng-click="toggleContextBasedEditing()">
       <div class="md" ng-class="[{'md-event-available' : enableContextBasedEditing, 'md-event-busy' : !enableContextBasedEditing}]"></div>
       <span>Toggle context based editing</span></button>
@@ -363,7 +363,7 @@
     <div ng-if="thisView === 'feedback'">
       <!-- feedback report -->
       <div>
-        <div feedback branch="targetBranch" editable="true" view="thisView"></div>
+        <div feedback branch="targetBranch" editable="true" view="thisView" enable-context-based-editing="enableContextBasedEditing"></div>
       </div>
     </div>
 

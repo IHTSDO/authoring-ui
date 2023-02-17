@@ -580,7 +580,7 @@ select {
     }
     .editing-form .description.lang-ref-set-5.btn-add-option-language-visible {
         width: 27%;
-    }    
+    }
     .editing-form .acceptability {
         width: 22%;
     }
@@ -613,7 +613,7 @@ select {
     }
     .edit-no-model .editing-form .description.lang-ref-set-5.btn-add-option-language-visible {
         width: 51%;
-    }    
+    }
     .edit-no-model .editing-form .typeid,
     .edit-no-model .editing-form .button-width-acceptability {
         width: 5%;
@@ -635,6 +635,7 @@ select {
         padding-bottom: 0px;
     }
 }
+
 @media (min-width: 1701px) {
     .small-buttons {
         margin-top: 5px;
@@ -649,6 +650,36 @@ select {
     }
     .concept-headers {
         padding-bottom: 0px;
+    }
+    .editing-form .description.lang-ref-set-1 {
+        width: 61%;
+    }
+    .editing-form .description.lang-ref-set-1.btn-add-option-language-visible {
+        width: 59%;
+    }
+    .editing-form .description.lang-ref-set-2 {
+        width: 54%;
+    }
+    .editing-form .description.lang-ref-set-2.btn-add-option-language-visible {
+        width: 52%;
+    }
+    .editing-form .description.lang-ref-set-3 {
+        width: 46%;
+    }
+    .editing-form .description.lang-ref-set-3.btn-add-option-language-visible {
+        width: 44%;
+    }
+    .editing-form .description.lang-ref-set-4 {
+        width: 39%;
+    }
+    .editing-form .description.lang-ref-set-4.btn-add-option-language-visible {
+        width: 37%;
+    }
+    .editing-form .description.lang-ref-set-5 {
+        width: 32%;
+    }
+    .editing-form .description.lang-ref-set-5.btn-add-option-language-visible {
+        width: 29%;
     }
 }
 @media (min-width: 1794px) {
@@ -751,7 +782,7 @@ select {
     }
     .edit-no-model .editing-form .description.lang-ref-set-5.btn-add-option-language-visible {
         width: 58%;
-    }    
+    }
     .edit-no-model .editing-form .typeid,
     .edit-no-model .editing-form .button-width-acceptability {
         width: 4%;
@@ -1597,14 +1628,14 @@ button-link .bluehl .grey.darken-3 {
 .result-width {
   width: calc(100% - 125px);
 }
-.concept-title ul.dashboard-link-list > li {     
-    padding-top: 0px;   
+.concept-title ul.dashboard-link-list > li {
+    padding-top: 0px;
     margin-left: -6px;
     padding-left: 8px;
     width: 23px;
 }
 
-.concept-title ul.dashboard-link-list li:hover ul {    
+.concept-title ul.dashboard-link-list li:hover ul {
     z-index: 1;
     left: -140px;
     top: 23px;
@@ -1618,7 +1649,7 @@ button-link .bluehl .grey.darken-3 {
     border-bottom: unset;
     border-top: 6px solid #4fc3f7;
 }
-.concept-title ul.dashboard-link-list li ul li[disabled] {    
+.concept-title ul.dashboard-link-list li ul li[disabled] {
     background-color: #424249;
     color: #76747c;
     border-bottom: 1px #76747c solid;
@@ -1631,7 +1662,7 @@ button-link .bluehl .grey.darken-3 {
     width: 17px;
 }
 .owl-axiom-expression .btn.copy-to-clipboard {
-    position: absolute; 
+    position: absolute;
     right: 0px;
     background: transparent;
 }

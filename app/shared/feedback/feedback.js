@@ -51,7 +51,10 @@ angular.module('singleConceptAuthoringApp')
           branch: '=',
 
           // view mode, for example : no sidebar
-          view: '='
+          view: '=',
+
+          // flag to enable/disable the Context Based Editing for concept
+          enableContextBasedEditing: '=?'
         },
         templateUrl: 'shared/feedback/feedback.html',
 
