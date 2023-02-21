@@ -2190,6 +2190,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // get the avialable languages for this module id
         scope.getAvailableLanguages = function (description) {
+          if (description.released) {
+            return [description.lang];
+          }
           const additionalFSNs = metadataService.getAdditionalFSNs();
           let additionalLanguages = [];
           angular.forEach(additionalFSNs, function(item) {
