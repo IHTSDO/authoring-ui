@@ -429,6 +429,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // this up
         merge: '@?',
 
+        // whether this display is part of the merge view
+        conceptVersionBehind: '=?',
+
         // whether this display is part of the integrity Check view
         integrityCheckView: '@?',
 
@@ -584,6 +587,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isMerge = true;
         } else {
           scope.isMerge = false;
+        }
+
+        console.log(scope.conceptVersionBehind);
+        if (scope.conceptVersionBehind === 'true' || scope.conceptVersionBehind === true) {
+          scope.isConceptVersionBehind = true;
+        } else {
+          scope.isConceptVersionBehind = false;
         }
 
         if (scope.integrityCheckView === 'true' || scope.integrityCheckView === true) {

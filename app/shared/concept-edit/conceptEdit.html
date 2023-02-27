@@ -57,7 +57,6 @@
                   <span>Detach Template {{template.name}} v {{template.version}}</span>
                   </div>
                 </a>
-
               </li>
             </ul>
           </div>
@@ -87,19 +86,13 @@
 
       <!-- concept name -->
       <div class="col-md-6 no-padding">
-
-
         <button type="button" class="btn-default grey darken-4 fsn-title-button pull-right" ng-class="[{'conceptFocus' : hasFocus}]">
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}
             <span ng-show="componentStyles.isNew"><strong>- New Concept</strong></span>
             <span ng-show="componentStyles.isDeleted"><strong>- Deleted Concept</strong></span>
           </span>
-
           <span ng-show="!concept.fsn && !concept.effectiveTime" class="fsn">Unsaved Concept</span>
-
         </button>
-
-
       </div>
 
       <div class="no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
@@ -114,7 +107,7 @@
           </button>
           <button type="button"
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
-                  ng-click="acceptConceptVersion()" ng-if="isMerge">
+                  ng-click="acceptConceptVersion()" ng-if="isMerge && !isConceptVersionBehind">
             <span> Accept This Version </span>
           </button>
           <button type="button"
