@@ -1,11 +1,11 @@
-<section class="tables-data conflicts"> 
+<section class="tables-data conflicts">
   <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
     <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
            id="select_all_to_review"
            name="filter-checkbox" value=""/>
   </script>
-  <div class="row no-gutter no-padding"> 
-    
+  <div class="row no-gutter no-padding">
+
     <!-- if merge review is not current (out of date, stale, etc), prompt user -->
     <div ng-if="badStateDetected" class="loading-merges blue darken-1">
       <h3>{{badStateText}} </h3>
@@ -65,7 +65,7 @@
       </div>
       <h3>{{rebasingText}}</h3>
     </div>
-    
+
     <!-- Displayed after merges complete -->
     <div ng-if="fiveOFour" class="loading-merges amber">
       <div class="all-done">
@@ -92,7 +92,7 @@
         ng-if="rebaseWithMerges">Resolved merges applied</span></h3>
       <h3>Switching to {{taskKey ? 'task' : 'project'}} view in five seconds...</h3>
     </div>
-    
+
     <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
     <div ng-if="!badStateDetected && conflicts && rebaseRunning && !warning" class="loading-merges amber">
       <div class="all-done">
@@ -101,23 +101,23 @@
       <h3>Unexpected error: Attempt to pull in changes while merges remain unresolved. Contact the administrator.</h3>
     </div>
     <!-- Displayed before merges complete, or during rebasing -->
-    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete"> 
-      
+    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete">
+
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
         <div ng-if="conflicts && !rebasing">
           <div class="row no-padding">
-            <div class="col-md-12 conflicts-list-header p-l-20"> 
-              
+            <div class="col-md-12 conflicts-list-header p-l-20">
+
               <!-- Hide sidebar control -->
-              
+
               <h4>Concept Merges
                 <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-right "
                         ng-if="viewedMerges.length > 0"
                         title="Hide Sidebar"></button>
               </h4>
             </div>
-            
+
             <!-- Nav tabs -->
             <div class="row classification-report ">
               <ul class="nav nav-tabs" role="tablist">
@@ -130,21 +130,21 @@
                   data-toggle="tab">Merges Accepted</a> </li>
               </ul>
             </div>
-            
+
             <!-- Tab panes -->
-            <div class="tab-content row m-t-10 col-sm-12 no-padding"> 
-              
+            <div class="tab-content row m-t-10 col-sm-12 no-padding">
+
               <!-- Merges to Review -->
               <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
                 <table show-filter="false" ng-table="conflictsToReviewTableParams"
                        template-pagination="utilities/data-table-pager.html"
                        class="table table-full table-full-small concepts-in-conflict">
-                  <tr ng-repeat="conflict in $data"> 
-                    
+                  <tr ng-repeat="conflict in $data">
+
                     <!-- Fsn -->
                     <td class="col-concept col-md-10" data-title="'Concept'"
                         sortable="'fsn'"> {{conflict.fsn}} </td>
-                    
+
                     <!-- Controls -->
                     <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 " title=""
                               ng-disabled="conflict.viewed"
@@ -154,7 +154,7 @@
                       </button></td>
                   </tr>
                 </table>
-                
+
                 <!-- buttons trigger off whether all merges are complete
                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
                 <div class="col-md-12">
@@ -166,18 +166,18 @@
                     class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span> </button>
                 </div>
               </div>
-              
+
               <!-- Merges Accepted -->
               <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
                 <table show-filter="false" ng-table="conflictsAcceptedTableParams"
                        template-pagination="utilities/data-table-pager.html"
                        class="table table-full table-full-small concepts-in-conflict">
-                  <tr ng-repeat="conflict in $data"> 
-                    
+                  <tr ng-repeat="conflict in $data">
+
                     <!-- Fsn -->
                     <td class="col-concept col-md-10" data-title="'Concept'"
                         sortable="'fsn'"> {{conflict.fsn}} </td>
-                    
+
                     <!-- Controls -->
                     <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 " title=""
                               ng-disabled="conflict.viewed"
@@ -187,7 +187,7 @@
                       </button></td>
                   </tr>
                 </table>
-                <div class="col-md-12"> 
+                <div class="col-md-12">
                   <!-- buttons trigger off whether all merges are complete
                   NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
                   <button ng-if="mergesComplete" ng-click="finalizeMerges()"
@@ -202,7 +202,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Conflicts Report: Content -->
       <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]"
            ng-show="viewedMerges.length > 0">
@@ -244,6 +244,9 @@
                  save-function="conceptUpdateFunction(project, task, concept)"></div>
           </div>
           <div class="col-md-4 task-version conflict-concept-column">
+            <div class="alert alert-dismissible alert-danger validation" ng-if="merge.targetConceptVersionBehind">
+              <div>The {{isTask ? 'task' : 'project'}} concept is a version behind, please accept the {{isTask ? 'project' : 'mainline'}} or merged version</div>
+            </div>
             <div concept-edit
                  concept="merge.targetConcept"
                  branch="targetBranch"
@@ -252,6 +255,7 @@
                  autosave="false"
                  show-inactive="false"
                  highlight-changes="true"
+                 concept-version-behind="merge.targetConceptVersionBehind"
                  component-styles="merge.styles.target"> </div>
           </div>
         </div>
