@@ -2268,19 +2268,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         scope.getOptionalLanguageRefsetsButtonAddVisibility = function() {
-          var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-          if (scope.contextBasedEditingEnabled && optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
-            var selectedLanguageCount = 0;
-            for (const property in scope.descriptionIndexToOptionalLanguagesMap) {
-              if (scope.descriptionIndexToOptionalLanguagesMap[property].length > selectedLanguageCount) {
-                selectedLanguageCount = scope.descriptionIndexToOptionalLanguagesMap[property].length;
-              }
-            }
-            if (selectedLanguageCount < optionalLanguageRefsets.length) {
-              return 'btn-add-option-language-visible';
+          let visible = false;
+          for (let i =  0; i < scope.concept.descriptions.length; i++) {
+            let des = scope.concept.descriptions[i];
+            if (scope.allowAddingOptionalLanguageRefsetForDescripion(des)) {
+              visible = true;
+              break;
             }
           }
-          return 'btn-add-option-language-invisible';
+          if (!scope.isStatic && !scope.showInferredRels && scope.contextBasedEditingEnabled && visible) {
+            return 'btn-add-option-language-visible';
+          } else {
+            return 'btn-add-option-language-invisible';
+          }
         }
 
         scope.getDialectsForDescription = function (description, FSN) {
