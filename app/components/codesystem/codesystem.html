@@ -127,7 +127,13 @@
         <div ng-show="!dailyBuildValidationCollapsed">
           <div class="card-content clearfix">
             <div validation validation-container="dailyBuildValidationContainer" branch="branch"
-             is-code-system="true" allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" allow-whitelist-error="{{userRoles.includes('ADMIN')}}"  editable="true" hide-exceptions="true" raise-jira-tickets-disabled="true"></div>
+             is-code-system="true" 
+             allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" 
+             allow-whitelist-error="{{userRoles.includes('ADMIN')}}"  
+             editable="true" 
+             hide-exceptions="true" 
+             raise-jira-tickets-disabled="true"
+             allow-download-daily-build-package="true"></div>
           </div>
         </div>
       </div>

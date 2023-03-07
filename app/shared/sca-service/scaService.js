@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
-     
+
       function saveCRSRequest(projectKey, taskKey, requestId, requestUrl) {
         var deferred = $q.defer();
 
@@ -1812,11 +1812,11 @@ angular.module('singleConceptAuthoringApp')
           requestBody.taskKey = taskKey;
           requestBody.conceptId = conceptId;
           requestBody.includeDependencies = includeDependecies;
-  
-          $http.post(apiEndpoint + "request-concept-promotion", requestBody).then(function (response) {            
+
+          $http.post(apiEndpoint + "request-concept-promotion", requestBody).then(function (response) {
             var locHeader = response.headers('Location');
             deferred.resolve(locHeader);
-          }, function (error) {              
+          }, function (error) {
               if (error && error.data && error.data.message) {
                 var message = JSON.parse(error.data.message);
                 if (typeof message === 'object') {
@@ -1827,7 +1827,7 @@ angular.module('singleConceptAuthoringApp')
               }
               deferred.reject(error.statusText);
           });
-  
+
           return deferred.promise;
         },
 
@@ -1846,7 +1846,7 @@ angular.module('singleConceptAuthoringApp')
         raiseRVFJiraTickets: function(branch, reportRunId, assertionIds) {
           var deferred = $q.defer();
 
-          $http.post(apiEndpoint + "branches/" + branch + '/validation-reports/' + reportRunId + '/failure-jira-associations', assertionIds).then(function (response) {            
+          $http.post(apiEndpoint + "branches/" + branch + '/validation-reports/' + reportRunId + '/failure-jira-associations', assertionIds).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
             console.log(error);
@@ -1855,7 +1855,7 @@ angular.module('singleConceptAuthoringApp')
               }
               deferred.reject(error.statusText);
           });
-  
+
           return deferred.promise;
         },
 
@@ -1864,14 +1864,14 @@ angular.module('singleConceptAuthoringApp')
           var queryParam = '';
           if (selectedProjectKey) {
             queryParam = '?generateEn_GbLanguageRefsetDelta=true&projectKey=' + selectedProjectKey;
-          }          
+          }
           $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/upgrade/' + newDependantVersion + queryParam).then(function (response) {
-            var locHeader = response.headers('Location');            
+            var locHeader = response.headers('Location');
             deferred.resolve(locHeader);
           }, function (error) {
             deferred.reject(error);
           });
-  
+
           return deferred.promise;
         },
 
@@ -1879,6 +1879,20 @@ angular.module('singleConceptAuthoringApp')
           var deferred = $q.defer();
           $http.get(apiEndpoint + 'codesystems/upgrade/' + jobId).then(function (response) {
             deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject(error);
+          });
+          return deferred.promise;
+        },
+
+        downloadDailyBuildPakcage: function(codeSystemShortname) {
+          var deferred = $q.defer();
+
+          var config = {
+            responseType: "arraybuffer"
+          }
+          $http.get(apiEndpoint + 'codesystems/' + codeSystemShortname + '/daily-build-package/download', config).then(function (response) {
+            deferred.resolve(response);
           }, function (error) {
             deferred.reject(error);
           });
