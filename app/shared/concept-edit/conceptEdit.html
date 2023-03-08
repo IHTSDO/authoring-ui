@@ -205,11 +205,11 @@
                           ng-class="[{'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"
                           ng-click="collapse(concept)"></i></span>
               </div>
-              <ul ng-if=" role === 'AUTHOR' || !isStatic || role === 'REVIEWER'">
+              <ul>
                 <li ng-click="addAdditionalAxiom(false)" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
                 <li ng-click="addGCIAxiom()" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
-                <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">Undo Changes</li>
-                <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic">Redo Changes</li>
+                <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic && role === 'AUTHOR'">Undo Changes</li>
+                <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic && role === 'AUTHOR'">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
                 <li ng-click="viewDescriptor()">View Descriptor</li>
                 <li ng-click="requestPromotion()" ng-if="role === 'AUTHOR' && !isStatic && allowConceptPromotion">Request Promotion</li>
