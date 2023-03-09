@@ -48,6 +48,49 @@
               <td data-title="'Dependant Version'" sortable="'dependantVersionEffectiveTime'" filter="{ 'dependantVersionEffectiveTime': 'text' }">
                 {{codesystem.dependantVersionEffectiveTime}}
               </td>
+              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+                <a ng-href="#/codesystem/{{codesystem.shortName}}?expandClassification=true">
+                  <button ng-show="codesystem.latestClassificationJson"
+                          type="button"
+                          ng-class="[
+                          {indicator_green : codesystem.latestClassificationJson.equivalentConceptsFound === false && codesystem.latestClassificationJson.status !== 'STALE'},
+                          {indicator_green : codesystem.latestClassificationJson.status === 'COMPLETED' && codesystem.latestClassificationJson.equivalentConceptsFound === false && codesystem.latestClassificationJson.status !== 'STALE'},
+                          {indicator_green : codesystem.latestClassificationJson.status === 'SAVED' && codesystem.latestClassificationJson.equivalentConceptsFound === false && codesystem.latestClassificationJson.status !== 'STALE'},
+                          {indicator_blue : codesystem.latestClassificationJson.status === 'RUNNING'},
+                          {indicator_blue : codesystem.latestClassificationJson.status === 'SCHEDULED'},
+                          {indicator_red : codesystem.latestClassificationJson.equivalentConceptsFound === true && codesystem.latestClassificationJson.status !== 'STALE' || codesystem.latestClassificationJson.status === 'FAILED' && codesystem.latestClassificationJson.status !== 'STALE'},
+                          {indicator_grey : codesystem.latestClassificationJson.status === 'STALE'},
+                           ]"
+                          class="btn btn-round btn-default pull-left tooltips-right normalcase ">
+                    <div class="md md-notifications "></div>
+                    <span>
+                      <div class="message_classification_{{codesystem.latestClassificationJson.status}}">
+                        <div ng-if="codesystem.latestClassificationJson.equivalentConceptsFound === true && codesystem.latestClassificationJson.redundantStatedRelationshipsFound === false  && codesystem.latestClassificationJson.status !== 'STALE'"> - equivalent relationships were found </div>
+                        <div ng-if="codesystem.latestClassificationJson.equivalentConceptsFound === false && codesystem.latestClassificationJson.redundantStatedRelationshipsFound === true  && codesystem.latestClassificationJson.status !== 'STALE'"> - redundant inferred relationships were found </div>
+                        <div ng-if="codesystem.latestClassificationJson.equivalentConceptsFound === true && codesystem.latestClassificationJson.redundantStatedRelationshipsFound === true  && codesystem.latestClassificationJson.status !== 'STALE'"> - redundant inferred relationships and equivalency errors were found </div>
+                        <div ng-if="codesystem.latestClassificationJson.status === 'COMPLETED' && codesystem.latestClassificationJson.equivalentConceptsFound === false && codesystem.latestClassificationJson.inferredRelationshipChangesFound === false && codesystem.latestClassificationJson.status !== 'STALE'"> - no results </div>
+                      </div>
+                    </span>
+                  </button>
+                </a>
+              </td>
+              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+                <a ng-href="#/codesystem/{{codesystem.shortName}}?expandValidation=true">
+                  <button ng-show="codesystem.latestValidationStatus && codesystem.latestValidationStatus !== 'Failed-to-retrieve'"
+                          type="button"
+                          ng-class="[{hidden : codesystem.latestValidationStatus === 'NOT_TRIGGERED'},
+                          {indicator_blue : codesystem.latestValidationStatus === 'SCHEDULED'},
+                          {indicator_blue : codesystem.latestValidationStatus === 'QUEUED'},
+                          {indicator_blue : codesystem.latestValidationStatus === 'RUNNING'},
+                          {indicator_green : codesystem.latestValidationStatus === 'COMPLETED'},
+                          {indicator_red : codesystem.latestValidationStatus === 'FAILED'},
+                          {indicator_grey : codesystem.latestValidationStatus === 'STALE'}]"
+                          class="btn btn-round btn-default pull-left lighten-1 tooltips-right">
+                    <div class="md md-school "></div>
+                    <span> <div class="message_validation_{{codesystem.latestValidationStatus}}"> </div></span>
+                  </button>
+                </a>
+              </td>
             </tr>
           </table>
         </div>
