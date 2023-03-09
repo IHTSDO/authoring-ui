@@ -357,6 +357,25 @@ td select {
     right: 0px;
     top: 45px;
 }
+.upgrade-model .modal-body.scroll-if-height {    
+    overflow: auto;
+    padding-top: 0px;
+}
+@media (max-width: 1793px) {
+    .upgrade-model .modal-body.scroll-if-height {
+        max-height: 65vh;
+    }
+}
+@media (min-width: 1701px) {
+    .upgrade-model .modal-body.scroll-if-height {
+        max-height: 67vh;
+    }
+}
+@media (min-width: 1794px) {
+    .upgrade-model .modal-body.scroll-if-height {
+        max-height: 72vh;
+    }
+}
 .sac-modal .modal-body.scroll-if-height {
     max-height: 60vh; 
     overflow: auto;
