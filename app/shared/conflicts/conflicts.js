@@ -513,50 +513,52 @@ angular.module('singleConceptAuthoringApp')
             
           function deDuplicateConflict(conflict){
               var deferred = $q.defer();
-              conflict.autoMergedConcept.classAxioms = [];
-              conflict.autoMergedConcept.gciAxioms = [];
               
               if(conflict.sourceConcept) {
-                angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
-                  let newAxiom = {};
-                  angular.copy(axiom, newAxiom);
-                  angular.forEach(conflict.targetConcept.classAxioms, function(secondAxiom){
-                    if(axiom.axiomId === secondAxiom.axiomId){
-                        angular.forEach(secondAxiom.relationships, function(relationship){
-                            let relationshipFound = false;
-                            angular.forEach(newAxiom.relationships, function(newAxiomRelationship){
-                                if(newAxiomRelationship.relationshipId === relationship.relationshipId){
-                                    relationshipFound = true;
-                                }
-                            })
-                            if(!relationshipFound){
-                                newAxiom.relationships.push(relationship);
-                            }
-                        })
+                angular.forEach(conflict.autoMergedConcept.classAxioms, function(mergedAxiom) {
+                  angular.forEach(conflict.sourceConcept.classAxioms, function(sourceAxiom) {
+                    if (mergedAxiom.axiomId === sourceAxiom.axiomId) {
+                      mergedAxiom.relationships = angular.copy(sourceAxiom.relationships);
+                      angular.forEach(conflict.targetConcept.classAxioms, function(targetAxiom) {
+                        if (sourceAxiom.axiomId === targetAxiom.axiomId) {
+                          angular.forEach(targetAxiom.relationships, function(targetRelationship) {
+                              let relationshipFound = false;
+                              angular.forEach(sourceAxiom.relationships, function(sourceRelationship) {
+                                  if(sourceRelationship.relationshipId === targetRelationship.relationshipId) {
+                                      relationshipFound = true;
+                                  }
+                              });
+                              if (!relationshipFound) {
+                                mergedAxiom.relationships.push(targetRelationship);
+                              }
+                          });
+                        }
+                      });
                     }
                   });
-                  conflict.autoMergedConcept.classAxioms.push(newAxiom);
                 });
 
-                angular.forEach(conflict.sourceConcept.gciAxioms, function(axiom){
-                  let newAxiom = {};
-                  angular.copy(axiom, newAxiom);
-                  angular.forEach(conflict.targetConcept.gciAxioms, function(secondAxiom){
-                    if(axiom.axiomId === secondAxiom.axiomId){
-                        angular.forEach(secondAxiom.relationships, function(relationship){
-                            let relationshipFound = false;
-                            angular.forEach(newAxiom.relationships, function(newAxiomRelationship){
-                                if(newAxiomRelationship.relationshipId === relationship.relationshipId){
-                                    relationshipFound = true;
-                                }
-                            })
-                            if(!relationshipFound){
-                                newAxiom.relationships.push(relationship);
-                            }
-                        })
+                angular.forEach(conflict.autoMergedConcept.gciAxioms, function(mergedAxiom) {
+                  angular.forEach(conflict.sourceConcept.gciAxioms, function(sourceAxiom) {
+                    if (mergedAxiom.axiomId === sourceAxiom.axiomId) {
+                      mergedAxiom.relationships = angular.copy(sourceAxiom.relationships);
+                      angular.forEach(conflict.targetConcept.gciAxioms, function(targetAxiom) {
+                        if (sourceAxiom.axiomId === targetAxiom.axiomId) {
+                          angular.forEach(targetAxiom.relationships, function(targetRelationship) {
+                              let relationshipFound = false;
+                              angular.forEach(sourceAxiom.relationships, function(sourceRelationship) {
+                                  if(sourceRelationship.relationshipId === targetRelationship.relationshipId) {
+                                      relationshipFound = true;
+                                  }
+                              });
+                              if (!relationshipFound) {
+                                mergedAxiom.relationships.push(targetRelationship);
+                              }
+                          });
+                        }
+                      });
                     }
                   });
-                  conflict.autoMergedConcept.gciAxioms.push(newAxiom);
                 });
               }              
               deferred.resolve(conflict);
