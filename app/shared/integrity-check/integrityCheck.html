@@ -9,11 +9,11 @@
     </div>
   </script>
 
-  <div class="row no-gutter no-padding">   
-    <div class="col-md-12 no-padding no-gutter">      
+  <div class="row no-gutter no-padding">
+    <div class="col-md-12 no-padding no-gutter">
       <div ng-show="!hideSidebar" class="col-md-3 no-padding no-gutter">
         <div >
-          <div class="row no-padding">                                   
+          <div class="row no-padding">
             <div>
               <ul class="nav nav-tabs no-padding sidebar-tabs" role="tablist">
                 <li role="presentation" ng-class="{'active' : actionTab === 1}">
@@ -31,9 +31,9 @@
                 <li role="presentation" ng-class="{'active' : actionTab === 3}">
                   <a ng-click="setActiveTab(3)" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
                     <div class="md md-work"></div>
-                    <span>Changes To Upgrade</span>                    
+                    <span>Changes To Upgrade</span>
                   </a>
-                </li>                
+                </li>
               </ul>
             </div>
 
@@ -52,16 +52,16 @@
                        template-pagination="utilities/data-table-pager.html"
                        class="table">
                   <div class="col-md-12 no-padding" >
-                    <div class="pull-right p-r-15">                       
+                    <div class="pull-right p-r-15">
                       <button
                         class="btn btn-round btn-default blue lighten-2 tooltips-bottom xxlarge-size-tooltip offset-tooltip-right"
                         ng-click="applyAutomatedContentFix()">
                         <div class="md md-assignment-turned-in"></div>
                         <span>Auto-fix content for the selected items</span>
-                      </button>        
+                      </button>
                     </div>
                   </div>
-                  <tr ng-repeat="concept in $data"> 
+                  <tr ng-repeat="concept in $data">
                     <td class="col-checkbox col-md-1 no-padding "
                         header="'ng-table/headers/checkboxHeader.html'"><div class="checkbox">
                         <label class="filled">
@@ -73,21 +73,21 @@
                     <td class="col-concept col-md-10" data-title="'Concept'"
                         sortable="'term'"> <div class="p-r-5 p-t-7 p-b-7"
                         ng-click="selectConcept(concept)">{{concept.term}}</div> </td>
-                    
+
                     <!-- Controls -->
-                    <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 " 
+                    <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 "
                               ng-click="viewConcept(concept)" ng-disabled="selectedConcept.priorConcept.conceptId === concept.conceptId">
                       <div
                           class="md md-edit "></div>
                       </button></td>
                   </tr>
                 </table>
-              </div>             
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Integrity Report: Content -->
       <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]">
         <div class="row no-padding no-gutter">
@@ -99,14 +99,14 @@
           </div>
           <div class="col-md-6 merged-header">
             <h4>Resolution</h4>
-          </div>          
+          </div>
         </div>
         <div class="row no-padding no-gutter" ng-if="selectedConcept.priorConcept && selectedConcept.resolutionConcept">
           <div class="col-md-6 conflict-concept-column">
             <div concept-edit
                  concept="selectedConcept.priorConcept"
                  branch="branch"
-                 static="true"                 
+                 static="true"
                  autosave="false"
                  disable-remove-concept="true"
                  show-inactive="false"
@@ -118,11 +118,12 @@
                  branch="branch"
                  static="false"
                  autosave="false"
-                 disable-remove-concept="true"                
+                 disable-remove-concept="true"
                  show-inactive="false"
+                 load-validation="true"
                  component-styles="componentStyle.resolutionConcept"
                  integrity-check-view="true"></div>
-          </div>      
+          </div>
         </div>
       </div>
 
@@ -142,7 +143,7 @@
 
             <!-- model -->
             <div class="no-gutter col-md-6">
-              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>              
+              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true" default-view="'inferred'"></div>
             </div>
 
             <!-- concept -->
