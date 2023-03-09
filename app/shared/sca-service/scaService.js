@@ -1897,6 +1897,16 @@ angular.module('singleConceptAuthoringApp')
             deferred.reject(error);
           });
           return deferred.promise;
+        },
+
+        getCodeSystems: function() {
+          var deferred = $q.defer();
+          $http.get(apiEndpoint + 'codesystems').then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject(error);
+          });
+          return deferred.promise;
         }
 
       };

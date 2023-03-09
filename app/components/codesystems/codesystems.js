@@ -88,21 +88,19 @@ angular.module('singleConceptAuthoringApp.codesystems', [
                 else if(item.maintainerType){
                     return item.maintainerType === $scope.selectedType.type
                 }
-                else return -1
+                else return false;
               }); 
+            } else {
+              mydata = $scope.codesystems;
             }
 
             if (searchStr) {
-              if($scope.selectedType.type === 'All'){
-                  mydata = $scope.codesystems;
-              }
               mydata = mydata.filter(function (item) {
                 return item.name.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                 || item.shortName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
-            } else if ($scope.selectedType.type === 'All' && !searchStr) {
-              mydata = $scope.codesystems;
             }
+
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
@@ -167,43 +165,44 @@ angular.module('singleConceptAuthoringApp.codesystems', [
     function initialize() {
         notificationService.sendMessage('Loading Code Systems...');
         $scope.codesystems = [];
-        scaService.getProjects().then(function (projects) {
-            angular.forEach(angular.copy(metadataService.getCodeSystems()), function(codesystem) {
-              angular.forEach(projects, function (project) {
-                let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
-                if(path === codesystem.branchPath && !$scope.codesystems.includes(codesystem)){
-                    if(codesystem.dependantVersionEffectiveTime && codesystem.dependantVersionEffectiveTime != ''){
-                        let date = codesystem.dependantVersionEffectiveTime.toString()
-                        codesystem.dependantVersionEffectiveTime = [date.slice(0, 4), date.slice(4,6), date.slice(6,8)].join('-');
-                    }
-                    $scope.codesystems.push(codesystem);
-                    return
-                }
-              });
+        var projects = metadataService.getProjects();
+        scaService.getCodeSystems().then(function(codesystems) {
+          angular.forEach(codesystems, function(codesystem) {
+            angular.forEach(projects, function (project) {
+              let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
+              if(path === codesystem.branchPath && !$scope.codesystems.includes(codesystem)){
+                  if(codesystem.dependantVersionEffectiveTime && codesystem.dependantVersionEffectiveTime != ''){
+                      let date = codesystem.dependantVersionEffectiveTime.toString()
+                      codesystem.dependantVersionEffectiveTime = [date.slice(0, 4), date.slice(4,6), date.slice(6,8)].join('-');
+                  }
+                  $scope.codesystems.push(codesystem);
+                  return;
+              }
+            });  
+          });
 
-            });
-            var anyInternationalProjectPresent = false;
-            angular.forEach($scope.codesystems, function(codesystem) {
-              if (!codesystem.maintainerType) {
-                anyInternationalProjectPresent = true;
-              }
-              if(codesystem && codesystem.maintainerType && codesystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(codesystem.maintainerType)){
-                  $scope.typeDropdown.push(codesystem.maintainerType);
-              }
-            });
-            if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
-              $scope.typeDropdown.splice(1, 0, 'International');
+          var anyInternationalProjectPresent = false;
+          angular.forEach($scope.codesystems, function(codesystem) {
+            if (!codesystem.maintainerType) {
+              anyInternationalProjectPresent = true;
             }
-            accountService.getUserPreferences().then(function (preferences) {
-                $scope.preferences = preferences;
+            if(codesystem && codesystem.maintainerType && codesystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(codesystem.maintainerType)){
+                $scope.typeDropdown.push(codesystem.maintainerType);
+            }
+          });
+          if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
+            $scope.typeDropdown.splice(1, 0, 'International');
+          }
+          accountService.getUserPreferences().then(function (preferences) {
+              $scope.preferences = preferences;
 
-                if(preferences.hasOwnProperty("selectedType")) {
-                  $scope.selectedType.type = $scope.preferences.selectedType;
-                }
-                notificationService.sendMessage('Code Systems loaded.', 5000);
-                $scope.tableParams.reload();
-              });
-        });
+              if(preferences.hasOwnProperty("selectedType")) {
+                $scope.selectedType.type = $scope.preferences.selectedType;
+              }
+              notificationService.sendMessage('Code Systems loaded.', 5000);
+              $scope.tableParams.reload();
+            });
+        });        
     }
 
 
