@@ -2488,10 +2488,10 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function donateConcept(branch, sourceBranch, conceptId, includeDependencies) {
+      function copyConcept(branch, sourceBranch, conceptId, includeDependencies) {
         var deferred = $q.defer();
         var queryParams = '?sourceBranch=' + encodeURIComponent(sourceBranch) + '&ecl=' + conceptId + '&includeDependencies=' + includeDependencies;
-        $http.post(apiEndpoint + branch + '/concepts/donate' + queryParams, null).then(function (response) {
+        $http.post(apiEndpoint + branch + '/concepts/copy' + queryParams, null).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -2614,7 +2614,7 @@ angular.module('singleConceptAuthoringApp')
         setEndpoint: setEndpoint,
         getEndpoint: getEndpoint,
         retrieveSemanticTags: retrieveSemanticTags,
-        donateConcept: donateConcept
+        copyConcept: copyConcept
       };
     }
 
