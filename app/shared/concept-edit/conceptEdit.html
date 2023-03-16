@@ -348,7 +348,7 @@
           </div>
 
           <!-- Term -->
-          <div class="pull-left description no-padding lang-ref-set-{{(dialectLength > getUnSelectedOptionalLanguageRefsetsLength()) ? (dialectLength - getUnSelectedOptionalLanguageRefsetsLength()) : dialectLength}} {{getOptionalLanguageRefsetsButtonAddVisibility()}}"
+          <div class="pull-left description no-padding lang-ref-set-{{getDialectLength()}} {{getOptionalLanguageRefsetsButtonAddVisibility()}}"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
             <textarea ng-keyup="enterListener({event: $event})" custom-autofocus="true" ng-if="description.type === 'FSN' && !isFeedback" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"

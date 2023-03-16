@@ -514,7 +514,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.saving = false;
         scope.templateInitialized = false;
         scope.showInferredRels = false;
-        scope.dialectLength = null;
         scope.relationshipGroups = {};
         scope.extensionNamespace = '';
         scope.modelVisible = true;
@@ -2230,41 +2229,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // function to retrieve branch dialect ids as array instead of map
 // NOTE: Required for orderBy in ng-repeat
         scope.getDialectIdsForDescription = function (description, FSN) {
-          let dialectLength = 0;
           let dialects = metadataService.getDialectsForModuleId(description.moduleId, FSN);
-          angular.forEach(scope.getAvailableLanguages(description), function(language){
-              let count = 0;
-              angular.forEach(dialects, function(dialect){
-                  if(dialect.indexOf(language) > -1)
-                      {
-                          count++
-                          if(count > dialectLength){
-                              dialectLength = count;
-                          }
-                      }
-              })
-          });
-          if(dialectLength > scope.dialectLength){
-            scope.dialectLength = dialectLength;
-          }
-
           return Object.keys(dialects);
         };
 
-        scope.getUnSelectedOptionalLanguageRefsetsLength = function() {
-          var unSelecteLanguageCount = 0;
+        scope.getDialectLength = function() {
+          var dialectLength  = 0;
           var optionalLanguageRefsets = metadataService.getOptionalLanguageRefsets();
-          if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
-            let count = 0;
-            for (const property in scope.descriptionIndexToOptionalLanguagesMap) {
-              if (scope.descriptionIndexToOptionalLanguagesMap[property].length > count) {
-                count = scope.descriptionIndexToOptionalLanguagesMap[property].length;
+          angular.forEach(scope.concept.descriptions, function(description) {
+            var index = scope.concept.descriptions.indexOf(description);
+            var count = 0;
+            var desciptionDialects = scope.getDialectsForDescription(description);
+            Object.keys(desciptionDialects).forEach(function(dialectId) {
+              var isOpitonalDialect = optionalLanguageRefsets && optionalLanguageRefsets.filter(function(item) {return item.refsetId === dialectId;}).length !== 0;
+              var language = desciptionDialects[dialectId];
+              if(!isOpitonalDialect && language.indexOf(description.lang) > -1) {
+                  count++;
               }
+            });
+
+            if (scope.descriptionIndexToOptionalLanguagesMap[index]) {
+              count += scope.descriptionIndexToOptionalLanguagesMap[index].length;
             }
 
-            unSelecteLanguageCount = optionalLanguageRefsets.length - count;
-          }
-          return unSelecteLanguageCount;
+            if (count > dialectLength) {
+              dialectLength = count;
+            }
+          });
+
+          return dialectLength;
         }
 
         scope.getOptionalLanguageRefsetsButtonAddVisibility = function() {
