@@ -361,6 +361,10 @@ td select {
     overflow: auto;
     padding-top: 0px;
 }
+.upgrade-model .modal-body .table > tbody > tr > td, 
+.upgrade-model .modal-body .table > tbody > tr > th {
+    padding: unset;
+  }
 @media (max-width: 1793px) {
     .upgrade-model .modal-body.scroll-if-height {
         max-height: 65vh;
