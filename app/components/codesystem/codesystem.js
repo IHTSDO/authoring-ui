@@ -89,6 +89,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   }
                   $scope.codeSystem = codeSystem;
 
+                  // set the extension metadata for use by other elements
+                  metadataService.setExtensionMetadata(response.metadata);
+
                   // check wheter or not the latest dependant version was upgraded
                   terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
                     if (response.data.items && response.data.items.length > 0) {
