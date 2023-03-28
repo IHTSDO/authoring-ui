@@ -4915,6 +4915,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
+        scope.viewConceptJson = function() {
+          terminologyServerService.getEndpoint().then(function(endpoint) {
+            window.open(endpoint +'browser/' + scope.branch + '/concepts/' + scope.concept.conceptId, '_blank');
+          });
+        };
+
         scope.requestPromotion = function() {
           if(scope.concept.released === true && hasUnpublishedChanges()) {
             scope.errors = ['This concept has unpublished changes, and therefore cannot be promoted. Please revert these changes and try again.'];
