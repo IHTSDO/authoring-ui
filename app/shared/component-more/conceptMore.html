@@ -17,6 +17,37 @@
       </select>
     </div>
   </div>
+
+  <div class="pop-edit concept-more description-popover row" ng-if="concept.alternateIdentifiers.length != 0">
+    <br/>
+    <div class="col-md-12 no-padding pull-left">
+      <label class="control-label">Alternate Identifiers</label>
+    </div>
+    <div class="row">
+      <div class="concept-id pull-left col-md-6 p-l-0 p-r-5">
+        <label class="control-label">Scheme</label>
+      </div>
+      <div class="concept-id pull-left col-md-3 p-l-0 p-r-5">
+        <label class="control-label">Alternate Identifier</label>
+      </div>
+      <div class="time pull-left col-md-3 p-l-0 p-r-5">
+        <label class="control-label">Eff. Time</label>
+      </div>
+    </div>
+    <div ng-repeat="alternateIdentifier in concept.alternateIdentifiers" class="row">
+      <div class="concept-id pull-left col-md-6 p-l-0 p-r-5">
+        <span class="fields row"> {{alternateIdentifier.identifierScheme && alternateIdentifier.identifierScheme.fsn && alternateIdentifier.identifierScheme.fsn.term ? alternateIdentifier.identifierScheme.fsn.term : alternateIdentifier.identifierSchemeId}} </span>
+      </div>
+      <div class="concept-id pull-left col-md-3 p-l-0 p-r-5">
+        <span class="fields row"> {{alternateIdentifier.alternateIdentifier}} </span>
+      </div>
+      <div class="time pull-left col-md-3 p-l-0 p-r-5">
+        <span class="fields row"> {{alternateIdentifier.effectiveTime}} </span>
+      </div>
+    </div>
+    <div ng-if="!concept.active"><br/></div>
+  </div>
+
   <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
     <div class="col-md-12 no-padding pull-left">
       <label class="control-label">Inactivation Reason
