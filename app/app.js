@@ -73,7 +73,7 @@ angular
   })
 
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider, localStorageServiceProvider) {
-    
+
     localStorageServiceProvider.setPrefix('singleConceptAuthoringApp')
                                .setStorageType('localStorage');
 
@@ -88,6 +88,19 @@ angular
       ['$delegate', '$window', extendExceptionHandler]);
     //intercept requests to add hardcoded authorization header to work around the spring security popup
     $httpProvider.interceptors.push('httpRequestInterceptor');
+
+    // intercept 403 error
+    $httpProvider.interceptors.push(['$q', 'notificationService', function($q, notificationService) {
+      return {
+          responseError: function(rejection) {
+              if(rejection && rejection.status === 403){
+                notificationService.sendError("Request access denied");
+              } else {
+                return $q.reject(rejection);
+              }
+          }
+      }
+  }]);
 
     // modal providers MUST not use animation
     // due to current angular-ui bug where the
@@ -197,7 +210,7 @@ angular
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);
 
-        // Footer information        
+        // Footer information
         if(endpoints.scaUserGuideEndpoint) {
           $("#user_guide").attr("href", endpoints.scaUserGuideEndpoint);
         }
@@ -242,8 +255,8 @@ angular
             };
 
             // start connecting websocket after retrieving user information
-            scaService.connectWebsocket();       
-          }, 
+            scaService.connectWebsocket();
+          },
           function () {}
         );
 
@@ -254,7 +267,7 @@ angular
           if(response.length > 0) {
             metadataService.setNamespaces(response);
           }
-        });        
+        });
 
         ///////////////////////////////////////////
         // Cache local data
@@ -281,7 +294,7 @@ angular
             })
           }, function(error) {
             // apply default preferences
-            var userPreferences = {};            
+            var userPreferences = {};
             accountService.applyUserPreferences(userPreferences).then(function (appliedPreferences) {
               accountService.saveUserPreferences(appliedPreferences).then(function() {});
             })
@@ -295,7 +308,7 @@ angular
           if(response.length !== 0) {
             response.sort(function (a, b) {
               return a.localeCompare(b);
-            });            
+            });
           }
           metadataService.setSemanticTags(response);
         });
@@ -303,7 +316,7 @@ angular
         ///////////////////////////////////////////
         // load code systems
         ///////////////////////////////////////////
-        terminologyServerService.getAllCodeSystems().then(function (response) {        
+        terminologyServerService.getAllCodeSystems().then(function (response) {
           metadataService.setCodeSystems(response.items);
         });
 
