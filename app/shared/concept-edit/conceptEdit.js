@@ -1389,6 +1389,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
+        function hasClinicalDrugParent() {
+          for (let i = 0; i < scope.concept.classAxioms.length; i++) {
+            if (scope.concept.classAxioms[i].active) {
+              for (let j = 0; j < scope.concept.classAxioms[i].relationships.length; j++) {
+                let rel = scope.concept.classAxioms[i].relationships[j];
+                if (rel.type.conceptId === '116680003' && rel.target.fsn.endsWith('(clinical drug)')) {
+                  return true;
+                }
+              }
+            }
+          }
+          return false;
+        }
+
         /**
          * Helper function to save or update concept after validation
          * @param concept
@@ -1537,6 +1551,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     concept: scope.concept,
                     validation: scope.validation
                   });
+
+                  // if a new Clinical Drug concept is created
+                  if (saveFn == terminologyServerService.createConcept && scope.isSctid(scope.concept.conceptId) && hasClinicalDrugParent()) {
+                    if (!scope.validation.warnings) {
+                      scope.validation.warnings = {};
+                    }
+                    if (!scope.validation.warnings[scope.concept.conceptId]) {
+                      scope.validation.warnings[scope.concept.conceptId] = [];
+                    }
+                    scope.validation.warnings[scope.concept.conceptId].push('A new Clinical Drug concept has been saved so that the abstract concept Medicinal Product and Medicinal Product Form will also be created.')
+                  }
 
                   // if ui state update function specified, call it (after a
                   // moment to let binding update)
