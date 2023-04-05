@@ -530,6 +530,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isOptionalAttribute = templateService.isOptionalAttribute;
         scope.isExtensionSet = metadataService.isExtensionSet;
         scope.isLockedModule = metadataService.isLockedModule;
+        scope.isEnableAxiomAdditionOnInternationalConcepts = metadataService.isEnableAxiomAdditionOnInternationalConcepts;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
         scope.crsFilter = crsService.crsFilter;

@@ -29,6 +29,8 @@ angular.module('singleConceptAuthoringApp')
 
     var projectsLoadCompleted = false;
 
+    var enableAxiomAdditionOnInternationalConcepts = false;
+
     // relationship metadata
     var isaRelationshipId = '116680003';
 
@@ -259,6 +261,10 @@ angular.module('singleConceptAuthoringApp')
         var defaultLanguages = [];
         var defaultLanguageRefsetId = null;
 
+        if (metadata.enableAxiomAdditionOnInternationalConcepts) {
+          enableAxiomAdditionOnInternationalConcepts = metadata.enableAxiomAdditionOnInternationalConcepts === 'true' || metadata.enableAxiomAdditionOnInternationalConcepts === true;
+        }
+
         // extract the available language refset ids, dialect ids, language codes
         for (var key in metadata) {
           if (metadata.hasOwnProperty(key)) {
@@ -484,6 +490,10 @@ angular.module('singleConceptAuthoringApp')
         return false;
       }
       return !isExtensionModule(moduleId);
+    }
+
+    function isEnableAxiomAdditionOnInternationalConcepts() {
+      return enableAxiomAdditionOnInternationalConcepts;
     }
 
 
@@ -1002,6 +1012,7 @@ angular.module('singleConceptAuthoringApp')
       isTaskPromotionDisabled: isTaskPromotionDisabled,
       isComplex: isComplex,
       isBatch: isBatch,
+      isEnableAxiomAdditionOnInternationalConcepts: isEnableAxiomAdditionOnInternationalConcepts,
 
       // extension module-dependent retrieval functions
 
