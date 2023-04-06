@@ -615,10 +615,6 @@ angular.module('singleConceptAuthoringApp')
           return $http.get(apiEndpoint + 'projects?' + params).then(
             function (response) {
               return response.data;
-            }, function (error) {
-              if (error.status === 403) {
-                $location.path('/login');
-              }
             }
           );
         },
@@ -632,10 +628,6 @@ angular.module('singleConceptAuthoringApp')
               }
 
               return response.data;
-            }, function (error) {
-              if (error.status === 403) {
-                $location.path('/login');
-              }
             }
           );
         },
@@ -645,12 +637,7 @@ angular.module('singleConceptAuthoringApp')
             function (response) {
               return response.data;
             }, function (error) {
-              if (error.status === 403) {
-                $location.path('/login');
-              }
-              else {
-                console.error(error);
-              }
+              console.error(error);
             }
           );
         },
@@ -663,10 +650,6 @@ angular.module('singleConceptAuthoringApp')
               }
 
               return response.data;
-            }, function (error) {
-              if (error.status === 403) {
-                $location.path('/login');
-              }
             }
           );
         },
@@ -726,10 +709,6 @@ angular.module('singleConceptAuthoringApp')
 //            $rootScope.accountDetails = response.data.assignee;
 
               deferred.resolve(response.data);
-            }, function (error) {
-              if (error.status === 403) {
-                $location.path('/login');
-              }
             }
           );
           return deferred.promise;

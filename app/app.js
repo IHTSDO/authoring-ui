@@ -90,11 +90,13 @@ angular
     $httpProvider.interceptors.push('httpRequestInterceptor');
 
     // intercept 403 error
-    $httpProvider.interceptors.push(['$q', 'notificationService', function($q, notificationService) {
+    $httpProvider.interceptors.push(['$q', '$location', 'notificationService', function($q, $location, notificationService) {
       return {
           responseError: function(rejection) {
-              if(rejection && rejection.status === 403){
+              if(rejection && rejection.status === 403 && rejection.config && (rejection.config.method === 'POST' || rejection.config.method === 'PUT' || rejection.config.method === 'DELETE')){
                 notificationService.sendError("Request access denied");
+              } else if(rejection && rejection.status === 403 && rejection.config && rejection.config.method === 'GET'){
+                $location.path('/login');
               } else {
                 return $q.reject(rejection);
               }
