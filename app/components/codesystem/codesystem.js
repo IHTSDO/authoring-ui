@@ -315,6 +315,12 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         $location.url('project/' + project.key);
       };
 
+      $scope.viewCodeSystemMetadata = function () {
+        return terminologyServerService.getEndpoint().then(function(endpoint) {
+          window.open(endpoint + 'branches/' + $scope.codeSystem.branchPath + '/metadata?includeInheritedMetadata=true', '_blank');
+        });
+      };
+
       function waitForCodeSystemUpgradeToComplete(jobId) {
         var deferred = $q.defer();
         $timeout(function () {
