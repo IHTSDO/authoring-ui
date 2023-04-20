@@ -22,11 +22,17 @@
               ng-options="module.id as module.name for module in getAvailableModules(description.moduleId)"></select>
     </div>
   </div>
-  <div ng-if="!description.active || description.inactivationIndicator" class="pop-edit description-more row">
+  <div ng-if="description.active && description.inactivationIndicator">
+    <div class="module pull-left">
+      <label class="control-label">Additional Information</label>
+      <span class="fields row" ng-if="description.inactivationIndicator">{{formatComponentMoreText(description.inactivationIndicator)}}</span>      
+    </div>
+  </div>
+  <div ng-if="!description.active" class="pop-edit description-more row">
     <div class="module pull-left">
       <label class="control-label">Inactivation Reason
 
-        <button ng-if="!description.active && !isStatic && !isLockedModule(description.moduleId)" type="button"
+        <button ng-if="!isStatic && !isLockedModule(description.moduleId)" type="button"
                 class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active"
                 title="Edit" ng-click="editDescriptionInactivationReason(description)" aria-disabled="false">
           <i class="md fa-sca fa-pencil"></i>
@@ -34,9 +40,9 @@
         </button>
       </label>
       <span class="fields row" ng-if="description.inactivationIndicator">{{formatComponentMoreText(description.inactivationIndicator)}}</span>
-      <span class="fields row" ng-if="!description.active && (!description.inactivationIndicator || description.inactivationIndicator.length === 0)">Reason not stated</span>
+      <span class="fields row" ng-if="!description.inactivationIndicator || description.inactivationIndicator.length === 0">Reason not stated</span>
     </div>
-    <div ng-if="!description.active" class="col-md-12 no-padding pull-left m-t-20">
+    <div class="col-md-12 no-padding pull-left m-t-20">
       <label class="control-label">Association Targets</label>
       <div ng-show="!description.associationTargets">None</div>
       <div ng-repeat="(key, value) in description.associationTargets" class="p-b-10">
