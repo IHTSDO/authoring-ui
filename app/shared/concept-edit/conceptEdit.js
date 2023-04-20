@@ -1560,7 +1560,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     if (!scope.validation.warnings[scope.concept.conceptId]) {
                       scope.validation.warnings[scope.concept.conceptId] = [];
                     }
-                    scope.validation.warnings[scope.concept.conceptId].push('A new Clinical Drug concept has been saved so that the abstract concept Medicinal Product and Medicinal Product Form will also be created.')
+                    scope.validation.warnings[scope.concept.conceptId].push('A new clinical drug was created. Please check if the matching abstract concepts for Medicinal Product and Medicinal Product Form already exist. If this is not the case, please create those manually or ask Tech support for a bulk update.')
                   }
 
                   // if ui state update function specified, call it (after a
