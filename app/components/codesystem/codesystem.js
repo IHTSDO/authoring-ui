@@ -192,6 +192,23 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         });
       };
 
+      $scope.startNewAuthoringCycle = function() {
+        notificationService.clear();
+        modalService.confirm('Do you really want to start a new Authoring cycle for '+ $scope.codeSystem.name +'?').then(function () {
+          notificationService.sendMessage('Starting new Authoring cycle...');
+          terminologyServerService.startNewAuthoringCycle($scope.codeSystem.shortName).then(function() {
+            notificationService.clear();
+            terminologyServerService.getEndpoint().then(function(endpoint) {
+              modalService.message('Success', 'Metadata for this codesystem have been updated. Click <a href="' + endpoint + 'branches/' + $scope.codeSystem.branchPath + '/metadata?includeInheritedMetadata=true" target="_blank">here</a> to review.');
+            });
+          }, function(error) {
+            notificationService.sendError('Error starting new Authoring cycle: ' + error);
+          })
+        }, function () {
+          // do nothing
+        });
+      };
+
       $scope.upgrade = function() {
         var modalInstance = $modal.open({
           templateUrl: 'shared/upgrade-modal/upgradeModal.html',

@@ -89,9 +89,9 @@ angular.module('singleConceptAuthoringApp')
 
       function updateBranchMetadata(branch, metadata) {
         var deferred = $q.defer();
-        $http.put(apiEndpoint + 'branches/' + branch + '/metadata-upsert', metadata).then(function (response) {          
+        $http.put(apiEndpoint + 'branches/' + branch + '/metadata-upsert', metadata).then(function (response) {
           deferred.resolve(response.data);
-        }, function (error) {          
+        }, function (error) {
           deferred.reject(error);
         });
         return deferred.promise;
@@ -99,9 +99,9 @@ angular.module('singleConceptAuthoringApp')
 
       function setAuthorFlag(branch, requestBody) {
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'branches/' + branch + '/actions/set-author-flag', requestBody).then(function (response) {          
+        $http.post(apiEndpoint + 'branches/' + branch + '/actions/set-author-flag', requestBody).then(function (response) {
           deferred.resolve(response.data);
-        }, function (error) {          
+        }, function (error) {
           deferred.reject(error);
         });
         return deferred.promise;
@@ -135,7 +135,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve({concept: concept, validationResults: validationResults});
             } else {
               deferred.reject(error);
-            }            
+            }
           }
           deferred.reject(error);
         });
@@ -161,12 +161,12 @@ angular.module('singleConceptAuthoringApp')
           if (error && error.status === 400) {
             var validationResults = [];
             if (error.data && error.data.hasOwnProperty("validationResults")) {
-              validationResults = error.data.validationResults;             
+              validationResults = error.data.validationResults;
 
               deferred.resolve({concept: concept, validationResults: validationResults});
             } else {
               deferred.reject(error);
-            }            
+            }
           }
           deferred.reject(error);
         });
@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
               }
               else {
                 deferred.reject('Bulk concept update failed');
-              }              
+              }
             } else {
               pollForBulkUpdate(url, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
             cleanRelationshipType(relationship.target);
         }
       }
-        
+
       function cleanRelationshipType(relationship) {
 
         var allowableRelationshipProperties = [
@@ -368,7 +368,7 @@ angular.module('singleConceptAuthoringApp')
             relationship.pt = relationship.pt.term;
         }
       }
-        
+
       function cleanRelationshipTarget(relationship) {
 
         var allowableRelationshipProperties = [
@@ -442,7 +442,7 @@ angular.module('singleConceptAuthoringApp')
           relationship.sourceId = concept.conceptId;
 
         });
-          
+
         //Loop through and remove any axioms that have been added during feedback axiom comparions
         if(concept.classAxioms){
             for (var i = concept.classAxioms.length - 1; i >= 0; i--) {
@@ -451,7 +451,7 @@ angular.module('singleConceptAuthoringApp')
                 }
             }
         }
-        
+
         if(concept.gciAxioms){
             for (var i = concept.gciAxioms.length - 1; i >= 0; i--) {
                 if (concept.gciAxioms[i].deleted) {
@@ -459,9 +459,9 @@ angular.module('singleConceptAuthoringApp')
                 }
             }
         }
-          
+
         //Loop through and remove any axiom relationships that have been added during feedback axiom comparions
-          
+
         angular.forEach(concept.classAxioms, function(axiom){
             for (var i = axiom.relationships.length - 1; i >= 0; i--) {
                 if (axiom.relationships[i].deleted) {
@@ -510,7 +510,7 @@ angular.module('singleConceptAuthoringApp')
 
       //////////////////////////////////////////////
       // Classification functions
-      //////////////////////////////////////////////      
+      //////////////////////////////////////////////
 
       // get a specific classification result for projectKey, taskKey, and
       // classifierId
@@ -534,8 +534,8 @@ angular.module('singleConceptAuthoringApp')
         return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/classifications/').then(function (response) {
           return response.data.items;
         });
-      }      
-        
+      }
+
       // get all classification results for a branchroot
       function getClassificationsForBranchRoot(branchroot) {
         return $http.get(apiEndpoint + branchroot + '/classifications').then(function (response) {
@@ -894,7 +894,7 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
           return null;
         });
-      }      
+      }
 
       // Retrieve inbound relationships of a concept
       // GET /{path}/concepts/{conceptId}/inbound-relationships
@@ -987,8 +987,8 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
-        
-        
+
+
       // Retrieve members where the type is GCI and the provided conceptId is referenced
       // GET /{path}/members
       function getGciExpressionsFromTarget(conceptId, branch) {
@@ -1140,7 +1140,7 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
-        
+
       // Helper call to retrieve a concept with all elements at a point in time
       // Puts all elements in save-ready format
       function getFullConceptAtDate(conceptId, branch, acceptLanguageValue, date) {
@@ -1234,7 +1234,7 @@ angular.module('singleConceptAuthoringApp')
             "conceptIds":conceptIdList
         }
         var config = {};
-        
+
         // if accept language value set, set header
         if (acceptLanguageValue) {
           // declare headers if not specified
@@ -1520,7 +1520,7 @@ angular.module('singleConceptAuthoringApp')
               }
               else {
                 response.data = {items: [], total: 0}
-              }              
+              }
               if (searchTimestamp) {
                 response.data.searchTimestamp = searchTimestamp;
               }
@@ -1849,31 +1849,31 @@ angular.module('singleConceptAuthoringApp')
           console.error('Error retrieving versions: code system is not defined');
           return null;
         }
-          
+
         let url = '';
-        
+
         if(apiEndpoint.includes('snowowl')){
             url = 'snowowl/admin/codesystems/';
         }
         else{
             url = apiEndpoint + 'codesystems/';
         }
-          
+
         return $http.get(url + codeSystemShortName + '/versions').then(function (response) {
           return response;
         }, function (error) {
           return null;
         });
       }
-        
+
       function getCodeSystem (codeSystemShortName) {
         if(!codeSystemShortName) {
           console.error('Error retrieving versions: code system is not defined');
           return null;
         }
-          
+
         let url = apiEndpoint + 'codesystems/';
-          
+
         return $http.get(url + codeSystemShortName).then(function (response) {
           return response.data;
         }, function (error) {
@@ -1883,12 +1883,22 @@ angular.module('singleConceptAuthoringApp')
 
       function getAllCodeSystems () {
         let url = apiEndpoint + 'codesystems';
-          
+
         return $http.get(url).then(function (response) {
           return response.data;
         }, function (error) {
           return null;
         });
+      }
+
+      function startNewAuthoringCycle(codeSystemShortname) {
+        var deferred = $q.defer();
+        $http.post(apiEndpoint + 'codesystems/' + codeSystemShortname + '/new-authoring-cycle').then(function (response) {
+          deferred.resolve(response.data);
+        }, function(error) {
+          deferred.reject(error.message);
+        });
+        return deferred.promise;
       }
 
 
@@ -2166,7 +2176,7 @@ angular.module('singleConceptAuthoringApp')
           }, function(error) {
             stopStatusPolling();
             console.error(error);
-            deferred.reject(error);            
+            deferred.reject(error);
           });
         }, 2000)
 
@@ -2200,7 +2210,7 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
             return 1;
           }
-          else if (error.status === 409) {            
+          else if (error.status === 409) {
             if (error.data && error.data.message) {
               var errorMsg = error.data.message;
 
@@ -2219,7 +2229,7 @@ angular.module('singleConceptAuthoringApp')
               return null;
             }
             notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-            
+
             return null;
           }
           else {
@@ -2235,7 +2245,7 @@ angular.module('singleConceptAuthoringApp')
        */
       function branchIntegrityCheck(branch) {
         var deferred = $q.defer();
-        
+
         $http.post(apiEndpoint + branch + '/integrity-check').then(function (response) {
           deferred.resolve(response.data);
         }, function(error) {
@@ -2249,7 +2259,7 @@ angular.module('singleConceptAuthoringApp')
        */
       function branchUpgradeIntegrityCheck(branch, extensionMainBranchPath) {
         var deferred = $q.defer();
-        
+
         $http.post(apiEndpoint + branch + '/upgrade-integrity-check' + (extensionMainBranchPath ? '?extensionMainBranchPath=' + extensionMainBranchPath : '')).then(function (response) {
           deferred.resolve(response.data);
         }, function(error) {
@@ -2259,7 +2269,7 @@ angular.module('singleConceptAuthoringApp')
           else {
             deferred.reject(error);
           }
-          
+
         });
         return deferred.promise;
       }
@@ -2390,28 +2400,28 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-        
+
       //Config service instatiates endpoint after config load
       function setEndpoint(url){
           apiEndpoint = url;
       }
 
       function getEndpoint() {
-        var defer = $q.defer();        
-        if (!apiEndpoint) {                  
-          setTimeout(function waitForTerminologyServerURL() {                              
-            if (!apiEndpoint) {                      
+        var defer = $q.defer();
+        if (!apiEndpoint) {
+          setTimeout(function waitForTerminologyServerURL() {
+            if (!apiEndpoint) {
               setTimeout(waitForTerminologyServerURL, 10);
-            } 
-            else {                  
+            }
+            else {
               defer.resolve(apiEndpoint);
             }
           }, 10);
         }
-        else {              
+        else {
           defer.resolve(apiEndpoint);
         }
-        
+
         return defer.promise;
       }
 
@@ -2446,7 +2456,7 @@ angular.module('singleConceptAuthoringApp')
 
       function findClosestActiveAncestor(inactiveConceptId, branch) {
         var defer = $q.defer();
-        var findingConcept =  function(conceptId, branch, defer) {          
+        var findingConcept =  function(conceptId, branch, defer) {
           getFullConcept(conceptId, branch).then(function (response) {
             if (response.active) {
               defer.resolve(response);
@@ -2459,12 +2469,12 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
             }
-          });  
+          });
         }
         findingConcept(inactiveConceptId, branch, defer);
         return defer.promise;
       }
-        
+
       // Mark branch as complex
       // POST /branches/{branchPath}/actions/set-author-flag
       function markBranchAsComplex(branch, value) {
@@ -2479,7 +2489,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function retrieveSemanticTags() {
-        var deferred = $q.defer();        
+        var deferred = $q.defer();
         $http.get(apiEndpoint + 'validation-maintenance/semantic-tags').then(function (response) {
           deferred.resolve(response.data);
         }).then(function (error) {
@@ -2534,7 +2544,7 @@ angular.module('singleConceptAuthoringApp')
         getFullConceptAtDate: getFullConceptAtDate,
         updateDescription: updateDescription,
         getClassificationForTask: getClassificationForTask,
-        getClassificationForProject: getClassificationForProject,        
+        getClassificationForProject: getClassificationForProject,
         getClassificationsForBranchRoot: getClassificationsForBranchRoot,
         getClassifications: getClassifications,
         getClassificationsForProject: getClassificationsForProject,
@@ -2587,6 +2597,7 @@ angular.module('singleConceptAuthoringApp')
         getAllCodeSystemVersionsByShortName: getAllCodeSystemVersionsByShortName,
         getAllCodeSystems: getAllCodeSystems,
         getCodeSystem: getCodeSystem,
+        startNewAuthoringCycle: startNewAuthoringCycle,
 
         // merge-review functionality
         getMergeReview: getMergeReview,

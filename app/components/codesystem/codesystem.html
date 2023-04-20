@@ -21,6 +21,14 @@
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
+          <button ng-if="codeSystem && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="startNewAuthoringCycle()"
+            >
+            <div
+              class="project-icon pink pull-left">
+              <div class="md md-new-releases"></div>
+            </div>
+            New Authoirng Cycle
+          </button>
           <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="upgrade()"
             ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion">
             <div
