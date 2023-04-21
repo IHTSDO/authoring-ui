@@ -26,7 +26,7 @@
         <div class="btn-group pull-right p-t-10 p-r-10">
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
-                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled">
+                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || project.projectLocked">
             <div
               class="project-icon yellow darken-2 pull-left">
               <div class="md md-autorenew"></div>
@@ -54,13 +54,13 @@
           </button>
           <button class="btn btn-border tooltips-bottom xlarge-size-tooltip "
                   ng-click="promote()"
-                  ng-disabled="project.branchState !== 'FORWARD' || project.projectPromotionDisabled || project.projectMrcmDisabled || !sacSignedOff()">
+                  ng-disabled="project.projectLocked || project.branchState !== 'FORWARD' || project.projectPromotionDisabled || project.projectMrcmDisabled || !sacSignedOff()">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
             </div>
-            <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote</div>
-            <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
+            <div ng-if="!project.projectLocked && !project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote</div>
+            <div ng-if="project.projectLocked || project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
         </div>
         <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectScheduledRebaseDisabled !== undefined">

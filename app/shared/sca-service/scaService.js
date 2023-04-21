@@ -1886,6 +1886,30 @@ angular.module('singleConceptAuthoringApp')
             deferred.reject(error);
           });
           return deferred.promise;
+        },
+
+        lockProjects: function(codeSystem) {
+          var deferred = $q.defer();
+          
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/lock').then(function () {           
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+          return deferred.promise;
+        },
+
+        unlockProjects: function(codeSystem) {
+          var deferred = $q.defer();
+          
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/unlock').then(function () {           
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+          return deferred.promise;
         }
 
       };
