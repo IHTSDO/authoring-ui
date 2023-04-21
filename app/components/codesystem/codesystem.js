@@ -59,6 +59,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       $scope.dailyBuildValidationCollapsed = true;
       $scope.exceptionListCollapsed = true;
       $scope.classificationCollapsed = $location.search().expandClassification ? !$location.search().expandClassification : true;
+      $scope.lockOrUnlockProjectsInProgress = false;
 
       hotkeys.bindTo($scope)
       .add({
@@ -104,16 +105,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     }
                   });
 
-                  // get the project task list
-                  scaService.getProjects().then(function (projects) {
-                    angular.forEach(projects, function (project) {
-                      let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
-                      if(path === $scope.codeSystem.branchPath){
-                          $scope.projects.push(project);
-                      }
-                    });
-                    $scope.projectTableParams.reload();
-                  });
+                  // get the project list
+                  reloadProjects();
 
                   // check if the EN-GB language refset presents
                   if (response.metadata && response.metadata.requiredLanguageRefsets) {
@@ -164,6 +157,70 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               });
           });
 
+      };
+
+      $scope.isProjectLocked = function() {
+        for(let i = 0; i < $scope.projects.length; i++) {
+          if ($scope.projects[i].projectLocked) {
+            return true;
+          }
+        }
+
+        return false;
+      };
+
+      $scope.toggleLockProject = function() {
+        if ($scope.isProjectLocked()) {
+          modalService.confirm('Do you really want to unlock all projects against '+ $scope.codeSystem.name +'?').then(function () {
+            notificationService.sendMessage('Unlocking projects...');
+            $scope.lockOrUnlockProjectsInProgress = true;
+            scaService.unlockProjects($scope.codeSystem.shortName).then(function() {
+              reloadProjects().then(function() {
+                $scope.lockOrUnlockProjectsInProgress = false;
+                notificationService.sendMessage('Successfully unlocked projects');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectsInProgress = false;
+              notificationService.sendError('Error unlocking projects. Message : ' + error.message);
+            });
+          }, function () {
+            // do nothing
+          });
+        } else {
+          modalService.confirm('Do you really want to lock all projects against '+ $scope.codeSystem.name +'?').then(function () {
+            notificationService.sendMessage('Locking projects...');
+            $scope.lockOrUnlockProjectsInProgress = true;
+            scaService.lockProjects($scope.codeSystem.shortName).then(function() {
+              reloadProjects().then(function() {
+                $scope.lockOrUnlockProjectsInProgress = false;
+                notificationService.sendMessage('Successfully locked projects');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectsInProgress = false;
+              notificationService.sendError('Error locking projects. Message : ' + error.message);
+            });
+          }, function () {
+            // do nothing
+          });
+        }
+      };
+
+      function reloadProjects() {
+        var deferred = $q.defer();
+        // get the project task list
+        scaService.getProjects().then(function (projects) {
+          $scope.projects = [];
+          angular.forEach(projects, function (project) {
+            let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
+            if(path === $scope.codeSystem.branchPath){
+                $scope.projects.push(project);
+            }
+          });
+          $scope.projectTableParams.reload();
+          deferred.resolve();
+        });
+
+        return deferred.promise;
       }
 
       $scope.$on('reloadCodeSystem', function (event, data) {
