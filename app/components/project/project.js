@@ -41,6 +41,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.lineItems = [];
       $scope.globalLineItems = [];
       $scope.releaseNotesDisabled = true;
+      $scope.lockOrUnlockProjectInProgress = false;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -405,6 +406,45 @@ angular.module('singleConceptAuthoringApp.project', [
             }, function () {
               // do nothing
             });
+      };
+
+      // lock/unlock project
+      $scope.toggleLockProject = function() {
+        if ($scope.project.projectLocked) {
+          modalService.confirm('Do you really want to unlock this project?').then(function () {
+            notificationService.sendMessage('Unlocking project...');
+            $scope.lockOrUnlockProjectInProgress = true;
+            scaService.unlockProject($routeParams.projectKey).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project = response;
+                $scope.lockOrUnlockProjectInProgress = false;
+                notificationService.sendMessage('Successfully unlocked project');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectInProgress = false;
+              notificationService.sendError('Error unlocking project. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        } else {
+          modalService.confirm('Do you really want to lock this project?').then(function () {
+            notificationService.sendMessage('Locking project...');
+            $scope.lockOrUnlockProjectInProgress = true;
+            scaService.lockProject($routeParams.projectKey).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project = response;
+                $scope.lockOrUnlockProjectInProgress = false;
+                notificationService.sendMessage('Successfully locked project');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectInProgress = false;
+              notificationService.sendError('Error locking project. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        }
       }
 
       // classify the project
