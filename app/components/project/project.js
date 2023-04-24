@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-                    
+
           // detect code system for given branch
           const allCodeSystems = metadataService.getCodeSystems();
           if (allCodeSystems && allCodeSystems.length !== 0) {
@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp.project', [
               metadataService.setModuleName(response.conceptId, response.fsn);
             });
           }
-            
+
           $scope.releaseNotesDisabled = metadataService.isExtensionSet();
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
@@ -308,7 +308,7 @@ angular.module('singleConceptAuthoringApp.project', [
               });
           });
         };
-        
+
       $scope.openReleaseNotesConfigModal = function () {
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/releaseNotesConfig.html',
@@ -326,7 +326,7 @@ angular.module('singleConceptAuthoringApp.project', [
           modalInstance.result.then(function () {
           });
       };
-        
+
       $scope.openLineItemModal = function (id, all) {
           let item = {};
           let items = $scope.lineItems;
@@ -348,7 +348,7 @@ angular.module('singleConceptAuthoringApp.project', [
                 angular.forEach(lineItem.children, function (child) {
                   if ($scope.lineItems.filter(function(item) {return item.title === child.title}).length == 0) {
                     globalItems.push(child);
-                  }                    
+                  }
                 });
             }
           });
@@ -397,7 +397,7 @@ angular.module('singleConceptAuthoringApp.project', [
               });
           });
       };
-        
+
       $scope.refsetUpdate = function (name) {
           modalService.confirm('This will update the relevant refset/s, create a new task and redirect you to it.  Continue?').then(function () {
               templateService.refsetUpdate($scope.project.key, name).then(function (response) {
@@ -416,7 +416,7 @@ angular.module('singleConceptAuthoringApp.project', [
             $scope.lockOrUnlockProjectInProgress = true;
             scaService.unlockProject($routeParams.projectKey).then(function() {
               scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-                $scope.project = response;
+                $scope.project.projectLocked = response.projectLocked;
                 $scope.lockOrUnlockProjectInProgress = false;
                 notificationService.sendMessage('Successfully unlocked project');
               });
@@ -428,12 +428,12 @@ angular.module('singleConceptAuthoringApp.project', [
             // do nothing
           });
         } else {
-          modalService.confirm('Do you really want to lock this project?').then(function () {
+          modalService.confirm('This action will disable promotion and rebase on this project. Do want to proceed?').then(function () {
             notificationService.sendMessage('Locking project...');
             $scope.lockOrUnlockProjectInProgress = true;
             scaService.lockProject($routeParams.projectKey).then(function() {
               scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-                $scope.project = response;
+                $scope.project.projectLocked = response.projectLocked;
                 $scope.lockOrUnlockProjectInProgress = false;
                 notificationService.sendMessage('Successfully locked project');
               });
@@ -784,7 +784,7 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.project.taskPromotionDisabled = !$scope.project.taskPromotionDisabled;
           notificationService.sendError('Error udpating Project Tasks Promotion: ' + error);
         });
-      };      
+      };
 
       $scope.toggleProjectScheduledRebase = function () {
         $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
