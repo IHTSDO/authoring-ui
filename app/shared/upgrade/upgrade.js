@@ -97,8 +97,8 @@ angular.module('singleConceptAuthoringApp')
       $scope.requireEnGBImport = $location.search().projectKey && $location.search().projectKey.trim() !== '';
       notificationService.clear();
       terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
-        if (codeSystem.userRoles && !codeSystem.userRoles.includes('ADMIN')) {
-          notificationService.sendError('You must login as ADMIN to upgrade this code system.');
+        if (codeSystem.userRoles && !codeSystem.userRoles.includes('ADMIN') && !codeSystem.userRoles.includes('PROJECT_LEAD')) {
+          notificationService.sendError('You must login as ADMIN or PROJECT LEAD to upgrade this code system.');
           return;
         }
 
