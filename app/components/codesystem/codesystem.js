@@ -169,12 +169,12 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         return false;
       };
 
-      $scope.toggleLockProject = function() {
+      $scope.toggleLockProjects = function() {
         if ($scope.isProjectLocked()) {
           modalService.confirm('Do you really want to unlock all projects against '+ $scope.codeSystem.name +'?').then(function () {
             notificationService.sendMessage('Unlocking projects...');
             $scope.lockOrUnlockProjectsInProgress = true;
-            scaService.unlockProjects($scope.codeSystem.shortName).then(function() {
+            scaService.unlockProjectsForCodeSystem($scope.codeSystem.shortName).then(function() {
               reloadProjects().then(function() {
                 $scope.lockOrUnlockProjectsInProgress = false;
                 notificationService.sendMessage('Successfully unlocked projects');
@@ -190,7 +190,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           modalService.confirm('Do you really want to lock all projects against '+ $scope.codeSystem.name +'?').then(function () {
             notificationService.sendMessage('Locking projects...');
             $scope.lockOrUnlockProjectsInProgress = true;
-            scaService.lockProjects($scope.codeSystem.shortName).then(function() {
+            scaService.lockProjectsForCodeSystem($scope.codeSystem.shortName).then(function() {
               reloadProjects().then(function() {
                 $scope.lockOrUnlockProjectsInProgress = false;
                 notificationService.sendMessage('Successfully locked projects');

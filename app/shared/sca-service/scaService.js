@@ -1888,7 +1888,7 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        lockProjects: function(codeSystem) {
+        lockProjectsForCodeSystem: function(codeSystem) {
           var deferred = $q.defer();
           
           $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/lock').then(function () {           
@@ -1900,10 +1900,34 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        unlockProjects: function(codeSystem) {
+        unlockProjectsForCodeSystem: function(codeSystem) {
           var deferred = $q.defer();
           
           $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/unlock').then(function () {           
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+          return deferred.promise;
+        },
+
+        lockProject: function(projectKey) {
+          var deferred = $q.defer();
+          
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/lock').then(function () {           
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+          return deferred.promise;
+        },
+
+        unlockProject: function(projectKey) {
+          var deferred = $q.defer();
+          
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/unlock').then(function () {           
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);

@@ -24,6 +24,14 @@
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
+          <button ng-disabled="lockOrUnlockProjectsInProgress" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProject()"
+            >
+            <div
+              class="project-icon red pull-left">
+              <div class="fa {{project.projectLocked ? 'fa-lock' : 'fa-unlock'}}"></div>
+            </div>
+            {{project.projectLocked ? 'Unlock Project' : 'Lock Project'}}
+          </button>
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
                   ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || project.projectLocked">
