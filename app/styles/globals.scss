@@ -565,3 +565,6 @@ h4.timeline-title::-webkit-scrollbar-corner{
     from { transform: rotate(0deg); }
     to {transform: rotate(359deg); }
 }
+.code-system .project-list table > thead > tr > th:first-child {
+    padding-left: 10px;
+}
