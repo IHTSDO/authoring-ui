@@ -181,7 +181,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               });
             }, function(error) {
               $scope.lockOrUnlockProjectsInProgress = false;
-              notificationService.sendError('Error unlocking projects. Message : ' + error.message);
+              notificationService.sendError('Error unlocking projects. Message : ' + (error.data ? error.data.message : error.message));
             });
           }, function () {
             // do nothing
@@ -197,7 +197,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               });
             }, function(error) {
               $scope.lockOrUnlockProjectsInProgress = false;
-              notificationService.sendError('Error locking projects. Message : ' + error.message);
+              notificationService.sendError('Error locking projects. Message : ' + (error.data ? error.data.message : error.message));
             });
           }, function () {
             // do nothing
