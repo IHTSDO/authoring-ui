@@ -212,7 +212,7 @@
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data" class="min-table-row">
               <td data-title="''" style="padding-left: 8px;">
-                <i ng-if="isProjectLocked()" class="red-text fa fa-lock"></i>
+                <i ng-if="project.projectLocked" class="red-text fa fa-lock"></i>
               </td>
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'title'" filter="{ 'title': 'text' }">
                 <a class="tooltips-right"
