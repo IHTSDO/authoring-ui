@@ -775,7 +775,18 @@ angular.module('singleConceptAuthoringApp.project', [
         return '';
       };
 
-       $scope.toggleProjectScheduledRebase = function () {
+      $scope.toggleTaskPromotion = function () {
+        $scope.project.taskPromotionDisabled = !$scope.project.taskPromotionDisabled;
+        notificationService.sendMessage('Updating Project Tasks Promotion...');
+        scaService.updateProject($scope.project.key, {'taskPromotionDisabled': $scope.project.taskPromotionDisabled}).then(function (response) {
+          notificationService.sendMessage('Project Tasks Promotion successfully updated', 5000);
+        }, function (error) {
+          $scope.project.taskPromotionDisabled = !$scope.project.taskPromotionDisabled;
+          notificationService.sendError('Error udpating Project Tasks Promotion: ' + error);
+        });
+      };      
+
+      $scope.toggleProjectScheduledRebase = function () {
         $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
         notificationService.sendMessage('Updating Project Scheduled Rebase...');
         scaService.updateProject($scope.project.key, {'projectScheduledRebaseDisabled': $scope.project.projectScheduledRebaseDisabled}).then(function (response) {
