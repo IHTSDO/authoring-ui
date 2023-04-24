@@ -24,7 +24,7 @@
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
-          <button ng-disabled="lockOrUnlockProjectsInProgress" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProject()"
+          <button ng-disabled="lockOrUnlockProjectInProgress" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProject()"
             >
             <div
               class="project-icon red pull-left">
@@ -70,6 +70,13 @@
             <div ng-if="!project.projectLocked && !project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote</div>
             <div ng-if="project.projectLocked || project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
+        </div>
+        <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" style="margin-top: 15px; margin-bottom: 15px;" ng-if="project.taskPromotionDisabled !== undefined">
+          <div><button class="btn btn-default transparent pull-right no-padding"          
+            ng-class="[{'md-check-box' : !project.taskPromotionDisabled}, {'md-check-box-outline-blank' : project.taskPromotionDisabled}]"
+            ng-click="toggleTaskPromotion()" />
+          </div>     
+          <div><p class="pull-right">Tasks promotion enabled</p></div>
         </div>
         <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectScheduledRebaseDisabled !== undefined">
           <div><button class="btn btn-default transparent pull-right no-padding"          
