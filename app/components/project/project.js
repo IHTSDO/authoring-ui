@@ -42,6 +42,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.globalLineItems = [];
       $scope.releaseNotesDisabled = true;
       $scope.lockOrUnlockProjectInProgress = false;
+      $scope.lockOrUnlockTaskInProgress = false;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -428,7 +429,7 @@ angular.module('singleConceptAuthoringApp.project', [
             // do nothing
           });
         } else {
-          modalService.confirm('This action will disable promotion and rebase on this project. Do want to proceed?').then(function () {
+          modalService.confirm('This action will disable promotion and rebase on this project. Do you want to proceed?').then(function () {
             notificationService.sendMessage('Locking project...');
             $scope.lockOrUnlockProjectInProgress = true;
             scaService.lockProject($routeParams.projectKey).then(function() {
@@ -776,14 +777,41 @@ angular.module('singleConceptAuthoringApp.project', [
       };
 
       $scope.toggleTaskPromotion = function () {
-        $scope.project.taskPromotionDisabled = !$scope.project.taskPromotionDisabled;
-        notificationService.sendMessage('Updating Project Tasks Promotion...');
-        scaService.updateProject($scope.project.key, {'taskPromotionDisabled': $scope.project.taskPromotionDisabled}).then(function (response) {
-          notificationService.sendMessage('Project Tasks Promotion successfully updated', 5000);
-        }, function (error) {
-          $scope.project.taskPromotionDisabled = !$scope.project.taskPromotionDisabled;
-          notificationService.sendError('Error udpating Project Tasks Promotion: ' + error);
-        });
+        if ($scope.project.taskPromotionDisabled) {
+          modalService.confirm('This action will enable task promotion. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Enabling task promotion...');
+            $scope.lockOrUnlockTaskInProgress = true;
+            scaService.updateProject($scope.project.key, {'taskPromotionDisabled': false}).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project.taskPromotionDisabled = response.taskPromotionDisabled;
+                $scope.lockOrUnlockTaskInProgress = false;
+                notificationService.sendMessage('Successfully enabled task promotion');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockTaskInProgress = false;
+              notificationService.sendError('Error enabling task promotion. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        } else {
+          modalService.confirm('This action will disable task promotion. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Disabling task promotion...');
+            $scope.lockOrUnlockTaskInProgress = true;
+            scaService.updateProject($scope.project.key, {'taskPromotionDisabled': true}).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project.taskPromotionDisabled = response.taskPromotionDisabled;
+                $scope.lockOrUnlockTaskInProgress = false;
+                notificationService.sendMessage('Successfully disabled task promotion');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockTaskInProgress = false;
+              notificationService.sendError('Error disabling task promotion. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        }        
       };
 
       $scope.toggleProjectScheduledRebase = function () {
