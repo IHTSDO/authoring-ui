@@ -446,6 +446,9 @@ module.exports = function (grunt) {
     'htmlmin',
     'cacheBust'
   ]);
+  
+  grunt.registerTask('test', [
+  ]);
 
   grunt.registerTask('default', [
     'newer:jshint',
