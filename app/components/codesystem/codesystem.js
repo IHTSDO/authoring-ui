@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             // do nothing
           });
         } else {
-          modalService.confirm('This action will disable promotion and rebase on all projects on the '+ $scope.codeSystem.name +'?').then(function () {
+          modalService.confirm('This action will disable promotion and rebase on all projects on the '+ $scope.codeSystem.name +'? Do you want to proceed?', 'width: 141%; margin-left: -85px;').then(function () {
             notificationService.sendMessage('Locking projects...');
             $scope.lockOrUnlockProjectsInProgress = true;
             scaService.lockProjectsForCodeSystem($scope.codeSystem.shortName).then(function() {
