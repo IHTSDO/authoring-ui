@@ -429,7 +429,7 @@ angular.module('singleConceptAuthoringApp.project', [
             // do nothing
           });
         } else {
-          modalService.confirm('This action will disable promotion and rebase on this project. Do you want to proceed?').then(function () {
+          modalService.confirm('This action will disable promotion and rebase on this project. Do you want to proceed?', 'width: 125%;').then(function () {
             notificationService.sendMessage('Locking project...');
             $scope.lockOrUnlockProjectInProgress = true;
             scaService.lockProject($routeParams.projectKey).then(function() {
