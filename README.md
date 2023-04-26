@@ -26,10 +26,6 @@ Run `bower install` to catch all build dependencies.
 Run `gem update --system` to ensure all Ruby gems are up to date.
 Run `gem install compass` to install the Compass SASS compiler.
 
-## Testing
-
-Running `grunt test` will run the unit tests with karma.
-
 ## App Structure
 
 The template application is based on a 'Folder per Feature' formula. Each significant component within the application should have it's own folder within the 'components' section. This folder should contain a html template, javascript file (containing it's module definition, controller, config and any feature specific factories or services), and the feature's Karma unit test (via Jasmine. File name should be appended with .spec.js).
