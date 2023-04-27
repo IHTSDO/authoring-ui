@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // set the local project and branch for use by containers (classification/validation)
           $scope.project = response;
-          $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF ? response.metadata.enableDroolsInRVF !== 'true' : true;
+          $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF && response.metadata.enableDroolsInRVF === 'false' ? true : false;
           $scope.branch = response.branchPath;
 
           // last rebased time
