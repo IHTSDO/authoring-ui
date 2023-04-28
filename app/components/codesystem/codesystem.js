@@ -251,7 +251,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.startNewAuthoringCycle = function() {
         notificationService.clear();
-        modalService.confirm('Do you really want to start a new Authoring cycle for '+ $scope.codeSystem.name +'?').then(function () {
+        modalService.confirm('Do you really want to start a new Authoring cycle for '+ $scope.codeSystem.name +'? \n\nThis should only be performed if you are completing Post Release Tasks', 'white-space: pre-line;width: 125%;').then(function () {
           notificationService.sendMessage('Starting new Authoring cycle...');
           terminologyServerService.startNewAuthoringCycle($scope.codeSystem.shortName).then(function() {
             notificationService.clear();
