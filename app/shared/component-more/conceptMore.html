@@ -65,8 +65,8 @@
           <div class="col-md-4"> {{formatComponentMoreText(key)}} </div>
           <div class="col-md-8">
             <div class="row  p-b-5" ng-repeat="target in value">
-              <div class="col-md-4">{{target}}</div>
-              <div class="col-md-8 max-w-700">{{getTerm(target)}}</div>
+              <div class="col-md-4"><a ng-click="openConceptFromId(target)">{{target}}</a></div>
+              <div class="col-md-8 max-w-700"><a ng-click="openConceptFromId(target)">{{getTerm(target)}}</a></div>
             </div>
           </div>
         </div>
