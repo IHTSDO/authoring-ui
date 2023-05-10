@@ -7,11 +7,11 @@
     <div class="page-header row p-b-5">
       <div class="col-md-4 no-padding">
         <h1 class="p-l-15">
-          {{project.title}}
+          {{project.title}}&nbsp;&nbsp;&nbsp;<i ng-if="project.projectLocked" class="red-text fa fa-lock tooltips-bottom"><span>Project is being locked</span></i>
         </h1>
         <p class="lead p-l-15 m-b-5">
           {{project.projectLead.displayName}}
-        </p>       
+        </p>
         <div class="col-md-12 no-padding" ng-if="project.lastPromotionTimeToMain">
           <p class="p-l-15 m-b-0 promotion-box">Last promoted to MAIN: {{project.lastPromotionTimeToMain | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
         </div>
@@ -20,13 +20,26 @@
         </div>
         <div class="col-md-12 no-padding" ng-if="project.lastRebaseTime">
           <p class="p-l-15 m-b-0 promotion-box">Last rebased date: {{project.lastRebaseTime | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
-        </div>       
+        </div>
       </div>
-      <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
+      <div class="col-md-8 project-main-buttons p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
+          <button ng-disabled="lockOrUnlockTaskInProgress" class="btn btn-border tooltips-bottom xlarge-size-tooltip" ng-click="toggleTaskPromotion()">
+            <div class="project-icon blue darken-1 pull-left" style="background-color: #ff9400;">
+              <div class="fa {{project.taskPromotionDisabled ? 'fa-lock' : 'fa-unlock'}}"></div>
+            </div>
+            <div class="inline">{{project.taskPromotionDisabled ? 'Unlock' : 'Lock'}} Tasks</div>
+          </button>
+          <button ng-disabled="lockOrUnlockProjectInProgress" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProject()">
+            <div
+              class="project-icon red pull-left">
+              <div class="fa {{project.projectLocked ? 'fa-lock' : 'fa-unlock'}}"></div>
+            </div>
+            {{project.projectLocked ? 'Unlock Project' : 'Lock Project'}}
+          </button>
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
-                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled">
+                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || project.projectLocked">
             <div
               class="project-icon yellow darken-2 pull-left">
               <div class="md md-autorenew"></div>
@@ -51,37 +64,37 @@
             </div>
             Validate
             <span>Run validation against this project</span>
-          </button>
+          </button>          
           <button class="btn btn-border tooltips-bottom xlarge-size-tooltip "
                   ng-click="promote()"
-                  ng-disabled="project.branchState !== 'FORWARD' || project.projectPromotionDisabled || project.projectMrcmDisabled || !sacSignedOff()">
+                  ng-disabled="project.projectLocked || project.branchState !== 'FORWARD' || project.projectPromotionDisabled || project.projectMrcmDisabled || !sacSignedOff()">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
             </div>
-            <div ng-if="!project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote</div>
-            <div ng-if="project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
+            <div ng-if="!project.projectLocked && !project.projectPromotionDisabled && !project.projectMrcmDisabled" class="inline">Promote</div>
+            <div ng-if="project.projectLocked || project.projectPromotionDisabled || project.projectMrcmDisabled" class="inline">Project Promotion Disabled</div>
           </button>
         </div>
         <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectScheduledRebaseDisabled !== undefined">
-          <div><button class="btn btn-default transparent pull-right no-padding"          
+          <div><button class="btn btn-default transparent pull-right no-padding"
             ng-class="[{'md-check-box' : !project.projectScheduledRebaseDisabled}, {'md-check-box-outline-blank' : project.projectScheduledRebaseDisabled}]"
             ng-click="toggleProjectScheduledRebase()" />
-          </div>     
+          </div>
           <div><p class="pull-right">Automated rebase enabled</p></div>
         </div>
         <div class="col-md-12 p-t-10 p-r-10 sca-scheduled-rebase" ng-if="project.projectDroolsValidationDisabled !== undefined" style="margin-top: 15px; margin-bottom: 15px;">
-          <div><button class="btn btn-default transparent pull-right no-padding"             
+          <div><button class="btn btn-default transparent pull-right no-padding"
             ng-disabled="!userRoles.includes('ADMIN')"
             ng-class="[{'md-check-box' : !project.projectDroolsValidationDisabled}, {'md-check-box-outline-blank' : project.projectDroolsValidationDisabled}]"
             ng-click="toggleProjectDroolsValidation()" />
-          </div>     
+          </div>
           <div><p class="pull-right">Drools validation in RVF enabled</p></div>
         </div>
-      </div>      
+      </div>
 </div>
     <div class="row project-page">
-        
+
       <!-- Acceptance Criteria -->
       <div class="card ">
         <div class="card-header">
@@ -117,7 +130,7 @@
                           <div style="margin-top: 12px; font-size: 14px;">
                               {{criteria.label}}
                           </div>
-                      </div>                      
+                      </div>
               </div>
               <div class="col-md-8">
                       <div class="row" style="display:inline-flex; width:100%;">
@@ -133,7 +146,7 @@
                               <div ng-if="!criteria.complete && !userRoles.includes(criteria.requiredRole)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:28px; padding:10px; margin-left: -1px;"></div>
                               <div style="margin-top: 12px; font-size: 14px;">
                                   <span ng-if="!criteria.reportName">{{criteria.label}}</span>
-                                  <a ng-if="criteria.reportName" href="{{'/reporting/' + branch + '?report=' + criteria.reportName}}" target="_blank">{{criteria.label}}</a>                              
+                                  <a ng-if="criteria.reportName" href="{{'/reporting/' + branch + '?report=' + criteria.reportName}}" target="_blank">{{criteria.label}}</a>
                               </div>
                           </div>
                       </div>
@@ -145,7 +158,7 @@
                               <div ng-if="!criteria.complete && !userRoles.includes(criteria.requiredRole)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:28px; padding:10px; margin-left: -1px;"></div>
                               <div style="margin-top: 12px; font-size: 14px;">
                                   <span ng-if="!criteria.reportName">{{criteria.label}}</span>
-                                  <a ng-if="criteria.reportName" href="{{'/reporting/' + branch + '?report=' + criteria.reportName}}" target="_blank">{{criteria.label}}</a>                              
+                                  <a ng-if="criteria.reportName" href="{{'/reporting/' + branch + '?report=' + criteria.reportName}}" target="_blank">{{criteria.label}}</a>
                               </div>
                           </div>
                       </div>
@@ -162,13 +175,13 @@
                       <div class="row" style="display:inline-flex; width:100%;">
                           <div class="fa fa-info pull-right" style="color: #fbc02d; font-size:28px; padding:10px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
-                              Mapping Estimate: 12 days. 
+                              Mapping Estimate: 12 days.
                           </div>
                       </div>
                       <div class="row" style="display:inline-flex; width:100%;">
                           <div class="fa fa-info pull-right" style="color: #fbc02d; font-size:28px; padding:10px;"></div>
                           <div style="margin-top: 12px; font-size: 14px;">
-                              Component Changes: 387. 
+                              Component Changes: 387.
                           </div>
                       </div>
 -->
@@ -213,7 +226,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="!project.validationStatus"                    
+            <button ng-disabled="!project.validationStatus"
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !validationCollapsed, 'md-keyboard-arrow-right' : validationCollapsed}]">
@@ -226,7 +239,7 @@
             <div class="clearfix"></div>
           </div>
         </div>
-        
+
         <div ng-show="!validationCollapsed">
           <div class="card-content clearfix">
             <div validation validation-container="validationContainer" branch="branch"
@@ -316,7 +329,7 @@
                           {indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
                           {indicator_blue : task.latestValidationStatus === 'QUEUED'},
                           {indicator_blue : task.latestValidationStatus === 'RUNNING'},
-                          {indicator_red : task.latestValidationStatus === 'FAILED'},                         
+                          {indicator_red : task.latestValidationStatus === 'FAILED'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'},
                           {indicator_grey : task.latestValidationStatus === 'STALE'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
@@ -335,7 +348,7 @@
 
         </div>
       </div>
-        
+
 <!--
       <div class="card ">
         <div class="card-header">
@@ -382,7 +395,7 @@
         </div>
       </div>
 -->
-    
+
       <div class="card" ng-if="!releaseNotesDisabled">
         <div class="card-header">
           <div class="card-title">
@@ -415,16 +428,16 @@
             <div class="card-content clearfix">
                 <div class="row task-details project-main-buttons">
                     <div ng-repeat="lineItem in lineItems | orderBy : 'title'"class="col-md-3">
-                    <button ng-click="openLineItemModal(lineItem.id)" class="btn btn-border editingtask" style="color: #666"> 
+                    <button ng-click="openLineItemModal(lineItem.id)" class="btn btn-border editingtask" style="color: #666">
                         <span class="md fa-sca fa-clipboard iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{lineItem.title}}</span> 
+font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{lineItem.title}}</span>
                     </button>
                     </div>
                 </div>
             </div>
         </div>
       </div>
-        
+
       <div class="card " ng-show="!$root.managedServiceUser && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))">
         <div class="card-header">
           <div class="card-title">
@@ -448,17 +461,17 @@ font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">{{lineIte
             <div class="card-content clearfix">
                 <div class="row task-details project-main-buttons">
                     <div class="col-md-3">
-                        <button ng-click="refsetUpdate('Update SEP Refsets')" class="btn btn-border cyan darken-1 editingtask"> 
+                        <button ng-click="refsetUpdate('Update SEP Refsets')" class="btn btn-border cyan darken-1 editingtask">
                             <span class="md fa-sca fa-edit cyan darken-2 iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update SEP Refsets</span> 
+    font-size: 22px; padding: 8px 13px;"></span> <span class="button-link">Update SEP Refsets</span>
                         </button>
                     </div>
                     <div class="col-md-1">
                     </div>
                     <div class="col-md-3">
-                        <button ng-click="refsetUpdate('Update Lateralizable Refset')" class="btn btn-border green darken-1 editingtask"> 
+                        <button ng-click="refsetUpdate('Update Lateralizable Refset')" class="btn btn-border green darken-1 editingtask">
                             <span class="md fa-sca fa-edit iconbase" style="border-radius: 4px 0 0 4px; height: 46px;
-    font-size: 22px; padding: 8px 13px; background-color: #2d7130"></span> <span class="button-link">Update Lateralizable Refset</span> 
+    font-size: 22px; padding: 8px 13px; background-color: #2d7130"></span> <span class="button-link">Update Lateralizable Refset</span>
                         </button>
                     </div>
                     <div class="col-md-2">

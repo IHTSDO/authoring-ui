@@ -2,7 +2,7 @@
   <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right dash-tables " ng-show="codeSystem">
+  <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right dash-tables code-system" ng-show="codeSystem">
 
     <div class="page-header row p-b-5">
       <div class="col-md-4 no-padding">
@@ -15,10 +15,29 @@
         <div class="col-md-12 no-padding" ng-if="codeSystem.dependantVersionEffectiveTime">
           <p class="p-l-15 m-b-0 promotion-box">Current Dependency Release: {{codeSystem.dependantVersionEffectiveTime}}</p>
         </div>
+        <div class="col-md-12 no-padding">
+          <p class="p-l-15 m-b-0 promotion-box">View Metadata: <a href="javascript:void(0);" ng-click="viewCodeSystemMetadata()"><i class="md md-launch"></i></a></p>
+        </div>
       </div>
       <div class="col-md-8 project-main-buttons p-l-10 p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
-          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && userRoles.includes('ADMIN')" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="upgrade()"
+          <button ng-disabled="lockOrUnlockProjectsInProgress" ng-if="codeSystem && projects.length != 0" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProjects()"
+            >
+            <div
+              class="project-icon red pull-left">
+              <div class="fa {{isProjectLocked() ? 'fa-lock' : 'fa-unlock'}}"></div>
+            </div>
+            {{isProjectLocked() ? 'Unlock Projects' : 'Lock Projects'}}
+          </button>
+          <button ng-if="codeSystem && userRoles.includes('ADMIN')" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="startNewAuthoringCycle()"
+            >
+            <div
+              class="project-icon pink pull-left">
+              <div class="md md-new-releases"></div>
+            </div>
+            New Authoring Cycle
+          </button>
+          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="upgrade()"
             ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion">
             <div
               class="project-icon amber pull-left">
@@ -127,7 +146,13 @@
         <div ng-show="!dailyBuildValidationCollapsed">
           <div class="card-content clearfix">
             <div validation validation-container="dailyBuildValidationContainer" branch="branch"
-             is-code-system="true" allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" allow-whitelist-error="{{userRoles.includes('ADMIN')}}"  editable="true" hide-exceptions="true" raise-jira-tickets-disabled="true"></div>
+             is-code-system="true"
+             allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}"
+             allow-whitelist-error="{{userRoles.includes('ADMIN')}}"
+             editable="true"
+             hide-exceptions="true"
+             raise-jira-tickets-disabled="true"
+             allow-download-daily-build-package="true"></div>
           </div>
         </div>
       </div>
@@ -181,17 +206,19 @@
           </div>
         </div>
 
-        <div class="table-responsive white m-b-40" ng-show="!projectsCollapsed">
+        <div class="table-responsive white m-b-40 project-list" ng-show="!projectsCollapsed">
 
           <table ng-table="projectTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data" class="min-table-row">
-
+              <td data-title="''" style="padding-left: 8px;">
+                <i ng-if="project.projectLocked" class="red-text fa fa-lock"></i>
+              </td>
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'title'" filter="{ 'title': 'text' }">
                 <a class="tooltips-right"
                    ng-href="#/project/{{project.key}}/"> {{project.title}}<span>Open Project</span></a>
               </td>
-               <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
+               <td header-title="'Click to sort'" data-title="'Project Key'" sortable="'key'" filter="{ 'key': 'text' }">
                 {{project.key}}
               </td>
               <td header-title="'Click to sort'" data-title="'Project Lead'" sortable="'authorKey'" filter="{ 'projectLead.displayName': 'text' }">

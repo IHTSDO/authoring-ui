@@ -418,7 +418,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     myData = scope.feedbackContainer.review.conceptsClassified;
                   }
-                  
+
                   // filter based on presence of feedback if requested
                   if (scope.viewConceptsMode !== 'All concepts') {
                     var newData = [];
@@ -475,7 +475,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     myData = scope.feedbackContainer.review.conceptsReviewed;
                   }
-                  
+
                   // filter based on presence of feedback if requested
                   if (scope.viewConceptsMode !== 'All concepts') {
                     var newData = [];
@@ -689,37 +689,34 @@ angular.module('singleConceptAuthoringApp')
             return str;
           }
 
-          function updateReviewedListUiState() {
-            var conceptIds = [];
-            angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
-              conceptIds.push(concept.conceptId);
-            });
-            scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
-          }
-
           // watch for notification of updated concepts from conceptEdit
           // directive
           scope.$on('conceptEdit.conceptChanged', function (event, data) {
 
             // ignore if concepts arrays are not declared (not initialized)
-            if (!scope.feedbackContainer || !scope.feedbackContainer.review.conceptsResolved || !scope.feedbackContainer.review.conceptsToResolve) {
+            if (!scope.feedbackContainer || !scope.feedbackContainer.review.conceptsReviewed || !scope.feedbackContainer.review.conceptsToReview) {
               return;
             }
 
             // cycle over resolved list
-            for (var i = 0; i < scope.feedbackContainer.review.conceptsResolved.length; i++) {
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsReviewed.length; i++) {
 
               // declaration for convenience
-              var concept = scope.feedbackContainer.review.conceptsResolved[i];
+              var concept = scope.feedbackContainer.review.conceptsReviewed[i];
 
               // if this concept is present, move it from Resolved to To Resolve
               if (concept.conceptId === data.conceptId) {
-                scope.feedbackContainer.review.conceptsResolved.splice(i);
-                scope.feedbackContainer.review.conceptsToResolve.push(concept);
+                scope.feedbackContainer.review.conceptsReviewed.splice(i);
+                scope.feedbackContainer.review.conceptsToReview.push(concept);
+                scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+                  if (response) {
+                    if (response.indexOf(data.conceptI) > -1) {
+                      response.splice(response.indexOf(data.conceptId), 1);
+                    }
+                    scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', response);
+                  }
+                });
               }
-
-              // update the ui state
-              updateReviewedListUiState();
             }
           });
 
@@ -733,31 +730,43 @@ angular.module('singleConceptAuthoringApp')
           };
 
           // move item from ToReview to Reviewed
-          scope.addToReviewed = function (item, stopUiStateUpdate, itemList) {
-            console.log(itemList);
-            if (itemList) {
+          scope.addToReviewed = function (items) {
+            if (!Array.isArray(items)) {
+              var cloned = angular.copy(items);
+              items = [];
+              items.push(cloned);
+            }
+            if (items.length === 0) return;
+
+            if (items.length > 1) {
               notificationService.sendMessage('Multiple concepts marked as approved.', 5000, null);
-              angular.forEach(itemList, function (item) {
-                scope.moveItemToReviewed(item);
-              });
-
+            } else {
+              notificationService.sendMessage('Concept: ' + items[0].term + ' marked as approved.', 5000, null);
             }
-            else {
-              notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
+
+            angular.forEach(items, function (item) {
               scope.moveItemToReviewed(item);
-            }
-
+            });
+            scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+              if (response) {
+                angular.forEach(items, function (item) {
+                  if (response.indexOf(item.conceptId) < 0) {
+                    response.push(item.conceptId);
+                  }
+                });
+                scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', response);
+              } else {
+                var conceptIds = [];
+                angular.forEach(items, function (item) {
+                  conceptIds.push(item.conceptId);
+                });
+                scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
+              }
+            });
 
             scope.conceptsToReviewTableParams.reload();
             scope.conceptsReviewedTableParams.reload();
             scope.conceptsClassifiedTableParams.reload();
-
-
-            // if stop request not indicated (or not supplied), update ui state
-            if (!stopUiStateUpdate) {
-              updateReviewedListUiState();
-            }
-
           };
 
           scope.conceptExistsInToReviewList = function (concept) {
@@ -958,9 +967,9 @@ angular.module('singleConceptAuthoringApp')
               var reviewConcept = scope.feedbackContainer.review.conceptsToReview[i];
               if (concept.conceptId === reviewConcept.conceptId) {
 
-                // moove to reviewed list
+                // move to reviewed list
                 reviewConcept.viewed = false
-                scope.addToReviewed(reviewConcept,true);
+                scope.addToReviewed(reviewConcept);
 
                 // remove from viewed concepts list
                 for (var i = 0; i < scope.viewedConcepts.length; i++) {
@@ -970,7 +979,6 @@ angular.module('singleConceptAuthoringApp')
                   }
                 }
 
-                updateReviewedListUiState();
                 break;
               }
             }
@@ -1043,8 +1051,14 @@ angular.module('singleConceptAuthoringApp')
             return scope.deletedConceptIds.includes(conceptId);
           }
           // move item from Reviewed to ToReview
-          scope.returnToReview = function (item, stopUiStateUpdate) {
+          scope.returnToReview = function (items) {
             if (sendingConceptToReview) return;
+
+            if (!Array.isArray(items)) {
+              var cloned = angular.copy(items);
+              items = [];
+              items.push(cloned);
+            }
 
             sendingConceptToReview = true;
 
@@ -1055,21 +1069,30 @@ angular.module('singleConceptAuthoringApp')
                 scope.changeReviewStatus(scope.reviewComplete);
                 scope.reviewComplete = false;
               }
-              item.selected = false;
-              scope.feedbackContainer.review.conceptsToReview.push(item);
-              var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
-                return x.conceptId;
-              }).indexOf(item.conceptId);
-              scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
+              angular.forEach(items, function (item) {
+                item.selected = false;
+                scope.feedbackContainer.review.conceptsToReview.push(item);
+                var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
+                  return x.conceptId;
+                }).indexOf(item.conceptId);
+                scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
+              });
+
               scope.conceptsReviewedTableParams.reload();
               scope.conceptsToReviewTableParams.reload();
               scope.conceptsClassifiedTableParams.reload();
               sendingConceptToReview = false;
 
-              // if stop request not indicated (or not supplied), update ui state
-              if (!stopUiStateUpdate) {
-                updateReviewedListUiState();
-              }
+              scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+                if (response) {
+                  angular.forEach(items, function (item) {
+                    if (response.indexOf(item.conceptId) > -1) {
+                      response.splice(response.indexOf(item.conceptId), 1);
+                    }
+                  });
+                  scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', response);
+                }
+              });
             });
           };
 
@@ -1353,7 +1376,7 @@ angular.module('singleConceptAuthoringApp')
                   itemList.push(item);
                 }
               });
-              scope.addToReviewed({}, true, itemList);
+              scope.addToReviewed(itemList);
               if(scope.booleanObj.checkedToReview) {
                 scope.booleanObj.checkedToReview = false;
               }
@@ -1361,16 +1384,16 @@ angular.module('singleConceptAuthoringApp')
                 scope.$broadcast('stopEditing', {'concept': item});
               });
             } else if (actionTab === 2) {
+              var items = []
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true) {
-
-                  scope.returnToReview(item, true);
+                  items.push(item);
                 }
               });
+              if (items.length !== 0) {
+                scope.returnToReview(items);
+              }
             }
-
-            // update the ui state
-            updateReviewedListUiState();
           };
 
           scope.approveAllConcepts = function() {
@@ -1381,11 +1404,9 @@ angular.module('singleConceptAuthoringApp')
               itemList.push(item);
             });
 
-            scope.addToReviewed({}, true, itemList);
+            scope.addToReviewed(itemList);
 
             scope.viewedConcepts = [];
-
-            updateReviewedListUiState();
           };
 
           // function called when dropping concept
@@ -1748,11 +1769,15 @@ angular.module('singleConceptAuthoringApp')
                 // been changed since  the review was created they are moved
                 // back to 'To Review'
                 if (scope.role === 'REVIEWER') {
+                  var items = []
                   angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
                     if (item.modifiedSinceReview === true) {
-                      scope.returnToReview(item);
+                      items.push(item);
                     }
                   });
+                  if (items.length !== 0) {
+                    scope.returnToReview(items);
+                  }
                 }
 
                 // on load, initialize tables -- all subsequent reloads are

@@ -59,6 +59,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       $scope.dailyBuildValidationCollapsed = true;
       $scope.exceptionListCollapsed = true;
       $scope.classificationCollapsed = $location.search().expandClassification ? !$location.search().expandClassification : true;
+      $scope.lockOrUnlockProjectsInProgress = false;
 
       hotkeys.bindTo($scope)
       .add({
@@ -89,6 +90,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   }
                   $scope.codeSystem = codeSystem;
 
+                  // set the extension metadata for use by other elements
+                  metadataService.setExtensionMetadata(response.metadata);
+
                   // check wheter or not the latest dependant version was upgraded
                   terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
                     if (response.data.items && response.data.items.length > 0) {
@@ -101,16 +105,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     }
                   });
 
-                  // get the project task list
-                  scaService.getProjects().then(function (projects) {
-                    angular.forEach(projects, function (project) {
-                      let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
-                      if(path === $scope.codeSystem.branchPath){
-                          $scope.projects.push(project);
-                      }
-                    });
-                    $scope.projectTableParams.reload();
-                  });
+                  // get the project list
+                  reloadProjects();
 
                   // check if the EN-GB language refset presents
                   if (response.metadata && response.metadata.requiredLanguageRefsets) {
@@ -161,6 +157,70 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               });
           });
 
+      };
+
+      $scope.isProjectLocked = function() {
+        for(let i = 0; i < $scope.projects.length; i++) {
+          if ($scope.projects[i].projectLocked) {
+            return true;
+          }
+        }
+
+        return false;
+      };
+
+      $scope.toggleLockProjects = function() {
+        if ($scope.isProjectLocked()) {
+          modalService.confirm('Do you really want to unlock all projects against '+ $scope.codeSystem.name +'?').then(function () {
+            notificationService.sendMessage('Unlocking projects...');
+            $scope.lockOrUnlockProjectsInProgress = true;
+            scaService.unlockProjectsForCodeSystem($scope.codeSystem.shortName).then(function() {
+              reloadProjects().then(function() {
+                $scope.lockOrUnlockProjectsInProgress = false;
+                notificationService.sendMessage('Successfully unlocked projects');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectsInProgress = false;
+              notificationService.sendError('Error unlocking projects. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        } else {
+          modalService.confirm('This action will disable promotion and rebase on all projects on the '+ $scope.codeSystem.name +'. Do you want to proceed?', 'width: 141%; margin-left: -85px;').then(function () {
+            notificationService.sendMessage('Locking projects...');
+            $scope.lockOrUnlockProjectsInProgress = true;
+            scaService.lockProjectsForCodeSystem($scope.codeSystem.shortName).then(function() {
+              reloadProjects().then(function() {
+                $scope.lockOrUnlockProjectsInProgress = false;
+                notificationService.sendMessage('Successfully locked projects');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectsInProgress = false;
+              notificationService.sendError('Error locking projects. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        }
+      };
+
+      function reloadProjects() {
+        var deferred = $q.defer();
+        // get the project task list
+        scaService.getProjects().then(function (projects) {
+          $scope.projects = [];
+          angular.forEach(projects, function (project) {
+            let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
+            if(path === $scope.codeSystem.branchPath){
+                $scope.projects.push(project);
+            }
+          });
+          $scope.projectTableParams.reload();
+          deferred.resolve();
+        });
+
+        return deferred.promise;
       }
 
       $scope.$on('reloadCodeSystem', function (event, data) {
@@ -186,6 +246,23 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
         modalInstance.result.then(function () {
         }, function () {
+        });
+      };
+
+      $scope.startNewAuthoringCycle = function() {
+        notificationService.clear();
+        modalService.confirm('Do you really want to start a new Authoring cycle for '+ $scope.codeSystem.name +'? \n\nThis should only be performed if you are completing Post Release Tasks', 'white-space: pre-line;width: 125%;').then(function () {
+          notificationService.sendMessage('Starting new Authoring cycle...');
+          terminologyServerService.startNewAuthoringCycle($scope.codeSystem.shortName).then(function() {
+            notificationService.clear();
+            terminologyServerService.getEndpoint().then(function(endpoint) {
+              modalService.message('Success', 'Metadata for this codesystem have been updated. Click <a href="' + endpoint + 'branches/' + $scope.codeSystem.branchPath + '/metadata?includeInheritedMetadata=true" target="_blank">here</a> to review.');
+            });
+          }, function(error) {
+            notificationService.sendError('Error starting new Authoring cycle: ' + error);
+          })
+        }, function () {
+          // do nothing
         });
       };
 
@@ -310,6 +387,12 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.viewProject = function (project) {
         $location.url('project/' + project.key);
+      };
+
+      $scope.viewCodeSystemMetadata = function () {
+        return terminologyServerService.getEndpoint().then(function(endpoint) {
+          window.open(endpoint + 'branches/' + $scope.codeSystem.branchPath + '/metadata?includeInheritedMetadata=true', '_blank');
+        });
       };
 
       function waitForCodeSystemUpgradeToComplete(jobId) {

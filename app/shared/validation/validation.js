@@ -39,7 +39,9 @@ angular.module('singleConceptAuthoringApp')
 
           allowWhitelistWarning: '@?',
 
-          allowWhitelistError: '@?'
+          allowWhitelistError: '@?',
+
+          allowDownloadDailyBuildPackage: '@?'
 
         },
         templateUrl: 'shared/validation/validation.html',
@@ -57,6 +59,7 @@ angular.module('singleConceptAuthoringApp')
           scope.viewFullListException = false;
           scope.exceptionLoading = false;
           scope.issueType = {type: ''};
+          scope.allowDownloadDailyBuildPackage = attrs.allowDownloadDailyBuildPackage === 'true';
           var isRaiseJiraTicketsForceDisabled = attrs.raiseJiraTicketsDisabled === 'true';
 
           // highlighting map
@@ -178,7 +181,7 @@ angular.module('singleConceptAuthoringApp')
                     if(assertionFailed.failureCount !== -1){
                         var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
 
-                          // if viewing task report and instance is not user modified, return false                          
+                          // if viewing task report and instance is not user modified, return false
                           if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
                             return false;
                           }
@@ -498,6 +501,32 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.dailyBuildPackageDownloading = false;
+          scope.downloadDailyBuildPackage = function() {
+            scope.dailyBuildPackageDownloading = true;
+            scaService.downloadDailyBuildPakcage($routeParams.codeSystem).then(function(response) {
+              var filename = $routeParams.codeSystem + '-';
+              var disposition = response.headers('Content-Disposition');
+              if (disposition && disposition.indexOf('attachment') !== -1) {
+                  var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                  var matches = filenameRegex.exec(disposition);
+                  if (matches != null && matches[1]) {
+                    filename += matches[1].replace(/['"]/g, '');
+                  }
+              }
+              scope.dlcDialog(response.data, filename, 'application/zip');
+              scope.dailyBuildPackageDownloading = false;
+            }, function (error) {
+              if (error.data && error.data.message) {
+                notificationService.sendError(error.data.message);
+              }
+              if (error.status && error.status === 404 ) {
+                notificationService.sendError('No daily build package found for code system ' + $routeParams.codeSystem + '.');
+              }
+              scope.dailyBuildPackageDownloading = false;
+            });
+          };
+
           scope.toggleViewFullListExceptions = function () {
             //scope.viewFullListException = !scope.viewFullListException;
             scope.allWhitelistItems = [];
@@ -767,7 +796,7 @@ angular.module('singleConceptAuthoringApp')
                   });
               }
             });
-          }            
+          }
 
           function initFailures() {
 
@@ -945,7 +974,7 @@ angular.module('singleConceptAuthoringApp')
                   conceptFsn : 'FSN'
                 });
                 var fileName = 'validation_' + (new Date()).getTime();
-                scope.dlcDialog(convertToCSV(objArray), fileName);
+                scope.dlcDialog(convertToCSV(objArray), fileName, 'text/tab-separated-values');
               });
               }
             });
@@ -970,15 +999,15 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // creates element for dialog download of classification data
-          scope.dlcDialog = (function (data, fileName) {
+          scope.dlcDialog = (function (data, fileName, fileType) {
 
             // create the hidden element
             var a = document.createElement('a');
             document.body.appendChild(a);
 
-            return function (data, fileName) {
+            return function (data, fileName, fileType) {
               var
-              blob = new Blob([data], {type: 'text/tab-separated-values'}),
+              blob = new Blob([data], {type: fileType}),
               url = window.URL.createObjectURL(blob);
               a.href = url;
               a.download = fileName;
