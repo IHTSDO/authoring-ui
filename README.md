@@ -1,11 +1,4 @@
-# Authoring UI by SNOMED International
-
-![Last Commit](https://img.shields.io/github/last-commit/ihtsdo/authoring-ui/develop)
-![Issues](https://img.shields.io/github/issues/ihtsdo/authoring-ui)
-![Contributors](https://img.shields.io/github/contributors/ihtsdo/authoring-ui)
-
-![license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
-![GitHub commit activity the past year](https://img.shields.io/github/commit-activity/m/ihtsdo/authoring-ui/develop)
+# angular-app-template
 
 This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
 version 0.11.1.
@@ -28,14 +21,14 @@ Run `gem install compass` to install the Compass SASS compiler.
 
 ## App Structure
 
-The template application is based on a 'Folder per Feature' formula. Each significant component within the application should have it's own folder within the 'components' section. This folder should contain a html template, javascript file (containing it's module definition, controller, config and any feature specific factories or services), and the feature's Karma unit test (via Jasmine. File name should be appended with .spec.js).
+The template application is based on a 'Folder per Feature' formula. Each significant component within the application should have it's own folder within the 'components' section. This folder should contain a html template, javascript file (containing it's module definition, controller, config and any feature specific factories or services), and the feature's Karma unit test (via Jasmine. File name should be appended with .spec.js). 
 
-Any modules, services, directives, filters etc should be included within the /shared directory. Here they will be picked up automatically by the compiler.
+Any modules, services, directives, filters etc should be included within the /shared directory. Here they will be picked up automatically by the compiler. 
 
 ## Additional Configuration
 
 
-In order to obtain api-endpoint information within the local environment and avoid CORS errors when accessing SNOWOWL and IMS endpoints a configuration similar to the following (very basic) should be used:
+In order to obtain api-endpoint information within the local environment and avoid CORS errors when accessing SNOWOWL and IMS endpoints a configuration similar to the following (very basic) should be used: 
 
 ```
 user 'details here';
@@ -46,47 +39,43 @@ events {
 }
  
 http {
-    include    mime.types;
-    
+	include    mime.types;
     server {
-        listen      8080;
-        server_name localhost;
+		listen		8080;
+		server_name	localhost;
  
-        location / {
-            root /FileLocation/authoring-ui/dist;
-        }
-        
+		location / {
+			root /FileLocation/authoring-ui/dist;
+		}
         location /config {
-            alias /FileLocation/authoring-ui;
-        }
-        
-        location /snowstorm {
-            proxy_pass https://dev-authoring.ihtsdotools.org/snowstorm;
-        }
+			alias /FileLocation/authoring-ui;
+		}
+ 
+		location /snowowl {
+			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
+		}
         
         location /auth {
-            proxy_pass https://dev-ims.ihtsdotools.org/api/account;
-        }
-    }
-    
-    server {
+			proxy_pass https://dev-ims.ihtsdotools.org/api/account;
+		}
+	}
+	server {
         listen      8081;
         server_name localhost;
-        
+
         location / {
             proxy_pass http://127.0.0.1:9000;
         }
-        
         location /config {
             proxy_pass https://dev-authoring.ihtsdotools.org/config;
         }
         
-        location /snowstorm/ihtsdo-sca {
-            proxy_pass https://dev-authoring.ihtsdotools.org/snowstorm/ihtsdo-sca;
+        location /snowowl/ihtsdo-sca {
+            proxy_pass https://dev-authoring.ihtsdotools.org/snowowl/ihtsdo-sca;
         }
-        
-        location /snowstorm {
-            proxy_pass https://dev-authoring.ihtsdotools.org/snowstorm;
+
+        location /snowowl {
+            proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
         }
         
         location /authoring-services {
@@ -100,18 +89,18 @@ http {
         location /spellcheck-service {
             proxy_pass https://dev-authoring.ihtsdotools.org/spellcheck-service;
         }
-        
+
         location /auth {
             proxy_pass https://dev-ims.ihtsdotools.org/api/account;
             proxy_set_header Accept "application/json";
         }
-        
+
         location /traceability-service {
             proxy_pass https://dev-authoring.ihtsdotools.org/traceability-service;
         }
     }
 }
 ```
-In order to access these location after running nginx you should use the URL 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on running 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server).
+In order to access these location after running nginx you should use the URL 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on running 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
 
 These urls are used so that the browser picks up the authentication cookies used by IMS correctly. Using localhost instead will leave the developer unable to log in. 
