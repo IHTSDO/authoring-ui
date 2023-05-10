@@ -256,6 +256,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
                   notificationService.sendError(conflictMessage);
                   $scope.branchLocked = false;
+                  $scope.promoting = false;
                 });
               }
             }, function (error) {
@@ -290,6 +291,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
                       notificationService.sendError(conflictMessage);
                       $scope.branchLocked = false;
+                      $scope.promoting = false;
                     });
                   }
                   if($scope.lineItems){

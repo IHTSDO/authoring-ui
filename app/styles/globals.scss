@@ -357,6 +357,29 @@ td select {
     right: 0px;
     top: 45px;
 }
+.upgrade-model .modal-body.scroll-if-height {    
+    overflow: auto;
+    padding-top: 0px;
+}
+.upgrade-model .modal-body .table > tbody > tr > td, 
+.upgrade-model .modal-body .table > tbody > tr > th {
+    padding: unset;
+  }
+@media (max-width: 1793px) {
+    .upgrade-model .modal-body.scroll-if-height {
+        max-height: 65vh;
+    }
+}
+@media (min-width: 1701px) {
+    .upgrade-model .modal-body.scroll-if-height {
+        max-height: 67vh;
+    }
+}
+@media (min-width: 1794px) {
+    .upgrade-model .modal-body.scroll-if-height {
+        max-height: 72vh;
+    }
+}
 .sac-modal .modal-body.scroll-if-height {
     max-height: 60vh; 
     overflow: auto;
@@ -541,4 +564,7 @@ h4.timeline-title::-webkit-scrollbar-corner{
 @keyframes spin {
     from { transform: rotate(0deg); }
     to {transform: rotate(359deg); }
+}
+.code-system .project-list table > thead > tr > th:first-child {
+    padding-left: 10px;
 }

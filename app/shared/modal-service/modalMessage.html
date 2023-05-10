@@ -7,7 +7,7 @@
     <div class="row p-b-10">
       <div class="col-md-1"></div>
       <div class="col-md-9">
-        <h4>{{message}}</h4>
+        <h4><div compile-html="message"></div></h4>
         <ul ng-show="messageList.length > 0">
           <li ng-repeat="entry in messageList">{{entry}}</li>
         </ul>

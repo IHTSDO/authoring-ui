@@ -11,7 +11,7 @@
             class="btn btn-default back-button"
             ng-if="isWhitelistEnabled">
             <i ng-if="savingExceptions" class="md-spin md-loop"></i>
-            {{!savingExceptions ? 'Add selected to Exceptions' : 'Adding selected to Exceptions'}}            
+            {{!savingExceptions ? 'Add selected to Exceptions' : 'Adding selected to Exceptions'}}
     </button>
   </script>
   <script type="text/ng-template" id="editheader.html">
@@ -38,6 +38,9 @@
               class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip offset-tooltip-left">
       <div>{{viewFullReport ? 'Show ' + (taskKey ? 'Task' : 'Project') + ' Report' : 'Show Full Report'}} </div>
       <span ng-if="viewFullReport">View only concepts modified in {{taskKey ? 'task' : 'project'}}</span> <span ng-if="!viewFullReport">View all validation errors in {{taskKey ? 'task' : 'project'}}</span> </button>
+      <button ng-if="isCodeSystem && allowDownloadDailyBuildPackage" ng-click="downloadDailyBuildPackage()" class="btn btn-default blue case-failures pull-right">
+        <div>{{dailyBuildPackageDownloading ? 'Downloading...' : 'Download Package'}}</div>
+      </button>
     </div>
   </div>
   <div class="validation-report report-table" ng-show="!isCollapsed && (validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE')">

@@ -41,6 +41,8 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.lineItems = [];
       $scope.globalLineItems = [];
       $scope.releaseNotesDisabled = true;
+      $scope.lockOrUnlockProjectInProgress = false;
+      $scope.lockOrUnlockTaskInProgress = false;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
@@ -87,7 +89,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-                    
+
           // detect code system for given branch
           const allCodeSystems = metadataService.getCodeSystems();
           if (allCodeSystems && allCodeSystems.length !== 0) {
@@ -139,7 +141,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // set the local project and branch for use by containers (classification/validation)
           $scope.project = response;
-          $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF ? response.metadata.enableDroolsInRVF !== 'true' : true;
+          $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF && response.metadata.enableDroolsInRVF === 'false' ? true : false;
           $scope.branch = response.branchPath;
 
           // last rebased time
@@ -186,7 +188,7 @@ angular.module('singleConceptAuthoringApp.project', [
               metadataService.setModuleName(response.conceptId, response.fsn);
             });
           }
-            
+
           $scope.releaseNotesDisabled = metadataService.isExtensionSet();
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
@@ -307,7 +309,7 @@ angular.module('singleConceptAuthoringApp.project', [
               });
           });
         };
-        
+
       $scope.openReleaseNotesConfigModal = function () {
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/releaseNotesConfig.html',
@@ -325,7 +327,7 @@ angular.module('singleConceptAuthoringApp.project', [
           modalInstance.result.then(function () {
           });
       };
-        
+
       $scope.openLineItemModal = function (id, all) {
           let item = {};
           let items = $scope.lineItems;
@@ -347,7 +349,7 @@ angular.module('singleConceptAuthoringApp.project', [
                 angular.forEach(lineItem.children, function (child) {
                   if ($scope.lineItems.filter(function(item) {return item.title === child.title}).length == 0) {
                     globalItems.push(child);
-                  }                    
+                  }
                 });
             }
           });
@@ -396,7 +398,7 @@ angular.module('singleConceptAuthoringApp.project', [
               });
           });
       };
-        
+
       $scope.refsetUpdate = function (name) {
           modalService.confirm('This will update the relevant refset/s, create a new task and redirect you to it.  Continue?').then(function () {
               templateService.refsetUpdate($scope.project.key, name).then(function (response) {
@@ -405,6 +407,45 @@ angular.module('singleConceptAuthoringApp.project', [
             }, function () {
               // do nothing
             });
+      };
+
+      // lock/unlock project
+      $scope.toggleLockProject = function() {
+        if ($scope.project.projectLocked) {
+          modalService.confirm('Do you really want to unlock this project?').then(function () {
+            notificationService.sendMessage('Unlocking project...');
+            $scope.lockOrUnlockProjectInProgress = true;
+            scaService.unlockProject($routeParams.projectKey).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project.projectLocked = response.projectLocked;
+                $scope.lockOrUnlockProjectInProgress = false;
+                notificationService.sendMessage('Successfully unlocked project');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectInProgress = false;
+              notificationService.sendError('Error unlocking project. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        } else {
+          modalService.confirm('This action will disable promotion and rebase on this project. Do you want to proceed?', 'width: 125%;').then(function () {
+            notificationService.sendMessage('Locking project...');
+            $scope.lockOrUnlockProjectInProgress = true;
+            scaService.lockProject($routeParams.projectKey).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project.projectLocked = response.projectLocked;
+                $scope.lockOrUnlockProjectInProgress = false;
+                notificationService.sendMessage('Successfully locked project');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockProjectInProgress = false;
+              notificationService.sendError('Error locking project. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        }
       }
 
       // classify the project
@@ -735,7 +776,45 @@ angular.module('singleConceptAuthoringApp.project', [
         return '';
       };
 
-       $scope.toggleProjectScheduledRebase = function () {
+      $scope.toggleTaskPromotion = function () {
+        if ($scope.project.taskPromotionDisabled) {
+          modalService.confirm('This action will enable task promotion. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Enabling task promotion...');
+            $scope.lockOrUnlockTaskInProgress = true;
+            scaService.updateProject($scope.project.key, {'taskPromotionDisabled': false}).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project.taskPromotionDisabled = response.taskPromotionDisabled;
+                $scope.lockOrUnlockTaskInProgress = false;
+                notificationService.sendMessage('Successfully enabled task promotion');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockTaskInProgress = false;
+              notificationService.sendError('Error enabling task promotion. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        } else {
+          modalService.confirm('This action will disable task promotion. Do you want to proceed?').then(function () {
+            notificationService.sendMessage('Disabling task promotion...');
+            $scope.lockOrUnlockTaskInProgress = true;
+            scaService.updateProject($scope.project.key, {'taskPromotionDisabled': true}).then(function() {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                $scope.project.taskPromotionDisabled = response.taskPromotionDisabled;
+                $scope.lockOrUnlockTaskInProgress = false;
+                notificationService.sendMessage('Successfully disabled task promotion');
+              });
+            }, function(error) {
+              $scope.lockOrUnlockTaskInProgress = false;
+              notificationService.sendError('Error disabling task promotion. Message : ' + (error.data ? error.data.message : error.message));
+            });
+          }, function () {
+            // do nothing
+          });
+        }        
+      };
+
+      $scope.toggleProjectScheduledRebase = function () {
         $scope.project.projectScheduledRebaseDisabled = !$scope.project.projectScheduledRebaseDisabled;
         notificationService.sendMessage('Updating Project Scheduled Rebase...');
         scaService.updateProject($scope.project.key, {'projectScheduledRebaseDisabled': $scope.project.projectScheduledRebaseDisabled}).then(function (response) {
