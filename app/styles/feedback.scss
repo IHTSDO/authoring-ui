@@ -310,7 +310,7 @@ section thead input {
     overflow-y: scroll;    
 }
 .feedback-chat p {
-    width: 100%;
+    width: 100% !important;
     float: left;
 }
 .feedback-chat::-webkit-scrollbar,
