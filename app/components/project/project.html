@@ -104,7 +104,7 @@
               ng-click="criteriaCollapsed = !criteriaCollapsed"
               type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : criteriaCollapsed, 'md-keyboard-arrow-down' : !criteriaCollapsed}]">
-              <span class="project-subtitle">Acceptance Criteria <i ng-if="userRoles.includes('PROJECT_MANAGER')" class="md md-settings f20" style="color: #00acc1" ng-click="openSACConfigModal(); $event.stopPropagation()"></i></span>
+              <span class="project-subtitle">Acceptance Criteria <i ng-if="userRoles.includes('PROJECT_LEAD')" class="md md-settings f20" style="color: #00acc1" ng-click="openSACConfigModal(); $event.stopPropagation()"></i></span>
             </button>
             <span class="project-icon pull-right"><span class="fa fa-tasks" style="font-size: 24px;
     text-align: center;

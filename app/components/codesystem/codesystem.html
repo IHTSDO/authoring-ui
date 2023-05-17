@@ -37,7 +37,7 @@
             </div>
             New Authoring Cycle
           </button>
-          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('PROJECT_LEAD'))" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="upgrade()"
+          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD'))" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="upgrade()"
             ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion">
             <div
               class="project-icon amber pull-left">

@@ -336,7 +336,7 @@ angular.module('singleConceptAuthoringApp.project', [
           if (all){
               readOnly = true;
           }
-          if(!$scope.userRoles.includes('PROJECT_MANAGER')) {
+          if(!$scope.userRoles.includes('PROJECT_LEAD')) {
              readOnly = true;
           }
           angular.forEach($scope.lineItems, function (lineItem) {
