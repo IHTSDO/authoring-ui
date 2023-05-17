@@ -1303,7 +1303,7 @@ angular.module('singleConceptAuthoringApp')
           // depending on current viewed tab
           scope.addMultipleToEdit = function (actionTab) {
             var conceptsToAdd = [];
-            scope.simultaneousFeedbackAdded = false;
+            scope.batchFeedback = false;
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
@@ -1845,7 +1845,8 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(concept.messages, function (message) {
                   // attach the concept name to the message for display when
                   // multiple concept feedbacks are viewed
-                  message.conceptName = concept.term;
+                  message.conceptTerm = concept.term;
+                  message.conceptId = concept.conceptId;
                   viewedFeedback.push(message);
                 });
 
@@ -1864,7 +1865,8 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(concept.messages, function (message) {
                   // attach the concept name to the message for display when
                   // multiple concept feedbacks are viewed
-                  message.conceptName = concept.term;
+                  message.conceptTerm = concept.term;
+                  message.conceptId = concept.conceptId;
                   viewedFeedback.push(message);
                 });
 
@@ -1885,7 +1887,8 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(concept.messages, function (message) {
                   // attach the concept name to the message for display when
                   // multiple concept feedbacks are viewed
-                  message.conceptName = concept.term;
+                  message.conceptTerm = concept.term;
+                  message.conceptId = concept.conceptId;
                   viewedFeedback.push(message);
                 });
 
@@ -1935,11 +1938,14 @@ angular.module('singleConceptAuthoringApp')
                 notificationService.clear();
               },
               function() {
+                if (concept.messages) {
+                  scope.selectConceptForFeedback(concept);
+                }
                 notificationService.sendMessage('The selected concept was created and deleted in this task, it cannot be loaded anymore.');
               }
             );
             } else {
-              scope.simultaneousFeedbackAdded = false;
+              scope.batchFeedback = false;
               if (actions && actions.length > 0) {
                 if (actions.indexOf('selectConceptForFeedback') >= 0) scope.selectConceptForFeedback(concept);
                 if (actions.indexOf('addToEdit') >= 0) scope.addToEdit(concept);
@@ -1972,7 +1978,7 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          scope.selectConceptForFeedback = function (concept, deletedConceptChecking) {
+          scope.selectConceptForFeedback = function (concept) {
             concept.read = true;
             //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
             scope.subjectConcepts = [concept];
@@ -1988,14 +1994,14 @@ angular.module('singleConceptAuthoringApp')
             });
 
             if ( scope.subjectConcepts.length === 0) {
-              scope.simultaneousFeedbackAdded = false ;
+              scope.batchFeedback = false ;
               notificationService.sendWarning('No concepts selected', 5000);
               return
             }
             if (scope.subjectConcepts.length === 1) {
               scope.selectConcept( scope.subjectConcepts[0], 'addToEdit');
             } else {
-              scope.simultaneousFeedbackAdded = true;
+              scope.batchFeedback = true;
               getViewedFeedback();
             }
           };

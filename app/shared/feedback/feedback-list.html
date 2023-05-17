@@ -188,7 +188,7 @@
                 ui-on-drop="dropConcept(concept, $data, actionTab)">
                 <span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span>
                 <div class="pull-left tooltips-bottom large-size-tooltip offset-tooltip-left normal-case" ng-if="isActiveDescriptionOnInactiveConcept(concept);"><i class="p-t-5 p-r-5 fa fa-exclamation-triangle" style="color: red;" aria-hidden="true"></i><span>An active description has been added to the inactive concept</span></div>
-                <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]" ng-click="selectConcept(concept)">{{concept.term? concept.term : 'Deleted concept'}} </div></td>
+                <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]" ng-click="selectConcept(concept)">{{concept.term? concept.term : 'Deleted concept (' + concept.conceptId + ')'}} </div></td>
             <!--Author Controls -->
             <td ng-if="role === 'AUTHOR'" class="  col-md-3"
                 data-title="'Read / Unread'" sortable="'read'"><div class="m-3 ">
@@ -300,7 +300,7 @@
                 ui-on-drop="dropConcept(concept, $data, actionTab)">
                 <span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span>
                 <div class="pull-left tooltips-bottom large-size-tooltip offset-tooltip-left normal-case" ng-if="isActiveDescriptionOnInactiveConcept(concept);"><i class="p-t-5 p-r-5 fa fa-exclamation-triangle" style="color: red;" aria-hidden="true"></i><span>An active description has been added to the inactive concept</span></div>
-                <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]">{{concept.term? concept.term : 'Deleted concept'}} </div></td>
+                <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]">{{concept.term ? concept.term : 'Deleted concept (' + concept.conceptId + ')'}} </div></td>
             <td class=" col-md-3"><div class="pull-right m-r-5 clear-position">
                 <button ng-show="concept.messages.length > 0"
                         class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 normal-case" ng-mouseover="setTooltipPosition($event);"
@@ -374,7 +374,7 @@
                   filter="{ 'term': 'text' }"
                   ui-draggable="true" drag="concept"
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                  ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept' : concept.term}} </span></td>
+                  ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept (' + concept.conceptId + ')' : concept.term}} </span></td>
               <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
                   class=" col-md-4 no-padding"><div class="pull-right pull-right-margin m-r-5 clear-position">
                   <button ng-show="concept.messages.length > 0"

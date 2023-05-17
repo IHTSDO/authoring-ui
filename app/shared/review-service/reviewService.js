@@ -413,25 +413,15 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       scaService.getReviewForTask(projectKey, taskKey).then(function (feedback) {
 
-        var getConceptsForReview = function (branch, idList, review, feedbackList) {
+        var joinTerms = function (branch, idProcessingBatch, review) {
           var deferred = $q.defer();
-          terminologyServerService.bulkRetrieveFullConcept(idList, branch, acceptLanguageValue).then(function (response) {
+          terminologyServerService.bulkRetrieveFullConcept(idProcessingBatch, branch, acceptLanguageValue).then(function (response) {
             angular.forEach(response, function (concept) {
               angular.forEach(review.concepts, function (reviewConcept) {
                 if (concept.conceptId === reviewConcept.conceptId) {
                   reviewConcept.active = concept.active;
-                  if (useFSN) {
-                    reviewConcept.term = concept.fsn;
-                  } else {
-                    reviewConcept.term = concept.pt;
-                  }
+                  reviewConcept.term = useFSN ? concept.fsn : concept.pt;
                   reviewConcept.descriptions = concept.descriptions;
-                  angular.forEach(feedbackList, function (feedback) {
-                    if (reviewConcept.conceptId === feedback.id) {
-                      reviewConcept.messages = feedback.messages;
-                      reviewConcept.viewDate = feedback.viewDate;
-                    }
-                  });
                 }
               });
             });
@@ -451,11 +441,21 @@ angular.module('singleConceptAuthoringApp')
           });
         });
 
-        var i, j, temparray, chunk = 50;
+        // join feedback  
+        angular.forEach(review.concepts, function (reviewConcept) {
+          angular.forEach(feedback, function (fb) {
+            if (reviewConcept.conceptId === fb.id) {
+              reviewConcept.messages = fb.messages;
+              reviewConcept.viewDate = fb.viewDate;
+            }
+          });
+        });
+
+        var i, j, idProcessingBatch, chunk = 50;
         var promises = [];
         for (i = 0, j = idList.length; i < j; i += chunk) {
-          temparray = idList.slice(i, i + chunk);
-          promises.push(getConceptsForReview(branch, temparray, review, feedback));            ;
+          idProcessingBatch = idList.slice(i, i + chunk);
+          promises.push(joinTerms(branch, idProcessingBatch, review));
         }
 
         // on resolution of all promises
