@@ -140,7 +140,7 @@
 
   <!-- models and concepts -->
   <div class="no-padding pull-right" ng-class="(view === 'edit-no-sidebar') ? ['col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'] : getLayoutWidths('modelsAndConcepts')">
-    <div ng-if="(viewedConcepts.length > 0 || subjectConcepts.length > 0) && !batchFeedback">
+    <div ng-if="(viewedConcepts.length > 0 || viewFeedbackOnly) && !batchFeedback">
       <div id="feedback-model-concept-view">
         <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts track by concept.conceptId" ng-class="[{'first' : $first}]">
           <div ng-class="getLayoutWidths('models')">
