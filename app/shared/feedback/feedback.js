@@ -1920,6 +1920,7 @@ angular.module('singleConceptAuthoringApp')
             if(disabledAction) {
               return;
             }
+            scope.viewFeedbackOnly = false;
             if(scope.isDeletedConcept(concept)) {
               // check if concept already exists in list
               for (var i = 0; i < scope.viewedConcepts.length; i++) {
@@ -1939,6 +1940,7 @@ angular.module('singleConceptAuthoringApp')
               },
               function() {
                 if (concept.messages) {
+                  scope.viewFeedbackOnly = true;
                   scope.selectConceptForFeedback(concept);
                 }
                 notificationService.sendMessage('The selected concept was created and deleted in this task, it cannot be loaded anymore.');
