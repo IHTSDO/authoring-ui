@@ -1,7 +1,7 @@
 angular.module('singleConceptAuthoringApp')
 
-  .directive('integrityCheck', ['$rootScope', 'ngTableParams', '$route', '$routeParams', '$filter',  'terminologyServerService', 'notificationService',
-    function ($rootScope, NgTableParams, $route, $routeParams, $filter, terminologyServerService, notificationService) {
+  .directive('integrityCheck', ['$rootScope', 'ngTableParams', '$route', '$routeParams', '$filter', '$q',  'terminologyServerService', 'notificationService',
+    function ($rootScope, NgTableParams, $route, $routeParams, $filter, $q, terminologyServerService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -19,8 +19,8 @@ angular.module('singleConceptAuthoringApp')
           } else {
             $rootScope.pageTitle = 'Upgrade/' + $routeParams.projectKey;
           }
-          
-          
+
+
           scope.concepts = [];
           scope.selectedConcept = {};
           scope.selectedConcept.priorConcept = null;
@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.setActiveTab = function (tabIndex) {
             scope.actionTab = tabIndex;
-          };         
+          };
 
           scope.integrityCheckTableParams = new NgTableParams({
               page: 1,
@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp')
                   params.total(scope.concepts.length);
                   scope.concepts = params.sorting() ? $filter('orderBy')(scope.concepts, params.orderBy()) : scope.concepts;
                   var concepts = scope.concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  
+
                   $defer.resolve(concepts);
                 }
               }
@@ -90,108 +90,138 @@ angular.module('singleConceptAuthoringApp')
               for (let axiomId in selectedConcept.axiomsToBeReplaced) {
                 ids = ids.concat(selectedConcept.axiomsToBeReplaced[axiomId]);
               }
-            });          
+            });
             notificationService.sendMessage('Saving auto-fixed content for selected concepts...');
             // Fetch the active and inacive concepts
-            terminologyServerService.bulkRetrieveFullConcept(ids,scope.branch).then(function (concepts) {
-              // find concept id replacements
-              var inactiveConceptIdMap = {};
-              for (let i =0; i < concepts.length; i++) {
-                let concept = concepts[i];
-                if (!concept.active && concept.hasOwnProperty('associationTargets')) {
-                  for (let associationTarget in concept.associationTargets){
-                    inactiveConceptIdMap[concept.conceptId] = concept.associationTargets[associationTarget];
-                  }
-                }                
-              }
+            terminologyServerService.bulkRetrieveFullConcept(ids, scope.branch).then(function (concepts) {
 
-              var updatedConcepts = [];
-              for (let i =0; i < selectedConcepts.length; i++) {
-                let concept = selectedConcepts[i];
-                for (let j =0; j < concepts.length; j++) { 
-                  let conceptFull = concepts[j];                 
-                  if (concept.conceptId === conceptFull.conceptId) {
-                    for (let axiomId in concept.axiomsToBeReplaced) {
-                      for (let k =0; k < conceptFull.classAxioms.length; k++) {
-                        replaceInactiveTargetId(axiomId, conceptFull.classAxioms[k], inactiveConceptIdMap);
-                      }
-                      for (let k =0; k < conceptFull.gciAxioms.length; k++) {
-                        replaceInactiveTargetId(axiomId, conceptFull.gciAxioms[k], inactiveConceptIdMap);
-                      }
-                    }
-                    updatedConcepts.push(conceptFull);
-                    break;
-                  }                
-                }                
-              }
-
-              if (updatedConcepts.length !== 0) {
-                terminologyServerService.bulkValidateConcepts(scope.branch, updatedConcepts).then(function(validationResponse){
-                  var invalidConceptIds = []
-                  if (validationResponse && validationResponse.data && validationResponse.data.length !== 0) {
-                    for (let i = 0; i < validationResponse.data.length; i++) {
-                      if (validationResponse.data[i].severity === 'ERROR' && !invalidConceptIds.includes(validationResponse.data[i].conceptId)) {
-                        invalidConceptIds.push(validationResponse.data[i].conceptId);
-                      }
-                    }
-                  }
-
-                  if (invalidConceptIds.length !== 0) {
-                    updatedConcepts = updatedConcepts.filter(function(item) {
-                      return !invalidConceptIds.includes(item.conceptId);
-                    })
-                  }
-                  if (updatedConcepts.length !== 0) {
-                    terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
-                      if (response.conceptIds) {
-                        var message = 'Updated ' + response.conceptIds.length + ' concepts successfully.';
-                        if (invalidConceptIds.length > 0) {
-                          message += ' ' + invalidConceptIds.length + ' concepts failed to validate, please correct them manually and re-try.';
+              getInactiveConceptIdToAssociationTargetsMap(concepts).then(function (response) {
+                var inactiveConceptIdToAssociationTargetsMap = response;
+                var updatedConcepts = [];
+                for (let i =0; i < selectedConcepts.length; i++) {
+                  let concept = selectedConcepts[i];
+                  for (let j =0; j < concepts.length; j++) {
+                    let conceptFull = concepts[j];
+                    if (concept.conceptId === conceptFull.conceptId) {
+                      for (let axiomId in concept.axiomsToBeReplaced) {
+                        for (let k =0; k < conceptFull.classAxioms.length; k++) {
+                          replaceInactiveTargetId(axiomId, conceptFull.classAxioms[k], inactiveConceptIdToAssociationTargetsMap);
                         }
-                        
-                        notificationService.sendMessage(message)
-                        scope.concepts = scope.concepts.filter(function(item) {
-                          return !response.conceptIds.includes(parseInt(item.conceptId));
-                        });
-    
-                        if (scope.concepts.length !== 0) {
-                          var found = scope.concepts.filter(function(item) {
-                            return item.conceptId === scope.selectedConcept.priorConcept.conceptId;
-                          }).length !== 0;
-    
-                          if (!found) {
-                            scope.viewConcept(scope.concepts[0], true);
+                        for (let k =0; k < conceptFull.gciAxioms.length; k++) {
+                          replaceInactiveTargetId(axiomId, conceptFull.gciAxioms[k], inactiveConceptIdToAssociationTargetsMap);
+                        }
+                      }
+                      updatedConcepts.push(conceptFull);
+                      break;
+                    }
+                  }
+                }
+
+                if (updatedConcepts.length !== 0) {
+                  terminologyServerService.bulkValidateConcepts(scope.branch, updatedConcepts).then(function(validationResponse){
+                    var invalidConceptIds = []
+                    if (validationResponse && validationResponse.data && validationResponse.data.length !== 0) {
+                      for (let i = 0; i < validationResponse.data.length; i++) {
+                        if (validationResponse.data[i].severity === 'ERROR' && !invalidConceptIds.includes(validationResponse.data[i].conceptId)) {
+                          invalidConceptIds.push(validationResponse.data[i].conceptId);
+                        }
+                      }
+                    }
+
+                    if (invalidConceptIds.length !== 0) {
+                      updatedConcepts = updatedConcepts.filter(function(item) {
+                        return !invalidConceptIds.includes(item.conceptId);
+                      })
+                    }
+                    if (updatedConcepts.length !== 0) {
+                      terminologyServerService.bulkUpdateConcept(scope.branch, updatedConcepts).then(function(response) {
+                        if (response.conceptIds) {
+                          var message = 'Updated ' + response.conceptIds.length + ' concepts successfully.';
+                          if (invalidConceptIds.length > 0) {
+                            message += ' ' + invalidConceptIds.length + ' concepts failed to validate, please correct them manually and re-try.';
                           }
-                          scope.integrityCheckTableParams.reload();
-                        } 
-                        else {
-                          $route.reload();
+
+                          notificationService.sendMessage(message)
+                          scope.concepts = scope.concepts.filter(function(item) {
+                            return !response.conceptIds.includes(parseInt(item.conceptId));
+                          });
+
+                          if (scope.concepts.length !== 0) {
+                            var found = scope.concepts.filter(function(item) {
+                              return item.conceptId === scope.selectedConcept.priorConcept.conceptId;
+                            }).length !== 0;
+
+                            if (!found) {
+                              scope.viewConcept(scope.concepts[0], true);
+                            }
+                            scope.integrityCheckTableParams.reload();
+                          }
+                          else {
+                            $route.reload();
+                          }
                         }
-                      }
-                    });
-                  } else {
-                    notificationService.sendMessage(invalidConceptIds.length + ' concepts failed to validate, please correct them manually and re-try.');
-                  }
-                });                
-              } else {
-                notificationService.sendMessage('No concepts updated.');
-              }
+                      });
+                    } else {
+                      notificationService.sendMessage(invalidConceptIds.length + ' concepts failed to validate, please correct them manually and re-try.');
+                    }
+                  });
+                } else {
+                  notificationService.sendMessage('No concepts updated.');
+                }
+              });
             });
+          }
+
+          function getInactiveConceptIdToAssociationTargetsMap(concepts) {
+            var deferred = $q.defer();
+            // find concept id replacements
+            var inactiveConceptIdToAssociationTargetsMap = {};
+            var idsRequiredActiveAncestor = [];
+            for (let i =0; i < concepts.length; i++) {
+              let concept = concepts[i];
+              if (!concept.active) {
+                if (concept.hasOwnProperty('associationTargets')) {
+                  for (let associationTarget in concept.associationTargets){
+                    inactiveConceptIdToAssociationTargetsMap[concept.conceptId] = concept.associationTargets[associationTarget];
+                  }
+                } else {
+                  idsRequiredActiveAncestor.push(concept.conceptId);
+                }
+              }
+            }
+
+            if (idsRequiredActiveAncestor.length !== 0) {
+              let count = 0;
+              for (let i = 0; i < idsRequiredActiveAncestor.length; i++) {
+                terminologyServerService.findClosestActiveAncestor(idsRequiredActiveAncestor[i], scope.branch).then(function (response) {
+                  inactiveConceptIdToAssociationTargetsMap[idsRequiredActiveAncestor[i]] = [response.conceptId];
+                  count++;
+
+                  if (count === idsRequiredActiveAncestor.length) {
+                    deferred.resolve(inactiveConceptIdToAssociationTargetsMap);
+                  }
+                });
+              }
+            } else {
+              deferred.resolve(inactiveConceptIdToAssociationTargetsMap);
+            }
+
+            return deferred.promise;
           }
 
           scope.viewConcept = function (concept, skipNotifcation) {
             if (!skipNotifcation) {
               notificationService.sendMessage('Loading concept: ' + concept.term);
-            }            
+            }
             scope.selectedConcept.priorConcept = null;
             scope.selectedConcept.resolutionConcept = null;
             scope.componentStyle = {};
             terminologyServerService.getFullConcept(concept.conceptId, scope.branch).then(function (response) {
-              scope.selectedConcept.priorConcept = response;                      
+              scope.selectedConcept.priorConcept = response;
               highlightInactiveComponents(scope.selectedConcept.priorConcept, concept.axiomsToBeReplaced);
-              constructResolutionConcept(response, concept.axiomsToBeReplaced, skipNotifcation);              
+              constructResolutionConcept(response, concept.axiomsToBeReplaced, skipNotifcation);
             });
-          };   
+          };
 
           scope.$on('viewTaxonomy', function(event, data) {
             scope.actionTab = 1;
@@ -205,7 +235,7 @@ angular.module('singleConceptAuthoringApp')
             for (let i = 0; i < scope.concepts.length; i++) {
               if (scope.concepts[i].conceptId === scope.selectedConcept.priorConcept.conceptId) {
                 pos = i;
-                break;                
+                break;
               }
             }
             if (pos !== -1) {
@@ -224,20 +254,20 @@ angular.module('singleConceptAuthoringApp')
             // verify that this SCTID does not exist in the edit list
             for (var i = 0; i < scope.viewConcepts.length; i++) {
               if (scope.viewConcepts[i].conceptId === data.conceptId) {
-                notificationService.sendWarning('Concept already loaded', 5000);           
+                notificationService.sendWarning('Concept already loaded', 5000);
                 return;
               }
             }
             // send loading notification for user display
             notificationService.sendMessage('Loading concepts...', 10000, null);
-            terminologyServerService.getFullConcept(data.conceptId, scope.branch).then(function (response) {            
+            terminologyServerService.getFullConcept(data.conceptId, scope.branch).then(function (response) {
               if (!response) {
                 return;
               }
               scope.viewConcepts.push(response);
               scope.$broadcast('editingConcepts', {concepts: scope.viewConcepts});
               notificationService.clear();
-            });      
+            });
           });
 
           scope.$on('stopEditing', function (event, data) {
@@ -256,12 +286,12 @@ angular.module('singleConceptAuthoringApp')
 
           function constructResolutionConcept(originalConcept, axiomsToBeReplaced, skipNotifcation) {
             scope.componentStyle.resolutionConcept = {};
-            let ids = [];         
+            let ids = [];
             for (let axiomId in axiomsToBeReplaced) {
               ids = ids.concat(axiomsToBeReplaced[axiomId]);
             }
             // Fetch the inacive concepts
-            terminologyServerService.bulkRetrieveFullConcept(ids,scope.branch).then(function (inactiveConcepts) {              
+            terminologyServerService.bulkRetrieveFullConcept(ids,scope.branch).then(function (inactiveConcepts) {
               let newIds = [];
               let idsRequiredActiveAncestor = [];
 
@@ -278,7 +308,7 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     idsRequiredActiveAncestor.push(inactiveConcept.conceptId);
                   }
-                }                                
+                }
               }
 
               if (idsRequiredActiveAncestor.length !== 0) {
@@ -288,7 +318,7 @@ angular.module('singleConceptAuthoringApp')
                     newIds = newIds.concat(response.conceptId);
                     inactiveConceptIdMap[idsRequiredActiveAncestor[i]] = [response.conceptId];
                     count++;
-                    
+
                     if (count === idsRequiredActiveAncestor.length) {
                       getAndReplaceInactiveConcept(newIds, originalConcept, axiomsToBeReplaced, inactiveConceptIdMap, skipNotifcation);
                     }
@@ -308,7 +338,7 @@ angular.module('singleConceptAuthoringApp')
                 replacedConceptMap[response.items[i].conceptId] = response.items[i];
               }
 
-              let resolutionConcept = angular.copy(originalConcept);                
+              let resolutionConcept = angular.copy(originalConcept);
               for (let axiomId in axiomsToBeReplaced) {
                 replaceInactiveConcepts(resolutionConcept.classAxioms, axiomId, axiomsToBeReplaced[axiomId], inactiveConceptIdMap, replacedConceptMap);
                 replaceInactiveConcepts(resolutionConcept.gciAxioms, axiomId, axiomsToBeReplaced[axiomId], inactiveConceptIdMap, replacedConceptMap);
@@ -317,46 +347,46 @@ angular.module('singleConceptAuthoringApp')
               scope.selectedConcept.resolutionConcept = resolutionConcept;
               if (!skipNotifcation) {
                 notificationService.clear();
-              }                
+              }
             });
           }
 
           function highlightInactiveComponents(priorConcept, axiomsToBeReplaced) {
             scope.componentStyle.priorConcept = {};
             for (let i = 0; i < priorConcept.classAxioms.length; i++) {
-              let axiom  = priorConcept.classAxioms[i];                
+              let axiom  = priorConcept.classAxioms[i];
               if (axiomsToBeReplaced.hasOwnProperty(axiom.axiomId)) {
                 let relationships = axiom.relationships;
                 for (let j = 0; j < relationships.length; j++) {
                   if (axiomsToBeReplaced[axiom.axiomId].includes(parseInt(relationships[j].target.conceptId))) {
-                    relationships[j].relationshipId = terminologyServerService.createGuid();                         
+                    relationships[j].relationshipId = terminologyServerService.createGuid();
                     scope.componentStyle.priorConcept[relationships[j].relationshipId] = {};
                     scope.componentStyle.priorConcept[relationships[j].relationshipId].style = 'redhl';
                   }
                 }
-              }                
-            } 
+              }
+            }
           }
 
           function highlightNewComponents(relationship) {
-            relationship.relationshipId = terminologyServerService.createGuid();                         
+            relationship.relationshipId = terminologyServerService.createGuid();
             scope.componentStyle.resolutionConcept[relationship.relationshipId] = {};
             scope.componentStyle.resolutionConcept[relationship.relationshipId].style = 'tealhl';
           }
 
-          function replaceInactiveTargetId(axiomId , axiom, inactiveConceptIdMap) {            
+          function replaceInactiveTargetId(axiomId , axiom, inactiveConceptIdMap) {
             if (axiomId === axiom.axiomId){
               for (let l =0; l < axiom.relationships.length; l++) {
                 let relationship = axiom.relationships[l];
                 if (inactiveConceptIdMap.hasOwnProperty(relationship.target.conceptId)) {
                   let newTargetIds = inactiveConceptIdMap[relationship.target.conceptId];
                   for (let m = 0; m < newTargetIds.length; m++) {
-                    if (m === 0) {                            
+                    if (m === 0) {
                       relationship.target.conceptId = newTargetIds[m];
                     }
                     else {
                       let newRelationship = angular.copy(relationship);
-                      newRelationship.target.conceptId = newTargetIds[m];                                  
+                      newRelationship.target.conceptId = newTargetIds[m];
                       axiom.relationships.push(newRelationship);
                     }
                   }
@@ -373,7 +403,7 @@ angular.module('singleConceptAuthoringApp')
                   let relationship = axiom.relationships[relIndex];
                   for (let conceptIdToBeReplacedIndex = 0; conceptIdToBeReplacedIndex < conceptIdsToBeReplaced.length; conceptIdToBeReplacedIndex++) {
                     if (parseInt(relationship.target.conceptId) === conceptIdsToBeReplaced[conceptIdToBeReplacedIndex]) {
-                      let  inactiveConceptIds = inactiveConceptIdMap[relationship.target.conceptId];                      
+                      let  inactiveConceptIds = inactiveConceptIdMap[relationship.target.conceptId];
                       let originalRelationShip = angular.copy(relationship);
 
                       for (let i = 0; i < inactiveConceptIds.length; i++) {
@@ -382,7 +412,7 @@ angular.module('singleConceptAuthoringApp')
                         newTarget.pt = newTarget.pt && newTarget.pt.term ? newTarget.pt.term :newTarget.pt;
                         newTarget.preferredSynonym = newTarget.pt && newTarget.pt.term ? newTarget.pt.term : newTarget.pt;
 
-                        if (i === 0) {                            
+                        if (i === 0) {
                           relationship.target = newTarget;
                           highlightNewComponents(relationship);
                         }
@@ -392,16 +422,16 @@ angular.module('singleConceptAuthoringApp')
                           highlightNewComponents(newRelationship);
                           axiom.relationships.push(newRelationship);
                         }
-                      }                      
+                      }
                     }
-                  }                        
+                  }
                 }
-              } 
+              }
             }
           }
-          
-          function constructConcepts() { 
-            let conceptIds = []; 
+
+          function constructConcepts() {
+            let conceptIds = [];
             for (let axiomId in scope.integrityCheckResult.axiomsWithMissingOrInactiveReferencedConcept) {
               let concept = scope.integrityCheckResult.axiomsWithMissingOrInactiveReferencedConcept[axiomId];
               if (conceptIds.includes(concept.conceptId)) {
@@ -418,7 +448,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           }
-          
+
           function initialize() {
             constructConcepts();
 
