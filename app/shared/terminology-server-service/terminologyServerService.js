@@ -2510,6 +2510,28 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function searchIdentifiers(branch, alternateIdentifier, acceptLanguageValue) {
+        var deferred = $q.defer();
+        var config = {};
+
+        if (acceptLanguageValue) {
+          // declare headers if not specified
+          if (!config.headers) {
+            config.headers = {};
+          }
+          // set the accept language header
+          config.headers['Accept-Language'] = acceptLanguageValue;
+        }
+
+        $http.get(apiEndpoint + branch + '/identifiers?alternateIdentifier=' + alternateIdentifier, config).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2573,6 +2595,9 @@ angular.module('singleConceptAuthoringApp')
         getMembersByRefsetAndReferencedComponent: getMembersByRefsetAndReferencedComponent,
         getReferenceSetsByReferencedComponent: getReferenceSetsByReferencedComponent,
         getGciExpressionsFromTarget: getGciExpressionsFromTarget,
+
+        // identifier functionality
+        searchIdentifiers: searchIdentifiers,
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,
