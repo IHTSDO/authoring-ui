@@ -237,7 +237,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.userOptions.searchType = 'Active only' ;
                 }
                 else if (value === 'Identifier') {
-                  $scope.searchMode = 'Identifier';
+                  $scope.searchMode = 'LOINC Code';
                   $scope.identifierMode = true;
                   $scope.userOptions.searchType = 'Active only' ;
                 }
@@ -257,7 +257,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.selectedLanguageRefsets = [];
             }
             else if (value === 'Identifier') {
-              $scope.searchMode = 'Identifier';
+              $scope.searchMode = 'LOINC Code';
               $scope.identifierMode = true;
               $scope.userOptions.searchType = 'Active only' ;
             }
