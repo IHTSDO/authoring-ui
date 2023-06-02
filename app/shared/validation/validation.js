@@ -1088,12 +1088,27 @@ angular.module('singleConceptAuthoringApp')
 // exclude a single failure, with optional commit
           scope.excludeFailure = function (failure) {
             if(failure.validationRuleId) {
-              var whitelistItem = constructWhitelistItem(scope.branch, failure);
-              aagService.addToWhitelist(whitelistItem).then(function(respone) {
-                scope.allWhitelistItems.push(respone.data);
-                scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
-                scope.resetUserExclusionFlag();
-                $rootScope.$broadcast('reloadExceptions');
+              var modalInstance = $modal.open({
+                templateUrl: 'shared/validation/whitelistItemModal.html',
+                controller: 'whitelistItemModalCtrl',
+                resolve: {
+                  failure: function() {
+                    return failure;
+                  }
+                }
+              });
+        
+              modalInstance.result.then(function (result) {                
+                var whitelistItem = constructWhitelistItem(scope.branch, result);
+                failure.addingToExceptions = true;
+                aagService.addToWhitelist(whitelistItem).then(function(respone) {
+                  scope.allWhitelistItems.push(respone.data);
+                  scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+                  scope.resetUserExclusionFlag();
+                  $rootScope.$broadcast('reloadExceptions');
+                  delete failure.addingToExceptions;
+                });
+              }, function () {
               });
             } else {
               notificationService.sendError('No assertion uuid found for the failure');
@@ -1108,6 +1123,8 @@ angular.module('singleConceptAuthoringApp')
             whitelistItem.branch = branch;
             whitelistItem.assertionFailureText = failure.assertionText;
             whitelistItem.additionalFields = failure.fullComponent;
+            whitelistItem.temporary = failure.temporary !== undefined ? failure.temporary : false;
+            whitelistItem.reason = failure.reason !== undefined ? failure.reason : null;
 
             return whitelistItem;
           }
