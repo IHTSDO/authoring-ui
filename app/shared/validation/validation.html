@@ -138,8 +138,8 @@
                 ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
             <td header-title="'Click to sort'" data-title="'Semantic Tag'" sortable="'semanticTag'" style="min-width: 115px;">{{failure.semanticTag}} </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
-            <td data-header="'excludeheader.html'"><button ng-if="isWhitelistEnabled" type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
-              Exceptions </button></td>
+            <td data-header="'excludeheader.html'"><button ng-if="isWhitelistEnabled" type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">
+              <i ng-if="failure.addingToExceptions" class="md-spin md-loop"></i>{{!failure.addingToExceptions ? 'Add to Exceptions' : 'Adding to Exceptions'}}</button></td>
             <td ng-if="editable" data-header="'editheader.html'"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
                       title="{{isProject() ? 'View Concept' : 'View/Edit Concept'}}"> <span class="md md-edit"></span> </button></td>

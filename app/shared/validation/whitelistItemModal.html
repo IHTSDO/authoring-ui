@@ -1,0 +1,39 @@
+<div class="clearfix" id="inactivateComponentModal">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Add to Exceptions</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12 no-padding">
+        <div class="radio">
+          <label style="margin-left: -13px;">
+            <input style="margin-left: -20px; margin-top: 0px;" type="radio" name="exceptionType" value="permanent" ng-model="exceptionType">Permanent Exception
+          </label>
+          <label style="margin-left: 30px;">
+            <input style="margin-left: -20px; margin-top: 0px;" type="radio" name="exceptionType" value="temporary" ng-model="exceptionType">Temporary Exception
+          </label>
+        </div>
+      </div>        
+      <div class="col-md-12 no-padding">
+        <label>Reason</label>
+        <br/>
+        <textarea ng-model="reason" name="reason"
+          class="resizable-text form-control msd-elastic"
+        >
+        </textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-md-4">
+      <button type="button" class=" col-md-12 btn btn-warning no-margin"
+              ng-click="cancel()">Cancel </button>
+    </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <button type="button" class="col-md-12 btn btn-info no-margin"
+              ng-click="confirm()">Save</button>
+    </div>
+  </div>
+</div>
