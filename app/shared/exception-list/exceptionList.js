@@ -10,22 +10,25 @@ angular.module('singleConceptAuthoringApp')
         replace: true,
         scope: {
           // branch this report is good for
-          branch: '=',         
+          branch: '=',
 
           // overridden labbels (optional)
           overriddenLabels: '=?',
 
           // code systesm flag (optional)
-          isCodeSystem: '=?'
+          isCodeSystem: '=?',
+
+          exceptionType: '=?'
         },
         templateUrl: 'shared/exception-list/exceptionList.html',
 
         link: function (scope, element, attrs, linkCtrl) {
-         
+
           scope.isCodeSystem = attrs.isCodeSystem === 'true';
           scope.allWhitelistItems = [];
           scope.viewFullListException = false;
-          scope.exceptionLoading = false;          
+          scope.exceptionLoading = false;
+          scope.exceptionType = attrs.exceptionType ? attrs.exceptionType : 'ALL';
 
           // declare table parameters
           scope.exclusionsTableParams = new NgTableParams({
@@ -60,9 +63,9 @@ angular.module('singleConceptAuthoringApp')
                 $defer.resolve(orderedData);
               }
             }
-          );        
+          );
 
-          scope.toggleViewFullListExceptions = function () {            
+          scope.toggleViewFullListExceptions = function () {
             scope.allWhitelistItems = [];
             scope.exclusionsTableParams.reload();
             retrieveWhitelist().then(function() {
@@ -167,7 +170,7 @@ angular.module('singleConceptAuthoringApp')
               else {
                   branch = scope.branch;
               }
-              aagService.getWhitelistItemsByBranchAndDate(branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
+              aagService.getWhitelistItemsByBranchAndDate(branch, new Date(creationDate).getTime(), scope.exceptionType).then(function(whitelistItems) {
                 if(whitelistItems){
                   let idList = [];
                   angular.forEach(whitelistItems, function (item) {
@@ -249,7 +252,7 @@ angular.module('singleConceptAuthoringApp')
               aagService.removeFromWhitelist(failure.id).then(function() {
                 scope.allWhitelistItems = scope.allWhitelistItems.filter(function(item) {
                   return item.id !== failure.id;
-                });                
+                });
                 scope.exclusionsTableParams.reload();
                 $rootScope.$broadcast('removeExceptionFromWhitelist');
               });
@@ -265,9 +268,11 @@ angular.module('singleConceptAuthoringApp')
           initialize();
 
           scope.$on('reloadExceptions', function(event, data) {
-            scope.allWhitelistItems = [];
-            scope.exclusionsTableParams.reload();
-            initialize();
+            if (data.type === scope.exceptionType) {
+              scope.allWhitelistItems = [];
+              scope.exclusionsTableParams.reload();
+              initialize();
+            }
           });
         }
       };

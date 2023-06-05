@@ -157,16 +157,16 @@
         </div>
       </div>
 
-      <!--- Exception list -->
+      <!--- Permanent Exception list -->
       <div class="card">
 
         <div class="card-header">
           <div class="card-title">
             <button
-                    ng-click="exceptionListCollapsed = !exceptionListCollapsed"
+                    ng-click="permanentExceptionListCollapsed = !permanentExceptionListCollapsed"
                     type="button"
-                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !dailyBuildValidationCollapsed, 'md-keyboard-arrow-right' : dailyBuildValidationCollapsed}]">
-              <span class="project-subtitle" ng-class="{'report-text' : validationContainer}">Exceptions</span>
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !permanentExceptionListCollapsed, 'md-keyboard-arrow-right' : permanentExceptionListCollapsed}]">
+              <span class="project-subtitle" ng-class="{'report-text' : validationContainer}">Permanent Exceptions</span>
             </button>
 
             <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-list"></span></span>
@@ -176,9 +176,36 @@
           </div>
         </div>
 
-        <div ng-show="!exceptionListCollapsed">
+        <div ng-show="!permanentExceptionListCollapsed">
           <div class="card-content clearfix">
-            <div ng-if="branch" exceptions branch="branch" is-code-system="true"
+            <div ng-if="branch" exceptions branch="branch" is-code-system="true" exception-type="PERMANENT" 
+                overridden-labels="{'exceptionLabel1':'Exceptions since last release', 'exceptionLabel2':'All exceptions', 'exceptionLabel3':'Latest exceptions', 'exceptionLabel4':'All exceptions'}"></div>
+          </div>
+        </div>
+      </div>
+
+      <!--- Temporary Exception list -->
+      <div class="card">
+
+        <div class="card-header">
+          <div class="card-title">
+            <button
+                    ng-click="temporaryExceptionListCollapsed = !temporaryExceptionListCollapsed"
+                    type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : !temporaryExceptionListCollapsed, 'md-keyboard-arrow-right' : temporaryExceptionListCollapsed}]">
+              <span class="project-subtitle" ng-class="{'report-text' : validationContainer}">Temporary Exceptions</span>
+            </button>
+
+            <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-list"></span></span>
+            <span class="arrow-purple pull-right"></span>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <div ng-show="!temporaryExceptionListCollapsed">
+          <div class="card-content clearfix">
+            <div ng-if="branch" exceptions branch="branch" is-code-system="true" exception-type="TEMPORARY" 
                 overridden-labels="{'exceptionLabel1':'Exceptions since last release', 'exceptionLabel2':'All exceptions', 'exceptionLabel3':'Latest exceptions', 'exceptionLabel4':'All exceptions'}"></div>
           </div>
         </div>

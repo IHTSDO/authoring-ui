@@ -1105,7 +1105,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.allWhitelistItems.push(respone.data);
                   scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
                   scope.resetUserExclusionFlag();
-                  $rootScope.$broadcast('reloadExceptions');
+                  $rootScope.$broadcast('reloadExceptions', {type: respone.data.temporary ? 'TEMPORARY' : 'PERMANENT'});
                   delete failure.addingToExceptions;
                 });
               }, function () {
@@ -1266,7 +1266,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
               scope.resetUserExclusionFlag();
-              $rootScope.$broadcast('reloadExceptions');
+              $rootScope.$broadcast('reloadExceptions', {type: 'PERMANENT'});
               scope.savingExceptions = false;
             });
           };

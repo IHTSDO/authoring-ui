@@ -43,6 +43,8 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.releaseNotesDisabled = true;
       $scope.lockOrUnlockProjectInProgress = false;
       $scope.lockOrUnlockTaskInProgress = false;
+      $scope.permanentExceptionListCollapsed = true;
+      $scope.temporaryExceptionListCollapsed = true;
 
       // initialize the header notification
       $rootScope.classificationRunning = false;
