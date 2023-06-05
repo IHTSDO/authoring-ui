@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
     
-    function getWhitelistItemsByBranchAndDate(branch, date) {
+    function getWhitelistItemsByBranchAndDate(branch, date, exceptionType) {
       var deferred = $q.defer();      
       let args = '';
       if(date && date !== null && date !== undefined){
@@ -31,6 +31,9 @@ angular.module('singleConceptAuthoringApp')
       }
       else{
           args = '&page=0&size=10000';
+      }
+      if (exceptionType) {
+        args += '&type=' + exceptionType;
       }
       $http.get(apiEndpoint + 'whitelist-items/' + branch + '?creationDate=' + args).then(function (response) {
         deferred.resolve(Array.isArray(response.data) ? response.data : []);
