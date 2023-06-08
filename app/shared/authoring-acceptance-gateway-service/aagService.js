@@ -58,8 +58,8 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function removeFromWhitelist(id) {
-      var deferred = $q.defer();      
-      $http.delete(apiEndpoint + 'whitelist-items/' + id).then(function () {
+      var deferred = $q.defer();
+      $http.delete(apiEndpoint + 'whitelist-items/item/' + id).then(function () {
         deferred.resolve();
       }, function (error) {       
           deferred.reject('Error deleting item from whitelist. Error: ' + error.message);       
