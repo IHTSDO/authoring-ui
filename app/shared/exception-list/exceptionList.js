@@ -29,6 +29,7 @@ angular.module('singleConceptAuthoringApp')
           scope.viewFullListException = false;
           scope.exceptionLoading = false;
           scope.exceptionType = attrs.exceptionType ? attrs.exceptionType : 'ALL';
+          scope.showExpirationDate = scope.exceptionType === 'ALL' || scope.exceptionType === 'TEMPORARY';
 
           // declare table parameters
           scope.exclusionsTableParams = new NgTableParams({
@@ -53,7 +54,9 @@ angular.module('singleConceptAuthoringApp')
                     conceptId: item.conceptId,
                     componentId: item.componentId,
                     timestamp: new Date(item.creationDate).getTime(),
-                    user: item.userId
+                    user: item.userId,
+                    expirationDate: item.expirationDate,
+                    reason: item.reason
                   });
                 });
 
@@ -262,6 +265,20 @@ angular.module('singleConceptAuthoringApp')
           function initialize() {
             retrieveWhitelist().then(function() {
               scope.exclusionsTableParams.reload();
+            });
+
+            $('body').on('mouseup', function(e) {
+                if(!$(e.target).closest('.popover').length) {
+                    $('.popover').each(function(){
+                        if(($(this).find('.reason-more').length != 0) && $(this).hasClass("in")) {                          
+                          var elm = $(this).find("[component-id]");
+                          var componentId = $(elm[0]).attr("component-id");
+                          if(componentId) {
+                            document.getElementById(componentId).click();
+                          }
+                        }
+                    });
+                }
             });
           }
 

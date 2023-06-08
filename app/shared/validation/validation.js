@@ -1092,14 +1092,14 @@ angular.module('singleConceptAuthoringApp')
                 templateUrl: 'shared/validation/whitelistItemModal.html',
                 controller: 'whitelistItemModalCtrl',
                 resolve: {
-                  failure: function() {
-                    return failure;
+                  failures: function() {
+                    return [failure];
                   }
                 }
               });
         
               modalInstance.result.then(function (result) {                
-                var whitelistItem = constructWhitelistItem(scope.branch, result);
+                var whitelistItem = constructWhitelistItem(scope.branch, result[0]);
                 failure.addingToExceptions = true;
                 aagService.addToWhitelist(whitelistItem).then(function(respone) {
                   scope.allWhitelistItems.push(respone.data);
@@ -1124,6 +1124,7 @@ angular.module('singleConceptAuthoringApp')
             whitelistItem.assertionFailureText = failure.assertionText;
             whitelistItem.additionalFields = failure.fullComponent;
             whitelistItem.temporary = failure.temporary !== undefined ? failure.temporary : false;
+            whitelistItem.expirationDate = failure.expirationDate !== undefined ? failure.expirationDate : null;
             whitelistItem.reason = failure.reason !== undefined ? failure.reason : null;
 
             return whitelistItem;
@@ -1251,24 +1252,36 @@ angular.module('singleConceptAuthoringApp')
             if(failuresToAddWhiteList.length === 0) {
               return;
             }
-
-            var promises = [];
-            angular.forEach(failuresToAddWhiteList, function (failure) {
-              var whitelistItem = constructWhitelistItem(scope.branch, failure);
-              promises.push(aagService.addToWhitelist(whitelistItem));
-            });
-            scope.savingExceptions = true;
-            $q.all(promises).then(function (results) {
-              results.forEach(function(item, current, array) {
-                scope.allWhitelistItems.push(item.data);
-                if (current === array.length - 1){
-                    scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/validation/whitelistItemModal.html',
+              controller: 'whitelistItemModalCtrl',
+              resolve: {
+                failures: function() {
+                  return failuresToAddWhiteList;
                 }
-              });
-              scope.resetUserExclusionFlag();
-              $rootScope.$broadcast('reloadExceptions', {type: 'PERMANENT'});
-              scope.savingExceptions = false;
+              }
             });
+
+            modalInstance.result.then(function (result) {                
+              var promises = [];
+              angular.forEach(result, function (failure) {
+                var whitelistItem = constructWhitelistItem(scope.branch, failure);
+                promises.push(aagService.addToWhitelist(whitelistItem));
+              });
+              scope.savingExceptions = true;
+              $q.all(promises).then(function (results) {
+                results.forEach(function(item, current, array) {
+                  scope.allWhitelistItems.push(item.data);
+                  if (current === array.length - 1){
+                      scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
+                  }
+                });
+                scope.resetUserExclusionFlag();
+                $rootScope.$broadcast('reloadExceptions', {type: results[0].data.temporary ? 'TEMPORARY' : 'PERMANENT'});
+                scope.savingExceptions = false;
+              });
+            }, function () {
+            });            
           };
 
           scope.openCreateTaskModal = function (task, editList, savedList) {
