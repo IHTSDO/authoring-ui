@@ -3796,3 +3796,25 @@ input[type=checkbox]:after {
     margin: 0 auto;
     list-style: none;
   }
+
+div[datepicker] {
+    button {
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+    button[disabled],
+    button[disabled].active {
+        background-color: #fff !important;
+        border-color: #ccc !important;
+    }
+    &:hover {
+        color: #333;
+        background-color: #ebebeb;
+        border-color: #adadad;   
+    }
+}
+.dropdown-menu:has(div[datepicker]) {
+    max-height: unset;
+    z-index: 1060;
+} 
