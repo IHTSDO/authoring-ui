@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getAllWhitelistItems() {
-      var deferred = $q.defer();      
+      var deferred = $q.defer();
       $http.get(apiEndpoint + 'whitelist-items?page=0&size=10000').then(function (response) {
         deferred.resolve(response.data.content);
       }, function (error) {
@@ -22,9 +22,9 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
-    
+
     function getWhitelistItemsByBranchAndDate(branch, date, exceptionType) {
-      var deferred = $q.defer();      
+      var deferred = $q.defer();
       let args = '';
       if(date && date !== null && date !== undefined){
           args = date +'&page=0&size=10000'
@@ -48,11 +48,21 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function addToWhitelist(whitelistItem) {
-      var deferred = $q.defer();      
+      var deferred = $q.defer();
       $http.post(apiEndpoint + 'whitelist-items', whitelistItem).then(function (data) {
         deferred.resolve(data);
-      }, function (error) {       
-          deferred.reject('Error adding item to whitelist. Error: ' + error.message);       
+      }, function (error) {
+          deferred.reject('Error adding item to whitelist. Error: ' + error.message);
+      });
+      return deferred.promise;
+    }
+
+    function updateWhitelistItem(whitelistItem) {
+      var deferred = $q.defer();
+      $http.put(apiEndpoint + 'whitelist-items/item/' + whitelistItem.id, whitelistItem).then(function (data) {
+        deferred.resolve(data);
+      }, function (error) {
+          deferred.reject('Error updating whitelist item. Error: ' + error.message);
       });
       return deferred.promise;
     }
@@ -61,12 +71,12 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       $http.delete(apiEndpoint + 'whitelist-items/item/' + id).then(function () {
         deferred.resolve();
-      }, function (error) {       
-          deferred.reject('Error deleting item from whitelist. Error: ' + error.message);       
+      }, function (error) {
+          deferred.reject('Error deleting item from whitelist. Error: ' + error.message);
       });
       return deferred.promise;
     }
-    
+
     // Retrieve SAC items for a branch
       // GET /acceptance/{branch}
       function getBranchSAC(branch, matchAuthorFlags) {
@@ -76,7 +86,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
-        
+
       // Retrieve SAC items
       // GET /acceptance
       function getSAC(branch) {
@@ -86,7 +96,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
-        
+
       // Accept an SAC item on a branch
       // POST /acceptance/{branch}/item/{item-id}/accept
       function acceptBranchSAC(branch, id) {
@@ -95,7 +105,7 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
         });
       }
-        
+
       // Unaccept an SAC item on a branch
       // DELETE /acceptance/{branch}/item/{item-id}/accept
       function unacceptBranchSAC(branch, id) {
@@ -105,7 +115,7 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
         });
       }
-    
+
       // Update Branch SAC
       // PUT /criteria/{branch}
       function getBranchCriteria(branch) {
@@ -114,7 +124,7 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
         });
       }
-        
+
       // Update Branch SAC
       // PUT /criteria/{branch}
       function updateBranchSAC(branch, sac) {
@@ -123,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
         });
       }
-    
+
       // Create Branch SAC
       // POST /criteria/{branch}
       function createBranchSAC(branch, sac) {
@@ -148,6 +158,7 @@ angular.module('singleConceptAuthoringApp')
       getWhitelistItemsByBranchAndDate: getWhitelistItemsByBranchAndDate,
       getAllWhitelistItems: getAllWhitelistItems,
       addToWhitelist: addToWhitelist,
+      updateWhitelistItem: updateWhitelistItem,
       removeFromWhitelist: removeFromWhitelist
     };
 

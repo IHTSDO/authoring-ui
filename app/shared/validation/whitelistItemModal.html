@@ -1,17 +1,17 @@
 <div class="clearfix add-exception-popup" id="inactivateComponentModal">
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4 class="modal-title">Add to Exceptions</h4>
+    <h4 class="modal-title">{{mode == 'add' ? 'Add to Exceptions' : 'Edit Exception'}}</h4>
   </div>
   <div class="modal-body">
     <div class="row">
       <div class="col-md-12 no-padding" style="padding-left: 20px;">
         <div class="radio">
           <label style="margin-left: -13px;">
-            <input type="radio" name="exceptionType" value="permanent" ng-model="exceptionType">Permanent Exception
+            <input ng-click="selectExceptionType('permanent')" type="radio" name="exceptionType" value="permanent" ng-model="exceptionType">Permanent Exception
           </label>
           <label style="margin-left: 30px;">
-            <input type="radio" name="exceptionType" value="temporary" ng-model="exceptionType">Temporary Exception
+            <input ng-click="selectExceptionType('temporary')" type="radio" name="exceptionType" value="temporary" ng-model="exceptionType">Temporary Exception
           </label>
           <label ng-show="exceptionType == 'temporary'">
             Expiration Date
