@@ -705,6 +705,13 @@ angular.module('singleConceptAuthoringApp')
               aagService.getWhitelistItemsByBranchAndDate(branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
                 if(whitelistItems !== undefined){
                   let idList = [];
+                  var today = new Date();
+                  today.setHours(0,0,0,0);
+
+                  whitelistItems = whitelistItems.filter(function (el) {
+                    return !el.expirationDate || today <= new Date(el.expirationDate);
+                  });
+
                   angular.forEach(whitelistItems, function (item) {
                       if(item.assertionFailureText !== null){
                           item.failureText = item.assertionFailureText;
@@ -895,7 +902,7 @@ angular.module('singleConceptAuthoringApp')
 
 
 
-          scope.$on('removeExceptionFromWhitelist', function(event, data) {
+          scope.$on('exceptionsChanged', function(event, data) {
             checkWhitelist().then(function() {
               scope.reloadTables();
             });
@@ -1094,6 +1101,9 @@ angular.module('singleConceptAuthoringApp')
                 templateUrl: 'shared/validation/whitelistItemModal.html',
                 controller: 'whitelistItemModalCtrl',
                 resolve: {
+                  mode: function() {
+                    return 'add';
+                  },
                   failures: function() {
                     return [failure];
                   }
@@ -1258,6 +1268,9 @@ angular.module('singleConceptAuthoringApp')
               templateUrl: 'shared/validation/whitelistItemModal.html',
               controller: 'whitelistItemModalCtrl',
               resolve: {
+                mode: function() {
+                  return 'add';
+                },
                 failures: function() {
                   return failuresToAddWhiteList;
                 }

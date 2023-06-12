@@ -1,26 +1,4 @@
 <section class="tables-data">
-  <!-- for ng-table checkboxes -->
-  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
-    <input type="checkbox" ng-model="checkAll" ng-class="[{'project' : !task}]" ng-change="selectAll(checkAll)" title="Select Concepts"
-           id="select_all_failures"
-           name="filter-checkbox" value=""/>
-  </script>
-  <script type="text/ng-template" id="excludeheader.html">
-    <button type="button" ng-click="excludeFailures()"
-            class="btn btn-default back-button"
-            ng-if="isWhitelistEnabled">
-            Add selected to Exceptions
-    </button>
-  </script>
-  <script type="text/ng-template" id="editheader.html">
-    <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
-            class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
-            <span
-              class="md md-edit"></span>
-    </button>
-  </script>
-
-  <!-- Exception table -->
   <div class="row m-t-15 no-gutter table-responsive white">
     <div class="row">
       <div class="col-md-4 p-10" style="margin-top: 9px;">
@@ -57,9 +35,9 @@
         <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
         <td class="button-column">
           <button ng-if="failure.reason"
-            title="View reason" 
-            type="button" class="btn btn-round btn-default blue-grey-text darken-1"            
-            id="reason-more-{{failure.id}}"                  
+            title="View reason"
+            type="button" class="btn btn-round btn-default blue-grey-text darken-1"
+            id="reason-more-{{failure.id}}"
             popover-template="'shared/exception-list/reasonMore.html'"
             popover-placement="left-top"
             popover-trigger="click: click"
@@ -67,10 +45,17 @@
           > <i class="fa fa-info-circle"></i>
           </button>
         </td>
-        <td class="button-column"><button
+        <td class="button-column" style="text-align: center; min-width: 52px">
+          <button type="button" 
+            class="btn btn-round btn-default blue" title="Edit" ng-click="editException(failure.id)"
+            style="display: inline-block;">
+            <i class="md fa-sca fa-pencil"></i>
+          </button>
+          <button
             title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
-            type="button" class="btn btn-round btn-default blue"> <i
-              class="md md-close"></i>
+            type="button" class="btn btn-round btn-default blue"
+            style="display: inline-block;"> 
+            <i class="md md-close"></i>
           <div class="ripple-wrapper"></div>
           </button></td>
       </tr>

@@ -257,7 +257,42 @@ angular.module('singleConceptAuthoringApp')
                   return item.id !== failure.id;
                 });
                 scope.exclusionsTableParams.reload();
-                $rootScope.$broadcast('removeExceptionFromWhitelist');
+                $rootScope.$broadcast('exceptionsChanged');
+              });
+            }
+          };
+
+          scope.editException = function(exceptionId) {
+            var exception = scope.allWhitelistItems.filter(function(item) {
+              return item.id === exceptionId;
+            });
+            if (exception) {
+              const originalWhitelistItem = angular.copy(exception[0]);
+              var modalInstance = $modal.open({
+                templateUrl: 'shared/validation/whitelistItemModal.html',
+                controller: 'whitelistItemModalCtrl',
+                resolve: {
+                  mode: function() {
+                    return 'edit';
+                  },
+
+                  failures: function() {
+                    return [exception[0]];
+                  }
+                }
+              });
+
+              modalInstance.result.then(function (result) {
+                aagService.updateWhitelistItem(result[0]).then(function(respone) {
+                  if (originalWhitelistItem.temporary !== respone.data.temporary) {
+                    $rootScope.$broadcast('reloadExceptions', {type: 'TEMPORARY'});
+                    $rootScope.$broadcast('reloadExceptions', {type: 'PERMANENT'});
+                  } else {
+                    scope.exclusionsTableParams.reload();
+                  }
+                  $rootScope.$broadcast('exceptionsChanged');
+                });
+              }, function () {
               });
             }
           };
@@ -270,7 +305,7 @@ angular.module('singleConceptAuthoringApp')
             $('body').on('mouseup', function(e) {
                 if(!$(e.target).closest('.popover').length) {
                     $('.popover').each(function(){
-                        if(($(this).find('.reason-more').length != 0) && $(this).hasClass("in")) {                          
+                        if(($(this).find('.reason-more').length != 0) && $(this).hasClass("in")) {
                           var elm = $(this).find("[component-id]");
                           var componentId = $(elm[0]).attr("component-id");
                           if(componentId) {
