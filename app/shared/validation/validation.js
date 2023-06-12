@@ -910,7 +910,9 @@ angular.module('singleConceptAuthoringApp')
             scope.isWarningAssertion = isWarningAssertion;
             scope.failuresLoading = true;
 
-            scope.isWhitelistEnabled = (isAllowWhitelistWarning &&  isWarningAssertion)  || (isAllowWhitelistError && !isWarningAssertion);
+            scope.isWhitelistEnabled = ((isAllowWhitelistWarning &&  isWarningAssertion)  || (isAllowWhitelistError && !isWarningAssertion)) 
+                                      && assertionFailure.assertionUuid !== 'f68c761b-3b5c-4223-bc00-6e181e7f68c3'
+                                      && assertionFailure.assertionUuid !== 'b7f727d7-9226-4eef-9a7e-47a8580f6e7a';
 
             var objArray = [];
 
