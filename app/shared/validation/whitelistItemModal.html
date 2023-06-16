@@ -8,19 +8,10 @@
       <div class="col-md-12 no-padding" style="padding-left: 20px;">
         <div class="radio">
           <label style="margin-left: -13px;">
-            <input ng-click="selectExceptionType('permanent')" type="radio" name="exceptionType" value="permanent" ng-model="exceptionType">Permanent Exception
+            <input type="radio" name="exceptionType" value="permanent" ng-model="exceptionType">Permanent Exception
           </label>
           <label style="margin-left: 30px;">
-            <input ng-click="selectExceptionType('temporary')" type="radio" name="exceptionType" value="temporary" ng-model="exceptionType">Temporary Exception
-          </label>
-          <label ng-show="exceptionType == 'temporary'">
-            Expiration Date
-            <div class="input-group datepicker" style="display: inline;">
-              <input datepicker-popup="yyyy-MM-dd" ng-model="expirationDate" is-open="datePickerOpened" datepicker-options="dateOptions" datepicker-append-to-body="true" close-text="Close" />
-              <span>
-                <button type="button" class="btn" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-              </span>
-            </div>            
+            <input type="radio" name="exceptionType" value="temporary" ng-model="exceptionType">Temporary Exception
           </label>
         </div>
       </div>        
