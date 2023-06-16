@@ -31,7 +31,6 @@
         <td class="col-md-1" style="min-width: 120px;" header-title="'Click to sort'" data-title="'Component ID'" sortable="'componentId'"> {{failure.componentId}} </td>
         <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'"> {{failure.failureText}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}} </td>
-        <td ng-show="showExpirationDate" style="min-width: 125px;" class="col-md-2" header-title="'Click to sort'" data-title="'Expiration Date'" sortable="'timestamp'"> {{failure.expirationDate | date : "yyyy-MM-dd"}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
         <td class="button-column">
           <button ng-if="failure.reason"
@@ -46,7 +45,7 @@
           </button>
         </td>
         <td class="button-column" style="text-align: center; min-width: 52px">
-          <button type="button" 
+          <button type="button"
             class="btn btn-round btn-default blue" title="Edit" ng-click="editException(failure.id)"
             style="display: inline-block;">
             <i class="md fa-sca fa-pencil"></i>
@@ -54,7 +53,7 @@
           <button
             title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
             type="button" class="btn btn-round btn-default blue"
-            style="display: inline-block;"> 
+            style="display: inline-block;">
             <i class="md md-close"></i>
           <div class="ripple-wrapper"></div>
           </button></td>

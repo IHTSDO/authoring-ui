@@ -705,12 +705,6 @@ angular.module('singleConceptAuthoringApp')
               aagService.getWhitelistItemsByBranchAndDate(branch, new Date(creationDate).getTime()).then(function(whitelistItems) {
                 if(whitelistItems !== undefined){
                   let idList = [];
-                  var today = new Date();
-                  today.setHours(0,0,0,0);
-
-                  whitelistItems = whitelistItems.filter(function (el) {
-                    return !el.expirationDate || today <= new Date(el.expirationDate);
-                  });
 
                   angular.forEach(whitelistItems, function (item) {
                       if(item.assertionFailureText !== null){
@@ -917,7 +911,7 @@ angular.module('singleConceptAuthoringApp')
             scope.isWarningAssertion = isWarningAssertion;
             scope.failuresLoading = true;
 
-            scope.isWhitelistEnabled = ((isAllowWhitelistWarning &&  isWarningAssertion)  || (isAllowWhitelistError && !isWarningAssertion)) 
+            scope.isWhitelistEnabled = ((isAllowWhitelistWarning &&  isWarningAssertion)  || (isAllowWhitelistError && !isWarningAssertion))
                                       && assertionFailure.assertionUuid !== 'f68c761b-3b5c-4223-bc00-6e181e7f68c3'
                                       && assertionFailure.assertionUuid !== 'b7f727d7-9226-4eef-9a7e-47a8580f6e7a';
 
@@ -1109,8 +1103,8 @@ angular.module('singleConceptAuthoringApp')
                   }
                 }
               });
-        
-              modalInstance.result.then(function (result) {                
+
+              modalInstance.result.then(function (result) {
                 var whitelistItem = constructWhitelistItem(scope.branch, result[0]);
                 failure.addingToExceptions = true;
                 aagService.addToWhitelist(whitelistItem).then(function(respone) {
@@ -1136,7 +1130,6 @@ angular.module('singleConceptAuthoringApp')
             whitelistItem.assertionFailureText = failure.assertionText;
             whitelistItem.additionalFields = failure.fullComponent;
             whitelistItem.temporary = failure.temporary !== undefined ? failure.temporary : false;
-            whitelistItem.expirationDate = failure.expirationDate !== undefined ? failure.expirationDate : null;
             whitelistItem.reason = failure.reason !== undefined ? failure.reason : null;
 
             return whitelistItem;
@@ -1277,7 +1270,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-            modalInstance.result.then(function (result) {                
+            modalInstance.result.then(function (result) {
               var promises = [];
               angular.forEach(result, function (failure) {
                 var whitelistItem = constructWhitelistItem(scope.branch, failure);
@@ -1296,7 +1289,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.savingExceptions = false;
               });
             }, function () {
-            });            
+            });
           };
 
           scope.openCreateTaskModal = function (task, editList, savedList) {
