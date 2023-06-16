@@ -1376,7 +1376,7 @@ angular.module('singleConceptAuthoringApp')
                 if (response.total === 0) {
                   delete params.conceptIds;
                   params.termFilter = termFilter;
-                  doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+                  getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp).then(function(response) {
                     deferred.resolve(response);
                   }, function (error) {
                     deferred.reject(error);
@@ -1408,7 +1408,7 @@ angular.module('singleConceptAuthoringApp')
                 if (response.total === 0) {
                   delete params.conceptIds;
                   params.termFilter = termFilter;
-                  doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+                  getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp).then(function(response) {
                     deferred.resolve(response);
                   }, function (error) {
                     deferred.reject(error);
@@ -1432,7 +1432,7 @@ angular.module('singleConceptAuthoringApp')
                 if (response.total === 0) {
                   delete params.conceptIds;
                   params.termFilter = termFilter;
-                  doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+                  getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp).then(function(response) {
                     deferred.resolve(response);
                   }, function (error) {
                     deferred.reject(error);
@@ -1452,8 +1452,7 @@ angular.module('singleConceptAuthoringApp')
           else {
             console.error('unrecognised ID');
             params.termFilter = termFilter;
-
-            doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+            getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp).then(function(response) {
               deferred.resolve(response);
             }, function (error) {
               deferred.reject(error);
@@ -1481,14 +1480,64 @@ angular.module('singleConceptAuthoringApp')
         // if the user is searching for text
         else {
           params.termFilter = termFilter;
-
-          doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
-            deferred.resolve(response);
-          }, function (error) {
-            deferred.reject(error);
-          });
+          if (termFilter && termFilter.trim().indexOf(' ') >= 0) {
+            doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error);
+            });
+          } else {
+            getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp).then(function(response) {
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error);
+            });
+          }
         }
 
+        return deferred.promise;
+      }
+
+      function getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp) {
+        let deferred = $q.defer();
+        $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + params.termFilter + '/concept-or-identifier-ref-concept', config).then(function (response) {
+          if (tsv) {
+            deferred.resolve(response);
+          }
+          else {
+            let results = [];
+            angular.forEach(response.data.items, function(item) {
+              let obj = {
+                active: item.active,
+                concept: {
+                  active: item.active,
+                  conceptId: item.conceptId,
+                  definitionStatus: item.definitionStatus,
+                  fsn: item.fsn ? item.fsn.term : item.fsn,
+                  preferredSynonym: item.pt ? item.pt.term : item.pt,
+                  moduleId: item.moduleId,
+                  term: item.pt ? item.pt.term : item.pt
+                }
+              };
+              results.push(obj);
+            });
+            response.data.items = results;
+            if (searchTimestamp) {
+              response.data.searchTimestamp = searchTimestamp;
+            }
+            deferred.resolve(response.data);
+          }
+        }, function (error) {
+          if (error && error.status === 404) {
+            doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error);
+            });
+          } else {
+            deferred.reject(error);
+          }
+        });
         return deferred.promise;
       }
 
@@ -2510,28 +2559,6 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function searchIdentifiers(branch, alternateIdentifier, acceptLanguageValue) {
-        var deferred = $q.defer();
-        var config = {};
-
-        if (acceptLanguageValue) {
-          // declare headers if not specified
-          if (!config.headers) {
-            config.headers = {};
-          }
-          // set the accept language header
-          config.headers['Accept-Language'] = acceptLanguageValue;
-        }
-
-        $http.get(apiEndpoint + branch + '/identifiers?alternateIdentifier=' + alternateIdentifier, config).then(function (response) {
-          deferred.resolve(response.data);
-        }, function (error) {
-          deferred.reject(error);
-        });
-
-        return deferred.promise;
-      }
-
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2595,9 +2622,6 @@ angular.module('singleConceptAuthoringApp')
         getMembersByRefsetAndReferencedComponent: getMembersByRefsetAndReferencedComponent,
         getReferenceSetsByReferencedComponent: getReferenceSetsByReferencedComponent,
         getGciExpressionsFromTarget: getGciExpressionsFromTarget,
-
-        // identifier functionality
-        searchIdentifiers: searchIdentifiers,
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,

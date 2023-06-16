@@ -218,7 +218,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.userOptions.template = '';
         $scope.loadPerformed = false;
-        $scope.identifierMode = false;
         $scope.isEscgMode = false;
         $scope.templateMode = false;
         if(metadataService.isTemplatesEnabled())
@@ -236,11 +235,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   $scope.userOptions.statedSelection = 'stated';
                   $scope.userOptions.searchType = 'Active only' ;
                 }
-                else if (value === 'Identifier') {
-                  $scope.searchMode = 'LOINC Code';
-                  $scope.identifierMode = true;
-                  $scope.userOptions.searchType = 'Active only' ;
-                }
                 else {
                   $scope.searchMode = 'Text';
                   $scope.userOptions.searchType = 'Active only';
@@ -255,11 +249,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.userOptions.statedSelection = 'inferred';
               $scope.userOptions.searchType = 'Active only';
               $scope.selectedLanguageRefsets = [];
-            }
-            else if (value === 'Identifier') {
-              $scope.searchMode = 'LOINC Code';
-              $scope.identifierMode = true;
-              $scope.userOptions.searchType = 'Active only' ;
             }
             else {
               $scope.searchMode = 'Text';
@@ -447,23 +436,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               $scope.selectedResultsList.push(item.concept.conceptId);
             }
           });
-          if ($scope.identifierMode) {
-            $scope.downloadSearchResults($scope.selectedResultsList.join(','), $scope.selectedResultsList);
-          } else {
-            $scope.downloadSearchResults($scope.searchStr, $scope.selectedResultsList);
-          }          
+          $scope.downloadSearchResults($scope.searchStr, $scope.selectedResultsList);          
         }
         else {
-          if ($scope.identifierMode) {
-            $scope.results.filter(function(item) {
-              if(item.selected) {
-                $scope.selectedResultsList.push(item.concept.conceptId);
-              }
-            });
-            $scope.downloadSearchResults($scope.selectedResultsList.join(','), $scope.selectedResultsList);
-          } else {
-            $scope.downloadSearchResults($scope.searchStr, $scope.templateMode ? $scope.batchIdList : undefined);
-          }          
+          $scope.downloadSearchResults($scope.searchStr, $scope.templateMode ? $scope.batchIdList : undefined);          
         }
       };
 
@@ -638,38 +614,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.userOptions.selectedDialect === (usModel.dialectId + fsnSuffix);
 
         $scope.searchTimestamp = new Date().getTime();
-        if ($scope.identifierMode) {
-          terminologyServerService.searchIdentifiers($scope.branch, searchStr, acceptLanguageValue).then(function(response) {            
-            if(response.total > 0) {
-              if(response.searchAfter){
-                $scope.searchAfter = response.searchAfter;
-              }
-              $scope.loadPerformed = true;
-              $scope.searchTotal = addCommas(response.total);
-
-              var resultItems = [];
-              angular.forEach(response.items, function (item) {
-                var concept = {};
-                concept.active = item.referencedComponent.active;
-                var innerConcept = {};
-                innerConcept = item.referencedComponent;
-                innerConcept.fsn = item.referencedComponent.fsn.term;
-                innerConcept.term = item.referencedComponent.pt.term;
-                innerConcept.preferredSynonym = item.referencedComponent.pt.term;
-                concept.concept = innerConcept;
-                resultItems.push(concept);
-              });
-
-              $scope.storedResults = appendResults ? $scope.storedResults.concat(resultItems) : resultItems;
-              $scope.processResults();
-            }
-            else {
-              $scope.loadPerformed = false;
-              $scope.searchStatus = 'No results';
-            }
-          });
-        }
-        else if($scope.userOptions.template) {
+        if($scope.userOptions.template) {
             templateService.searchByTemplate($scope.userOptions.template.name, $scope.branch, $scope.userOptions.statedSelection, $scope.userOptions.model).then(function(results){
                 $scope.batchIdList = results.data;
                 if(results.data.length > 0){
