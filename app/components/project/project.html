@@ -21,6 +21,9 @@
         <div class="col-md-12 no-padding" ng-if="project.lastRebaseTime">
           <p class="p-l-15 m-b-0 promotion-box">Last rebased date: {{project.lastRebaseTime | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</p>
         </div>
+        <div class="col-md-12 no-padding">
+          <p class="p-l-15 m-b-0 promotion-box">View Metadata: <a href="javascript:void(0);" ng-click="viewProjectMetadata()"><i class="md md-launch"></i></a></p>
+        </div>
       </div>
       <div class="col-md-8 project-main-buttons p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
