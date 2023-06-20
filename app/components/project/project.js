@@ -205,6 +205,12 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
+      $scope.viewProjectMetadata = function () {
+        return terminologyServerService.getEndpoint().then(function(endpoint) {
+          window.open(endpoint + 'branches/' + $scope.branch + '/metadata?includeInheritedMetadata=true', '_blank');
+        });
+      };
+
       $scope.$on('reloadProject', function (event, data) {
         if (!data || data.project === $routeParams.projectKey) {
           $scope.getProject();
