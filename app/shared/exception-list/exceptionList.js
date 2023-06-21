@@ -55,7 +55,6 @@ angular.module('singleConceptAuthoringApp')
                     componentId: item.componentId,
                     timestamp: new Date(item.creationDate).getTime(),
                     user: item.userId,
-                    expirationDate: item.expirationDate,
                     reason: item.reason
                   });
                 });
