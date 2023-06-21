@@ -27,13 +27,13 @@
       </div>
       <div class="col-md-8 project-main-buttons p-r-10">
         <div class="btn-group pull-right p-t-10 p-r-10">
-          <button ng-disabled="lockOrUnlockTaskInProgress" class="btn btn-border tooltips-bottom xlarge-size-tooltip" ng-click="toggleTaskPromotion()">
+          <button ng-if="userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD') || userRoles.includes('PROJECT_LEAD')" ng-disabled="lockOrUnlockTaskInProgress" class="btn btn-border tooltips-bottom xlarge-size-tooltip" ng-click="toggleTaskPromotion()">
             <div class="project-icon blue darken-1 pull-left" style="background-color: #ff9400;">
               <div class="fa {{project.taskPromotionDisabled ? 'fa-lock' : 'fa-unlock'}}"></div>
             </div>
             <div class="inline">{{project.taskPromotionDisabled ? 'Unlock' : 'Lock'}} Tasks</div>
           </button>
-          <button ng-disabled="lockOrUnlockProjectInProgress" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProject()">
+          <button ng-if="userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')" ng-disabled="lockOrUnlockProjectInProgress" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="toggleLockProject()">
             <div
               class="project-icon red pull-left">
               <div class="fa {{project.projectLocked ? 'fa-lock' : 'fa-unlock'}}"></div>
