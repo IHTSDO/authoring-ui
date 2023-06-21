@@ -101,6 +101,9 @@
         margin-left: -20px; 
         margin-top: 0px;
     }
+    textarea.form-control {
+        height: auto !important;
+    }
     .datepicker {
         input {
             margin-left: 10px; 
