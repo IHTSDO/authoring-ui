@@ -64,10 +64,10 @@
         
         <li class="col-md-6" ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="criteria.manual && !criteria.id.includes('task-review-changes')">
           <div class="timeline-badge">
-              <div ng-if="criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 6px; top: 2px;"></div>
-              <div ng-if="criteria.complete && !userRoles.includes(criteria.requiredRole)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; position: absolute; left: 6px; top: 2px;"></div>
-              <div ng-if="!criteria.complete && userRoles.includes(criteria.requiredRole)" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
-              <div ng-if="!criteria.complete && !userRoles.includes(criteria.requiredRole)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
+              <div ng-if="criteria.complete && userHasRole(criteria.requiredRoles)" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 6px; top: 2px;"></div>
+              <div ng-if="criteria.complete && !userHasRole(criteria.requiredRoles)" class="fa fa-check-square pull-right" style="color: grey; font-size:18px; position: absolute; left: 6px; top: 2px;"></div>
+              <div ng-if="!criteria.complete && userHasRole(criteria.requiredRoles)" ng-click="acceptManualSac(criteria.id)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
+              <div ng-if="!criteria.complete && !userHasRole(criteria.requiredRoles)" class="md-check-box-outline-blank pull-right" style="color: grey; font-size:18px; position: absolute; left: 0px; top: 2px;"></div>
           </div>
           <div style="font-size: 12px; margin-left: 15px;">
                 {{criteria.label}}

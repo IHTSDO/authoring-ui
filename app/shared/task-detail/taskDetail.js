@@ -784,6 +784,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         window.open(rootUrl[1] + '/browse/' + issueKey, issueKey);
       };
+
+      $scope.userHasRole = function(requiredRoles) {
+        return !requiredRoles || $scope.userRoles.filter(function(role) { return requiredRoles.indexOf(role) !== -1;}).length !== 0; 
+      };
         
       $scope.pollForCompletion = function () {
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {

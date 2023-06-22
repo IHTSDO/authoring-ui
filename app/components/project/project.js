@@ -845,6 +845,10 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
+      $scope.userHasRole = function(requiredRoles) {
+        return !requiredRoles || $scope.userRoles.filter(function(role) { return requiredRoles.indexOf(role) !== -1;}).length !== 0; 
+      };
+
       // on load, retrieve tasks for project
       function initialize() {
         // initialize the project
