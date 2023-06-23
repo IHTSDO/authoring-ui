@@ -36,6 +36,8 @@ angular.module('singleConceptAuthoringApp')
 
     var snomedCtRootId = '138875005';
 
+    var previousDependantVersionEffectiveTime = null;
+
     $rootScope.extensionMetadataSet = false;
 
     function getSnomedCtRootId() {
@@ -979,6 +981,14 @@ angular.module('singleConceptAuthoringApp')
       return result;
     }
 
+    function setPreviousDependantVersionEffectiveTime(effectiveTime) {
+      previousDependantVersionEffectiveTime = effectiveTime
+    }
+
+    function getPreviousDependantVersionEffectiveTime() {
+      return previousDependantVersionEffectiveTime;
+    }
+
     return {
 
       // relationship functions
@@ -1081,7 +1091,9 @@ angular.module('singleConceptAuthoringApp')
       getCodeSystenForGivenBranch: getCodeSystenForGivenBranch,
       getCodeSystenForGivenShortname: getCodeSystenForGivenShortname,
       getDropdownLanguages: getDropdownLanguages,
-      getOptionalLanguageRefsets: getOptionalLanguageRefsets
+      getOptionalLanguageRefsets: getOptionalLanguageRefsets,
+      setPreviousDependantVersionEffectiveTime: setPreviousDependantVersionEffectiveTime,
+      getPreviousDependantVersionEffectiveTime: getPreviousDependantVersionEffectiveTime
     };
 
   }])

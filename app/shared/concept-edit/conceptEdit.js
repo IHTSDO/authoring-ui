@@ -4991,133 +4991,180 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.revertAxiom = function (axiom) {
           modalService.confirm('The axiom will be reverted to the previously published version. Do you want to proceed?').then(function () {
             notificationService.sendMessage('Reverting axiom to the previously published version...');
-            var codeSystemShortName = '';
-            getCodeSystemShortName().then(function (response) {
-              codeSystemShortName = response;
-              getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
-                if (response.items.length > 0) {
-                  var version = response.items[response.items.length - 1].version;
-                  var versionBranch = null;
-                  if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
-                    versionBranch = 'MAIN/' + version;
-                  } else {
-                    var arr = scope.branch.split("/");
-                    versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
-                  }
-                  terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (versionedConcept) {
-                    if(axiom.type === 'additional'){
-                        angular.forEach(versionedConcept.classAxioms, function(versionedAxiom){
-                            if(axiom.axiomId === versionedAxiom.axiomId){
-                                angular.forEach(scope.concept.classAxioms, function(unversionedAxiom){
-                                  if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
-                                    unversionedAxiom.relationships = versionedAxiom.relationships;
-                                    unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
-                                    unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
-                                    unversionedAxiom.active = versionedAxiom.active;
-                                    unversionedAxiom.moduleId = versionedAxiom.moduleId;
-                                    scope.saveConcept();
-                                    return
-                                  }
-                                })
-                            }
-                        })
-                    }
-                    else{
-                      angular.forEach(versionedConcept.gciAxioms, function(versionedAxiom){
-                        if(axiom.axiomId === versionedAxiom.axiomId){
-                          angular.forEach(scope.concept.gciAxioms, function(unversionedAxiom){
-                            if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
-                              unversionedAxiom.relationships = versionedAxiom.relationships;
-                              unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
-                              unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
-                              unversionedAxiom.active = versionedAxiom.active;
-                              unversionedAxiom.moduleId = versionedAxiom.moduleId;
-                              scope.saveConcept();
-                              return
-                            }
-                          })
-                        }
-                      })
-                    }
-                  }, function (error) {
-                    notificationService.sendError('Failed to get versioned axiom');
-                  });
+            var codeSystemShortName = getCodeSystemShortName();
+            getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
+              if (response.items.length > 0) {
+                var version = response.items[response.items.length - 1].version;
+                var versionBranch = null;
+                if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
+                  versionBranch = 'MAIN/' + version;
                 } else {
-                  notificationService.sendError('Failed to get versions');
+                  var arr = scope.branch.split("/");
+                  versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
                 }
-              });
+                terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (versionedConcept) {
+                  if(axiom.type === 'additional'){
+                      angular.forEach(versionedConcept.classAxioms, function(versionedAxiom){
+                          if(axiom.axiomId === versionedAxiom.axiomId){
+                              angular.forEach(scope.concept.classAxioms, function(unversionedAxiom){
+                                if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
+                                  unversionedAxiom.relationships = versionedAxiom.relationships;
+                                  unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
+                                  unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
+                                  unversionedAxiom.active = versionedAxiom.active;
+                                  unversionedAxiom.moduleId = versionedAxiom.moduleId;
+                                  scope.saveConcept();
+                                  return
+                                }
+                              })
+                          }
+                      })
+                  }
+                  else{
+                    angular.forEach(versionedConcept.gciAxioms, function(versionedAxiom){
+                      if(axiom.axiomId === versionedAxiom.axiomId){
+                        angular.forEach(scope.concept.gciAxioms, function(unversionedAxiom){
+                          if(unversionedAxiom.axiomId === versionedAxiom.axiomId){
+                            unversionedAxiom.relationships = versionedAxiom.relationships;
+                            unversionedAxiom.effectiveTime = versionedAxiom.effectiveTime;
+                            unversionedAxiom.definitionStatus = versionedAxiom.definitionStatus;
+                            unversionedAxiom.active = versionedAxiom.active;
+                            unversionedAxiom.moduleId = versionedAxiom.moduleId;
+                            scope.saveConcept();
+                            return
+                          }
+                        })
+                      }
+                    })
+                  }
+                }, function (error) {
+                  notificationService.sendError('Failed to get versioned axiom');
+                });
+              } else {
+                notificationService.sendError('Failed to get versions');
+              }
             });
           }, function () {
             // do nothing
           });
-
         };
+
+        scope.checkRevertingConceptPermission = function() {
+          if (metadataService.isExtensionSet()) {
+            var previousDependencyRelease = metadataService.getPreviousDependantVersionEffectiveTime();
+            if (previousDependencyRelease) {              
+              let intModuleIds = [];
+              angular.forEach(metadataService.getInternationalMetadata().modules, function (module) {
+                intModuleIds.push(module.id);
+              });
+              if (intModuleIds.includes(scope.concept.moduleId)
+                && scope.concept.releasedEffectiveTime
+                && scope.concept.releasedEffectiveTime > previousDependencyRelease) {
+                  return false;
+              }
+
+              for (let i = 0; i < scope.concept.descriptions.length; i++) {
+                var desc = scope.concept.descriptions[i];
+                if (intModuleIds.includes(desc.moduleId)
+                  && desc.releasedEffectiveTime
+                  && desc.releasedEffectiveTime > previousDependencyRelease) {
+                    return false;
+                }
+              }
+            
+              for (let i = 0; i < scope.concept.classAxioms.length; i++) {
+                var axiom = scope.concept.classAxioms[i];
+                if (intModuleIds.includes(axiom.moduleId)
+                  && axiom.releasedEffectiveTime
+                  && axiom.releasedEffectiveTime > previousDependencyRelease) {
+                    return false;
+                }
+              }
+            
+              for (let i = 0; i < scope.concept.gciAxioms.length; i++) {
+                var axiom = scope.concept.gciAxioms[i];
+                if (intModuleIds.includes(axiom.moduleId)
+                  && axiom.releasedEffectiveTime
+                  && axiom.releasedEffectiveTime > previousDependencyRelease) {
+                    return false;
+                }              
+              }
+            
+              for (let i = 0; i < scope.concept.relationships.length; i++) {
+                var rel = scope.concept.relationships[i];
+                if (intModuleIds.includes(rel.moduleId)
+                  && rel.releasedEffectiveTime
+                  && rel.releasedEffectiveTime > previousDependencyRelease) {
+                    return false;
+                }
+              }              
+            }
+          }
+          return true;
+        }
 
         scope.revertToVersion = function () {
           modalService.confirm('The concept will be reverted to the previously published version. Do you want to proceed?').then(function () {
             notificationService.sendMessage('Reverting concept to the previously published version...');
-            var codeSystemShortName = '';
-            getCodeSystemShortName().then(function (response) {
-              codeSystemShortName = response;
-              getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
-                if (response.items.length > 0) {
-                  var version = response.items[response.items.length - 1].version;
-                  var versionBranch = null;
-                  if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
-                    versionBranch = 'MAIN/' + version;
-                  } else {
-                    var arr = scope.branch.split("/");
-                    versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
-                  }
-
-                  var result = {};
-                  result.versionedConcept = null;
-                  result.projectConcept = null;
-
-                  var getVersionedConceptFn = function () {
-                    var deferred = $q.defer();
-                    terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
-                      result.versionedConcept = response;
-                      deferred.resolve();
-                    }, function (error) {
-                      deferred.resolve();
-                    });
-                    return deferred.promise;
-                  };
-
-                  var getProjectConceptFn = function () {
-                    var deferred = $q.defer();
-                    var arr = scope.branch.split("/");
-                    var branch = arr.slice(0,arr.length - 1).join("/");
-                    terminologyServerService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
-                      result.projectConcept = response;
-                      deferred.resolve();
-                    }, function (error) {
-                      deferred.resolve();
-                    });
-                    return deferred.promise;
-                  };
-
-                  var promises = [];
-                  promises.push(getVersionedConceptFn());
-                  promises.push(getProjectConceptFn());
-                  // on resolution of all promises
-                  $q.all(promises).then(function () {
-                    if (!result.versionedConcept && !result.projectConcept){
-                      notificationService.clear();
-                      modalService.message('This concept was created on this task, please use the delete functionality to remove it.');
-                    } else {
-                      scope.concept = result.versionedConcept ? result.versionedConcept : result.projectConcept;
-                      scope.unmodifiedConcept = JSON.parse(JSON.stringify(result.versionedConcept ? result.versionedConcept : result.projectConcept));
-                      scope.isModified = false;
-                      scope.componentStyles = {}; // clear highlighting if any
-                      scope.saveConcept();
-                    }
-                  });
+            var codeSystemShortName = getCodeSystemShortName();
+            getAllCodeSystemVersionsByShortName(codeSystemShortName).then(function (response) {
+              if (response.items.length > 0) {
+                var version = response.items[response.items.length - 1].version;
+                var versionBranch = null;
+                if(codeSystemShortName === 'SNOMEDCT' || response.isNewBranch) {
+                  versionBranch = 'MAIN/' + version;
                 } else {
-                  notificationService.sendError('Failed to get versions');
+                  var arr = scope.branch.split("/");
+                  versionBranch = arr.slice(0,arr.length - 2).join("/") + '/' + version;
                 }
-              });
+
+                var result = {};
+                result.versionedConcept = null;
+                result.projectConcept = null;
+
+                var getVersionedConceptFn = function () {
+                  var deferred = $q.defer();
+                  terminologyServerService.getFullConcept(scope.concept.conceptId, versionBranch).then(function (response) {
+                    result.versionedConcept = response;
+                    deferred.resolve();
+                  }, function (error) {
+                    deferred.resolve();
+                  });
+                  return deferred.promise;
+                };
+
+                var getProjectConceptFn = function () {
+                  var deferred = $q.defer();
+                  var arr = scope.branch.split("/");
+                  var branch = arr.slice(0,arr.length - 1).join("/");
+                  terminologyServerService.getFullConcept(scope.concept.conceptId, branch).then(function (response) {
+                    result.projectConcept = response;
+                    deferred.resolve();
+                  }, function (error) {
+                    deferred.resolve();
+                  });
+                  return deferred.promise;
+                };
+
+                var promises = [];
+                promises.push(getVersionedConceptFn());
+                promises.push(getProjectConceptFn());
+                // on resolution of all promises
+                $q.all(promises).then(function () {
+                  if (!result.versionedConcept && !result.projectConcept){
+                    notificationService.clear();
+                    modalService.message('This concept was created on this task, please use the delete functionality to remove it.');
+                  } else {
+                    scope.concept = result.versionedConcept ? result.versionedConcept : result.projectConcept;
+                    scope.unmodifiedConcept = JSON.parse(JSON.stringify(result.versionedConcept ? result.versionedConcept : result.projectConcept));
+                    scope.isModified = false;
+                    scope.componentStyles = {}; // clear highlighting if any
+                    scope.saveConcept();
+                  }
+                });
+              } else {
+                notificationService.sendError('Failed to get versions');
+              }
             });
           }, function () {
             // do nothing
@@ -5126,19 +5173,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         function getCodeSystemShortName() {
-          var deferred = $q.defer();
-
-          if (!metadataService.isExtensionSet()) {
-            deferred.resolve('SNOMEDCT');
-          } else {
-            //var branch = 'MAIN/2018-01-31/SNOMEDCT-DK/TESTDK1/TESTDK1-34';
-            var arr = scope.branch.split("/");
-            var branch = arr.slice(0,arr.length - 2).join("/");
-            terminologyServerService.getBranch(branch).then(function (response) {
-              deferred.resolve(response.metadata.codeSystemShortName);
-            });
-          }
-          return deferred.promise;
+          return !metadataService.isExtensionSet() ? 'SNOMEDCT' : metadataService.getExtensionMetadata().codeSystemShortName;
         }
 
         function getAllCodeSystemVersionsByShortName (codeSystemShortName) {
@@ -5968,7 +6003,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           $rootScope.$broadcast('editConcept', {conceptId: rel.type.conceptId, fsn: rel.type.fsn, noSwitchView: true});
         };
 
-        function getRole () {
+        function getRoleForTask () {
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
               accountService.getRoleForTask(task).then(function (role) {
@@ -6289,7 +6324,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // on load, check task status
           checkPromotedStatus();
 
-          getRole();
+          getRoleForTask();
 
           if (scope.concept.validation) {
             scope.validation = scope.concept.validation;
