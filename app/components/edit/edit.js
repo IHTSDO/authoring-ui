@@ -2103,6 +2103,17 @@ angular.module('singleConceptAuthoringApp.edit', [
                 }
               }
             }
+            metadataService.setPreviousDependantVersionEffectiveTime(null);
+            if ($scope.codeSystemShortname) {
+              terminologyServerService.getAllCodeSystemVersionsByShortName($scope.codeSystemShortname).then(function (response) {
+                if (response.data.items && response.data.items.length > 0) {
+                  var items = response.data.items;
+                  if (items[items.length - 1].dependantVersionEffectiveTime) {
+                    metadataService.setPreviousDependantVersionEffectiveTime(items[items.length - 1].dependantVersionEffectiveTime);
+                  }
+                }
+              });
+            }
           }
           getRoleForTask().then(function() {
             if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER') {

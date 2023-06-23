@@ -138,7 +138,7 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="revertToVersion()" ng-if="!isStatic && !isIntegrityCheckView && role === 'AUTHOR'"
+                  ng-click="revertToVersion()" ng-if="!isStatic && !isIntegrityCheckView && role === 'AUTHOR' && checkRevertingConceptPermission()"
                   ng-disabled="!isSctid(concept.conceptId) || !concept.active">
             <span>Revert to version</span>
           </button>
