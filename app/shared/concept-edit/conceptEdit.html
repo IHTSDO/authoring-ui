@@ -138,9 +138,9 @@
           </button>
           <button type="button"
                   class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom medium-size-tooltip offset-tooltip-right tooltips-light"
-                  ng-click="revertToVersion()" ng-if="!isStatic && !isIntegrityCheckView && role === 'AUTHOR' && checkRevertingConceptPermission()"
-                  ng-disabled="!isSctid(concept.conceptId) || !concept.active">
-            <span>Revert to version</span>
+                  ng-click="revertToVersion()" ng-if="!isStatic && !isIntegrityCheckView && role === 'AUTHOR'"
+                  ng-disabled="!isSctid(concept.conceptId) || !concept.active || !abiltiyToRevertConcept">
+            <span>{{abiltiyToRevertConcept ? 'Revert to version' : 'Unable to revert to version as this concept contains the latest INT components that do not exist in previous versioned branch'}}</span>
           </button>
           <button type="button"
                   ng-click="toggleConceptActive(concept, true)"

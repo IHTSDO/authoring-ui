@@ -5049,7 +5049,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        scope.checkRevertingConceptPermission = function() {
+        scope.abiltiyToRevertConcept = false;
+        function checkRevertingConceptAbility() {
           if (metadataService.isExtensionSet()) {
             var previousDependencyRelease = metadataService.getPreviousDependantVersionEffectiveTime();
             if (previousDependencyRelease) {              
@@ -5060,7 +5061,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (intModuleIds.includes(scope.concept.moduleId)
                 && scope.concept.releasedEffectiveTime
                 && scope.concept.releasedEffectiveTime > previousDependencyRelease) {
-                  return false;
+                  return;
               }
 
               for (let i = 0; i < scope.concept.descriptions.length; i++) {
@@ -5068,7 +5069,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (intModuleIds.includes(desc.moduleId)
                   && desc.releasedEffectiveTime
                   && desc.releasedEffectiveTime > previousDependencyRelease) {
-                    return false;
+                    return;
                 }
               }
             
@@ -5077,7 +5078,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (intModuleIds.includes(axiom.moduleId)
                   && axiom.releasedEffectiveTime
                   && axiom.releasedEffectiveTime > previousDependencyRelease) {
-                    return false;
+                    return;
                 }
               }
             
@@ -5086,7 +5087,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (intModuleIds.includes(axiom.moduleId)
                   && axiom.releasedEffectiveTime
                   && axiom.releasedEffectiveTime > previousDependencyRelease) {
-                    return false;
+                    return;
                 }              
               }
             
@@ -5095,12 +5096,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (intModuleIds.includes(rel.moduleId)
                   && rel.releasedEffectiveTime
                   && rel.releasedEffectiveTime > previousDependencyRelease) {
-                    return false;
+                    return;
                 }
               }              
             }
           }
-          return true;
+          scope.abiltiyToRevertConcept = true;
         }
 
         scope.revertToVersion = function () {
@@ -6323,6 +6324,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // on load, check task status
           checkPromotedStatus();
+
+          // detect reverting concept ability
+          checkRevertingConceptAbility();
 
           getRoleForTask();
 
