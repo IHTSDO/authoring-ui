@@ -13,7 +13,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.projectBranch = null;
       $scope.promoting = false;
       $scope.automatePromotionStatus = "";
-      $scope.automatePromotionErrorMsg = "";    
+      $scope.automatePromotionErrorMsg = "";
       $scope.hasRequestPendingClarification = crsService.hasRequestPendingClarification;
       $scope.isTaskPromotionDisabled = metadataService.isTaskPromotionDisabled;
       $scope.sac = [];
@@ -29,17 +29,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
       $scope.taxonomyConcept = null;
-        
+
       $scope.sacSignedOff = function () {
           let value = true;
-          angular.forEach($scope.sac, function (criteria) {                      
+          angular.forEach($scope.sac, function (criteria) {
               if (criteria.complete === false) {
-                value = false;                       
+                value = false;
               }
             });
           return value;
       }
-      
+
       $scope.markBranchAsComplex = function () {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
@@ -63,18 +63,18 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                           $scope.sac.push(criteria);
                         }, function() {
                           $scope.sac.push(criteria);
-                        });                                                 
+                        });
                       } else {
                         $scope.sac.push(criteria);
-                      }                                          
+                      }
                     }
-                  }); 
-                }                
+                  });
+                }
               });
-          });          
+          });
         });
       }
-      
+
       rnmService.getBranchLineItems($scope.branch).then(function (lineItems) {
           if (lineItems) {
             angular.forEach(lineItems, function (item) {
@@ -85,7 +85,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             }
           }
       });
-        
+
       rnmService.getBranchLineItems('MAIN').then(function (lineItems) {
           if (lineItems) {
             angular.forEach(lineItems, function (item) {
@@ -93,7 +93,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             });
           }
       });
-        
+
       $scope.openLineItemModal = function (id) {
           let item = {};
           let globalItems = [];
@@ -111,7 +111,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 angular.forEach(lineItem.children, function (child) {
                   if ($scope.lineItems.filter(function(item) {return item.title === child.title}).length == 0) {
                     globalItems.push(child);
-                  }                    
+                  }
                 });
             }
           });
@@ -146,7 +146,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 },
                 mode: function() {
                   return mode;
-                },                
+                },
                 isProject: function() {
                   return false;
                 }
@@ -171,7 +171,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               });
           });
       };
-        
+
       $scope.acceptManualSac = function (id) {
           aagService.acceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
@@ -182,11 +182,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                         $scope.sac.push(criteria);
                       }
                     });
-                  }                  
+                  }
               });
           });
       };
-        
+
       $scope.unacceptManualSac = function (id) {
           aagService.unacceptBranchSAC($scope.branch, id).then(function (sac) {
               aagService.getBranchSAC($scope.branch).then(function (sac) {
@@ -197,7 +197,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                         $scope.sac.push(criteria);
                       }
                     });
-                  }                  
+                  }
               });
           });
       };
@@ -243,7 +243,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           return;
         }
 
-        $scope.promoting = true;        
+        $scope.promoting = true;
         notificationService.sendMessage('Preparing for task promotion...');
 
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
@@ -306,7 +306,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   }
                   if($scope.lineItems){
                       angular.forEach($scope.lineItems, function (lineItem){
-                          lineItem.content = lineItem.content.slice(0, -2);
                           lineItem.content = $scope.branch + ' - ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '\n\n' + lineItem.content;
                           rnmService.updateBranchLineItem($scope.branch, lineItem).then(function (lineItem){
                               rnmService.promoteBranchLineItem($scope.branch, lineItem.id).then(function (lineItem) {
@@ -336,14 +335,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $rootScope.branchLocked = false;
         });
       };
-      
+
       $scope.proceedAutomatePromotion = function () {
         if ($scope.isTaskPromotionDisabled()) {
           return;
         }
         notificationService.sendMessage('Preparing for task promotion automation...');
         $scope.automatePromotionErrorMsg = '';
-        $scope.automatePromotionStatus = '';       
+        $scope.automatePromotionStatus = '';
 
         promotionService.checkPrerequisitesForAutomatedPromotionTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
 
@@ -383,13 +382,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               setTimeout(function(){
                 angular.element(document.activeElement).trigger('blur');
               });
-            });            
+            });
           }
         }, function (error) {
           notificationService.sendError('Unexpected error preparing for promotion: ' + error);
           $scope.promoting = false;
         });
-      };     
+      };
 
       function promoteTaskAutomation() {
         notificationService.sendMessage('Starting automated promotion...');
@@ -408,7 +407,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         checkPrerequisitesForValidation().then(function(message) {
           if (message) {
-            modalService.confirm(message).then(function () {        
+            modalService.confirm(message).then(function () {
               markTaskInProgressIfAnyAndValidate();
             }, function() {
               setTimeout(function(){
@@ -437,22 +436,22 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           let msg = null;
           if (response.latestClassificationJson) {
             let latestClassificationJson = response.latestClassificationJson;
-            if (latestClassificationJson.status === 'SAVED' &&  
+            if (latestClassificationJson.status === 'SAVED' &&
               (new Date(response.branchHeadTimestamp)).getTime() - (new Date(latestClassificationJson.saveDate)).getTime() < 1000) {
               msg = null;
             } else if ((new Date(latestClassificationJson.creationDate)).getTime() < response.branchHeadTimestamp) {
               msg = 'There are new changes on this task since the last classification. Do you still want to start a validation?';
             } else {
-              if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound) 
+              if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound)
                 && latestClassificationJson.status !== 'SAVED') {
                 msg = 'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
-            } 
+            }
           } else {
             msg = 'Classification has not been run. Do you still want to start a validation?';
           }
 
-          deferred.resolve(msg);         
+          deferred.resolve(msg);
         });
         return deferred.promise;
       }
@@ -620,17 +619,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         terminologyServerService.getBranch($scope.branch).then(function (response) {
 
           // if lock found, set rootscope variable and continue polling
-          if (response.locked) {            
+          if (response.locked) {
             $rootScope.branchLocked = true;
             $timeout(function () {
               // Stop checking for lock if the task key not found
               if ($routeParams.taskKey && $scope.branch.endsWith($routeParams.taskKey)) {
                 $scope.checkForLock();
-              }              
+              }
             }, 10000);
            }
-          else {            
-            $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'SCHEDULED' || $scope.task.latestClassificationJson.status === 'BUILDING');            
+          else {
+            $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'SCHEDULED' || $scope.task.latestClassificationJson.status === 'BUILDING');
             $rootScope.branchLocked = $rootScope.classificationRunning;
           }
           if (response.hasOwnProperty('userRoles')) {
@@ -691,7 +690,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     $scope.automatePromotionErrorMsg =  'Error automate promotion: Classification already in progress on this branch.';
                   }
                   notificationService.clear();
-                  $scope.checkForLock();                  
+                  $scope.checkForLock();
                   break;
               case 'Classified with results':
               case 'Classified with equivalencies Found':
@@ -734,15 +733,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 $rootScope.branchLocked = false;
                 if (!isInitialPageLoad) {
                   $scope.automatePromotionErrorMsg =  'Error automate promotion' + (typeof response.message !== 'undefined' ? ': ' + response.message : '');
-                  notificationService.clear();                  
-                }                
+                  notificationService.clear();
+                }
                 break;
               default:
                 $rootScope.automatedPromotionInQueued = false;
                 $rootScope.classificationRunning = false;
                 $rootScope.branchLocked = false;
             }
-            
+
             if ($scope.automatePromotionStatus === 'Queued'
                 || response.status === 'Rebasing'
                 || response.status === 'Classifying'
@@ -796,9 +795,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.userHasRole = function(requiredRoles) {
-        return !requiredRoles || $scope.userRoles.filter(function(role) { return requiredRoles.indexOf(role) !== -1;}).length !== 0; 
+        return !requiredRoles || $scope.userRoles.filter(function(role) { return requiredRoles.indexOf(role) !== -1;}).length !== 0;
       };
-        
+
       $scope.pollForCompletion = function () {
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               // Poll if still running
@@ -826,7 +825,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       function getCRSRequests() {
         scaService.getCRSRequests($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
           $scope.crsConcepts = response;
-          filterDuplicatedCRSRequests();          
+          filterDuplicatedCRSRequests();
         });
       }
 
@@ -860,7 +859,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           } else {
             $rootScope.branchLocked = true;
           }
-          
+
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
@@ -899,11 +898,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.$on('reloadTask', function (event, data) {
         if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
           initialize();
-        }        
+        }
       });
 
       $scope.$on('promotion.completed', function (event, data) {
-        if (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {          
+        if (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
             scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
                 if(response.metadata && response.metadata.internal && response.metadata.internal.integrityIssue) {
                     terminologyServerService.branchUpgradeIntegrityCheck(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName).then( function(response) {
@@ -921,7 +920,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.$on('notification.branchState', function (event, data) {
         if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
           initialize();
-        }        
+        }
       });
 
 // reload SAC
@@ -932,12 +931,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (sac && sac.criteriaItems) {
             angular.forEach(sac.criteriaItems, function (criteria) {
               if (criteria.authoringLevel === "TASK") {
-                $scope.sac.push(criteria);                  
+                $scope.sac.push(criteria);
               }
-            }); 
-          }                
+            });
+          }
         });
-      }      
+      }
     });
 
 // re-initialize if concept change occurs and task is new
@@ -951,18 +950,18 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             return;
           }
         });
-        
+
         initialize();
       });
 
       $scope.$on('conceptEdit.conceptModified', function (event, data) {
         if ($scope.task.status === 'Review Completed') {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            $scope.task = response;            
+            $scope.task = response;
           });
         }
       });
-      
+
       $scope.$on('triggerTaskValidation', function (event, data) {
         if (data.task && data.task === $routeParams.taskKey && data.project === $routeParams.projectKey) {
           $scope.startValidation();
