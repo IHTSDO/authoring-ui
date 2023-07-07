@@ -96,7 +96,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         
       $scope.openLineItemModal = function (id) {
           let item = {};
-          let items = [];
           let globalItems = [];
           let readOnly = false;
           if(!$scope.userRoles.includes('AUTHOR') || $scope.role !== 'AUTHOR') {
@@ -116,6 +115,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 });
             }
           });
+          let mode;
+          if (readOnly) {
+            mode = 'READ_ONLY';
+          } else {
+            if (item.id) {
+              mode = 'EDIT';
+            } else {
+              mode = 'NEW';
+            }
+          }
+
           var modalInstance = $modal.open({
             templateUrl: 'shared/releaseNotes/lineItem.html',
             controller: 'lineItemCtrl',
@@ -129,15 +139,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   return item;
                 },
                 lineItems: function() {
-                  return items;
+                  return $scope.lineItems;
                 },
                 globalLineItems: function() {
                   return globalItems;
                 },
-                readOnly: function() {
-                  return readOnly;
-                },
-                all: function() {
+                mode: function() {
+                  return mode;
+                },                
+                isProject: function() {
                   return false;
                 }
               }
@@ -297,10 +307,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   if($scope.lineItems){
                       angular.forEach($scope.lineItems, function (lineItem){
                           lineItem.content = lineItem.content.slice(0, -2);
-                          lineItem.content = lineItem.content + ' : ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName;
+                          lineItem.content = $scope.branch + ' - ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '\n\n' + lineItem.content;
                           rnmService.updateBranchLineItem($scope.branch, lineItem).then(function (lineItem){
                               rnmService.promoteBranchLineItem($scope.branch, lineItem.id).then(function (lineItem) {
-                                });
+                              });
                           });
                       });
                   }

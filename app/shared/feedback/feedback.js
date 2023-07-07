@@ -544,15 +544,15 @@ angular.module('singleConceptAuthoringApp')
                     return item;
                   },
                   lineItems: function() {
-                    return scope.lineItems;
+                    return [];
                   },
                   globalLineItems: function() {
                     return [];
                   },
-                  readOnly: function() {
-                    return true;
+                  mode: function() {
+                    return 'READ_ONLY';
                   },
-                  all: function() {
+                  isProject: function() {
                     return false;
                   }
                 }

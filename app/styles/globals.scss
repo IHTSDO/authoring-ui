@@ -385,13 +385,18 @@ td select {
     overflow: auto;
     padding-top: 0px;
 }
+.modal-dialog:has(.release-note-modal) {
+    margin-top: 0px;
+}
 .release-note-modal .modal-body.scroll-if-height{
     overflow: auto;
-    max-height: 68vh;
+    max-height: calc(100vh - 236px);
     padding-top: 0px;
     height: auto;
 }
-
+.release-note-modal input {
+    height: 30px;
+}
 .jira-ticket-generation-modal .modal-body.scroll-if-height{
     overflow: auto;
     max-height: 65vh;
