@@ -35,12 +35,13 @@
         <td class="button-column">
           <button ng-if="failure.reason"
             title="View reason"
-            type="button" class="btn btn-round btn-default blue-grey-text darken-1"
+            type="button" class="btn-round blue-grey-text darken-1"
             id="reason-more-{{failure.id}}"
             popover-template="'shared/exception-list/reasonMore.html'"
             popover-placement="left-top"
             popover-trigger="click: click"
             popover-append-to-body="true"
+            style="background-color: transparent;"
           > <i class="fa fa-info-circle"></i>
           </button>
         </td>
