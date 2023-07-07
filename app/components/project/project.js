@@ -338,20 +338,32 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.openLineItemModal = function (id, all) {
           let item = {};
-          let items = $scope.lineItems;
           let globalItems = [];
-          let readOnly = false;
-          if (all){
-              readOnly = true;
-          }
-          if(!$scope.userRoles.includes('PROJECT_LEAD')) {
-             readOnly = true;
-          }
+          
           angular.forEach($scope.lineItems, function (lineItem) {
             if (lineItem.id === id) {
               item = lineItem;
             }
           });
+
+          let readOnly = false;
+          if (all){
+              readOnly = true;
+          }
+          else if(!$scope.userRoles.includes('PROJECT_LEAD') && item.id) {
+             readOnly = true;
+          }
+          
+          var mode;
+          if (readOnly) {
+            mode = 'READ_ONLY';
+          } else {
+            if (item.id) {
+              mode = 'EDIT';
+            } else {
+              mode = 'NEW';
+            }
+          }
           angular.forEach($scope.globalLineItems, function (lineItem) {
             if(lineItem.title === "Content Development Activity"){
                 angular.forEach(lineItem.children, function (child) {
@@ -374,16 +386,16 @@ angular.module('singleConceptAuthoringApp.project', [
                   return item;
                 },
                 lineItems: function() {
-                  return items;
+                  return $scope.lineItems;
                 },
                 globalLineItems: function() {
                   return globalItems;
                 },
-                readOnly: function() {
-                  return readOnly;
+                mode: function() {
+                  return mode;
                 },
-                all: function() {
-                    return all;
+                isProject: function() {
+                  return true;
                 }
               }
           });

@@ -1,39 +1,94 @@
 <div id="configModal" class="clearfix release-note-modal">
   <div class="modal-header">
-    <div ng-if="!new && !all" class="col-md-8">
-      <h4 class="modal-title" style="margin-left: -15px;">{{lineItem.title}}</h4>
-    </div>
-    <div ng-if="new && !all" class="col-md-8" style="margin-left: -10px;">
-      <h4 class="modal-title">Line Item:</h4>
-      <select ng-if="!globalLineItems" name="select-choice" class="form-control"
-                ng-options="lineItem.title for lineItem in lineItems"
-                ng-model="lineItem"
-                ng-change="selectLineItem(lineItem)"
-                style="margin-top:10px;">
-          <option value="" disabled selected>Please select a category</option>
-      </select>
-      <select ng-if="globalLineItems" name="select-choice" class="form-control"
-                ng-options="lineItem.title for lineItem in globalLineItems"
-                ng-model="lineItem"
-                ng-change="selectLineItem(lineItem)"
-                style="margin-top:10px;">
-          <option value="" disabled selected>Please select a category</option>
-      </select>
-    </div>
-    <div ng-if="all" class="col-md-8">
-      <h4 class="modal-title" style="margin-left: -15px;">All Project Release Notes:</h4>
-    </div>
+    <div class="col-md-8">
+      <h4 class="modal-title" style="margin-left: -10px;">{{new ? 'Line Item:' : (lineItem.id ? lineItem.title : 'All Project Release Notes:')}}</h4>
+    </div>    
     <div class="col-md-4">
       <button type="button" style="margin-right: -20px;" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
   </div>
-  <div class="modal-body scroll-if-height">  
-    <div class="col-md-12 no-padding release-notes">
+  <div class="modal-body scroll-if-height">
+    <div ng-if="new || (lineItem.id && !isProject)" class="col-md-12 no-padding" style="margin-left: -10px;">
+      <div class="col-md-8" ng-if="new">        
+        <select ng-if="!globalLineItems" name="select-choice" class="form-control"
+                  ng-options="lineItem.title for lineItem in lineItems"
+                  ng-model="lineItem"
+                  ng-change="selectLineItem(lineItem)"
+                  style="margin-top:10px;">
+            <option value="" disabled selected>Please select a category</option>
+        </select>
+        <select ng-if="globalLineItems" name="select-choice" class="form-control"
+                  ng-options="lineItem.title for lineItem in globalLineItems"
+                  ng-model="lineItem"
+                  ng-change="selectLineItem(lineItem)"
+                  style="margin-top:10px;">
+            <option value="" disabled selected>Please select a category</option>
+        </select>
+      </div>
+      <div class="col-md-6 no-padding" style="padding-left: 15px;">
+        <br>
+        <label class="modal-title">Change type</label>
+        <select name="select-choice" class="form-control"
+            ng-options="changeType for changeType in changeTypeOptions"
+            ng-model="lineItem.changeType"
+            ng-disabled="readOnly"
+            ng-change="checkLineItemContentUnChanged()"
+            style="height: 30px">
+        </select>
+
+        <label class="modal-title m-t-10">Additional change types</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.additionalChangeTypes" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Hierarchy</label>
+        <select name="select-choice" class="form-control"
+          ng-options="hierarchy for hierarchy in hierarchyOptions"
+          ng-model="lineItem.hierarchy"
+          ng-disabled="readOnly"
+          ng-change="checkLineItemContentUnChanged()"
+          style="height: 30px">
+        </select>
+
+        <label class="modal-title m-t-10">Changes in additional hierarchies</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.changedInAdditionalHierarchy" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Number of concepts edited (approx)</label>
+        <input type="number" class="form-control blue-underline" ng-model="lineItem.numberEditedConcepts" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Future changes planned?</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.futureChangesPlanned" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Link to content tracker</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.linkContentTracker" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Concept inactivations</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.conceptInactivations" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Link to briefing note</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.linkBriefingNote" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Link to template</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.linkToTemplate" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+      </div>
+      <div class="col-md-6 no-padding" style="padding-left: 15px;">
+        <br>
+        <label class="modal-title">Are there any description changes? If so, what type, and why?</label>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.descriptionChanges" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+
+        <label class="modal-title m-t-10">Notes:</label>
+        <div class="col-md-12 no-padding m-t-10 release-notes">
+          <div id="editor" style="height: 40vh;">
+          </div>
+        </div>
+      </div>        
+    </div>
+    <div ng-if="(lineItem.id && isProject) || lineItems.length != 0" class="col-md-12 no-padding">
+      <div class="col-md-12 no-padding release-notes">
         <div id="editor">
         </div>
+      </div>
     </div>
   </div>
-  <div class="modal-footer clearfix" ng-style="readOnly && {'padding-top': '0px'}">    
+  <div class="modal-footer clearfix" ng-style="readOnly && {'padding-top': '0px'}">
     <div class="col-md-12 no-padding" ng-if="!readOnly">
       <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-warning no-margin" ng-click="close()">Cancel </button>
