@@ -1,6 +1,30 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
+  .directive('positiveNumber', function () {
+    /* Allows the user to enter only positive numbers
+    *  Don't allow even decimal values
+    */
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      link: function (scope, element, attr, ctrl) {
+        function inputValue(val) {
+          if (val) {
+            var digits = val.replace(/[^0-9]/g, '');
+
+            if (digits !== val) {
+              ctrl.$setViewValue(digits);
+              ctrl.$render();
+            }
+            return parseInt(digits,10);
+          }
+          return undefined;
+        }            
+        ctrl.$parsers.push(inputValue);
+      }
+    };
+  })
   .controller('lineItemCtrl', function ($scope, $rootScope, $modalInstance, $timeout, rnmService, branch, lineItem, lineItems, globalLineItems, mode, isProject, modalService, metadataService) {
     // NEW, EDIT, READ_ONLY
     var mode = mode;

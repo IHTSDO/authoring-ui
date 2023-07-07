@@ -2,14 +2,14 @@
   <div class="modal-header">
     <div class="col-md-8">
       <h4 class="modal-title" style="margin-left: -10px;">{{new ? 'Line Item:' : (lineItem.id ? lineItem.title : 'All Project Release Notes:')}}</h4>
-    </div>    
+    </div>
     <div class="col-md-4">
       <button type="button" style="margin-right: -20px;" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
   </div>
   <div class="modal-body scroll-if-height">
     <div ng-if="new || (lineItem.id && !isProject)" class="col-md-12 no-padding" style="margin-left: -10px;">
-      <div class="col-md-8" ng-if="new">        
+      <div class="col-md-8" ng-if="new">
         <select ng-if="!globalLineItems" name="select-choice" class="form-control"
                   ng-options="lineItem.title for lineItem in lineItems"
                   ng-model="lineItem"
@@ -25,6 +25,7 @@
             <option value="" disabled selected>Please select a category</option>
         </select>
       </div>
+      <div class="col-md-4 no-padding m-t-15" ng-if="new"><span>(Mandatory field)</span></div>
       <div class="col-md-6 no-padding" style="padding-left: 15px;">
         <br>
         <label class="modal-title">Change type</label>
@@ -34,6 +35,7 @@
             ng-disabled="readOnly"
             ng-change="checkLineItemContentUnChanged()"
             style="height: 30px">
+            <option value=""></option>
         </select>
 
         <label class="modal-title m-t-10">Additional change types</label>
@@ -46,13 +48,14 @@
           ng-disabled="readOnly"
           ng-change="checkLineItemContentUnChanged()"
           style="height: 30px">
+          <option value=""></option>
         </select>
 
         <label class="modal-title m-t-10">Changes in additional hierarchies</label>
         <input type="text" class="form-control blue-underline" ng-model="lineItem.changedInAdditionalHierarchy" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
 
         <label class="modal-title m-t-10">Number of concepts edited (approx)</label>
-        <input type="number" class="form-control blue-underline" ng-model="lineItem.numberEditedConcepts" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
+        <input type="text" class="form-control blue-underline" ng-model="lineItem.numberEditedConcepts" positive-number ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
 
         <label class="modal-title m-t-10">Future changes planned?</label>
         <input type="text" class="form-control blue-underline" ng-model="lineItem.futureChangesPlanned" ng-change="checkLineItemContentUnChanged()" ng-disabled="readOnly"/>
@@ -79,7 +82,7 @@
           <div id="editor" style="height: 40vh;">
           </div>
         </div>
-      </div>        
+      </div>
     </div>
     <div ng-if="(lineItem.id && isProject) || lineItems.length != 0" class="col-md-12 no-padding">
       <div class="col-md-12 no-padding release-notes">
