@@ -250,6 +250,21 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         });
       };
 
+      $scope.openBranchMetadataConfigModal = function() {
+        $modal.open({
+          templateUrl: 'shared/branch-metadata-config-modal/branchMetadataConfigModal.html',
+          controller: 'branchMetadataConfigCtrl',
+          resolve: {
+            branch: function () {
+              return $scope.codeSystem.branchPath;
+            },
+            title: function () {
+              return 'code system';
+            }
+          }
+        });
+      };
+
       $scope.startNewAuthoringCycle = function() {
         notificationService.clear();
         modalService.confirm('Do you really want to start a new Authoring cycle for '+ $scope.codeSystem.name +'? \n\nThis should only be performed if you are completing Post Release Tasks', 'white-space: pre-line;width: 125%;').then(function () {

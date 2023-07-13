@@ -730,6 +730,20 @@ angular.module('singleConceptAuthoringApp.project', [
         }
       );
 
+      $scope.openBranchMetadataConfigModal = function() {
+        $modal.open({
+          templateUrl: 'shared/branch-metadata-config-modal/branchMetadataConfigModal.html',
+          controller: 'branchMetadataConfigCtrl',
+          resolve: {
+            branch: function () {
+              return $scope.branch;
+            },
+            title: function () {
+              return 'project';
+            }
+          }
+        });
+      };
 
       $scope.editTask = function (task) {
         var modalInstance = $modal.open({

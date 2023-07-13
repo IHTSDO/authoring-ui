@@ -7,7 +7,8 @@
     <div class="page-header row p-b-5">
       <div class="col-md-4 no-padding">
         <h1 class="p-l-15">
-          {{codeSystem.name}} : {{codeSystem.shortName}}
+          {{codeSystem.name}} : {{codeSystem.shortName}}&nbsp;&nbsp;
+          <i ng-if="userRoles.includes('ADMIN')" class="md md-settings f20" style="color: #00acc1" ng-click="openBranchMetadataConfigModal();"></i>
         </h1>
         <div class="col-md-12 no-padding" ng-if="codeSystem.latestVersion">
           <p class="p-l-15 m-b-0 promotion-box">Last published: {{codeSystem.latestVersion.version}}</p>

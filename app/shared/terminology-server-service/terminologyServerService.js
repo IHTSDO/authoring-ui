@@ -87,6 +87,16 @@ angular.module('singleConceptAuthoringApp')
       // Terminology Server Branch Metadata Methods
       /////////////////////////////////////
 
+      function getBranchMetadata(branch) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + 'branches/' + branch + '/metadata?includeInheritedMetadata=true').then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       function updateBranchMetadata(branch, metadata) {
         var deferred = $q.defer();
         $http.put(apiEndpoint + 'branches/' + branch + '/metadata-upsert', metadata).then(function (response) {
@@ -2572,6 +2582,7 @@ angular.module('singleConceptAuthoringApp')
         getMemberProperties: getMemberProperties,
         getConceptPreferredTerm: getConceptPreferredTerm,
         updateConcept: updateConcept,
+        getBranchMetadata: getBranchMetadata,
         updateBranchMetadata: updateBranchMetadata,
         setAuthorFlag: setAuthorFlag,
         bulkUpdateConcept: bulkUpdateConcept,
