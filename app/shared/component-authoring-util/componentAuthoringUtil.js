@@ -586,8 +586,12 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, continue
         else {
+          var term = description.term;
+          if (description.type && description.type === 'FSN') {
+            term = term.replace(/\(.*\)/g, '').trim();
+          }
 
-          var matchInfo = description.term.match(/([a-zA-Z]+)/g);
+          var matchInfo = term.match(/([a-zA-Z]+)/g);
           var tokenizedWords = [];
           if (matchInfo) {
             for (var i = 0; i < matchInfo.length; i++) {
