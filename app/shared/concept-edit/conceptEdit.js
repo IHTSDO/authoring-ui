@@ -5053,7 +5053,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function checkRevertingConceptAbility() {
           if (metadataService.isExtensionSet()) {
             var previousDependencyRelease = metadataService.getPreviousDependantVersionEffectiveTime();
-            if (previousDependencyRelease) {              
+            if (previousDependencyRelease) {
               let intModuleIds = [];
               angular.forEach(metadataService.getInternationalMetadata().modules, function (module) {
                 intModuleIds.push(module.id);
@@ -5064,41 +5064,49 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   return;
               }
 
-              for (let i = 0; i < scope.concept.descriptions.length; i++) {
-                var desc = scope.concept.descriptions[i];
-                if (intModuleIds.includes(desc.moduleId)
-                  && desc.releasedEffectiveTime
-                  && desc.releasedEffectiveTime > previousDependencyRelease) {
-                    return;
+              if (scope.concept.descriptions) {
+                for (let i = 0; i < scope.concept.descriptions.length; i++) {
+                  var desc = scope.concept.descriptions[i];
+                  if (intModuleIds.includes(desc.moduleId)
+                    && desc.releasedEffectiveTime
+                    && desc.releasedEffectiveTime > previousDependencyRelease) {
+                      return;
+                  }
                 }
               }
-            
-              for (let i = 0; i < scope.concept.classAxioms.length; i++) {
-                var axiom = scope.concept.classAxioms[i];
-                if (intModuleIds.includes(axiom.moduleId)
-                  && axiom.releasedEffectiveTime
-                  && axiom.releasedEffectiveTime > previousDependencyRelease) {
-                    return;
+
+              if (scope.concept.classAxioms) {
+                for (let i = 0; i < scope.concept.classAxioms.length; i++) {
+                  var axiom = scope.concept.classAxioms[i];
+                  if (intModuleIds.includes(axiom.moduleId)
+                    && axiom.releasedEffectiveTime
+                    && axiom.releasedEffectiveTime > previousDependencyRelease) {
+                      return;
+                  }
                 }
               }
-            
-              for (let i = 0; i < scope.concept.gciAxioms.length; i++) {
-                var axiom = scope.concept.gciAxioms[i];
-                if (intModuleIds.includes(axiom.moduleId)
-                  && axiom.releasedEffectiveTime
-                  && axiom.releasedEffectiveTime > previousDependencyRelease) {
-                    return;
-                }              
-              }
-            
-              for (let i = 0; i < scope.concept.relationships.length; i++) {
-                var rel = scope.concept.relationships[i];
-                if (intModuleIds.includes(rel.moduleId)
-                  && rel.releasedEffectiveTime
-                  && rel.releasedEffectiveTime > previousDependencyRelease) {
-                    return;
+
+              if (scope.concept.gciAxioms) {
+                for (let i = 0; i < scope.concept.gciAxioms.length; i++) {
+                  var axiom = scope.concept.gciAxioms[i];
+                  if (intModuleIds.includes(axiom.moduleId)
+                    && axiom.releasedEffectiveTime
+                    && axiom.releasedEffectiveTime > previousDependencyRelease) {
+                      return;
+                  }
                 }
-              }              
+              }
+
+              if (scope.concept.relationships) {
+                for (let i = 0; i < scope.concept.relationships.length; i++) {
+                  var rel = scope.concept.relationships[i];
+                  if (intModuleIds.includes(rel.moduleId)
+                    && rel.releasedEffectiveTime
+                    && rel.releasedEffectiveTime > previousDependencyRelease) {
+                      return;
+                  }
+                }
+              }
             }
           }
           scope.abiltiyToRevertConcept = true;
