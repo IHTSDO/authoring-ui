@@ -341,6 +341,16 @@ h4.timeline-title {
     background-color: transparent;
     color: #eee;
 }
+.sca-dark .Automated.Promotion.Queued.badge,
+.sca-dark .Automated.Promotion.Rebasing.badge {
+    color: #F3CB67;
+    background-color: transparent;
+}
+.sca-dark .Automated.Promotion.Classifying.badge,
+.sca-dark .Automated.Promotion.Promoting.badge {
+    background-color: transparent;
+    color: #00b0ff;
+}
 /* Edit View */
 
 .sca-dark .button-nav {

@@ -843,6 +843,16 @@ button.fsn-title-button {
 .Claimed.badge {
     background-color: grey;
 }
+.Automated.Promotion.Queued.badge,
+.Automated.Promotion.Rebasing.badge {
+    background-color: #ffca28;
+}
+.Automated.Promotion.Classifying.badge {
+    background-color: #00a4e4;
+}
+.Automated.Promotion.Promoting.badge {
+    background-color: #0091d7;
+}
 .btn-default:focus,
 .btn-default:active,
 .btn-default:hover,

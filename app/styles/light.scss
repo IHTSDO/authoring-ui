@@ -164,6 +164,16 @@
     background-color: white;
     color: gray;
 }
+.sca-light .Automated.Promotion.Queued.badge,
+.sca-light .Automated.Promotion.Rebasing.badge {
+    color: #F3CB67;
+    background-color: transparent;
+}
+.sca-light .Automated.Promotion.Classifying.badge,
+.sca-light .Automated.Promotion.Promoting.badge {
+    background-color: transparent;
+    color: #00b0ff;
+}
 /* Edit View */
 
 .sca-light .button-nav {
