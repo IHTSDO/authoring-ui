@@ -468,6 +468,7 @@ angular.module('singleConceptAuthoringApp')
                     semanticTag: item.semanticTag,
                     conceptId: item.conceptId,
                     componentId: item.componentId,
+                    reason: item.reason,
                     timestamp: new Date(item.creationDate).getTime(),
                     user: item.userId
                   });
@@ -1248,6 +1249,34 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
+          scope.editException = function(exceptionId) {
+            var exception = scope.allWhitelistItems.filter(function(item) {
+              return item.id === exceptionId;
+            });
+            if (exception) {
+              var modalInstance = $modal.open({
+                templateUrl: 'shared/validation/whitelistItemModal.html',
+                controller: 'whitelistItemModalCtrl',
+                resolve: {
+                  mode: function() {
+                    return 'edit';
+                  },
+
+                  failures: function() {
+                    return [exception[0]];
+                  }
+                }
+              });
+
+              modalInstance.result.then(function (result) {
+                aagService.updateWhitelistItem(result[0]).then(function(respone) {
+                  scope.reloadTables();
+                });
+              }, function () {
+              });
+            }
+          };
+
           scope.excludeFailures = function () {
             var failures = scope.failureTableParams.data;
             var failuresToAddWhiteList = failures.filter(function (failure) {
@@ -1397,6 +1426,26 @@ angular.module('singleConceptAuthoringApp')
             });
 
           };
+
+          function initialize() {
+            if (!scope.hideExceptions) {
+              $('body').on('mouseup', function(e) {
+                if(!$(e.target).closest('.popover').length) {
+                  $('.popover').each(function(){
+                    if(($(this).find('.reason-more').length != 0) && $(this).hasClass("in")) {
+                      var elm = $(this).find("[component-id]");
+                      var componentId = 'exception-' + $(elm[0]).attr("component-id");
+                      if(componentId) {
+                        document.getElementById(componentId).click();
+                      }
+                    }
+                  });
+                }
+              });
+            }
+          }
+
+          initialize();
         }
       };
     }])
