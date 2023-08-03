@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete, $location, accountService, modalService) {
+  .controller('taskCtrl', function ($scope, $rootScope, $timeout, $modalInstance, scaService, metadataService, task, canDelete, $location, accountService, modalService) {
 
     // scope variables
     $scope.projects = null;
@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp')
                 firstCreatedTask = response;
               }
               if (count === $scope.task.numberOfTasks) {
-                $modalInstance.close();
+                $modalInstance.dismiss();
                 $location.url('tasks/task/' + firstCreatedTask.projectKey + '/' + firstCreatedTask.key + '/edit');
               }
             } else {
