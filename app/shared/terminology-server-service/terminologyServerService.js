@@ -767,7 +767,7 @@ angular.module('singleConceptAuthoringApp')
        *   unused (optional) TODO Implement association targets on support from
        *   back-end
        */
-      function inactivateConcept(branch, conceptId, inactivationIndicator, associationTargets) {
+      function inactivateConcept(branch, conceptId, moduleId, inactivationIndicator, associationTargets) {
 
         var deferred = $q.defer();
 
@@ -786,7 +786,8 @@ angular.module('singleConceptAuthoringApp')
           'commitComment': 'Inactivation',
           'inactivationIndicator': inactivationIndicator,
           'active': false,
-          'associationTargets': associationTargets
+          'associationTargets': associationTargets,
+          'moduleId' : moduleId
         };
 
         $http.put(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, propertiesObj).then(function (response) {

@@ -2852,7 +2852,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
-            terminologyServerService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+            terminologyServerService.inactivateConcept(scope.branch, scope.concept.conceptId, scope.concept.moduleId, results.reason.id, results.associationTarget).then(function () {
 
               // if reason is selected, deactivate all descriptions and
               // relationships
