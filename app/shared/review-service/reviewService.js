@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp')
 
       // update the task
       scaService.updateTask(task.projectKey, task.key, updateObj).then(function (response) {
-        scaService.saveUiStateForReviewTask(task.projectKey, task.key, 'reviewed-list', []);
+        scaService.saveUiStateForReviewTask(task.projectKey, task.key, 'reviewed-list', {'conceptIds': [], 'approvalDate': null});
         $rootScope.$broadcast('reloadTask');
         deferred.resolve(response);
       }, function (error) {

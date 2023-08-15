@@ -1879,7 +1879,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function updateReviewFeedback() {
           scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
             if (response) {
-              var reviewedListIds = response;
+              var reviewedListIds = Array.isArray(response) ? response : (response.conceptIds ? response.conceptIds : []);
               for (var i = 0; i < reviewedListIds.length; i++) {
                 if (scope.concept.conceptId === reviewedListIds[i]) {
                   var message = '<p>Modified since approval</p>';
@@ -1890,7 +1890,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   break;
                 }
               }
-              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', reviewedListIds) ;
+              var data = {
+                'conceptIds': reviewedListIds,
+                'approvalDate': new Date()
+              };
+              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', data) ;
             }
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response && response.status === 'Review Completed') {
