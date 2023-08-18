@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
             let found = false;
             angular.forEach(concept.classAxioms, function(axiom){
                 angular.forEach(axiom.relationships, function (axiomRel){
-                  if(axiomRel.type.conceptId === crsRelationship.type.conceptId 
+                  if(axiomRel.type.conceptId === crsRelationship.type.conceptId
                     && ((axiomRel.target && crsRelationship.target && axiomRel.target.conceptId === crsRelationship.target.conceptId)
                         || (axiomRel.concreteValue && crsRelationship.concreteValue && axiomRel.concreteValue.valueWithPrefix === crsRelationship.concreteValue.valueWithPrefix))
                     && axiomRel.groupId === crsRelationship.groupId){
@@ -462,12 +462,14 @@ angular.module('singleConceptAuthoringApp')
               // if already initialized, simply return
               if (concepts) {
                 currentTaskConcepts = concepts;
+                deleteUnRequiredDialectsForConcepts(currentTaskConcepts);
                 getBulkCrsRequestsStatus();
                 deferred.resolve(concepts);
               } else {
                 if (isTaskAuthor) {
                   initializeCrsTask().then(function () {
                     getBulkCrsRequestsStatus();
+                    deleteUnRequiredDialectsForConcepts(currentTaskConcepts);
                     deferred.resolve(currentTaskConcepts);
                   }, function (error) {
                     notificationService.sendError(error);
@@ -483,9 +485,34 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function deleteUnRequiredDialectsForConcepts(taskConcepts) {
+        var dialects = metadataService.getDialectsForModuleId(null, false);
+        var dialectIds = [];
+        if (dialects) {
+          for (var key in dialects) {
+            dialectIds.push(key);
+          }
+        }
+        for (let i = 0; i < taskConcepts.length; i++) {
+          var taksConcept = taskConcepts[i];
+          if (taksConcept.concept && taksConcept.concept.descriptions) {
+            for (let j = 0; j < taksConcept.concept.descriptions.length; j++) {
+              var description = taksConcept.concept.descriptions[j];
+              if (description.active && !description.effectiveTime && description.acceptabilityMap) {
+                for (var key in description.acceptabilityMap) {
+                  if (dialectIds.indexOf(key) === -1) {
+                    delete description.acceptabilityMap[key];
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
       function getCrsConceptsForTask(projectKey, taskKey) {
         var deferred = $q.defer();
-        scaService.getSharedUiStateForTask(projectKey, taskKey, 'crs-concepts').then(function (concepts) {        
+        scaService.getSharedUiStateForTask(projectKey, taskKey, 'crs-concepts').then(function (concepts) {
           if (concepts) {
             deferred.resolve(concepts);
           } else {
