@@ -303,16 +303,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       $scope.branchLocked = false;
                       $scope.promoting = false;
                     });
-                  }
-                  if($scope.lineItems){
-                      angular.forEach($scope.lineItems, function (lineItem){
-                          lineItem.content = $scope.branch + ' - ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '\n\n' + lineItem.content;
-                          rnmService.updateBranchLineItem($scope.branch, lineItem).then(function (lineItem){
-                              rnmService.promoteBranchLineItem($scope.branch, lineItem.id).then(function (lineItem) {
-                              });
-                          });
-                      });
-                  }
+                  }                  
                 }, function (error) {
                   $scope.promoting = false;
                   $rootScope.branchLocked = false;
