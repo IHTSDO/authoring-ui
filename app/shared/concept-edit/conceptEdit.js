@@ -4666,9 +4666,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if a new FSN (determined by no effective time)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
 
-              // strip any non-international dialects
+              const dialectDefaults = metadataService.getDialectDefaultsForModuleId(null, false);
+              let requiredDialects = [];
+              if (dialectDefaults) {
+                for (var key in dialectDefaults) {
+                  if (dialectDefaults.hasOwnProperty(key) && dialectDefaults[key] === 'true') {
+                    requiredDialects.push(key);
+                  }
+              }
+              }
+              // strip any non-international dialects or dialects not in the required list
               angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)) {
+                if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)
+                    && (requiredDialects.length === 0 || requiredDialects.indexOf(dialectId) === -1)) {
                   delete description.acceptabilityMap[dialectId];
                 }
               });
