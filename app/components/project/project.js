@@ -350,7 +350,7 @@ angular.module('singleConceptAuthoringApp.project', [
           if (all){
               readOnly = true;
           }
-          else if(!$scope.userRoles.includes('PROJECT_LEAD') && item.id) {
+          else if(!$scope.userRoles.includes('PROJECT_LEAD') && !$scope.userRoles.includes('RELEASE_LEAD') && item.id) {
              readOnly = true;
           }
           
