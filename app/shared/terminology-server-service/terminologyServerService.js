@@ -1511,44 +1511,56 @@ angular.module('singleConceptAuthoringApp')
 
       function getConceptOrIdentifierReferencedConcept(branch, params, config, tsv, searchTimestamp) {
         let deferred = $q.defer();
-        $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + params.termFilter + '/concept-or-identifier-ref-concept', config).then(function (response) {
-          if (tsv) {
-            deferred.resolve(response);
-          }
-          else {
-            let results = [];
-            angular.forEach(response.data.items, function(item) {
-              let obj = {
-                active: item.active,
-                concept: {
-                  active: item.active,
-                  conceptId: item.conceptId,
-                  definitionStatus: item.definitionStatus,
-                  fsn: item.fsn ? item.fsn.term : item.fsn,
-                  preferredSynonym: item.pt ? item.pt.term : item.pt,
-                  moduleId: item.moduleId,
-                  term: item.pt ? item.pt.term : item.pt
-                }
-              };
-              results.push(obj);
-            });
-            response.data.items = results;
-            if (searchTimestamp) {
-              response.data.searchTimestamp = searchTimestamp;
-            }
-            deferred.resolve(response.data);
-          }
-        }, function (error) {
-          if (error && error.status === 404) {
-            doSearch(branch, params, config, tsv, searchTimestamp).then(function (response) {
+
+        var getIdentiferReferencedConceptsFn = function (branch, params, config, tsv) {
+          let deferred = $q.defer();
+          $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + params.termFilter + '/concept-or-identifier-ref-concept', config).then(function (response) {
+            if (tsv) {
               deferred.resolve(response);
-            }, function (error) {
-              deferred.reject(error);
-            });
+            }
+            else {
+              let results = [];
+              angular.forEach(response.data.items, function(item) {
+                let obj = {
+                  active: item.active,
+                  concept: {
+                    active: item.active,
+                    conceptId: item.conceptId,
+                    definitionStatus: item.definitionStatus,
+                    fsn: item.fsn ? item.fsn.term : item.fsn,
+                    preferredSynonym: item.pt ? item.pt.term : item.pt,
+                    moduleId: item.moduleId,
+                    term: item.pt ? item.pt.term : item.pt
+                  }
+                };
+                results.push(obj);
+              });
+              response.data.items = results;
+              if (searchTimestamp) {
+                response.data.searchTimestamp = searchTimestamp;
+              }
+              deferred.resolve(response.data);
+            }
+          }, function (error) {
+            console.error(error);
+            deferred.resolve([]);
+          });
+          return deferred.promise;
+        }
+        var promises = [];
+        promises.push(getIdentiferReferencedConceptsFn(branch, params, config, tsv));
+        promises.push(doSearch(branch, params, config, tsv, searchTimestamp));           
+
+        $q.all(promises).then(function (responses) {
+          if (tsv) {
+            deferred.resolve(responses[0].data && responses[0].data.length !== 0 ? responses[0] : responses[1]);
           } else {
-            deferred.reject(error);
-          }
+            deferred.resolve(responses[0].total !== 0 ? responses[0] : responses[1]);
+          }          
+        }, function (error) {
+          deferred.reject('Error creating template concepts: ' + error);
         });
+
         return deferred.promise;
       }
 
