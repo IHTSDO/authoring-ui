@@ -206,27 +206,6 @@ angular.module('singleConceptAuthoringApp.codesystems', [
     }
 
 
-    $scope.openCreateTaskModal = function () {
-      var modalInstance = $modal.open({
-        templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl',
-        resolve: {
-          task: function() {
-            return null;
-          },
-          canDelete: function() {
-              return false;
-            }
-        }
-      });
-
-      modalInstance.result.then(function () {
-        initialize();
-      }, function () {
-      });
-    };
-
-
     initialize();
   })
 ;

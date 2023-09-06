@@ -7,7 +7,9 @@
     <div class="page-header row p-b-5">
       <div class="col-md-4 no-padding">
         <h1 class="p-l-15">
-          {{project.title}}&nbsp;&nbsp;&nbsp;<i ng-if="project.projectLocked" class="red-text fa fa-lock tooltips-bottom"><span>Project is being locked</span></i>
+          {{project.title}}&nbsp;&nbsp;
+          <i ng-if="userRoles.includes('ADMIN')" class="md md-settings f20" style="color: #00acc1" ng-click="openBranchMetadataConfigModal();"></i>
+          <i ng-if="project.projectLocked" class="red-text fa fa-lock tooltips-bottom"><span>Project is being locked</span></i>
         </h1>
         <p class="lead p-l-15 m-b-5">
           {{project.projectLead.displayName}}

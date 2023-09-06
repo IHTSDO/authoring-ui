@@ -182,7 +182,26 @@
         <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'"> {{failure.failureText}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}} </td>
         <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
-        <td class="button-column"><button
+        <td class="button-column">
+          <button ng-if="failure.reason"
+            title="View reason"
+            type="button" class="btn-round blue-grey-text darken-1"
+            id="exception-reason-more-{{failure.id}}"
+            popover-template="'shared/exception-list/reasonMore.html'"
+            popover-placement="left-top"
+            popover-trigger="click: click"
+            popover-append-to-body="true"
+            style="background-color: transparent;"
+          > <i class="fa fa-info-circle"></i>
+          </button>
+        </td>
+        <td class="button-column" style="text-align: center; min-width: 52px">
+          <button type="button"
+            class="btn btn-round btn-default blue" title="Edit" ng-click="editException(failure.id)"
+            style="display: inline-block;">
+            <i class="md fa-sca fa-pencil"></i>
+          </button>
+          <button
             title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
             type="button" class="btn btn-round btn-default blue"> <i
               class="md md-close"></i>

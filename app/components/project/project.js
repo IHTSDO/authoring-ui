@@ -350,7 +350,7 @@ angular.module('singleConceptAuthoringApp.project', [
           if (all){
               readOnly = true;
           }
-          else if(!$scope.userRoles.includes('PROJECT_LEAD') && item.id) {
+          else if(!$scope.userRoles.includes('PROJECT_LEAD') && !$scope.userRoles.includes('RELEASE_LEAD') && item.id) {
              readOnly = true;
           }
           
@@ -597,10 +597,6 @@ angular.module('singleConceptAuthoringApp.project', [
                           }
                         });
                       }
-                      if($scope.lineItems){
-                        rnmService.promoteBranchLineItems($scope.branch).then(function (lineItem) {
-                          });
-                      }
                     });
                   }
                   else {
@@ -659,10 +655,6 @@ angular.module('singleConceptAuthoringApp.project', [
                               }
                             });
                           } else {
-                            if($scope.lineItems){
-                                rnmService.promoteBranchLineItems($scope.branch).then(function (lineItem) {
-                                  });
-                              }
                             $scope.getProject();
                           }
                         });
@@ -730,6 +722,20 @@ angular.module('singleConceptAuthoringApp.project', [
         }
       );
 
+      $scope.openBranchMetadataConfigModal = function() {
+        $modal.open({
+          templateUrl: 'shared/branch-metadata-config-modal/branchMetadataConfigModal.html',
+          controller: 'branchMetadataConfigCtrl',
+          resolve: {
+            branch: function () {
+              return $scope.branch;
+            },
+            title: function () {
+              return 'project';
+            }
+          }
+        });
+      };
 
       $scope.editTask = function (task) {
         var modalInstance = $modal.open({

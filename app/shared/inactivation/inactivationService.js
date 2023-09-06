@@ -71,8 +71,7 @@ angular.module('singleConceptAuthoringApp')
       } else if (!parameters.reasonId) {
         deferred.reject('Inactivation called without setting reason');
       } else {
-        terminologyServerService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
-
+        terminologyServerService.inactivateConcept(parameters.branch,  parameters.concept.conceptId, parameters.concept.moduleId,  parameters.reasonId,  parameters.assocMembers).then(function () {
           deferred.resolve();
         });
       }

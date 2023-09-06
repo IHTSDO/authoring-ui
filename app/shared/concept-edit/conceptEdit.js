@@ -1879,7 +1879,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function updateReviewFeedback() {
           scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
             if (response) {
-              var reviewedListIds = response;
+              var reviewedListIds = Array.isArray(response) ? response : (response.conceptIds ? response.conceptIds : []);
               for (var i = 0; i < reviewedListIds.length; i++) {
                 if (scope.concept.conceptId === reviewedListIds[i]) {
                   var message = '<p>Modified since approval</p>';
@@ -1890,7 +1890,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   break;
                 }
               }
-              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', reviewedListIds) ;
+              var data = {
+                'conceptIds': reviewedListIds,
+                'approvalDate': new Date()
+              };
+              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', data) ;
             }
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response && response.status === 'Review Completed') {
@@ -2852,7 +2856,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
-            terminologyServerService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+            terminologyServerService.inactivateConcept(scope.branch, scope.concept.conceptId, scope.concept.moduleId, results.reason.id, results.associationTarget).then(function () {
 
               // if reason is selected, deactivate all descriptions and
               // relationships
@@ -4662,9 +4666,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if a new FSN (determined by no effective time)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
 
-              // strip any non-international dialects
+              const dialectDefaults = metadataService.getDialectDefaultsForModuleId(null, false);
+              let requiredDialects = [];
+              if (dialectDefaults) {
+                for (var key in dialectDefaults) {
+                  if (dialectDefaults.hasOwnProperty(key) && dialectDefaults[key] === 'true') {
+                    requiredDialects.push(key);
+                  }
+              }
+              }
+              // strip any non-international dialects or dialects not in the required list
               angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)) {
+                if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)
+                    && (requiredDialects.length === 0 || requiredDialects.indexOf(dialectId) === -1)) {
                   delete description.acceptabilityMap[dialectId];
                 }
               });
