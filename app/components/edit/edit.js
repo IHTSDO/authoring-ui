@@ -2198,12 +2198,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       var deferred = $q.defer();
       // check for extension metadata
       if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
-
+        let moduleIds = [];
+        moduleIds.push($scope.project.metadata.defaultModuleId);
+        if ($scope.project.metadata.expectedExtensionModules) {
+          moduleIds = moduleIds.concat($scope.project.metadata.expectedExtensionModules);
+        }
         // get the extension default module concept
-        terminologyServerService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
+        terminologyServerService.searchAllConcepts($scope.task.branchPath, moduleIds.join(), null, 0, 50, null, true, true).then(function (response) {
 
           // set the name for display
-          $scope.project.metadata.defaultModuleName = extConcept.fsn;
+          $scope.project.metadata.extensionModules = response.items;
 
           // set the extension metadata for use by other elements
           metadataService.setExtensionMetadata($scope.project.metadata);

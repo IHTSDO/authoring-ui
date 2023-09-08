@@ -382,13 +382,33 @@ angular.module('singleConceptAuthoringApp')
 
 
         // populate the cached extension metadata from passed metadata and temporary variables
-        extensionMetadata = {
-          modules: [
-            {
-              id: metadata.defaultModuleId,
-              name: metadata.defaultModuleName
+        var modules = [];
+        if (metadata.expectedExtensionModules) {
+          for (var i = 0; i < metadata.expectedExtensionModules.length; i++) {
+            modules.push({
+              id: metadata.expectedExtensionModules[i],
+              name: metadata.extensionModules.filter(item => item.concept.conceptId === metadata.expectedExtensionModules[i])[0].concept.fsn
+            });
+          }
+        } else if (metadata.defaultModuleId) {
+          modules.push({
+            id: metadata.defaultModuleId,
+            name: metadata.extensionModules.filter(item => item.concept.conceptId === metadata.defaultModuleId)[0].concept.fsn
+          });
+        }
+        // sort modules. Defaut module should be first
+        if (metadata.defaultModuleId) {
+          modules.sort(function (a, b) { 
+            if (b.id === metadata.defaultModuleId ) {
+              return 1; 
+            } else {
+              return -1;
             }
-          ],
+          });
+        }        
+
+        extensionMetadata = {
+          modules: modules,
           additionalModules: [],
           shortname: metadata.shortname,
           acceptLanguageMap: defaultLanguages[0] + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
