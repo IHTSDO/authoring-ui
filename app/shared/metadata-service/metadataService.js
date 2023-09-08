@@ -387,19 +387,19 @@ angular.module('singleConceptAuthoringApp')
           for (var i = 0; i < metadata.expectedExtensionModules.length; i++) {
             modules.push({
               id: metadata.expectedExtensionModules[i],
-              name: metadata.extensionModules.filter(item => item.concept.conceptId === metadata.expectedExtensionModules[i])[0].concept.fsn
+              name: (metadata.extensionModules ? metadata.extensionModules.filter(item => item.concept.conceptId === metadata.expectedExtensionModules[i])[0].concept.fsn : null)
             });
           }
         } else if (metadata.defaultModuleId) {
           modules.push({
             id: metadata.defaultModuleId,
-            name: metadata.extensionModules.filter(item => item.concept.conceptId === metadata.defaultModuleId)[0].concept.fsn
+            name: (metadata.extensionModules ? metadata.extensionModules.filter(item => item.concept.conceptId === metadata.defaultModuleId)[0].concept.fsn : null)
           });
         }
-        // sort modules. Defaut module should be first
+        // sort modules. Defaut module should always be first
         if (metadata.defaultModuleId) {
           modules.sort(function (a, b) { 
-            if (b.id === metadata.defaultModuleId ) {
+            if (b.id === metadata.defaultModuleId) {
               return 1; 
             } else {
               return -1;
