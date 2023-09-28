@@ -732,6 +732,9 @@ angular.module('singleConceptAuthoringApp.project', [
             },
             title: function () {
               return 'project';
+            },
+            isCodeSystem: function () {
+              return false;
             }
           }
         });

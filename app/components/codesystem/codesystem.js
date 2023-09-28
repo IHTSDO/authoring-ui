@@ -260,6 +260,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             },
             title: function () {
               return 'code system';
+            },
+            isCodeSystem: function () {
+              return true;
             }
           }
         });

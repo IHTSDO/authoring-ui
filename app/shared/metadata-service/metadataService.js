@@ -21,6 +21,8 @@ angular.module('singleConceptAuthoringApp')
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
+    var annotationsEnabled = false
+
     var templatesEnabled = false;
 
     var spellcheckDisabled = false;
@@ -837,6 +839,14 @@ angular.module('singleConceptAuthoringApp')
       mrcmEnabled = value;
     }
 
+    function setAnnotationsEnabled(value) {
+      annotationsEnabled = value;
+    }
+
+    function isAnnatationsEnabled() { 
+      return annotationsEnabled;
+    }
+
     function setTemplatesEnabled(value){
         templatesEnabled = value;
     }
@@ -1073,6 +1083,8 @@ angular.module('singleConceptAuthoringApp')
       setBranchMetadata: setBranchMetadata,
       clearBranchMetadata: clearBranchMetadata,
       setMrcmEnabled: setMrcmEnabled,
+      setAnnotationsEnabled: setAnnotationsEnabled,
+      isAnnatationsEnabled: isAnnatationsEnabled,
       setTemplatesEnabled: setTemplatesEnabled,
       setSpellcheckDisabled: setSpellcheckDisabled,
       setModuleName: setModuleName,

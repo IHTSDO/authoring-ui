@@ -9,6 +9,14 @@
         <div>
           <div class="row">
             <div class="col-md-12 no-padding">
+              <div class="row m-b-10" ng-show="isCodeSystem">
+                <div class="col-md-12 no-padding">
+                  <label for="annotationsEnabled">Annotations Enabled</label>
+                  <div class="no-padding checkbox m-l-40" style="display: inline;">
+                    <input id="annotationsEnabled" type="checkbox" ng-model="annotationsEnabled">                         
+                  </div>
+                </div>
+              </div>
               <div class="row">
                   <div class="col-md-6 no-padding">
                     <label>RVF Max. Failure Export</label>

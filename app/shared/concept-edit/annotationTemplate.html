@@ -62,7 +62,7 @@
           typeahead-min-length="0" 
           typeahead-auto-select-if-only-one-match="true"></textarea>
         </div>
-        <div ng-show="!isStatic && !showInferredRels">
+        <div ng-show="!isStatic && !showInferredRels && isAnnatationsEnabled()">
           <button ng-if="!isStatic" type="button" ng-click="addAnnotation($index)" class="pull-right btn-default add-buttons md fa-sca fa-plus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">
             <span>Add New Annotation</span>
           </button>

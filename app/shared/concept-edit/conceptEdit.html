@@ -208,7 +208,7 @@
               <ul>
                 <li ng-click="addAdditionalAxiom(false)" ng-if="!isStatic && !template && (!isLockedModule(concept.moduleId) || (isLockedModule(concept.moduleId) && isEnableAxiomAdditionOnInternationalConcepts())) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
                 <li ng-click="addGCIAxiom()" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
-                <li ng-click="addAnnotation()" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Annotation</li>
+                <li ng-click="addAnnotation()" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR' && isAnnatationsEnabled()" ng-disabled="showInferredRels">Add Annotation</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic && role === 'AUTHOR'">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic && role === 'AUTHOR'">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>

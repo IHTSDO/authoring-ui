@@ -87,9 +87,14 @@ angular.module('singleConceptAuthoringApp')
       // Terminology Server Branch Metadata Methods
       /////////////////////////////////////
 
-      function getBranchMetadata(branch) {
+      function getBranchMetadata(branch, includeInheritedMetadata) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + 'branches/' + branch + '/metadata?includeInheritedMetadata=true').then(function (response) {
+
+        var params = 'includeInheritedMetadata=true';
+        if (typeof includeInheritedMetadata !== 'undefined') {
+          params = 'includeInheritedMetadata=' + includeInheritedMetadata
+        }
+        $http.get(apiEndpoint + 'branches/' + branch + '/metadata?' + params).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);

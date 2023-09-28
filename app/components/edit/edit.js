@@ -2086,12 +2086,14 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           // detect code system for given branch
           const allCodeSystems = metadataService.getCodeSystems();
+          var codeSystemBranchPath = null;
           if (allCodeSystems && allCodeSystems.length !== 0) {
             for (let i = 0; i < allCodeSystems.length; i++) {
               if ($scope.branch.startsWith('MAIN/SNOMEDCT-')
                   && allCodeSystems[i].branchPath.startsWith('MAIN/SNOMEDCT-')
                   && $scope.branch.startsWith(allCodeSystems[i].branchPath)) {
                 $scope.codeSystemShortname = allCodeSystems[i].shortName;
+                codeSystemBranchPath = allCodeSystems[i].branchPath;
                 break;
               }
             }
@@ -2099,6 +2101,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               for (let i = 0; i < allCodeSystems.length; i++) {
                 if (allCodeSystems[i].branchPath === 'MAIN') {
                   $scope.codeSystemShortname = allCodeSystems[i].shortName;
+                  codeSystemBranchPath = 'MAIN';
                   break;
                 }
               }
@@ -2112,6 +2115,9 @@ angular.module('singleConceptAuthoringApp.edit', [
                     metadataService.setPreviousDependantVersionEffectiveTime(items[items.length - 1].dependantVersionEffectiveTime);
                   }
                 }
+              });
+              terminologyServerService.getBranchMetadata(codeSystemBranchPath, false).then(function(response) {
+                metadataService.setAnnotationsEnabled(typeof  response.annotationsEnabled !== 'undefined' && (response.annotationsEnabled === true || response.annotationsEnabled === 'true'));
               });
             }
           }
