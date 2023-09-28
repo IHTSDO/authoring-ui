@@ -248,6 +248,21 @@ angular.module('singleConceptAuthoringApp')
         return axiom;
       }
 
+      function getNewAnnotation() {
+        var annotation = {
+          'annotationId': terminologyServerService.createGuid(),
+          'annotationTypeId': null,
+          'annotationTypePt': null,
+          'annotationValue': true,
+          'annotationLanguage': null,
+          'active': true,
+          'released': false,
+          'moduleId': metadataService.getCurrentModuleId()
+        };
+
+        return annotation;
+      }
+
       /**
        * Checks if concept has basic fields required and adds them if not
        * Specifically checks one FSN, one SYNONYM, one IsA relationship
@@ -1197,6 +1212,7 @@ function getFsnDescriptionForConcept(concept) {
         getNewIsaRelationship: getNewIsaRelationship,
         getNewAttributeRelationship: getNewAttributeRelationship,
         getNewAxiom: getNewAxiom,
+        getNewAnnotation: getNewAnnotation,
 
         // validation and minimum fields
         applyMinimumFields: applyMinimumFields,

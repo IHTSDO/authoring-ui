@@ -38,7 +38,7 @@
   <div ng-class="[{'new-concept' : componentStyles.isNew}, {'deleted-concept' : componentStyles.isDeleted}]">
 
 
-    <div class="row grey concept-headers darken-4 ng-scope" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]">
+    <div class="row grey concept-headers darken-4 ng-scope" ng-class="[getConceptStyle(), {'conceptFocus' : hasFocus}]" drop-channel="annotationObj" ui-on-drop="dropAnnotations($data)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
       <div class="pull-left no-padding col-md-1" ng-disabled="saving" ng-class="{'disabled': saving}">
           <button ng-click="setConceptProperties(concept, $event)" type="button" id="concept-more-{{initializationTimeStamp}}"
@@ -208,6 +208,7 @@
               <ul>
                 <li ng-click="addAdditionalAxiom(false)" ng-if="!isStatic && !template && (!isLockedModule(concept.moduleId) || (isLockedModule(concept.moduleId) && isEnableAxiomAdditionOnInternationalConcepts())) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Axiom</li>
                 <li ng-click="addGCIAxiom()" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add GCI Axiom</li>
+                <li ng-click="addAnnotation()" ng-if="!isStatic && !template && !isLockedModule(concept.moduleId) && role === 'AUTHOR'" ng-disabled="showInferredRels">Add Annotation</li>
                 <li ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic && role === 'AUTHOR'">Undo Changes</li>
                 <li ng-click="redo()" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ng-if="!isStatic && role === 'AUTHOR'">Redo Changes</li>
                 <li ng-click="downloadOWLAxiom()">View OWL Axiom</li>
@@ -498,7 +499,10 @@
       </div>
     </div>
 
-    <div class="p-b-3"> </div>
+    <!-- rows: Concept Annotations -->
+    <div ng-if="concept.annotations.length > 0" class="row">
+      <div ng-include="'shared/concept-edit/annotationTemplate.html'"></div>
+    </div>
     <!-- rows: Relationships -->
     <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
       <div ng-if="showRelationshipGroup(relationshipGroup)">

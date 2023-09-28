@@ -367,6 +367,12 @@ select {
 .concept-headers .col-md-13 {
     width: 23%;
 }
+.concept-headers.sca-drag-target {
+    background: #dedede !important;
+}
+.concept-headers.sca-drag-target .fsn-title-button {
+    background-color: transparent;
+}
 .editing-form .rolegroup {
     width: 3.0%;
     padding-left: 0px;
@@ -548,6 +554,9 @@ select {
         width: 8%;
         padding-left: 1%;
     }
+    .editing-form .annotation .sourcename {
+        width: 56%;
+    }
     .editing-form .description {
         width: 47%;
     }
@@ -650,6 +659,9 @@ select {
     }
     .concept-headers {
         padding-bottom: 0px;
+    }
+    .editing-form .annotation .sourcename {
+        width: 59%;
     }
     .editing-form .description.lang-ref-set-1 {
         width: 61%;
@@ -868,6 +880,9 @@ button.fsn-title-button {
 }
 .is_a_bg {
     margin-left: .5%;
+}
+.annotation .is_a_bg textarea{
+    background-color: #D6C1AD;
 }
 .attr input,
 .attr textarea,

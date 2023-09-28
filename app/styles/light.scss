@@ -1109,3 +1109,6 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-light .status-concept.small-buttons.green.btn-default[disabled] {
     color: #4CAF50;
 }
+.sca-light .concept-headers.sca-drag-target .fsn-title-button {
+    background-color: transparent;
+}

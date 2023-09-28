@@ -427,7 +427,7 @@ angular.module('singleConceptAuthoringApp')
         // strip unknown tags
         var allowableProperties = [
           'fsn', 'released', 'conceptId', 'definitionStatus', 'active', 'moduleId',
-          'isLeafInferred', 'effectiveTime', 'descriptions',
+          'isLeafInferred', 'effectiveTime', 'descriptions','annotations',
           'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets', 'classAxioms', 'gciAxioms'];
 
         // if a locally assigned UUID, strip

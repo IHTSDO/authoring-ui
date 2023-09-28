@@ -3336,6 +3336,47 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
+        scope.addAnnotation = function(afterIndex) {
+          var annotation = componentAuthoringUtil.getNewAnnotation();
+          if (!scope.concept.annotations ) {
+            scope.concept.annotations = [];
+          }
+          if (afterIndex === null || afterIndex === undefined) {
+            scope.concept.annotations.push(annotation);
+            autoSave();
+          }
+          // if in range, add after the specified afterIndex
+          else {
+            scope.concept.annotations.splice(afterIndex + 1, 0, annotation);
+          }
+          autoSave();
+        };
+
+        scope.removeAnnotation = function (annotation) {
+          var index = scope.concept.annotations.indexOf(annotation);
+          if (index !== -1) {
+            scope.concept.annotations.splice(index, 1);
+            autoSave();
+          } else {
+            console.error('Error removing annotation; annotation not found');
+          }
+        };
+
+        scope.toggleAnnotationActive = function (annotation) {
+          if (annotation.active) {
+            modalService.confirm('Do you really want to inactivate this annotation?').then(function () {
+              annotation.active = false;
+              autoSave();
+              }, function () {
+                // do nothing
+              }
+            );
+          } else {
+            annotation.active = true;
+            autoSave();
+          }
+        };
+
 
 ////////////////////////////////
 // Shared Elements
@@ -3851,6 +3892,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.descriptions[targetIndex] = copy;
           }
 
+          autoSave();
+        };
+
+        scope.dropAnnotations = function ($data) {
+          if (!scope.concept.annotations) {
+            scope.concept.annotations = [];
+          }
+          angular.forEach($data, function (annotation) {            
+            if (annotation.active) {
+              var clonedAnnotation = angular.copy(annotation);
+              clonedAnnotation.annotationId = terminologyServerService.createGuid();
+              delete clonedAnnotation.effectiveTime;
+              clonedAnnotation.released = false;
+              clonedAnnotation.moduleId = metadataService.getCurrentModuleId();
+              
+              scope.concept.annotations.push(clonedAnnotation);
+            }            
+          });
           autoSave();
         };
 

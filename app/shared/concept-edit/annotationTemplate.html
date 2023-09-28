@@ -1,0 +1,88 @@
+<div class="annotation row  p-t-5 m-b-5">
+  <div class="grey darken-4 p-t-5 row" drop-channel="annotationObj" ui-on-drop="dropAnnotations($data)" drop-validate="!isLockedModule(concept.moduleId)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
+    <div class="col-md-1 no-padding pull-left">
+      <button class="btn-default md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case" ng-click="setAxiomProperties(axiom, $event)" popover-template="'shared/component-more/annotationMore.html'" popover-placement="{{popoverDirection}}" popover-append-to-body="true" id="{{axiom.type}}-axiom-more-{{initializationTimeStamp}}-{{$index}}">
+        <span>More details</span>
+      </button>
+      <button class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button" ui-draggable-custom="true" drag="concept.annotations" drag-channel="annotationObj">
+        <span>Drag This Row</span>
+      </button>
+    </div>
+    <div class="col-md-11 no-padding">
+      <div class="darken-4 p-t-7">
+        <span class="fsn">Annotations</span>
+      </div>
+    </div>
+  </div>
+  
+  <div ng-repeat="annotation in concept.annotations" class="row">
+    <div class="darken-3 p-t-5 grey">
+      <div class="col-md-12 no-padding">
+        <div  class="transparent md morebuttons more-button-width"></div>
+        <div class=" md morebuttons drag-button-width concept-edit-button"></div>
+        <!-- Active/Inactive -->
+        <button type="button" ng-disabled="isStatic || !annotation.released || isLockedModule(annotation.moduleId)" ng-click="toggleAnnotationActive(annotation)" ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : annotation.active}, {red: !annotation.active}]" class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent">
+          <span ng-if="isStatic">Active/Inactive</span>
+          <span ng-if="!isStatic && annotation.released">Toggle Active/Inactive</span>
+          <span ng-if="!isStatic && !annotation.released">Cannot inactivate unreleased annotation</span>
+        </button>
+        <!-- attribute type' -->
+        <div class="pull-left is_a is_a_bg" style="margin-left: 0px; width: 22%;">
+          <textarea id="annotation-type-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}" 
+          style="width: 100%;"
+          custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" 
+          type="text" 
+          ng-model="annotation.annotationTypePt"
+          ng-readonly="annotation.effectiveTime || isStatic || template || isLockedModule(annotation.moduleId) || isBatch" 
+          class="resizable-text form-control msd-elastic no-border-bottom rel" 
+          typeahead="suggestion as suggestion.term for suggestion in axiom.allowedAttributes | filter:{term:$viewValue}:emptyOrMatch" 
+          typeahead-focus-first="false" typeahead-loading="typeTypeaheadLoading" 
+          typeahead-wait-ms="700" 
+          typeahead-on-select="setAxiomRelationshipTypeConcept(relationship, $item, axiom.type, relationship.groupId, $parent.$parent.$parent.$index, $index)" 
+          typeahead-editable="false" 
+          typeahead-min-length="0" 
+          typeahead-auto-select-if-only-one-match="true"></textarea>
+        </div>
+        <div class="pull-left sourcename def_PRIMITIVE">
+          <textarea id="annotation-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}" 
+          style="width: 100%;"
+          custom-autofocus="true" 
+          autofocus 
+          ng-keyup="enterListener({event: $event})" 
+          type="text" 
+          ng-model="relationship.type.pt" 
+          ng-readonly="relationship.effectiveTime || isStatic || template || isLockedModule(axiom.moduleId) || isBatch || relationship.deleted" 
+          class="resizable-text form-control msd-elastic no-border-bottom rel" 
+          typeahead="suggestion as suggestion.term for suggestion in axiom.allowedAttributes | filter:{term:$viewValue}:emptyOrMatch" 
+          typeahead-focus-first="false" 
+          typeahead-loading="typeTypeaheadLoading" 
+          typeahead-wait-ms="700" 
+          typeahead-on-select="setAxiomRelationshipTypeConcept(relationship, $item, axiom.type, relationship.groupId, $parent.$parent.$parent.$index, $index)" 
+          typeahead-editable="false" 
+          typeahead-min-length="0" 
+          typeahead-auto-select-if-only-one-match="true"></textarea>
+        </div>
+        <div ng-show="!isStatic && !showInferredRels">
+          <button ng-if="!isStatic" type="button" ng-click="addAnnotation($index)" class="pull-right btn-default add-buttons md fa-sca fa-plus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">
+            <span>Add New Annotation</span>
+          </button>
+          <button type="button" ng-click="removeAnnotation(annotation)" ng-if="!annotation.effectiveTime && !annotation.released" class="pull-right m-l-5 btn-default add-buttons md fa-sca fa-minus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">
+            <span>Remove Annotation</span>
+          </button>                    
+        </div>
+      </div>      
+    </div>
+  </div>
+  <div class="row">
+    <div class="validation red" ng-repeat="error in validation.errors[annotation.annotationId]">
+      <strong>Convention Error:</strong>
+      <div compile-html="error"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[annotation.annotationId]">
+      <strong>Convention Warning:</strong>
+      <div compile-html="warning"></div>
+    </div>
+  </div>
+</div>
