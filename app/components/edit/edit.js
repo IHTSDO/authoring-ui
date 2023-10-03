@@ -2120,7 +2120,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 var annotationsEnabled = typeof  response.annotationsEnabled !== 'undefined' && (response.annotationsEnabled === true || response.annotationsEnabled === 'true');
                 metadataService.setAnnotationsEnabled(annotationsEnabled);
                 if (annotationsEnabled) {
-                  terminologyServerService.getAnnotationTypes('MAIN').then(function(response) {
+                  terminologyServerService.getAnnotationTypes($scope.task.branchPath).then(function(response) {
                     metadataService.setAnnotationTypes(response.items);
                   });
                 }

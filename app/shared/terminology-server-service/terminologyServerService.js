@@ -2589,7 +2589,7 @@ angular.module('singleConceptAuthoringApp')
 
       function getAnnotationTypes(branch) {
         var deferred = $q.defer();
-        var params = 'activeFilter=true&statedEcl=<%20900000000000516008';
+        var params = 'activeFilter=true&statedEcl=<%202882247005';
         $http.get(apiEndpoint + branch + '/concepts?' + params).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
