@@ -531,6 +531,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isExtensionSet = metadataService.isExtensionSet;
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isAnnatationsEnabled = metadataService.isAnnatationsEnabled;
+        scope.getAnnotationTypes = metadataService.getAnnotationTypes;
         scope.isEnableAxiomAdditionOnInternationalConcepts = metadataService.isEnableAxiomAdditionOnInternationalConcepts;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
@@ -1427,6 +1428,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean the concept for terminology server-ready save
           terminologyServerService.cleanConcept(clonedConcept, keepTempIds);
 
+          // parse annotations
+          if (clonedConcept.annotations) {
+            angular.forEach(clonedConcept.annotations, function (annotation) {
+              if (!annotation.annotationLanguage && annotation.annotationValue && annotation.annotationValue.startsWith('@')) {
+                var language =  annotation.annotationValue.substring(1, annotation.annotationValue.indexOf('"')).trim();
+                annotation.annotationLanguage= language;
+                
+                // remove language
+                var annotationValue = annotation.annotationValue.replace("@" + language, '').trim();
+
+                //remove first and last double quote
+                annotationValue = annotationValue.substring(1, annotationValue.length - 1);
+                annotation.annotationValue = annotationValue;
+              }
+            });
+          }
+
           saveFn(
             $routeParams.projectKey,
             $routeParams.taskKey,
@@ -1484,10 +1502,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   delete scope.concept.classAxioms;
                   delete scope.concept.gciAxioms;
                   delete scope.concept.relationships;
+                  delete scope.concept.annotations;
+
+
                   angular.merge(scope.concept, scope.concept, response.concept);
                   scope.unmodifiedConcept = JSON.parse(JSON.stringify(response.concept));
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
+
+                  
+                  // retain the annotation types
+                  angular.forEach(scope.concept.annotations, function (annotation) {
+                    angular.forEach(clonedConcept.annotations, function (clonedAnnotation) {
+                      if (annotation.annotationId === clonedAnnotation.annotationId) {
+                        annotation.annotationTypePt = clonedAnnotation.annotationTypePt;
+                      }
+                    });
+                  });
 
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
@@ -5622,6 +5653,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.type = {};
             }
           }
+        };
+
+        scope.setAnnotationTypeConcept = function (annotation, item) {
+          if (!annotation || !item) {
+            console.error('Cannot set annotation type concept field, either field or item not specified');
+            return;
+          }
+          annotation.annotationTypeId = item.conceptId;
+          annotation.annotationTypePt = item.pt;
+          autoSave();          
         };
 
         scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, relationshipGroupId, parentIndex, itemIndex) {

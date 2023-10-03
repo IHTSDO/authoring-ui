@@ -253,7 +253,7 @@ angular.module('singleConceptAuthoringApp')
           'annotationId': terminologyServerService.createGuid(),
           'annotationTypeId': null,
           'annotationTypePt': null,
-          'annotationValue': true,
+          'annotationValue': null,
           'annotationLanguage': null,
           'active': true,
           'released': false,
@@ -1013,6 +1013,27 @@ function getFsnDescriptionForConcept(concept) {
         return errors;
       };
 
+      function checkAnnotationComplete(annotation) {
+        var errors = [];
+
+        if (!annotation.moduleId) {
+          errors.push('Annotation moduleId must be set');
+        }
+        if (!annotation.annotationTypeId) {
+          errors.push('Annotation type must be set');
+        }
+        if (!annotation.annotationValue || annotation.annotationValue.length === 0) {
+          errors.push('Annotation value must be set');
+        }
+        
+        if (annotation.active === null) {
+          errors.push('Annotation type must be set');
+        }
+        
+        // pass all checks -> return true
+        return errors;
+      };
+
       // method to check single relationship for validity
       function checkRelationshipComplete(relationship) {
 
@@ -1186,6 +1207,11 @@ function getFsnDescriptionForConcept(concept) {
           for (var m = 0; m < concept.gciAxioms.length; m++) {
             errors = errors.concat(checkAxiomComplete(concept.gciAxioms[m], 'gci'));
           }
+        }
+
+        // check annotations
+        for (var n = 0; n < concept.annotations.length; n++) {
+          errors = errors.concat(checkAnnotationComplete(concept.annotations[n]));
         }
 
         // strip any duplicate messages

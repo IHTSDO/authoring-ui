@@ -2587,6 +2587,18 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getAnnotationTypes(branch) {
+        var deferred = $q.defer();
+        var params = 'activeFilter=true&statedEcl=<%20900000000000516008';
+        $http.get(apiEndpoint + branch + '/concepts?' + params).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2651,6 +2663,9 @@ angular.module('singleConceptAuthoringApp')
         getMembersByRefsetAndReferencedComponent: getMembersByRefsetAndReferencedComponent,
         getReferenceSetsByReferencedComponent: getReferenceSetsByReferencedComponent,
         getGciExpressionsFromTarget: getGciExpressionsFromTarget,
+
+        // annotation
+        getAnnotationTypes: getAnnotationTypes,
 
         // attribute retrieval
         getDomainAttributes: getDomainAttributes,

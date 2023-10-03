@@ -15,7 +15,7 @@
     </div>
   </div>
   
-  <div ng-repeat="annotation in concept.annotations" class="row">
+  <div ng-repeat="annotation in concept.annotations track by annotation.annotationId" class="row">
     <div class="darken-3 p-t-5 grey">
       <div class="col-md-12 no-padding">
         <div  class="transparent md morebuttons more-button-width"></div>
@@ -29,38 +29,31 @@
         <!-- attribute type' -->
         <div class="pull-left is_a is_a_bg" style="margin-left: 0px; width: 22%;">
           <textarea id="annotation-type-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}" 
-          style="width: 100%;"
-          custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" 
-          type="text" 
-          ng-model="annotation.annotationTypePt"
-          ng-readonly="annotation.effectiveTime || isStatic || template || isLockedModule(annotation.moduleId) || isBatch" 
-          class="resizable-text form-control msd-elastic no-border-bottom rel" 
-          typeahead="suggestion as suggestion.term for suggestion in axiom.allowedAttributes | filter:{term:$viewValue}:emptyOrMatch" 
-          typeahead-focus-first="false" typeahead-loading="typeTypeaheadLoading" 
-          typeahead-wait-ms="700" 
-          typeahead-on-select="setAxiomRelationshipTypeConcept(relationship, $item, axiom.type, relationship.groupId, $parent.$parent.$parent.$index, $index)" 
-          typeahead-editable="false" 
-          typeahead-min-length="0" 
-          typeahead-auto-select-if-only-one-match="true"></textarea>
+            style="width: 100%;"
+            custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" 
+            type="text" 
+            ng-model="annotation.annotationTypePt.term"
+            ng-readonly="annotation.effectiveTime || isStatic || template || isLockedModule(annotation.moduleId) || isBatch" 
+            class="resizable-text form-control msd-elastic no-border-bottom rel" 
+            typeahead="suggestion.pt.term as suggestion.pt.term for suggestion in getAnnotationTypes() | filter:$viewValue" 
+            typeahead-focus-first="false"          
+            typeahead-on-select="setAnnotationTypeConcept(annotation, $item)"
+            typeahead-editable="false" 
+            typeahead-min-length="0" 
+            typeahead-auto-select-if-only-one-match="true"></textarea>
         </div>
         <div class="pull-left sourcename def_PRIMITIVE">
-          <textarea id="annotation-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}" 
-          style="width: 100%;"
-          custom-autofocus="true" 
-          autofocus 
-          ng-keyup="enterListener({event: $event})" 
-          type="text" 
-          ng-model="relationship.type.pt" 
-          ng-readonly="relationship.effectiveTime || isStatic || template || isLockedModule(axiom.moduleId) || isBatch || relationship.deleted" 
-          class="resizable-text form-control msd-elastic no-border-bottom rel" 
-          typeahead="suggestion as suggestion.term for suggestion in axiom.allowedAttributes | filter:{term:$viewValue}:emptyOrMatch" 
-          typeahead-focus-first="false" 
-          typeahead-loading="typeTypeaheadLoading" 
-          typeahead-wait-ms="700" 
-          typeahead-on-select="setAxiomRelationshipTypeConcept(relationship, $item, axiom.type, relationship.groupId, $parent.$parent.$parent.$index, $index)" 
-          typeahead-editable="false" 
-          typeahead-min-length="0" 
-          typeahead-auto-select-if-only-one-match="true"></textarea>
+          <textarea id="annotation-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}"
+            style="width: 100%;"
+            ng-style="annotation.annotationLanguage && {'padding-right':'30px'}"
+            custom-autofocus="true" autofocus
+            ng-keyup="enterListener({event: $event})" type="text" ng-model="annotation.annotationValue"
+            ng-readonly="annotation.effectiveTime || isStatic ||isLockedModule(annotation.moduleId) || annotation.deleted"
+            class="resizable-text relationship msd-elastic no-border-bottom">            
+          </textarea>
+          <span ng-if="annotation.annotationLanguage" class="custom-button" style="position: absolute; margin-left: -20px; text-transform: uppercase">
+            {{annotation.annotationLanguage}}
+          </span>         
         </div>
         <div ng-show="!isStatic && !showInferredRels && isAnnatationsEnabled()">
           <button ng-if="!isStatic" type="button" ng-click="addAnnotation($index)" class="pull-right btn-default add-buttons md fa-sca fa-plus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">

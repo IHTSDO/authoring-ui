@@ -2117,7 +2117,13 @@ angular.module('singleConceptAuthoringApp.edit', [
                 }
               });
               terminologyServerService.getBranchMetadata(codeSystemBranchPath, false).then(function(response) {
-                metadataService.setAnnotationsEnabled(typeof  response.annotationsEnabled !== 'undefined' && (response.annotationsEnabled === true || response.annotationsEnabled === 'true'));
+                var annotationsEnabled = typeof  response.annotationsEnabled !== 'undefined' && (response.annotationsEnabled === true || response.annotationsEnabled === 'true');
+                metadataService.setAnnotationsEnabled(annotationsEnabled);
+                if (annotationsEnabled) {
+                  terminologyServerService.getAnnotationTypes('MAIN').then(function(response) {
+                    metadataService.setAnnotationTypes(response.items);
+                  });
+                }
               });
             }
           }

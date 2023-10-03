@@ -18,6 +18,8 @@ angular.module('singleConceptAuthoringApp')
 
     var codeSystems = [];
 
+    var annotationTypes = [];
+
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
@@ -847,6 +849,14 @@ angular.module('singleConceptAuthoringApp')
       return annotationsEnabled;
     }
 
+    function setAnnotationTypes(list) {
+      annotationTypes = list;
+    }
+
+    function getAnnotationTypes() {
+      return annotationTypes;
+    }
+
     function setTemplatesEnabled(value){
         templatesEnabled = value;
     }
@@ -1077,6 +1087,10 @@ angular.module('singleConceptAuthoringApp')
       useInternationalLanguageRefsets: function () {
         return extensionMetadata ? extensionMetadata.useInternationalLanguageRefsets : false;
       },
+
+      // annotation functions
+      setAnnotationTypes: setAnnotationTypes,
+      getAnnotationTypes: getAnnotationTypes,
 
       // module and branch metadata setters
       setExtensionMetadata: setExtensionMetadata,
