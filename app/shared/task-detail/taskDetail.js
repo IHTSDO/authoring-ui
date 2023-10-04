@@ -425,21 +425,32 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         var deferred = $q.defer();
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           let msg = null;
+          let canConflict = false;
+          if (response.branchState && 
+              (response.branchState === 'BEHIND' || response.branchState === 'DIVERGED' || response.branchState === 'STALE')
+              && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
+              canConflict = true;
+          }
           if (response.latestClassificationJson) {
             let latestClassificationJson = response.latestClassificationJson;
-            if (latestClassificationJson.status === 'SAVED' &&
-              (new Date(response.branchHeadTimestamp)).getTime() - (new Date(latestClassificationJson.saveDate)).getTime() < 1000) {
+            if (latestClassificationJson.status === 'SAVED' && (new Date(response.branchHeadTimestamp)).getTime() - (new Date(latestClassificationJson.saveDate)).getTime() < 1000) {
               msg = null;
             } else if ((new Date(latestClassificationJson.creationDate)).getTime() < response.branchHeadTimestamp) {
-              msg = 'There are new changes on this task since the last classification. Do you still want to start a validation?';
+              msg = canConflict ? 'There are new changes on this task since the last classification and task has not been rebased. Do you still want to start a validation?' : 
+                                  'There are new changes on this task since the last classification. Do you still want to start a validation?';
             } else {
               if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound)
                 && latestClassificationJson.status !== 'SAVED') {
-                msg = 'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
+                msg = canConflict ? 'Classification has been run, but the results have not been saved and task has not been rebased. Do you still want to start a validation?' :
+                                    'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
             }
-          } else {
-            msg = 'Classification has not been run. Do you still want to start a validation?';
+          } else {            
+            msg = canConflict ? 'Classification has not been run and task has not been rebased. Do you still want to start a validation?' :
+                                'Classification has not been run. Do you still want to start a validation?';
+          }
+          if (!msg && canConflict) {
+            msg = 'Task has not been rebased. Do you still want to start a validation?';
           }
 
           deferred.resolve(msg);
