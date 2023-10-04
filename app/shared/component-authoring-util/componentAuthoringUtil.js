@@ -1210,9 +1210,11 @@ function getFsnDescriptionForConcept(concept) {
         }
 
         // check annotations
-        for (var n = 0; n < concept.annotations.length; n++) {
-          errors = errors.concat(checkAnnotationComplete(concept.annotations[n]));
-        }
+        if (concept.annotations) {
+          for (var n = 0; n < concept.annotations.length; n++) {
+            errors = errors.concat(checkAnnotationComplete(concept.annotations[n]));
+          }
+        }        
 
         // strip any duplicate messages
         for (var i = 0; i < errors.length; i++) {
