@@ -1621,7 +1621,14 @@ angular.module('singleConceptAuthoringApp.edit', [
             // set the classification and validation flags
             $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING' || $scope.task.latestClassificationJson.status === 'SCHEDULED');
             $rootScope.validationRunning = $scope.task.latestValidationStatus && ($scope.task.latestValidationStatus === 'QUEUED' || $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING');
-
+            if ($rootScope.validationRunning) {
+              $timeout(function () {
+                  var messageElement = angular.element(document.querySelector('.validation-message-header'));
+                  messageElement.addClass('message_validation_' + $scope.task.latestValidationStatus);
+                  var statusElement = angular.element(document.querySelector('.validation-status-header'));
+                  statusElement.addClass('indicator_' + ($scope.task.latestValidationStatus === 'QUEUED' ? 'yellow' : ($scope.task.latestValidationStatus === 'SCHEDULED' ? 'blue' : 'purple')));
+              }, 0);
+            }
             deferred.resolve(task);
           });
         }, function (error) {

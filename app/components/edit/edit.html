@@ -90,8 +90,9 @@
               Validation Failed
             </li>
             <li
-              ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'QUEUED' ||task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'SCHEDULED')">
-              Validation Running
+              ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'QUEUED' ||task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'SCHEDULED')"
+              class="message_validation_{{task.latestValidationStatus}}">
+              
             </li>
             <li ng-if="task.latestValidationStatus === 'COMPLETED' || task.latestValidationStatus === 'STALE'" ng-click="viewValidationFromSidebar()">
               View Validation Report

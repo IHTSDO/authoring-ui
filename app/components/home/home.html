@@ -128,12 +128,12 @@
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' && task.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
-                          {indicator_blue : task.latestValidationStatus === 'QUEUED'},
-                          {indicator_blue : task.latestValidationStatus === 'RUNNING'},
-                          {indicator_red : task.latestValidationStatus === 'FAILED'},                          
+                          {indicator_yellow : task.latestValidationStatus === 'QUEUED'},
+                          {indicator_purple : task.latestValidationStatus === 'RUNNING'},
+                          {indicator_red : task.latestValidationStatus === 'FAILED'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'},
                           {indicator_grey : task.latestValidationStatus === 'STALE'}]"
-                          class="btn btn-round   btn-default lighten-2 pull-left ">                          
+                          class="btn btn-round   btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>
                     <span> <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>

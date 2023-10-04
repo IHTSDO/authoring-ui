@@ -195,6 +195,14 @@ angular.module('singleConceptAuthoringApp.project', [
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning = $scope.project.validationStatus && ($scope.project.validationStatus === 'SCHEDULED' || $scope.project.validationStatus === 'QUEUED' || $scope.project.validationStatus === 'RUNNING');
+          if ($rootScope.validationRunning) {
+            $timeout(function () {
+                var messageElement = angular.element(document.querySelector('.validation-message-header'));
+                messageElement.addClass('message_validation_' + $scope.project.validationStatus);
+                var statusElement = angular.element(document.querySelector('.validation-status-header'));
+                statusElement.addClass('indicator_' + ($scope.project.validationStatus === 'QUEUED' ? 'yellow' : ($scope.project.validationStatus === 'SCHEDULED' ? 'blue' : 'purple')));                
+            }, 0);
+          }
 
           // get the latest validation for this project (if exists)
           if ($scope.project.validationStatus !== 'FAILED') {
@@ -539,7 +547,6 @@ angular.module('singleConceptAuthoringApp.project', [
         scaService.startValidationForProject($scope.project.key).then(function (response) {
           notificationService.sendMessage('Validation running');
           $scope.validationContainer = { status : response };
-          $rootScope.validationRunning = true;
           $timeout(function () {
             $scope.getProject();
           }, 2000);

@@ -65,8 +65,8 @@
                        type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
                           {indicator_blue : project.validationStatus === 'SCHEDULED'},
-                          {indicator_blue : project.validationStatus === 'QUEUED'},
-                          {indicator_blue : project.validationStatus === 'RUNNING'},
+                          {indicator_yellow : project.validationStatus === 'QUEUED'},
+                          {indicator_purple : project.validationStatus === 'RUNNING'},
                           {indicator_green : project.validationStatus === 'COMPLETED'},
                           {indicator_red : project.validationStatus === 'FAILED'},
                           {indicator_grey : project.validationStatus === 'STALE'}]"

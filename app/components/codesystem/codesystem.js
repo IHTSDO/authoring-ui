@@ -148,6 +148,14 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     }
                     $scope.validationContainer = response;
                     $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
+                    if ($rootScope.validationRunning) {
+                      $timeout(function () {
+                          var messageElement = angular.element(document.querySelector('.validation-message-header'));
+                          messageElement.addClass('message_validation_' + response.executionStatus);                
+                          var statusElement = angular.element(document.querySelector('.validation-status-header'));
+                          statusElement.addClass('indicator_' + (response.executionStatus === 'QUEUED' ? 'yellow' : (response.executionStatus === 'SCHEDULED' ? 'blue' : 'purple')));
+                      }, 0);
+                    }
                   });
                   terminologyServerService.getClassificationsForBranchRoot(codeSystem.branchPath).then(function (classifications) {
                     if (classifications && classifications.length !== 0) {
