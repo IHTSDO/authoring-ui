@@ -119,24 +119,32 @@ angular.module('singleConceptAuthoringApp')
 
             if (status && status === 'Stale') {
               if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
+                var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
                 var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
-                return status + ' ' + covertToUTCTime(endTime);
+                var duration = (new Date(endTime) - new Date(startTime)) / 1000;
+                return status + ', Started: ' + covertToUTCTime(startTime) + ', Ended: ' + covertToUTCTime(endTime) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
               } else {
                 return status;
               }
             }
 
             if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
-
+              if (scope.validationContainer.report.rvfValidationResult.endTime                
+                && scope.validationContainer.report.rvfValidationResult.startTime) { 
+                  var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
+                  var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
+                  var duration = (new Date(endTime) - new Date(startTime)) / 1000;
+                  return status + ', Started: ' + covertToUTCTime(startTime) + ', Ended: ' + covertToUTCTime(endTime) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
+              }
               // get the end time if specified
               if (scope.validationContainer.report.rvfValidationResult.endTime) {
                 var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
-                return status + ' ' + covertToUTCTime(endTime);
+                return status + ', Ended: ' + covertToUTCTime(endTime);
               }
 
               if (scope.validationContainer.report.rvfValidationResult.startTime) {
                 var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
-                return status + ', started ' + covertToUTCTime(startTime);
+                return status + ', Started: ' + covertToUTCTime(startTime);
               }
             }
 
