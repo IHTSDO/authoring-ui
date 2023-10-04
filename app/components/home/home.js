@@ -217,6 +217,12 @@ angular.module('singleConceptAuthoringApp.home', [
             scaService.getTasks($scope.showPromotedTasks ? false : true).then(function (response) {
                 if (response && response.length > 0) {
                     var branches = [];
+                    angular.forEach(response, function (task) {
+                        if (task.branchBaseTimestamp && task.latestCodeSystemVersionTimestamp 
+                            && task.latestCodeSystemVersionTimestamp > task.branchBaseTimestamp) {                          
+                            task.branchBaseTimestampBehideCodeSystem = true;
+                        }
+                    });
                     for (let i =0 ; i < response.length; i++) {
                         if (response[i].status !== 'New') {
                             branches.push(response[i].branchPath);

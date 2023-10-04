@@ -25,7 +25,15 @@
               </div>
               
               <h4 class="timeline-title">{{task.summary}}</h4>
-              
+            </div>
+          </div>
+        </li>
+        <li  ng-if="task.branchBaseTimestamp">
+          <div class="timeline-badge" style="top: -4px;"> <i class="icon-circle theme-border"></i> </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <label class="control-label">Last Rebased Date:</label> <span>{{task.branchBaseTimestamp | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</span>
+              <h4 compile-html="task.description" class=" width-fix timeline-title task-detail task-detail-description"></h4>
             </div>
           </div>
         </li>
