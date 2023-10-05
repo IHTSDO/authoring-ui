@@ -398,7 +398,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         checkPrerequisitesForValidation().then(function(message) {
           if (message) {
-            modalService.confirm(message).then(function () {
+            modalService.confirm(message, 'white-space: pre-line;').then(function () {
               markTaskInProgressIfAnyAndValidate();
             }, function() {
               setTimeout(function(){
@@ -436,17 +436,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             if (latestClassificationJson.status === 'SAVED' && (new Date(response.branchHeadTimestamp)).getTime() - (new Date(latestClassificationJson.saveDate)).getTime() < 1000) {
               msg = null;
             } else if ((new Date(latestClassificationJson.creationDate)).getTime() < response.branchHeadTimestamp) {
-              msg = canConflict ? 'There are new changes on this task since the last classification and task has not been rebased. Do you still want to start a validation?' : 
+              msg = canConflict ? 'The task has not been rebased. \n\nThere are new changes on this task since the last classification. \n\nDo you still want to start a validation?' : 
                                   'There are new changes on this task since the last classification. Do you still want to start a validation?';
             } else {
               if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound)
                 && latestClassificationJson.status !== 'SAVED') {
-                msg = canConflict ? 'Classification has been run, but the results have not been saved and task has not been rebased. Do you still want to start a validation?' :
+                msg = canConflict ? 'The task has not been rebased. \n\nClassification has been run, but the results have not been saved. \n\nDo you still want to start a validation?' :
                                     'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
             }
           } else {            
-            msg = canConflict ? 'Classification has not been run and task has not been rebased. Do you still want to start a validation?' :
+            msg = canConflict ? 'The task has not been rebased. \n\nClassification has not been run. \n\nDo you still want to start a validation?' :
                                 'Classification has not been run. Do you still want to start a validation?';
           }
           if (!msg && canConflict) {
