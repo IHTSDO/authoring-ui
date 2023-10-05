@@ -1,5 +1,5 @@
-<div class="col-md-12 scroll-if-height no-padding task-detail-tab" ng-controller="taskDetailCtrl"> 
-  
+<div class="col-md-12 scroll-if-height no-padding task-detail-tab" ng-controller="taskDetailCtrl">
+
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row no-padding clearfix">
     <div class="col col-md-12">
@@ -23,7 +23,7 @@
                      Batch</div>
                  </div>
               </div>
-              
+
               <h4 class="timeline-title">{{task.summary}}</h4>
             </div>
           </div>
@@ -33,7 +33,6 @@
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">Last Rebased Date:</label> <span>{{task.lastRebaseTime | date : "yyyy-MM-ddTHH:mm:ss'Z'":"UTC"}}</span>
-              <h4 compile-html="task.description" class=" width-fix timeline-title task-detail task-detail-description"></h4>
             </div>
           </div>
         </li>
@@ -69,7 +68,7 @@
                 {{criteria.label}}
           </div>
           </li>
-        
+
         <li class="col-md-6" ng-repeat="criteria in sac | orderBy : ['order','label']" style="margin-bottom:10px;" ng-if="criteria.manual && !criteria.id.includes('task-review-changes')">
           <div class="timeline-badge">
               <div ng-if="criteria.complete && userHasRole(criteria.requiredRoles)" ng-click="unacceptManualSac(criteria.id)" class="fa fa-check-square pull-right" style="color: green; font-size:18px; position: absolute; left: 6px; top: 2px;"></div>
@@ -110,11 +109,11 @@
     <div class="p-l-15 p-r-15" ng-if="(automatePromotionStatus === 'Queued'
                                     || automatePromotionStatus === 'Rebasing'
                                     || automatePromotionStatus === 'Classifying'
-                                    || automatePromotionStatus === 'Promoting') 
+                                    || automatePromotionStatus === 'Promoting')
                                     && automatePromotionErrorMsg === ''
-                                    && task.status !== 'Promoted' 
+                                    && task.status !== 'Promoted'
                                     && task.status !== 'Completed'">
-      <div class="alert" ng-class="[{'green' : automatePromotionStatus === 'Classifying'}, 
+      <div class="alert" ng-class="[{'green' : automatePromotionStatus === 'Classifying'},
                 {'amber' :  automatePromotionStatus === 'Rebasing'},
                 {'blue' : automatePromotionStatus === 'Promoting'},
                 {'alert-warning' : automatePromotionStatus !== 'Classifying' && automatePromotionStatus !== 'Rebasing' && automatePromotionStatus !== 'Promoting'}]">Automated promotion in progress. {{automatePromotionStatus !== ''? 'Status: ' + automatePromotionStatus : ''}} </div>
@@ -122,7 +121,7 @@
     <div class="p-l-15 p-r-15" ng-if="automatePromotionErrorMsg !== ''">
       <div class="alert alert-danger">{{automatePromotionErrorMsg}}
         <div ng-if="automatePromotionStatus === 'Rebased with conflicts'">Click <a ng-click="viewConflicts()">here</a> to redirect to Merge Concepts page.</div>
-        <div ng-if="automatePromotionStatus === 'Classified with results' || automatePromotionStatus === 'Classified with equivalencies Found'">Click <a ng-click="viewClassification()">here</a> to see the classification results.</div>        
+        <div ng-if="automatePromotionStatus === 'Classified with results' || automatePromotionStatus === 'Classified with equivalencies Found'">Click <a ng-click="viewClassification()">here</a> to see the classification results.</div>
       </div>
     </div>
     <div class="p-l-15 p-r-15">
@@ -139,7 +138,7 @@
       <button ng-if="editable !== 'false'"
               ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.status === 'Completed' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || promoting || automatePromotionStatus === 'Rebasing' || automatePromotionStatus === 'Classifying' || automatePromotionStatus === 'Promoting' || hasRequestPendingClarification() || role === 'UNDEFINED' || isTaskPromotionDisabled() || !sacSignedOff()"
               class="btn btn-default blue darken-1 promote" ng-click="promote()"> <span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">{{(role === 'AUTHOR' && isTaskPromotionDisabled()) ? 'Task Promotion Disabled' : 'Promote This Task to the Project'}}</span> </button>
-      <button class="btn btn-default purple darken-1 auto-promote" 
+      <button class="btn btn-default purple darken-1 auto-promote"
               ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.status === 'Completed' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked || automatePromotionStatus === 'Rebasing' || automatePromotionStatus === 'Classifying' || automatePromotionStatus === 'Promoting' || automatePromotionStatus === 'Queued' || isAutomatePromotionRunning() || hasRequestPendingClarification() || role === 'UNDEFINED' || isTaskPromotionDisabled() || !sacSignedOff()"
               ng-click="proceedAutomatePromotion()"> <span class="md md-archive purple darken-2 iconbase"></span> <span class="button-link">{{(role === 'AUTHOR' && isTaskPromotionDisabled()) ? 'Auto Promotion Disabled' : 'Begin Promotion Automation'}}</span> </button>
       <div ng-if="!releaseNotesDisabled">
@@ -149,6 +148,6 @@
               ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"> <span class="fa fa-clipboard iconbase" style="padding-top: 10px;"></span> <span class="button-link">{{role === 'AUTHOR' ? 'Edit' : 'View' }}: {{lineItem.title}}</span> </button>
     </div>
     </div>
-    
+
   </div>
 </div>
