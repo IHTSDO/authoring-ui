@@ -867,6 +867,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $scope.role = role;
           });
 
+          // get latest rebase time
+          terminologyServerService.getTraceabilityForBranch($scope.task.branchPath, null, 'REBASE').then(function(traceability) {
+            if (traceability && !traceability.empty) {
+              const content = traceability.content;
+              let date = new Date(content[content.length - 1].commitDate);
+              $scope.task.lastRebaseTime = date.toUTCString();        
+            }
+          }, function () {
+            // do nothing
+          });
+
           if ($scope.task.branchState === 'DIVERGED') {
             $rootScope.$broadcast('branchDiverged');
           }
