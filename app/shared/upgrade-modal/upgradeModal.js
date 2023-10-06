@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('upgradeModalCtrl', function ($scope, $modalInstance, $location, $filter, ngTableParams, terminologyServerService, codeSystem, enGbLanguageRefsetPresent, modalService, metadataService) {
+  .controller('upgradeModalCtrl', function ($scope, $modalInstance, $location, $filter, $q, ngTableParams, terminologyServerService, codeSystem, enGbLanguageRefsetPresent, modalService, metadataService) {
 
     $scope.codeSystem = codeSystem;
 
@@ -16,6 +16,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.selectedProject = null;
 
     $scope.copyEnGb = false;
+
+    $scope.projectsLoading = false;
 
     // declare table parameters
     $scope.projectTableParams = new ngTableParams({
@@ -98,18 +100,45 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-      var projects = metadataService.getProjects();
+      $scope.projectsLoading = true;
+      var allProjects = [];
       var extensionMasterKey = $scope.codeSystem.shortName.substr($scope.codeSystem.shortName.indexOf('-') + 1);
-      angular.forEach(projects, function (project) {
+      angular.forEach(metadataService.getProjects(), function (project) {
         let path = project.branchPath.substr(0, project.branchPath.lastIndexOf("/"));
         if(path === $scope.codeSystem.branchPath){
-            $scope.projects.push(project);
+            var clonedProject = angular.copy(project);            
+            allProjects.push(clonedProject);
         }
         if (project.key === extensionMasterKey) {
           $scope.selectedProject = project.key;
         }
       });
-      $scope.projectTableParams.reload();
+
+      if (allProjects.length === 0) {
+        $scope.projectsLoading = false;
+      } else {
+        var promises = [];
+
+        // Fetch branch state for each project
+        angular.forEach(allProjects, function (project) {
+          promises.push(terminologyServerService.getBranch(project.branchPath));
+        });
+
+        // on resolution of all promises
+        $q.all(promises).then(function (responses) {
+          angular.forEach(allProjects, function (project) {
+            angular.forEach(responses, function (response) {
+              if (response.path === project.branchPath) {
+                project.branchState = response.state;
+              }
+            });
+          });
+          $scope.projects = allProjects;
+          $scope.projectsLoading = false;
+          $scope.projectTableParams.reload();
+        }, function (error) {});
+      }
+
       if (!$scope.selectedProject && $scope.projects.length !== 0) {
         $scope.selectedProject = $scope.projects[0].key;
       }

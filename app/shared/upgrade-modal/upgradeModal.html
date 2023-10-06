@@ -41,6 +41,11 @@
                   ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
           </td>
         </tr>
+        <tr ng-show="projectsLoading">
+          <td colspan="4">
+            <div class="alert alert-success text-center">Loading projects...</div>
+          </td>
+        </tr>
       </table>
     </div>
     <div class="row">
