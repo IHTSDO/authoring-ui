@@ -117,36 +117,30 @@ angular.module('singleConceptAuthoringApp')
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
 
+            var startTimestamp = scope.validationContainer.startTimestamp ?  scope.validationContainer.startTimestamp : (scope.validationContainer.report ? (new Date(scope.validationContainer.report.rvfValidationResult.startTime)).getTime() : null);
+            var endTimestamp = scope.validationContainer.endTimestamp ?  scope.validationContainer.endTimestamp : (scope.validationContainer.report ? (new Date(scope.validationContainer.report.rvfValidationResult.endTime)).getTime() : null);
+
             if (status && status === 'Stale') {
               if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
-                var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
-                var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
-                var duration = (new Date(endTime) - new Date(startTime)) / 1000;
-                return status + ', Started: ' + covertToUTCTime(startTime) + ', Ended: ' + covertToUTCTime(endTime) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
+                var duration = (endTimestamp - startTimestamp) / 1000;
+                return status + ', Started: ' + covertToUTCTime(new Date(startTimestamp)) + ', Ended: ' + covertToUTCTime(new Date(endTimestamp)) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
               } else {
                 return status;
               }
             }
-
-            if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
-              if (scope.validationContainer.report.rvfValidationResult.endTime                
-                && scope.validationContainer.report.rvfValidationResult.startTime) { 
-                  var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
-                  var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
-                  var duration = (new Date(endTime) - new Date(startTime)) / 1000;
-                  return status + ', Started: ' + covertToUTCTime(startTime) + ', Ended: ' + covertToUTCTime(endTime) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
-              }
-              // get the end time if specified
-              if (scope.validationContainer.report.rvfValidationResult.endTime) {
-                var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
-                return status + ', Ended: ' + covertToUTCTime(endTime);
-              }
-
-              if (scope.validationContainer.report.rvfValidationResult.startTime) {
-                var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
-                return status + ', Started: ' + covertToUTCTime(startTime);
-              }
+            
+            if (startTimestamp && endTimestamp) {
+                var duration = (endTimestamp - startTimestamp) / 1000;
+                return status + ', Started: ' + covertToUTCTime(new Date(startTimestamp)) + ', Ended: ' + covertToUTCTime(new Date(endTimestamp)) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
             }
+            // get the end time if specified
+            if (endTimestamp) {
+              return status + ', Ended: ' + covertToUTCTime(new Date(endTimestamp));
+            }
+
+            if (startTimestamp) {
+              return status + ', Started: ' + covertToUTCTime(new Date(startTimestamp));
+            }            
 
             return status;
           };
@@ -156,7 +150,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            var utcTime = new Date(dateTime + ' UTC');
+            var utcTime = new Date(dateTime).toISOString();
             return $filter('date')(utcTime, "yyyy-MM-ddTHH:mm:ss'Z'","UTC");
           }
 
