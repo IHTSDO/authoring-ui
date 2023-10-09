@@ -1,9 +1,7 @@
 <div class="annotation row  p-t-5 m-b-5">
   <div class="grey darken-4 p-t-5 row" drop-channel="annotationObj" ui-on-drop="dropAnnotations($data)" drop-validate="!isLockedModule(concept.moduleId)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
     <div class="col-md-1 no-padding pull-left">
-      <button class="btn-default md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case" ng-click="setAxiomProperties(axiom, $event)" popover-template="'shared/component-more/annotationMore.html'" popover-placement="{{popoverDirection}}" popover-append-to-body="true" id="{{axiom.type}}-axiom-more-{{initializationTimeStamp}}-{{$index}}">
-        <span>More details</span>
-      </button>
+      <div  class="transparent md morebuttons more-button-width"></div>
       <button class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button" ui-draggable-custom="true" drag="concept.annotations" drag-channel="annotationObj">
         <span>Drag This Row</span>
       </button>
@@ -18,8 +16,19 @@
   <div ng-repeat="annotation in concept.annotations track by annotation.annotationId" class="row">
     <div class="darken-3 p-t-5 grey">
       <div class="col-md-12 no-padding">
-        <div  class="transparent md morebuttons more-button-width"></div>
-        <div class=" md morebuttons drag-button-width concept-edit-button"></div>
+        <button id="annotation-more-{{initializationTimeStamp}}-{{$index}}" ng-click="setDescriptionProperties(annotation, $event)"
+                  class="btn-default transparent md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
+                  popover-template="'shared/component-more/annotationMore.html'"
+                  popover-placement="{{popoverDirection}}"
+                  popover-append-to-body="true">
+            <span>More details</span>
+          </button>
+          <button
+            class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
+            ui-draggable="true" drag="annotation" drag-channel="annotationObj"
+            drag-image="getDragImageForAnnotation(annotation)">
+            <span>Drag this row</span>
+          </button>
         <!-- Active/Inactive -->
         <button type="button" ng-disabled="isStatic || !annotation.released || isLockedModule(annotation.moduleId)" ng-click="toggleAnnotationActive(annotation)" ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : annotation.active}, {red: !annotation.active}]" class="tooltips-bottom small-size-tooltip concept-edit-button btn-transparent">
           <span ng-if="isStatic">Active/Inactive</span>
@@ -44,16 +53,23 @@
         </div>
         <div class="pull-left sourcename def_PRIMITIVE">
           <textarea id="annotation-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}"
-            style="width: 100%;"
-            ng-style="annotation.annotationLanguage && {'padding-right':'30px'}"
+            style="width: 90%;"
+            ng-change="updateAnnotation(annotation)"            
             custom-autofocus="true" autofocus
             ng-keyup="enterListener({event: $event})" type="text" ng-model="annotation.annotationValue"
+            ng-model-options="{updateOn: 'blur'}"
             ng-readonly="annotation.effectiveTime || isStatic ||isLockedModule(annotation.moduleId) || annotation.deleted"
             class="resizable-text relationship msd-elastic no-border-bottom">            
           </textarea>
-          <span ng-if="annotation.annotationLanguage" class="custom-button" style="position: absolute; margin-left: -20px; text-transform: uppercase">
-            {{annotation.annotationLanguage}}
-          </span>         
+          <!-- Annotation language -->
+          <div class="pull-left typeid" style="width: 10%;">
+            <select ng-disabled="annotation.released || isStatic || isLockedModule(annotation.moduleId) || showInferredRels"
+                    ng-options="language for language in annotationLanguageOptions | orderBy : '-'"
+                    ng-model="annotation.annotationLanguage" ng-change="updateAnnotation(annotation)" name="select-type"
+                    id="select-type-choice" class="form-control" ui-on-drop=""
+                    style="text-transform: uppercase;">
+            </select>
+          </div>     
         </div>
         <div ng-show="!isStatic && !showInferredRels && isAnnatationsEnabled()">
           <button ng-if="!isStatic" type="button" ng-click="addAnnotation($index)" class="pull-right btn-default add-buttons md fa-sca fa-plus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">

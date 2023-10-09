@@ -569,6 +569,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           'ACCEPTABLE': 'A'
         };
 
+        scope.annotationLanguageOptions = ['-', 'en'];
+
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
@@ -3931,7 +3933,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.concept.annotations) {
             scope.concept.annotations = [];
           }
-          angular.forEach($data, function (annotation) {            
+          if (!angular.isArray($data)) {
+            $data = [$data];
+          }
+          angular.forEach($data, function (annotation) {
             if (annotation.active) {
               var clonedAnnotation = angular.copy(annotation);
               clonedAnnotation.annotationId = terminologyServerService.createGuid();
@@ -4383,6 +4388,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return 'Relationship Group ' + relationshipGroup[0].groupId;
         };
 
+        scope.getDragImageForAnnotation = function(annotation) {
+          return annotation.annotationTypePt.term + ', ' + annotation.annotationValue;
+        };
+
 // dummy function added for now to prevent default behavior
 // of dropping into untagged input boxes.  Issue has been raised
 // with the repository developers, but not up to forking and fixing
@@ -4825,6 +4834,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
         };
+
+        scope.updateAnnotation = function (annotation) {
+          if (annotation.annotationLanguage && annotation.annotationLanguage === '-') {
+            annotation.annotationLanguage = null;
+          }
+          autoSave();
+        }
 
 // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship, roleGroupOnly, keepSCTID) {

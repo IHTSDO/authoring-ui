@@ -1,14 +1,17 @@
-<div class="edits editing-form" component-id="{{axiom.type}}-axiom-more-{{initializationTimeStamp}}-{{$index}}">
-  <div class="pop-edit axiom-more row">    
+<div class="edits editing-form" component-id="annotation-more-{{initializationTimeStamp}}-{{$index}}">
+  <div class="pop-edit annotation-more row">
+    <div class="concept-id pull-left">
+      <label class="control-label">Annotation ID</label>
+      <span class="fields row "> {{annotation.annotationId}}</span> </div>
     <div class="time pull-left">
       <label class="control-label">Eff. Time</label>
-      <span class="fields row">{{axiom.effectiveTime }}</span> </div>
+      <span class="fields row">{{annotation.effectiveTime }}</span> </div>
     <div class="module pull-left">
       <label class="control-label">Module Id</label>
       <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
                     ng-disabled="isLockedModule(concept.moduleId)"
-              ng-model="axiom.moduleId" ng-disabled="isStatic"
-              ng-options="module.id as (module.name) for module in getAvailableModules(axiom.moduleId)">
+              ng-model="annotation.moduleId" ng-disabled="isStatic"
+               ng-options="module.id as (module.name) for module in getAvailableModules(annotation.moduleId)">
       </select>
     </div>
   </div>

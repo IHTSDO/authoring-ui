@@ -2015,6 +2015,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                     }
                     else if(($(this).find('.description-more').length != 0
                               || $(this).find('.concept-more').length != 0
+                              || $(this).find('.annotation-more').length != 0
                               || $(this).find('.axiom-more').length != 0
                               || $(this).find('.relationship-more').length != 0
                               || $(this).find('.optional-language-addition-form').length != 0)
