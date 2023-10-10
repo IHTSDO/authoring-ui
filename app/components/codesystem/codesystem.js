@@ -149,12 +149,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     $scope.validationContainer = response;
                     $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
                     if ($rootScope.validationRunning) {
-                      $timeout(function () {
-                          var messageElement = angular.element(document.querySelector('.validation-message-header'));
-                          messageElement.addClass('message_validation_' + response.executionStatus);                
-                          var statusElement = angular.element(document.querySelector('.validation-status-header'));
-                          statusElement.addClass('indicator_' + (response.executionStatus === 'QUEUED' ? 'yellow' : (response.executionStatus === 'SCHEDULED' ? 'blue' : 'purple')));
-                      }, 0);
+                      refreshValidationIndicator(response.executionStatus);
                     }
                   });
                   terminologyServerService.getClassificationsForBranchRoot(codeSystem.branchPath).then(function (classifications) {
@@ -237,6 +232,49 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           $scope.getCodeSystem();
         }
       });
+
+      $scope.$on('reloadCodeSystemValidation', function (event, data) {
+        if (!data || data.branchPath === $scope.codeSystem.branchPath) {
+          scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
+            delete response.dailyBuildReport;
+            delete response.dailyBuildRvfUrl;
+            $scope.validationContainer = response;
+            $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
+            if ($rootScope.validationRunning) {
+              refreshValidationIndicator(response.executionStatus);
+            }
+          });
+        }
+      });
+
+      function refreshValidationIndicator(executionStatus) {        
+        $timeout(function () {
+          // Remove the old class and add the new one
+          var messageElement = angular.element(document.querySelector('.validation-message-header'));
+          if (messageElement.attr('class')) {
+            var classStr = messageElement.attr('class');
+            var classArr = classStr.split(' ');
+            for (var i = 0; i < classArr.length; i++) {
+              if (classArr[i].startsWith('message_validation_')) {
+                messageElement.removeClass(classArr[i]);
+              }
+            }
+          }
+          messageElement.addClass('message_validation_' + executionStatus);
+
+          var statusElement = angular.element(document.querySelector('.validation-status-header'));
+          if (statusElement.attr('class')) {
+            var classStr = statusElement.attr('class');
+            var classArr = classStr.split(' ');
+            for (var i = 0; i < classArr.length; i++) {
+              if (classArr[i].startsWith('indicator_')) {
+                statusElement.removeClass(classArr[i]);
+              }
+            }
+          }
+          statusElement.addClass('indicator_' + (executionStatus === 'QUEUED' ? 'yellow' : (executionStatus === 'SCHEDULED' ? 'blue' : 'purple')));
+        }, 0);
+      }
 
       // task creation from codesystem page
       $scope.openCreateTaskModal = function () {

@@ -488,32 +488,42 @@ angular.module('singleConceptAuthoringApp')
                 task: "WRPAS-98" (omitted for project)
                 */
               case 'Validation':
-
-                // convert to first-character capitalized for all words
-                var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
-                  return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                });
-                msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  newNotification.project ? 'project ' + newNotification.project : 'code system ' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
-
-                // do not supply a url (button link) for FAILED status
-                if (event !== 'FAILED') {
+                if (newNotification.event !== 'FAILED' && newNotification.event !== 'COMPLETED') {
                   if (newNotification.task) {
-                    url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
+                    $rootScope.$broadcast('reloadTaskValidation', {project: newNotification.project, task: newNotification.task});
                   } else if (newNotification.project) {
-                    url = '#/project/' + newNotification.project;
+                    $rootScope.$broadcast('reloadProjectValidation', {project: newNotification.project});
                   } else {
-                    url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
+                    $rootScope.$broadcast('reloadCodeSystemValidation', {branchPath: newNotification.branchPath});
                   }
-                }
-
-                if (newNotification.task) {
-                  $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
-                } else if (newNotification.project) {
-                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
                 } else {
-                  $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
+                  // convert to first-character capitalized for all words
+                  var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                  });
+                  msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  newNotification.project ? 'project ' + newNotification.project : 'code system ' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName);
+
+                  // do not supply a url (button link) for FAILED status
+                  if (event !== 'FAILED') {
+                    if (newNotification.task) {
+                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
+                    } else if (newNotification.project) {
+                      url = '#/project/' + newNotification.project;
+                    } else {
+                      url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
+                    }
+                  }
+  
+                  if (newNotification.task) {
+                    $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
+                  } else if (newNotification.project) {
+                    $rootScope.$broadcast('reloadProject', {project: newNotification.project});
+                  } else {
+                    $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
+                  }
+                  notificationService.sendMessage(msg, 0, url);
                 }
-                notificationService.sendMessage(msg, 0, url);
+                
                 break;
 
               /*

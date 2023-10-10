@@ -196,12 +196,7 @@ angular.module('singleConceptAuthoringApp.project', [
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'SCHEDULED' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning = $scope.project.validationStatus && ($scope.project.validationStatus === 'SCHEDULED' || $scope.project.validationStatus === 'QUEUED' || $scope.project.validationStatus === 'RUNNING');
           if ($rootScope.validationRunning) {
-            $timeout(function () {
-                var messageElement = angular.element(document.querySelector('.validation-message-header'));
-                messageElement.addClass('message_validation_' + $scope.project.validationStatus);
-                var statusElement = angular.element(document.querySelector('.validation-status-header'));
-                statusElement.addClass('indicator_' + ($scope.project.validationStatus === 'QUEUED' ? 'yellow' : ($scope.project.validationStatus === 'SCHEDULED' ? 'blue' : 'purple')));                
-            }, 0);
+            refreshValidationIndicator($scope.project.validationStatus);
           }
 
           // get the latest validation for this project (if exists)
@@ -224,6 +219,49 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.getProject();
         }
       });
+
+      $scope.$on('reloadProjectValidation', function (event, data) {
+        if (!data || data.project === $routeParams.projectKey) {
+          scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+            $rootScope.validationRunning = response.validationStatus && (response.validationStatus === 'SCHEDULED' || response.validationStatus === 'QUEUED' || response.validationStatus === 'RUNNING');
+            if ($rootScope.validationRunning) {
+              refreshValidationIndicator(response.validationStatus);
+            }
+          });
+        }
+      });
+
+      function refreshValidationIndicator(validationStatus) {
+        if ($scope.validationContainer) {
+          $scope.validationContainer.executionStatus = validationStatus;
+        }
+        $timeout(function () {
+          // Remove the old class and add the new one
+          var messageElement = angular.element(document.querySelector('.validation-message-header'));
+          if (messageElement.attr('class')) {
+            var classStr = messageElement.attr('class');
+            var classArr = classStr.split(' ');
+            for (var i = 0; i < classArr.length; i++) {
+              if (classArr[i].startsWith('message_validation_')) {
+                messageElement.removeClass(classArr[i]);
+              }
+            }
+          }
+          messageElement.addClass('message_validation_' + validationStatus);
+
+          var statusElement = angular.element(document.querySelector('.validation-status-header'));
+          if (statusElement.attr('class')) {
+            var classStr = statusElement.attr('class');
+            var classArr = classStr.split(' ');
+            for (var i = 0; i < classArr.length; i++) {
+              if (classArr[i].startsWith('indicator_')) {
+                statusElement.removeClass(classArr[i]);
+              }
+            }
+          }
+          statusElement.addClass('indicator_' + (validationStatus === 'QUEUED' ? 'yellow' : (validationStatus === 'SCHEDULED' ? 'blue' : 'purple')));
+        }, 0);
+      }
 
       // reload SAC
       $scope.$on('reloadSAC', function (event, data) {
@@ -347,7 +385,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.openLineItemModal = function (id, all) {
           let item = {};
           let globalItems = [];
-          
+
           angular.forEach($scope.lineItems, function (lineItem) {
             if (lineItem.id === id) {
               item = lineItem;
@@ -361,7 +399,7 @@ angular.module('singleConceptAuthoringApp.project', [
           else if(!$scope.userRoles.includes('PROJECT_LEAD') && !$scope.userRoles.includes('RELEASE_LEAD') && item.id) {
              readOnly = true;
           }
-          
+
           var mode;
           if (readOnly) {
             mode = 'READ_ONLY';
@@ -510,7 +548,7 @@ angular.module('singleConceptAuthoringApp.project', [
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
           let msg = null;
           let canConflict = false;
-          if (response.branchState && 
+          if (response.branchState &&
             (response.branchState === 'BEHIND' || response.branchState === 'DIVERGED' || response.branchState === 'STALE')) {
             canConflict = true;
           }
@@ -859,7 +897,7 @@ angular.module('singleConceptAuthoringApp.project', [
           }, function () {
             // do nothing
           });
-        }        
+        }
       };
 
       $scope.toggleProjectScheduledRebase = function () {
@@ -886,7 +924,7 @@ angular.module('singleConceptAuthoringApp.project', [
       };
 
       $scope.userHasRole = function(requiredRoles) {
-        return !requiredRoles || $scope.userRoles.filter(function(role) { return requiredRoles.indexOf(role) !== -1;}).length !== 0; 
+        return !requiredRoles || $scope.userRoles.filter(function(role) { return requiredRoles.indexOf(role) !== -1;}).length !== 0;
       };
 
       // on load, retrieve tasks for project

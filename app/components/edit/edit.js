@@ -1622,12 +1622,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING' || $scope.task.latestClassificationJson.status === 'SCHEDULED');
             $rootScope.validationRunning = $scope.task.latestValidationStatus && ($scope.task.latestValidationStatus === 'QUEUED' || $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING');
             if ($rootScope.validationRunning) {
-              $timeout(function () {
-                  var messageElement = angular.element(document.querySelector('.validation-message-header'));
-                  messageElement.addClass('message_validation_' + $scope.task.latestValidationStatus);
-                  var statusElement = angular.element(document.querySelector('.validation-status-header'));
-                  statusElement.addClass('indicator_' + ($scope.task.latestValidationStatus === 'QUEUED' ? 'yellow' : ($scope.task.latestValidationStatus === 'SCHEDULED' ? 'blue' : 'purple')));
-              }, 0);
+              refreshValidationIndicator($scope.task.latestValidationStatus);
             }
             deferred.resolve(task);
           });
@@ -1669,6 +1664,51 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.getLatestValidation();
       }
     });
+
+    $scope.$on('reloadTaskValidation', function (event, data) {
+      if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
+        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $rootScope.validationRunning = response.latestValidationStatus && (response.latestValidationStatus === 'QUEUED' || response.latestValidationStatus === 'SCHEDULED' || response.latestValidationStatus === 'RUNNING');
+          if ($rootScope.validationRunning) {
+            refreshValidationIndicator(response.latestValidationStatus);
+          }
+        });
+      }
+    });
+
+    function refreshValidationIndicator(latestValidationStatus) {
+      if ($scope.validationContainer) {
+        $scope.validationContainer.executionStatus = latestValidationStatus;
+      }
+
+      $timeout(function () {
+
+        // Remove the old class and add the new one
+        var messageElement = angular.element(document.querySelector('.validation-message-header'));
+        if (messageElement.attr('class')) {
+          var classStr = messageElement.attr('class');
+          var classArr = classStr.split(' ');
+          for (var i = 0; i < classArr.length; i++) {
+            if (classArr[i].startsWith('message_validation_')) {
+              messageElement.removeClass(classArr[i]);
+            }
+          }
+        }
+        messageElement.addClass('message_validation_' + latestValidationStatus);
+
+        var statusElement = angular.element(document.querySelector('.validation-status-header'));
+        if (statusElement.attr('class')) {
+          var classStr = statusElement.attr('class');
+          var classArr = classStr.split(' ');
+          for (var i = 0; i < classArr.length; i++) {
+            if (classArr[i].startsWith('indicator_')) {
+              statusElement.removeClass(classArr[i]);
+            }
+          }
+        }
+        statusElement.addClass('indicator_' + (latestValidationStatus === 'QUEUED' ? 'yellow' : (latestValidationStatus === 'SCHEDULED' ? 'blue' : 'purple')));
+      }, 0);
+    }
 
     $scope.$on('conceptEdit.conceptChange', function (event, data) {
       loadTask();
