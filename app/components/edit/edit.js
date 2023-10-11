@@ -1380,6 +1380,16 @@ angular.module('singleConceptAuthoringApp.edit', [
               };
             }
           });
+          if (concept.annotations) {
+            angular.forEach(concept.annotations, function (annotation) {
+              if (!annotation.effectiveTime) {
+                styleObj[annotation.annotationId] = {
+                  message: null,
+                  style: 'tealhl'
+                };
+              }
+            });
+          }
         }
 
         feedbackStyles[concept.conceptId] = styleObj;

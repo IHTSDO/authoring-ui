@@ -13,7 +13,8 @@
     </div>
   </div>
   
-  <div ng-repeat="annotation in concept.annotations track by annotation.annotationId" class="row">
+  <div ng-repeat="annotation in concept.annotations track by annotation.annotationId" class="row"
+    ng-class="getComponentStyle(annotation.annotationId, null, '', annotation)">
     <div class="darken-3 p-t-5 grey">
       <div class="col-md-12 no-padding">
         <button id="annotation-more-{{initializationTimeStamp}}-{{$index}}" ng-click="setDescriptionProperties(annotation, $event)"

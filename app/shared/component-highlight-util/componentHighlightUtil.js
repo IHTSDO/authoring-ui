@@ -2,16 +2,16 @@
 
 angular.module('singleConceptAuthoringApp')
   .service('componentHighlightUtil', function (terminologyServerService, $q) {
-    
+
     //function to compare the current version of a concept with the version that existed at the time of branch creation
     //and highlight any changes
     function runComparison(conceptId, branch, concept, originalConcept) {
       var deferred = $q.defer();
-      
-      var styles = {};      
+
+      var styles = {};
       var inactiveDescriptions = {};
       var currentConcept = angular.copy(concept);
-      
+
       if (originalConcept) {
         compareConcept(styles, inactiveDescriptions, currentConcept, originalConcept).then(function(response){
           deferred.resolve(response);
@@ -22,19 +22,19 @@ angular.module('singleConceptAuthoringApp')
           compareConcept(styles, inactiveDescriptions, currentConcept, concept).then(function(response){
             deferred.resolve(response);
           });
-        }, 
+        },
         //if the concept is not found in the before version then it has been created within the lifecycle of the task
         function () {
           styles = {isNew: true};
           var response = {};
-          response.styles = styles;          
+          response.styles = styles;
           response.concept = currentConcept;
           response.inactiveDescriptions = inactiveDescriptions;
-  
+
           deferred.resolve(response);
         });
       }
-      
+
       return deferred.promise;
     }
 
@@ -46,19 +46,21 @@ angular.module('singleConceptAuthoringApp')
         highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId);
       }
       compareDescriptions(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
-        compareAxioms(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
-          var response = {};
-          response.styles = styles;              
-          response.concept = currentConcept;
-          response.inactiveDescriptions = inactiveDescriptions;
+        compareAnnotations(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
+          compareAxioms(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
+            var response = {};
+            response.styles = styles;
+            response.concept = currentConcept;
+            response.inactiveDescriptions = inactiveDescriptions;
 
-          deferred.resolve(response);
-        })
+            deferred.resolve(response);
+          });
+        });
       });
 
       return deferred.promise;
     }
-    
+
     function compareDescriptions(styles, inactiveDescriptions, currentConcept, originalConcept){
       var deferred = $q.defer();
       let originalIds = [];
@@ -81,10 +83,51 @@ angular.module('singleConceptAuthoringApp')
               || !isEquivalent(description.acceptabilityMap, originalDescription.acceptabilityMap)){
                 highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, description.descriptionId, originalDescription, description);
               }
-            } 
+            }
         });
       });
       //description is new
+      angular.forEach(newIds, function(id){
+        if(!originalIds.includes(id)){
+          highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, id);
+        }
+      });
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    function compareAnnotations(styles, inactiveDescriptions, currentConcept, originalConcept){
+      var deferred = $q.defer();
+      let originalIds = [];
+      let newIds = [];
+      //build list of before and after ids for simpler iteration
+      if (originalConcept.annotations) {
+        angular.forEach(originalConcept.annotations, function(annotation){
+          originalIds.push(annotation.annotationId);
+        });
+      }
+      if (currentConcept.annotations) {
+        angular.forEach(currentConcept.annotations, function(annotation){
+          newIds.push(annotation.annotationId);
+          //Annotation is not new but has changed
+          if (originalConcept.annotations) {
+            angular.forEach(originalConcept.annotations, function(originalAnnotation){
+              if (annotation.annotationId === originalAnnotation.annotationId) {
+                if (annotation.active !== originalAnnotation.active
+                || annotation.moduleId !== originalAnnotation.moduleId
+                || annotation.annotationTypeId !== originalAnnotation.annotationTypeId
+                || annotation.annotationValue !== originalAnnotation.annotationValue
+                || annotation.annotationLanguage !== originalAnnotation.annotationLanguage) {
+                  highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, description.descriptionId, originalDescription, description);
+                }
+              }
+            });
+          }
+        });
+      }
+
+
+      //Annotation is new
       angular.forEach(newIds, function(id){
         if(!originalIds.includes(id)){
           highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, id);
@@ -153,7 +196,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
             });
-          } 
+          }
         });
       });
 
@@ -186,7 +229,7 @@ angular.module('singleConceptAuthoringApp')
       delete relationship.type.active;
       delete relationship.type.pt;
       delete relationship.type.fsn;
-      delete relationship.type.moduleId;        
+      delete relationship.type.moduleId;
       delete relationship.type.preferredSynonym;
       delete relationship.relationshipId;
     }
@@ -194,7 +237,7 @@ angular.module('singleConceptAuthoringApp')
     function compareAxiomRelationships (styles, inactiveDescriptions, axiom, originalAxiom, currentConcept, params){
       var deferred = $q.defer();
       angular.forEach(axiom.relationships, function(newRelationship){
-        let newRelClone = angular.copy(newRelationship);       
+        let newRelClone = angular.copy(newRelationship);
         cleanRelationship(newRelClone);
 
         angular.forEach(originalAxiom.relationships, function(originalRelationship){
@@ -209,11 +252,11 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(originalAxiom.relationships, function(originalRelationship){
                   if(params.partialMatches.includes(newRelationship.groupId)){
                     delete newRelClone.groupId
-                    
+
                     let oldRelClone = angular.copy(originalRelationship);
                     cleanRelationship(oldRelClone)
                     delete oldRelClone.groupId;
-                    
+
                     if(JSON.stringify(newRelClone) === JSON.stringify(oldRelClone)){
                         newRelationship.found = true;
                     }
@@ -226,21 +269,21 @@ angular.module('singleConceptAuthoringApp')
           }
         }
       });
-        
+
       angular.forEach(axiom.relationships, function(newRelationship){
         if(newRelationship.found){
           delete newRelationship.found;
         }
       });
-        
+
       angular.forEach(originalAxiom.relationships, function(originalRelationship){
         var cleanedOriginalRelationship = angular.copy(originalRelationship);
         cleanRelationship(cleanedOriginalRelationship);
-        
+
         angular.forEach(axiom.relationships, function(newRelationship){
           var cleanedNewRelationship = angular.copy(newRelationship);
           cleanRelationship(cleanedNewRelationship);
-          
+
           if(JSON.stringify(cleanedNewRelationship) === JSON.stringify(cleanedOriginalRelationship)){
             originalRelationship.found = true;
           }
@@ -249,10 +292,10 @@ angular.module('singleConceptAuthoringApp')
           originalRelationship.relationshipId = terminologyServerService.createGuid();
           originalRelationship.active = false;
           originalRelationship.deleted = true;
-          
+
           var index = -1;
           for (var i = 0; i < axiom.relationships.length; i++) {
-            if (axiom.relationships[i].active             
+            if (axiom.relationships[i].active
               && axiom.relationships[i].groupId == originalRelationship.groupId
               && (axiom.relationships[i].type.conceptId == originalRelationship.type.conceptId
                 || axiom.relationships[i].target.conceptId == originalRelationship.target.conceptId)) {
@@ -265,7 +308,7 @@ angular.module('singleConceptAuthoringApp')
           else {
             axiom.relationships.push(originalRelationship);
           }
-         
+
           highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, originalRelationship.relationshipId, null, null, true);
         }
       });
@@ -281,7 +324,7 @@ angular.module('singleConceptAuthoringApp')
       let params= {};
       let originalMatchedGroups = [];
       let partialMatches = [];
-        
+
       angular.forEach(axiom.relationships, function(newRelationship){
           if(newRelationship.groupId !== 0){
               if(!newGroups[newRelationship.groupId]){
@@ -289,9 +332,9 @@ angular.module('singleConceptAuthoringApp')
               }
               newGroups[newRelationship.groupId].push(newRelationship);
           }
-          
+
       });
-        
+
       angular.forEach(originalAxiom.relationships, function(originalRelationship){
           if(originalRelationship.groupId !== 0){
               if(!oldGroups[originalRelationship.groupId]){
@@ -300,7 +343,7 @@ angular.module('singleConceptAuthoringApp')
               oldGroups[originalRelationship.groupId].push(originalRelationship);
           }
       });
-        
+
       angular.forEach(newGroups, function(newGroup){
           let newGroupString = '';
           let groupId = '';
@@ -329,7 +372,7 @@ angular.module('singleConceptAuthoringApp')
               }
           });
       });
-      
+
       //check for partial matches
       angular.forEach(newGroups, function(newGroup){
           let groupId = '';
@@ -351,20 +394,20 @@ angular.module('singleConceptAuthoringApp')
                   });
               }
           })
-      });        
-      
+      });
+
       params.partialMatches = partialMatches;
       params.matchedGroups = matchedGroups;
       params.originalMatchedGroups = originalMatchedGroups;
-        
+
       deferred.resolve(params);
       return deferred.promise;
     }
 
     //called on concept load after comparison to add components, concepts and axioms to styles list
-    function highlightComponent(styles, inactiveDescriptions, conceptId, componentId, originalDescription, currentDescription, removed, axiom) {      
+    function highlightComponent(styles, inactiveDescriptions, conceptId, componentId, originalDescription, currentDescription, removed, axiom) {
       if(originalDescription !== null && currentDescription !== null && originalDescription !== undefined && currentDescription !== undefined){
-          
+
           //detects changes to description type and displays change in tooltip
           if (currentDescription.type !== originalDescription.type) {
             styles[componentId + '-type'] = {
@@ -372,7 +415,7 @@ angular.module('singleConceptAuthoringApp')
               style: 'triangle-redhl'
             };
           }
-          
+
           //detects changes to case significance and displays change in tooltip
           if (currentDescription.caseSignificance !== originalDescription.caseSignificance) {
             styles[componentId + '-caseSignificance'] = {
@@ -380,19 +423,19 @@ angular.module('singleConceptAuthoringApp')
               style: 'triangle-redhl'
             };
           }
-          
+
           //detects changes to inactivation indicator and historical associations and displays change in description more
           if ((originalDescription.inactivationIndicator !== currentDescription.inactivationIndicator
                       || checkAssociationTargetsChanged(originalDescription.associationTargets, currentDescription.associationTargets))
-                      && !originalDescription.active 
+                      && !originalDescription.active
                       && !currentDescription.active) {
             inactiveDescriptions[originalDescription.descriptionId] = originalDescription;
           }
-          
+
           //Detects changes to acceptability and displays change in tooltip
           var componentDialects = Object.keys(currentDescription.acceptabilityMap);
           componentDialects = componentDialects.concat(Object.keys(originalDescription.acceptabilityMap));
-          
+
           angular.forEach(componentDialects, function (dialectId) {
               if (currentDescription.acceptabilityMap[dialectId] && !originalDescription.acceptabilityMap[dialectId]) {
                 styles[componentId + '-acceptability-' + dialectId] = {
@@ -420,11 +463,11 @@ angular.module('singleConceptAuthoringApp')
       if (componentId && !removed && !axiom) {
         styles[componentId] = {message: null, style: 'tealhl'};
       }
-        
+
       else if (componentId && removed && !axiom) {
         styles[componentId] = {message: null, style: 'redhl'};
       }
-        
+
       else if (componentId && axiom) {
         styles[componentId] = {message: null, style: 'tealhl', new: true};
       }
@@ -439,7 +482,7 @@ angular.module('singleConceptAuthoringApp')
       // Create arrays of property names
       var aProps = Object.getOwnPropertyNames(a);
       var bProps = Object.getOwnPropertyNames(b);
-      
+
       if (aProps.length != bProps.length) {
         return false;
       }
@@ -464,7 +507,7 @@ angular.module('singleConceptAuthoringApp')
           }
         } else {
           return true;
-        }  
+        }
       }
       return false;
   }
