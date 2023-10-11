@@ -1430,23 +1430,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean the concept for terminology server-ready save
           terminologyServerService.cleanConcept(clonedConcept, keepTempIds);
 
-          // parse annotations
-          if (clonedConcept.annotations) {
-            angular.forEach(clonedConcept.annotations, function (annotation) {
-              if (!annotation.annotationLanguage && annotation.annotationValue && annotation.annotationValue.startsWith('@')) {
-                var language =  annotation.annotationValue.substring(1, annotation.annotationValue.indexOf('"')).trim();
-                annotation.annotationLanguage= language;
-                
-                // remove language
-                var annotationValue = annotation.annotationValue.replace("@" + language, '').trim();
-
-                //remove first and last double quote
-                annotationValue = annotationValue.substring(1, annotationValue.length - 1);
-                annotation.annotationValue = annotationValue;
-              }
-            });
-          }
-
           saveFn(
             $routeParams.projectKey,
             $routeParams.taskKey,
@@ -1512,7 +1495,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
 
-                  
+
                   // retain the annotation types
                   angular.forEach(scope.concept.annotations, function (annotation) {
                     angular.forEach(clonedConcept.annotations, function (clonedAnnotation) {
@@ -3943,9 +3926,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete clonedAnnotation.effectiveTime;
               clonedAnnotation.released = false;
               clonedAnnotation.moduleId = metadataService.getCurrentModuleId();
-              
+
               scope.concept.annotations.push(clonedAnnotation);
-            }            
+            }
           });
           autoSave();
         };
@@ -5678,7 +5661,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           annotation.annotationTypeId = item.conceptId;
           annotation.annotationTypePt = item.pt;
-          autoSave();          
+          autoSave();
         };
 
         scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, relationshipGroupId, parentIndex, itemIndex) {
