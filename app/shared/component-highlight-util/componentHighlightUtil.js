@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp')
                 || annotation.annotationTypeId !== originalAnnotation.annotationTypeId
                 || annotation.annotationValue !== originalAnnotation.annotationValue
                 || annotation.annotationLanguage !== originalAnnotation.annotationLanguage) {
-                  highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, description.descriptionId, originalDescription, description);
+                  highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, annotation.annotationId);
                 }
               }
             });
