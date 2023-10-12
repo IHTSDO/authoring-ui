@@ -1495,16 +1495,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
 
-
-                  // retain the annotation types
-                  angular.forEach(scope.concept.annotations, function (annotation) {
-                    angular.forEach(clonedConcept.annotations, function (clonedAnnotation) {
-                      if (annotation.annotationId === clonedAnnotation.annotationId) {
-                        annotation.annotationTypePt = clonedAnnotation.annotationTypePt;
-                      }
-                    });
-                  });
-
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
 
@@ -5660,7 +5650,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
           annotation.annotationTypeId = item.conceptId;
-          annotation.annotationTypePt = item.pt;
+          annotation.annotationTypePt = angular.copy(item.pt);
           autoSave();
         };
 
