@@ -384,6 +384,25 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      function isAnnotationsEqual(a1, a2) {
+        if (a1.annotationId !== a2.annotationId) {
+          return false;
+        }
+        if (a1.active !== a2.active) {
+          return false;
+        }
+        if (a1.annotationTypeId !== a2.annotationTypeId) {
+          return false;
+        }       
+        if (a1.annotationValue !== a2.annotationValue) {
+          return false;
+        }
+        if (a1.annotationLanguage !== a2.annotationLanguage) {
+          return false;
+        }
+        return true;
+      }
+
       function isDescriptionsEqual(d1, d2) {
         if (d1.descriptionId !== d2.descriptionId) {
           return false;
@@ -445,6 +464,8 @@ angular.module('singleConceptAuthoringApp')
           return isRelationshipsEqual(c1, c2);
         } else if (c1.hasOwnProperty('conceptId') && c2.hasOwnProperty('conceptId')) {
           return isConceptsEqual(c1, c2);
+        } else if (c1.hasOwnProperty('annotationId') && c2.hasOwnProperty('annotationId')) {
+          return isAnnotationsEqual(c1, c2);
         } else {
           return false;
         }

@@ -213,7 +213,7 @@ angular.module('singleConceptAuthoringApp')
            * single concept triple
            * @param merge
            */
-            
+
           function mapAxiomRelationships(axiom, mappedComponents, type, axiomId){
               angular.forEach(axiom.relationships, function (relationship) {
                 if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
@@ -231,7 +231,7 @@ angular.module('singleConceptAuthoringApp')
               });
               return mappedComponents
           }
-            
+
           function mapComponents(merge) {
 
             // initialize the mapped components array
@@ -268,8 +268,17 @@ angular.module('singleConceptAuthoringApp')
                 //mappedComponents[axiom.axiomId].source = axiom;
                 mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'source', axiom.axiomId);
               });
+
+              if (merge.sourceConcept.annotations) {
+                angular.forEach(merge.sourceConcept.annotations, function (annotation) {
+                  if (!mappedComponents.hasOwnProperty(annotation.annotationId)) {
+                    mappedComponents[annotation.annotationId] = {};
+                  }
+                  mappedComponents[annotation.annotationId].source = annotation;
+                });
+              }
             }
-            
+
             if (merge.targetConcept) {
               angular.forEach(merge.targetConcept.descriptions, function (description) {
                 if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
@@ -300,8 +309,17 @@ angular.module('singleConceptAuthoringApp')
                 //mappedComponents[axiom.axiomId].target = axiom;
                  mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'target', axiom.axiomId);
               });
+
+              if (merge.targetConcept.annotations) {
+                angular.forEach(merge.targetConcept.annotations, function (annotation) {
+                  if (!mappedComponents.hasOwnProperty(annotation.annotationId)) {
+                    mappedComponents[annotation.annotationId] = {};
+                  }
+                  mappedComponents[annotation.annotationId].target = annotation;
+                });
+              }
             }
-            
+
             if (merge.autoMergedConcept) {
               angular.forEach(merge.autoMergedConcept.descriptions, function (description) {
                 if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
@@ -332,6 +350,23 @@ angular.module('singleConceptAuthoringApp')
                 //mappedComponents[axiom.axiomId].merged = axiom;
                 mappedComponents = mapAxiomRelationships(axiom, mappedComponents, 'merged', axiom.axiomId);
               });
+
+              if (merge.autoMergedConcept.annotations) {
+                var annotationTypes = metadataService.getAnnotationTypes();
+                angular.forEach(merge.autoMergedConcept.annotations, function (annotation) {
+                  let foundAnnotationTypes = annotationTypes.filter(function (type) {
+                      return type.conceptId === annotation.annotationTypeId;
+                  });
+                  if (foundAnnotationTypes.length !== 0) {
+                    annotation.annotationTypePt = foundAnnotationTypes[0].pt;
+                  }
+
+                  if (!mappedComponents.hasOwnProperty(annotation.annotationId)) {
+                    mappedComponents[annotation.annotationId] = {};
+                  }
+                  mappedComponents[annotation.annotationId].merged = annotation;
+                });
+              }
             }
 
             return mappedComponents;
@@ -412,7 +447,7 @@ angular.module('singleConceptAuthoringApp')
 
           }
 
-          function hasInactiveMergedElements(concept, styles) {            
+          function hasInactiveMergedElements(concept, styles) {
             if (!concept) {
               return false;
             }
@@ -510,10 +545,10 @@ angular.module('singleConceptAuthoringApp')
               scope.hideSidebar = false;
             }
           });
-            
+
           function deDuplicateConflict(conflict){
               var deferred = $q.defer();
-              
+
               if(conflict.sourceConcept) {
                 angular.forEach(conflict.autoMergedConcept.classAxioms, function(mergedAxiom) {
                   angular.forEach(conflict.sourceConcept.classAxioms, function(sourceAxiom) {
@@ -560,12 +595,12 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
                 });
-              }              
+              }
               deferred.resolve(conflict);
 
               return deferred.promise;
           }
-            
+
           function assignAxiomPartIds(conflict){
             if(conflict.sourceConcept) {
               angular.forEach(conflict.sourceConcept.classAxioms, function(axiom){
@@ -590,7 +625,7 @@ angular.module('singleConceptAuthoringApp')
                       relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
                   })
               });
-            }  
+            }
             if(conflict.autoMergedConcept) {
               angular.forEach(conflict.autoMergedConcept.classAxioms, function(axiom){
                 angular.forEach(axiom.relationships, function(relationship){
@@ -602,7 +637,7 @@ angular.module('singleConceptAuthoringApp')
                       relationship.relationshipId = axiom.axiomId + '_' + relationship.groupId + '_' + relationship.type.conceptId + '_' + relationship.target.conceptId;
                   })
               });
-            } 
+            }
           }
 
           function initializeMergeReview(review) {
@@ -719,7 +754,7 @@ angular.module('singleConceptAuthoringApp')
                     }
                     else {
                       notificationService.sendError('Component integrity issues found. Please contact technical support. ' + JSON.stringify(response));
-                    }                    
+                    }
                   } else {
                     scope.rebaseRunning = false;
                     scope.rebaseComplete = true;
@@ -781,7 +816,7 @@ angular.module('singleConceptAuthoringApp')
             if (mergeReviewId) {
 
               terminologyServerService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
-                  
+
                 // Previous review is current and has concepts,
                 // initialize from this review
                 if (mergeReview && mergeReview.length > 0) {
@@ -795,7 +830,7 @@ angular.module('singleConceptAuthoringApp')
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      rebase(newReview.id); 
+                      rebase(newReview.id);
                     }
                   }, function (error) {
                     if (error) {
@@ -950,7 +985,7 @@ angular.module('singleConceptAuthoringApp')
 
             scope.actionTab = 1;
 
-            setTimeout(function waitForFetchingBranchRoot() {              
+            setTimeout(function waitForFetchingBranchRoot() {
               if (metadataService.getBranch()) {
                 if ($routeParams.taskKey) {
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -972,15 +1007,15 @@ angular.module('singleConceptAuthoringApp')
                         getReviewStatusAndInitialize(mergeReviewId);
                       });
                     }
-                  }                  
+                  }
                 }, function(error) {
                   console.error('Error while determine branch state. Error: ' + error);
                 })
-                
+
               } else {
                 setTimeout(waitForFetchingBranchRoot, 100);
               }
-            }, 100);            
+            }, 100);
           };
 
           scope.initialize();
