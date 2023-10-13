@@ -128,6 +128,11 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
 
     function getTransformationRecipes() {
       templateService.getTransformationRecipes().then(function(response) {
+        if (response.length !== 0) {
+          response = response.filter(function(item) {
+            return item.key !== 'axiom-owl-expression-update-tsv';
+          });
+        } 
         $scope.transformationRecipes = response;
       });
     }

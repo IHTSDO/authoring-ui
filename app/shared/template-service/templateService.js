@@ -1360,7 +1360,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function getTransformationRecipes(branchPath) {
+    function getTransformationRecipes() {
       var deferred = $q.defer();
 
       $http.get(apiEndpoint + 'MAIN/recipes').then(function (response) {
