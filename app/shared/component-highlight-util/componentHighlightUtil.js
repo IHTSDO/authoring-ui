@@ -115,9 +115,9 @@ angular.module('singleConceptAuthoringApp')
               if (annotation.annotationId === originalAnnotation.annotationId) {
                 if (annotation.active !== originalAnnotation.active
                 || annotation.moduleId !== originalAnnotation.moduleId
-                || annotation.annotationTypeId !== originalAnnotation.annotationTypeId
-                || annotation.annotationValue !== originalAnnotation.annotationValue
-                || annotation.annotationLanguage !== originalAnnotation.annotationLanguage) {
+                || annotation.typeId !== originalAnnotation.typeId
+                || annotation.value !== originalAnnotation.value
+                || annotation.languageCode !== originalAnnotation.languageCode) {
                   highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, annotation.annotationId);
                 }
               }

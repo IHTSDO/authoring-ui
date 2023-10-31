@@ -355,10 +355,10 @@ angular.module('singleConceptAuthoringApp')
                 var annotationTypes = metadataService.getAnnotationTypes();
                 angular.forEach(merge.autoMergedConcept.annotations, function (annotation) {
                   let foundAnnotationTypes = annotationTypes.filter(function (type) {
-                      return type.conceptId === annotation.annotationTypeId;
+                      return type.conceptId === annotation.typeId;
                   });
                   if (foundAnnotationTypes.length !== 0) {
-                    annotation.annotationTypePt = foundAnnotationTypes[0].pt;
+                    annotation.typePt = foundAnnotationTypes[0].pt;
                   }
 
                   if (!mappedComponents.hasOwnProperty(annotation.annotationId)) {

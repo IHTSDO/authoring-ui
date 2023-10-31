@@ -251,10 +251,10 @@ angular.module('singleConceptAuthoringApp')
       function getNewAnnotation() {
         var annotation = {
           'annotationId': terminologyServerService.createGuid(),
-          'annotationTypeId': null,
-          'annotationTypePt': null,
-          'annotationValue': null,
-          'annotationLanguage': null,
+          'typeId': null,
+          'typePt': null,
+          'value': null,
+          'languageCode': null,
           'active': true,
           'released': false,
           'moduleId': metadataService.getCurrentModuleId()
@@ -391,13 +391,13 @@ angular.module('singleConceptAuthoringApp')
         if (a1.active !== a2.active) {
           return false;
         }
-        if (a1.annotationTypeId !== a2.annotationTypeId) {
+        if (a1.typeId !== a2.typeId) {
           return false;
         }       
-        if (a1.annotationValue !== a2.annotationValue) {
+        if (a1.value !== a2.value) {
           return false;
         }
-        if (a1.annotationLanguage !== a2.annotationLanguage) {
+        if (a1.languageCode !== a2.languageCode) {
           return false;
         }
         return true;
@@ -1040,10 +1040,10 @@ function getFsnDescriptionForConcept(concept) {
         if (!annotation.moduleId) {
           errors.push('Annotation moduleId must be set');
         }
-        if (!annotation.annotationTypeId) {
+        if (!annotation.typeId) {
           errors.push('Annotation type must be set');
         }
-        if (!annotation.annotationValue || annotation.annotationValue.length === 0) {
+        if (!annotation.value || annotation.value.length === 0) {
           errors.push('Annotation value must be set');
         }
         

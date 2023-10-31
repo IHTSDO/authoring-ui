@@ -4362,7 +4362,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getDragImageForAnnotation = function(annotation) {
-          return annotation.annotationTypePt.term + ', ' + annotation.annotationValue;
+          return annotation.typePt.term + ', ' + annotation.value;
         };
 
 // dummy function added for now to prevent default behavior
@@ -4809,8 +4809,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.updateAnnotation = function (annotation) {
-          if (annotation.annotationLanguage && annotation.annotationLanguage === '-') {
-            annotation.annotationLanguage = null;
+          if (annotation.languageCode && annotation.languageCode === '-') {
+            annotation.languageCode = null;
           }
           autoSave();
         }
@@ -5649,8 +5649,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Cannot set annotation type concept field, either field or item not specified');
             return;
           }
-          annotation.annotationTypeId = item.conceptId;
-          annotation.annotationTypePt = angular.copy(item.pt);
+          annotation.typeId = item.conceptId;
+          annotation.typePt = angular.copy(item.pt);
           autoSave();
         };
 

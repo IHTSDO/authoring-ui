@@ -42,7 +42,7 @@
             style="width: 100%;"
             custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" 
             type="text" 
-            ng-model="annotation.annotationTypePt.term"
+            ng-model="annotation.typePt.term"
             ng-readonly="annotation.effectiveTime || isStatic || template || isLockedModule(annotation.moduleId) || isBatch" 
             class="resizable-text form-control msd-elastic no-border-bottom rel" 
             typeahead="suggestion.pt.term as suggestion.pt.term for suggestion in getAnnotationTypes() | filter:$viewValue" 
@@ -57,7 +57,7 @@
             style="width: 90%;"
             ng-change="updateAnnotation(annotation)"            
             custom-autofocus="true" autofocus
-            ng-keyup="enterListener({event: $event})" type="text" ng-model="annotation.annotationValue"
+            ng-keyup="enterListener({event: $event})" type="text" ng-model="annotation.value"
             ng-model-options="{updateOn: 'blur'}"
             ng-readonly="annotation.effectiveTime || isStatic ||isLockedModule(annotation.moduleId) || annotation.deleted"
             class="resizable-text relationship msd-elastic no-border-bottom">            
@@ -66,7 +66,7 @@
           <div class="pull-left typeid" style="width: 10%;">
             <select ng-disabled="annotation.released || isStatic || isLockedModule(annotation.moduleId) || showInferredRels"
                     ng-options="language for language in annotationLanguageOptions | orderBy : '-'"
-                    ng-model="annotation.annotationLanguage" ng-change="updateAnnotation(annotation)" name="select-type"
+                    ng-model="annotation.languageCode" ng-change="updateAnnotation(annotation)" name="select-type"
                     id="select-type-choice" class="form-control" ui-on-drop=""
                     style="text-transform: uppercase;">
             </select>
