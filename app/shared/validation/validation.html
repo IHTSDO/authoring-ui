@@ -45,6 +45,12 @@
   <div class="validation-report report-table" ng-show="!isCollapsed && (validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE')">
     <div role="tabpanel" class="">
       <div class="row" ng-if="viewTop && validationContainer.report">
+        <div class="col-md-8 m-l-5 m-b-5 m-t-5 pull-left" ng-if="!hideAssertionGroupLabel">          
+          <label class="pull-left" style="padding-top: 6px; color: inherit;">SQL Assertion Groups: </label>
+          <span class="pull-left" style="padding-top: 6px;">&nbsp;{{validationContainer.report.rvfValidationResult.validationConfig.groupsList.join(', ')}}</span>
+          <label ng-show="validationContainer.report.rvfValidationResult.validationConfig.enableDrools" class="pull-left p-l-20" style="padding-top: 6px; color: inherit;">Drool Assertion Groups: </label>
+          <span ng-show="validationContainer.report.rvfValidationResult.validationConfig.enableDrools" class="pull-left" style="padding-top: 6px;">&nbsp;{{validationContainer.report.rvfValidationResult.validationConfig.droolsRulesGroupList.join(', ')}}</span>
+        </div>
         <div class="col-md-3 m-r-5 m-b-5 m-t-5 pull-right">
           <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="table-search form-control pull-right">
             <option value="">All</option>

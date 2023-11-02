@@ -34,6 +34,9 @@ angular.module('singleConceptAuthoringApp')
           // flag to hide exception list (optional)
           hideExceptions: '=?',
 
+          // flag to hide assertion group label (optional)
+          hideAssertionGroupLabel: '=?',
+
           // flag to disable Raise Tickets feature  (optional)
           raiseJiraTicketsDisabled: '=?',
 
@@ -51,6 +54,7 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.isCodeSystem = attrs.isCodeSystem === 'true';
           scope.hideExceptions = attrs.hideExceptions === 'true';
+          scope.hideAssertionGroupLabel = attrs.hideAssertionGroupLabel === 'true';
           scope.displayStatus = '';
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
