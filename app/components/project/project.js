@@ -182,6 +182,10 @@ angular.module('singleConceptAuthoringApp.project', [
           // set the branch metadata for use by other elements
           metadataService.setBranchMetadata($scope.project);
 
+          // set the branch assertion groups for use by other elements
+          $scope.branchAssertionGroupNames = $scope.project.metadata.assertionGroupNames ?
+                                            $scope.project.metadata.assertionGroupNames.split(',') : [];
+
           // set the extension metadata for use by other elements
           metadataService.setExtensionMetadata($scope.project.metadata);
 

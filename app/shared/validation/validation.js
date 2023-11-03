@@ -37,6 +37,9 @@ angular.module('singleConceptAuthoringApp')
           // flag to hide assertion group label (optional)
           hideAssertionGroupLabel: '=?',
 
+          // branch assertion groups (optional)
+          branchAssertionGroupNames: '=?',
+
           // flag to disable Raise Tickets feature  (optional)
           raiseJiraTicketsDisabled: '=?',
 

@@ -122,6 +122,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   response.branchPath = response.path;
                   response.codeSystem = codeSystem;
                   metadataService.setBranchMetadata(response);
+                  // set the branch assertion groups for use by other elements
+                  $scope.branchAssertionGroupNames = response.metadata.assertionGroupNames ? response.metadata.assertionGroupNames.split(',') : [];
 
                   if (response.hasOwnProperty('userRoles')) {
                     permissionService.setRolesForBranch($scope.branch, response.userRoles);
