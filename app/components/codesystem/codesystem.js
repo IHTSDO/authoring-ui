@@ -375,7 +375,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       function doValidate() {
         notificationService.sendMessage('Starting validation for codesystem...');
-        scaService.startValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
+        scaService.startValidationForBranch($scope.codeSystem.branchPath, true).then(function (response) {
           $scope.validationContainer = { status : response };
           $timeout(function () {
             notificationService.sendMessage('Validation running');

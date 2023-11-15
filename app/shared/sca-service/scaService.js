@@ -524,7 +524,7 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
                     }
                   }
-  
+
                   if (newNotification.task) {
                     $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                   } else if (newNotification.project) {
@@ -534,7 +534,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                   notificationService.sendMessage(msg, 0, url);
                 }
-                
+
                 break;
 
               /*
@@ -1246,15 +1246,17 @@ angular.module('singleConceptAuthoringApp')
 
 // Initiate validation for a branch
 // POST /branches/{branch}/validation
-        startValidationForBranch: function (branch) {
-          console.log(branch);
+        startValidationForBranch: function (branch, enableMRCMValidation) {
           if (!branch) {
             console.error('Must specify branch to start validation');
             return {};
           }
-
+          var param = '';
+          if (typeof(enableMRCMValidation) !== 'undefined') {
+            param += '?enableMRCMValidation=' + enableMRCMValidation;
+          }
           // POST call takes no data
-          return $http.post(apiEndpoint + 'branches/' + branch + '/validation', {}).then(function (response) {
+          return $http.post(apiEndpoint + 'branches/' + branch + '/validation' + (param.length !== 0 ? param : ''), {}).then(function (response) {
             return response.data;
           }, function (error) {
             console.error('Error getting validation for branch ' + branch);
@@ -1911,8 +1913,8 @@ angular.module('singleConceptAuthoringApp')
 
         lockProjectsForCodeSystem: function(codeSystem) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/lock').then(function () {           
+
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/lock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
@@ -1923,8 +1925,8 @@ angular.module('singleConceptAuthoringApp')
 
         unlockProjectsForCodeSystem: function(codeSystem) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/unlock').then(function () {           
+
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/unlock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
@@ -1935,8 +1937,8 @@ angular.module('singleConceptAuthoringApp')
 
         lockProject: function(projectKey) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/lock').then(function () {           
+
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/lock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
@@ -1947,8 +1949,8 @@ angular.module('singleConceptAuthoringApp')
 
         unlockProject: function(projectKey) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/unlock').then(function () {           
+
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/unlock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
