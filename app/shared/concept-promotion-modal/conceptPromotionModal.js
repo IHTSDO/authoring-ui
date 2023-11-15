@@ -41,12 +41,16 @@ angular.module('singleConceptAuthoringApp')
       let attributeTargets = [];
       angular.forEach($scope.concept.classAxioms, function(axiom) {
         angular.forEach(axiom.relationships, function(relationship) {
-          attributeTargets.push(relationship.target.conceptId);
+          if (relationship.target && relationship.target.conceptId) {
+            attributeTargets.push(relationship.target.conceptId);
+          }          
         });
       });
       angular.forEach($scope.concept.gciAxioms, function(axiom) {
         angular.forEach(axiom.relationships, function(relationship) {
-          attributeTargets.push(relationship.target.conceptId);
+          if (relationship.target && relationship.target.conceptId) {
+            attributeTargets.push(relationship.target.conceptId);
+          }
         });
       });
       // get all ancestors of all attribute targets
