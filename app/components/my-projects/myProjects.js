@@ -16,7 +16,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
             permissionService.setRolesForBranch(null, []);
             $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
                 defer.resolve();
-            });       
+            });
             return defer.promise;
           }
         ]
@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     $scope.typeDropdown = ['All'];
     $scope.selectedType = {type:''};
     $scope.selectedType.type = $scope.typeDropdown[0];
-    
+
     hotkeys.bindTo($scope)
         .add({
           combo: 'alt+t',
@@ -70,7 +70,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         total: $scope.projects ? $scope.projects.length : 0, // length of data
         getData: function ($defer, params) {
           // Store display number to local storage, then can be re-used later
-          if (!localStorageService.get('my-project-table-display-number') 
+          if (!localStorageService.get('my-project-table-display-number')
               || params.count() !== localStorageService.get('my-project-table-display-number')) {
               localStorageService.set('my-project-table-display-number', params.count());
           }
@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
             var searchStr = params.filter().search;
             var mydata = [];
-            
+
             if($scope.selectedType.type !== 'All'){
                mydata = $scope.projects.filter(function (item) {
                 if ($scope.selectedType.type === 'International') {
@@ -92,9 +92,9 @@ angular.module('singleConceptAuthoringApp.myProjects', [
                     return item.codeSystem.maintainerType === $scope.selectedType.type
                 }
                 else return -1
-              }); 
+              });
             }
-              
+
             if (searchStr) {
               if($scope.selectedType.type === 'All'){
                 mydata = $scope.projects;
@@ -184,7 +184,21 @@ angular.module('singleConceptAuthoringApp.myProjects', [
           }
       }
     });
-    
+
+    $scope.$on('reloadProjectClassification', function (event, data) {
+      if (data && data.project) {
+        for (var i = 0; i < $scope.projects.length; i++) {
+            if (data.project === $scope.projects[i].key) {
+                scaService.getProjectForKey(data.project).then(function (response) {
+                    $scope.projects[i].latestClassificationJson = response.latestClassificationJson;
+                    $scope.tableParams.reload();
+                });
+                break;
+            }
+        }
+      }
+    });
+
     $scope.refreshTable = function () {
         $scope.preferences.selectedType = $scope.selectedType.type;
         accountService.saveUserPreferences($scope.preferences).then(function (response) {
@@ -193,7 +207,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     }
 
     function loadProjects() {
-      $scope.projects = [];      
+      $scope.projects = [];
       scaService.getProjects().then(function(results){
           angular.forEach($scope.projectKeys, function(projectKey) {
                 angular.forEach(results, function(result) {
@@ -230,12 +244,12 @@ angular.module('singleConceptAuthoringApp.myProjects', [
           if (projectKeys.indexOf(task.projectKey) === -1) {
             projectKeys.push(task.projectKey);
           }
-        });       
+        });
         deferred.resolve(projectKeys);
       });
       return deferred.promise;
     }
-   
+
     function initialize() {
       notificationService.sendMessage('Loading projects...');
       $scope.projectKeys = [];
@@ -249,7 +263,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         });
         if ($scope.projectKeys.length !== 0) {
           loadProjects();
-        }        
+        }
       });
     }
 

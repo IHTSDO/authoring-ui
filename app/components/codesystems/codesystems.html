@@ -80,8 +80,8 @@
                           type="button"
                           ng-class="[{hidden : codesystem.latestValidationStatus === 'NOT_TRIGGERED'},
                           {indicator_blue : codesystem.latestValidationStatus === 'SCHEDULED'},
-                          {indicator_blue : codesystem.latestValidationStatus === 'QUEUED'},
-                          {indicator_blue : codesystem.latestValidationStatus === 'RUNNING'},
+                          {indicator_yellow : codesystem.latestValidationStatus === 'QUEUED'},
+                          {indicator_purple : codesystem.latestValidationStatus === 'RUNNING'},
                           {indicator_green : codesystem.latestValidationStatus === 'COMPLETED'},
                           {indicator_red : codesystem.latestValidationStatus === 'FAILED'},
                           {indicator_grey : codesystem.latestValidationStatus === 'STALE'}]"

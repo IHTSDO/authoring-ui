@@ -236,7 +236,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       });
 
       $scope.$on('reloadCodeSystemValidation', function (event, data) {
-        if (!data || data.branchPath === $scope.codeSystem.branchPath) {
+        if (!data || (data.branchPath === $scope.codeSystem.branchPath && !data.reloadCodeSystem)) {
           scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
             delete response.dailyBuildReport;
             delete response.dailyBuildRvfUrl;
@@ -247,7 +247,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             }
           });
         }
-      });
+      });      
 
       function refreshValidationIndicator(executionStatus) {        
         $timeout(function () {

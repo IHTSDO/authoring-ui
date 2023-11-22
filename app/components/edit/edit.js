@@ -1676,7 +1676,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
     $scope.$on('reloadTaskValidation', function (event, data) {
-      if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
+      if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey && !data.reloadTask)) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.validationRunning = response.latestValidationStatus && (response.latestValidationStatus === 'QUEUED' || response.latestValidationStatus === 'SCHEDULED' || response.latestValidationStatus === 'RUNNING');
           if ($rootScope.validationRunning) {

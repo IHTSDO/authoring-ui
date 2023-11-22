@@ -412,39 +412,50 @@ angular.module('singleConceptAuthoringApp')
 
                 // retrieve the latest classification
                 // set url and broadcast classification complete to taskDetail.js or project.js
-                if (!newNotification.task && newNotification.project) {
-                  $rootScope.$broadcast('reloadProject', {project: newNotification.project});
-                } else if (!newNotification.task && !newNotification.project) {
-                  $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
-                }
-                terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
-                  if (!classifications || classifications.length === 0) {
-                    msg += ' but no classifications could be retrieved';
-                    notificationService.sendError(msg);
-                    return;
-                  } else {
-                    // assign results to the classification container (note,
-                    // chronological order, use last value)
-                    var classification = classifications[classifications.length - 1];
-                    if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                      msg += ' - Changes found';
-                    } else {
-                      msg += ' - No changes found';
-                    }
 
-                    if (newNotification.task) {
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
-                      notificationService.sendMessage(msg, 0, url);
-                      $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
-                    } else if (newNotification.project) {
-                      url = '#/project/' + newNotification.project;
-                      notificationService.sendMessage(msg, 0, url);
-                    } else {
-                      url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
-                      notificationService.sendMessage(msg, 0, url);
-                    }
+                if (newNotification.task) {
+                  $rootScope.$broadcast('reloadTaskClassification', {project: newNotification.project, task: newNotification.task});
+                } else if (newNotification.project) {                   
+                  $rootScope.$broadcast('reloadProjectClassification', {project: newNotification.project});
+                } else if (newNotification.branchPath) {                   
+                  $rootScope.$broadcast('reloadCodeSystemClassification', {branchPath: newNotification.branchPath});
+                }
+
+                if (newNotification.event !== 'Classification is running') {
+                  if (!newNotification.task && newNotification.project) {
+                    $rootScope.$broadcast('reloadProject', {project: newNotification.project});
+                  } else if (!newNotification.task && !newNotification.project) {
+                    $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
                   }
-                });
+                  terminologyServerService.getClassificationsForBranchRoot(newNotification.branchPath).then(function (classifications) {
+                    if (!classifications || classifications.length === 0) {
+                      msg += ' but no classifications could be retrieved';
+                      notificationService.sendError(msg);
+                      return;
+                    } else {
+                      // assign results to the classification container (note,
+                      // chronological order, use last value)
+                      var classification = classifications[classifications.length - 1];
+                      if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
+                        msg += ' - Changes found';
+                      } else {
+                        msg += ' - No changes found';
+                      }
+  
+                      if (newNotification.task) {
+                        url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                        notificationService.sendMessage(msg, 0, url);
+                        $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});                      
+                      } else if (newNotification.project) {
+                        url = '#/project/' + newNotification.project;
+                        notificationService.sendMessage(msg, 0, url);
+                      } else {
+                        url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
+                        notificationService.sendMessage(msg, 0, url);
+                      }
+                    }
+                  });
+                }                
 
                 break;
 
@@ -488,15 +499,15 @@ angular.module('singleConceptAuthoringApp')
                 task: "WRPAS-98" (omitted for project)
                 */
               case 'Validation':
-                if (newNotification.event !== 'FAILED' && newNotification.event !== 'COMPLETED') {
-                  if (newNotification.task) {
-                    $rootScope.$broadcast('reloadTaskValidation', {project: newNotification.project, task: newNotification.task});
-                  } else if (newNotification.project) {
-                    $rootScope.$broadcast('reloadProjectValidation', {project: newNotification.project});
-                  } else {
-                    $rootScope.$broadcast('reloadCodeSystemValidation', {branchPath: newNotification.branchPath});
-                  }
+                if (newNotification.task) {
+                  $rootScope.$broadcast('reloadTaskValidation', {project: newNotification.project, task: newNotification.task, reloadTask: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
+                } else if (newNotification.project) {
+                  $rootScope.$broadcast('reloadProjectValidation', {project: newNotification.project, reloadProject: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
                 } else {
+                  $rootScope.$broadcast('reloadCodeSystemValidation', {branchPath: newNotification.branchPath, reloadCodeSystem: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
+                }
+
+                if (newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED') {
                   // convert to first-character capitalized for all words
                   var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();

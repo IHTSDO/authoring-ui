@@ -155,6 +155,20 @@ angular.module('singleConceptAuthoringApp.projects', [
           }
       }
     });
+
+    $scope.$on('reloadProjectClassification', function (event, data) {
+      if (data && data.project) {
+        for (var i = 0; i < $scope.projects.length; i++) {
+            if (data.project === $scope.projects[i].key) {
+                scaService.getProjectForKey(data.project).then(function (response) {
+                    $scope.projects[i].latestClassificationJson = response.latestClassificationJson;
+                    $scope.tableParams.reload();
+                });
+                break;
+            }
+        }
+      }
+    });
     
     $scope.refreshTable = function () {
         $scope.preferences.selectedType = $scope.selectedType.type;

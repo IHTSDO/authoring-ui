@@ -488,6 +488,20 @@ angular.module('singleConceptAuthoringApp.home', [
             }
         });
 
+        $scope.$on('reloadTaskClassification', function (event, data) {
+            if (data && data.project && data.task) {
+                for (var i = 0; i < $scope.tasks.length; i++) {
+                    if (data.project === $scope.tasks[i].projectKey && data.task === $scope.tasks[i].key) {
+                        scaService.getTaskForProject(data.project, data.task).then(function (response) {
+                            $scope.tasks[i].latestClassificationJson = response.latestClassificationJson;
+                            $scope.tableParams.reload();
+                        });
+                        break;
+                    }
+                }
+            }
+        });
+
 // Initialization:  get tasks and classifications
         function initialize() {
             $scope.tasks = [];

@@ -147,6 +147,25 @@ angular.module('singleConceptAuthoringApp.codesystems', [
           }
       }
     });
+
+    $scope.$on('reloadCodeSystemClassification', function (event, data) {
+      if (data && data.project) {
+        if (data && data.branchPath) {
+          for (var i = 0; i < $scope.codesystems.length; i++) {
+              if (data.branchPath === $scope.codesystems[i].branchPath) {
+                terminologyServerService.getClassificationsForBranchRoot(data.branchPath).then(function (classifications) {
+                  if (classifications && classifications.length !== 0) {
+                    $scope.classificationContainer = classifications[classifications.length - 1];
+                    $scope.codesystems[i].latestClassificationJson = classifications[classifications.length - 1];
+                    $scope.tableParams.reload();                    
+                  }
+                });
+                break;
+              }
+          }
+        }
+      }
+    });
     
     $scope.refreshTable = function () {
         $scope.preferences.selectedType = $scope.selectedType.type;

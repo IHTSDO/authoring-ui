@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp.project', [
       });
 
       $scope.$on('reloadProjectValidation', function (event, data) {
-        if (!data || data.project === $routeParams.projectKey) {
+        if (!data || (data.project === $routeParams.projectKey && !data.reloadProject)) {
           scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
             $rootScope.validationRunning = response.validationStatus && (response.validationStatus === 'SCHEDULED' || response.validationStatus === 'QUEUED' || response.validationStatus === 'RUNNING');
             if ($rootScope.validationRunning) {
