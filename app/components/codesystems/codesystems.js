@@ -16,7 +16,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
             permissionService.setRolesForBranch(null, []);
             $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
                 defer.resolve();
-            });       
+            });
             return defer.promise;
           }
         ]
@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
     $scope.typeDropdown = ['All'];
     $scope.selectedType = {type:''};
     $scope.selectedType.type = $scope.typeDropdown[0];
-    
+
     hotkeys.bindTo($scope)
         .add({
           combo: 'alt+t',
@@ -69,10 +69,10 @@ angular.module('singleConceptAuthoringApp.codesystems', [
         getData: function ($defer, params) {
 
           // Store display number to local storage, then can be re-used later
-          if (!localStorageService.get('codesystems-table-display-number') 
+          if (!localStorageService.get('codesystems-table-display-number')
               || params.count() !== localStorageService.get('codesystems-table-display-number')) {
               localStorageService.set('codesystems-table-display-number', params.count());
-          }  
+          }
 
           if (!$scope.codesystems || $scope.codesystems.length === 0) {
             $defer.resolve(new Array());
@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
                     return item.maintainerType === $scope.selectedType.type
                 }
                 else return false;
-              }); 
+              });
             } else {
               mydata = $scope.codesystems;
             }
@@ -149,24 +149,21 @@ angular.module('singleConceptAuthoringApp.codesystems', [
     });
 
     $scope.$on('reloadCodeSystemClassification', function (event, data) {
-      if (data && data.project) {
-        if (data && data.branchPath) {
-          for (var i = 0; i < $scope.codesystems.length; i++) {
-              if (data.branchPath === $scope.codesystems[i].branchPath) {
-                terminologyServerService.getClassificationsForBranchRoot(data.branchPath).then(function (classifications) {
-                  if (classifications && classifications.length !== 0) {
-                    $scope.classificationContainer = classifications[classifications.length - 1];
-                    $scope.codesystems[i].latestClassificationJson = classifications[classifications.length - 1];
-                    $scope.tableParams.reload();                    
-                  }
-                });
-                break;
-              }
-          }
+      if (data && data.branchPath) {
+        for (var i = 0; i < $scope.codesystems.length; i++) {
+            if (data.branchPath === $scope.codesystems[i].branchPath) {
+              terminologyServerService.getClassificationsForBranchRoot(data.branchPath).then(function (classifications) {
+                if (classifications && classifications.length !== 0) {
+                  $scope.codesystems[i].latestClassificationJson = classifications[classifications.length - 1];
+                  $scope.tableParams.reload();
+                }
+              });
+              break;
+            }
         }
       }
     });
-    
+
     $scope.refreshTable = function () {
         $scope.preferences.selectedType = $scope.selectedType.type;
         accountService.saveUserPreferences($scope.preferences).then(function (response) {
@@ -211,7 +208,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
                   $scope.codesystems.push(codesystem);
                   return;
               }
-            });  
+            });
           });
 
           var anyInternationalProjectPresent = false;
@@ -235,7 +232,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
               notificationService.sendMessage('Code Systems loaded.', 5000);
               $scope.tableParams.reload();
             });
-        });        
+        });
     }
 
 
