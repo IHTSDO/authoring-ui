@@ -16,7 +16,7 @@ angular.module('singleConceptAuthoringApp.home', [
                     permissionService.setRolesForBranch(null, []);
                     $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
                         defer.resolve();
-                    });       
+                    });
                     return defer.promise;
                   }
                 ]
@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.showPromotedReviews = false;
         $scope.projects = [];
         var loadingTask = false;
-    
+
         $scope.typeDropdown = ['All'];
         $scope.selectedType = {type:''};
         $scope.selectedType.type = $scope.typeDropdown[0];
@@ -102,12 +102,12 @@ angular.module('singleConceptAuthoringApp.home', [
                            mydata = $scope.tasks.filter(function (item) {
                             if ($scope.selectedType.type === 'International') {
                                 return !item.codeSystem.maintainerType
-                            }   
+                            }
                             else if(item.codeSystem) {
                                 return item.codeSystem.maintainerType === $scope.selectedType.type
                             }
                             else return -1
-                          }); 
+                          });
                         }
                         if (searchStr) {
                             if($scope.selectedType.type === 'All'){
@@ -204,7 +204,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
             if (!disableNotification) {
                 notificationService.sendMessage('Loading tasks...', 0);
-            }            
+            }
 
             $scope.tasks = null;
             $scope.reviewTasks = null;
@@ -218,8 +218,8 @@ angular.module('singleConceptAuthoringApp.home', [
                 if (response && response.length > 0) {
                     var branches = [];
                     angular.forEach(response, function (task) {
-                        if (task.branchBaseTimestamp && task.latestCodeSystemVersionTimestamp 
-                            && task.latestCodeSystemVersionTimestamp > task.branchBaseTimestamp) {                          
+                        if (task.branchBaseTimestamp && task.latestCodeSystemVersionTimestamp
+                            && task.latestCodeSystemVersionTimestamp > task.branchBaseTimestamp) {
                             task.branchBaseTimestampBehideCodeSystem = true;
                         }
                     });
@@ -356,7 +356,7 @@ angular.module('singleConceptAuthoringApp.home', [
             }
           });
         }
-    
+
         $scope.refreshTable = function () {
             $scope.preferences.selectedType = $scope.selectedType.type;
             accountService.saveUserPreferences($scope.preferences).then(function (response) {
@@ -367,7 +367,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.$watch('rebaseComplete', function () {
             $scope.tableParams.reload();
         }, true);
-    
+
         $scope.matchTasksToProjects = function() {
             angular.forEach($scope.tasks, function (task) {
                 angular.forEach($scope.projects, function (project) {
@@ -385,7 +385,7 @@ angular.module('singleConceptAuthoringApp.home', [
             }
             $scope.tableParams.reload();
         }, true);
-    
+
         $scope.$watch('projects', function () {
             var anyInternationalProjectPresent = false;
             angular.forEach($scope.projects, function(project) {
@@ -396,7 +396,7 @@ angular.module('singleConceptAuthoringApp.home', [
               if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                  $scope.typeDropdown.push(project.codeSystem.maintainerType);
               }
-              
+
             });
             if (anyInternationalProjectPresent && !$scope.typeDropdown.includes('International')) {
                 $scope.typeDropdown.splice(1, 0, 'International');
@@ -457,10 +457,10 @@ angular.module('singleConceptAuthoringApp.home', [
                 } else {
                     $scope.tasks.push(newTask);
                 }
-            }            
+            }
         }
 
-        $scope.isProjectsLoaded = function() {            
+        $scope.isProjectsLoaded = function() {
             return $scope.projects && $scope.projects.length > 0;
         };
 
@@ -471,6 +471,20 @@ angular.module('singleConceptAuthoringApp.home', [
                 loadTasks(true);
             } else {
                 loadTasks();
+            }
+        });
+
+        $scope.$on('reloadTaskValidation', function (event, data) {
+            if (data && data.project && data.task) {
+                for (var i = 0; i < $scope.tasks.length; i++) {
+                    if (data.project === $scope.tasks[i].projectKey && data.task === $scope.tasks[i].key) {
+                        scaService.getValidationForTask(data.project, data.task).then(function (response) {
+                            $scope.tasks[i].latestValidationStatus = response.executionStatus;
+                            $scope.tableParams.reload();
+                        });
+                        break;
+                    }
+                }
             }
         });
 
@@ -490,7 +504,7 @@ angular.module('singleConceptAuthoringApp.home', [
                     $scope.selectedType.type = $scope.preferences.selectedType;
                 }
             });
-            loadTasks();              
+            loadTasks();
         }
 
         initialize();

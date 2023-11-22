@@ -133,6 +133,20 @@ angular.module('singleConceptAuthoringApp.codesystems', [
       }
 
     }, true);
+
+    $scope.$on('reloadCodeSystemValidation', function (event, data) {
+      if (data && data.branchPath) {
+          for (var i = 0; i < $scope.codesystems.length; i++) {
+              if (data.branchPath === $scope.codesystems[i].branchPath) {
+                  scaService.getValidationForBranch(data.branchPath).then(function (response) {
+                      $scope.codesystems[i].latestValidationStatus = response.executionStatus;
+                      $scope.tableParams.reload();
+                  });
+                  break;
+              }
+          }
+      }
+    });
     
     $scope.refreshTable = function () {
         $scope.preferences.selectedType = $scope.selectedType.type;

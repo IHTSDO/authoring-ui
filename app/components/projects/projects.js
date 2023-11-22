@@ -141,6 +141,20 @@ angular.module('singleConceptAuthoringApp.projects', [
       }
 
     }, true);
+
+    $scope.$on('reloadProjectValidation', function (event, data) {
+      if (data && data.project) {
+          for (var i = 0; i < $scope.projects.length; i++) {
+              if (data.project === $scope.projects[i].key) {
+                  scaService.getValidationForProject(data.project).then(function (response) {
+                      $scope.projects[i].validationStatus = response.executionStatus;
+                      $scope.tableParams.reload();
+                  });
+                  break;
+              }
+          }
+      }
+    });
     
     $scope.refreshTable = function () {
         $scope.preferences.selectedType = $scope.selectedType.type;
