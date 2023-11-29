@@ -26,6 +26,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.releaseNotesDisabled = true;
       $scope.releaseNotesCollapsed = false;
 
+      $scope.isExternalAuthoringUser = function() {
+        return ($rootScope.features && $rootScope.accountDetails.roles.includes('ROLE_' + $rootScope.features.externalAuthoringGroup));
+      }
+
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
       $scope.taxonomyConcept = null;
@@ -303,7 +307,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       $scope.branchLocked = false;
                       $scope.promoting = false;
                     });
-                  }                  
+                  }
                 }, function (error) {
                   $scope.promoting = false;
                   $rootScope.branchLocked = false;
@@ -426,7 +430,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           let msg = null;
           let canConflict = false;
-          if (response.branchState && 
+          if (response.branchState &&
               (response.branchState === 'BEHIND' || response.branchState === 'DIVERGED' || response.branchState === 'STALE')
               && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
               canConflict = true;
@@ -436,7 +440,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             if (latestClassificationJson.status === 'SAVED' && (new Date(response.branchHeadTimestamp)).getTime() - (new Date(latestClassificationJson.saveDate)).getTime() < 1000) {
               msg = null;
             } else if ((new Date(latestClassificationJson.creationDate)).getTime() < response.branchHeadTimestamp) {
-              msg = canConflict ? 'The task has not been rebased. \n\nThere are new changes on this task since the last classification. \n\nDo you still want to start a validation?' : 
+              msg = canConflict ? 'The task has not been rebased. \n\nThere are new changes on this task since the last classification. \n\nDo you still want to start a validation?' :
                                   'There are new changes on this task since the last classification. Do you still want to start a validation?';
             } else {
               if ((latestClassificationJson.inferredRelationshipChangesFound || latestClassificationJson.equivalentConceptsFound)
@@ -445,7 +449,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                                     'Classification has been run, but the results have not been saved. Do you still want to start a validation?'
               }
             }
-          } else {            
+          } else {
             msg = canConflict ? 'The task has not been rebased. \n\nClassification has not been run. \n\nDo you still want to start a validation?' :
                                 'Classification has not been run. Do you still want to start a validation?';
           }
@@ -865,6 +869,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
+            if ($scope.role === 'AUTHOR' && !metadataService.isComplex() && $rootScope.features && $rootScope.accountDetails.roles.includes('ROLE_' + $rootScope.features.externalAuthoringGroup)) {
+              $scope.complex = false;
+              $scope.markBranchAsComplex();
+            }
           });
 
           // get latest rebase time
@@ -872,7 +880,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             if (traceability && !traceability.empty) {
               const content = traceability.content;
               let date = new Date(content[content.length - 1].commitDate);
-              $scope.task.lastRebaseTime = date.toUTCString();        
+              $scope.task.lastRebaseTime = date.toUTCString();
             }
           }, function () {
             // do nothing

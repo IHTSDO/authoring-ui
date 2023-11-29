@@ -415,9 +415,9 @@ angular.module('singleConceptAuthoringApp')
 
                 if (newNotification.task) {
                   $rootScope.$broadcast('reloadTaskClassification', {project: newNotification.project, task: newNotification.task});
-                } else if (newNotification.project) {                   
+                } else if (newNotification.project) {
                   $rootScope.$broadcast('reloadProjectClassification', {project: newNotification.project});
-                } else if (newNotification.branchPath) {                   
+                } else if (newNotification.branchPath) {
                   $rootScope.$broadcast('reloadCodeSystemClassification', {branchPath: newNotification.branchPath});
                 }
 
@@ -441,11 +441,11 @@ angular.module('singleConceptAuthoringApp')
                       } else {
                         msg += ' - No changes found';
                       }
-  
+
                       if (newNotification.task) {
                         url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                         notificationService.sendMessage(msg, 0, url);
-                        $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});                      
+                        $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                       } else if (newNotification.project) {
                         url = '#/project/' + newNotification.project;
                         notificationService.sendMessage(msg, 0, url);
@@ -455,7 +455,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                   });
-                }                
+                }
 
                 break;
 
@@ -1743,11 +1743,11 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        getUsers : function (offset) {
+        getUsers : function (offset, groupName) {
           var deferred = $q.defer();
 
           // get the list
-          $http.get(apiEndpoint + 'users?offset=' + offset).then(function (response) {
+          $http.get(apiEndpoint + 'users?offset=' + offset + (groupName ? ('&groupName=' + groupName) : '')).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 404) {

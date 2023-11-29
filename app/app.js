@@ -198,6 +198,7 @@ angular
       function (response) {
         var endpoints = response.endpoints;
         $rootScope.endpoints = endpoints;
+        $rootScope.features = response.features;
 
         scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
         aagService.setEndpoint('..' + AppConstants.AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT);

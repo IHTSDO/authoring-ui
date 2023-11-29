@@ -86,15 +86,17 @@ angular.module('singleConceptAuthoringApp')
           scope.languages = [];
           scope.lineItems = [];
           var users = [];
+          var userCount = 0;
           var sendingConceptToReview = false;
 
           // utility function pass-thrus
           scope.isExtensionSet = metadataService.isExtensionSet;
           scope.useInternationalLanguageRefsets = metadataService.useInternationalLanguageRefsets
 
-          function getUsers(start) {
-            scaService.getUsers(start).then(function (response) {
+          function getUsers(offset) {
+            scaService.getUsers(offset).then(function (response) {
               if (response.users.items.length > 0) {
+                userCount += response.users.items.length;
                 angular.forEach(response.users.items, function (item) {
                   if (item.key !== $rootScope.accountDetails.login) {
                     var user = {};
@@ -107,11 +109,13 @@ angular.module('singleConceptAuthoringApp')
                 });
               }
 
-              if (response.users.size > users.length + 1) {
-                getUsers(start + 50);
+              if (response.users.size > userCount) {
+                getUsers(offset + 50);
               }
             },
-            function (error) {});
+            function (error) {
+              console.error(error);
+            });
           }
 
           function initLanguagesDropdown () {
@@ -2410,7 +2414,7 @@ angular.module('singleConceptAuthoringApp')
 
           function initialize() {
             initLanguagesDropdown();
-            getUsers(0,50);
+            getUsers(0);
             scope.releaseNotesDisabled = metadataService.isExtensionSet();
             if (!scope.releaseNotesDisabled) {
               getBranchLineItems();

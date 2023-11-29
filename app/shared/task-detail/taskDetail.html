@@ -14,7 +14,7 @@
                 <div class="col-md-6 switch white-text" ng-if="sacSet && !batch">
                     <label class="switch pull-right" style="color:#737373">
                       <input type="checkbox" ng-checked="complex" ng-model="complex"
-                             ng-change="markBranchAsComplex()">
+                             ng-change="markBranchAsComplex()" ng-disabled="isExternalAuthoringUser()">
                       <span class="lever lever-complex" style="margin-left: 0px; margin-right: 10px; top:-10px"></span> <span style="top:-10px; position:relative;">Complex</span></label>
                  </div>
                  <div class="col-md-6 white-text" ng-if="sacSet && batch">
