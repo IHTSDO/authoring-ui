@@ -38,14 +38,19 @@
             </div>
             New Authoring Cycle
           </button>
-          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD'))" class="btn btn-border tooltips-bottom large-size-tooltip offset-tooltip-right" ng-click="upgrade()"
-            ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion">
+          <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD'))" 
+            class="btn btn-border tooltips-bottom offset-tooltip-right"
+            ng-class="[{large-size-tooltip : upgradedToLastestDependantVersion},
+                      {xxlarge-size-tooltip : authoringFreeze}]"
+            ng-click="upgrade()"
+            ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion || authoringFreeze">
             <div
               class="project-icon amber pull-left">
               <div class="md md-file-upload"></div>
             </div>
             Upgrade
             <span ng-if="upgradedToLastestDependantVersion">You are on the latest version</span>
+            <span ng-if="authoringFreeze" style="width: 285px;">Extension upgrade disabled during authoring freeze</span>
           </button>
           <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip offset-tooltip-right" ng-click="classify()"
             ng-disabled="classificationRunning || codeSystemUpgradeRunning">

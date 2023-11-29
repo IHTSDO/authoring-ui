@@ -94,6 +94,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   // set the extension metadata for use by other elements
                   metadataService.setExtensionMetadata(response.metadata);
 
+                  $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
+
                   // check wheter or not the latest dependant version was upgraded
                   terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
                     if (response.data.items && response.data.items.length > 0) {
@@ -299,7 +301,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       };
 
       $scope.openBranchMetadataConfigModal = function() {
-        $modal.open({
+        var modalInstance = $modal.open({
           templateUrl: 'shared/branch-metadata-config-modal/branchMetadataConfigModal.html',
           controller: 'branchMetadataConfigCtrl',
           resolve: {
@@ -313,6 +315,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               return true;
             }
           }
+        });
+
+        modalInstance.result.then(function () {
+          $scope.getCodeSystem();
+        }, function () {
         });
       };
 
