@@ -249,9 +249,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             }
           });
         }
-      });      
+      });
 
-      function refreshValidationIndicator(executionStatus) {        
+      function refreshValidationIndicator(executionStatus) {
         $timeout(function () {
           // Remove the old class and add the new one
           var messageElement = angular.element(document.querySelector('.validation-message-header'));
@@ -341,23 +341,30 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       };
 
       $scope.upgrade = function() {
-        var modalInstance = $modal.open({
-          templateUrl: 'shared/upgrade-modal/upgradeModal.html',
-          controller: 'upgradeModalCtrl',
-          resolve: {
-            codeSystem: function () {
-              return $scope.codeSystem;
-            },
-            enGbLanguageRefsetPresent: function() {
-              return $scope.enGbLanguageRefsetPresent;
-            }
+        terminologyServerService.getBranch($scope.branch).then(function (response) {
+          $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
+          if ($scope.authoringFreeze) {
+            notificationService.sendError('Extension upgrade disabled during authoring freeze');
+          } else {
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/upgrade-modal/upgradeModal.html',
+              controller: 'upgradeModalCtrl',
+              resolve: {
+                codeSystem: function () {
+                  return $scope.codeSystem;
+                },
+                enGbLanguageRefsetPresent: function() {
+                  return $scope.enGbLanguageRefsetPresent;
+                }
+              }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+            });
           }
         });
-
-        modalInstance.result.then(function () {
-        }, function () {
-        });
-      }
+      };
 
       // classify the codesystem
       $scope.classify = function () {

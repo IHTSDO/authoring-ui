@@ -40,8 +40,8 @@
           </button>
           <button ng-if="codeSystem && codeSystem.shortName !== 'SNOMEDCT' && (userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD'))" 
             class="btn btn-border tooltips-bottom offset-tooltip-right"
-            ng-class="[{large-size-tooltip : upgradedToLastestDependantVersion},
-                      {xxlarge-size-tooltip : authoringFreeze}]"
+            ng-class="[{'large-size-tooltip' : upgradedToLastestDependantVersion},
+                      {'xxlarge-size-tooltip' : authoringFreeze}]"
             ng-click="upgrade()"
             ng-disabled="codeSystemUpgradeRunning || upgradedToLastestDependantVersion || authoringFreeze">
             <div
