@@ -66,6 +66,7 @@ angular.module('singleConceptAuthoringApp')
           scope.viewFullListException = false;
           scope.exceptionLoading = false;
           scope.issueType = {type: ''};
+          scope.apiEndpoint = terminologyServerService.apiEndpoint;
           scope.allowDownloadDailyBuildPackage = attrs.allowDownloadDailyBuildPackage === 'true';
           var isRaiseJiraTicketsForceDisabled = attrs.raiseJiraTicketsDisabled === 'true';
 
@@ -135,7 +136,7 @@ angular.module('singleConceptAuthoringApp')
                 return status;
               }
             }
-            
+
             if (startTimestamp && endTimestamp) {
                 var duration = (endTimestamp - startTimestamp) / 1000;
                 return status + ', Started: ' + covertToUTCTime(new Date(startTimestamp)) + ', Ended: ' + covertToUTCTime(new Date(endTimestamp)) + ', Duration: ' + Math.floor(duration / 60) + ' minutes' ;
@@ -147,7 +148,7 @@ angular.module('singleConceptAuthoringApp')
 
             if (startTimestamp) {
               return status + ', Started: ' + covertToUTCTime(new Date(startTimestamp));
-            }            
+            }
 
             return status;
           };
