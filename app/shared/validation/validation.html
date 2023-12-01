@@ -58,11 +58,11 @@
         <div class="col-md-8 m-l-5 m-b-5 m-t-5 pull-left" ng-if="!hideAssertionGroupLabel">
           <label class="pull-left" style="padding-top: 6px; color: inherit;">SQL Assertion Groups:&nbsp;</label>
           <span ng-repeat="group in validationContainer.report.rvfValidationResult.validationConfig.groupsList" class="pull-left" style="padding-top: 6px;">
-            <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
+            <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}" target="_blank">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
           </span>
           <label ng-show="validationContainer.report.rvfValidationResult.validationConfig.enableDrools" class="pull-left p-l-20" style="padding-top: 6px; color: inherit;">Drools Assertion Groups:&nbsp;</label>
           <span ng-show="validationContainer.report.rvfValidationResult.validationConfig.enableDrools" ng-repeat="group in validationContainer.report.rvfValidationResult.validationConfig.droolsRulesGroupList" class="pull-left" style="padding-top: 6px;">
-            <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
+            <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}" target="_blank">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
           </span>
         </div>
         <div class="col-md-3 m-r-5 m-b-5 m-t-5 pull-right">
