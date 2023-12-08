@@ -29,6 +29,8 @@ angular.module('singleConceptAuthoringApp')
         if ($scope.isCodeSystem) {
           metadata.annotationsEnabled = $scope.annotationsEnabled + '';
           metadata.authoringFreeze = $scope.authoringFreeze + '';
+        } else {
+          metadata.multipleModuleEditingDisabled = $scope.multipleModuleEditingDisabled + '';
         }
         terminologyServerService.updateBranchMetadata($scope.branch, metadata).then(function (response) {
           $modalInstance.close();
@@ -47,6 +49,10 @@ angular.module('singleConceptAuthoringApp')
           if (response.failureExportMax) {
             $scope.failureExportMax = response.failureExportMax;
           }
+          if (typeof response.multipleModuleEditingDisabled !== 'undefined') {
+            $scope.multipleModuleEditingDisabled = response.multipleModuleEditingDisabled === true || response.multipleModuleEditingDisabled === 'true';
+          }
+          
         });
         if ($scope.isCodeSystem) {
           terminologyServerService.getBranchMetadata($scope.branch, false).then(function(response) {

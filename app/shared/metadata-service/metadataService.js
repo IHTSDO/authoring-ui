@@ -387,7 +387,7 @@ angular.module('singleConceptAuthoringApp')
 
         // populate the cached extension metadata from passed metadata and temporary variables
         var modules = [];
-        if (metadata.expectedExtensionModules) {
+        if (metadata.expectedExtensionModules && (!metadata.multipleModuleEditingDisabled || metadata.multipleModuleEditingDisabled === 'false')) {
           for (var i = 0; i < metadata.expectedExtensionModules.length; i++) {
             modules.push({
               id: metadata.expectedExtensionModules[i],
