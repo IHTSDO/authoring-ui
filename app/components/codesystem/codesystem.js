@@ -95,6 +95,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   metadataService.setExtensionMetadata(response.metadata);
 
                   $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
+                  $scope.integrityIssueFound = response.metadata.internal && (response.metadata.internal.integrityIssue === true || response.metadata.internal.integrityIssue === 'true');
 
                   // check wheter or not the latest dependant version was upgraded
                   terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
@@ -343,8 +344,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       $scope.upgrade = function() {
         terminologyServerService.getBranch($scope.branch).then(function (response) {
           $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
+          $scope.integrityIssueFound = response.metadata.internal && (response.metadata.internal.integrityIssue === true || response.metadata.internal.integrityIssue === 'true');
           if ($scope.authoringFreeze) {
             notificationService.sendError('Extension upgrade disabled during authoring freeze');
+          } else if ($scope.integrityIssueFound) {
+            notificationService.sendError('Unable to upgrade the extension due to bad integrity');
           } else {
             var modalInstance = $modal.open({
               templateUrl: 'shared/upgrade-modal/upgradeModal.html',
