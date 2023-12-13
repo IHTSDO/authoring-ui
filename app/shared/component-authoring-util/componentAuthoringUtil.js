@@ -51,6 +51,14 @@ angular.module('singleConceptAuthoringApp')
         if (!moduleId) {
           moduleId = metadataService.getCurrentModuleId();
         }
+        var caseSignificance = 'CASE_INSENSITIVE';
+        var defaultCaseSignificances = metadataService.getDefaultCaseSignificances();
+        for (let i = 0; i < defaultCaseSignificances.length; i++) {
+          if (defaultCaseSignificances[i].languageCode === language) {
+            caseSignificance = defaultCaseSignificances[i].defaultCaseSignificance;
+            break;
+          }
+        }
         if(language && language !== null){
            var lang = language;
         }
@@ -63,7 +71,7 @@ angular.module('singleConceptAuthoringApp')
           'type': 'SYNONYM',
           'term': null,
           'lang': lang,
-          'caseSignificance': 'CASE_INSENSITIVE',
+          'caseSignificance': caseSignificance,
           'conceptId': null,
           'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE', false, lang)
         };

@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
           restrict: {
             activeOnly: true
           }
-        },        
+        },
         {
           id: 'MOVED_FROM',
           conceptId: '900000000000525002',
@@ -265,6 +265,7 @@ angular.module('singleConceptAuthoringApp')
         var readOnlyDialects = {};
         var languages = ['en'];
         var defaultLanguages = [];
+        var defaultCaseSignificances = [];
         var defaultLanguageRefsetId = null;
 
         if (metadata.enableAxiomAdditionOnInternationalConcepts) {
@@ -274,6 +275,14 @@ angular.module('singleConceptAuthoringApp')
         // extract the available language refset ids, dialect ids, language codes
         for (var key in metadata) {
           if (metadata.hasOwnProperty(key)) {
+            var caseSignificanceMatch = key.match(/defaultCaseSignificance\.(.+)/);
+            if (caseSignificanceMatch && caseSignificanceMatch[1]) {
+              var item = {};
+              item.languageCode = caseSignificanceMatch[1];
+              item.defaultCaseSignificance = metadata[key];
+              defaultCaseSignificances.push(item);
+            }
+
             var match = key.match(/requiredLanguageRefset\.(.+)/);
             if (match && match[1]) {
               languages.push(match[1]);
@@ -358,8 +367,8 @@ angular.module('singleConceptAuthoringApp')
         if (metadata.optionalLanguageRefsets) {
           for (let i = 0; i < metadata.optionalLanguageRefsets.length; i++) {
             dialects[metadata.optionalLanguageRefsets[i]['refsetId']] = metadata.optionalLanguageRefsets[i]['language'];
-          }              
-        } 
+          }
+        }
 
         languages = parseLanguages(languages);
         defaultLanguages = parseLanguages(defaultLanguages);
@@ -374,7 +383,7 @@ angular.module('singleConceptAuthoringApp')
         if (defaultLanguages.length === 0) {
           defaultLanguages.push(languages[0]);
         }
-          
+
         if (metadata.useInternationalLanguageRefsets) {
             dialects = internationalMetadata.dialects;
             dialectDefaults = internationalMetadata.dialectDefaults;
@@ -402,14 +411,14 @@ angular.module('singleConceptAuthoringApp')
         }
         // sort modules. Defaut module should always be first
         if (metadata.defaultModuleId) {
-          modules.sort(function (a, b) { 
+          modules.sort(function (a, b) {
             if (b.id === metadata.defaultModuleId) {
-              return 1; 
+              return 1;
             } else {
               return -1;
             }
           });
-        }        
+        }
 
         extensionMetadata = {
           modules: modules,
@@ -425,7 +434,8 @@ angular.module('singleConceptAuthoringApp')
           codeSystemShortName : metadata.codeSystemShortName,
           useInternationalLanguageRefsets: (metadata.useInternationalLanguageRefsets ? true : false),
           optionalLanguageRefsets: metadata.optionalLanguageRefsets,
-          additionalFSNs: metadata.additionalFSNs 
+          additionalFSNs: metadata.additionalFSNs,
+          defaultCaseSignificances: defaultCaseSignificances
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
@@ -483,7 +493,7 @@ angular.module('singleConceptAuthoringApp')
           return module.id === moduleId;
         }).length > 0;
     }
-      
+
     function isAdditionalExtensionModule(moduleId) {
       if (!extensionMetadata || !Array.isArray(extensionMetadata.additionalModules)) {
         return false;
@@ -535,7 +545,7 @@ angular.module('singleConceptAuthoringApp')
         return internationalMetadata.modules;
       }
     }
-      
+
     function getallModules() {
         let allModules = [];
         if (internationalMetadata && internationalMetadata.modules) {
@@ -549,10 +559,10 @@ angular.module('singleConceptAuthoringApp')
             allModules = allModules.concat(extensionMetadata.additionalModules);
           }
         }
-        
+
         return allModules;
     }
-      
+
     function addExtensionModule(moduleId, moduleName, readOnly) {
         extensionMetadata.additionalModules.push(
             {
@@ -635,6 +645,10 @@ angular.module('singleConceptAuthoringApp')
       return dialects;
     }
 
+    function getDefaultCaseSignificances() {
+      return extensionMetadata ? extensionMetadata.defaultCaseSignificances : [];
+    }
+
     // get available dialects from extension metadata
     // NOTE: Return international dialects for FSNs
     function getDialectsForModuleId(moduleId, FSN) {
@@ -672,7 +686,7 @@ angular.module('singleConceptAuthoringApp')
     function getOptionalLanguageRefsets() {
       if (extensionMetadata && extensionMetadata.optionalLanguageRefsets) {
         return extensionMetadata.optionalLanguageRefsets;
-      } 
+      }
 
       return null;
     }
@@ -690,7 +704,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function isAdditionalFSN(description) {
-      return extensionMetadata && extensionMetadata.additionalFSNs 
+      return extensionMetadata && extensionMetadata.additionalFSNs
               && extensionMetadata.additionalFSNs.filter(function (item) {return item.language === description.lang && item.dialectIds.filter(value => Object.keys(description.acceptabilityMap).includes(value)).length !== 0;}).length !== 0;
     }
 
@@ -710,7 +724,7 @@ angular.module('singleConceptAuthoringApp')
         }
         else {
           return extensionMetadata.dialects[dialectId] + '-' + extensionMetadata.dialects[dialectId].toUpperCase() + '-x-' + dialectId + ';q=0.8,en-US;q=0.5'
-        }        
+        }
       }
       return 'q=0.8,en-US;q=0.5';
     }
@@ -793,21 +807,21 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function isProjectsLoaded() {
-      var defer = $q.defer();        
-        if (!projectsLoadCompleted) {                  
-          setTimeout(function waitForProjectsLoadCompleted() {                              
-            if (!projectsLoadCompleted) {                      
+      var defer = $q.defer();
+        if (!projectsLoadCompleted) {
+          setTimeout(function waitForProjectsLoadCompleted() {
+            if (!projectsLoadCompleted) {
               setTimeout(waitForProjectsLoadCompleted, 10);
-            } 
-            else {                  
+            }
+            else {
               defer.resolve(projectsLoadCompleted);
             }
           }, 10);
         }
-        else {              
+        else {
           defer.resolve(projectsLoadCompleted);
         }
-        
+
         return defer.promise;
     }
 
@@ -845,7 +859,7 @@ angular.module('singleConceptAuthoringApp')
       annotationsEnabled = value;
     }
 
-    function isAnnatationsEnabled() { 
+    function isAnnatationsEnabled() {
       return annotationsEnabled;
     }
 
@@ -884,7 +898,7 @@ angular.module('singleConceptAuthoringApp')
     function isTaskPromotionDisabled() {
       return taskPromotionDisabled;
     }
-      
+
     function isComplex() {
       let complex = false;
       if(branchMetadata.metadata && branchMetadata.metadata.authorFlags && branchMetadata.metadata.authorFlags != null){
@@ -902,7 +916,7 @@ angular.module('singleConceptAuthoringApp')
           return false
       }
     }
-      
+
     function isBatch() {
       let batch = false;
       if(branchMetadata.metadata && branchMetadata.metadata.authorFlags && branchMetadata.metadata.authorFlags != null){
@@ -956,7 +970,7 @@ angular.module('singleConceptAuthoringApp')
       return false;
     }
 
-    function getDropdownLanguages() {      
+    function getDropdownLanguages() {
       var result = {};
       let usModel = {
         moduleId: '731000124108',
@@ -972,17 +986,17 @@ angular.module('singleConceptAuthoringApp')
       let usPT = {id: '900000000000509007-pt', label: 'PT in US'};
       var internatinalFilter = [];
       internatinalFilter.push(usFSN);
-      internatinalFilter.push(usPT);           
+      internatinalFilter.push(usPT);
 
       var extensionFilter = [];
       extensionFilter.push(usFSN);
       extensionFilter.push(usPT);
 
-      if (extensionMetadata !== null) {          
+      if (extensionMetadata !== null) {
         var dialects = getAllDialects();
         // Remove 'en-gb' if any
-        
-        if (dialects.hasOwnProperty(gbDialectId)) {             
+
+        if (dialects.hasOwnProperty(gbDialectId)) {
           delete dialects[gbDialectId];
         }
 
@@ -1007,12 +1021,12 @@ angular.module('singleConceptAuthoringApp')
             if (key !== usModel.dialectId) {
               let languages = dialects[key].split('-');
               var dialect = {id: key, label: 'PT in ' + (languages.length > 1 ? languages[1].toUpperCase() : languages[0].toUpperCase())}
-              extensionFilter.push(dialect);               
+              extensionFilter.push(dialect);
             }
           }
           result.languages = extensionFilter;
           result.selectedLanguage = usPT; // Set PT in US by default
-        }                
+        }
       } else {
         result.languages = internatinalFilter;
         result.selectedLanguage = usFSN; // Set FSN in US by default
@@ -1081,6 +1095,7 @@ angular.module('singleConceptAuthoringApp')
       getAcceptLanguageValueForModuleId: getAcceptLanguageValueForModuleId,
       getExtensionAcceptLanguageValueByDialectId: getExtensionAcceptLanguageValueByDialectId,
       getAllDialects: getAllDialects,
+      getDefaultCaseSignificances: getDefaultCaseSignificances,
       isExtensionSet: function () {
         return extensionMetadata !== null;
       },
