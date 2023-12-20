@@ -46,8 +46,12 @@
     <div role="tabpanel">
       <div class="row" ng-if="viewTop">
         <div class="col-md-8 m-l-5 m-b-5 m-t-5 pull-left">
-          <label class="pull-left" style="padding-top: 6px; color: inherit;">Assertion Groups: </label>
-          <span class="pull-left" style="padding-top: 6px;">&nbsp;{{branchAssertionGroupNames.join(', ')}}</span>
+<!--          <label class="pull-left" style="padding-top: 6px; color: inherit;">Assertion Groups: </label>-->
+<!--          <span class="pull-left" style="padding-top: 6px;">&nbsp;{{branchAssertionGroupNames.join(', ')}}</span>-->
+          <label class="pull-left" style="padding-top: 6px; color: inherit;">Assertion Groups:&nbsp;</label>
+          <span ng-repeat="group in branchAssertionGroupNames" class="pull-left" style="padding-top: 6px;">
+            <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}" target="_blank">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
+          </span>
         </div>
       </div>
     </div>
