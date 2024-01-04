@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
           }());
 
           $scope.downloadTemplate = function(template){
-            templateService.downloadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, template).then(function (data) {
+            templateService.downloadTemplateCsv(template).then(function (data) {
               var fileName = 'batch_' + template;
               $scope.dlcDialog(data.data, fileName);
             });

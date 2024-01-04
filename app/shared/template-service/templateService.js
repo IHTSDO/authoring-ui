@@ -44,12 +44,10 @@ angular.module('singleConceptAuthoringApp')
         lexical = 'true';
       }
       var deferred = $q.defer();
-      var array = [];
-      let name = templateName.replace(/\//g, '%252F');
-      $http.get(apiEndpoint + branch + '/templates/' + name + '/concepts?lexicalMatch=' + lexical + '&logicalMatch=' + logical + '&stated=' + statedFlag).then(function (idList) {
+      $http.get(apiEndpoint + branch + '/templates/concept-search?templateName=' + encodeURIComponent(templateName) +'&lexicalMatch=' + lexical + '&logicalMatch=' + logical + '&stated=' + statedFlag).then(function (idList) {
         deferred.resolve(idList);
       }, function (error) {
-        deferred.reject('Failed to retrieve template concepts: ' + error.message);
+        deferred.reject('Failed to retrieve template concepts: ' + (error.message ? error.message : error.status + ' ' + error.statusText));
       });
       return deferred.promise;
     }
@@ -140,7 +138,7 @@ angular.module('singleConceptAuthoringApp')
         }, 5000);
 
       }, function (error) {
-        deferred.reject('Failed to retrieve template concepts: ' + error.message);
+        deferred.reject('Failed to retrieve template concepts: ' + (error.message ? error.message : error.status + ' ' + error.statusText));
       });
       return deferred.promise;
     }
@@ -361,7 +359,7 @@ angular.module('singleConceptAuthoringApp')
       $http.post(apiEndpoint + branch + '/templates/transform/concept?destinationTemplate=' + encodeURI(destinationTemplate.name), conceptToTransform).then(function (response) {
         deferred.resolve(response.data);
       }, function (error) {
-        deferred.reject('Failed to retrieve template concepts: ' + error.message);
+        deferred.reject('Failed to retrieve template concepts: ' + (error.message ? error.message : error.status + ' ' + error.statusText));
       });
       return deferred.promise;
     }
@@ -1335,11 +1333,11 @@ angular.module('singleConceptAuthoringApp')
       currentTask = task;
     }
 
-    function downloadTemplateCsv(branch, template) {
+    function downloadTemplateCsv(template) {
       return $http({
         'method': 'GET',
         //replace with task level branch path - working around BE bug
-        'url': apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template).replace('%2F', '%252F') + '/empty-input-file'
+        'url': apiEndpoint + '/templates/empty-input-file?templateName=' + encodeURIComponent(template)
 
       }).then(function (response) {
         return response;
@@ -1348,7 +1346,7 @@ angular.module('singleConceptAuthoringApp')
 
     function uploadTemplateCsv(branch, template, file) {
       var deferred = $q.defer();
-      $http.post(apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template).replace('%2F', '%252F') + '/generate', file, {
+      $http.post(apiEndpoint + branch + '/templates/generate?templateName=' + encodeURIComponent(template), file, {
         withCredentials: true,
         headers: { 'Content-Type': undefined },
         transformRequest: angular.identity
