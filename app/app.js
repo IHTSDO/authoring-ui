@@ -69,7 +69,9 @@ angular
   })
   .constant('AppConstants', {
     AUTHORING_SERVICES_ENDPOINT: '/authoring-services/',
-    AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT: '/authoring-acceptance-gateway/'
+    AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT: '/authoring-acceptance-gateway/',
+    RELEASE_NOTES_ENDPOINT: '/release-notes/',
+    RVF_ENDPOINT: '/rvf/'
   })
 
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider, localStorageServiceProvider) {
@@ -147,7 +149,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, aagService, rnmService, spellcheckService, AppConstants) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, validationService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, aagService, rnmService, spellcheckService, AppConstants) {
 
     $window.ga('create', 'UA-41892858-21', 'auto');
     // track pageview on state change
@@ -202,7 +204,8 @@ angular
 
         scaService.setEndpoint('..' + AppConstants.AUTHORING_SERVICES_ENDPOINT);
         aagService.setEndpoint('..' + AppConstants.AUTHORING_ACCEPTANCE_GATEWAY_ENDPOINT);
-        rnmService.setEndpoint('../release-notes/');
+        rnmService.setEndpoint('..' + AppConstants.RELEASE_NOTES_ENDPOINT);
+        validationService.setRvfEndpoint('..' + AppConstants.RVF_ENDPOINT);
         spellcheckService.setEndpoint(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'spelling/check');
         terminologyServerService.setEndpoint(endpoints.terminologyServerEndpoint);
         crsService.setCrsEndpoint(endpoints['crsEndpoint']);

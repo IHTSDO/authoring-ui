@@ -100,6 +100,7 @@ angular.module('singleConceptAuthoringApp')
           // local variables for ng-table population
           scope.assertionsFailed = [];
           scope.assertionsWarning = [];
+          scope.excludedAssertions = [];
           scope.failures = [];
 
           // Allow broadcasting of new validation results
@@ -224,45 +225,70 @@ angular.module('singleConceptAuthoringApp')
             count: 10,
             sorting: {failureCount: 'desc'},
             orderBy: 'failureCount'
-          },
-          {
-            filterDelay: 50,
-            total: '-',
-            getData: function ($defer, params) {
+            },
+            {
+              filterDelay: 50,
+              total: '-',
+              getData: function ($defer, params) {
 
-              if (!scope.assertionsWarning || scope.assertionsWarning.length === 0) {
-                params.total(0);
-                $defer.resolve([]);
-              } else {
+                if (!scope.assertionsWarning || scope.assertionsWarning.length === 0) {
+                  params.total(0);
+                  $defer.resolve([]);
+                } else {
 
-                // cycle over each failed assertion to get count / display status
-                angular.forEach(scope.assertionsWarning, function (assertionWarning) {
-                  if(assertionWarning.failureCount > 0){
-                      var filteredInstances = assertionWarning.firstNInstances.filter(function (instance) {
-                        // if viewing task report and instance is not user modified or validation failure is excluded, return false
-                        if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
-                          return false;
-                        }
+                  // cycle over each failed assertion to get count / display status
+                  angular.forEach(scope.assertionsWarning, function (assertionWarning) {
+                    if(assertionWarning.failureCount > 0){
+                        var filteredInstances = assertionWarning.firstNInstances.filter(function (instance) {
+                          // if viewing task report and instance is not user modified or validation failure is excluded, return false
+                          if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
+                            return false;
+                          }
 
-                        return true;
-                      });
-                      assertionWarning.filteredCount = filteredInstances.length;
-                      assertionWarning.total = assertionWarning.failureCount;
-                  }
-                });
+                          return true;
+                        });
+                        assertionWarning.filteredCount = filteredInstances.length;
+                        assertionWarning.total = assertionWarning.failureCount;
+                    }
+                  });
 
-                // filter by user modification
-                var orderedData = scope.assertionsWarning.filter(function (assertionWarning) {
-                  return assertionWarning.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionWarning.technicalIssue : !assertionWarning.technicalIssue));
-                });
+                  // filter by user modification
+                  var orderedData = scope.assertionsWarning.filter(function (assertionWarning) {
+                    return assertionWarning.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionWarning.technicalIssue : !assertionWarning.technicalIssue));
+                  });
 
-                params.total(orderedData.length);
-                orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
               }
             }
-          }
-        );
+          );
+
+          scope.excludedAssertionsTableParams = new NgTableParams({
+            page: 1,
+            count: 10,
+            sorting: {failureCount: 'desc'},
+            orderBy: 'failureCount'
+            },
+            {
+              filterDelay: 50,
+              total: '-',
+              getData: function ($defer, params) {
+
+                if (!scope.excludedAssertions || scope.excludedAssertions.length === 0) {
+                  params.total(0);
+                  $defer.resolve([]);
+                } else {
+                  var orderedData = scope.excludedAssertions;
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
+              }
+            }
+          );
+          
 
           // sets view to top and clears viewed concept list
           scope.setViewTop = function () {
@@ -817,6 +843,20 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
+            
+            var assertionExclusionList = scope.validationContainer.report.rvfValidationResult.validationConfig.assertionExclusionList;
+            if (assertionExclusionList && assertionExclusionList.length > 0) {
+              validationService.getAllAssertions().then(function (assertions) {
+                angular.forEach(assertionExclusionList, function (exclusion) {
+                  angular.forEach(assertions, function (assertion) {
+                    if (exclusion === assertion.uuid) {
+                      scope.excludedAssertions.push(assertion);
+                    }
+                  });
+                });
+                scope.excludedAssertionsTableParams.reload();
+              });
+            }
 
             scaService.getTechnicalIssueItems().then(
               function(data) {

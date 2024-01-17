@@ -134,7 +134,21 @@
           </tr>
         </table>
       </div>
-
+      <div class="table-responsive white" ng-show="viewTop && excludedAssertionsTableParams.total() > 0">
+        <table ng-table="excludedAssertionsTableParams" template-pagination="utilities/data-table-pager.html" class="table">
+          <tr ng-repeat="assertion in $data" style="height: 37px;">
+            <td header-title="'Click to sort'" data-title="'Assertions Excluded'" sortable="'assertionText'">
+              {{assertion.assertionText}}
+            </td>
+            <td header-title="'Click to sort'" data-title="'Assertion Type'" sortable="'type'" style="min-width: 125px;">
+              {{assertion.type.replace('DROOL_RULES', 'DROOLS')}}
+            </td>
+            <td header-title="'Click to sort'" data-title="'Assertion ID'" sortable="'uuid'" style="min-width: 260px; padding-top: 8px; padding-bottom: 8px;">
+              {{assertion.uuid}}
+            </td>
+          </tr>
+        </table>
+      </div>
       <div class="table-responsive white" ng-if="!viewTop">
         <div class="row">
           <div class="col-md-10 p-10"> <strong>Assertion {{isWarningAssertion ? 'Warning' : 'Failure'}}</strong>: {{assertionFailureViewed.assertionText}} </div>
