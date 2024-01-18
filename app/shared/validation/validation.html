@@ -137,7 +137,7 @@
       <div class="table-responsive white" ng-show="viewTop && excludedAssertionsTableParams.total() > 0">
         <table ng-table="excludedAssertionsTableParams" template-pagination="utilities/data-table-pager.html" class="table">
           <tr ng-repeat="assertion in $data" style="height: 37px;">
-            <td header-title="'Click to sort'" data-title="'Assertions Excluded'" sortable="'assertionText'">
+            <td header-title="'Click to sort'" data-title="'Excluded Assertions'" sortable="'assertionText'">
               {{assertion.assertionText}}
             </td>
             <td header-title="'Click to sort'" data-title="'Assertion Type'" sortable="'type'" style="min-width: 125px;">
