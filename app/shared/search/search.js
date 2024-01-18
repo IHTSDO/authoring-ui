@@ -651,7 +651,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                     $scope.searchStatus = 'No results';
                 }
 
-            })
+            }, function (error) {
+              $scope.searchStatus = 'Error performing search: ' + error;
+              if (error.statusText) {
+                $scope.searchStatus += ': ' + error.statusText;
+              }
+              if (error.data && error.data.message) {
+                $scope.searchStatus += ': ' + error.data.message;
+              }
+            });
 
         }
         else{

@@ -42,7 +42,11 @@ angular.module('singleConceptAuthoringApp')
     $scope.edit = mode === 'EDIT';
     $scope.isProject = isProject;
 
-    $scope.changeTypeOptions = ['New Concept','Model Change', 'Description Change', 'Re-model', 'Inactivation'].sort(function (a, b) { return a.localeCompare(b);});
+    var changeTypeOptions = ['New Concept','Model Change', 'Description Change', 'Inactivation'];
+    if ($scope.readOnly) {
+      changeTypeOptions.push('Re-model');
+    }
+    $scope.changeTypeOptions = changeTypeOptions.sort(function (a, b) { return a.localeCompare(b);});
     $scope.hierarchyOptions = metadataService.getSemanticTags();
 
     var originalLineItem = {};

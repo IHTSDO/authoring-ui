@@ -11,7 +11,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       if (!properties) {
         $http.get(AppConstants.AUTHORING_SERVICES_ENDPOINT + 'ui-configuration').then(function (response) {
-          properties = response.data;
+            properties = response.data;
             $http.get('/config/versions.json').then(function (confResponse) {
               versions = confResponse.data;
               deferred.resolve(properties, validationProperties);

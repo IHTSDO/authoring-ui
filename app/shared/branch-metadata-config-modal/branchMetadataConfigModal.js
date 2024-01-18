@@ -6,6 +6,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.title = title;
       $scope.failureExportMax = null;
       $scope.annotationsEnabled = false;
+      $scope.authoringFreeze = false;
       $scope.isCodeSystem = isCodeSystem;
 
       $scope.validate = function() {
@@ -27,6 +28,9 @@ angular.module('singleConceptAuthoringApp')
         var metadata = {'failureExportMax': $scope.failureExportMax + ''};
         if ($scope.isCodeSystem) {
           metadata.annotationsEnabled = $scope.annotationsEnabled + '';
+          metadata.authoringFreeze = $scope.authoringFreeze + '';
+        } else {
+          metadata.multipleModuleEditingDisabled = $scope.multipleModuleEditingDisabled + '';
         }
         terminologyServerService.updateBranchMetadata($scope.branch, metadata).then(function (response) {
           $modalInstance.close();
@@ -37,7 +41,7 @@ angular.module('singleConceptAuthoringApp')
       };
 
       $scope.close = function () {
-        $modalInstance.close();
+        $modalInstance.dismiss();
       };
 
       function initialize() {
@@ -45,11 +49,18 @@ angular.module('singleConceptAuthoringApp')
           if (response.failureExportMax) {
             $scope.failureExportMax = response.failureExportMax;
           }
+          if (typeof response.multipleModuleEditingDisabled !== 'undefined') {
+            $scope.multipleModuleEditingDisabled = response.multipleModuleEditingDisabled === true || response.multipleModuleEditingDisabled === 'true';
+          }
+          
         });
         if ($scope.isCodeSystem) {
           terminologyServerService.getBranchMetadata($scope.branch, false).then(function(response) {
             if (typeof response.annotationsEnabled !== 'undefined') {
               $scope.annotationsEnabled = response.annotationsEnabled === true || response.annotationsEnabled === 'true';
+            }
+            if (typeof response.authoringFreeze !== 'undefined') {
+              $scope.authoringFreeze = response.authoringFreeze === true || response.authoringFreeze === 'true';
             }
           });
         }

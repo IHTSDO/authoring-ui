@@ -94,6 +94,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   // set the extension metadata for use by other elements
                   metadataService.setExtensionMetadata(response.metadata);
 
+                  $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
+                  $scope.integrityIssueFound = response.metadata.internal && (response.metadata.internal.integrityIssue === true || response.metadata.internal.integrityIssue === 'true');
+
                   // check wheter or not the latest dependant version was upgraded
                   terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
                     if (response.data.items && response.data.items.length > 0) {
@@ -247,9 +250,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             }
           });
         }
-      });      
+      });
 
-      function refreshValidationIndicator(executionStatus) {        
+      function refreshValidationIndicator(executionStatus) {
         $timeout(function () {
           // Remove the old class and add the new one
           var messageElement = angular.element(document.querySelector('.validation-message-header'));
@@ -299,7 +302,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       };
 
       $scope.openBranchMetadataConfigModal = function() {
-        $modal.open({
+        var modalInstance = $modal.open({
           templateUrl: 'shared/branch-metadata-config-modal/branchMetadataConfigModal.html',
           controller: 'branchMetadataConfigCtrl',
           resolve: {
@@ -313,6 +316,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
               return true;
             }
           }
+        });
+
+        modalInstance.result.then(function () {
+          $scope.getCodeSystem();
+        }, function () {
         });
       };
 
@@ -334,23 +342,33 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       };
 
       $scope.upgrade = function() {
-        var modalInstance = $modal.open({
-          templateUrl: 'shared/upgrade-modal/upgradeModal.html',
-          controller: 'upgradeModalCtrl',
-          resolve: {
-            codeSystem: function () {
-              return $scope.codeSystem;
-            },
-            enGbLanguageRefsetPresent: function() {
-              return $scope.enGbLanguageRefsetPresent;
-            }
+        terminologyServerService.getBranch($scope.branch).then(function (response) {
+          $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
+          $scope.integrityIssueFound = response.metadata.internal && (response.metadata.internal.integrityIssue === true || response.metadata.internal.integrityIssue === 'true');
+          if ($scope.authoringFreeze) {
+            notificationService.sendError('Extension upgrade disabled during authoring freeze');
+          } else if ($scope.integrityIssueFound) {
+            notificationService.sendError('Unable to upgrade the extension due to bad integrity');
+          } else {
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/upgrade-modal/upgradeModal.html',
+              controller: 'upgradeModalCtrl',
+              resolve: {
+                codeSystem: function () {
+                  return $scope.codeSystem;
+                },
+                enGbLanguageRefsetPresent: function() {
+                  return $scope.enGbLanguageRefsetPresent;
+                }
+              }
+            });
+
+            modalInstance.result.then(function () {
+            }, function () {
+            });
           }
         });
-
-        modalInstance.result.then(function () {
-        }, function () {
-        });
-      }
+      };
 
       // classify the codesystem
       $scope.classify = function () {
@@ -375,7 +393,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       function doValidate() {
         notificationService.sendMessage('Starting validation for codesystem...');
-        scaService.startValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
+        scaService.startValidationForBranch($scope.codeSystem.branchPath, true).then(function (response) {
           $scope.validationContainer = { status : response };
           $timeout(function () {
             notificationService.sendMessage('Validation running');

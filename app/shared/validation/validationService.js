@@ -5,14 +5,18 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('validationService', ['scaService', 'notificationService', '$q', function (scaService, notificationService, $q) {
+  .service('validationService', ['scaService', 'notificationService', '$q', '$http', function (scaService, notificationService, $q, $http) {
 
     //
     // Validation Failure Exclusion getter, setter, and cached values
     // NOTE: This is initialized in app.js
     //
-
+    var rvfEndpoint = null;
     var validationFailureExclusions = null;
+
+    function setRvfEndpoint(endpoint) {
+      rvfEndpoint = endpoint;
+    }
 
     // exposed below, used for other validation failure exclusion functions
     function getValidationFailureExclusions() {
@@ -43,12 +47,25 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function getAllAssertions() {
+      return $http.get(rvfEndpoint + 'assertions?includeDroolsRules=true&includeTraceabilityAssertions=false&ignoreResourceType=true').then(
+        function (response) {
+          return response.data;
+        }, function (error) {
+          return null;
+        }
+      );
+    }
+
 
     //
     // Validation exclusion/whitelisting
     //
 
     return {
+      setRvfEndpoint: setRvfEndpoint,
+      getAllAssertions: getAllAssertions,
+
 
       isValidationFailureExcluded: function (assertionUuid, conceptId, failureText) {
         if (!validationFailureExclusions) {

@@ -103,8 +103,8 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       return error;
     }
 
-    function getUsers(start, end) {
-      scaService.getUsers(start,end).then(function (response) {
+    function getUsers(offset) {
+      scaService.getUsers(offset).then(function (response) {
         if (response.users.items.length > 0) {
           angular.forEach(response.users.items, function (item) {
             var user = {};
@@ -120,8 +120,8 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
           });
         }
 
-        if (response.users.size > end) {
-          getUsers(start + 50, end + 50);
+        if (response.users.size > $scope.users.length + 1) {
+          getUsers(offset + 50);
         }
       });
     }
@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
     }
 
     function initialize() {
-      getUsers(0,50);
+      getUsers(0);
       getTransformationRecipes();
     }
 

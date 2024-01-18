@@ -415,9 +415,9 @@ angular.module('singleConceptAuthoringApp')
 
                 if (newNotification.task) {
                   $rootScope.$broadcast('reloadTaskClassification', {project: newNotification.project, task: newNotification.task});
-                } else if (newNotification.project) {                   
+                } else if (newNotification.project) {
                   $rootScope.$broadcast('reloadProjectClassification', {project: newNotification.project});
-                } else if (newNotification.branchPath) {                   
+                } else if (newNotification.branchPath) {
                   $rootScope.$broadcast('reloadCodeSystemClassification', {branchPath: newNotification.branchPath});
                 }
 
@@ -441,11 +441,11 @@ angular.module('singleConceptAuthoringApp')
                       } else {
                         msg += ' - No changes found';
                       }
-  
+
                       if (newNotification.task) {
                         url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                         notificationService.sendMessage(msg, 0, url);
-                        $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});                      
+                        $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                       } else if (newNotification.project) {
                         url = '#/project/' + newNotification.project;
                         notificationService.sendMessage(msg, 0, url);
@@ -455,7 +455,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                   });
-                }                
+                }
 
                 break;
 
@@ -524,7 +524,7 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/codesystem/' + metadataService.getCodeSystenForGivenBranch(newNotification.branchPath).shortName;
                     }
                   }
-  
+
                   if (newNotification.task) {
                     $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
                   } else if (newNotification.project) {
@@ -534,7 +534,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                   notificationService.sendMessage(msg, 0, url);
                 }
-                
+
                 break;
 
               /*
@@ -1246,15 +1246,17 @@ angular.module('singleConceptAuthoringApp')
 
 // Initiate validation for a branch
 // POST /branches/{branch}/validation
-        startValidationForBranch: function (branch) {
-          console.log(branch);
+        startValidationForBranch: function (branch, enableMRCMValidation) {
           if (!branch) {
             console.error('Must specify branch to start validation');
             return {};
           }
-
+          var param = '';
+          if (typeof(enableMRCMValidation) !== 'undefined') {
+            param += '?enableMRCMValidation=' + enableMRCMValidation;
+          }
           // POST call takes no data
-          return $http.post(apiEndpoint + 'branches/' + branch + '/validation', {}).then(function (response) {
+          return $http.post(apiEndpoint + 'branches/' + branch + '/validation' + (param.length !== 0 ? param : ''), {}).then(function (response) {
             return response.data;
           }, function (error) {
             console.error('Error getting validation for branch ' + branch);
@@ -1741,11 +1743,11 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        getUsers : function (offset) {
+        getUsers : function (offset, groupName) {
           var deferred = $q.defer();
 
           // get the list
-          $http.get(apiEndpoint + 'users?offset=' + offset).then(function (response) {
+          $http.get(apiEndpoint + 'users?offset=' + offset + (groupName ? ('&groupName=' + groupName) : '')).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 404) {
@@ -1911,8 +1913,8 @@ angular.module('singleConceptAuthoringApp')
 
         lockProjectsForCodeSystem: function(codeSystem) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/lock').then(function () {           
+
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/lock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
@@ -1923,8 +1925,8 @@ angular.module('singleConceptAuthoringApp')
 
         unlockProjectsForCodeSystem: function(codeSystem) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/unlock').then(function () {           
+
+          $http.post(apiEndpoint + 'codesystems/' + codeSystem + '/projects/unlock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
@@ -1935,8 +1937,8 @@ angular.module('singleConceptAuthoringApp')
 
         lockProject: function(projectKey) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/lock').then(function () {           
+
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/lock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);
@@ -1947,8 +1949,8 @@ angular.module('singleConceptAuthoringApp')
 
         unlockProject: function(projectKey) {
           var deferred = $q.defer();
-          
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/unlock').then(function () {           
+
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/unlock').then(function () {
             deferred.resolve();
           }, function (error) {
             deferred.reject(error);

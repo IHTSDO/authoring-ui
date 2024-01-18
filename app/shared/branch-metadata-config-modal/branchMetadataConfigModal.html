@@ -11,6 +11,22 @@
             <div class="col-md-12 no-padding">
               <div class="row m-b-10" ng-show="isCodeSystem">
                 <div class="col-md-12 no-padding">
+                  <label for="authoringFreeze">Authoring Freeze</label>
+                  <div class="no-padding checkbox m-l-40" style="display: inline;">
+                    <input id="authoringFreeze" type="checkbox" ng-model="authoringFreeze">                         
+                  </div>
+                </div>
+              </div>
+              <div class="row m-b-10" ng-show="!isCodeSystem">
+                <div class="col-md-12 no-padding">
+                  <label for="multipleModuleEditingDisabled">Multiple Module Editing Disabled</label>
+                  <div class="no-padding checkbox m-l-40" style="display: inline;">
+                    <input id="multipleModuleEditingDisabled" type="checkbox" ng-model="multipleModuleEditingDisabled">                         
+                  </div>
+                </div>
+              </div>
+              <div class="row m-b-10" ng-show="isCodeSystem">
+                <div class="col-md-12 no-padding">
                   <label for="annotationsEnabled">Annotations Enabled</label>
                   <div class="no-padding checkbox m-l-40" style="display: inline;">
                     <input id="annotationsEnabled" type="checkbox" ng-model="annotationsEnabled">                         

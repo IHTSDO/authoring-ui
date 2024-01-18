@@ -5466,7 +5466,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else{
               relationship.dataType = null;
               delete relationship.concreteValue;
-              relationship.target = {};
+              //relationship.target = {};
               relationship.rangeMin = null;
               relationship.rangeMax = null;
           }

@@ -95,7 +95,7 @@
                 </button>
                 <button
                   ng-show="task.branchBaseTimestampBehideCodeSystem "
-                  type="button"
+                  type="button" ng-click="goToConflicts(task)"
                   class="btn btn-round btn-center btn-default lighten-1 indicator_red tooltips-left">
                   <div class="md md-sync "></div>
                   <span>This task has not been rebased since the last SNOMED release</span>
