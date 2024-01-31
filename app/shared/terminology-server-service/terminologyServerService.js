@@ -1888,12 +1888,27 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
+      
+      // Get last rebase for branch
+      // GET /activities?onBranch=MAIN%2FQIFAS&includeHigherPromotions=false&activityType=REBASE&intOnly=false&brief=true&summaryOnly=true&page=0&size=20&sort=commitDate%2Cdesc
+      function getLastRebase(branchRoot) {
+        if(!branchRoot) {
+          console.error('Error retrieving last rebase time: Branch root is missing');
+          return null;
+        }
+        var params = 'onBranch=' + encodeURIComponent(branchRoot) +'&includeHigherPromotions=false&activityType=REBASE&intOnly=false&brief=true&summaryOnly=true&page=0&size=20&sort=commitDate%2Cdesc';
+        return $http.get('/traceability-service/activities?' + params).then(function (response) {
+          return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
+        }, function (error) {
+          return null;
+        });
+      }
 
       // Get last promotion for branch
       // GET /traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
       function getLastTaskPromotionTime(branchRoot) {
         if(!branchRoot) {
-          console.error('Error retrieving last promotion time: Branh root is missing');
+          console.error('Error retrieving last promotion time: Branch root is missing');
           return null;
         }
         var params = 'page=0&size=1&sort=commitDate%2Cdesc&onBranch=' + encodeURIComponent(branchRoot);
@@ -2682,6 +2697,7 @@ angular.module('singleConceptAuthoringApp')
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
         getLastPromotionTimeToMain: getLastPromotionTimeToMain,
+        getLastRebase: getLastRebase,
         getLastTaskPromotionTime: getLastTaskPromotionTime,
         synchronousMerge: synchronousMerge,
         markBranchAsComplex: markBranchAsComplex,

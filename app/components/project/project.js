@@ -145,12 +145,19 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.project = response;
           $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF && response.metadata.enableDroolsInRVF === 'false' ? true : false;
           $scope.branch = response.branchPath;
-
+          
           // last rebased time
-          if ($scope.project.branchBaseTimestamp) {
-            let date = new Date($scope.project.branchBaseTimestamp);
-            $scope.project.lastRebaseTime =  date.toUTCString();
-          }
+          terminologyServerService.getLastRebase($scope.branch).then(function (rebaseTime) {
+            if (rebaseTime) {
+              let date = new Date(rebaseTime);
+              $scope.project.lastRebaseTime = date.toUTCString();
+            }
+          });
+          // last rebased time
+//          if ($scope.project.branchBaseTimestamp) {
+//            let date = new Date($scope.project.branchBaseTimestamp);
+//            $scope.project.lastRebaseTime =  date.toUTCString();
+//          }
 
           // last promotion time to MAIN
           terminologyServerService.getLastPromotionTimeToMain($scope.branch).then(function (promotionTime) {
