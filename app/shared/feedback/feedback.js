@@ -1158,6 +1158,9 @@ angular.module('singleConceptAuthoringApp')
             // remove from viewed concepts list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
+                if (scope.viewedConcepts.length > 1) {
+                  shiftFeedbackToNextConcept(i == (scope.viewedConcepts.length - 1) ? scope.viewedConcepts[i - 1] : scope.viewedConcepts[i + 1]);
+                }
                 scope.viewedConcepts.splice(i, 1);
                 break;
               }
@@ -1185,6 +1188,13 @@ angular.module('singleConceptAuthoringApp')
             // Remove the concept id from Project Taxonomy View List
             removeConceptFromProjectTaxonomyViewList(data.concept.conceptId);
           });
+
+          function shiftFeedbackToNextConcept(concept) {
+            if (scope.subjectConcepts.length == 1) {
+              concept.term = concept.fsn;
+              scope.selectConceptForFeedback(concept);
+            }
+          }
 
           // the scope variable containing the map of concept -> [style map]
           scope.styles = {};
