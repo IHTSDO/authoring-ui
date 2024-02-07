@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.sidebar', [])
 
-  .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal', '$q', '$timeout','metadataService','templateService', 'notificationService',
-    function sidebarCtrl($scope, $rootScope, $location, $modal, $q, $timeout, metadataService, templateService, notificationService) {
+  .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal', '$q', '$timeout','metadataService','templateService', 'notificationService','accountService',
+    function sidebarCtrl($scope, $rootScope, $location, $modal, $q, $timeout, metadataService, templateService, notificationService, accountService) {
 
       $scope.gotoBrowser = function() {
         window.open('/browser', '_blank');
@@ -141,5 +141,14 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         });
       };
 
+      function initialize() {
+        accountService.getRoleForTask({}).then(function (role) {
+          if (role === 'REVIEWER_ONLY') {
+              $scope.isReviewerOnly = true;
+          }
+        });
+      }
+
+      initialize();
     }
   ]);
