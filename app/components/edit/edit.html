@@ -9,7 +9,7 @@
     <button
       drag-enter-class="sca-drag-target"
       type="button" ng-click="createConcept(true)"
-      ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || !canCreateConcept"
+      ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || !canCreateConcept || role !== 'AUTHOR' || branchLocked"
       class="btn btn-default new-concept-button widget-toolbar tooltips-right tooltips-light normal-case">
       <div class="md fa-sca fa-edit"></div>
 
@@ -24,7 +24,7 @@
             popover-append-to-body="true"
             type="button"
             id="templateCreateBtn"
-            ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || !canCreateConcept"
+            ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || !canCreateConcept || role !== 'AUTHOR' || branchLocked"
             ng-if="templates.length > 0"
             class="btn btn-default create-template widget-toolbar tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i>

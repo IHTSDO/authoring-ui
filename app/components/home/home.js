@@ -518,6 +518,11 @@ angular.module('singleConceptAuthoringApp.home', [
                     $scope.selectedType.type = $scope.preferences.selectedType;
                 }
             });
+            accountService.getRoleForTask({}).then(function (role) {
+                if (role === 'REVIEWER_ONLY') {
+                    $scope.isReviewerOnly = true;
+                }
+            });
             loadTasks();
         }
 

@@ -50,12 +50,17 @@ angular.module('singleConceptAuthoringApp')
 
       getAccount().then(function(accountDetails) {
 
+        // check reviewer only first
+        if (isReviewerOnly(accountDetails.roles)) {
+          deferred.resolve('REVIEWER_ONLY');
+        }
+
         // check reviewer first
-        if (task.reviewers && isReviewer(accountDetails.login,task.reviewers)) {
+        else if (task.reviewers && isReviewer(accountDetails.login,task.reviewers)) {
           deferred.resolve('REVIEWER');
         }
 
-        // check assignee second
+        // check assignee third
         else if (task.assignee && accountDetails.login === task.assignee.username) {
           deferred.resolve('AUTHOR');
         }
@@ -72,12 +77,22 @@ angular.module('singleConceptAuthoringApp')
     function getRoleForProject(project) {
       return 'UNDEFINED';
     }
-    
+
     function isReviewer(loginUser, reviewers) {
       for (let i =0; i < reviewers.length; i++) {
         if (loginUser === reviewers[i].username) {
           return true;
-        }        
+        }
+      }
+      return false;
+    }
+
+    function isReviewerOnly(roles) {
+      let pattern = /^ap-.*-reviewer-only$/;
+      for (let i = 0; i < roles.length; i++) {
+        if (pattern.test(roles[i])) {
+          return true;
+        }
       }
       return false;
     }
@@ -158,7 +173,7 @@ angular.module('singleConceptAuthoringApp')
       $rootScope.globalStyleClasses = globalStyleClasses;
 
       /////////////////////////////////////////////////////
-      // Set Min. Network connection speed 
+      // Set Min. Network connection speed
       /////////////////////////////////////////////////////
       window.minNetworkConnection = localPreferences.minNetworkConnection;
 
@@ -180,14 +195,14 @@ angular.module('singleConceptAuthoringApp')
         if(response !== null && response !== undefined){
             response.appView = "sca-default";
         }
-        
+
         if (response.branchPath && !isValidBranchPath(response.branchPath)) {
           response.branchPath = null;
           if (response.browserView) {
             response.browserView = null;
           }
         }
-        
+
         return response;
       }, function(error) {
         return null;
@@ -210,17 +225,17 @@ angular.module('singleConceptAuthoringApp')
           if (projects[i].branchPath === branch) {
             return true;
           }
-        }  
+        }
         return false;
       }
-      
+
       return true;
     }
 
     return {
       getAccount: getAccount,
       getRoleForTask: getRoleForTask,
-      getRoleForProject: getRoleForProject,     
+      getRoleForProject: getRoleForProject,
       applyUserPreferences : applyUserPreferences,
       getUserPreferences: getUserPreferences,
       saveUserPreferences: saveUserPreferences,
