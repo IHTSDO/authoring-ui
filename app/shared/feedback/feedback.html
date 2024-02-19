@@ -178,7 +178,7 @@
         </div>
       </div>
       <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0"> <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
-        ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term ? subjectConcept.term : 'the deleted concept ' + subjectConcept.conceptId}}
+        ng-repeat="subjectConcept in subjectConcepts"><strong>{{subjectConcept.term ? subjectConcept.term : 'the deleted concept ' + subjectConcept.conceptId}}</strong>
         &nbsp;&nbsp;
         <button class="btn-default m-5 primary-action-btn" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button>
         </span>
