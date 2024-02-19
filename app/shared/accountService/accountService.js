@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function isReviewerOnly(roles) {
-      let pattern = /^ROLE_ap-.*-reviewer-only$/;
+      let pattern = /^ROLE_ap-.*-reviewer$/;
       for (let i = 0; i < roles.length; i++) {
         if (pattern.test(roles[i])) {
           return true;

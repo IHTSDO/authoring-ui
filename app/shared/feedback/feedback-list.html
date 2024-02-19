@@ -4,7 +4,7 @@
   -->
 
 <div class="col-md-12 no-padding" style="100vh;">
-  <div class="col-md-12 m-t-10 load-performed" ng-if="(role === 'REVIEWER' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">
+  <div class="col-md-12 m-t-10 load-performed" ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">
     <button type="button" class="col-md-8 btn btn-success dropdown-toggle" data-toggle="dropdown">
         <span>{{viewConceptsMode}}</span>&nbsp;<span class="caret"></span>
     </button>
@@ -114,7 +114,7 @@
                ng-show="feedbackContainer.review.conceptsToReview.length > 0"
                template-pagination="utilities/review-table-pager.html"
                class="table feedback-table" drop-channel="feedbackConcept">
-          <div class="col-md-1 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'"
+          <div class="col-md-1 no-padding " ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && task.status === 'In Review'"
                ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <!-- Only appears if reviewer role -->
             <div class=" p-5">
@@ -125,7 +125,7 @@
               <span>Group selected concepts</span> </button>
             </div>
           </div>
-          <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER' && task.status === 'In Review'">
+          <div class="col-md-7 no-padding" ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && task.status === 'In Review'">
             <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
                    placeholder="Filter concepts"
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
@@ -141,7 +141,7 @@
                    ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
                    ng-model-options="{debounce: 500}" ui-on-drop="null">
           </div>
-          <div class="col-md-4 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'"
+          <div class="col-md-4 no-padding " ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && task.status === 'In Review'"
                ng-hide="feedbackContainer.review.conceptsToReview.length === 0">
             <!-- Only appears if reviewer role -->
             <div class="pull-right p-5">
@@ -215,7 +215,7 @@
                 </div>
               </div></td>
             <!--Reviewer Controls -->
-            <td ng-if="role === 'REVIEWER'" class="col-md-3"><div class="pull-right-margin clear-position">
+            <td ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY')" class="col-md-3"><div class="pull-right-margin clear-position">
                 <button ng-show="concept.messages.length > 0"
                         class="pull-right btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
                         ng-click="selectConcept(concept)" ng-mouseover="setTooltipPosition($event);">
@@ -310,7 +310,7 @@
                 </button>
                 <button
                   class="btn btn-round btn-default green base tooltips-bottom small-size-tooltip m-r-2 normal-case"
-                  ng-if="role === 'REVIEWER' && task.status === 'In Review'" ng-mouseover="setTooltipPosition($event);"
+                  ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && task.status === 'In Review'" ng-mouseover="setTooltipPosition($event);"
                   ng-click="returnToReview(concept)">
                 <div
                     class="md md-thumb-down"></div>
@@ -375,7 +375,7 @@
                   ui-draggable="true" drag="concept"
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                   ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept (' + concept.conceptId + ')' : concept.term}} </span></td>
-              <td ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
+              <td ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && (task.status === 'In Review' || task.status === 'Review Completed')"
                   class=" col-md-4 no-padding"><div class="pull-right pull-right-margin m-r-5 clear-position">
                   <button ng-show="concept.messages.length > 0"
                       class="pull-right btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
