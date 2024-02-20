@@ -4809,8 +4809,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.updateAnnotation = function (annotation) {
-          if (annotation.languageCode && annotation.languageCode === '-') {
-            annotation.languageCode = null;
+          if (annotation.languageDialectCode && annotation.languageDialectCode === '-') {
+            annotation.languageDialectCode = null;
           }
           autoSave();
         }

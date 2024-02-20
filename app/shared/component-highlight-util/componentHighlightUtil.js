@@ -117,7 +117,7 @@ angular.module('singleConceptAuthoringApp')
                 || annotation.moduleId !== originalAnnotation.moduleId
                 || annotation.typeId !== originalAnnotation.typeId
                 || annotation.value !== originalAnnotation.value
-                || annotation.languageCode !== originalAnnotation.languageCode) {
+                || annotation.languageDialectCode !== originalAnnotation.languageDialectCode) {
                   highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId, annotation.annotationId);
                 }
               }
