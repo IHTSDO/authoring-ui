@@ -112,12 +112,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     .add({
       combo: 'alt+y',
       description: 'Start classification',
-      callback: function() {if($scope.role !== 'REVIEWER'){$scope.classify();}}
+      callback: function() {if($scope.role !== 'REVIEWER' && $scope.role !== 'REVIEWER_ONLY'){$scope.classify();}}
     })
     .add({
       combo: 'alt+v',
       description: 'Start validation ',
-      callback: function() {if($scope.role !== 'REVIEWER'){$scope.validate();}}
+      callback: function() {if($scope.role !== 'REVIEWER' && $scope.role !== 'REVIEWER_ONLY'){$scope.validate();}}
     })
     .add({
       combo: 'alt+t',
@@ -429,7 +429,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.showSidebarEdit = false; // Feedback page has its own sitebar
 
           //  view starts with no concepts
-          if($scope.role === 'REVIEWER') {
+          if($scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY') {
             $scope.concepts = [];
             $scope.editList = [];
           }
@@ -960,7 +960,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       if(!data.noSwitchView && ($scope.thisView === 'feedback'
         || $scope.thisView === 'batch'
         || $scope.thisView === 'inactivation')) {
-        $scope.setView('edit-default', $scope.role === 'REVIEWER');
+        $scope.setView('edit-default', $scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY');
       }
       processUiStateUpdate(data.conceptId, data.loadFromTermServer);
 
@@ -2187,7 +2187,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
           getRoleForTask().then(function() {
             setExtensionMetadataIfRequired().then(function() {
-              if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER') {
+              if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY') {
                 crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
                   initializeTaskDetails();
                 }, function (error) {

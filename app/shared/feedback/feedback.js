@@ -1233,7 +1233,7 @@ angular.module('singleConceptAuthoringApp')
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === conceptId) {
                 notificationService.sendWarning('Concept already shown');
-                if (scope.role === 'REVIEWER') {
+                if (scope.role === 'REVIEWER' || scope.role === 'REVIEWER_ONLY') {
                   $rootScope.$broadcast('conceptFocusedFromKey', {id : conceptId});
                 }
                 return;
@@ -1289,7 +1289,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               addToEditHelper(item.conceptId).then(function (response) {
-                if (scope.role === 'REVIEWER') {
+                if (scope.role === 'REVIEWER' || scope.role === 'REVIEWER_ONLY') {
                   // set focus on the selected concept
                   setTimeout(function waitForConceptRender() {
                     var elm = document.getElementById('conceptId-' + item.conceptId);
@@ -1805,7 +1805,7 @@ angular.module('singleConceptAuthoringApp')
                 //Loops through all items in the reviewed list. If they have
                 // been changed since  the review was created they are moved
                 // back to 'To Review'
-                if (scope.role === 'REVIEWER') {
+                if (scope.role === 'REVIEWER' || scope.role === 'REVIEWER_ONLY') {
                   var modifiedConceptsSinceReview = []
                   angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
                     if (approvalDate && item.lastUpdatedTime && new Date(item.lastUpdatedTime) > new Date(approvalDate)) {
@@ -1963,7 +1963,7 @@ angular.module('singleConceptAuthoringApp')
               for (var i = 0; i < scope.viewedConcepts.length; i++) {
                 if (scope.viewedConcepts[i].conceptId === concept.conceptId) {
                   notificationService.sendWarning('Concept already shown');
-                  if (scope.role === 'REVIEWER') {
+                  if (scope.role === 'REVIEWER' || scope.role === 'REVIEWER_ONLY') {
                     $rootScope.$broadcast('conceptFocusedFromKey', {id : concept.conceptId});
                   }
                   return;

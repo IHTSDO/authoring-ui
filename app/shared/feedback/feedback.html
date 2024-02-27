@@ -38,7 +38,7 @@
         <div class="pull-left p-l-15 "><strong>Task Reviewers:</strong></div>
         <div ng-if="role === 'REVIEWER' || role === 'REVIEWER_ONLY'">
           <div class="editable-field">
-            <div ng-if="task.reviewers && task.reviewers.length !== 0 && role !== 'REVIEWER_ONLY'" class="inline">
+            <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
               <div ng-repeat="reviewer in sortReviewers(task.reviewers) track by reviewer.displayName" class="in-block">
                   <div class="badge Available">
                     <span>{{reviewer.displayName}}</span>
@@ -150,13 +150,13 @@
           <div ng-class="getLayoutWidths('concepts')">
             <div id="conceptId-{{concept.conceptId}}" concept-edit concept="concept" branch="branch"
                 static="role !== 'AUTHOR' || checkDeletedConceptById(concept.conceptId)"
-                load-validation="role === 'REVIEWER' || role === 'AUTHOR'"
+                load-validation="role === 'REVIEWER' || role === 'REVIEWER_ONLY' || role === 'AUTHOR'"
                 load-project-taxonomy="conceptExistsInInferredList(concept)"
                 component-styles="styles[concept.conceptId]"
                 inactive-descriptions="inactiveDescriptions[concept.conceptId]"
                 feedback-view="true"
                 enable-project-taxonomy="true"
-                enable-approval="role === 'REVIEWER' && conceptExistsInToReviewList(concept)"
+                enable-approval="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && conceptExistsInToReviewList(concept)"
                 enable-load-next="true"
                 traceabilities="feedbackContainer.review.traceability"
                 enable-context-based-editing="enableContextBasedEditing"></div>
@@ -221,7 +221,7 @@
                      typeahead-editable="false" typeahead-min-length="3">
             </div>
             <div class="col-md-6 no-padding">
-              <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"><span
+              <div class="pull-left follow-up" ng-show="role === 'REVIEWER' || role === 'REVIEWER_ONLY'"><span
                 class="pull-left "> Request follow-up </span><span
                 class="pull-left p-5">
                 <input type="checkbox" ng-model="requestFollowup">
