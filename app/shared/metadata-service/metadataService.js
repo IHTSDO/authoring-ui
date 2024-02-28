@@ -399,14 +399,12 @@ angular.module('singleConceptAuthoringApp')
         if (metadata.expectedExtensionModules && (!metadata.multipleModuleEditingDisabled || metadata.multipleModuleEditingDisabled === 'false')) {
           for (var i = 0; i < metadata.expectedExtensionModules.length; i++) {
             modules.push({
-              id: metadata.expectedExtensionModules[i],
-              name: (metadata.extensionModules ? metadata.extensionModules.filter(item => item.concept.conceptId === metadata.expectedExtensionModules[i])[0].concept.fsn : null)
+              id: metadata.expectedExtensionModules[i]
             });
           }
         } else if (metadata.defaultModuleId) {
           modules.push({
-            id: metadata.defaultModuleId,
-            name: (metadata.extensionModules ? metadata.extensionModules.filter(item => item.concept.conceptId === metadata.defaultModuleId)[0].concept.fsn : null)
+            id: metadata.defaultModuleId
           });
         }
         // sort modules. Defaut module should always be first

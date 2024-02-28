@@ -94,6 +94,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   // set the extension metadata for use by other elements
                   metadataService.setExtensionMetadata(response.metadata);
 
+                  populateModuleNamesIfRequired(codeSystem.branchPath, response.metadata);
+
                   $scope.authoringFreeze = response.metadata.authoringFreeze === true || response.metadata.authoringFreeze === 'true';
                   $scope.integrityIssueFound = response.metadata.internal && (response.metadata.internal.integrityIssue === true || response.metadata.internal.integrityIssue === 'true');
 
@@ -167,6 +169,24 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           });
 
       };
+
+      function populateModuleNamesIfRequired(branchPath, metadata) {
+        if (metadata && metadata.defaultModuleId) {
+          let moduleIds = [];
+          moduleIds.push(metadata.defaultModuleId);
+          if (metadata.expectedExtensionModules) {
+            moduleIds = moduleIds.concat(metadata.expectedExtensionModules);
+          }
+          // get the extension default module concept
+          terminologyServerService.searchAllConcepts(branchPath, moduleIds.join(), null, 0, 50, null, true, true).then(function (response) {
+            angular.forEach(response.items, function (item) {
+              metadataService.setModuleName(item.concept.conceptId, item.concept.fsn);
+            });
+          }, function (error) {
+            notificationService.sendError('Fatal error: Could not load extension module concept');
+          });
+        }
+      }
 
       $scope.isProjectLocked = function() {
         for(let i = 0; i < $scope.projects.length; i++) {

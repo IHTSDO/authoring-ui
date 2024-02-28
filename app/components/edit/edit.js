@@ -2186,18 +2186,18 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
           }
           getRoleForTask().then(function() {
-            setExtensionMetadataIfRequired().then(function() {
-              if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY') {
-                crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
-                  initializeTaskDetails();
-                }, function (error) {
-                  console.error('Unexpected error checking CRS status. Error: ' + error);
-                  initializeTaskDetails();
-                });
-              } else {
+            metadataService.setExtensionMetadata($scope.project.metadata); 
+            populateModuleNamesIfRequired();
+            if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY') {
+              crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
                 initializeTaskDetails();
-              }
-            });
+              }, function (error) {
+                console.error('Unexpected error checking CRS status. Error: ' + error);
+                initializeTaskDetails();
+              });
+            } else {
+              initializeTaskDetails();
+            }
           });
         });
       }, function (error) {
@@ -2264,9 +2264,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    function setExtensionMetadataIfRequired() {
-      var deferred = $q.defer();
-      // check for extension metadata
+    function populateModuleNamesIfRequired() {
       if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
         let moduleIds = [];
         moduleIds.push($scope.project.metadata.defaultModuleId);
@@ -2275,23 +2273,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
         // get the extension default module concept
         terminologyServerService.searchAllConcepts($scope.task.branchPath, moduleIds.join(), null, 0, 50, null, true, true).then(function (response) {
-
-          // set the name for display
-          $scope.project.metadata.extensionModules = response.items;
-
-          // set the extension metadata for use by other elements
-          metadataService.setExtensionMetadata($scope.project.metadata);
-          deferred.resolve();
-
+          angular.forEach(response.items, function (item) {
+            metadataService.setModuleName(item.concept.conceptId, item.concept.fsn);
+          });
         }, function (error) {
           notificationService.sendError('Fatal error: Could not load extension module concept');
         });
       }
-      else {
-        deferred.resolve();
-      }
-
-      return deferred.promise;
     }
 
     function getRoleForTask() {

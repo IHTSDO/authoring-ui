@@ -145,7 +145,7 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.project = response;
           $scope.project.projectDroolsValidationDisabled = response.metadata && response.metadata.enableDroolsInRVF && response.metadata.enableDroolsInRVF === 'false' ? true : false;
           $scope.branch = response.branchPath;
-          
+
           // last rebased time
           terminologyServerService.getLastRebase($scope.branch).then(function (rebaseTime) {
             if (rebaseTime) {
@@ -195,12 +195,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // set the extension metadata for use by other elements
           metadataService.setExtensionMetadata($scope.project.metadata);
-
-          if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
-            terminologyServerService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.project.branchPath, null).then(function(response) {
-              metadataService.setModuleName(response.conceptId, response.fsn);
-            });
-          }
+          populateModuleNamesIfRequired();
 
           $scope.releaseNotesDisabled = metadataService.isExtensionSet();
 
@@ -218,6 +213,24 @@ angular.module('singleConceptAuthoringApp.project', [
           }
         });
       };
+
+      function populateModuleNamesIfRequired() {
+        if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
+          let moduleIds = [];
+          moduleIds.push($scope.project.metadata.defaultModuleId);
+          if ($scope.project.metadata.expectedExtensionModules) {
+            moduleIds = moduleIds.concat($scope.project.metadata.expectedExtensionModules);
+          }
+          // get the extension default module concept
+          terminologyServerService.searchAllConcepts($scope.project.branchPath, moduleIds.join(), null, 0, 50, null, true, true).then(function (response) {
+            angular.forEach(response.items, function (item) {
+              metadataService.setModuleName(item.concept.conceptId, item.concept.fsn);
+            });
+          }, function (error) {
+            notificationService.sendError('Fatal error: Could not load extension module concept');
+          });
+        }
+      }
 
       $scope.viewProjectMetadata = function () {
         return terminologyServerService.getEndpoint().then(function(endpoint) {
