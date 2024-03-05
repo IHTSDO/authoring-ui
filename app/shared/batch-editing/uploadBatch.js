@@ -76,7 +76,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
           $scope.downloadTemplate = function(template){
             templateService.downloadTemplateCsv(template).then(function (data) {
-              var fileName = 'batch_' + template;
+              var fileName = 'batch_' + template + '.tsv';
               $scope.dlcDialog(data.data, fileName);
             });
           }
