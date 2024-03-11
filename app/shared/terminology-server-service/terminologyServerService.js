@@ -2070,11 +2070,22 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getAttributeValues(branch, attributeId, searchStr) {
-        return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) : '') + '&expand=fsn()&limit=50').then(function (response) {
-          return response.data.items ? response.data.items : [];
-        }, function (error) {
-          return null;
-        });
+        if (attributeId && attributeId === '116680003') {
+          var deferred = $q.defer();
+          searchConcepts(branch, searchStr, null, 0, 50, false, null, true).then(function (response) {
+            deferred.resolve(response.items);
+          }, function (error) {
+            console.error('Error retrieving attribute values for attribute id: ' + attributeId, error);
+            deferred.resolve(null);
+          });
+          return deferred.promise;
+        } else {
+          return $http.get(apiEndpoint + 'mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) : '') + '&expand=fsn()&limit=50').then(function (response) {
+            return response.data.items ? response.data.items : [];
+          }, function (error) {
+            return null;
+          });
+        }
       }
 
       function getAttributeValuesByConcept(branch, attributeId, searchStr) {
