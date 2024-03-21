@@ -1,0 +1,906 @@
+repo_name: IHTSDO/authoring-ui
+report_id: 911f7d6df31e1ec792ef44c6a6a509f8
+version: 0.1
+repo_type: Public
+timestamp: '2024-03-21T12:57:15+00:00'
+requested_by: QuyenLy87
+provider: github
+branch: master
+detected_tools_count: 67
+tools:
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/IHTSDO/authoring-ui
+  detection_source: Repo Metadata
+- name: Compass
+  description: A Stylesheet Authoring Environment that makes your website design simpler
+    to implement and easier to maintain
+  website_url: http://compass-style.org/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: CSS Pre-processors / Extensions
+  image_url: https://img.stackshare.io/service/1173/compass-avatar.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: jQuery
+  description: The Write Less, Do More, JavaScript Library.
+  website_url: http://jquery.com/
+  version: 3.6.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Javascript UI Libraries
+  image_url: https://img.stackshare.io/service/1021/lxEKmMnB_400x400.jpg
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 09:51:40.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui
+  detection_source: Repo Metadata
+- name: Grunt
+  description: The JavaScript Task Runner
+  website_url: http://gruntjs.com/
+  version: 0.4.5
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: JS Build Tools / JS Task Runners
+  image_url: https://img.stackshare.io/service/845/falgg2jybmhgk16y62lr.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: JSHint
+  description: A Static Code Analysis Tool for JavaScript
+  website_url: http://www.jshint.com/about/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Code Review
+  image_url: https://img.stackshare.io/service/1945/mzh2bRes_400x400.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package.json
+  detection_source: package.json
+  last_updated_by: Chris-Swires
+  last_updated_on: 2015-06-12 07:47:51.000000000 Z
+- name: Karma
+  description: Spectacular Test Runner for JavaScript
+  website_url: http://karma-runner.github.io/
+  version: 0.13.22
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Browser Testing
+  image_url: https://img.stackshare.io/service/1420/TidYGd6a.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Peter Duff
+  last_updated_on: 2018-01-23 11:23:33.000000000 Z
+- name: Travis CI
+  description: A hosted continuous integration service for open source and private
+    projects
+  website_url: http://travis-ci.com/
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/460/Lu6cGu0z_400x400.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/.travis.yml
+  detection_source: ".travis.yml"
+  last_updated_by: Chris-Swires
+  last_updated_on: 2015-06-12 07:47:51.000000000 Z
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package.json
+  detection_source: package.json
+  last_updated_by: Chris-Swires
+  last_updated_on: 2015-06-12 07:47:51.000000000 Z
+- name: Font Awesome
+  description: The internet's most popular icon toolkit
+  website_url: https://fontawesome.com/
+  version: '4.3'
+  open_source: true
+  hosted_saas: false
+  category: Design
+  sub_category: Fonts
+  image_url: https://img.stackshare.io/service/3244/1_Mr1Fy00XjPGNf1Kkp_hWtw_2x.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2018-12-24 10:24:48.000000000 Z
+- name: Imagemin
+  website_url: https://github.com/imagemin/imagemin
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/3378/7868808.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package.json
+  detection_source: package.json
+  last_updated_by: Peter Duff
+  last_updated_on: 2018-01-23 11:23:33.000000000 Z
+- name: Shell
+  description: A shell is a text-based terminal, used for manipulating programs and
+    files. Shell scripts typically manage program execution.
+  website_url: https://en.wikipedia.org/wiki/Shell_script
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui
+  detection_source: Repo Metadata
+- name: angular
+  description: Bower package for AngularJS
+  package_url: http://bower.io/angular
+  version: 1.4.14
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-aria
+  description: Angular-aria.js bower repo
+  package_url: http://bower.io/angular-aria
+  version: 1.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-auto-validate
+  description: An automatic validation module for AngularJS which gets rid of excess
+    html in favour of dynamic element modification to notify the user of validation
+    errors
+  package_url: http://bower.io/angular-auto-validate
+  version: 1.18.6
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-bootstrap
+  description: Native AngularJS
+  package_url: http://bower.io/angular-bootstrap
+  version: 0.13.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 08:05:28.000000000 Z
+- name: angular-cookies
+  description: Angular-cookies bower repo
+  package_url: http://bower.io/angular-cookies
+  version: 1.4.6
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-elastic
+  description: Elastic
+  package_url: http://bower.io/angular-elastic
+  version: 2.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-hotkeys
+  description: Hotkeys component for AngularJS
+  package_url: http://bower.io/angular-hotkeys
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-loading-bar
+  description: A fully automatic loading / progress bar for your angular apps
+  package_url: http://bower.io/angular-loading-bar
+  version: 0.7.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-local-storage
+  description: An Angular module that gives you access to the browser's local storage
+  package_url: http://bower.io/angular-local-storage
+  version: 0.7.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-messages
+  package_url: http://bower.io/angular-messages
+  version: 1.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-mocks
+  description: Angular-mocks.js bower repo
+  package_url: http://bower.io/angular-mocks
+  version: 1.3.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-motion
+  description: AngularMotion - Fancy CSS3 animations for AngularJS 1.2+
+  package_url: http://bower.io/angular-motion
+  version: 0.4.2
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-native-dragdrop
+  description: Angular HTML5 Drag and Drop directive written in pure with no dependency
+    on JQuery
+  package_url: http://bower.io/angular-native-dragdrop
+  version: 1.1.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-resource
+  description: Angular-resource bower repo
+  package_url: http://bower.io/angular-resource
+  version: 1.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-route
+  description: Angular-route bower repo
+  package_url: http://bower.io/angular-route
+  version: 1.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-sanitize
+  description: Angular-sanitize bower repo
+  package_url: http://bower.io/angular-sanitize
+  version: 1.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-strap
+  description: AngularStrap - AngularJS directives for Bootstrap
+  package_url: http://bower.io/angular-strap
+  version: 2.2.4
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 08:05:28.000000000 Z
+- name: angular-touch
+  package_url: http://bower.io/angular-touch
+  version: 1.5.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-ui-sortable
+  description: This directive allows you to jQueryUI Sortable
+  package_url: http://bower.io/angular-ui-sortable
+  version: 0.13.4
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 09:51:40.000000000 Z
+- name: angular-ui-tinymce
+  description: This directive allows you to TinyMCE in your form
+  package_url: http://bower.io/angular-ui-tinymce
+  version: 0.0.18
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angular-ui-tree
+  description: Tree directive for AngularJS
+  package_url: http://bower.io/angular-ui-tree
+  version: 2.9.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: angularjs-dropdown-multiselect
+  description: AngularJS Dropdown Multiselect directive
+  package_url: http://bower.io/angularjs-dropdown-multiselect
+  version: 1.11.8
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: bootstrap-additions
+  description: BootstrapAdditions - CSS extension kit for Twitter Bootstrap 3.0+
+  package_url: http://bower.io/bootstrap-additions
+  version: 0.3.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 08:05:28.000000000 Z
+- name: bootstrap-sass-official
+  description: Bootstrap-sass is a Sass-powered version of Bootstrap 3
+  package_url: http://bower.io/bootstrap-sass-official
+  version: 3.4.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 08:05:28.000000000 Z
+- name: c3-angular
+  description: An angularjs directive to integrate c3.js within your angularjs project
+  package_url: http://bower.io/c3-angular
+  version: 0.5.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: jquery-ui
+  description: Shim repository for jQuery UI
+  package_url: http://bower.io/jquery-ui
+  version: 1.11.4
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 09:51:40.000000000 Z
+- name: ng-table
+  description: Simple table with sorting and filtering on AngularJS
+  package_url: http://bower.io/ng-table
+  version: 0.5.3
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 09:51:40.000000000 Z
+- name: ngSmoothScroll
+  description: A pure-javascript library and set of directives to scroll smoothly
+    to an element with easing
+  package_url: http://bower.io/ngSmoothScroll
+  version: 1.7.1
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 09:51:40.000000000 Z
+- name: sockjs-client
+  description: SockJS-client is a browser JavaScript library that provides a WebSocket-like
+    object
+  package_url: http://bower.io/sockjs-client
+  version: 1.1.4
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2018-12-24 10:24:48.000000000 Z
+- name: textAngular
+  description: A radically powerful Text-Editor/Wysiwyg editor for Angular.js
+  package_url: http://bower.io/textAngular
+  version: 1.4.0
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Quyen Ly
+  last_updated_on: 2022-02-11 05:46:39.000000000 Z
+- name: velocity
+  description: Accelerated JavaScript animation
+  package_url: http://bower.io/velocity
+  version: 1.2.3
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/bower/image.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/bower.json
+  detection_source: bower.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2023-04-25 09:51:40.000000000 Z
+- name: grunt-autoprefixer
+  description: Parse CSS and add vendor-prefixed CSS properties using the Can I Use
+    database
+  package_url: https://www.npmjs.com/grunt-autoprefixer
+  version: 2.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17148/default_9746cbb559e39df4afd8298f9a252dff8519e646.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-concurrent
+  description: Run grunt tasks concurrently
+  package_url: https://www.npmjs.com/grunt-concurrent
+  version: 1.0.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16823/default_9a5182350af29cb82b3344853e865051f508ac6c.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-clean
+  description: Clean files and folders
+  package_url: https://www.npmjs.com/grunt-contrib-clean
+  version: 0.6.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15939/default_8b5680d4e916298d08363c291a0d6e34c07ceb15.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-compass
+  description: Compile Sass to CSS using Compass
+  package_url: https://www.npmjs.com/grunt-contrib-compass
+  version: 1.0.4
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17938/default_e0b07170ab7d7ea66954ff35fdeaae5255c4c0aa.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-concat
+  description: Concatenate files
+  package_url: https://www.npmjs.com/grunt-contrib-concat
+  version: 0.5.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16075/default_d4e765f8a43dcfd232c8b9ee9732058bc27c727a.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-connect
+  description: Start a connect web server
+  package_url: https://www.npmjs.com/grunt-contrib-connect
+  version: 0.9.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16236/default_380ae3d73e22c7ca1f42b96479bcd0095dabc0d3.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-copy
+  description: Copy files and folders
+  package_url: https://www.npmjs.com/grunt-contrib-copy
+  version: 0.7.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16056/default_c7b204838197013798409fa2b4dafce450edc7fb.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-cssmin
+  description: Minify CSS
+  package_url: https://www.npmjs.com/grunt-contrib-cssmin
+  version: 0.12.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16324/default_b5c8f3c8e46d368f74a982d06d7f13291fe651ea.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-htmlmin
+  description: Minify HTML
+  package_url: https://www.npmjs.com/grunt-contrib-htmlmin
+  version: 0.4.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17474/default_e5adc22c59a44962e41dfaec51edeb42c083f2f4.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-imagemin
+  description: Minify images
+  package_url: https://www.npmjs.com/grunt-contrib-imagemin
+  version: 1.0.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17791/default_abcc2eea82e62d338a749f334647866df76198b8.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-jshint
+  description: Validate files with JSHint
+  package_url: https://www.npmjs.com/grunt-contrib-jshint
+  version: 0.11.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15898/default_59a1b5716eefa3750c20936c3d53ff13a6390ee1.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-uglify
+  description: Minify JavaScript files with UglifyJS
+  package_url: https://www.npmjs.com/grunt-contrib-uglify
+  version: 0.7.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15954/default_ac622bc364a601d766b9a6f6039f191492f54d65.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-contrib-watch
+  description: Run predefined tasks whenever watched file patterns are added
+  package_url: https://www.npmjs.com/grunt-contrib-watch
+  version: 0.6.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15932/default_4dc9671df0093fd7061f6455afdf054e6cc9dacb.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-karma
+  description: Grunt plugin for karma test runner
+  package_url: https://www.npmjs.com/grunt-karma
+  version: 3.0.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16328/default_e8196e273db814cf9be505b35dec386fafb0dbaa.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+  vulnerabilities:
+  - name: Grunt-karma vulnerable to prototype pollution
+    cve_id: CVE-2022-37602
+    cve_url: https://github.com/advisories/GHSA-hcj4-xf6x-63wj
+    detected_date: Oct 20
+    severity: critical
+    first_patched:
+- name: grunt-newer
+  description: Run Grunt tasks with only those source files modified since the last
+    successful run
+  package_url: https://www.npmjs.com/grunt-newer
+  version: 1.1.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17008/default_d17bbf7e4f3b102e29ff09c01b8165e7ba600319.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-ng-annotate
+  description: Add
+  package_url: https://www.npmjs.com/grunt-ng-annotate
+  version: 0.9.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17671/default_eb9caf7d7fb4d231f7e3b04a8c1fbef6fcd9fd73.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-svgmin
+  description: Minify SVG
+  package_url: https://www.npmjs.com/grunt-svgmin
+  version: 2.0.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/18677/default_ee6b4297c393c737b2e05ae6453ec620a6c456eb.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: grunt-usemin
+  description: Replaces references to non-optimized scripts or stylesheets into a
+    set of HTML files
+  package_url: https://www.npmjs.com/grunt-usemin
+  version: 3.0.0
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17796/default_abcc2eea82e62d338a749f334647866df76198b8.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: imagemin
+  description: Minify images seamlessly
+  package_url: https://www.npmjs.com/imagemin
+  version: 4.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17228/default_48f040bdc5f6c639c70bf350f8b8158ede27286c.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Peter Duff
+  last_updated_on: 2018-01-23 11:23:33.000000000 Z
+- name: jshint-stylish
+  description: Stylish reporter for JSHint
+  package_url: https://www.npmjs.com/jshint-stylish
+  version: 1.0.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16031/default_261820f5687b4c88a3e8f95c71b5e8dccd34c1d7.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Peter Duff
+  last_updated_on: 2018-01-23 11:23:33.000000000 Z
+- name: load-grunt-tasks
+  description: Load multiple grunt tasks using globbing patterns
+  package_url: https://www.npmjs.com/load-grunt-tasks
+  version: 3.1.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16062/default_924b66c04aa848a4028c1a5753a23dae0f835f86.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: micromatch
+  description: Glob matching for javascript/node.js
+  package_url: https://www.npmjs.com/micromatch
+  version: 2.3.11
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17143/default_0ffbf6d9ee2940fe94be8424fd9afff068fff458.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: time-grunt
+  description: Display the elapsed execution time of grunt tasks
+  package_url: https://www.npmjs.com/time-grunt
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16275/default_ab17554b7e80af3d234b14168ed61e75d43f8eee.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
+- name: vinyl-fs
+  description: Vinyl adapter for the file system
+  package_url: https://www.npmjs.com/vinyl-fs
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16630/default_f7592cb347fae67ce7c7f221ddd5fd2cb0afc28f.png
+  detection_source_url: https://github.com/IHTSDO/authoring-ui/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: Chris Swires
+  last_updated_on: 2021-06-04 13:56:28.000000000 Z
