@@ -207,16 +207,37 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.classify = function () {
-
-        notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
-
-        if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            doClassify();
-          });
-        } else {
-          doClassify();
-        }
+        var results = {
+          unsavedConcepts: []
+        };
+        reviewService.checkModifiedConcepts($scope.task, results).then(function(results) {
+          if (results.unsavedConcepts.length > 0) {
+            var message = 'There are some unsaved concepts. Do you realy want to proceed with classification?';
+            modalService.confirm(message, 'white-space: pre-line;').then(function () {
+              notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+              if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
+                scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                  doClassify();
+                });
+              } else {
+                doClassify();
+              }
+            }, function() {
+              setTimeout(function(){
+                angular.element(document.activeElement).trigger('blur');
+              });
+            });
+          } else {
+            notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+            if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                doClassify();
+              });
+            } else {
+              doClassify();
+            }
+          }
+        });
       };
 
       function doClassify() {
