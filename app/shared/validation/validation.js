@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user modification
                   var orderedData = scope.assertionsFailed.filter(function (assertionFailed) {
-                    return assertionFailed.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionFailed.technicalIssue : !assertionFailed.technicalIssue));
+                    return assertionFailed.filteredCount != 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionFailed.technicalIssue : !assertionFailed.technicalIssue));
                   });
 
                   params.total(orderedData.length);
@@ -254,7 +254,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user modification
                   var orderedData = scope.assertionsWarning.filter(function (assertionWarning) {
-                    return assertionWarning.filteredCount > 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionWarning.technicalIssue : !assertionWarning.technicalIssue));
+                    return assertionWarning.filteredCount != 0 && (scope.issueType.type === '' ? true : (scope.issueType.type === 'technical' ? assertionWarning.technicalIssue : !assertionWarning.technicalIssue));
                   });
 
                   params.total(orderedData.length);
