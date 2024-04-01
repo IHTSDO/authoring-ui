@@ -184,6 +184,9 @@ angular.module('singleConceptAuthoringApp.project', [
             } else {
               permissionService.setRolesForBranch($scope.branch, []);
             }
+            if (response.locked) {
+              $scope.project.branchLocked = true;
+            }
           });
 
           // set the branch metadata for use by other elements
