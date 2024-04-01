@@ -996,13 +996,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         initialize();
       });
 
-      $scope.$on('conceptEdit.conceptModified', function (event, data) {
-        if ($scope.task.status === 'Review Completed') {
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            $scope.task = response;
-          });
-        }
-      });
+      // $scope.$on('conceptEdit.conceptModified', function (event, data) {
+      //   if ($scope.task.status === 'Review Completed') {
+      //     scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+      //       $scope.task = response;
+      //     });
+      //   }
+      // });
 
       $scope.$on('triggerTaskValidation', function (event, data) {
         if (data.task && data.task === $routeParams.taskKey && data.project === $routeParams.projectKey) {

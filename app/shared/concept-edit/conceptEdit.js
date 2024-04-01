@@ -4898,12 +4898,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.isModified = true;
 
-          // broadcast event to any listeners (currently task detail)
-          $rootScope.$broadcast('conceptEdit.conceptModified', {
-            branch: scope.branch,
-            conceptId: scope.concept.conceptId,
-            concept: scope.concept
-          });
+          // // broadcast event to any listeners (currently task detail)
+          // $rootScope.$broadcast('conceptEdit.conceptModified', {
+          //   branch: scope.branch,
+          //   conceptId: scope.concept.conceptId,
+          //   concept: scope.concept
+          // });
           scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);
 
