@@ -617,17 +617,15 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       }
 
-      // rebase the project -- simply route to merge/rebase view
+      // rebase the project
       $scope.mergeAndRebase = function () {
-        $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
-      };
-      $scope.mergeAndRebase = function (task) {
         terminologyServerService.getBranch($scope.branch).then(function (response) {
           if (!response.locked) {
             $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
           }
           else {
             notificationService.sendWarning('Unable to start rebase on project as the root branch is locked due to ongoing changes.', 7000);
+            $scope.project.branchLocked = true;
           }
         });
       };

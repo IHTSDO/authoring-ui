@@ -44,13 +44,14 @@
           </button>
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
-                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || project.projectLocked">
+                  ng-disabled="(project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE') || project.projectRebaseDisabled || project.projectLocked || project.branchLocked">
             <div
               class="project-icon yellow darken-2 pull-left">
               <div class="md md-autorenew"></div>
             </div>
             Pull in Mainline Changes
-            <span>Pull in changes from the mainline into this project</span>
+            <span ng-if="!project.branchLocked">Pull in changes from the mainline into this project</span>
+            <span ng-if="project.branchLocked">Rebase already in progress</span>
           </button>
         <button class="btn btn-border tooltips-bottom xlarge-size-tooltip " ng-click="classify()"
             ng-disabled="project.latestClassificationJson.status && ((project.latestClassificationJson.status === 'SCHEDULED' || project.latestClassificationJson.status === 'RUNNING') && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
