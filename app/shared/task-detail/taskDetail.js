@@ -4,6 +4,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
   .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'rnmService', 'permissionService', 'modalService',
     function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, rnmService, permissionService, modalService) {
 
+      var externalAuthoringGroup = null;
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
       $rootScope.branchLocked = false;
@@ -27,7 +28,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.releaseNotesCollapsed = false;
 
       $scope.isExternalAuthoringUser = function() {
-        return ($rootScope.features && $rootScope.accountDetails.roles.includes('ROLE_' + $rootScope.features.externalAuthoringGroup));
+        return (externalAuthoringGroup && $rootScope.accountDetails.roles.includes('ROLE_' + externalAuthoringGroup));
       }
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
@@ -856,6 +857,44 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       }
 
+      function findExternalAuthoringGroup() {
+        var deferred = $q.defer();
+        const allCodeSystems = metadataService.getCodeSystems();
+        var foundCodeSystem = null;
+        if (allCodeSystems && allCodeSystems.length !== 0) {
+          for (let i = 0; i < allCodeSystems.length; i++) {
+            if ($scope.task.branchPath.startsWith('MAIN/SNOMEDCT-')
+                && allCodeSystems[i].branchPath.startsWith('MAIN/SNOMEDCT-')
+                && $scope.task.branchPath.startsWith(allCodeSystems[i].branchPath)) {
+              foundCodeSystem = allCodeSystems[i];
+              break;
+            }
+          }
+          if (!foundCodeSystem) {
+            for (let i = 0; i < allCodeSystems.length; i++) {
+              if (allCodeSystems[i].branchPath === 'MAIN') {
+                foundCodeSystem = allCodeSystems[i];
+                break;
+              }
+            }
+          }
+
+          if (foundCodeSystem) {
+            terminologyServerService.getBranchMetadata(foundCodeSystem.branchPath, false).then(function (response) {
+              if (response && response.externalAuthoringGroup) {
+                deferred.resolve(response.externalAuthoringGroup);
+              } else {
+                deferred.resolve(null);
+              }
+            });
+          } else {
+            deferred.resolve(null);
+          }
+        }
+
+        return deferred.promise;
+      }
+
       function initialize() {
 
         // retrieve the task
@@ -890,9 +929,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
-            if ($scope.role === 'AUTHOR' && !metadataService.isComplex() && $rootScope.features && $rootScope.accountDetails.roles.includes('ROLE_' + $rootScope.features.externalAuthoringGroup)) {
-              $scope.complex = false;
-              $scope.markBranchAsComplex();
+            if ($scope.role === 'AUTHOR') {
+              // get extenal authoring group
+              findExternalAuthoringGroup().then(function (response) {                
+                externalAuthoringGroup = response;
+                if (externalAuthoringGroup && !metadataService.isComplex() && $rootScope.accountDetails.roles.includes('ROLE_' + externalAuthoringGroup)) {
+                  $scope.complex = false;
+                  $scope.markBranchAsComplex();
+                } 
+              });              
             }
           });
 
