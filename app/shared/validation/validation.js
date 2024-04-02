@@ -406,7 +406,7 @@ angular.module('singleConceptAuthoringApp')
                       // apply the reference
                       failure.referencedComponentId = matchInfo[1];
                       failure.referencedComponentType = 'Description';
-                      if (description && description.term) {
+                      if (description && description.term && failure.detail.indexOf(description.term) === -1){
                         failure.detail = failure.detail.replace(matchInfo[0].trim(), '\"' + description.term + '\"');
                       }
 
