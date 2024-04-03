@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
         return newValues;
       }
 
-      function getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr) {
+      function getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr, isMrcmDisabled) {
         var deferred = $q.defer();
 
         // if expression specified, perform direct retrieval
@@ -148,8 +148,9 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, use default MRCM rules
         else {
-          terminologyServerService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
-              var concepts = getConceptsForValueTypeaheadHelper(response);
+          if (isMrcmDisabled) {
+            terminologyServerService.searchConcepts(branch, termFilter, null, 0, 50, false, null, true).then(function (response) {
+              var concepts = getConceptsForValueTypeaheadHelper(response.items);
               //Filter out for the inactive concepts
               concepts = concepts.filter(function(concept){
                 return concept.active;
@@ -160,6 +161,20 @@ angular.module('singleConceptAuthoringApp')
             function (error) {
               deferred.reject(error.message);
             });
+          } else {
+            terminologyServerService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
+                var concepts = getConceptsForValueTypeaheadHelper(response);
+                //Filter out for the inactive concepts
+                concepts = concepts.filter(function(concept){
+                  return concept.active;
+                });
+
+                deferred.resolve(concepts);
+              },
+              function (error) {
+                deferred.reject(error.message);
+              });
+          }
         }
 
         return deferred.promise;
