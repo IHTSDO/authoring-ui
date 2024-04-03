@@ -542,6 +542,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
                 && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
 
+        
+        scope.isObjectEmpty = function(card){
+          return Object.keys(card).length === 0;
+        };
+        
         var conceptsMap = {};
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();

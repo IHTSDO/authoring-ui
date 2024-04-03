@@ -41,8 +41,20 @@ angular.module('singleConceptAuthoringApp')
     function compareConcept(styles, inactiveDescriptions, currentConcept, originalConcept) {
       var deferred = $q.defer();
       //check concept conditions first
-      if(currentConcept.active !== originalConcept.active
-        || currentConcept.definitionStatus !== originalConcept.definitionStatus){
+      if(currentConcept.active !== originalConcept.active 
+        || currentConcept.definitionStatus !== originalConcept.definitionStatus
+        || ((originalConcept.inactivationIndicator !== currentConcept.inactivationIndicator
+            || checkAssociationTargetsChanged(originalConcept.associationTargets, currentConcept.associationTargets))
+            && !originalConcept.active
+            && !currentConcept.active)){
+        if ((originalConcept.inactivationIndicator !== currentConcept.inactivationIndicator
+          || checkAssociationTargetsChanged(originalConcept.associationTargets, currentConcept.associationTargets))
+          && !originalConcept.active
+          && !currentConcept.active) {
+            currentConcept.previousInactivationIndicator = originalConcept.inactivationIndicator;
+            currentConcept.previousAssociationTargets = originalConcept.associationTargets;
+        }
+        
         highlightComponent(styles, inactiveDescriptions, currentConcept.conceptId);
       }
       compareDescriptions(styles, inactiveDescriptions, currentConcept, originalConcept).then(function () {
