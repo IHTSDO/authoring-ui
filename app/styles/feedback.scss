@@ -786,8 +786,17 @@ strong {
 .feedback-table thead tr th:nth-of-type(3) {
    width: 25%;
 }
+.feedback-table.extension.AUTHOR tbody {
+    max-height: calc(100vh - 445px);
+}
+.feedback-table.extension tbody {
+    max-height: calc(100vh - 415px);
+}
+.feedback-table.AUTHOR tbody {
+    max-height: calc(100vh - 420px);
+}
 .feedback-table tbody {
-    max-height: 440px;
+    max-height: calc(100vh - 399px);
     overflow-y: auto;
     overflow-x: hidden;
     display: block;
@@ -804,11 +813,6 @@ strong {
 }
 .feedback-table .pull-right-margin .pull-right{
     margin-left: 1px;
-}
-@media screen and (max-height: 768px) {
-    .feedback-table tbody {
-        max-height: 330px;
-    }
 }
 .feedback-header-main .editable-field .btn {
     padding-right: 0px;
