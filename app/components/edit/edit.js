@@ -1912,7 +1912,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       };
       reviewService.checkModifiedConcepts($scope.task, results).then(function(results) {
         if (results && results.unsavedConcepts.length > 0) {
-          var message = 'There are some unsaved concepts. Do you realy want to proceed with classification?';
+          var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
           modalService.confirm(message, 'width: 120%;').then(function () {
             notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
             if ($scope.task.status === 'New') {
