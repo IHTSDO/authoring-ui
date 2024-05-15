@@ -542,6 +542,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
                 && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
 
+
+        scope.isObjectEmpty = function(card){
+          return Object.keys(card).length === 0;
+        };
+
         var conceptsMap = {};
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
@@ -649,8 +654,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.disableRemoveConcept = false;
         }
 
+        function isRecognisedSemanticTag() {
+          if (scope.concept && scope.concept.descriptions) {
+            for (let i = 0; i < scope.concept.descriptions.length; i++) {
+              let desc = scope.concept.descriptions[i];
+              if (desc.active && desc.type === 'FSN' && desc.lang === 'en') {
+                const semanticTag = desc.term.substring(desc.term.lastIndexOf('(') + 1, desc.term.lastIndexOf(')'));
+                if (semanticTag.length !== 0) {
+                  return semanticTags.includes(semanticTag);
+                }
+              }
+            }
+          }
+          return true;
+        }
+
         scope.getConceptsForValueTypeahead = function(attributeId, termFilter, branch, escgExpr, axiom, relationship, parentIndex, itemIndex) {
-          var promise = constraintService.getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr);
+          var promise = constraintService.getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr, !isRecognisedSemanticTag());
           if (relationship) {
             promise.then(function(results) {
               if (results.length === 1) {
@@ -3649,7 +3669,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
 
-          else if (metadataService.isMrcmEnabled()) {
+          else if (metadataService.isMrcmEnabled() && isRecognisedSemanticTag()) {
 
             if (relationship.type.conceptId) {
               if(relationship.dataType && relationship.concreteValue){
@@ -3703,18 +3723,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise simply allow drop
           else {
-            terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
-              relationship.target.conceptId = response.conceptId;
-              relationship.target.fsn = response.fsn;
-              relationship.target.definitionStatus = response.definitionStatus;
-              relationship.target.effectiveTime = response.effectiveTime;
-              relationship.target.moduleId = response.moduleId;
-              relationship.target.active= response.active;
-              relationship.target.released = response.released;
+            if(relationship.dataType && relationship.concreteValue){
+              relationship.concreteValue.value = data.concreteValue;
+              scope.updateConcreteValue(relationship);
+            } else {
+              terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
+                relationship.target.conceptId = response.conceptId;
+                relationship.target.fsn = response.fsn;
+                relationship.target.definitionStatus = response.definitionStatus;
+                relationship.target.effectiveTime = response.effectiveTime;
+                relationship.target.moduleId = response.moduleId;
+                relationship.target.active= response.active;
+                relationship.target.released = response.released;
 
-              scope.computeAxioms(type);
-              autoSave();
-            });
+                scope.computeAxioms(type);
+                autoSave();
+              });
+            }
           }
         };
 
@@ -4898,12 +4923,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.isModified = true;
 
-          // broadcast event to any listeners (currently task detail)
-          $rootScope.$broadcast('conceptEdit.conceptModified', {
-            branch: scope.branch,
-            conceptId: scope.concept.conceptId,
-            concept: scope.concept
-          });
+          // // broadcast event to any listeners (currently task detail)
+          // $rootScope.$broadcast('conceptEdit.conceptModified', {
+          //   branch: scope.branch,
+          //   conceptId: scope.concept.conceptId,
+          //   concept: scope.concept
+          // });
           scope.computeAxioms(axiomType.ADDITIONAL);
             scope.computeAxioms(axiomType.GCI);
 
@@ -5702,7 +5727,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
               relationship.target.fsn = tempFsn;
             });
-          } else if (metadataService.isMrcmEnabled()) {
+          } else if (metadataService.isMrcmEnabled() && isRecognisedSemanticTag()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
             } else {

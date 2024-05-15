@@ -44,7 +44,7 @@
     </div>
     <div class="col-md-12 no-padding pull-left m-t-20">
       <label class="control-label">Association Targets</label>
-      <div ng-show="!description.associationTargets">None</div>
+      <div ng-show="!description.associationTargets || isObjectEmpty(description.associationTargets)">None</div>
       <div ng-repeat="(key, value) in description.associationTargets" class="p-b-10">
         <div class="row no-gutter col-md-12 no-padding">
           <div class="col-md-4">

@@ -1907,15 +1907,33 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
-
-      if ($scope.task.status === 'New') {
-        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-          doClassify();
-        });
-      } else {
-        doClassify();
-      }
+      var results = {
+        unsavedConcepts: []
+      };
+      reviewService.checkModifiedConcepts($scope.task, results).then(function(results) {
+        if (results && results.unsavedConcepts.length > 0) {
+          var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
+          modalService.confirm(message, 'width: 120%;').then(function () {
+            notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+            if ($scope.task.status === 'New') {
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                doClassify();
+              });
+            } else {
+              doClassify();
+            }
+          });
+        } else {
+          notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+          if ($scope.task.status === 'New') {
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+              doClassify();
+            });
+          } else {
+            doClassify();
+          }
+        }
+      });
     };
 
     function doClassify() {

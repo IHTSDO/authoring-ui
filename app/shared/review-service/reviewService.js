@@ -477,7 +477,8 @@ angular.module('singleConceptAuthoringApp')
       getLatestReview: getLatestReview,
 
       // utility functions
-      checkReviewPrerequisites: checkReviewPrerequisites
+      checkReviewPrerequisites: checkReviewPrerequisites,
+      checkModifiedConcepts: checkModifiedConcepts
     };
 
   })

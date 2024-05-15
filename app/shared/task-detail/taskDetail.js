@@ -4,6 +4,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
   .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'rnmService', 'permissionService', 'modalService',
     function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, rnmService, permissionService, modalService) {
 
+      var externalAuthoringGroup = null;
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
       $rootScope.branchLocked = false;
@@ -27,7 +28,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.releaseNotesCollapsed = false;
 
       $scope.isExternalAuthoringUser = function() {
-        return ($rootScope.features && $rootScope.accountDetails.roles.includes('ROLE_' + $rootScope.features.externalAuthoringGroup));
+        return (externalAuthoringGroup && $rootScope.accountDetails.roles.includes('ROLE_' + externalAuthoringGroup));
       }
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
@@ -207,16 +208,37 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.classify = function () {
-
-        notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
-
-        if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            doClassify();
-          });
-        } else {
-          doClassify();
-        }
+        var results = {
+          unsavedConcepts: []
+        };
+        reviewService.checkModifiedConcepts($scope.task, results).then(function(results) {
+          if (results && results.unsavedConcepts.length > 0) {
+            var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
+            modalService.confirm(message, 'width: 120%;').then(function () {
+              notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+              if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
+                scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                  doClassify();
+                });
+              } else {
+                doClassify();
+              }
+            }, function() {
+              setTimeout(function(){
+                angular.element(document.activeElement).trigger('blur');
+              });
+            });
+          } else {
+            notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+            if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                doClassify();
+              });
+            } else {
+              doClassify();
+            }
+          }
+        });
       };
 
       function doClassify() {
@@ -835,6 +857,44 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       }
 
+      function findExternalAuthoringGroup() {
+        var deferred = $q.defer();
+        const allCodeSystems = metadataService.getCodeSystems();
+        var foundCodeSystem = null;
+        if (allCodeSystems && allCodeSystems.length !== 0) {
+          for (let i = 0; i < allCodeSystems.length; i++) {
+            if ($scope.task.branchPath.startsWith('MAIN/SNOMEDCT-')
+                && allCodeSystems[i].branchPath.startsWith('MAIN/SNOMEDCT-')
+                && $scope.task.branchPath.startsWith(allCodeSystems[i].branchPath)) {
+              foundCodeSystem = allCodeSystems[i];
+              break;
+            }
+          }
+          if (!foundCodeSystem) {
+            for (let i = 0; i < allCodeSystems.length; i++) {
+              if (allCodeSystems[i].branchPath === 'MAIN') {
+                foundCodeSystem = allCodeSystems[i];
+                break;
+              }
+            }
+          }
+
+          if (foundCodeSystem) {
+            terminologyServerService.getBranchMetadata(foundCodeSystem.branchPath, false).then(function (response) {
+              if (response && response.externalAuthoringGroup) {
+                deferred.resolve(response.externalAuthoringGroup);
+              } else {
+                deferred.resolve(null);
+              }
+            });
+          } else {
+            deferred.resolve(null);
+          }
+        }
+
+        return deferred.promise;
+      }
+
       function initialize() {
 
         // retrieve the task
@@ -869,9 +929,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
-            if ($scope.role === 'AUTHOR' && !metadataService.isComplex() && $rootScope.features && $rootScope.accountDetails.roles.includes('ROLE_' + $rootScope.features.externalAuthoringGroup)) {
-              $scope.complex = false;
-              $scope.markBranchAsComplex();
+            if ($scope.role === 'AUTHOR') {
+              // get extenal authoring group
+              findExternalAuthoringGroup().then(function (response) {                
+                externalAuthoringGroup = response;
+                if (externalAuthoringGroup && !metadataService.isComplex() && $rootScope.accountDetails.roles.includes('ROLE_' + externalAuthoringGroup)) {
+                  $scope.complex = false;
+                  $scope.markBranchAsComplex();
+                } 
+              });              
             }
           });
 
@@ -975,13 +1041,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         initialize();
       });
 
-      $scope.$on('conceptEdit.conceptModified', function (event, data) {
-        if ($scope.task.status === 'Review Completed') {
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            $scope.task = response;
-          });
-        }
-      });
+      // $scope.$on('conceptEdit.conceptModified', function (event, data) {
+      //   if ($scope.task.status === 'Review Completed') {
+      //     scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+      //       $scope.task = response;
+      //     });
+      //   }
+      // });
 
       $scope.$on('triggerTaskValidation', function (event, data) {
         if (data.task && data.task === $routeParams.taskKey && data.project === $routeParams.projectKey) {

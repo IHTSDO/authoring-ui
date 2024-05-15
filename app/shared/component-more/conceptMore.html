@@ -59,7 +59,7 @@
       <span class="fields row" ng-if="concept.inactivationIndicator">{{formatComponentMoreText(concept.inactivationIndicator)}}</span> <span class="fields row" ng-if="!concept.inactivationIndicator || concept.inactivationIndicator.length === 0">Reason not stated</span> </div>
     <div class="col-md-12 no-padding pull-left m-t-20">
       <label class="control-label">Association Targets</label>
-      <div ng-show="!concept.associationTargets">None</div>
+      <div ng-show="!concept.associationTargets || isObjectEmpty(concept.associationTargets)">None</div>
       <div ng-repeat="(key, value) in concept.associationTargets" class="p-b-10">
         <div class="row no-gutter col-md-12 no-padding">
           <div class="col-md-4"> {{formatComponentMoreText(key)}} </div>
@@ -67,6 +67,31 @@
             <div class="row  p-b-5" ng-repeat="target in value">
               <div class="col-md-4"><a ng-click="openConceptFromId(target)">{{target}}</a></div>
               <div class="col-md-8 max-w-700"><a ng-click="openConceptFromId(target)">{{getTerm(target)}}</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-if="!concept.active && (concept.previousInactivationIndicator || concept.previousAssociationTargets)" class="pop-edit concept-more description-popover row">
+    <div class="module pull-left m-t-20">
+      <label class="control-label">Previous Inactivation Reason</label>
+      <span class="fields row" ng-if="concept.previousInactivationIndicator">{{formatComponentMoreText(concept.previousInactivationIndicator)}}</span>
+      <span class="fields row"
+            ng-if="!concept.previousInactivationIndicator">Reason not stated</span>
+    </div>
+    <div class="col-md-12 no-padding pull-left m-t-20">
+      <label class="control-label">Previous Association Targets</label>
+      <div ng-show="!concept.previousAssociationTargets || isObjectEmpty(concept.previousAssociationTargets)">None</div>
+      <div ng-repeat="(key, value) in concept.previousAssociationTargets" class="p-b-10">
+        <div class="no-gutter col-md-12 no-padding">
+          <div class="col-md-4">
+            {{formatComponentMoreText(key)}}
+          </div>
+          <div class="col-md-8">
+            <div class="row  p-b-5" ng-repeat="target in value">
+              <div class="col-md-4"><a ng-click="openConceptFromId(target)">{{target}}</a></div>
+              <div class="col-md-8"><a ng-click="openConceptFromId(target)">{{getTerm(target)}}</a></div>
             </div>
           </div>
         </div>
