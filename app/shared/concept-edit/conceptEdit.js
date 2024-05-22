@@ -654,23 +654,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.disableRemoveConcept = false;
         }
 
-        function isRecognisedSemanticTag() {
-          if (scope.concept && scope.concept.descriptions) {
-            for (let i = 0; i < scope.concept.descriptions.length; i++) {
-              let desc = scope.concept.descriptions[i];
-              if (desc.active && desc.type === 'FSN' && desc.lang === 'en') {
-                const semanticTag = desc.term.substring(desc.term.lastIndexOf('(') + 1, desc.term.lastIndexOf(')'));
-                if (semanticTag.length !== 0) {
-                  return semanticTags.includes(semanticTag);
-                }
-              }
-            }
-          }
-          return true;
-        }
-
         scope.getConceptsForValueTypeahead = function(attributeId, termFilter, branch, escgExpr, axiom, relationship, parentIndex, itemIndex) {
-          var promise = constraintService.getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr, !isRecognisedSemanticTag());
+          var promise = constraintService.getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr);
           if (relationship) {
             promise.then(function(results) {
               if (results.length === 1) {
@@ -3669,7 +3654,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
 
-          else if (metadataService.isMrcmEnabled() && isRecognisedSemanticTag()) {
+          else if (metadataService.isMrcmEnabled()) {
 
             if (relationship.type.conceptId) {
               if(relationship.dataType && relationship.concreteValue){
@@ -5727,7 +5712,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
               relationship.target.fsn = tempFsn;
             });
-          } else if (metadataService.isMrcmEnabled() && isRecognisedSemanticTag()) {
+          } else if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
             } else {
