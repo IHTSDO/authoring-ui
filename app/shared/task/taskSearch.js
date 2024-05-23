@@ -64,6 +64,15 @@ angular.module('singleConceptAuthoringApp')
       }
     };
 
+    $scope.getReviewersDisplayName = function(reviewers) {
+      if (!reviewers) {
+        return '';
+      }
+      return reviewers.map(function(reviewer) {
+        return reviewer.displayName;
+      }).join(', ');
+    };
+
     $scope.clearMessages = function () {
       $scope.message = '';
     };

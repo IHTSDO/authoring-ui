@@ -9,12 +9,12 @@
         <div>
           <input autofocus="true"
             class="form-control"
-            ng-model="criteria" type="text" 
+            ng-model="criteria" type="text"
             ng-change="clearMessages()"
             ng-keyup="$event.keyCode == 13 && search()"
             placeholder="Enter task's name or ID...">
           <br>
-        </div>        
+        </div>
       </div>
       <div class="pull-right col-md-2">
         <button type="button" class="col-md-12 btn btn-info no-margin" ng-disabled="loading" ng-click="search()">Search</button>
@@ -22,7 +22,7 @@
     </div>
     <div class="alert alert-success text-center" ng-show="searching">Searching...</div>
     <div class="alert alert-success" ng-show="message">{{message}}</div>
-    
+
     <div class="table-responsive white" ng-show="!searching && tasks.length != 0">
       <table ng-table="searchTasksTableParams" template-pagination="utilities/data-table-pager.html"
          class="table table-full table-full-small">
@@ -38,11 +38,11 @@
           <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
             {{task.key}}
           </td>
-    
+
           <td data-title="'Modified'" sortable="'updated'" header-title="'Click to sort'">
             {{task.updated | date: "yyyy-MM-dd":"UTC"}}
           </td>
-    
+
           <td data-title="'Status'" ng-style="task.status !== '' && {'padding-top':'0px', 'padding-bottom':'0px'}" sortable="'status'" header-title="'Click to sort'">
             <div ng-if="task.status === 'In Review' && (!task.reviewers || task.reviewers.length === 0)" class="badge {{task.status}}"> Ready for
               Review
@@ -52,12 +52,16 @@
             </div>
             <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div>
           </td>
-             
+
           <td data-title="'Author'">
               <div>{{task.assignee.displayName}}</div>
-          </td>                  
+          </td>
+
+          <td data-title="'Reviewers'">
+            <div>{{getReviewersDisplayName(task.reviewers)}}</div>
+        </td>
         </tr>
       </table>
     </div>
-  </div>  
+  </div>
 </div>
