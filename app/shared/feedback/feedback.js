@@ -2247,6 +2247,16 @@ angular.module('singleConceptAuthoringApp')
             return users.filter(item => -1 === reviewers.indexOf(item.username));
           };
 
+          scope.getReviewersDisplayName = function(reviewers) {
+            if (!reviewers) {
+              return '';
+            }
+            return reviewers.map(function(reviewer) {
+              return reviewer.displayName;
+            }).join(', ');
+          };
+      
+
           var feebackProjectTaxonomyViewList = [];
           scope.isProjectTaxonomyVisisble = function (concept) {
             for (var i =0; i < feebackProjectTaxonomyViewList.length; i++) {

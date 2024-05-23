@@ -36,6 +36,9 @@
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
         <div class="pull-left p-l-15 "><strong>Task Reviewers:</strong></div>
+        <div ng-if="role !== 'REVIEWER' && role !== 'REVIEWER_ONLY' && role !== 'AUTHOR' && task.reviewers && task.reviewers.length !== 0">          
+          &nbsp;{{getReviewersDisplayName(task.reviewers)}}
+        </div>
         <div ng-if="role === 'REVIEWER' || role === 'REVIEWER_ONLY'">
           <div class="editable-field">
             <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
