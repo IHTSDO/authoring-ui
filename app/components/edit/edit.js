@@ -1323,7 +1323,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 //////////////////////////////////////////
 
 // function to get the latest validation result
-    $scope.getLatestValidation = function () {
+    $scope.getLatestValidation = function (reloadValidationContainer) {
 
       // if no task specified, retrieve for project
       if (!$scope.taskKey) {
@@ -1340,6 +1340,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (!response) {
             $scope.validationContainer = {executionStatus: 'No validation found'};
           } else {
+            response.reloadContainer = reloadValidationContainer;
             $scope.validationContainer = response;
           }
         });
@@ -1671,11 +1672,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('reloadTask', function (event, data) {
       if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
         loadTask();
-        $scope.getLatestValidation();
+        $scope.getLatestValidation(data.reloadValidation);
       }
     });
 
-    $scope.$on('reloadTaskValidation', function (event, data) {
+    $scope.$on('reloadTaskValidationStatus', function (event, data) {
       if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey && !data.reloadTask)) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.validationRunning = response.latestValidationStatus && (response.latestValidationStatus === 'QUEUED' || response.latestValidationStatus === 'SCHEDULED' || response.latestValidationStatus === 'RUNNING');

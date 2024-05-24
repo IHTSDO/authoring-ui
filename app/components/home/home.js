@@ -474,7 +474,7 @@ angular.module('singleConceptAuthoringApp.home', [
             }
         });
 
-        $scope.$on('reloadTaskValidation', function (event, data) {
+        $scope.$on('reloadTaskValidationStatus', function (event, data) {
             if (data && data.project && data.task) {
                 for (var i = 0; i < $scope.tasks.length; i++) {
                     if (data.project === $scope.tasks[i].projectKey && data.task === $scope.tasks[i].key) {

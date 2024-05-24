@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         }
       });
 
-      $scope.getCodeSystem = function () {
+      $scope.getCodeSystem = function (reloadValidationContainer) {
           terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
               terminologyServerService.getBranch(codeSystem.branchPath).then(function (response) {
                   $scope.branch = codeSystem.branchPath;
@@ -152,6 +152,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                       $scope.dailyBuildValidationContainer = {
                         'executionStatus': 'NOT_TRIGGERED'
                       };
+                    }
+                    if (response) {
+                      response.reloadContainer = reloadValidationContainer;
                     }
                     $scope.validationContainer = response;
                     $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
@@ -254,11 +257,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.$on('reloadCodeSystem', function (event, data) {
         if (!data || data.branchPath === $scope.codeSystem.branchPath) {
-          $scope.getCodeSystem();
+          $scope.getCodeSystem(data.reloadValidation);
         }
       });
 
-      $scope.$on('reloadCodeSystemValidation', function (event, data) {
+      $scope.$on('reloadCodeSystemValidationStatus', function (event, data) {
         if (!data || (data.branchPath === $scope.codeSystem.branchPath && !data.reloadCodeSystem)) {
           scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
             delete response.dailyBuildReport;

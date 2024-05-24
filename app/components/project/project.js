@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp.project', [
           return value;
       }
 
-      $scope.getProject = function () {
+      $scope.getProject = function (reloadValidationContainer) {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
           // detect code system for given branch
@@ -211,6 +211,9 @@ angular.module('singleConceptAuthoringApp.project', [
           // get the latest validation for this project (if exists)
           if ($scope.project.validationStatus !== 'FAILED') {
             scaService.getValidationForProject($scope.project.key).then(function (response) {
+              if (response) {
+                response.reloadContainer = reloadValidationContainer;
+              }
               $scope.validationContainer = response;
             });
           }
@@ -243,11 +246,11 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.$on('reloadProject', function (event, data) {
         if (!data || data.project === $routeParams.projectKey) {
-          $scope.getProject();
+          $scope.getProject(data.reloadValidation);
         }
       });
 
-      $scope.$on('reloadProjectValidation', function (event, data) {
+      $scope.$on('reloadProjectValidationStatus', function (event, data) {
         if (!data || (data.project === $routeParams.projectKey && !data.reloadProject)) {
           scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
             $rootScope.validationRunning = response.validationStatus && (response.validationStatus === 'SCHEDULED' || response.validationStatus === 'QUEUED' || response.validationStatus === 'RUNNING');

@@ -134,7 +134,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
 
     }, true);
 
-    $scope.$on('reloadCodeSystemValidation', function (event, data) {
+    $scope.$on('reloadCodeSystemValidationStatus', function (event, data) {
       if (data && data.branchPath) {
           for (var i = 0; i < $scope.codesystems.length; i++) {
               if (data.branchPath === $scope.codesystems[i].branchPath) {

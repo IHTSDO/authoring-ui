@@ -500,11 +500,11 @@ angular.module('singleConceptAuthoringApp')
                 */
               case 'Validation':
                 if (newNotification.task) {
-                  $rootScope.$broadcast('reloadTaskValidation', {project: newNotification.project, task: newNotification.task, reloadTask: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
+                  $rootScope.$broadcast('reloadTaskValidationStatus', {project: newNotification.project, task: newNotification.task, reloadTask: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
                 } else if (newNotification.project) {
-                  $rootScope.$broadcast('reloadProjectValidation', {project: newNotification.project, reloadProject: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
+                  $rootScope.$broadcast('reloadProjectValidationStatus', {project: newNotification.project, reloadProject: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
                 } else {
-                  $rootScope.$broadcast('reloadCodeSystemValidation', {branchPath: newNotification.branchPath, reloadCodeSystem: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
+                  $rootScope.$broadcast('reloadCodeSystemValidationStatus', {branchPath: newNotification.branchPath, reloadCodeSystem: newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED'});
                 }
 
                 if (newNotification.event === 'FAILED' || newNotification.event === 'COMPLETED') {
@@ -526,11 +526,11 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   if (newNotification.task) {
-                    $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task});
+                    $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task, reloadValidation: true});
                   } else if (newNotification.project) {
-                    $rootScope.$broadcast('reloadProject', {project: newNotification.project});
+                    $rootScope.$broadcast('reloadProject', {project: newNotification.project, reloadValidation: true});
                   } else {
-                    $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath});
+                    $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath, reloadValidation: true});
                   }
                   notificationService.sendMessage(msg, 0, url);
                 }

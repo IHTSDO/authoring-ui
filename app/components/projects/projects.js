@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp.projects', [
 
     }, true);
 
-    $scope.$on('reloadProjectValidation', function (event, data) {
+    $scope.$on('reloadProjectValidationStatus', function (event, data) {
       if (data && data.project) {
           for (var i = 0; i < $scope.projects.length; i++) {
               if (data.project === $scope.projects[i].key) {
