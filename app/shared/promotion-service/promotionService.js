@@ -47,16 +47,6 @@ angular.module('singleConceptAuthoringApp')
           if (task !== undefined) {
             scaService.getTaskForProject(project, task).then(function (branchStatus) {
               console.log(branchStatus);
-              ////////////////////////////////////////////////////////////
-              // CHECK:  Has the Task been reviewed?
-              ////////////////////////////////////////////////////////////
-              if (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none') {
-                flags.push({
-                  checkTitle: 'No review completed',
-                  checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
-                  blocksPromotion: false
-                });
-              }
 
               ////////////////////////////////////////////////////////////
               // CHECK:  Is the task still in Review?
