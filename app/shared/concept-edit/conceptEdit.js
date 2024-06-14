@@ -1522,7 +1522,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
-                    scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+                    // scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
                     if (!scope.concept.released && scope.concept.active) {
                       browserService.getConceptAcrossMultipleExtensions(scope.concept.conceptId).then(function(response) {
                         if (response) {
