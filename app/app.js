@@ -149,7 +149,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, validationService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, aagService, rnmService, spellcheckService, AppConstants) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, validationService, terminologyServerService, notificationService, accountService, metadataService, $timeout, $location, $window, $sce, hotkeys, cisService, crsService, templateService, aagService, rnmService, spellcheckService, AppConstants) {
 
     $window.ga('create', 'UA-41892858-21', 'auto');
     // track pageview on state change
@@ -199,6 +199,7 @@ angular
       // Success block -- config properties retrieved
       function (response) {
         var endpoints = response.endpoints;
+        var features = response.features;
         $rootScope.endpoints = endpoints;
         $rootScope.features = response.features;
 
@@ -215,6 +216,11 @@ angular
         var imsUrlParams = '?serviceReferer=' + window.location.href;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $rootScope.msCollectorUrl = $sce.trustAsResourceUrl(endpoints.msCollectorEndpoint);
+
+        // Set template exclusion list
+        if(features.templateExclusionList) {
+          templateService.setExclusionList(JSON.parse(features.templateExclusionList));
+        }
 
         // Footer information
         if(endpoints.scaUserGuideEndpoint) {

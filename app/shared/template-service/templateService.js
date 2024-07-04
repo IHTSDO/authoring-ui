@@ -8,6 +8,7 @@ angular.module('singleConceptAuthoringApp')
 
     var apiEndpoint = '../template-service/';
 
+    var exclusionList = [];
 
     //
     // Internal variables
@@ -1306,7 +1307,7 @@ angular.module('singleConceptAuthoringApp')
       if (!templateCache || refreshCache) {
         if (!parentIds || typeof parentIds === 'undefined' || parentIds.length === 0) {
           $http.get(apiEndpoint + 'templates').then(function (response) {
-            templateCache = response.data;
+            templateCache = response.data.filter(function (el) { return exclusionList.indexOf(el.name) === -1; });
             templateCache.sort(function (a, b) {
               return sortTemplatesByName(a, b);
             });
@@ -1331,6 +1332,10 @@ angular.module('singleConceptAuthoringApp')
 
     function setTask(task) {
       currentTask = task;
+    }
+
+    function setExclusionList(list) {
+      exclusionList = list;
     }
 
     function downloadTemplateCsv(template) {
@@ -1453,6 +1458,9 @@ angular.module('singleConceptAuthoringApp')
 
       // task initialization
       setTask: setTask,
+
+      // Template exclusion list
+      setExclusionList: setExclusionList,
 
       // Template CRUD functions
       getTemplates: getTemplates,
