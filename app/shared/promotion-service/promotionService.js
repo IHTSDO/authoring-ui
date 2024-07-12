@@ -36,8 +36,6 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(flags);
 
       } else {
-        console.log('here');
-        console.log(task);
         if (!latestClassificationJson) {
           flags.push({
             checkTitle: 'Classification Not Run',
@@ -46,7 +44,17 @@ angular.module('singleConceptAuthoringApp')
           });
           if (task !== undefined) {
             scaService.getTaskForProject(project, task).then(function (branchStatus) {
-              console.log(branchStatus);
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Has the Task been reviewed?
+              ////////////////////////////////////////////////////////////
+              if (branchStatus.status !== 'Review Completed' && (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none')) {
+                flags.push({
+                  checkTitle: 'No review completed',
+                  checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
+                  blocksPromotion: false
+                });
+              }
 
               ////////////////////////////////////////////////////////////
               // CHECK:  Is the task still in Review?
@@ -252,7 +260,7 @@ angular.module('singleConceptAuthoringApp')
               }
               else {
                 deferred.resolve(flags);
-              }           
+              }
 
             },
             function (error) {
@@ -268,7 +276,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function isClassificationSavedCurrent(activities) {    
+    function isClassificationSavedCurrent(activities) {
       var lastClassificationSaved = 0;
       var lastModifiedTime = (new Date(activities.content[activities.content.length - 1].commitDate)).getTime();
       angular.forEach(activities.content, function(activity) {
@@ -286,7 +294,7 @@ angular.module('singleConceptAuthoringApp')
         }
         else {
           scaService.getTaskForProject(projectKey, taskKey).then(function (task) {
-               
+
             if (task.branchState === 'UP_TO_DATE') {
               deferred.resolve([{
                 checkTitle: 'No Changes To Promote',
@@ -294,7 +302,7 @@ angular.module('singleConceptAuthoringApp')
                 blocksPromotion: true
               }]);
             }
-            
+
             var flags = [];
             ////////////////////////////////////////////////////////////
             // CHECK:  Has the Task been reviewed?
@@ -318,13 +326,13 @@ angular.module('singleConceptAuthoringApp')
               });
             }
             flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);
-            
+
             deferred.resolve(flags);
           }, function (error) {
             deferred.reject('Could not retrieve task details: ' + error);
           });
-        }        
-      });     
+        }
+      });
 
       return deferred.promise;
     }
@@ -344,12 +352,12 @@ angular.module('singleConceptAuthoringApp')
             // on resolution of all promises
             $q.all(promises).then(function (responses) {
               var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-              if (hasUnsavedConcept) {                
+              if (hasUnsavedConcept) {
                 deferred.resolve([{
                   checkTitle: 'Unsaved concepts found',
                   checkWarning: 'There are some unsaved concepts. Please save them before promoting task automation.',
                   blocksPromotion: true
-                }]);                
+                }]);
               }
               else {
                 deferred.resolve([]);
@@ -386,7 +394,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         checkClassificationPrerequisites(branch, task.latestClassificationJson, projectKey, taskKey).then(function (flags) {
-          flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);         
+          flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);
           deferred.resolve(flags);
         }, function (error) {
           deferred.reject(error);
