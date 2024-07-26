@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp.project', [
           return value;
       }
 
-      $scope.getProject = function (reloadValidationContainer) {
+      $scope.getProject = function (reloadValidationReport, validationNotificationOff) {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
           // detect code system for given branch
@@ -212,7 +212,8 @@ angular.module('singleConceptAuthoringApp.project', [
           if ($scope.project.validationStatus !== 'FAILED') {
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               if (response) {
-                response.reloadContainer = reloadValidationContainer;
+                response.notificationOff = validationNotificationOff;
+                response.reloadContainer = reloadValidationReport;
               }
               $scope.validationContainer = response;
             });
@@ -246,7 +247,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.$on('reloadProject', function (event, data) {
         if (!data || data.project === $routeParams.projectKey) {
-          $scope.getProject(data.reloadValidation);
+          $scope.getProject(data.reloadValidationReport, data.validationNotificationOff);
         }
       });
 

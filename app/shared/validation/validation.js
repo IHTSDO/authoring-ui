@@ -69,6 +69,7 @@ angular.module('singleConceptAuthoringApp')
           scope.apiEndpoint = terminologyServerService.apiEndpoint;
           scope.allowDownloadDailyBuildPackage = attrs.allowDownloadDailyBuildPackage === 'true';
           var isRaiseJiraTicketsForceDisabled = attrs.raiseJiraTicketsDisabled === 'true';
+          var validationContainerInitialized = false;
 
           // highlighting map
           scope.styles = {};
@@ -901,14 +902,16 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // only initialize or reload once-- watch statement fires multiple times otherwise
+            var notificationOff = scope.validationContainer.notificationOff;
             var reloadContainer = scope.validationContainer.reloadContainer;
-            if (scope.validationContainer.initialized && !reloadContainer) {
+            if (validationContainerInitialized && !reloadContainer) {
               return;
             }
-            scope.validationContainer.initialized = true;
+            validationContainerInitialized = true;
+            delete scope.validationContainer.notificationOff;
             delete scope.validationContainer.reloadContainer;
 
-            if (!reloadContainer) notificationService.sendMessage('Retrieving traceability information ...');
+            if (!notificationOff) notificationService.sendMessage('Retrieving traceability information ...');
             terminologyServerService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
 
               // if traceability found, extract the user modified concept ids
@@ -925,19 +928,19 @@ angular.module('singleConceptAuthoringApp')
                 });
 
               } else {
-                if (!reloadContainer) notificationService.sendWarning('Could not retrieve traceability for task');
+                if (!notificationOff) notificationService.sendWarning('Could not retrieve traceability for task');
               }
 
               // initialize the failures
-              if (!reloadContainer)  notificationService.sendMessage('Initializing validation failures...');
+              if (!notificationOff)  notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
-                if (!reloadContainer)  notificationService.sendMessage('Initialization complete', 3000);
+                if (!notificationOff)  notificationService.sendMessage('Initialization complete', 3000);
                 scope.initializationComplete = true;
               });
             }, function (error) {
-              if (!reloadContainer)  notificationService.sendMessage('Initializing validation failures...');
+              if (!notificationOff)  notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
-                if (!reloadContainer)  notificationService.sendMessage('Initialization complete', 3000);
+                if (!notificationOff)  notificationService.sendMessage('Initialization complete', 3000);
                 scope.initializationComplete = true;
               });
             });

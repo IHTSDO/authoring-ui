@@ -526,11 +526,11 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   if (newNotification.task) {
-                    $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task, reloadValidation: true});
+                    $rootScope.$broadcast('reloadTask', {project: newNotification.project, task: newNotification.task, reloadValidationReport: true, validationNotificationOff: true});
                   } else if (newNotification.project) {
-                    $rootScope.$broadcast('reloadProject', {project: newNotification.project, reloadValidation: true});
+                    $rootScope.$broadcast('reloadProject', {project: newNotification.project, reloadValidationReport: true, validationNotificationOff: true});
                   } else {
-                    $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath, reloadValidation: true});
+                    $rootScope.$broadcast('reloadCodeSystem', {branchPath: newNotification.branchPath, reloadValidationReport: true, validationNotificationOff: true});
                   }
                   notificationService.sendMessage(msg, 0, url);
                 }

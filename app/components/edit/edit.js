@@ -1323,7 +1323,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 //////////////////////////////////////////
 
 // function to get the latest validation result
-    $scope.getLatestValidation = function (reloadValidationContainer) {
+    $scope.getLatestValidation = function (reloadValidationReport, validationNotificationOff) {
 
       // if no task specified, retrieve for project
       if (!$scope.taskKey) {
@@ -1340,7 +1340,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (!response) {
             $scope.validationContainer = {executionStatus: 'No validation found'};
           } else {
-            response.reloadContainer = reloadValidationContainer;
+            response.notificationOff = validationNotificationOff;
+            response.reloadContainer = reloadValidationReport;
+
             $scope.validationContainer = response;
           }
         });
@@ -1672,7 +1674,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('reloadTask', function (event, data) {
       if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
         loadTask();
-        $scope.getLatestValidation(data.reloadValidation);
+        $scope.getLatestValidation(data.reloadValidationReport, data.validationNotificationOff);
       }
     });
 

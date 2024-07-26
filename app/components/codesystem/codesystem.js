@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         }
       });
 
-      $scope.getCodeSystem = function (reloadValidationContainer) {
+      $scope.getCodeSystem = function (reloadValidationReport, validationNotificationOff) {
           terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
               terminologyServerService.getBranch(codeSystem.branchPath).then(function (response) {
                   $scope.branch = codeSystem.branchPath;
@@ -154,7 +154,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                       };
                     }
                     if (response) {
-                      response.reloadContainer = reloadValidationContainer;
+                      response.notificationOff = validationNotificationOff;
+                      response.reloadContainer = reloadValidationReport;
                     }
                     $scope.validationContainer = response;
                     $rootScope.validationRunning = response && (response.executionStatus === 'SCHEDULED' || response.executionStatus === 'QUEUED' || response.executionStatus === 'RUNNING');
@@ -257,7 +258,7 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.$on('reloadCodeSystem', function (event, data) {
         if (!data || data.branchPath === $scope.codeSystem.branchPath) {
-          $scope.getCodeSystem(data.reloadValidation);
+          $scope.getCodeSystem(data.reloadValidationReport, data.validationNotificationOff);
         }
       });
 
