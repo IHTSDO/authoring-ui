@@ -2878,6 +2878,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // save concept but bypass validation checks
                 saveHelper(false, false).then(function () {
                   notificationService.sendMessage('Concept inactivated');
+                  updateReviewFeedback();
                 }, function (error) {
                   notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
                 });
