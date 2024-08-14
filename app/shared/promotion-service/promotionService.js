@@ -339,34 +339,17 @@ angular.module('singleConceptAuthoringApp')
 
     function checkUnsavedConcepts(projectKey, taskKey) {
       var deferred = $q.defer();
-      scaService.getUiStateForTask(projectKey, taskKey, 'edit-panel')
-        .then(function (uiState) {
-          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-            deferred.resolve([]);
-          }
-          else {
-            var promises = [];
-            for (var i = 0; i < uiState.length; i++) {
-              promises.push(scaService.getModifiedConceptForTask(projectKey, taskKey, uiState[i]));
-            }
-            // on resolution of all promises
-            $q.all(promises).then(function (responses) {
-              var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-              if (hasUnsavedConcept) {
-                deferred.resolve([{
-                  checkTitle: 'Unsaved concepts found',
-                  checkWarning: 'There are some unsaved concepts. Please save them before promoting task automation.',
-                  blocksPromotion: true
-                }]);
-              }
-              else {
-                deferred.resolve([]);
-              }
-            });
-          }
+      scaService.getModifiedConceptIdsForTask(projectKey, taskKey).then(function(unsavedConcepts) {
+        if (unsavedConcepts.length > 0) {
+            deferred.resolve([{
+              checkTitle: 'Unsaved concepts found',
+              checkWarning: 'There are some unsaved concepts. Please save them before promoting task automation.',
+              blocksPromotion: true
+            }]);
+        } else {
+          deferred.resolve([]);
         }
-      );
-
+      });
       return deferred.promise;
     }
 
