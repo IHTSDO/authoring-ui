@@ -340,7 +340,7 @@ angular.module('singleConceptAuthoringApp')
     function checkUnsavedConcepts(projectKey, taskKey) {
       var deferred = $q.defer();
       scaService.getModifiedConceptIdsForTask(projectKey, taskKey).then(function(unsavedConcepts) {
-        if (unsavedConcepts.length > 0) {
+        if (unsavedConcepts && unsavedConcepts.length > 0) {
             deferred.resolve([{
               checkTitle: 'Unsaved concepts found',
               checkWarning: 'There are some unsaved concepts. Please save them before promoting task automation.',

@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.classify = function () {
         scaService.getModifiedConceptIdsForTask($scope.task.projectKey, $scope.task.key).then(function(unsavedConcepts) {
-          if (unsavedConcepts.length > 0) {
+          if (unsavedConcepts && unsavedConcepts.length > 0) {
             var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
             modalService.confirm(message, 'width: 120%;').then(function () {
               notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);

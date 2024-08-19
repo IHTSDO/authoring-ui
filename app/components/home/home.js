@@ -316,28 +316,13 @@ angular.module('singleConceptAuthoringApp.home', [
             // check for project lock before continuing
             terminologyServerService.getBranch(projectBranch).then(function (response) {
                 if (!response.locked) {
-                    scaService.getUiStateForTask(task.projectKey, task.key, 'edit-panel')
-                        .then(function (uiState) {
-                            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-                              redirectToConflicts(task.branchPath,task.projectKey,task.key);
-                            }
-                            else {
-                              var promises = [];
-                              for (var i = 0; i < uiState.length; i++) {
-                                promises.push(scaService.getModifiedConceptForTask(task.projectKey, task.key, uiState[i]));
-                              }
-                              // on resolution of all promises
-                              $q.all(promises).then(function (responses) {
-                                var hasUnsavedConcept = responses.filter(function(concept){return concept !== null}).length > 0;
-                                if (hasUnsavedConcept) {
-                                  modalService.message('There are some unsaved concepts. Please go to task editing and save them before rebasing.');
-                                } else {
-                                  redirectToConflicts(task.branchPath,task.projectKey,task.key);
-                                }
-                              });
-                            }
-                          }
-                        );
+                    scaService.getModifiedConceptIdsForTask(task.projectKey, task.key).then(function(unsavedConcepts) {
+                        if (unsavedConcepts && unsavedConcepts.length > 0) {
+                            modalService.message('There are some unsaved concepts. Please go to task editing and save them before rebasing.');
+                        } else {
+                            redirectToConflicts(task.branchPath,task.projectKey,task.key);
+                        }  
+                    });
                 }
                 else {
                     notificationService.sendWarning('Unable to open conflicts view for ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
