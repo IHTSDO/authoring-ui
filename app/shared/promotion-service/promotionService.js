@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('promotionService', ['scaService', 'terminologyServerService', '$q', 'crsService', function (scaService, terminologyServerService, $q, crsService) {
+  .service('promotionService', ['scaService', 'terminologyServerService', '$q', 'crsService', 'componentAuthoringUtil', function (scaService, terminologyServerService, $q, crsService, componentAuthoringUtil) {
 
     /**
      * Checks if a branch is eligible for promotion
@@ -339,8 +339,8 @@ angular.module('singleConceptAuthoringApp')
 
     function checkUnsavedConcepts(projectKey, taskKey) {
       var deferred = $q.defer();
-      scaService.getModifiedConceptIdsForTask(projectKey, taskKey).then(function(unsavedConcepts) {
-        if (unsavedConcepts && unsavedConcepts.length > 0) {
+      componentAuthoringUtil.hasUnsavedConcepts(projectKey, taskKey).then(function(hasUnsavedConcepts) {
+        if (hasUnsavedConcepts) {
             deferred.resolve([{
               checkTitle: 'Unsaved concepts found',
               checkWarning: 'There are some unsaved concepts. Please save them before promoting task automation.',

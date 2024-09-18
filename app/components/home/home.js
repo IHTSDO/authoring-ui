@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService, componentAuthoringUtil) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -316,8 +316,8 @@ angular.module('singleConceptAuthoringApp.home', [
             // check for project lock before continuing
             terminologyServerService.getBranch(projectBranch).then(function (response) {
                 if (!response.locked) {
-                    scaService.getModifiedConceptIdsForTask(task.projectKey, task.key).then(function(unsavedConcepts) {
-                        if (unsavedConcepts && unsavedConcepts.length > 0) {
+                    componentAuthoringUtil.hasUnsavedConcepts(task.projectKey, task.key).then(function(hasUnsavedConcepts) {
+                        if (hasUnsavedConcepts) {
                             modalService.message('There are some unsaved concepts. Please go to task editing and save them before rebasing.');
                         } else {
                             redirectToConflicts(task.branchPath,task.projectKey,task.key);

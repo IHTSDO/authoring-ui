@@ -14,28 +14,28 @@ angular.module('singleConceptAuthoringApp')
       // Modified concept list utility functions
       //
 
-      function getModifiedList(projectKey, taskKey) {
-
+      function getModifiedConceptIdsForTask (projectKey, taskKey) {
         var deferred = $q.defer();
-
-        // get the list
+        // update the modified list
         $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          if (error.status === 404) {
+          // 404 indicates no ui state persisted, return empty array
+          if (error.status === 404 || error.status === '404') {
             deferred.resolve([]);
           } else {
-            deferred.reject('Error retrieving modified concept id list');
+            deferred.reject('Unexpected error retrieving modified concept ids for task' + (typeof error.data.message !== 'undefined' ?': ' + error.data.message : ''));
           }
         });
         return deferred.promise;
       }
 
+      
       // Modified list functions
       function saveModifiedConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
 
-        getModifiedList(projectKey, taskKey).then(function (modifiedList) {
+        getModifiedConceptIdsForTask(projectKey, taskKey).then(function (modifiedList) {
           var index = modifiedList.indexOf(conceptId);
 
           // if not in list, update the list
@@ -92,7 +92,7 @@ angular.module('singleConceptAuthoringApp')
       function removeModifiedConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
 
-        getModifiedList(projectKey, taskKey).then(function (modifiedList) {
+        getModifiedConceptIdsForTask(projectKey, taskKey).then(function (modifiedList) {
           var index = modifiedList.indexOf(conceptId);
 
           // if not in list, update the list
@@ -1035,21 +1035,7 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
-        getModifiedConceptIdsForTask: function (projectKey, taskKey) {
-          var deferred = $q.defer();
-          // update the modified list
-          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (response) {
-            deferred.resolve(response.data);
-          }, function (error) {
-            // 404 indicates no ui state persisted, return empty array
-            if (error.status === 404 || error.status === '404') {
-              deferred.resolve([]);
-            } else {
-              deferred.reject('Unexpected error retrieving modified concept ids for task' + (typeof error.data.message !== 'undefined' ?': ' + error.data.message : ''));
-            }
-          });
-          return deferred.promise;
-        },
+        getModifiedConceptIdsForTask: getModifiedConceptIdsForTask,
 
         ///////////////////////////////////////////////
         // Classification

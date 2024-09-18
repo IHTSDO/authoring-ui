@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'rnmService', 'permissionService', 'modalService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, rnmService, permissionService, modalService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$route', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'terminologyServerService', 'aagService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService', 'rnmService', 'permissionService', 'modalService', 'componentAuthoringUtil',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $route, $location, $timeout, $modal, metadataService, accountService, scaService, terminologyServerService, aagService, promotionService, crsService, notificationService, $q, reviewService, rnmService, permissionService, modalService, componentAuthoringUtil) {
 
       var externalAuthoringGroup = null;
       $scope.task = null;
@@ -208,8 +208,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.classify = function () {
-        scaService.getModifiedConceptIdsForTask($scope.task.projectKey, $scope.task.key).then(function(unsavedConcepts) {
-          if (unsavedConcepts && unsavedConcepts.length > 0) {
+        componentAuthoringUtil.hasUnsavedConcepts($scope.task.projectKey, $scope.task.key).then(function(hasUnsavedConcepts) {
+          if (hasUnsavedConcepts) {
             var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
             modalService.confirm(message, 'width: 120%;').then(function () {
               notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);

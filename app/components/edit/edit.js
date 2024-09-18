@@ -253,8 +253,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.goToConflicts = function () {
-      scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function(unsavedConcepts) {
-        if (unsavedConcepts && unsavedConcepts.length > 0) {
+      componentAuthoringUtil.hasUnsavedConcepts($routeParams.projectKey, $routeParams.taskKey).then(function(hasUnsavedConcepts) {
+        if (hasUnsavedConcepts) {
           var msg = '';
           if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
             msg = 'There are some unsaved concepts. Please save them before rebasing.';
@@ -1271,8 +1271,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
       notificationService.sendMessage('Removing all concepts from editing', 10000);
-      scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function(unsavedConcepts) {
-        if (unsavedConcepts && unsavedConcepts.length > 0) {
+      componentAuthoringUtil.hasUnsavedConcepts($routeParams.projectKey, $routeParams.taskKey).then(function(hasUnsavedConcepts) {
+        if (hasUnsavedConcepts) {
           var msg = 'There are some unsaved concepts. Please save them before removing.';
           modalService.message(msg);
         } else {
@@ -1881,8 +1881,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      scaService.getModifiedConceptIdsForTask($scope.task.projectKey, $scope.task.key).then(function(unsavedConcepts) {
-        if (unsavedConcepts && unsavedConcepts.length > 0) {
+      componentAuthoringUtil.hasUnsavedConcepts($scope.task.projectKey, $scope.task.key).then(function(hasUnsavedConcepts) {
+        if (hasUnsavedConcepts) {
           var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
           modalService.confirm(message, 'width: 120%;').then(function () {
             notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);

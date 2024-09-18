@@ -11,6 +11,29 @@ angular.module('singleConceptAuthoringApp')
         return id && id.match(/^[0-9]+$/);
       }
 
+      function hasUnsavedConcepts(projectKey, taskKey) {
+        var deferred = $q.defer();
+        scaService.getModifiedConceptIdsForTask(projectKey, taskKey).then(function(unsavedConcepts) {
+          if (unsavedConcepts && unsavedConcepts.length > 0) {
+            var promises = [];
+            for (var i = 0; i < unsavedConcepts.length; i++) {
+              promises.push(scaService.getModifiedConceptForTask(projectKey, taskKey, unsavedConcepts[i]));
+            }
+
+            // on resolution of all promises
+            $q.all(promises).then(function (responses) {
+              if (responses.filter(function(concept){return concept !== null}).length > 0) {
+                deferred.resolve(true);
+              } else {
+                deferred.resolve(false);
+              }
+            });
+          } else {
+            deferred.resolve(false);
+          }
+        });
+        return deferred.promise;
+      }
 
       function getNewAcceptabilityMap(moduleId, defaultValue, initial, lang) {
         var acceptabilityMap = {};
@@ -1298,7 +1321,8 @@ function getFsnDescriptionForConcept(concept) {
         setDefaultFields: setDefaultFields,
         getFsnForConcept: getFsnForConcept,
         getPtForConcept: getPtForConcept,
-        getFsnDescriptionForConcept : getFsnDescriptionForConcept
+        getFsnDescriptionForConcept : getFsnDescriptionForConcept,
+        hasUnsavedConcepts: hasUnsavedConcepts
 
       };
 
