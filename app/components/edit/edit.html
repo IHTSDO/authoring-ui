@@ -86,7 +86,7 @@
           </a>
 
           <ul class="button-sub-nav">
-            <li ng-if="task.latestValidationStatus === 'FAILED'">
+            <li ng-if="task.latestValidationStatus === 'FAILED'" ng-click="viewValidationFromSidebar()">
               Validation Failed
             </li>
             <li
