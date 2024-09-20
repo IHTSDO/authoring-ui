@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp.project', [
           }
 
           // get the latest validation for this project (if exists)
-          if ($scope.project.validationStatus !== 'FAILED') {
+          if ($scope.project.validationStatus !== 'NOT_TRIGGERED') {
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               if (response) {
                 response.notificationOff = validationNotificationOff;
