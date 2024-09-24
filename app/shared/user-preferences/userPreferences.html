@@ -20,30 +20,35 @@
             </div>
             <div class="col-md-1 no-padding"></div>
             <div class="col-md-6 no-padding">
-              <div class="row">                  
+              <div class="row">
                   <div class="col-md-10 col-sm-11 no-padding">
                     <label for="networkConnectionSpeed">Min. Network Connection</label>
                     <input type="number" min="0" id="networkConnectionSpeed"  name="select-colour-scheme" class="form-control"
                         ng-model="userPreferences.minNetworkConnection"
                         ng-change="clearMessages()">
-                    </input>                   
+                    </input>
                   </div>
-                  <div class="col-md-1 col-sm-1 no-padding m-t-10"><br/>(MB)</div>                  
+                  <div class="col-md-1 col-sm-1 no-padding m-t-10"><br/>(MB)</div>
               </div>
             </div>
         </div>
-        <br>          
+        <br>
         <label for="browserViewSelect">TS Browser Default</label>
         <select id="browserViewSelect" name="select-browser-view" class="form-control"
                 ng-options="project.key as project.title for project in projects | orderBy: 'title'"
                 ng-model="userPreferences.browserView"
                 ng-change="updatePath()">
         </select>
-
+        <br>
+        <label for="prePopulateProjectDisabled">Do not pre-populate the project in task creation</label>
+        <div class="no-padding checkbox inline m-l-30">
+          <input id="prePopulateProjectDisabled" type="checkbox" ng-model="userPreferences.prePopulateProjectDisabled">
+        </div>
+        <br>
         <br>
         <label for="allowedEmailNotification">Receive email notification</label>
         <div class="no-padding checkbox inline m-l-30">
-          <input id="allowedEmailNotification" type="checkbox" ng-model="userPreferences.allowedEmailNotification">                         
+          <input id="allowedEmailNotification" type="checkbox" ng-model="userPreferences.allowedEmailNotification">
         </div>
         <br>
         <br>
@@ -52,15 +57,15 @@
           <br>
           <div ng-repeat="languageRefset in optionalLanguageRefsets" class="inline m-r-20">
             <label class="w400">{{languageRefset.label}}</label><div class="no-padding checkbox inline m-l-25"><input type="checkbox" class="m-r-20" ng-model="selectedLanguageRefsets[languageRefset.refsetId]"></div>
-          </div>          
+          </div>
         </div -->
 
         <label for="layoutGrid">Page Layout</label>
-       
+
         <div id="layoutGrid" class="row no-gutter no-padding">
-     
+
           <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="getLayoutWidths(col1.name)">
-           
+
 
             <div ng-if="$index !== layout.children.length -1" class="pull-right sca-layout-elem layout-slider {{col1.name}}">
               <span class="pull-left slider-title">{{col1.name}}</span>
@@ -80,7 +85,7 @@
           <div ng-if="!layout.name"> Customizable layout not yet implemented for this view. </div>
         </div>
       </form>
-    </div>    
+    </div>
     <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
     <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
   </div>
