@@ -1829,6 +1829,17 @@ angular.module('singleConceptAuthoringApp')
             }
           }, true);
 
+          scope.$watch('feedbackContainer.review.conceptsToReview', function (oldValue, newValue) {
+            if (scope.feedbackContainer && scope.feedbackContainer.review && scope.task.status === 'In Review'
+               && scope.role && (scope.role === 'REVIEWER' || scope.role === 'REVIEWER_ONLY')) {
+              if (scope.feedbackContainer.review.conceptsToReview.length === 0) {
+                scaService.saveUiStateForReviewTask(scope.projectKey, scope.taskKey, 'awating-completion-state', {'status': true, 'taskKey': scope.taskKey, 'projectKey': scope.projectKey});
+              } else {
+                scaService.saveUiStateForReviewTask(scope.projectKey, scope.taskKey, 'awating-completion-state', {'status': false, 'taskKey': scope.taskKey, 'projectKey': scope.projectKey});
+              }
+            }
+          }, true);
+
           scope.$watch(function() {
               return document.getElementById("feedback-model-concept-view") ? document.getElementById("feedback-model-concept-view").offsetHeight : 0
           }, function(newValue) {
@@ -2255,7 +2266,7 @@ angular.module('singleConceptAuthoringApp')
               return reviewer.displayName;
             }).join(', ');
           };
-      
+
 
           var feebackProjectTaxonomyViewList = [];
           scope.isProjectTaxonomyVisisble = function (concept) {

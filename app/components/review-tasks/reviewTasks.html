@@ -71,8 +71,10 @@
                   </label>
                 </div></td>
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'" header-class="'header-tooltips'"
-                  filter="{ 'summary': 'text' }"><div ng-if="task.status === 'In Review' && hasNewEdits(task)" class="new-edits pull-left">New Edits</div><a class="tooltips-right"
-                   ng-click="viewReviewTask(task)">{{task.summary}}<span> Click to open reviewer view</span></a></td>
+                  filter="{ 'summary': 'text' }">
+                  <div class="new-edits pull-left" ng-if="task.status === 'In Review' && task.reviewers && task.reviewers.length !== 0 && task.awaitingCompletion">Awaiting completion</div>
+                  <div ng-if="task.status === 'In Review' && hasNewEdits(task)" class="new-edits pull-left">New Edits</div>
+                  <a class="tooltips-right" ng-click="viewReviewTask(task)">{{task.summary}}<span> Click to open reviewer view</span></a></td>
               <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }"> {{task.key}} </td>
               <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'"> {{task.updated | date: "yyyy-MM-dd":"UTC"}} </td>
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'assignee.displayName'"

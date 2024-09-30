@@ -16,7 +16,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           permissionService.setRolesForBranch(null, []);
           $q.all([terminologyServerService.getEndpoint(), metadataService.isProjectsLoaded()]).then(function() {
               defer.resolve();
-          });       
+          });
           return defer.promise;
           }
         ]
@@ -36,11 +36,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.projects = [];
       $scope.browserLink = '..';
       $scope.preferences = {};
-    
+
       $scope.typeDropdown = ['All'];
       $scope.selectedType = {type:''};
       $scope.selectedType.type = $scope.typeDropdown[0];
-      
+
       if (!$rootScope.reviewTaskFilter || Object.keys($rootScope.reviewTaskFilter).length === 0) {
         $rootScope.reviewTaskFilter = {};
       }
@@ -77,7 +77,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           getData: function ($defer, params) {
 
             // Store display number to local storage, then can be re-used later
-            if (!localStorageService.get('table-display-number') 
+            if (!localStorageService.get('table-display-number')
                 || params.count() !== localStorageService.get('table-display-number')) {
                 localStorageService.set('table-display-number', params.count());
             }
@@ -89,9 +89,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             } else {
 
               var searchStr = params.filter().search;
-             
+
               var mydata = [];
-                
+
               if($scope.selectedType.type !== 'All'){
                    mydata = $scope.reviewTasks.filter(function (item) {
                     if ($scope.selectedType.type === 'International') {
@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                         return item.codeSystem.maintainerType === $scope.selectedType.type
                     }
                     else return -1
-                  }); 
+                  });
                 }
 
               if (searchStr) {
@@ -133,15 +133,15 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               }
 
               params.total(mydata.length);
-              
+
               mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
-              
+
               if(params.sorting().feedbackMessageDate === 'asc' || params.sorting().feedbackMessageDate === 'desc'){
                 mydata.sort(function (a, b) {
                     return sortFeedbackFn(a, b, params.sorting().feedbackMessageDate);
                 });
               }
-              
+
               if(params.sorting().status === 'asc' || params.sorting().status === 'desc'){
                 mydata.sort(function (a, b) {
                     return sortStatusFn(a, b, params.sorting().status);
@@ -192,7 +192,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             return result;
         }
       }
-      
+
       function sortFeedbackFn (a, b, direction) {
         if (a.feedbackMessageDate && b.feedbackMessageDate &&
             a.feedbackMessagesStatus === 'unread' && b.feedbackMessagesStatus === 'unread') {
@@ -227,7 +227,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         $rootScope.reviewTaskFilter.showNewEdits = $scope.showNewEdits;
         $scope.reviewTableParams.reload();
       };
-    
+
       $scope.matchTasksToProjects = function() {
             angular.forEach($scope.reviewTasks, function (task) {
                 angular.forEach($scope.projects, function (project) {
@@ -255,6 +255,9 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         scaService.getReviewTasks($scope.showPromotedReviews ? false : true).then(function (response) {
           $scope.reviewTasks = response;
           $scope.matchTasksToProjects();
+          if ($scope.reviewTasks.length !== 0) {
+            getAllAwaitingCompletionStates();
+          }
           if ($scope.reviewTasks) {
             notificationService.sendMessage('All tasks loaded', 5000);
           }
@@ -349,7 +352,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         } else {
           $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
         }
-      };     
+      };
 
       //
       // Multi-task selection/action functions
@@ -392,15 +395,15 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.unassignSelectedClaimedTasks = function () {
         var promises = [];
-        
+
         // update all tasks and push promises into array
         angular.forEach($scope.getSelectedClaimedTasks(), function (task) {
           task.reviewers = task.reviewers ? task.reviewers : [];
           var i = task.reviewers.length;
-          while (i--) {              
-            if (task.reviewers[i].username === $rootScope.accountDetails.login) { 
+          while (i--) {
+            if (task.reviewers[i].username === $rootScope.accountDetails.login) {
               task.reviewers.splice(i, 1);
-            } 
+            }
           }
           promises.push(scaService.updateTask(task.projectKey, task.key, {'reviewers': task.reviewers}));
         });
@@ -451,7 +454,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.assignSelectedUnclaimedTasks = function () {
         var promises = [];
-        
+
         // update all tasks and push promises into array
         angular.forEach($scope.getSelectedUnclaimedTasks(), function (task) {
           var reviewers = task.reviewers ? task.reviewers : [];
@@ -480,13 +483,40 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         }
         return false;
       }
-      
+
       $scope.refreshTable = function () {
             $scope.preferences.selectedType = $scope.selectedType.type;
             accountService.saveUserPreferences($scope.preferences).then(function (response) {
             });
             $scope.reviewTableParams.reload();
-        }
+      }
+
+      function getAllAwaitingCompletionStates() {
+        var promises = [];
+
+        angular.forEach($scope.reviewTasks, function (task) {
+          if(task.status === 'In Review') {
+            promises.push(scaService.getUiStateForReviewTask(task.projectKey, task.key, 'awating-completion-state'));
+          }          
+        });
+
+        // on resolution of all promises
+        $q.all(promises).then(function (responses) {
+          const awaitingCompletionStates = responses.filter(function (response) {
+            return response !== null;
+          });
+          angular.forEach($scope.reviewTasks, function (task) {
+            const awaitingCompletionState = awaitingCompletionStates.find(function (response) {
+              return response.taskKey === task.key && response.projectKey === task.projectKey;
+            });
+            if (awaitingCompletionState) {
+              task.awaitingCompletion = awaitingCompletionState.status;
+            }
+          });
+        }, function (error) {
+          console.error('Unexpected error retrieving the awaiting completion state: ' + error);
+        });
+      }
 
 // Initialization:  get tasks and classifications
       function initialize() {

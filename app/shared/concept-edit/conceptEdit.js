@@ -1915,6 +1915,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
               }
             });
+            scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'awating-completion-state', {'status': false, 'taskKey': $routeParams.taskKey, 'projectKey': $routeParams.projectKey});
           });
         }
 
