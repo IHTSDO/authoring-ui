@@ -307,24 +307,54 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.getEditPanel = function () {
-      scaService.getUiStateForTask(
-        $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-        .then(function (uiState) {
-            $scope.concepts = [];
-            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-              $scope.editList = [];
+      var promises = [];
+      promises.push(scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel'));
+      promises.push(scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'modified-list'));
+      
+      // on resolution of all promises
+      $q.all(promises).then(function (responses) {
+        $scope.concepts = [];
+        if (!responses[0] || Object.getOwnPropertyNames(responses[0]).length === 0) {
+          $scope.editList = [];
+        }
+        else {
+          $scope.editList = responses[0];
+        }
+        
+        // Check whether or not the modified list is in the edit panel
+        var modifiedListNotInEditPanel = [];
+        if (responses[1] && Object.getOwnPropertyNames(responses[1]).length !== 0) {
+          for (var i = 0; i < responses[1].length; i++) {
+            if ($scope.editList.indexOf(responses[1][i]) === -1) {
+              modifiedListNotInEditPanel.push(responses[1][i]);
             }
-            else {
-              $scope.editList = uiState;
-              for (var i = 0; i < $scope.editList.length; i++) {
-                $scope.addConceptToListFromId($scope.editList[i]);
-              }
-            }
-
           }
-        );
-    };
+        }
 
+        // Make sure the modified items have actually been changed
+        if (modifiedListNotInEditPanel.length > 0) {
+          var promises = [];
+          for (var i = 0; i < modifiedListNotInEditPanel.length; i++) {
+            promises.push(scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, modifiedListNotInEditPanel[i]));
+          }
+
+          // on resolution of all promises
+          $q.all(promises).then(function (responses) {
+            var modifiedConcepts = responses.filter(function(concept){return concept !== null});
+            angular.forEach(modifiedConcepts, function(concept){
+              $scope.editList.push(concept.conceptId);
+            });
+            for (var i = 0; i < $scope.editList.length; i++) {
+              $scope.addConceptToListFromId($scope.editList[i]);
+            }
+          });
+        } else {
+          for (var i = 0; i < $scope.editList.length; i++) {
+            $scope.addConceptToListFromId($scope.editList[i]);
+          }
+        }
+      });
+    };
 
     $scope.getClassificationEditPanel = function () {
       scaService.getUiStateForTask(
@@ -1905,7 +1935,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
       });
-    };    
+    };
 
     function doClassify() {
        // start the classification
@@ -2175,7 +2205,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
           }
           getRoleForTask().then(function() {
-            metadataService.setExtensionMetadata($scope.project.metadata); 
+            metadataService.setExtensionMetadata($scope.project.metadata);
             populateModuleNamesIfRequired();
             if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY') {
               crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
