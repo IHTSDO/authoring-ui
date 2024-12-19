@@ -108,9 +108,9 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
         if (response.users.items.length > 0) {
           angular.forEach(response.users.items, function (item) {
             var user = {};
-            user.avatarUrl = item.avatarUrls['16x16'];
+            // user.avatarUrl = item.avatarUrls['16x16'];
             user.displayName = item.displayName;
-            user.email = item.emailAddress;
+            // user.email = item.emailAddress;
             user.username = item.name;
             $scope.users.push(user);
 

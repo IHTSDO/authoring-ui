@@ -100,9 +100,9 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(response.users.items, function (item) {
                   if (item.key !== $rootScope.accountDetails.login) {
                     var user = {};
-                    user.avatarUrl = item.avatarUrls['16x16'];
+                    // user.avatarUrl = item.avatarUrls['16x16'];
                     user.displayName = item.displayName;
-                    user.email = item.emailAddress;
+                    // user.email = item.emailAddress;
                     user.username = item.name;
                     users.push(user);
                   }

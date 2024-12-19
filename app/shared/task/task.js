@@ -180,9 +180,9 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(response, function (item) {
           if (item.active && !isTaskAuthorOrReviewer(item.name)) {
             var user = {};
-            user.avatarUrl = item.avatarUrls['16x16'];
+            // user.avatarUrl = item.avatarUrls['16x16'];
             user.displayName = item.displayName;
-            user.email = item.emailAddress;
+            // user.email = item.emailAddress;
             user.username = item.name;
             results.push(user);
           }
