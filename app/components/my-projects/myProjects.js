@@ -263,6 +263,8 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         });
         if ($scope.projectKeys.length !== 0) {
           loadProjects();
+        } else {
+          notificationService.sendMessage('Projects loaded', 5000);
         }
       });
     }
