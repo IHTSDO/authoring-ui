@@ -310,7 +310,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       var promises = [];
       promises.push(scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel'));
       promises.push(scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'modified-list'));
-      
+
       // on resolution of all promises
       $q.all(promises).then(function (responses) {
         $scope.concepts = [];
@@ -320,7 +320,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         else {
           $scope.editList = responses[0];
         }
-        
+
         // Check whether or not the modified list is in the edit panel
         var modifiedListNotInEditPanel = [];
         if (responses[1] && Object.getOwnPropertyNames(responses[1]).length !== 0) {
@@ -1148,6 +1148,20 @@ angular.module('singleConceptAuthoringApp.edit', [
                 }
             });
           }
+        }
+        if (clonedConcept.annotations && clonedConcept.annotations.length > 0) {
+          var clonedAnnotations = [];
+          for (let index = 0; index < clonedConcept.annotations.length; index++) {
+            var annotation = clonedConcept.annotations[index];
+            if (annotation.active) {
+              annotation.annotationId = terminologyServerService.createGuid();
+              delete annotation.effectiveTime;
+              annotation.released = false;
+              annotation.moduleId = metadataService.getCurrentModuleId();
+              clonedAnnotations.push(annotation);
+            }
+          }
+          clonedConcept.annotations = clonedAnnotations;
         }
 
         // cloning an inactive concept if it has no classAxioms, then add a new axiom to it
