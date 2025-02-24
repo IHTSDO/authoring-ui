@@ -66,7 +66,7 @@ angular.module('singleConceptAuthoringApp')
           else if(validationReportFound){
             $location.path(scope.notification.url).search('expandValidation', 'true');
           }
-          else if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
+          else if (scope.notification.url.endsWith($location.url()) || $location.url().endsWith(scope.notification.url)) {
             $route.reload();
           }
           else{
