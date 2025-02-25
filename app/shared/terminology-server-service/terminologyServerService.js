@@ -2130,6 +2130,8 @@ angular.module('singleConceptAuthoringApp')
               }, function (error) {
                 deferred.reject('Could not retrieve details of reported current review');
               });
+            } else if (response && response.data && response.data.status === 'FAILED') {
+              deferred.reject('Rebase failed. Please contact technical support to get help resolving this.');
             } else {
               pollForReview(mergeReviewId, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
@@ -2183,15 +2185,13 @@ angular.module('singleConceptAuthoringApp')
       function getMergeReviewDetails(mergeReviewId) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
-          console.log(response);
           if (response && response.data && response.data.status === 'CURRENT') {
             $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
               deferred.resolve(normaliseSnowstormMergeReviewConcepts(response2.data, mergeReviewId));
             }, function (error) {
               deferred.reject(null);
             });
-          }
-          else{
+          } else{
               deferred.resolve(null);
           }
         }, function (error) {
