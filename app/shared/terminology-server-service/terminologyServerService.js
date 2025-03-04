@@ -1843,7 +1843,7 @@ angular.module('singleConceptAuthoringApp')
       ////////////////////////////////
 
       // Get traceability log for branch
-      // GET /traceability-service/activities?onBranch=
+      // GET /authoring-traceability-service/activities?onBranch=
       function getTraceabilityForBranch(branch, conceptId, activityType, brief) {
         console.log(brief);
         var deferred = $q.defer();
@@ -1861,7 +1861,7 @@ angular.module('singleConceptAuthoringApp')
           params += '&brief=true'
         }
 
-        $http.get('/traceability-service/activities?' + params).then(function (response) {
+        $http.get('/authoring-traceability-service/activities?' + params).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           if (error.status === 404) {
@@ -1875,14 +1875,14 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // Get last promotion for branch
-      // GET /traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
+      // GET /authoring-traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
       function getLastPromotionTimeToMain(branchRoot) {
         if(!branchRoot) {
           console.error('Error retrieving last promotion time: Branh root is missing');
           return null;
         }
         var params = 'page=0&size=1&sort=commitDate%2Cdesc&sourceBranch=' + encodeURIComponent(branchRoot);
-        return $http.get('/traceability-service/activities/promotions?' + params).then(function (response) {
+        return $http.get('/authoring-traceability-service/activities/promotions?' + params).then(function (response) {
           return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
         }, function (error) {
           return null;
@@ -1897,7 +1897,7 @@ angular.module('singleConceptAuthoringApp')
           return null;
         }
         var params = 'onBranch=' + encodeURIComponent(branchRoot) +'&includeHigherPromotions=false&activityType=REBASE&intOnly=false&brief=true&summaryOnly=true&page=0&size=20&sort=commitDate%2Cdesc';
-        return $http.get('/traceability-service/activities?' + params).then(function (response) {
+        return $http.get('/authoring-traceability-service/activities?' + params).then(function (response) {
           return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
         }, function (error) {
           return null;
@@ -1905,14 +1905,14 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // Get last promotion for branch
-      // GET /traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
+      // GET /authoring-traceability-service/activities/promotions?page=0&size=1&sort=commitDate,desc&sourceBranch=
       function getLastTaskPromotionTime(branchRoot) {
         if(!branchRoot) {
           console.error('Error retrieving last promotion time: Branch root is missing');
           return null;
         }
         var params = 'page=0&size=1&sort=commitDate%2Cdesc&onBranch=' + encodeURIComponent(branchRoot);
-        return $http.get('/traceability-service/activities?' + params).then(function (response) {
+        return $http.get('/authoring-traceability-service/activities?' + params).then(function (response) {
           return response.data && response.data.content && response.data.content[0] ? response.data.content[0].commitDate : null;
         }, function (error) {
           return null;
@@ -1926,7 +1926,7 @@ angular.module('singleConceptAuthoringApp')
           return null;
         }
 
-        return $http.post('/traceability-service/activities/branches/last', branches).then(function (response) {
+        return $http.post('/authoring-traceability-service/activities/branches/last', branches).then(function (response) {
           return response.data;
         }, function (error) {
           return null;

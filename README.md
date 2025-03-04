@@ -95,8 +95,8 @@ http {
             proxy_set_header Accept "application/json";
         }
 
-        location /traceability-service {
-            proxy_pass https://www.example.com/traceability-service;
+        location /authoring-traceability-service {
+            proxy_pass https://www.example.com/authoring-traceability-service;
         }
     }
 }
