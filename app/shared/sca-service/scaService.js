@@ -1766,13 +1766,28 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        removeIssueLink: function (issueKey, linkId) {
+        removeCrsTaskForGivenRequestJiraKey: function (issueKey, linkId) {
           if (!issueKey || !linkId) {
             console.error('Must specify task key or link issue key');
             return null;
           }
 
           return $http.delete(apiEndpoint + 'issue-key/' + issueKey +'/issue-link/'+ linkId).then(
+            function (response) {
+              return response;
+            }, function (error) {
+              return error;
+            }
+          );
+        },
+
+        removeCrsTaskForGivenRequestId: function (projectKey, taskKey, crsId) {
+          if (!projectKey || !taskKey || !crsId) {
+            console.error('Must specify task key or project key or request id');
+            return null;
+          }
+
+          return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/crs-request/' + crsId).then(
             function (response) {
               return response;
             }, function (error) {
