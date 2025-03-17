@@ -1104,7 +1104,7 @@ angular.module('singleConceptAuthoringApp')
         selectedTemplate = null;
         deferred.resolve();
       } else {
-        initializeTemplate(template).then(function (t) {
+        initializeTemplate(angular.copy(template)).then(function (t) {
           selectedTemplate = t;
           deferred.resolve(selectedTemplate);
         });
