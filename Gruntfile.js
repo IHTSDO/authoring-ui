@@ -32,19 +32,12 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
-      bower: {
-        files: ['bower.json']
-      },
       js: {
         files: ['<%= yeoman.app %>/components/{,*/}*.js', '<%= yeoman.app %>/shared/{,*/}*.js', '<%= yeoman.app %>/components/**/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
           livereload: '<%= connect.options.livereload %>'
         }
-      },
-      jsTest: {
-        files: ['<%= yeoman.app %>/components/{,*/}*.spec.js', '<%= yeoman.app %>/components/**/{,*/}*.spec.js'],
-        tasks: ['karma']
       },
       compass: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -176,13 +169,13 @@ module.exports = function (grunt) {
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
-        sassDir: '<%= yeoman.app %>/styles',
+        sassDir: 'app/styles',
         cssDir: '.tmp/styles',
         generatedImagesDir: '.tmp/images/generated',
         imagesDir: '<%= yeoman.app %>/images',
         javascriptsDir: '<%= yeoman.app %>/components',
         fontsDir: '<%= yeoman.app %>/fonts',
-        importPath: './node_modules',
+        importPath: './node_modules/compass/lib/compass.js',
         httpImagesPath: '/images',
         httpGeneratedImagesPath: '/images/generated',
         httpFontsPath: '/fonts',
@@ -192,7 +185,7 @@ module.exports = function (grunt) {
       },
       dist: {
         options: {
-          generatedImagesDir: '<%= yeoman.dist %>/images/generated'
+          generatedImagesDir: 'dist/images/generated'
         }
       },
       server: {
@@ -341,12 +334,8 @@ module.exports = function (grunt) {
           cwd: '<%= yeoman.app %>/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
-        }, {
-          expand: true,
-          cwd: '.',
-          src: 'node_modules/bootstrap-sass-official/assets/fonts/bootstrap/*',
-          dest: '<%= yeoman.dist %>'
-        }, {
+        },
+        {
           expand: true,
           cwd: '.',
           src: 'node_modules/snomed-ecl-builder/output/*',
@@ -398,7 +387,6 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'concurrent:server',
       'autoprefixer:server',
       'connect:livereload',
       'watch'
@@ -420,8 +408,8 @@ module.exports = function (grunt) {
     'cssmin',
     'filerev',
     'usemin',
-    'htmlmin',
-    'cacheBust'
+    'htmlmin'
+    //'cacheBust'
   ]);
   
   grunt.registerTask('test', [
