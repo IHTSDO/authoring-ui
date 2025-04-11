@@ -175,7 +175,7 @@ module.exports = function (grunt) {
         imagesDir: '<%= yeoman.app %>/images',
         javascriptsDir: '<%= yeoman.app %>/components',
         fontsDir: '<%= yeoman.app %>/fonts',
-        importPath: 'node_modules/compass/lib/compass.js',
+        importPath: './node_modules/compass/lib/compass.js',
         httpImagesPath: '/images',
         httpGeneratedImagesPath: '/images/generated',
         httpFontsPath: '/fonts',
