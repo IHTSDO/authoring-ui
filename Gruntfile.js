@@ -194,6 +194,18 @@ module.exports = function (grunt) {
         }
       }
     },
+    
+    sass: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'app/styles',
+          src: ['*.scss'],
+          dest: '.tmp/styles',
+          ext: '.css'
+        }]
+      }
+    },
 
     // Renames files for browser caching purposes
     filerev: {
@@ -368,13 +380,10 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'compass:server'
-      ],
-      test: [
-        'compass'
+        'sass'
       ],
       dist: [
-        'compass:dist'
+        'sass'
       ]
     }
   });
