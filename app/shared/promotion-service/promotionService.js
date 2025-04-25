@@ -325,9 +325,9 @@ angular.module('singleConceptAuthoringApp')
                 blocksPromotion: false
               });
             }
-            flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);
-
-            deferred.resolve(flags);
+            checkCrsConceptsPrerequisites(projectKey, taskKey, flags).then(function(flags) {
+              deferred.resolve(flags);
+            });
           }, function (error) {
             deferred.reject('Could not retrieve task details: ' + error);
           });
@@ -377,8 +377,9 @@ angular.module('singleConceptAuthoringApp')
         }
 
         checkClassificationPrerequisites(branch, task.latestClassificationJson, projectKey, taskKey).then(function (flags) {
-          flags = checkCrsConceptsPrerequisites(projectKey, taskKey, flags);
-          deferred.resolve(flags);
+          checkCrsConceptsPrerequisites(projectKey, taskKey, flags).then(function (flags) {
+            deferred.resolve(flags);
+          });
         }, function (error) {
           deferred.reject(error);
         });
@@ -390,6 +391,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function checkCrsConceptsPrerequisites (projectKey, taskKey, flags) {
+      var deferred = $q.defer();
       var crsConcepts = crsService.getCrsConcepts();
       var deletedCRSConceptFound = false;
       angular.forEach(crsConcepts, function(concept, key) {
@@ -405,7 +407,26 @@ angular.module('singleConceptAuthoringApp')
                     blocksPromotion: false
                   });
       }
-      return flags;
+      crsService.getCrsConceptsForTask(projectKey, taskKey).then(function(crsConcept) {        
+        if (crsConcept && crsConcept.length > 0) {
+          var unsavedCrsRequests = [];
+          angular.forEach(crsConcept, function (concept) {
+            if (!concept.saved) {
+              unsavedCrsRequests.push(concept.crsId);
+            }
+          });
+          if (unsavedCrsRequests.length !== 0) {
+            flags.push({
+              checkTitle: 'Unsaved CRS Requests Detected',
+              checkWarning: 'The following requests have not been saved: ' + unsavedCrsRequests.join(', '),
+              blocksPromotion: false
+            });
+          }
+        }
+        deferred.resolve(flags);
+      });
+
+      return deferred.promise;
     }
 
     function checkPrerequisitesForProject(projectKey) {

@@ -14,7 +14,7 @@
       </div>
       <div class="col-md-1"> </div>
     </div>
-    <div class="row" ng-show="reviewChecks.classificationStatuses.length > 0">  
+    <div class="row" ng-show="reviewChecks.classificationStatuses.length > 0">
       <div class="col-md-10">
         <div class="row p-b-10" ng-repeat="flag in reviewChecks.classificationStatuses">
           <div class="col-md-1"></div>
@@ -29,9 +29,9 @@
           </div>
           <div class="col-md-1"></div>
         </div>
-      </div>  
+      </div>
     </div>
-    <div class="row" ng-show="reviewChecks.unsavedConcepts.length > 0"> 
+    <div class="row" ng-show="reviewChecks.unsavedConcepts.length > 0">
       <br>
       <div class="col-md-10">
         <div class="col-md-1"></div>
@@ -47,9 +47,20 @@
             </tr>
           </table>
         </div>
-      </div>  
+      </div>
     </div>
-
+    <div class="row" ng-show="reviewChecks.unsavedCrsRequests.length > 0">
+      <div class="col-md-1"></div>
+      <div class="col-md-1">
+        <h4> <span class="md md-warning orange p-5"></span> </h4>
+      </div>
+      <div class="col-md-10">
+        <div class="col-md-12 no-padding">
+          <h4>Unsaved CRS Requests Detected</h4>
+        </div>
+        <div class="col-md-12 no-padding">The following requests have not been saved: {{reviewChecks.unsavedCrsRequests.join(", ")}}</div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <div class="row col-md-12 no-padding top-modal">

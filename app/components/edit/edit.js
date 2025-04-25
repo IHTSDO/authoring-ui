@@ -2030,7 +2030,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0 && reviewChecks.classificationStatuses.length === 0) {
+            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0 && reviewChecks.classificationStatuses.length === 0 && reviewChecks.unsavedCrsRequests.length === 0) {
               reviewService.submitForReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Submitted for review', 3000);

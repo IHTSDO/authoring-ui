@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles IMS authentication, user roles, and user settings
  */
-  .factory('reviewService', function ($http, $rootScope, $q, scaService, terminologyServerService) {
+  .factory('reviewService', function ($http, $rootScope, $q, scaService, crsService, terminologyServerService) {
 
     //
     // Helper function to mark the task for review
@@ -301,6 +301,22 @@ angular.module('singleConceptAuthoringApp')
         return lastClassificationSaved === lastModifiedTime;
     }
 
+    function checkCrsRequests(task, results) {
+      var deferred = $q.defer();
+      crsService.getCrsConceptsForTask(task.projectKey, task.key).then(function(crsConcept) {
+        if (crsConcept && crsConcept.length > 0) {
+          angular.forEach(crsConcept, function (concept) {
+            if (!concept.saved) {
+              results.unsavedCrsRequests.push(concept.crsId);
+            }
+          });
+        }
+        deferred.resolve(results);
+      });
+         
+      return deferred.promise;
+    }
+
     function checkReviewPrerequisites(task) {
       var deferred = $q.defer();
 
@@ -309,11 +325,13 @@ angular.module('singleConceptAuthoringApp')
         unsavedConcepts: [],
         hasChangedContent: false,
         messages: [],
-        classificationStatuses: []
+        classificationStatuses: [],
+        unsavedCrsRequests: []
       };
 
-      var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results), checkClassificationPrerequisites(task.branchPath,task.latestClassificationJson,results)];
+      var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results), checkClassificationPrerequisites(task.branchPath,task.latestClassificationJson,results), checkCrsRequests(task, results)];
       $q.all(promises).then(function () {
+        console.log(results);
         deferred.resolve(results);
       }, function (error) {
         deferred.reject('Error checking review prerequisites: ' + error);

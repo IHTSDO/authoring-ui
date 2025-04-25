@@ -829,6 +829,7 @@ angular.module('singleConceptAuthoringApp')
         saveCrsConcept: saveCrsConcept,
         getCrsTaskComment: getCrsTaskComment,
         getCrsRequestsStatus: getCrsRequestsStatus,
+        getCrsConceptsForTask: getCrsConceptsForTask,
 
         crsFilter: crsFilter,
         rejectCrsConcept: rejectCrsConcept,
