@@ -306,8 +306,8 @@ angular.module('singleConceptAuthoringApp')
       crsService.getCrsConceptsForTask(task.projectKey, task.key).then(function(crsConcept) {
         if (crsConcept && crsConcept.length > 0) {
           angular.forEach(crsConcept, function (concept) {
-            if (!concept.saved) {
-              results.unsavedCrsRequests.push(concept.crsId);
+            if (!concept.saved && concept.isNewConcept && terminologyServerService.isSctid(concept.conceptId)) {
+              results.unsavedCrsRequests.push(concept.conceptId + ' (Request ID: ' + concept.crsId + ')');
             }
           });
         }

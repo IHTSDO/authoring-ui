@@ -411,14 +411,14 @@ angular.module('singleConceptAuthoringApp')
         if (crsConcept && crsConcept.length > 0) {
           var unsavedCrsRequests = [];
           angular.forEach(crsConcept, function (concept) {
-            if (!concept.saved) {
-              unsavedCrsRequests.push(concept.crsId);
+            if (!concept.saved && concept.isNewConcept && terminologyServerService.isSctid(concept.conceptId)) {
+              unsavedCrsRequests.push(concept.conceptId + ' (Request ID: ' + concept.crsId + ')');
             }
           });
           if (unsavedCrsRequests.length !== 0) {
             flags.push({
-              checkTitle: 'Unsaved CRS Requests Detected',
-              checkWarning: 'The following requests have not been saved: ' + unsavedCrsRequests.join(', '),
+              checkTitle: 'Unsaved requested promotion concept ID detected',
+              checkWarning: 'The following concepts have not been saved: ' + unsavedCrsRequests.join(', '),
               blocksPromotion: false
             });
           }
