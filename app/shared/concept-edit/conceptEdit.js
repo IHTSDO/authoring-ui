@@ -2595,8 +2595,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       delete scope.descriptionIndexToOptionalLanguagesMap[keys[i]];
                     }
                   }
-
                   autoSave();
+                  afterIndex++; // Increase index if there are multiple descriptions added at the same time (for example: Swiss extension)
                 }
             })
           } else {
