@@ -57,13 +57,13 @@
    }
    .validation-report.report-table thead tr > th input[type=checkbox]:checked:before{
        position: absolute;
-       top: unset;       
+       top: unset;
        margin-top: 2px;
        margin-left: -1px;
    }
-   .validation-report.report-table thead tr > th input[type=checkbox].project:checked:before{      
+   .validation-report.report-table thead tr > th input[type=checkbox].project:checked:before{
       left: 49px;
-    }    
+    }
   .validation-report.report-table thead tr > th input[type=checkbox]:after {
       margin-top: 2px;
   }
@@ -88,7 +88,7 @@
   }
   .jira-ticket-generation-modal .modal-body .table > thead tr > th input[type=checkbox]:checked:before{
     position: absolute;
-    top: unset;       
+    top: unset;
     margin-top: -1px;
     margin-left: 31px;
   }
@@ -98,7 +98,7 @@
 
   .add-exception-popup {
     input[type="radio"] {
-        margin-left: -20px; 
+        margin-left: -20px;
         margin-top: 0px;
     }
     textarea.form-control {
@@ -106,19 +106,19 @@
     }
     .datepicker {
         input {
-            margin-left: 10px; 
-            height: 30px; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-            padding-left: 10px; 
+            margin-left: 10px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding-left: 10px;
             width: 120px;
         }
         button {
-            height: 30px; 
-            padding-top: 6px; 
+            height: 30px;
+            padding-top: 6px;
             margin-top: -2px;
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
             margin-left: -2px;
         }
     }
@@ -126,9 +126,20 @@
 
   .reason-more {
       p {
-        padding-top: 10px; 
-        padding-left: 5px; 
+        padding-top: 10px;
+        padding-left: 5px;
         padding-right: 5px;
         max-width: 700px;
       }
+  }
+  .copyToClipboard-success {
+    visibility: visible;
+    opacity: 1;
+    z-index: 10001;
+    min-width: unset !important;
+    left: 100%;
+    top: 50%;
+    margin-top: -10px;
+    margin-left: 10px; 
+    display: none;
   }

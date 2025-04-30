@@ -59,7 +59,7 @@
   <div class="validation-report report-table" ng-show="!isCollapsed && (validationContainer.executionStatus == 'COMPLETED' || validationContainer.executionStatus == 'STALE')">
     <div role="tabpanel" class="">
       <div class="row" ng-if="viewTop && validationContainer.report">
-        <div class="col-md-8 m-l-5 m-b-5 m-t-5 pull-left" ng-if="!hideAssertionGroupLabel">
+        <div class="col-md-8 m-b-5 m-t-5 pull-left" ng-if="!hideAssertionGroupLabel">
           <label class="pull-left" style="padding-top: 6px; color: inherit;">SQL Assertion Groups:&nbsp;</label>
           <span ng-repeat="group in validationContainer.report.rvfValidationResult.validationConfig.groupsList" class="pull-left" style="padding-top: 6px;">
             <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}" target="_blank">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
@@ -69,7 +69,7 @@
             <a href="{{apiEndpoint}}/validation-browser/?assertionGroup={{group}}" target="_blank">{{group}}</a>{{!$last ? ',&nbsp;' : ''}}
           </span>
         </div>
-        <div class="col-md-3 m-r-5 m-b-5 m-t-5 pull-right">
+        <div class="col-md-4 p-l-0 m-b-5 m-t-5 pull-right">
           <select id="issue-type" style="width: auto; display: inline-block;" ng-model="issueType.type" ng-change="reloadTables()" name="select-type" class="table-search form-control pull-right">
             <option value="">All</option>
             <option value="technical">Technical Issues</option>
@@ -77,6 +77,7 @@
           </select>
           <label for="issue-type" class="pull-right p-r-10" style="padding-top: 6px; color: inherit;">View: </label>
           <button ng-if="isRaiseJiraTicketDisabled()" ng-click="openRaiseTicketModal()" class="btn btn-default btn-green pull-right m-r-15"><div>Raise Tickets</div></button>
+          <button ng-click="toogleAssertionIdVisibility();" class="btn btn-default btn-blue pull-right m-r-15"><div>{{showAssertionUuid ? 'Hide' : 'Show'}} Assertion ID</div></button>
         </div>
       </div>
       <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && failedAssertionsTableParams.total() === 0 && warningAssertionsTableParams.total() === 0"> No validation results to display </div>
@@ -85,6 +86,9 @@
           ng-table="failedAssertionsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table">
           <tr ng-repeat="assertion in $data" ng-if="assertion.failureCount != 0" title="{{assertion.failureCount == -1 ? assertion.failureMessage : ''}}">
+            <td data-title="'Assertion ID'" style="min-width: 270px;" ng-show="showAssertionUuid">
+              <i class="md md-content-copy m-r-5 tooltips-right" style="cursor: pointer;" ng-click="copyToClipboard($event, assertion.assertionUuid)"><span class="copyToClipboard-success">Copied!</span></i>{{assertion.assertionUuid}}
+            </td>
             <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'" ng-class="{'red-text' :assertion.failureCount == -1}">
               {{assertion.assertionText}}
             </td>
@@ -114,6 +118,9 @@
           ng-table="warningAssertionsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table">
           <tr ng-repeat="assertion in $data" ng-if="assertion.failureCount != 0" title="{{assertion.failureCount == -1 ? assertion.failureMessage : ''}}">
+            <td data-title="'Assertion ID'" style="min-width: 270px;" ng-show="showAssertionUuid">
+              <i class="md md-content-copy m-r-5 tooltips-right" style="cursor: pointer;" ng-click="copyToClipboard($event, assertion.assertionUuid)"><span class="copyToClipboard-success">Copied!</span></i>{{assertion.assertionUuid}}
+            </td>
             <td header-title="'Click to sort'" data-title="'Warning Assertions'" sortable="'assertionText'" ng-class="{'red-text' :assertion.failureCount == -1}">
               {{assertion.assertionText}}
             </td>

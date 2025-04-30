@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService', 'aagService',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService, aagService) {
+  .directive('validation', ['$rootScope', '$filter', '$q', '$window', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'terminologyServerService', 'notificationService', 'accountService', '$timeout', '$modal','metadataService', 'aagService',
+    function ($rootScope, $filter, $q, $window, NgTableParams, $routeParams, configService, validationService, scaService, terminologyServerService, notificationService, accountService, $timeout, $modal, metadataService, aagService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -65,6 +65,7 @@ angular.module('singleConceptAuthoringApp')
           scope.allWhitelistItems = [];
           scope.viewFullListException = false;
           scope.exceptionLoading = false;
+          scope.showAssertionUuid = false;
           scope.issueType = {type: ''};
           scope.apiEndpoint = terminologyServerService.apiEndpoint;
           scope.allowDownloadDailyBuildPackage = attrs.allowDownloadDailyBuildPackage === 'true';
@@ -289,7 +290,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
-          
+
 
           // sets view to top and clears viewed concept list
           scope.setViewTop = function () {
@@ -844,7 +845,7 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsFailed;
             scope.assertionsWarning = scope.validationContainer.report.rvfValidationResult.TestResult.assertionsWarning;
-            
+
             var assertionExclusionList = scope.validationContainer.report.rvfValidationResult.validationConfig.assertionExclusionList;
             if (assertionExclusionList && assertionExclusionList.length > 0) {
               validationService.getAllAssertions().then(function (assertions) {
@@ -1476,6 +1477,35 @@ angular.module('singleConceptAuthoringApp')
               });
             });
 
+          };
+
+          scope.toogleAssertionIdVisibility = function () {
+            scope.showAssertionUuid = !scope.showAssertionUuid;
+          };
+
+          scope.copyToClipboard = function(event, toCopy) {
+            var body = angular.element($window.document.body);
+            var textarea = angular.element('<textarea/>');
+            textarea.css({
+              position: 'fixed',
+              opacity: '0'
+            });
+            textarea.val(toCopy);
+            body.append(textarea);
+            textarea[0].select();
+
+            try {
+              var successful = document.execCommand('copy');
+              if (!successful) throw successful;
+              var tooltipElement = angular.element(event.target.querySelector('span'));
+              tooltipElement.css('display', 'block');
+              setTimeout(function(){
+                tooltipElement.css('display', 'none');
+              }, 1500);
+            } catch (err) {
+              console.log("failed to copy", toCopy);
+            }
+            textarea.remove();
           };
 
           function initialize() {
