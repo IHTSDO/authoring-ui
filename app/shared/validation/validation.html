@@ -86,7 +86,7 @@
           ng-table="failedAssertionsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table">
           <tr ng-repeat="assertion in $data" ng-if="assertion.failureCount != 0" title="{{assertion.failureCount == -1 ? assertion.failureMessage : ''}}">
-            <td data-title="'Assertion ID'" style="min-width: 270px;" ng-show="showAssertionUuid">
+            <td data-title="'Assertion ID'" style="min-width: 270px; width: 280px;" ng-show="showAssertionUuid">
               <i class="md md-content-copy m-r-5 tooltips-right" style="cursor: pointer;" ng-click="copyToClipboard($event, assertion.assertionUuid)"><span class="copyToClipboard-success">Copied!</span></i>{{assertion.assertionUuid}}
             </td>
             <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'" ng-class="{'red-text' :assertion.failureCount == -1}">
@@ -118,7 +118,7 @@
           ng-table="warningAssertionsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table">
           <tr ng-repeat="assertion in $data" ng-if="assertion.failureCount != 0" title="{{assertion.failureCount == -1 ? assertion.failureMessage : ''}}">
-            <td data-title="'Assertion ID'" style="min-width: 270px;" ng-show="showAssertionUuid">
+            <td data-title="'Assertion ID'" style="min-width: 270px;width: 280px;" ng-show="showAssertionUuid">
               <i class="md md-content-copy m-r-5 tooltips-right" style="cursor: pointer;" ng-click="copyToClipboard($event, assertion.assertionUuid)"><span class="copyToClipboard-success">Copied!</span></i>{{assertion.assertionUuid}}
             </td>
             <td header-title="'Click to sort'" data-title="'Warning Assertions'" sortable="'assertionText'" ng-class="{'red-text' :assertion.failureCount == -1}">

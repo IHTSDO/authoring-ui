@@ -1029,8 +1029,9 @@ angular.module('singleConceptAuthoringApp')
                   conceptId: 'Concept ID',
                   conceptFsn : 'FSN'
                 });
-                var fileName = 'validation_' + (new Date()).getTime();
-                scope.dlcDialog(convertToCSV(objArray), fileName, 'text/tab-separated-values');
+                var fileName = 'validation_' + assertionFailure.assertionUuid + '_' + (new Date()).getTime();
+                var data = 'Failures for assertion ' + assertionFailure.assertionUuid + ' - '+ assertionFailure.assertionText + '\n\n' + convertToCSV(objArray);
+                scope.dlcDialog(data, fileName, 'text/tab-separated-values');
               });
               }
             });
