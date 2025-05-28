@@ -2537,6 +2537,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.hasActiveAnnotations = function () {
+          return scope.concept.annotations && scope.concept.annotations.some(function (annotation) {
+            return annotation.active;
+          });
+        };
+
 
 // Adds a description to the concept
 // arg: afterIndex, integer, the index at which to add description

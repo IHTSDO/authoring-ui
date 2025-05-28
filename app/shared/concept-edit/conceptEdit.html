@@ -500,7 +500,7 @@
     </div>
 
     <!-- rows: Concept Annotations -->
-    <div ng-if="concept.annotations.length > 0" class="row">
+    <div ng-if="concept.annotations.length > 0 && (hasActiveAnnotations() || !hideInactive)" class="row">
       <div ng-include="'shared/concept-edit/annotationTemplate.html'"></div>
     </div>
     <!-- rows: Relationships -->
