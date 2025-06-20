@@ -246,7 +246,9 @@ angular.module('singleConceptAuthoringApp.project', [
       };
 
       $scope.$on('reloadProject', function (event, data) {
-        if (!data || data.project === $routeParams.projectKey) {
+        if (!data) {
+          $scope.getProject();
+        } else if (data.project === $routeParams.projectKey) {
           $scope.getProject(data.reloadValidationReport, data.validationNotificationOff);
         }
       });

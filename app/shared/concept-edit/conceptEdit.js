@@ -2360,7 +2360,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           let availableOptionalLanguageRefsets = [];
           if (optionalLanguageRefsets && optionalLanguageRefsets.length !== 0) {
             for (let i =0; i < optionalLanguageRefsets.length; i++) {
-              if (dialects[optionalLanguageRefsets[i].refsetId].indexOf(description.lang) > -1
+              if (dialects[optionalLanguageRefsets[i].refsetId] && dialects[optionalLanguageRefsets[i].refsetId].indexOf(description.lang) > -1
                 && (!scope.descriptionIndexToOptionalLanguagesMap[index] || !scope.descriptionIndexToOptionalLanguagesMap[index].includes(optionalLanguageRefsets[i].refsetId))) {
                   availableOptionalLanguageRefsets.push(optionalLanguageRefsets[i].refsetId);
               }

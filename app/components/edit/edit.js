@@ -1689,7 +1689,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('reloadTask', function (event, data) {
       if (!data || (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey)) {
         loadTask();
-        $scope.getLatestValidation(data.reloadValidationReport, data.validationNotificationOff);
+        if (data && data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
+          $scope.getLatestValidation(data.reloadValidationReport, data.validationNotificationOff);
+        }
       }
     });
 

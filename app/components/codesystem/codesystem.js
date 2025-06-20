@@ -257,7 +257,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       }
 
       $scope.$on('reloadCodeSystem', function (event, data) {
-        if (!data || data.branchPath === $scope.codeSystem.branchPath) {
+        if (!data) {
+          $scope.getCodeSystem();
+        } else if (data.branchPath === $scope.codeSystem.branchPath){
           $scope.getCodeSystem(data.reloadValidationReport, data.validationNotificationOff);
         }
       });
