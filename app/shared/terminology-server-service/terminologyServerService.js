@@ -1983,9 +1983,9 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
-      function startNewAuthoringCycle(codeSystemShortname) {
+      function startNewAuthoringCycle(codeSystemShortname, newEffectiveTime) {
         var deferred = $q.defer();
-        $http.post(apiEndpoint + 'codesystems/' + codeSystemShortname + '/new-authoring-cycle').then(function (response) {
+        $http.post(apiEndpoint + 'codesystems/' + codeSystemShortname + '/new-authoring-cycle' + (newEffectiveTime ? '?newEffectiveTime=' + newEffectiveTime: '')).then(function (response) {
           deferred.resolve(response.data);
         }, function(error) {
           deferred.reject(error.message);

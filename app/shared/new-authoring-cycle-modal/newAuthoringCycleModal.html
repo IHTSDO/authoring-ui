@@ -1,0 +1,46 @@
+<div class="clearfix">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Confirmation Dialog</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-1"> </div>
+      <div class="col-md-11 p-b-30">
+        <div class="row">
+          <h4 class="p-b-10">Do you really want to start a new Authoring cycle for {{codeSystemName}}?</h4>
+          <h4 class="p-b-10">This should only be performed if you are completing Post Release Tasks</h4>
+        </div>
+        <div class="row">
+          <div class="col-md-2 no-padding">
+            <label class="control-label" style="font-size: 14px; font-weight: 300;">Next Effective Time:</label>
+          </div>
+          <div class="col-md-2 no-padding">
+            <input style="margin-top: -5px; margin-left: 10px;" type="text" class="form-control"
+              datepicker-popup="yyyy-MM-dd" ng-model="selectedDate" is-open="datePickerOpened" close-text="Close" />
+          </div>
+          <div class="col-md-1 no-padding">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" style="color: black; margin-top: -5px; margin-left: 10px"
+                ng-click="openDatePickerPopup($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </div>
+          <div class="col-md-7 no-padding" style="margin-left: -10px;">
+            <span>
+              (The next effective time which will be used by SRS daily build config)
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="row no-padding no-gutter">
+          <div class="col-md-4">
+            <button type="button" class=" col-md-12 btn btn-warning no-margin" ng-click="cancel()">No </button>
+          </div>
+          <div class="col-md-4"></div>
+          <div class="col-md-4">
+            <button type="button" class="col-md-12 btn btn-info no-margin" ng-click="confirm()">Yes </button>
+          </div>
+        </div>
+      </div>
+    </div>

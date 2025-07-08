@@ -352,18 +352,27 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.startNewAuthoringCycle = function() {
         notificationService.clear();
-        modalService.confirm('Do you really want to start a new Authoring cycle for '+ $scope.codeSystem.name +'? \n\nThis should only be performed if you are completing Post Release Tasks', 'white-space: pre-line;width: 125%;').then(function () {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/new-authoring-cycle-modal/newAuthoringCycleModal.html',
+          controller: 'newAuthoringCycleModalCtrl',
+          resolve: {
+            codeSystemName: function () {
+              return $scope.codeSystem.name;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (response) {
           notificationService.sendMessage('Starting new Authoring cycle...');
-          terminologyServerService.startNewAuthoringCycle($scope.codeSystem.shortName).then(function() {
+          terminologyServerService.startNewAuthoringCycle($scope.codeSystem.shortName, response && response.newEffectiveTime ? response.newEffectiveTime : null).then(function() {
             notificationService.clear();
             terminologyServerService.getEndpoint().then(function(endpoint) {
               modalService.message('Success', 'Metadata for this codesystem have been updated. Click <a href="' + endpoint + 'branches/' + $scope.codeSystem.branchPath + '/metadata?includeInheritedMetadata=true" target="_blank">here</a> to review.');
             });
           }, function(error) {
             notificationService.sendError('Error starting new Authoring cycle: ' + error);
-          })
+          });
         }, function () {
-          // do nothing
         });
       };
 
