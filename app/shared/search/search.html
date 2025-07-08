@@ -96,7 +96,7 @@
 
   <div class="row no-padding">
     <div class="col-md-6 pull-right">
-      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
+      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue dropdown-toggle"
               title="Search Mode"
               data-toggle="dropdown">
         <div class="md col-md-12 no-padding text-center ng-binding">
@@ -117,8 +117,8 @@
     </div>
 
     <div class="col-md-6" ng-if="isEscgMode">
-      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue"
-              title="Search Mode"
+      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue dropdown-toggle"
+              title="Description Status"
               data-toggle="dropdown">
         <div class="md col-md-12 no-padding text-center ng-binding">
           {{descriptionSeachStatus === 'active' ? 'Active Descriptions' : 'Inactive Descriptions'}}&nbsp;<span class="caret"></span>
