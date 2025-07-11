@@ -1,12 +1,17 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, scaService, notificationService, terminologyServerService, modalService) {
+  .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, scaService, notificationService, terminologyServerService, modalService, metadataService) {
     $scope.criteria = '';
+    $scope.selectProjectKey = null;
+    $scope.selectStatus = null;
+    $scope.selecteAuthor = null;
     $scope.message = '';
     $scope.searching = false;
     $scope.processingTasksDeletion = false;
     $scope.isAdmin = false;
     $scope.tasks = [];
+    $scope.projects = metadataService.getProjects();
+    $scope.statuses = ['New', 'In Progress', 'In Review', 'Review Completed', 'Promoted', 'Completed'];
 
     $scope.selectAll = function (selectAll) {
       angular.forEach($scope.tasks, function (item) {
@@ -36,14 +41,34 @@ angular.module('singleConceptAuthoringApp')
       }
     );
 
+    $scope.searchUsers = function(username) {
+      if (!username || username.trim().length === 0) {
+        return [];
+      }
+      return scaService.searchUsers(username, null, null, 50, 0).then(function (response) {
+        var results = [];
+        angular.forEach(response, function (item) {
+          if (item.active) {
+            var user = {};
+            user.displayName = item.displayName;
+            user.username = item.name;
+            results.push(user);
+          }
+        });
+
+        return results;
+      });
+    };
+
     $scope.search = function () {
-      if ($scope.criteria.trim().length === 0 || $scope.searching) {
+      if (($scope.criteria.trim().length === 0 && !$scope.selectProjectKey && !$scope.selectStatus && !$scope.selecteAuthor) || $scope.searching) {
         return;
       }
       $scope.tasks = [];
       $scope.message = '';
       $scope.searching = true;
-      scaService.searchTasks($scope.criteria).then(function (result) {
+
+      scaService.searchTasks($scope.criteria.trim(), $scope.selectProjectKey, $scope.selectStatus, $scope.selecteAuthor ? $scope.selecteAuthor.username : null).then(function (result) {
         if (result.length === 0) {
           $scope.message = 'No results';
         }

@@ -30,7 +30,7 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      
+
       // Modified list functions
       function saveModifiedConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
@@ -653,12 +653,37 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
-        searchTasks: function (criteria) {
-          return $http.get(apiEndpoint + 'projects/tasks/search?lightweight=true&criteria=' + decodeURIComponent(criteria)).then(
+        searchTasks: function (criteria, projectKey, status, author) {
+          var params = '';
+          if (criteria) {
+            params += 'criteria=' + encodeURIComponent(criteria);
+          } else {
+            criteria = '';
+          }
+          if (projectKey) {
+            if (params.length > 0) {
+              params += '&';
+            }
+            params += 'projectKey=' + projectKey;
+          }
+          if (status) {
+            if (params.length > 0) {
+              params += '&';
+            }
+            params += 'status=' + status;
+          }
+          if (author) {
+            if (params.length > 0) {
+              params += '&';
+            }
+            params += 'author=' + author;
+          }
+          return $http.get(apiEndpoint + 'projects/tasks/search?lightweight=true&' + params).then(
             function (response) {
               return response.data;
             }, function (error) {
               console.error(error);
+              return [];
             }
           );
         },
@@ -1971,8 +1996,8 @@ angular.module('singleConceptAuthoringApp')
               param += '&';
             }
             param += 'taskKeys=' + taskKeys[i];
-          } 
-          
+          }
+
           return $http.put(apiEndpoint + 'admin/tasks/mark-as-deleted?' + param).then(function (response) {
             return response.data;
           }, function (error) {

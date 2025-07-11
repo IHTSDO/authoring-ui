@@ -64,11 +64,37 @@
   </div>
   <div class="modal-body">
     <div class="row">
-      <div class="col-md-10 no-padding">
+      <div class="col-md-4 no-padding">
         <div>
           <input autofocus="true" class="form-control" ng-model="criteria" type="text" ng-change="clearMessages()"
             ng-keyup="$event.keyCode == 13 && search()" placeholder="Enter task's name or ID...">
           <br>
+        </div>
+      </div>
+      <div class="col-md-6" style="margin-top: -25px;">
+        <div class="col-md-4">
+          <label class="no-margin">Project:</label>
+          <select name="select-choice" class="form-control"
+            ng-options="project.key as project.title for project in projects | orderBy: 'title'"
+            ng-model="selectProjectKey">
+            <option value=""></option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="no-margin">Status:</label>
+          <select name="select-choice" class="form-control" ng-options="status for status in statuses"
+            ng-model="selectStatus">
+            <option value=""></option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="no-margin">Author:</label>
+          <input class="form-control" type="text" ng-model="selecteAuthor"
+            typeahead="suggestion as suggestion.displayName for suggestion in searchUsers($viewValue)"
+            typeahead-focus-first="false" typeahead-editable="false" typeahead-min-length="1" typeahead-wait-ms="500"
+            typeahead-on-select="updateAssignee($item)" typeahead-loading="typeaheadLoading" typeahead-focus-custom>
+          <i ng-show="typeaheadLoading" style="position: absolute; right: 15px; top: 32px;" class="md md-cached"></i>
+          </input>
         </div>
       </div>
       <div class="pull-right col-md-2">
@@ -92,7 +118,9 @@
             header="'ng-table/headers/checkboxHeader.html'">
             <div class="checkbox">
               <label class="filled">
-                <input type="checkbox" ng-if="!task.status || (task.status !== 'Promoted' && task.status !== 'Completed')" ng-model="task.selected" ui-on-drop="">
+                <input type="checkbox"
+                  ng-if="!task.status || (task.status !== 'Promoted' && task.status !== 'Completed')"
+                  ng-model="task.selected" ui-on-drop="">
               </label>
             </div>
           </td>
