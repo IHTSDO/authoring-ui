@@ -1958,6 +1958,27 @@ angular.module('singleConceptAuthoringApp')
           });
 
           return deferred.promise;
+        },
+
+        deleteTasks: function (taskKeys) {
+          if (!taskKeys || taskKeys.length === 0) {
+            console.error('Must specify at least one task key to delete');
+            return null;
+          }
+          var param = '';
+          for(var i = 0; i < taskKeys.length; i++) {
+            if (i > 0) {
+              param += '&';
+            }
+            param += 'taskKeys=' + taskKeys[i];
+          } 
+          
+          return $http.put(apiEndpoint + 'admin/tasks/mark-as-deleted?' + param).then(function (response) {
+            return response.data;
+          }, function (error) {
+            console.error('Error deleting tasks: ', error);
+            return null;
+          });
         }
 
       };

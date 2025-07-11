@@ -52,6 +52,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         $modal.open({
             templateUrl: 'shared/task/taskSearch.html',
             controller: 'taskSearchCtrl',
+            size: 'large',
             resolve: {
                 task: function () {
                     return null;
