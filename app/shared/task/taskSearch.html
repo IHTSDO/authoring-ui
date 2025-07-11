@@ -92,7 +92,7 @@
             header="'ng-table/headers/checkboxHeader.html'">
             <div class="checkbox">
               <label class="filled">
-                <input type="checkbox" ng-model="task.selected" ui-on-drop="">
+                <input type="checkbox" ng-if="!task.status || (task.status !== 'Promoted' && task.status !== 'Completed')" ng-model="task.selected" ui-on-drop="">
               </label>
             </div>
           </td>

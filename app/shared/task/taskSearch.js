@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, scaService, notificationService, terminologyServerService) {
+  .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, scaService, notificationService, terminologyServerService, modalService) {
     $scope.criteria = '';
     $scope.message = '';
     $scope.searching = false;
@@ -10,7 +10,9 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.selectAll = function (selectAll) {
       angular.forEach($scope.tasks, function (item) {
-        item.selected = selectAll;
+        if (!item.status || (item.status !== 'Promoted' && item.status !== 'Completed')) {
+          item.selected = selectAll;
+        }
       });
     };
 
@@ -92,7 +94,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.getSelectedRequestsCount = function () {
       return $scope.tasks.filter(function (task) {
-        return task.selected;
+        return task.selected && (!task.status || (task.status !== 'Promoted' && task.status !== 'Completed'));
       }).length;
     };
 
@@ -108,21 +110,24 @@ angular.module('singleConceptAuthoringApp')
         notificationService.sendError('No tasks selected for deletion');
         return;
       }
-      var selectedTaskKeys = selectedTasks.map(function (task) {
-        return task.key;
-      });
-      $scope.processingTasksDeletion = true;
-      scaService.deleteTasks(selectedTaskKeys).then(function () {
-        notificationService.sendMessage('Selected tasks deleted successfully', 5000);
-        $scope.tasks = $scope.tasks.filter(function (task) {
-          return !task.selected;
+      let msg = 'Are you sure you want to delete the selected task(s)?';
+      modalService.confirm(msg).then(function () {
+        var selectedTaskKeys = selectedTasks.map(function (task) {
+          return task.key;
         });
-        $scope.searchTasksTableParams.reload();
-        $scope.processingTasksDeletion = false;
-      }, function (error) {
-        notificationService.sendError('Error deleting selected tasks', 10000);
-        console.error(error);
-        $scope.processingTasksDeletion = false;
+        $scope.processingTasksDeletion = true;
+        scaService.deleteTasks(selectedTaskKeys).then(function () {
+          notificationService.sendMessage('Selected tasks deleted successfully', 5000);
+          $scope.tasks = $scope.tasks.filter(function (task) {
+            return !task.selected;
+          });
+          $scope.searchTasksTableParams.reload();
+          $scope.processingTasksDeletion = false;
+        }, function (error) {
+          notificationService.sendError('Error deleting selected tasks', 10000);
+          console.error(error);
+          $scope.processingTasksDeletion = false;
+        });
       });
     }
 
