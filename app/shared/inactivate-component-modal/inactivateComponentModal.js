@@ -160,7 +160,7 @@ angular.module('singleConceptAuthoringApp')
           });
         }
 
-        let dropdown = $('.dropdown-menu');
+        let dropdown = $('#inactivateComponentModal .dropdown-menu');
 
         dropdown.children('.dropdown-menu-total').remove();
 
