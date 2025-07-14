@@ -52,6 +52,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         $modal.open({
             templateUrl: 'shared/task/taskSearch.html',
             controller: 'taskSearchCtrl',
+            backdrop: 'static',
             size: 'large',
             resolve: {
                 task: function () {

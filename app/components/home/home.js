@@ -415,6 +415,7 @@ angular.module('singleConceptAuthoringApp.home', [
             $modal.open({
                 templateUrl: 'shared/task/taskSearch.html',
                 controller: 'taskSearchCtrl',
+                backdrop: 'static',
                 size: 'large',
                 resolve: {
                     task: function () {
