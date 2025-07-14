@@ -33,6 +33,27 @@
     outline: none;
   }
 
+  #taskSearchModal .caret {
+    position: absolute;
+    right: 0;
+    top: 15px;
+  }
+
+  #taskSearchModal .dropdown-multiselect button {
+    border: none;
+    box-shadow: inset 0 -1px 0 #ddd;
+    border-radius: unset;
+    text-align: start;
+  }
+
+  #taskSearchModal .dropdown-multiselect button:focus {
+    box-shadow: inset 0 -2px 0 #00a6e5;
+  }
+  #taskSearchModal .dropdown-multiselect ul.dropdown-menu{
+    height: unset !important;
+    max-height: 490px !important;
+  }
+
   .cssProgress {
     background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
     background-size: 48px 48px;
@@ -74,18 +95,13 @@
       <div class="col-md-6" style="margin-top: -25px;">
         <div class="col-md-4">
           <label class="no-margin">Project:</label>
-          <select name="select-choice" class="form-control"
-            ng-options="project.key as project.title for project in projects | orderBy: 'title'"
-            ng-model="selectProjectKey">
-            <option value=""></option>
-          </select>
+          <div ng-dropdown-multiselect="" checkboxes="true" options="projectOptions" selected-model="selectedProjects"
+            extra-settings="multiselectSettings" translation-texts="multiselectTranslationTexts"></div>
         </div>
         <div class="col-md-4">
           <label class="no-margin">Status:</label>
-          <select name="select-choice" class="form-control" ng-options="status for status in statuses"
-            ng-model="selectStatus">
-            <option value=""></option>
-          </select>
+          <div ng-dropdown-multiselect="" checkboxes="true" options="statusOptions" selected-model="selectedStatuses"
+            extra-settings="multiselectSettings" translation-texts="multiselectTranslationTexts"></div>
         </div>
         <div class="col-md-4">
           <label class="no-margin">Author:</label>

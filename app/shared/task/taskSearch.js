@@ -2,16 +2,26 @@
 angular.module('singleConceptAuthoringApp')
   .controller('taskSearchCtrl', function ($scope, ngTableParams, $modalInstance, $location, $filter, scaService, notificationService, terminologyServerService, modalService, metadataService) {
     $scope.criteria = '';
-    $scope.selectProjectKey = null;
-    $scope.selectStatus = null;
+    $scope.selectedProjects = [];
+    $scope.selectedStatuses = [];
     $scope.selecteAuthor = null;
     $scope.message = '';
     $scope.searching = false;
     $scope.processingTasksDeletion = false;
     $scope.isAdmin = false;
     $scope.tasks = [];
-    $scope.projects = metadataService.getProjects();
-    $scope.statuses = ['New', 'In Progress', 'In Review', 'Review Completed', 'Promoted', 'Completed'];
+    $scope.statusOptions = [];
+    $scope.projectOptions = [];
+    $scope.multiselectSettings = {
+      showCheckAll: false, showUncheckAll: false, scrollable: true, smartButtonMaxItems: 5, smartButtonTextConverter: smartButtonTextConverter,
+      displayProp: 'label', idProperty: 'id', buttonClasses: 'form-control no-padding col-md-12'
+    };
+    $scope.multiselectTranslationTexts = { buttonDefaultText: '', dynamicButtonTextSuffix: '' };
+    var statuses = ['New', 'In Progress', 'In Review', 'Review Completed', 'Promoted', 'Completed'];
+
+    function smartButtonTextConverter(text, option) {
+      return option.id;
+    }
 
     $scope.selectAll = function (selectAll) {
       angular.forEach($scope.tasks, function (item) {
@@ -41,7 +51,7 @@ angular.module('singleConceptAuthoringApp')
       }
     );
 
-    $scope.searchUsers = function(username) {
+    $scope.searchUsers = function (username) {
       if (!username || username.trim().length === 0) {
         return [];
       }
@@ -61,14 +71,14 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.search = function () {
-      if (($scope.criteria.trim().length === 0 && !$scope.selectProjectKey && !$scope.selectStatus && !$scope.selecteAuthor) || $scope.searching) {
+      if (($scope.criteria.trim().length === 0 && (!$scope.selectedProjects || $scope.selectedProjects.length === 0) && (!$scope.selectedStatuses || $scope.selectedStatuses.length === 0) && !$scope.selecteAuthor) || $scope.searching) {
         return;
       }
       $scope.tasks = [];
       $scope.message = '';
       $scope.searching = true;
 
-      scaService.searchTasks($scope.criteria.trim(), $scope.selectProjectKey, $scope.selectStatus, $scope.selecteAuthor ? $scope.selecteAuthor.username : null).then(function (result) {
+      scaService.searchTasks($scope.criteria.trim(), $scope.selectedProjects, $scope.selectedStatuses, $scope.selecteAuthor ? $scope.selecteAuthor.username : null).then(function (result) {
         if (result.length === 0) {
           $scope.message = 'No results';
         }
@@ -157,6 +167,22 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function initialize() {
+      for (var i = 0; i < statuses.length; i++) {
+        var statusOption = {};
+        statusOption.id = statuses[i];
+        statusOption.label = statuses[i];
+        $scope.statusOptions.push(statusOption);
+      }
+
+      var projects = metadataService.getProjects();
+      var itemsSorted  = $filter('orderBy')(projects, 'title');
+      for (var i = 0; i < itemsSorted.length; i++) {
+        var projectOption = {};
+        projectOption.id = itemsSorted[i].key;
+        projectOption.label = itemsSorted[i].title;
+        $scope.projectOptions.push(projectOption);
+      }
+
       terminologyServerService.getBranch('MAIN').then(function (branch) {
         if (branch && branch.globalUserRoles && branch.globalUserRoles.length > 0 && branch.globalUserRoles.includes('ADMIN')) {
           $scope.isAdmin = true;

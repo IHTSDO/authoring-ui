@@ -653,24 +653,28 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
-        searchTasks: function (criteria, projectKey, status, author) {
+        searchTasks: function (criteria, projects, statuses, author) {
           var params = '';
           if (criteria) {
             params += 'criteria=' + encodeURIComponent(criteria);
           } else {
             criteria = '';
           }
-          if (projectKey) {
-            if (params.length > 0) {
-              params += '&';
+          if (projects && projects.length > 0) {
+            for (var i = 0; i < projects.length; i++) {              
+              if (params.length > 0) {
+                params += '&';
+              }
+              params += 'projectKeys=' + projects[i].id;
             }
-            params += 'projectKey=' + projectKey;
           }
-          if (status) {
-            if (params.length > 0) {
-              params += '&';
+          if (statuses && statuses.length > 0) {
+            for (var i = 0; i < statuses.length; i++) {
+              if (params.length > 0) {
+                params += '&';
+              }
+              params += 'statuses=' + statuses[i].id;
             }
-            params += 'status=' + status;
           }
           if (author) {
             if (params.length > 0) {
