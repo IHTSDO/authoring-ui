@@ -1442,7 +1442,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                   min-width: 160px;
                   padding: 5px 0;
                   margin: 2px 0 0;
-                  font-size: 14px;
+                  font-size: 13px;
                   text-align: left;
                   list-style: none;
                   background-color: #fff;
@@ -1473,7 +1473,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 .custom-dropdown-menu a:hover {
                   color: #262626;
                   text-decoration: none;
-                  background-color: #f5f5f5;
+                  background-color:rgb(238, 238, 238);
                 }
                 .custom-dropdown.open .custom-dropdown-menu {
                   display: block;
