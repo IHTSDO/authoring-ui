@@ -71,13 +71,15 @@
           </div>
 
           <div class="copy-to-clipboard" ng-if="isSctid(concept.conceptId) && concept.fsn">
-            <button class="btn dropdown-toggle glyphicon glyphicon-export" type="button" data-toggle="dropdown" aria-expanded="true"></button>
-            <ul class="dropdown-menu">
-                <li><a ng-click="copyToClipboard(concept.conceptId)">Copy Concept ID</a></li>
-                <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>
-                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and Concept ID</a></li>
-                <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy PT and Concept ID</a></li>
-            </ul>
+            <div class="custom-dropdown">
+              <button class="btn custom-dropdown-toggle glyphicon glyphicon-export" type="button" id="copy-to-clipboard-dropdown"></button>
+              <ul class="custom-dropdown-menu" style="display: none;">
+                  <li><a ng-click="copyToClipboard(concept.conceptId)">Copy Concept ID</a></li>
+                  <li><a ng-click="copyToClipboard(concept.fsn)">Copy FSN</a></li>
+                  <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + concept.fsn + '|')">Copy FSN and Concept ID</a></li>
+                  <li><a ng-click="copyToClipboard(concept.conceptId + ' |' + getPerferredTerm() + '|')">Copy PT and Concept ID</a></li>
+              </ul>
+            </div>
           </div>
           <i ng-if="getExtensionNamespace() != ''" class="fa fa-exclamation-triangle tooltips-right medium-size-tooltip promoted-concept" style="z-index: 1; bottom: -2px;">
             <span >Concept promoted from {{extensionNamespace}}</span>

@@ -195,6 +195,98 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.escgExpr = null;
       $scope.searchMode = 'Text';
 
+      // --- Dropdowns for Search Panel ---
+      // Search Mode Dropdown
+      $scope.searchModeOptions = [
+        { id: 'Text', label: 'Text' },
+        { id: 'ECL', label: 'ECL' }
+      ];
+      if (metadataService.isTemplatesEnabled()) {
+        $scope.searchModeOptions.push({ id: 'Template', label: 'Template' });
+      }
+      $scope.selectedSearchMode = [$scope.searchModeOptions.find(opt => opt.id === $scope.searchMode)];
+      $scope.searchModeDropdownSettings = {
+        selectionLimit: 1,
+        showCheckAll: false,
+        showUncheckAll: false,
+        smartButtonMaxItems: 1,
+        smartButtonTextConverter: function(itemText, option) { return option.label; },
+        buttonClasses: 'btn btn-default btn-primary btn-blue col-md-12',
+        closeOnSelect: true,
+        displayProp: 'label',
+        idProp: 'id',
+        enableSearch: false,
+        showCheckbox: false
+      };
+      $scope.searchModeDropdownTranslationTexts = {
+        buttonDefaultText: 'Search Mode'
+      };
+      $scope.searchModeDropdownEvents = {
+        onItemSelect: function(item) {
+          $scope.toggleSearchMode(item.id);
+          $scope.selectedSearchMode = [$scope.searchModeOptions.find(opt => opt.id === $scope.searchMode)];
+        }
+      };
+
+      // Description Status Dropdown
+      $scope.descriptionStatusOptions = [
+        { id: 'active', label: 'Active Descriptions' },
+        { id: 'inactive', label: 'Inactive Descriptions' }
+      ];
+      $scope.selectedDescriptionStatus = [$scope.descriptionStatusOptions.find(opt => opt.id === $scope.descriptionSeachStatus)];
+      $scope.descriptionStatusDropdownSettings = {
+        selectionLimit: 1,
+        showCheckAll: false,
+        showUncheckAll: false,
+        smartButtonMaxItems: 1,
+        smartButtonTextConverter: function(itemText, option) { return option.label; },
+        buttonClasses: 'btn btn-default btn-primary btn-blue col-md-12',
+        closeOnSelect: true,
+        displayProp: 'label',
+        idProp: 'id',
+        enableSearch: false,
+        showCheckbox: false
+      };
+      $scope.descriptionStatusDropdownTranslationTexts = {
+        buttonDefaultText: 'Description Status'
+      };
+      $scope.descriptionStatusDropdownEvents = {
+        onItemSelect: function(item) {
+          $scope.setDescriptionStatus(item.id);
+          $scope.selectedDescriptionStatus = [$scope.descriptionStatusOptions.find(opt => opt.id === $scope.descriptionSeachStatus)];
+        }
+      };
+
+      // Search Type Dropdown
+      $scope.searchTypeOptions = [
+        { id: 'Active only', label: 'Active Only' },
+        { id: 'Inactive only', label: 'Inactive only' },
+        { id: 'Active and Inactive', label: 'Active and inactive' }
+      ];
+      $scope.selectedSearchType = [$scope.searchTypeOptions.find(opt => opt.id === $scope.userOptions.searchType)];
+      $scope.searchTypeDropdownSettings = {
+        selectionLimit: 1,
+        showCheckAll: false,
+        showUncheckAll: false,
+        smartButtonMaxItems: 1,
+        smartButtonTextConverter: function(itemText, option) { return option.label; },
+        buttonClasses: 'btn btn-default btn-primary btn-blue col-md-12',
+        closeOnSelect: true,
+        displayProp: 'label',
+        idProp: 'id',
+        enableSearch: false,
+        showCheckbox: false
+      };
+      $scope.searchTypeDropdownTranslationTexts = {
+        buttonDefaultText: 'Search Type'
+      };
+      $scope.searchTypeDropdownEvents = {
+        onItemSelect: function(item) {
+          $scope.setsearchType(item.id);
+          $scope.selectedSearchType = [$scope.searchTypeOptions.find(opt => opt.id === $scope.userOptions.searchType)];
+        }
+      };
+
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
         $scope.processResults();
@@ -238,7 +330,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
                 else {
                   $scope.searchMode = 'Text';
                   $scope.userOptions.searchType = 'Active only';
-                  $scope.searchType = 'Active Only';
                 }
             }
         else{
@@ -1332,6 +1423,150 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             }
         }
 
+        // Custom jQuery dropdown functionality
+        $timeout(function() {
+          // Add custom dropdown styles
+          if (!$('#custom-dropdown-styles').length) {
+            $('head').append(`
+              <style id="custom-dropdown-styles">
+                .custom-dropdown {
+                  position: relative;
+                }
+                .custom-dropdown-menu {
+                  position: absolute;
+                  bottom: auto;
+                  top: 100%;
+                  left: 0;
+                  z-index: 1000;
+                  float: left;
+                  min-width: 160px;
+                  padding: 5px 0;
+                  margin: 2px 0 0;
+                  font-size: 14px;
+                  text-align: left;
+                  list-style: none;
+                  background-color: #fff;
+                  background-clip: padding-box;
+                  border: 1px solid #ccc;
+                  border: 1px solid rgba(0,0,0,.15);
+                  border-radius: 4px;
+                  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+                  margin-left: -15px;
+                  top:35px;
+                }
+                .custom-dropdown-menu li {
+                  display: block;
+                }
+                .custom-dropdown-menu .sidebar-dropdown,
+                .custom-dropdown-menu a {
+                  display: block;
+                  padding: 3px 20px;
+                  clear: both;
+                  font-weight: 400;
+                  line-height: 1.42857143;
+                  color: #333;
+                  white-space: nowrap;
+                  cursor: pointer;
+                  text-decoration: none;
+                }
+                .custom-dropdown-menu .sidebar-dropdown:hover,
+                .custom-dropdown-menu a:hover {
+                  color: #262626;
+                  text-decoration: none;
+                  background-color: #f5f5f5;
+                }
+                .custom-dropdown.open .custom-dropdown-menu {
+                  display: block;
+                }
+                .custom-dropdown-toggle.glyphicon {
+                  border: 1px solid #ccc;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  background-color: #fff;
+                }
+                .custom-dropdown-toggle.glyphicon:hover {
+                  background-color: #e6e6e6;
+                }
+              </style>
+            `);
+          }
+
+          // Initialize custom dropdowns
+          function initCustomDropdowns() {
+            console.log('Initializing custom dropdowns...');
+            
+            // Close all dropdowns
+            function closeAllDropdowns() {
+              $('.custom-dropdown-menu').hide();
+              $('.custom-dropdown').removeClass('open');
+            }
+
+            // Toggle dropdown
+            function toggleDropdown($dropdown) {
+              var $menu = $dropdown.find('.custom-dropdown-menu');
+              var isOpen = $menu.is(':visible');
+              
+              closeAllDropdowns();
+              
+              if (!isOpen) {
+                $menu.show();
+                $dropdown.addClass('open');
+              }
+            }
+
+            // Remove existing handlers to prevent duplicates
+            $(document).off('click.customDropdown');
+            $(document).off('keydown.customDropdown');
+            $('.custom-dropdown-toggle').off('click.customDropdown');
+            $('.custom-dropdown-menu .sidebar-dropdown').off('click.customDropdown');
+
+            // Click handler for dropdown toggles
+            $(document).on('click.customDropdown', '.custom-dropdown-toggle', function(e) {
+              console.log('Dropdown toggle clicked');
+              e.preventDefault();
+              e.stopPropagation();
+              var $dropdown = $(this).closest('.custom-dropdown');
+              toggleDropdown($dropdown);
+            });
+
+            // Click outside to close
+            $(document).on('click.customDropdown', function(e) {
+              if (!$(e.target).closest('.custom-dropdown').length) {
+                closeAllDropdowns();
+              }
+            });
+
+            // Keyboard navigation
+            $(document).on('keydown.customDropdown', function(e) {
+              if (e.keyCode === 27) { // ESC key
+                closeAllDropdowns();
+              }
+            });
+
+            // Click on menu items
+            $(document).on('click.customDropdown', '.custom-dropdown-menu .sidebar-dropdown', function(e) {
+              console.log('Menu item clicked');
+              e.stopPropagation();
+              closeAllDropdowns();
+            });
+
+            // Log found elements
+            console.log('Found dropdown toggles:', $('.custom-dropdown-toggle').length);
+            console.log('Found dropdown menus:', $('.custom-dropdown-menu').length);
+          }
+
+          // Initialize dropdowns after Angular has rendered
+          initCustomDropdowns();
+
+          // Re-initialize when scope changes (for dynamic content)
+          $scope.$watch(function() {
+            return $scope.searchMode + $scope.descriptionSeachStatus + $scope.userOptions.searchType;
+          }, function() {
+            $timeout(function() {
+              initCustomDropdowns();
+            }, 100);
+          });
+        }, 500); // Increased timeout to ensure DOM is ready
 
     }
   ])

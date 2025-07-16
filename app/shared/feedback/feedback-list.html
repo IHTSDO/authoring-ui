@@ -5,20 +5,22 @@
 
 <div class="col-md-12 no-padding">
   <div class="col-md-12 m-t-10 load-performed" ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">
-    <button type="button" class="col-md-8 btn btn-success dropdown-toggle" data-toggle="dropdown">
-        <span>{{viewConceptsMode}}</span>&nbsp;<span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" style="margin-left: 15px;" role="menu">
-        <li>
-            <div class="sidebar-dropdown" ng-click="setViewConcepts('All concepts')">All concepts</div>
-        </li>
-        <li>
-            <div class="sidebar-dropdown"ng-click="setViewConcepts('Concepts with feedback')">Concepts with feedback</div>
-        </li>
-        <li>
-            <div class="sidebar-dropdown" ng-click="setViewConcepts('Concepts without feedback')">Concepts without feedback</div>
-        </li>                            
-    </ul>
+    <div class="custom-dropdown">
+      <button type="button" class="col-md-8 btn btn-success custom-dropdown-toggle" id="view-concepts-dropdown">
+          <span>{{viewConceptsMode}}</span>&nbsp;<span class="caret"></span>
+      </button>
+      <ul class="custom-dropdown-menu" style="margin-left: 15px; display: none;" role="menu">
+          <li>
+              <div class="sidebar-dropdown" ng-click="setViewConcepts('All concepts')">All concepts</div>
+          </li>
+          <li>
+              <div class="sidebar-dropdown" ng-click="setViewConcepts('Concepts with feedback')">Concepts with feedback</div>
+          </li>
+          <li>
+              <div class="sidebar-dropdown" ng-click="setViewConcepts('Concepts without feedback')">Concepts without feedback</div>
+          </li>                            
+      </ul>
+    </div>
     <a class="btn btn-primary col-md-4 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="download()">
       <span class="tooltip-dl">Download all concepts for review</span>
     </a>

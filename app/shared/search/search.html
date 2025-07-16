@@ -95,43 +95,47 @@
 
 
   <div class="row no-padding">
-    <div class="col-md-6 pull-right">
-      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue dropdown-toggle"
-              title="Search Mode"
-              data-toggle="dropdown">
-        <div class="md col-md-12 no-padding text-center ng-binding">
-          {{searchMode}}&nbsp;<span class="caret"></span>
-        </div>
-      </button>
-      <ul class="dropdown-menu" style="left:15px" role="menu">
-          <li>
-              <div class="sidebar-dropdown" ng-click="toggleSearchMode('Text')">Text</div>
-          </li>
-          <li>
-              <div class="sidebar-dropdown"ng-click="toggleSearchMode('ECL')">ECL</div>
-          </li>
-          <li ng-if="templates.length > 0">
-              <div class="sidebar-dropdown" ng-click="toggleSearchMode('Template')">Template</div>
-          </li>                       
-      </ul>
+    <div class="col-md-6 pull-left">
+      <div class="custom-dropdown">
+        <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
+                title="Search Mode"
+                id="search-mode-dropdown">
+          <div class="md col-md-12 no-padding text-center ng-binding">
+            {{searchMode}}&nbsp;<span class="caret"></span>
+          </div>
+        </button>
+        <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
+            <li>
+                <div class="sidebar-dropdown" ng-click="toggleSearchMode('Text')">Text</div>
+            </li>
+            <li>
+                <div class="sidebar-dropdown" ng-click="toggleSearchMode('ECL')">ECL</div>
+            </li>
+            <li ng-if="templates.length > 0">
+                <div class="sidebar-dropdown" ng-click="toggleSearchMode('Template')">Template</div>
+            </li>                       
+        </ul>
+      </div>
     </div>
 
     <div class="col-md-6" ng-if="isEscgMode">
-      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue dropdown-toggle"
-              title="Description Status"
-              data-toggle="dropdown">
-        <div class="md col-md-12 no-padding text-center ng-binding">
-          {{descriptionSeachStatus === 'active' ? 'Active Descriptions' : 'Inactive Descriptions'}}&nbsp;<span class="caret"></span>
-        </div>
-      </button>
-      <ul class="dropdown-menu" style="left:15px" role="menu">
-          <li>
-              <div class="sidebar-dropdown" ng-click="setDescriptionStatus('active')">Active Descriptions</div>
-          </li>
-          <li>
-              <div class="sidebar-dropdown"ng-click="setDescriptionStatus('inactive')">Inactive Descriptions</div>
-          </li>                     
-      </ul>
+      <div class="custom-dropdown">
+        <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
+                title="Description Status"
+                id="description-status-dropdown">
+          <div class="md col-md-12 no-padding text-center ng-binding">
+            {{descriptionSeachStatus === 'active' ? 'Active Descriptions' : 'Inactive Descriptions'}}&nbsp;<span class="caret"></span>
+          </div>
+        </button>
+        <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
+            <li>
+                <div class="sidebar-dropdown" ng-click="setDescriptionStatus('active')">Active Descriptions</div>
+            </li>
+            <li>
+                <div class="sidebar-dropdown" ng-click="setDescriptionStatus('inactive')">Inactive Descriptions</div>
+            </li>                     
+        </ul>
+      </div>
     </div>
 
     <div class="col-md-6" ng-show="isExtension && templateMode">
@@ -145,24 +149,26 @@
     </div>
 
     <div class="col-md-6" ng-if="!templateMode && !isEscgMode">
-      <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue dropdown-toggle"
-              title="Search Type"
-              data-toggle="dropdown">
-        <div class="md col-md-12 no-padding text-center ng-binding">
-          {{userOptions.searchType}}&nbsp;<span class="caret"></span>
-        </div>
-      </button>
-      <ul class="dropdown-menu" style="left:15px" role="menu">
-          <li>
-              <div class="sidebar-dropdown" ng-click="setsearchType('Active only')">Active Only</div>
-          </li>
-          <li>
-              <div class="sidebar-dropdown"ng-click="setsearchType('Inactive only')">Inactive only</div>
-          </li>
-          <li>
-              <div class="sidebar-dropdown" ng-click="setsearchType('Active and Inactive')">Active and inactive</div>
-          </li>                       
-      </ul>
+      <div class="custom-dropdown">
+        <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
+                title="Search Type"
+                id="search-type-dropdown">
+          <div class="md col-md-12 no-padding text-center ng-binding">
+            {{userOptions.searchType}}&nbsp;<span class="caret"></span>
+          </div>
+        </button>
+        <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
+            <li>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Active only')">Active Only</div>
+            </li>
+            <li>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Inactive only')">Inactive only</div>
+            </li>
+            <li>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Active and Inactive')">Active and inactive</div>
+            </li>                       
+        </ul>
+      </div>
     </div>
 
   </div>
