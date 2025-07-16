@@ -70,7 +70,8 @@
     "textangular": "~1.4.0",
     "time-grunt": "~1.0.0",
     "velocity-animate": "1.2.3",
-    "vinyl-fs": "2.2.1"
+    "vinyl-fs": "2.2.1",
+    "angularjs-datepicker": "^2.1.23"
   },
   "overrides": {
     "angular": "1.4.14",
