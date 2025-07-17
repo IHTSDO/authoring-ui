@@ -95,28 +95,6 @@
 
 
   <div class="row no-padding">
-    <div class="col-md-6">
-      <div class="custom-dropdown">
-        <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
-                title="Search Mode"
-                id="search-mode-dropdown">
-          <div class="md col-md-12 no-padding text-center ng-binding">
-            {{searchMode}}&nbsp;<span class="caret"></span>
-          </div>
-        </button>
-        <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
-            <li>
-                <div class="sidebar-dropdown" ng-click="toggleSearchMode('Text')">Text</div>
-            </li>
-            <li>
-                <div class="sidebar-dropdown" ng-click="toggleSearchMode('ECL')">ECL</div>
-            </li>
-            <li ng-if="templates.length > 0">
-                <div class="sidebar-dropdown" ng-click="toggleSearchMode('Template')">Template</div>
-            </li>                       
-        </ul>
-      </div>
-    </div>
 
     <div class="col-md-6" ng-if="isEscgMode">
       <div class="custom-dropdown">
@@ -138,16 +116,6 @@
       </div>
     </div>
 
-    <div class="col-md-6" ng-show="isExtension && templateMode">
-      <div ng-dropdown-multiselect=""
-        checkboxes="true" 
-        options="languageRefsetOptions" 
-        selected-model="selectedLanguageRefsets" 
-        extra-settings="languageRefsetMultiselectSettings" 
-        translation-texts="languageRefsetMultiselectTranslationTexts"
-        events="languageRefsetMultiselectEvents"></div>
-    </div>
-
     <div class="col-md-6" ng-if="!templateMode && !isEscgMode">
       <div class="custom-dropdown">
         <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
@@ -166,6 +134,39 @@
             </li>
             <li>
                 <div class="sidebar-dropdown" ng-click="setsearchType('Active and Inactive')">Active and inactive</div>
+            </li>                       
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6" ng-show="isExtension && templateMode">
+      <div ng-dropdown-multiselect=""
+        checkboxes="true" 
+        options="languageRefsetOptions" 
+        selected-model="selectedLanguageRefsets" 
+        extra-settings="languageRefsetMultiselectSettings" 
+        translation-texts="languageRefsetMultiselectTranslationTexts"
+        events="languageRefsetMultiselectEvents"></div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="custom-dropdown">
+        <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
+                title="Search Mode"
+                id="search-mode-dropdown">
+          <div class="md col-md-12 no-padding text-center ng-binding">
+            {{searchMode}}&nbsp;<span class="caret"></span>
+          </div>
+        </button>
+        <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
+            <li>
+                <div class="sidebar-dropdown" ng-click="toggleSearchMode('Text')">Text</div>
+            </li>
+            <li>
+                <div class="sidebar-dropdown" ng-click="toggleSearchMode('ECL')">ECL</div>
+            </li>
+            <li ng-if="templates.length > 0">
+                <div class="sidebar-dropdown" ng-click="toggleSearchMode('Template')">Template</div>
             </li>                       
         </ul>
       </div>
