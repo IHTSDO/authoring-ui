@@ -127,7 +127,7 @@
         </button>
         <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
             <li>
-                <div class="sidebar-dropdown" ng-click="setsearchType('Active only')">Active Only</div>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Active only')">Active only</div>
             </li>
             <li>
                 <div class="sidebar-dropdown" ng-click="setsearchType('Inactive only')">Inactive only</div>
@@ -147,6 +147,9 @@
         extra-settings="languageRefsetMultiselectSettings" 
         translation-texts="languageRefsetMultiselectTranslationTexts"
         events="languageRefsetMultiselectEvents"></div>
+    </div>
+
+    <div class="col-md-6" ng-show="!isExtension && templateMode">
     </div>
 
     <div class="col-md-6">
