@@ -12,7 +12,7 @@ This document explains **how to run the UI locally** and the **engineering conve
 flowchart TD
     Browser["Web Browser"] --> |HTTPS| Nginx[(Nginx)]
     Nginx --> AuthoringUI["Authoring UI (AngularJS SPA)"]
-    AuthoringUI --> |REST & WebSocket| Gateway[(Authoring Gateway Service)]
+    AuthoringUI --> |REST & WebSocket| Gateway[(Authoring-Services)]
     Gateway --> |REST| Snowstorm[(Snowstorm Term Server)]
     Gateway --> |REST| CIS[(CIS)]
     Gateway --> |REST| IMS[(IMS)]
@@ -33,7 +33,7 @@ flowchart TD
 sequenceDiagram
     participant Author as Author (browser)
     participant UI as Authoring UI
-    participant Gateway as Authoring Gateway
+    participant Gateway as Authoring-Services
     participant Snowstorm as Snowstorm
     Author->>UI: Search concepts
     UI->>Gateway: /api/search?term=heart
@@ -82,7 +82,7 @@ app/
   images/ fonts/           ← static assets
 cypress/                   ← e2e tests
 Gruntfile.js               ← build & dev-server tasks
-package.json & bower.json  ← JS dependencies
+package.json  ← JS dependencies
 ```
 
 Naming conventions:
@@ -133,7 +133,7 @@ Copy the contents of `dist/` behind any static web-server (Nginx, S3, CloudFront
 
 * **Unit Tests** – `npm test` runs Karma/Jasmine suites located under `app/**/*.spec.js`.
 * **End-to-End** – `npx cypress open` launches Cypress with tests in `cypress/e2e/`.
-* CI pipelines **must** execute both suites; see `.github/workflows/ci.yml` (planned).
+
 
 ---
 
@@ -147,20 +147,3 @@ Copy the contents of `dist/` behind any static web-server (Nginx, S3, CloudFront
    location / {
        try_files $uri $uri/ /index.html;  # SPA fallback
    }
-   ```
-
----
-
-## 7  Troubleshooting & FAQ
-
-| Symptom | Possible Cause | Resolution |
-|---------|----------------|------------|
-| Blanked-out screen with console error `angular.js?…:123 Unknown provider` | Missing dependency injection annotation after minification | Ensure new service is registered & injected correctly; run dev build to reproduce |
-| `GET /api/** 404` | Gateway not running or proxy mis-configured | Start backend stack or edit proxy in `Gruntfile.js` |
-| LiveReload not triggering | Wrong port / firewall | Confirm port **35729** open & not blocked |
-
----
-
-## 8  License
-
-Licensed under the [Apache License 2.0](LICENSE.md).
