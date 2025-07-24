@@ -8,3 +8,11 @@ bower_components
 /target/
 npm-debug.log
 /*.iml
+cypress.env.json
+cypress/reports/
+cypress/screenshots/
+cypress/videos/
+node/node_modules/
+node/*
+cypress/downloads/
+cypress/videos/*

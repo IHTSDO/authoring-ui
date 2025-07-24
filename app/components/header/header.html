@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-fixed-top" ng-class="{scroll: (scroll>10)}">
+<nav class="navbar navbar-default navbar-fixed-top" data-cy="main-navigation" ng-class="{scroll: (scroll>10)}">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left navbar-left-no-collapse col-md-7 no-padding pull-left">
       <li>
@@ -7,43 +7,43 @@
           <div id="logo">
             <img class="img-responsive" src="images/small_logo.png" alt="SNOMED International" width="40" height="40">
           </div>
-          <span>Authoring Platform</span>
+          <span data-cy="platform-title">Authoring Platform</span>
         </div>
       </li>
       <li>
         <ul class="dashboard-link-list">
           <li>
             <a ng-href="#/">
-              <div class="home-link pointerbtn-link withoutripple">
+              <div class="home-link pointerbtn-link withoutripple" data-cy="dashboard-menu">
                 <span class="btn btn-round-sm hamberger"><i class="md md-menu f20"></i></span>
                 <span>Dashboard</span>
               </div>
               </a>
 
             <ul>
-              <li class="no-padding"><a ng-href="#/"><div>My Tasks</div></a>
+              <li class="no-padding"><a ng-href="#/" data-cy="nav-my-tasks"><div>My Tasks</div></a>
               </li>
-              <li class="no-padding"><a ng-href="#/review-tasks"><div>Review Tasks</div></a>
+              <li class="no-padding"><a ng-href="#/review-tasks" data-cy="nav-review-tasks"><div>Review Tasks</div></a>
               </li>
-              <li class="no-padding"><a ng-href="#/my-projects"><div>My Projects</div></a>
+              <li class="no-padding"><a ng-href="#/my-projects" data-cy="nav-my-projects"><div>My Projects</div></a>
               </li>
-              <li class="no-padding"><a ng-href="#/projects"><div>All Projects</div></a>
+              <li class="no-padding"><a ng-href="#/projects" data-cy="nav-all-projects"><div>All Projects</div></a>
               </li>
-              <li class="no-padding"><a ng-href="#/codesystems"><div>Code Systems</div></a>
+              <li class="no-padding"><a ng-href="#/codesystems" data-cy="nav-code-systems"><div>Code Systems</div></a>
               </li>
-              <li ng-click="openBrowser()">TS Browser
+              <li ng-click="openBrowser()" data-cy="nav-ts-browser">TS Browser
               </li>
-              <li ng-click="openDailyBuild()">Daily Build
+              <li ng-click="openDailyBuild()" data-cy="nav-daily-build">Daily Build
               </li>
-              <li ng-click="openReporting()">Reporting Platform
+              <li ng-click="openReporting()" data-cy="nav-reporting">Reporting Platform
               </li>
-              <li ng-click="openMRCM()">MRCM
+              <li ng-click="openMRCM()" data-cy="nav-mrcm">MRCM
               </li>
-              <li ng-click="gotoTemplates()">Template Management
+              <li ng-click="gotoTemplates()" data-cy="nav-templates">Template Management
               </li>
-              <li ng-click="openReleaseNotes()">Release Notes
+              <li ng-click="openReleaseNotes()" data-cy="nav-release-notes">Release Notes
               </li>
-              <li ng-click="openValidationBrowser()">Validation Browser
+              <li ng-click="openValidationBrowser()" data-cy="nav-validation">Validation Browser
               </li>
             </ul>
           </li>
@@ -142,18 +142,18 @@
       </li>
       <li class="pull-right">
         <button ng-disabled="!isProjectsLoaded()" class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple tooltips-bottom small-size-tooltip tooltips-light"
-                ng-click="openSearchProjectsModal()"><i class="md md-search f20"></i>
+                ng-click="openSearchProjectsModal()" data-cy="search-projects-button"><i class="md md-search f20"></i>
                 <span class="button-link">Search projects</span> </button>
 
       </li>
       <li class="pull-right">
-        <a id="profile_not_active" title="display name will link to profile services in later updates">
+        <a id="profile_not_active" title="display name will link to profile services in later updates" data-cy="user-profile">
           <span ng-if="accountDetails === null">Logged in as unknown user</span>
-          <span ng-if="accountDetails !== null" id="accountDetails" popover-class="accountDetails" popover-append-to-body="true" popover-template="'rolePopoverTemplate.html'" popover-placement="bottom" popover-trigger="click: click" >{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
+          <span ng-if="accountDetails !== null" id="accountDetails" popover-class="accountDetails" popover-append-to-body="true" popover-template="'rolePopoverTemplate.html'" popover-placement="bottom" popover-trigger="click: click" data-cy="user-account-details">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
         </a>
       </li>
       <li class="pull-right">
-        <a ng-href="#/logout">Logout</a>
+        <a ng-href="#/logout" data-cy="logout-button">Logout</a>
       </li>
     </ul>
   </div>
