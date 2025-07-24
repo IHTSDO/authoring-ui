@@ -20,7 +20,7 @@
           <p ng-show="task.status === 'Promoted' || task.status === 'Completed'">{{task.summary}}</p>
           <div ng-hide="task.status === 'Promoted' || task.status === 'Completed'">
             <input autofocus="true" id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted' || task.status === 'Completed'" ng-change="clearMessages()" type="text" class="form-control"
-                 placeholder="Enter task title">
+                 placeholder="Enter task title" data-cy="task-summary">
             <br>
           </div>          
           <div class="row" ng-if="task.key">
@@ -57,6 +57,7 @@
                         ng-class="[{'task-color-black': task.key}] "
                         ng-change="clearMessages()"
                         ng-disabled="task.status === 'Promoted' || task.status === 'Completed'"
+                        data-cy="task-project-dropdown"
                   >
                 </select>
               </div>
@@ -80,7 +81,7 @@
           <label for="textArea">Task Details</label>
           <p compile-html="task.description" ng-show="task.status === 'Promoted' || task.status === 'Completed'"></p>
           <div ng-hide="task.status === 'Promoted' || task.status === 'Completed'">
-            <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+            <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]" data-cy="task-description"></text-angular>
           </div>
         </div>
       </div>
@@ -100,12 +101,12 @@
       <!-- Display create only if no task supplied -->
       <div ng-if="!task.key" class="col-md-4">
         <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="createTask(false)">Create Task </button>
+                ng-click="createTask(false)" data-cy="create-task-button">Create Task </button>
       </div>
       <!-- Display only if no task supplied -->
       <div ng-if="!task.key" class="col-md-4">
         <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="createAndOpenTask()">Create and Open Task </button>
+                ng-click="createAndOpenTask()" data-cy="create-and-open-task-button">Create and Open Task </button>
       </div>
       
       <!-- If has a task key, replace Create with Update -->

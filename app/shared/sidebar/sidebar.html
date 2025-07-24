@@ -1,56 +1,56 @@
-<div class ="view-height-tall" ng-controller="sidebarCtrl">
+<div class ="view-height-tall" data-cy="sidebar-navigation" ng-controller="sidebarCtrl">
   <ul class="no-padding">
     <li ng-click="gotoBrowser()">
-      <button type="button" class="btn grey darken-3 dashboard-links">TS Browser
+      <button type="button" class="btn grey darken-3 dashboard-links" data-cy="sidebar-ts-browser">TS Browser
       </button>
     </li>
     <li>
         <a ng-href="#/">
-            <button type="button" class="btn grey darken-3 dashboard-links">
+            <button type="button" class="btn grey darken-3 dashboard-links" data-cy="sidebar-my-tasks">
                 My Tasks
             </button>
         </a>
     </li>
     <li>
         <a ng-href="#/review-tasks">
-            <button type="button" class="btn grey darken-3 dashboard-links">
+            <button type="button" class="btn grey darken-3 dashboard-links" data-cy="sidebar-review-tasks">
                 Review Tasks
             </button>
         </a>
     </li>
     <li>
         <a ng-href="#/my-projects">
-            <button type="button" class="btn grey darken-3 dashboard-links">
+            <button type="button" class="btn grey darken-3 dashboard-links" data-cy="sidebar-my-projects">
                 My Projects
             </button>
         </a>
     </li>
     <li>
         <a ng-href="#/projects">
-            <button type="button" class="btn grey darken-3 dashboard-links">
+            <button type="button" class="btn grey darken-3 dashboard-links" data-cy="sidebar-all-projects">
                 All Projects
             </button>
         </a>
     </li>
     <li>
         <a ng-href="#/codesystems">
-            <button type="button" class="btn grey darken-3 dashboard-links">
+            <button type="button" class="btn grey darken-3 dashboard-links" data-cy="sidebar-code-systems">
                 Code Systems
             </button>
         </a>
     </li>
     <li>
-      <button class="btn grey darken-3 dashboard-links" ng-click="openTaskSearchModal()">
+      <button class="btn grey darken-3 dashboard-links" ng-click="openTaskSearchModal()" data-cy="sidebar-search-tasks">
         Search Tasks
       </button>
     </li>
     <li>
-      <button class="btn grey darken-3 dashboard-links" ng-disabled="!isProjectsLoaded()" ng-click="openUploadBatchModal()">
+      <button class="btn grey darken-3 dashboard-links" ng-disabled="!isProjectsLoaded()" ng-click="openUploadBatchModal()" data-cy="sidebar-upload-batch">
         Upload a Batch
       </button>
     </li>
     <li>
-      <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-show="!isReviewerOnly" ng-disabled="!isProjectsLoaded()">
+      <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-show="!isReviewerOnly" ng-disabled="!isProjectsLoaded()" data-cy="sidebar-new-task">
     New Task
       </button>
     </li>    
