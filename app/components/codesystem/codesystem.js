@@ -162,6 +162,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     if ($rootScope.validationRunning) {
                       refreshValidationIndicator(response.executionStatus);
                     }
+                  }, function (error) {
+                    console.error('Error getting latest validation for ' + codeSystem.branchPath);
+                    $scope.validationContainer = {executionStatus: 'FAILED', error: error, notificationOff: validationNotificationOff, reloadContainer: reloadValidationReport};
                   });
                   terminologyServerService.getClassificationsForBranchRoot(codeSystem.branchPath).then(function (classifications) {
                     if (classifications && classifications.length !== 0) {
@@ -274,6 +277,9 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             if ($rootScope.validationRunning) {
               refreshValidationIndicator(response.executionStatus);
             }
+          }, function (error) {
+            console.error('Error getting latest validation for ' + $scope.codeSystem.branchPath);
+            $scope.validationContainer = {executionStatus: 'FAILED', error: error};
           });
         }
       });

@@ -42,6 +42,15 @@
       </button>
     </div>
   </div>
+  <div class="validation-report report-table" ng-show="validationContainer.error && validationContainer.executionStatus == 'FAILED'">
+    <div role="tabpanel">
+      <div class="row m-t-5 m-b-5 p-l-5 p-r-5" ng-if="viewTop">
+        <div class="col-md-12 alert alert-danger">
+          {{validationContainer.error.data.message || validationContainer.error.data.status || validationContainer.error.data}}
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="validation-report report-table" ng-show="branchAssertionGroupNames && !isCollapsed && validationContainer.executionStatus == 'NOT_TRIGGERED'">
     <div role="tabpanel">
       <div class="row" ng-if="viewTop">

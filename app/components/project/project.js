@@ -216,6 +216,9 @@ angular.module('singleConceptAuthoringApp.project', [
                 response.reloadContainer = reloadValidationReport;
               }
               $scope.validationContainer = response;
+            }, function (error) {
+              console.error('Error getting latest validation for ' + $scope.project.key);
+              $scope.validationContainer = {executionStatus: 'FAILED', error: error, notificationOff: validationNotificationOff, reloadContainer: reloadValidationReport};
             });
           }
         });
