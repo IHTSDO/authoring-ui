@@ -1348,6 +1348,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           } else {
             $scope.validationContainer = response;
           }
+        }, function (error) {
+          console.error('Error getting latest validation for ' + $routeParams.projectKey);
+          $scope.validationContainer = {executionStatus: 'FAILED', error: error, notificationOff: validationNotificationOff, reloadContainer: reloadValidationReport};
         });
       } else {
 
@@ -1360,6 +1363,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
             $scope.validationContainer = response;
           }
+        }, function (error) {
+          console.error('Error getting latest validation for ' + $routeParams.projectKey + ', ' + $routeParams.taskKey);
+          $scope.validationContainer = {executionStatus: 'FAILED', error: error, notificationOff: validationNotificationOff, reloadContainer: reloadValidationReport};
         });
       }
     };

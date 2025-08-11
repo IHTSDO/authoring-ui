@@ -141,6 +141,10 @@ angular.module('singleConceptAuthoringApp.codesystems', [
                   scaService.getValidationForBranch(data.branchPath).then(function (response) {
                       $scope.codesystems[i].latestValidationStatus = response.executionStatus;
                       $scope.tableParams.reload();
+                  }, function (error) {
+                      console.error('Error getting latest validation for ' + data.branchPath);
+                      $scope.codesystems[i].latestValidationStatus = 'FAILED';
+                      $scope.tableParams.reload();
                   });
                   break;
               }

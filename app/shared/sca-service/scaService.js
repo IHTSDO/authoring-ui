@@ -1194,7 +1194,7 @@ angular.module('singleConceptAuthoringApp')
               return response.data;
             }, function (error) {
               console.error('Error getting latest validation for ' + projectKey + ', ' + taskKey);
-              return null;
+              return $q.reject(error);
             });
         },
 
@@ -1236,7 +1236,7 @@ angular.module('singleConceptAuthoringApp')
             return response.data;
           }, function (error) {
             console.error('Error getting validation for project ' + projectKey);
-            return null;
+            return $q.reject(error);
           });
 
         },
@@ -1291,7 +1291,7 @@ angular.module('singleConceptAuthoringApp')
             return response.data;
           }, function (error) {
             console.error('Error getting validation for branch ' + branch);
-            return null;
+            return $q.reject(error);
           });
 
         },

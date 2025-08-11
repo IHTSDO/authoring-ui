@@ -178,6 +178,10 @@ angular.module('singleConceptAuthoringApp.myProjects', [
                   scaService.getValidationForProject(data.project).then(function (response) {
                       $scope.projects[i].validationStatus = response.executionStatus;
                       $scope.tableParams.reload();
+                  }, function (error) {
+                      console.error('Error getting latest validation for ' + data.project);
+                      $scope.projects[i].validationStatus = 'FAILED';
+                      $scope.tableParams.reload();
                   });
                   break;
               }
