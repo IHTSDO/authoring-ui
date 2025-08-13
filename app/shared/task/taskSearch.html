@@ -130,6 +130,7 @@
         ng-disabled="processingTasksDeletion || getSelectedRequestsCount() == 0"
         ng-click="deleteSelectedTasks()">{{processingTasksDeletion ?
         'Processing Tasks Deletion...' : 'Delete Selected Tasks'}}</button>
+        <label style="font-weight: 500; float: right;" class="m-r-30">Total Tasks: {{searchTasksTableParams.total()}}</label>
     </div>
     <div class="table-responsive white" ng-show="!searching && tasks.length != 0">
       <table ng-table="searchTasksTableParams" template-pagination="utilities/data-table-pager.html"
