@@ -17,14 +17,21 @@ angular.module('singleConceptAuthoringApp')
       displayProp: 'label', idProperty: 'id', buttonClasses: 'form-control no-padding col-md-12'
     };
     $scope.multiselectTranslationTexts = { buttonDefaultText: '', dynamicButtonTextSuffix: '' };
-    var statuses = ['New', 'In Progress', 'In Review', 'Review Completed', 'Promoted', 'Completed'];
+    var statuses = ['New', 'In Progress', 'Ready For Review', 'In Review', 'Review Completed', 'Promoted', 'Completed'];
 
     function smartButtonTextConverter(text, option) {
       return option.id;
     }
 
-    $scope.selectAll = function (selectAll) {
+    $scope.toggletAllTasks = function () {
+      // Reset the selected flags
       angular.forEach($scope.tasks, function (item) {
+        item.selected = false;
+      });
+
+      var selectAll = $("#select_all_tasks_checkbox").prop("checked");
+      var displayTasks = $scope.searchTasksTableParams.data || [];
+      angular.forEach(displayTasks, function (item) {
         if (!item.status || (item.status !== 'Promoted' && item.status !== 'Completed')) {
           item.selected = selectAll;
         }
@@ -38,11 +45,21 @@ angular.module('singleConceptAuthoringApp')
       {
         total: $scope.tasks ? $scope.tasks.length : 0,
         getData: function ($defer, params) {
+
+          // Set the checkbox state
+          setTimeout(function () {
+            $("#select_all_tasks_checkbox").prop("checked", false);
+          }, 0);
+
+          // Get the filtered data
           if (!$scope.tasks || $scope.tasks.length === 0) {
             $defer.resolve([]);
           } else {
             var mydata = $scope.tasks;
             params.total(mydata.length);
+            mydata.forEach(function (task) {
+              task.selected = false;
+            });
 
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -138,7 +155,8 @@ angular.module('singleConceptAuthoringApp')
         notificationService.sendError('You do not have permission to delete tasks', 5000);
         return;
       }
-      var selectedTasks = $scope.tasks.filter(function (task) {
+      var displayTasks = $scope.searchTasksTableParams.data || [];
+      var selectedTasks = displayTasks.filter(function (task) {
         return task.selected;
       });
       if (selectedTasks.length === 0) {

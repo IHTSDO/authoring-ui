@@ -79,9 +79,9 @@
 <div id="taskSearchModal" class="clearfix">
   <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
     <div>
-      <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
-           id="select_all_failures"
-           name="filter-checkbox" value=""/>
+      <input type="checkbox" ng-model="checkAll" ng-click="toggletAllTasks()" title="Select Tasks"
+           id="select_all_tasks_checkbox"
+           name="filter-checkbox"/>
     </div>
   </script>
   <div class="modal-header clearfix">
