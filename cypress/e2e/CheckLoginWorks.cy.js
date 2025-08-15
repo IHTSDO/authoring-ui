@@ -1,4 +1,4 @@
-import Utils from '../commands/Utils';
+const Utils = require('../commands/Utils.js');
 
 const utils = new Utils();
 
