@@ -1,16 +1,13 @@
-export default class Utils {
-  branch: string;
-  project: string;
-  task: string;
-  loginTimeoutInSeconds = 30_000;
+class Utils {
 
   constructor() {
     this.branch = 'MAIN';
     this.project = '';
     this.task = '';
+    this.loginTimeoutInSeconds = 30000;
   }
 
-  login(url: string, username: string, password: string): void {
+  login(url, username, password) {
     cy.clearAllCookies();
     cy.visit(url);
     cy.contains('Please Log In', {timeout: 15000});
@@ -26,3 +23,5 @@ export default class Utils {
     cy.clearAllCookies();
   }
 }
+
+module.exports = Utils;
