@@ -665,7 +665,7 @@ angular.module('singleConceptAuthoringApp')
               if (params.length > 0) {
                 params += '&';
               }
-              params += 'projectKeys=' + projects[i].id;
+              params += 'projectKeys=' + encodeURIComponent(projects[i].id);
             }
           }
           if (statuses && statuses.length > 0) {
@@ -673,14 +673,14 @@ angular.module('singleConceptAuthoringApp')
               if (params.length > 0) {
                 params += '&';
               }
-              params += 'statuses=' + statuses[i].id;
+              params += 'statuses=' + encodeURIComponent(statuses[i].id);
             }
           }
           if (author) {
             if (params.length > 0) {
               params += '&';
             }
-            params += 'author=' + author;
+            params += 'author=' + encodeURIComponent(author);
           }
           return $http.get(apiEndpoint + 'projects/tasks/search?lightweight=true&' + params).then(
             function (response) {

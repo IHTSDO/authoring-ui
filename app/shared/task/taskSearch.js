@@ -24,11 +24,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     $scope.toggletAllTasks = function () {
-      // Reset the selected flags
-      angular.forEach($scope.tasks, function (item) {
-        item.selected = false;
-      });
-
       var selectAll = $("#select_all_tasks_checkbox").prop("checked");
       var displayTasks = $scope.searchTasksTableParams.data || [];
       angular.forEach(displayTasks, function (item) {
@@ -57,9 +52,6 @@ angular.module('singleConceptAuthoringApp')
           } else {
             var mydata = $scope.tasks;
             params.total(mydata.length);
-            mydata.forEach(function (task) {
-              task.selected = false;
-            });
 
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -105,6 +97,7 @@ angular.module('singleConceptAuthoringApp')
           $scope.searchTasksTableParams.reload();
         }
         $scope.searching = false;
+        $scope.searchDone = true;
       }, function (error) {
         $scope.searching = false;
         notificationService.sendError('Unexpected error searching for tasks', 10000);
@@ -155,8 +148,7 @@ angular.module('singleConceptAuthoringApp')
         notificationService.sendError('You do not have permission to delete tasks', 5000);
         return;
       }
-      var displayTasks = $scope.searchTasksTableParams.data || [];
-      var selectedTasks = displayTasks.filter(function (task) {
+      var selectedTasks = $scope.tasks.filter(function (task) {
         return task.selected;
       });
       if (selectedTasks.length === 0) {
