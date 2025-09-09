@@ -246,25 +246,73 @@ angular
               $rootScope.managedServiceUser = true;
             }
 
-            if ($rootScope.managedServiceUser) {
-              $("<script>").attr({src: $rootScope.msCollectorUrl !== '' ? $rootScope.msCollectorUrl : $rootScope.collectorUrl}).appendTo("body");
-            } else {
-              $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
+            // Prepare Issue Collector configuration BEFORE loading the script
+            function extractCollectorIdFromUrl(url) {
+              try {
+                if (!url) { return null; }
+                var match = url.match(/[?&]collectorId=([^&]+)/);
+                return match ? decodeURIComponent(match[1]) : null;
+              } catch (e) { return null; }
+            }
+            function extractBaseUrl(url) {
+              try {
+                if (!url) { return null; }
+                var a = document.createElement('a');
+                a.href = url;
+                return a.protocol + '//' + a.host;
+              } catch (e) { return null; }
             }
 
-            // Register Issue collector after retreiving account details
-            window.ATL_JQ_PAGE_PROPS = {
-              "triggerFunction": function (showCollectorDialog) {
-                jQuery("#myCustomTrigger").click(function (e) {
+            var standardCollectorUrl = endpoints.collectorEndpoint || '';
+            var msCollectorUrl = endpoints.msCollectorEndpoint || '';
+            var standardCollectorId = extractCollectorIdFromUrl(standardCollectorUrl);
+            var msCollectorId = extractCollectorIdFromUrl(msCollectorUrl);
+            var standardBaseUrl = extractBaseUrl(standardCollectorUrl);
+            var msBaseUrl = extractBaseUrl(msCollectorUrl);
+
+            if ($rootScope.managedServiceUser) {
+              // Managed service: NOT an issue collector. Open the MS endpoint in a new tab.
+              jQuery('#myCustomTrigger').off('click.atlassianCollector atlassianCollectorMs')
+                .on('click.atlassianCollectorMs', function (e) {
+                  e.preventDefault();
+                  var targetUrl = endpoints.msCollectorEndpoint || msCollectorUrl || 'https://support.servicedesk.snomed.org/servicedesk/customer/user/login?destination=portals';
+                  window.open(targetUrl, '_blank');
+                });
+            } else {
+              // Standard Jira issue collector
+              // Provide trigger and field values
+              window.ATL_JQ_PAGE_PROPS = window.ATL_JQ_PAGE_PROPS || {};
+              window.ATL_JQ_PAGE_PROPS.triggerFunction = function (showCollectorDialog) {
+                jQuery('#myCustomTrigger').off('click.atlassianCollector').on('click.atlassianCollector', function (e) {
                   e.preventDefault();
                   showCollectorDialog();
                 });
-              },
-              fieldValues: {
+              };
+              window.ATL_JQ_PAGE_PROPS.fieldValues = {
                 'fullname': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName,
                 'email': $rootScope.accountDetails.email
+              };
+              if (standardCollectorId) {
+                window.ATL_JQ_PAGE_PROPS[standardCollectorId] = {
+                  triggerFunction: window.ATL_JQ_PAGE_PROPS.triggerFunction,
+                  fieldValues: window.ATL_JQ_PAGE_PROPS.fieldValues
+                };
               }
-            };
+
+              // Force CUSTOM trigger with correct baseUrl for the standard collector
+              window.ATL_JQ_CONFIGS = window.ATL_JQ_CONFIGS || {};
+              if (standardCollectorId) {
+                window.ATL_JQ_CONFIGS[standardCollectorId] = {
+                  enabled: true,
+                  triggerText: 'Raise an Issue',
+                  triggerPosition: 'CUSTOM',
+                  baseUrl: standardBaseUrl || 'https://dev-workflow.ihtsdotools.org'
+                };
+              }
+
+              // Load the standard issue collector script AFTER configuration
+              $('<script>').attr({src: $rootScope.collectorUrl}).appendTo('body');
+            }
 
             // start connecting websocket after retrieving user information
             scaService.connectWebsocket();
