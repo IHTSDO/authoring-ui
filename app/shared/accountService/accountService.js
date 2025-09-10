@@ -44,6 +44,21 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function getAppLaunchers() {
+      var deferred = $q.defer();
+      $http.get('/launcherConfig.json', {withCredentials: true}).
+        success(function (data, status) {
+          console.log('Launcher config retrieved');
+          deferred.resolve(data.apps);
+        }).
+        error(function (data, status) {
+          console.error('Could not retrieve launcher config');
+          deferred.reject('Could not retrieve launcher config');
+        });
+
+      return deferred.promise;
+    }
+
     function getRoleForTask(task) {
 
       var deferred = $q.defer();
@@ -234,6 +249,7 @@ angular.module('singleConceptAuthoringApp')
 
     return {
       getAccount: getAccount,
+      getAppLaunchers: getAppLaunchers,
       getRoleForTask: getRoleForTask,
       getRoleForProject: getRoleForProject,
       applyUserPreferences : applyUserPreferences,

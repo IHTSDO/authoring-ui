@@ -316,6 +316,11 @@ angular
 
             // start connecting websocket after retrieving user information
             scaService.connectWebsocket();
+
+            // Get app launchers
+            accountService.getAppLaunchers().then(function(apps) {
+              $rootScope.apps = apps;
+            });
           },
           function () {}
         );

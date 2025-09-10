@@ -19,6 +19,27 @@ angular.module('singleConceptAuthoringApp')
         scope.imsRoles = '';
         scope.rbacRoles = '';
 
+        // Cache for appLaunchers to avoid infinite digest cycles
+        var cachedAppLaunchers = null;
+        var lastApps = null;
+        var lastAccountDetails = null;
+
+        scope.getAppLaunchers = function () {
+          // Only recalculate if dependencies have changed
+          if ($rootScope.apps !== lastApps || $rootScope.accountDetails !== lastAccountDetails) {
+            lastApps = $rootScope.apps;
+            lastAccountDetails = $rootScope.accountDetails;
+            if ($rootScope.apps && $rootScope.accountDetails) {
+              cachedAppLaunchers = $rootScope.apps.filter(function (app) {
+                return !app.clientName || $rootScope.accountDetails.clientAccess.includes(app.clientName);
+              }).sort((a, b) => (a.group ?? 99) - (b.group ?? 99) || (a.order ?? 99) - (b.order ?? 99) || a.Application.localeCompare(b.Application));
+            } else {
+              cachedAppLaunchers = [];
+            }
+          }
+          return cachedAppLaunchers || [];
+        };
+
         // template selection
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
         scope.clearTemplate = function() {
@@ -218,7 +239,6 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.gotoAllProjects = function() {
-
           $location.url('projects');
         };
 

@@ -128,8 +128,12 @@
         <a ng-href="#/login">Login</a>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse  identity-services col-md-3 pull-right"
+    <ul class="nav navbar-nav navbar-right no-padding navbar-right-no-collapse  identity-services col-md-3 pull-right"
         ng-if="loggedIn">
+      
+      <li class="pull-right">
+        <app-launcher apps="getAppLaunchers()"></app-launcher>  
+      </li>
 
       <li class="pull-right">
         <button class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple"

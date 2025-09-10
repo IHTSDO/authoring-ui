@@ -1,0 +1,240 @@
+<style>
+  .popover.app-launcher-popover {
+    right: 11px !important;
+    left: auto !important;
+  }
+
+  .popover.app-launcher-popover .arrow {
+    display: none;
+  }
+
+  .app-launcher button {
+    line-height: 0;
+    font-size: large;
+  }
+
+  .app-launcher i {
+    display: list-item;
+  }
+
+  .app-launcher-container {
+    width: 38rem;
+  }
+
+  .app-launcher-container .border-t {
+    border-top-width: 1px;
+    border-right: 0px;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-style: solid;
+    border-color: rgb(229, 231, 235);
+  }
+
+  .app-launcher-container .app-launcher-item {
+    min-height: 80px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    border-radius: 0.5rem;
+  }
+
+  .app-launcher-container .app-launcher-item i {
+    margin-bottom: 1.2rem;
+    font-weight: 900;
+    font-size: 2.8rem;
+    line-height: 2.25rem;
+  }
+
+  .app-launcher-container .app-launcher-item:hover {
+    background-color: #f3f4f6;
+  }
+
+  .app-launcher-container .text-sky {
+    --tw-text-opacity: 1;
+    color: rgb(14 165 233);
+  }
+
+  .app-launcher-container .text-violet {
+    --tw-text-opacity: 1;
+    color: rgb(139 92 246);
+  }
+
+  .app-launcher-container .text-green {
+    --tw-text-opacity: 1;
+    color: rgb(34 197 94);
+  }
+
+  .app-launcher-container .text-amber {
+    --tw-text-opacity: 1;
+    color: rgb(245 158 11);
+  }
+
+  .app-launcher-container .text-rose {
+    --tw-text-opacity: 1;
+    color: rgb(244 63 94);
+  }
+
+  .app-launcher-container .fa-building-columns {
+    width: 23px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M243.4%202.6l-224%2096c-14%206-21.8%2021-18.7%2035.8S16.8%20160%2032%20160l0%208c0%2013.3%2010.7%2024%2024%2024l400%200c13.3%200%2024-10.7%2024-24l0-8c15.2%200%2028.3-10.7%2031.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8-3.4-17.2-3.4-25.2%200zM128%20224l-64%200%200%20196.3c-.6%20.3-1.2%20.7-1.8%201.1l-48%2032c-11.7%207.8-17%2022.4-12.9%2035.9S17.9%20512%2032%20512l448%200c14.1%200%2026.5-9.2%2030.6-22.7s-1.1-28.1-12.9-35.9l-48-32c-.6-.4-1.2-.7-1.8-1.1L448%20224l-64%200%200%20192-40%200%200-192-64%200%200%20192-48%200%200-192-64%200%200%20192-40%200%200-192zM256%2064a32%2032%200%201%201%200%2064%2032%2032%200%201%201%200-64z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-id-badge {
+    width: 18px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20384%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M64%200C28.7%200%200%2028.7%200%2064L0%20448c0%2035.3%2028.7%2064%2064%2064l256%200c35.3%200%2064-28.7%2064-64l0-384c0-35.3-28.7-64-64-64L64%200zm96%20320l64%200c44.2%200%2080%2035.8%2080%2080c0%208.8-7.2%2016-16%2016L96%20416c-8.8%200-16-7.2-16-16c0-44.2%2035.8-80%2080-80zm-32-96a64%2064%200%201%201%20128%200%2064%2064%200%201%201%20-128%200zM144%2064l96%200c8.8%200%2016%207.2%2016%2016s-7.2%2016-16%2016l-96%200c-8.8%200-16-7.2-16-16s7.2-16%2016-16z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-network-wired {
+    width: 29px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20640%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M256%2064l128%200%200%2064-128%200%200-64zM240%200c-26.5%200-48%2021.5-48%2048l0%2096c0%2026.5%2021.5%2048%2048%2048l48%200%200%2032L32%20224c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032l96%200%200%2032-48%200c-26.5%200-48%2021.5-48%2048l0%2096c0%2026.5%2021.5%2048%2048%2048l160%200c26.5%200%2048-21.5%2048-48l0-96c0-26.5-21.5-48-48-48l-48%200%200-32%20256%200%200%2032-48%200c-26.5%200-48%2021.5-48%2048l0%2096c0%2026.5%2021.5%2048%2048%2048l160%200c26.5%200%2048-21.5%2048-48l0-96c0-26.5-21.5-48-48-48l-48%200%200-32%2096%200c17.7%200%2032-14.3%2032-32s-14.3-32-32-32l-256%200%200-32%2048%200c26.5%200%2048-21.5%2048-48l0-96c0-26.5-21.5-48-48-48L240%200zM96%20448l0-64%20128%200%200%2064L96%20448zm320-64l128%200%200%2064-128%200%200-64z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-check-double {
+    width: 20px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M342.6%2086.6c12.5-12.5%2012.5-32.8%200-45.3s-32.8-12.5-45.3%200L160%20178.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3%200s-12.5%2032.8%200%2045.3l80%2080c12.5%2012.5%2032.8%2012.5%2045.3%200l160-160zm96%20128c12.5-12.5%2012.5-32.8%200-45.3s-32.8-12.5-45.3%200L160%20402.7%2054.6%20297.4c-12.5-12.5-32.8-12.5-45.3%200s-12.5%2032.8%200%2045.3l128%20128c12.5%2012.5%2032.8%2012.5%2045.3%200l256-256z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-clone {
+    width: 23px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M288%20448L64%20448l0-224%2064%200%200-64-64%200c-35.3%200-64%2028.7-64%2064L0%20448c0%2035.3%2028.7%2064%2064%2064l224%200c35.3%200%2064-28.7%2064-64l0-64-64%200%200%2064zm-64-96l224%200c35.3%200%2064-28.7%2064-64l0-224c0-35.3-28.7-64-64-64L224%200c-35.3%200-64%2028.7-64%2064l0%20224c0%2035.3%2028.7%2064%2064%2064z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-magnifying-glass {
+    width: 23px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M416%20208c0%2045.9-14.9%2088.3-40%20122.7L502.6%20457.4c12.5%2012.5%2012.5%2032.8%200%2045.3s-32.8%2012.5-45.3%200L330.7%20376c-34.4%2025.2-76.8%2040-122.7%2040C93.1%20416%200%20322.9%200%20208S93.1%200%20208%200S416%2093.1%20416%20208zM208%20352a144%20144%200%201%200%200-288%20144%20144%200%201%200%200%20288z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-chart-line {
+    width: 26px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M64%2064c0-17.7-14.3-32-32-32S0%2046.3%200%2064L0%20400c0%2044.2%2035.8%2080%2080%2080l400%200c17.7%200%2032-14.3%2032-32s-14.3-32-32-32L80%20416c-8.8%200-16-7.2-16-16L64%2064zm406.6%2086.6c12.5-12.5%2012.5-32.8%200-45.3s-32.8-12.5-45.3%200L320%20210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3%200l-112%20112c-12.5%2012.5-12.5%2032.8%200%2045.3s32.8%2012.5%2045.3%200L240%20221.3l57.4%2057.4c12.5%2012.5%2032.8%2012.5%2045.3%200l128-128z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-list-check {
+    width: 23px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M152.1%2038.2c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20113C-2.3%20103.6-2.3%2088.4%207%2079s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zm0%20160c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20273c-9.4-9.4-9.4-24.6%200-33.9s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zM224%2096c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zm0%20160c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zM160%20416c0-17.7%2014.3-32%2032-32l288%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-288%200c-17.7%200-32-14.3-32-32zM48%20368a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-right-left {
+    width: 26px;
+    height: 26px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M32%2096l320%200%200-64c0-12.9%207.8-24.6%2019.8-29.6s25.7-2.2%2034.9%206.9l96%2096c6%206%209.4%2014.1%209.4%2022.6s-3.4%2016.6-9.4%2022.6l-96%2096c-9.2%209.2-22.9%2011.9-34.9%206.9s-19.8-16.6-19.8-29.6l0-64L32%20160c-17.7%200-32-14.3-32-32s14.3-32%2032-32zM480%20352c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-320%200%200%2064c0%2012.9-7.8%2024.6-19.8%2029.6s-25.7%202.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6%209.4-22.6l96-96c9.2-9.2%2022.9-11.9%2034.9-6.9s19.8%2016.6%2019.8%2029.6l0%2064%20320%200z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-pen-to-square {
+    width: 23px;
+    height: 23px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M471.6%2021.7c-21.9-21.9-57.3-21.9-79.2%200L362.3%2051.7l97.9%2097.9%2030.1-30.1c21.9-21.9%2021.9-57.3%200-79.2L471.6%2021.7zm-299.2%20220c-6.1%206.1-10.8%2013.6-13.5%2021.9l-29.6%2088.8c-2.9%208.6-.6%2018.1%205.8%2024.6s15.9%208.7%2024.6%205.8l88.8-29.6c8.2-2.7%2015.7-7.4%2021.9-13.5L437.7%20172.3%20339.7%2074.3%20172.4%20241.7zM96%2064C43%2064%200%20107%200%20160L0%20416c0%2053%2043%2096%2096%2096l256%200c53%200%2096-43%2096-96l0-96c0-17.7-14.3-32-32-32s-32%2014.3-32%2032l0%2096c0%2017.7-14.3%2032-32%2032L96%20448c-17.7%200-32-14.3-32-32l0-256c0-17.7%2014.3-32%2032-32l96%200c17.7%200%2032-14.3%2032-32s-14.3-32-32-32L96%2064z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-pen {
+    width: 26px;
+    height: 26px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M362.7%2019.3L314.3%2067.7%20444.3%20197.7l48.4-48.4c25-25%2025-65.5%200-90.5L453.3%2019.3c-25-25-65.5-25-90.5%200zm-71%2071L58.6%20323.5c-10.4%2010.4-18%2023.3-22.2%2037.4L1%20481.2C-1.5%20489.7%20.8%20498.8%207%20505s15.3%208.5%2023.7%206.1l120.3-35.4c14.1-4.2%2027-11.8%2037.4-22.2L421.7%20220.3%20291.7%2090.3z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-clipboard-list {
+    width: 19px;
+    height: 26px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20384%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M192%200c-41.8%200-77.4%2026.7-90.5%2064L64%2064C28.7%2064%200%2092.7%200%20128L0%20448c0%2035.3%2028.7%2064%2064%2064l256%200c35.3%200%2064-28.7%2064-64l0-320c0-35.3-28.7-64-64-64l-37.5%200C269.4%2026.7%20233.8%200%20192%200zm0%2064a32%2032%200%201%201%200%2064%2032%2032%200%201%201%200-64zM72%20272a24%2024%200%201%201%2048%200%2024%2024%200%201%201%20-48%200zm104-16l128%200c8.8%200%2016%207.2%2016%2016s-7.2%2016-16%2016l-128%200c-8.8%200-16-7.2-16-16s7.2-16%2016-16zM72%20368a24%2024%200%201%201%2048%200%2024%2024%200%201%201%20-48%200zm88%200c0-8.8%207.2-16%2016-16l128%200c8.8%200%2016%207.2%2016%2016s-7.2%2016-16%2016l-128%200c-8.8%200-16-7.2-16-16z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-layer-group {
+    width: 24px;
+    height: 22px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20576%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M264.5%205.2c14.9-6.9%2032.1-6.9%2047%200l218.6%20101c8.5%203.9%2013.9%2012.4%2013.9%2021.8s-5.4%2017.9-13.9%2021.8l-218.6%20101c-14.9%206.9-32.1%206.9-47%200L45.9%20149.8C37.4%20145.8%2032%20137.3%2032%20128s5.4-17.9%2013.9-21.8L264.5%205.2zM476.9%20209.6l53.2%2024.6c8.5%203.9%2013.9%2012.4%2013.9%2021.8s-5.4%2017.9-13.9%2021.8l-218.6%20101c-14.9%206.9-32.1%206.9-47%200L45.9%20277.8C37.4%20273.8%2032%20265.3%2032%20256s5.4-17.9%2013.9-21.8l53.2-24.6%20152%2070.2c23.4%2010.8%2050.4%2010.8%2073.8%200l152-70.2zm-152%20198.2l152-70.2%2053.2%2024.6c8.5%203.9%2013.9%2012.4%2013.9%2021.8s-5.4%2017.9-13.9%2021.8l-218.6%20101c-14.9%206.9-32.1%206.9-47%200L45.9%20405.8C37.4%20401.8%2032%20393.3%2032%20384s5.4-17.9%2013.9-21.8l53.2-24.6%20152%2070.2c23.4%2010.8%2050.4%2010.8%2073.8%200z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-table-list {
+    width: 22px;
+    height: 22px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M0%2096C0%2060.7%2028.7%2032%2064%2032l384%200c35.3%200%2064%2028.7%2064%2064l0%20320c0%2035.3-28.7%2064-64%2064L64%20480c-35.3%200-64-28.7-64-64L0%2096zm64%200l0%2064%2064%200%200-64L64%2096zm384%200L192%2096l0%2064%20256%200%200-64zM64%20224l0%2064%2064%200%200-64-64%200zm384%200l-256%200%200%2064%20256%200%200-64zM64%20352l0%2064%2064%200%200-64-64%200zm384%200l-256%200%200%2064%20256%200%200-64z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-fingerprint {
+    width: 22px;
+    height: 22px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M48%20256C48%20141.1%20141.1%2048%20256%2048c63.1%200%20119.6%2028.1%20157.8%2072.5c8.6%2010.1%2023.8%2011.2%2033.8%202.6s11.2-23.8%202.6-33.8C403.3%2034.6%20333.7%200%20256%200C114.6%200%200%20114.6%200%20256l0%2040c0%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24l0-40zm458.5-52.9c-2.7-13-15.5-21.3-28.4-18.5s-21.3%2015.5-18.5%2028.4c2.9%2013.9%204.5%2028.3%204.5%2043.1l0%2040c0%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24l0-40c0-18.1-1.9-35.8-5.5-52.9zM256%2080c-19%200-37.4%203-54.5%208.6c-15.2%205-18.7%2023.7-8.3%2035.9c7.1%208.3%2018.8%2010.8%2029.4%207.9c10.6-2.9%2021.8-4.4%2033.4-4.4c70.7%200%20128%2057.3%20128%20128l0%2024.9c0%2025.2-1.5%2050.3-4.4%2075.3c-1.7%2014.6%209.4%2027.8%2024.2%2027.8c11.8%200%2021.9-8.6%2023.3-20.3c3.3-27.4%205-55%205-82.7l0-24.9c0-97.2-78.8-176-176-176zM150.7%20148.7c-9.1-10.6-25.3-11.4-33.9-.4C93.7%20178%2080%20215.4%2080%20256l0%2024.9c0%2024.2-2.6%2048.4-7.8%2071.9C68.8%20368.4%2080.1%20384%2096.1%20384c10.5%200%2019.9-7%2022.2-17.3c6.4-28.1%209.7-56.8%209.7-85.8l0-24.9c0-27.2%208.5-52.4%2022.9-73.1c7.2-10.4%208-24.6-.2-34.2zM256%20160c-53%200-96%2043-96%2096l0%2024.9c0%2035.9-4.6%2071.5-13.8%20106.1c-3.8%2014.3%206.7%2029%2021.5%2029c9.5%200%2017.9-6.2%2020.4-15.4c10.5-39%2015.9-79.2%2015.9-119.7l0-24.9c0-28.7%2023.3-52%2052-52s52%2023.3%2052%2052l0%2024.9c0%2036.3-3.5%2072.4-10.4%20107.9c-2.7%2013.9%207.7%2027.2%2021.8%2027.2c10.2%200%2019-7%2021-17c7.7-38.8%2011.6-78.3%2011.6-118.1l0-24.9c0-53-43-96-96-96zm24%2096c0-13.3-10.7-24-24-24s-24%2010.7-24%2024l0%2024.9c0%2059.9-11%20119.3-32.5%20175.2l-5.9%2015.3c-4.8%2012.4%201.4%2026.3%2013.8%2031s26.3-1.4%2031-13.8l5.9-15.3C267.9%20411.9%20280%20346.7%20280%20280.9l0-24.9z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  .app-launcher-container .fa-toolbox {
+    width: 26px;
+    height: 26px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C!--!%20Font%20Awesome%20Free%206.7.2%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%2Ffree%20(Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License)%20Copyright%202024%20Fonticons%2C%20Inc.%20--%3E%3Cpath%20d%3D%22M176%2088l0%2040%20160%200%200-40c0-4.4-3.6-8-8-8L184%2080c-4.4%200-8%203.6-8%208zm-48%2040l0-40c0-30.9%2025.1-56%2056-56l144%200c30.9%200%2056%2025.1%2056%2056l0%2040%2028.1%200c12.7%200%2024.9%205.1%2033.9%2014.1l51.9%2051.9c9%209%2014.1%2021.2%2014.1%2033.9l0%2092.1-128%200%200-32c0-17.7-14.3-32-32-32s-32%2014.3-32%2032l0%2032-128%200%200-32c0-17.7-14.3-32-32-32s-32%2014.3-32%2032l0%2032L0%20320l0-92.1c0-12.7%205.1-24.9%2014.1-33.9l51.9-51.9c9-9%2021.2-14.1%2033.9-14.1l28.1%200zM0%20416l0-64%20128%200c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32l128%200c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32l128%200%200%2064c0%2035.3-28.7%2064-64%2064L64%20480c-35.3%200-64-28.7-64-64z%22%2F%3E%3C%2Fsvg%3E");
+  }
+</style>
+
+<div class="app-launcher relative" close-popover-on-click-outside="closePopover()" ng-if="apps && apps.length > 0">
+  <button type="button" class="dropdown-toggle pointer btn btn-round btn-link header-settings withoutripple"
+    id="app-launcher-btn" data-toggle="popover" popover-append-to-body="true" popover-class="app-launcher-popover"
+    popover-template="'appLauncher.html'" popover-placement="bottom-right" popover-trigger="click: click">
+    <i class="fa fa-ellipsis-h" style="height: 7px;"></i>
+    <i class="fa fa-ellipsis-h" style="height: 16px;"></i>
+  </button>
+</div>
+
+<script type="text/ng-template" id="appLauncher.html">
+    <div class= "col-md-12 row no-padding app-launcher-container">
+      <!-- Group 1 -->
+      <div class="row p-2" ng-if="appsByGroup(1).length > 0">
+          <div ng-repeat="app in appsByGroup(1)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+              <i class="text-sky fa {{app.faIcon}}"></i>
+              <p style="{{app.textStyle}}">{{app.Application}}</p>
+          </div>
+      </div>
+      <!-- Group 2 -->
+      <div class="row gap-3 border-t p-2" ng-if="appsByGroup(2).length > 0">
+          <div ng-repeat="app in appsByGroup(2)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+              <i class="text-violet fa {{app.faIcon}}"></i>
+              <p style="{{app.textStyle}}">{{app.Application}}</p>
+          </div>
+      </div>
+      <!-- Group 3 -->
+      <div class="row border-t p-2" ng-if="appsByGroup(3).length > 0">
+          <div ng-repeat="app in appsByGroup(3)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+              <i class="text-green fa {{app.faIcon}}"></i>
+              <p style="{{app.textStyle}}">{{app.Application}}</p>
+          </div>
+      </div>
+      <!-- Group 4 -->
+      <div class="row border-t p-2" ng-if="appsByGroup(4).length > 0">
+          <div ng-repeat="app in appsByGroup(4)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+              <i class="text-amber fa {{app.faIcon}}"></i>
+              <p style="{{app.textStyle}}">{{app.Application}}</p>
+          </div>
+      </div>
+      <!-- Group 5 -->
+      <div class="row border-t p-2" ng-if="appsByGroup(5).length > 0">
+          <div ng-repeat="app in appsByGroup(5)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+              <i class="text-rose fa {{app.faIcon}}"></i>
+              <p style="{{app.textStyle}}">{{app.Application}}</p>
+          </div>
+      </div>
+    </div>
+  </script>
