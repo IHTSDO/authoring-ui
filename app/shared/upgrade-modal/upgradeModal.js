@@ -70,12 +70,12 @@ angular.module('singleConceptAuthoringApp')
     /////////////////////////////////////////
 
     $scope.upgrade = function() {
-      modalService.confirm('Do you really want to upgrade the ' + $scope.codeSystem.name + ' to the new ' + $scope.selectedVersion.version + ' International Edition?').then(function () {
+      modalService.confirm('Do you really want to upgrade the ' + $scope.codeSystem.name + ' to the new ' + $scope.selectedVersion + ' International Edition?').then(function () {
         var queryParam = '';
         if ($scope.copyEnGb && $scope.selectedProject) {
           queryParam = '?projectKey=' + $scope.selectedProject;
         }
-        $location.url('codesystem/' + $scope.codeSystem.shortName + '/upgrade/' + $scope.selectedVersion.version + queryParam);
+        $location.url('codesystem/' + $scope.codeSystem.shortName + '/upgrade/' + $scope.selectedVersion + queryParam);
         $modalInstance.close();
       }, function () {
         // do nothing
@@ -92,10 +92,16 @@ angular.module('singleConceptAuthoringApp')
 
     function initialize() {
       var dependantVersionEffectiveTime = parseInt($scope.codeSystem.dependantVersionEffectiveTime.split('-').join(''));
-      terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
-        if (response.data.items && response.data.items.length > 0) {
-          $scope.versions = response.data.items.filter(function (item) {
-            return item.effectiveDate > dependantVersionEffectiveTime;
+      terminologyServerService.getCompatibleDependentVersions($scope.codeSystem.shortName).then(function (response) {
+        if (response.compatibleVersions && response.compatibleVersions.length > 0) {
+          let filteredVersions = response.compatibleVersions.filter(function (item) {
+            return item > dependantVersionEffectiveTime;
+          });
+          $scope.versions = filteredVersions.sort(function(a, b) {
+            return b - a;
+          }).map(function(item) {
+            let itemStr = item.toString();
+            return itemStr.substring(0,4) + '-' + itemStr.substring(4,6) + '-' + itemStr.substring(6,8);
           });
         }
       });

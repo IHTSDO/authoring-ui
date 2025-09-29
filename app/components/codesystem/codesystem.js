@@ -85,8 +85,10 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           terminologyServerService.getCodeSystem($routeParams.codeSystem).then(function (codeSystem) {
               terminologyServerService.getBranch(codeSystem.branchPath).then(function (response) {
                   $scope.branch = codeSystem.branchPath;
+                  let dependantVersionEffectiveTimeI;
                   if(codeSystem.dependantVersionEffectiveTime && codeSystem.dependantVersionEffectiveTime != ''){
                     let date = codeSystem.dependantVersionEffectiveTime.toString();
+                    dependantVersionEffectiveTimeI = codeSystem.dependantVersionEffectiveTime;
                     codeSystem.dependantVersionEffectiveTime = [date.slice(0, 4), date.slice(4,6), date.slice(6,8)].join('-');
                   }
                   $scope.codeSystem = codeSystem;
@@ -100,12 +102,18 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                   $scope.integrityIssueFound = response.metadata.internal && (response.metadata.internal.integrityIssue === true || response.metadata.internal.integrityIssue === 'true');
 
                   // check wheter or not the latest dependant version was upgraded
-                  terminologyServerService.getAllCodeSystemVersionsByShortName('SNOMEDCT').then(function (response) {
-                    if (response.data.items && response.data.items.length > 0) {
-                      var versions = response.data.items.sort(function (a, b) {
-                        return b.effectiveDate - a.effectiveDate;
+                  terminologyServerService.getCompatibleDependentVersions(codeSystem.shortName).then(function (response) {
+                    if (response.compatibleVersions && response.compatibleVersions.length > 0) {
+                      let compatibleVersions = [];
+                      response.compatibleVersions.forEach(function(version) {
+                        compatibleVersions.push(parseInt(version));
                       });
-                      if (versions[0].version === codeSystem.dependantVersionEffectiveTime) {
+                      compatibleVersions = compatibleVersions.sort(function (a, b) {
+                        return b - a;
+                      });
+                      if (compatibleVersions[0] > dependantVersionEffectiveTimeI) {
+                        $scope.upgradedToLastestDependantVersion = false;
+                      } else {
                         $scope.upgradedToLastestDependantVersion = true;
                       }
                     }

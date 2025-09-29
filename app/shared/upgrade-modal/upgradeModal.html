@@ -53,7 +53,7 @@
         <div>
           <label for="upgradeVersionSelection">Select version</label>
           <select id="upgradeVersionSelection" name="select-choice" class="form-control"
-                  ng-options="version as version.version for version in versions | orderBy: '-effectiveDate'"
+                  ng-options="version for version in versions"
                   ng-model="selectedVersion"
             >
           </select>

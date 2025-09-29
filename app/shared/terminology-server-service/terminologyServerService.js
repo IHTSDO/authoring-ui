@@ -2625,6 +2625,16 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getCompatibleDependentVersions(shortName) {
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + 'codesystems/' + shortName + '/dependencies/compatible-versions').then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -2745,7 +2755,8 @@ angular.module('singleConceptAuthoringApp')
         setEndpoint: setEndpoint,
         getEndpoint: getEndpoint,
         retrieveSemanticTags: retrieveSemanticTags,
-        copyConcept: copyConcept
+        copyConcept: copyConcept,
+        getCompatibleDependentVersions: getCompatibleDependentVersions
       };
     }
 
