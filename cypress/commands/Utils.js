@@ -10,12 +10,12 @@ class Utils {
   login(url, username, password) {
     cy.clearAllCookies();
     cy.visit(url);
-    cy.contains('Please Log In', {timeout: 15000});
+    cy.contains('Welcome to SNOMED International', {timeout: 15000});
     cy.get('#username').clear();
     cy.get('#username').type(username);
     cy.get('#password').clear();
     cy.get('#password').type(password, {log: false});
-    cy.get('button#submit', {timeout: this.loginTimeoutInSeconds}).click({force: true});
+    cy.get('input#kc-login', {timeout: this.loginTimeoutInSeconds}).click({force: true});
   }
 
   logout() {
