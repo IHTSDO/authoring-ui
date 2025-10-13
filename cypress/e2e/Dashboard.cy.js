@@ -1,4 +1,5 @@
 const Utils = require('../commands/Utils.js');
+
 const utils = new Utils();
 
 const urlAuthoring = Cypress.env('URL_AUTHORING');
@@ -7,7 +8,6 @@ const password = Cypress.env('TEST_LOGIN_PSW');
 
 describe('Dashboard Exploration Test', () => {
     before(() => {
-        // Clear cookies and local storage before each test
         cy.clearAllCookies();
         cy.clearAllLocalStorage();
         cy.clearAllSessionStorage();
