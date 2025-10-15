@@ -413,7 +413,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.openSearchTasksModel = function () {
             $modal.open({
-                templateUrl: 'shared/task/taskSearch.html',
+                templateUrl: 'shared/task-search/taskSearch.html',
                 controller: 'taskSearchCtrl',
                 backdrop: 'static',
                 size: 'large',

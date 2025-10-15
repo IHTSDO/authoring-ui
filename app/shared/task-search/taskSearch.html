@@ -8,6 +8,14 @@
     margin-bottom: unset;
   }
 
+  #taskSearchModal .md-remove-circle {
+    color: red;
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 31px;
+  }
+
   #taskSearchModal .checkbox input[type=checkbox] {
     min-height: unset;
   }
@@ -62,7 +70,7 @@
   #taskSearchModal .scroll-if-height {
     max-height: calc(100vh - 330px);
     height: unset;
-  }  
+  }
 
   .cssProgress {
     background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
@@ -95,25 +103,25 @@
   </div>
   <div class="modal-body">
     <div class="row m-t-5">
-      <div class="col-md-4 no-padding">
+      <div class="col-md-3 no-padding">
         <div>
           <input autofocus="true" class="form-control" ng-model="criteria" type="text" ng-change="clearMessages()"
             ng-keyup="$event.keyCode == 13 && search()" placeholder="Enter task's name or ID...">
           <br>
         </div>
       </div>
-      <div class="col-md-6" style="margin-top: -24px;">
-        <div class="col-md-4">
+      <div class="col-md-8" style="margin-top: -24px;">
+        <div class="col-md-3">
           <label class="no-margin">Project:</label>
           <div ng-dropdown-multiselect="" checkboxes="true" options="projectOptions" selected-model="selectedProjects"
             extra-settings="multiselectSettings" translation-texts="multiselectTranslationTexts"></div>
-        </div>
-        <div class="col-md-4">
+        </div>        
+        <div class="col-md-3">
           <label class="no-margin">Status:</label>
           <div ng-dropdown-multiselect="" checkboxes="true" options="statusOptions" selected-model="selectedStatuses"
             extra-settings="multiselectSettings" translation-texts="multiselectTranslationTexts"></div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <label class="no-margin">Author:</label>
           <input class="form-control" type="text" ng-model="selecteAuthor"
             typeahead="suggestion as suggestion.displayName for suggestion in searchUsers($viewValue)"
@@ -122,8 +130,18 @@
           <i ng-show="typeaheadLoading" style="position: absolute; right: 15px; top: 32px;" class="md md-cached"></i>
           </input>
         </div>
+        <div class="col-md-3">
+          <label class="no-margin">Created:</label>
+          <div>
+            <input type="text" date-range-picker start-date="startDate" end-date="endDate"
+              date-range-picker-options="dateRangeOptions" on-change="onDateRangeApply()" class="form-control"
+              ng-keydown="preventTyping($event)" ng-paste="$event.preventDefault()"
+              style="cursor: pointer; background-color: white;">
+              <span ng-click="clearDateRange()" class="md md-remove-circle" ng-if="shouldClearDateRange()"></span>
+          </div>
+        </div>
       </div>
-      <div class="pull-right col-md-2">
+      <div class="pull-right col-md-1">
         <button type="button" class="col-md-12 btn btn-info no-margin" ng-disabled="loading"
           ng-click="search()">Search</button>
       </div>
@@ -131,10 +149,14 @@
     <div class="alert alert-success text-center cssProgress" ng-show="searching">Searching...</div>
     <div class="alert alert-success" ng-show="message">{{message}}</div>
     <div class="row m-b-5" ng-if="!searching">
-      <button ng-if="isAdmin && tasks.length !== 0" type="button" style="margin-top: -10px;"
+      <button ng-if="isAdmin && tasks.length !== 0" type="button" style="margin-top: -10px; margin-right: 2px;"
         class="btn btn-danger no-margin" ng-disabled="processingTasksDeletion || getSelectedRequestsCount() == 0"
         ng-click="deleteSelectedTasks()">{{processingTasksDeletion ?
         'Task Deletion In Progress...' : 'Delete Selected Tasks'}}</button>
+      
+      <button ng-if="tasks.length !== 0" type="button" style="margin-top: -10px;" class="btn btn-info no-margin m-l-10"
+        ng-click="downloadSearchResults()">Download Results</button>
+      
       <label style="font-weight: 500; float: right;" class="m-r-30" ng-if="searchDone && tasks.length > 0">Total Tasks:
         {{tasks.length}}</label>
     </div>

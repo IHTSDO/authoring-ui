@@ -12,6 +12,80 @@ angular.module('singleConceptAuthoringApp')
     $scope.tasks = [];
     $scope.statusOptions = [];
     $scope.projectOptions = [];
+    $scope.dateRangeOptions = {
+      locale: {
+        format: 'YYYY-MM-DD',
+        separator: ' - '
+      },
+      showDropdowns: false,
+      autoUpdateInput: false,
+      linkedCalendars: false,  // Allow selecting dates from different months independently
+      alwaysShowCalendars: true  // Always show both calendars
+    };
+
+    // Initialize with proper moment objects to avoid NaN issues
+    $scope.startDate = moment().subtract(29, 'days');
+    $scope.endDate = moment();
+
+    var selectedStartDate = null;
+    var selectedEndDate = null;
+
+    $scope.shouldClearDateRange = function() {
+      return selectedStartDate !== null || selectedEndDate !== null;
+    };
+    
+    $scope.clearDateRange = function() {
+      selectedStartDate = null;
+      selectedEndDate = null;
+      $scope.updateInputField(null, null);
+    };
+    
+    // Prevent typing in the input field while allowing clicks and library interactions
+    $scope.preventTyping = function(event) {
+      // Allow backspace, delete, tab, escape, enter, and arrow keys for navigation
+      var allowedKeys = [8, 9, 27, 13, 46, 37, 38, 39, 40];
+      
+      // Prevent all other key inputs
+      if (allowedKeys.indexOf(event.keyCode) === -1) {
+        event.preventDefault();
+        return false;
+      }
+    };
+    
+    // Function to update the input field value
+    $scope.updateInputField = function(startDate, endDate) {
+      var inputValue = '';
+      if (startDate && endDate) {
+        inputValue = startDate.format('YYYY-MM-DD') + ' - ' + endDate.format('YYYY-MM-DD');        
+      }
+      
+      // Update the input field value
+      setTimeout(function() {
+        var pickerElement = document.querySelector('input[date-range-picker]');
+        if (pickerElement) {
+          pickerElement.value = inputValue;
+        }
+      }, 10);
+    };    
+    
+    // Handle when user applies date selection (on-change event)
+    $scope.onDateRangeApply = function() {
+      console.log('Date range applied:', 
+        $scope.startDate ? $scope.startDate.format('YYYY-MM-DD') : 'null', 
+        'to', 
+        $scope.endDate ? $scope.endDate.format('YYYY-MM-DD') : 'null'
+      );
+      
+      // The startDate and endDate are already updated by the directive via two-way binding
+      // Just update the input field display
+      if ($scope.startDate && $scope.endDate) {
+        selectedStartDate = $scope.startDate;
+        selectedEndDate = $scope.endDate;
+        $scope.updateInputField($scope.startDate, $scope.endDate);
+      }
+    };
+    
+    
     $scope.multiselectSettings = {
       showCheckAll: false, showUncheckAll: false, scrollable: true, smartButtonMaxItems: 5, smartButtonTextConverter: smartButtonTextConverter,
       displayProp: 'label', idProperty: 'id', buttonClasses: 'form-control no-padding col-md-12'
@@ -80,14 +154,18 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.search = function () {
-      if (($scope.criteria.trim().length === 0 && (!$scope.selectedProjects || $scope.selectedProjects.length === 0) && (!$scope.selectedStatuses || $scope.selectedStatuses.length === 0) && !$scope.selecteAuthor) || $scope.searching) {
+      if (($scope.criteria.trim().length === 0 && (!$scope.selectedProjects || $scope.selectedProjects.length === 0) && (!$scope.selectedStatuses || $scope.selectedStatuses.length === 0) && !$scope.selecteAuthor && !selectedStartDate && !selectedEndDate) || $scope.searching) {
         return;
       }
       $scope.tasks = [];
       $scope.message = '';
       $scope.searching = true;
 
-      scaService.searchTasks($scope.criteria.trim(), $scope.selectedProjects, $scope.selectedStatuses, $scope.selecteAuthor ? $scope.selecteAuthor.username : null).then(function (result) {
+      // Format dates for the API call
+      var startDateFormatted = selectedStartDate ? selectedStartDate.startOf('day').valueOf() : null;      
+      var endDateFormatted = selectedEndDate ? selectedEndDate.endOf('day').valueOf() : null;
+
+      scaService.searchTasks($scope.criteria.trim(), $scope.selectedProjects, $scope.selectedStatuses, $scope.selecteAuthor ? $scope.selecteAuthor.username : null, startDateFormatted, endDateFormatted).then(function (result) {
         if (result.length === 0) {
           $scope.message = 'No results';
         }
@@ -174,6 +252,57 @@ angular.module('singleConceptAuthoringApp')
           $scope.processingTasksDeletion = false;
         });
       });
+    }
+
+    $scope.downloadSearchResults = function () {
+      if (!$scope.tasks || $scope.tasks.length === 0) {
+        return;
+      }
+
+      // Helper function to clean values for TSV
+      function cleanValue(value) {
+        if (value === null || value === undefined) {
+          return '';
+        }
+        var strValue = String(value);
+        // Replace tabs and newlines with spaces
+        return strValue.replace(/[\t\n\r]/g, ' ');
+      }
+
+      // Get sorted data using the same logic as the table
+      var sortedTasks = $scope.tasks;
+      if ($scope.searchTasksTableParams.sorting()) {
+        sortedTasks = $filter('orderBy')($scope.tasks, $scope.searchTasksTableParams.orderBy());
+      }
+
+      // Create TSV header
+      var tsv = 'Task ID\tName\tCreated\tModified\tStatus\tAuthor\tReviewers\n';
+
+      // Add each task as a row
+      sortedTasks.forEach(function (task) {
+        var row = [
+          cleanValue(task.key),
+          cleanValue(task.summary),
+          cleanValue(task.created ? task.created : ''),
+          cleanValue(task.updated ? task.updated : ''),
+          cleanValue(task.status),          
+          cleanValue(task.assignee ? task.assignee.displayName : ''),
+          cleanValue($scope.getReviewersDisplayName(task.reviewers)),
+          
+        ];
+        tsv += row.join('\t') + '\n';
+      });
+
+      // Create blob and download
+      var blob = new Blob([tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
+      var link = document.createElement('a');
+      var url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'task-search-results-' + moment().format('YYYY-MM-DD-HHmmss') + '.tsv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function initialize() {

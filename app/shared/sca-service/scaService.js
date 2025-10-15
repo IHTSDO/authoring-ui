@@ -653,7 +653,7 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
-        searchTasks: function (criteria, projects, statuses, author) {
+        searchTasks: function (criteria, projects, statuses, author, startDate, endDate) {
           var params = '';
           if (criteria) {
             params += 'criteria=' + encodeURIComponent(criteria);
@@ -681,6 +681,18 @@ angular.module('singleConceptAuthoringApp')
               params += '&';
             }
             params += 'author=' + encodeURIComponent(author);
+          }
+          if (startDate) {
+            if (params.length > 0) {
+              params += '&';
+            }
+            params += 'createdDateFrom=' + startDate;
+          }
+          if (endDate) {
+            if (params.length > 0) {
+              params += '&';
+            }
+            params += 'createdDateTo=' + endDate
           }
           return $http.get(apiEndpoint + 'projects/tasks/search?lightweight=true&' + params).then(
             function (response) {
