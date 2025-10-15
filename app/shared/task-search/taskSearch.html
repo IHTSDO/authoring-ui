@@ -115,7 +115,7 @@
           <label class="no-margin">Project:</label>
           <div ng-dropdown-multiselect="" checkboxes="true" options="projectOptions" selected-model="selectedProjects"
             extra-settings="multiselectSettings" translation-texts="multiselectTranslationTexts"></div>
-        </div>        
+        </div>
         <div class="col-md-3">
           <label class="no-margin">Status:</label>
           <div ng-dropdown-multiselect="" checkboxes="true" options="statusOptions" selected-model="selectedStatuses"
@@ -137,7 +137,7 @@
               date-range-picker-options="dateRangeOptions" on-change="onDateRangeApply()" class="form-control"
               ng-keydown="preventTyping($event)" ng-paste="$event.preventDefault()"
               style="cursor: pointer; background-color: white;">
-              <span ng-click="clearDateRange()" class="md md-remove-circle" ng-if="shouldClearDateRange()"></span>
+            <span ng-click="clearDateRange()" class="md md-remove-circle" ng-if="shouldClearDateRange()"></span>
           </div>
         </div>
       </div>
@@ -152,11 +152,14 @@
       <button ng-if="isAdmin && tasks.length !== 0" type="button" style="margin-top: -10px; margin-right: 2px;"
         class="btn btn-danger no-margin" ng-disabled="processingTasksDeletion || getSelectedRequestsCount() == 0"
         ng-click="deleteSelectedTasks()">{{processingTasksDeletion ?
-        'Task Deletion In Progress...' : 'Delete Selected Tasks'}}</button>
-      
-      <button ng-if="tasks.length !== 0" type="button" style="margin-top: -10px;" class="btn btn-info no-margin m-l-10"
-        ng-click="downloadSearchResults()">Download Results</button>
-      
+        'Task Deletion In Progress...' : 'Delete Selected Tasks'}}</button>      
+
+      <a ng-if="tasks.length !== 0" style="margin-top: -10px; margin-right: 2px; color: white;"
+        class="btn btn-primary fa fa-download tooltips-bottom normal-case"
+        ng-click="downloadSearchResults()">
+        <span class="tooltip-dl">Download Results</span>
+      </a>
+
       <label style="font-weight: 500; float: right;" class="m-r-30" ng-if="searchDone && tasks.length > 0">Total Tasks:
         {{tasks.length}}</label>
     </div>
