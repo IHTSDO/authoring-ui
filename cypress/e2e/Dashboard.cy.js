@@ -7,12 +7,6 @@ const username = Cypress.env('TEST_LOGIN_USR');
 const password = Cypress.env('TEST_LOGIN_PSW');
 
 describe('Dashboard Exploration Test', () => {
-    before(() => {
-        cy.clearAllCookies();
-        cy.clearAllLocalStorage();
-        cy.clearAllSessionStorage();
-        cy.log('Cookies, local and session storage are cleared');
-    });
 
     it('Login', () => {
         utils.login(urlAuthoring, username, password);
@@ -105,9 +99,14 @@ describe('Dashboard Exploration Test', () => {
         cy.url().should('include', 'home');
     });
 
-    // Take a screenshot for manual verification
     it('Take a screenshot for manual verification', () => {
         cy.screenshot('dashboard-overview');
+    });
+
+    it('Logout', () => {
+        utils.logout();
+        cy.contains('Welcome to SNOMED International', {timeout: 15000}).should('be.visible');
+        cy.contains('Sign In').should('be.visible');
     });
 
 });

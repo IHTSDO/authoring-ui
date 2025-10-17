@@ -19,7 +19,7 @@ class Utils {
   }
 
   logout() {
-    cy.contains('Logout').click();
+    cy.contains('Logout', {timeout: 10000}).should('be.visible').click();
     cy.clearAllCookies();
   }
 }
