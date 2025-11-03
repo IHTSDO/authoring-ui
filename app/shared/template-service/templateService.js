@@ -1338,6 +1338,49 @@ angular.module('singleConceptAuthoringApp')
       exclusionList = list;
     }
 
+    function getTransformationTemplateVersion() {
+      var deferred = $q.defer();
+
+      $http.get(apiEndpoint + 'transformation/template/version', {
+        headers: {
+          'Accept': 'text/plain'
+        },
+        responseType: 'text',
+        transformResponse: [function (data) {
+          // Return raw text to preserve formatting like trailing zeros (e.g., 2.20)
+          return data;
+        }]
+      }).then(function (response) {
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject('Failed to retrieve Transformation Template Version: ' + error.message);
+      });
+
+      return deferred.promise;
+    }
+
+    function downloadTransformationTemplate() {
+      var deferred = $q.defer();
+      var url = apiEndpoint + 'transformation/template/download';
+
+      try {
+        var link = document.createElement('a');
+        link.href = url;
+        // allow server-provided filename; empty download attribute triggers download behavior
+        link.setAttribute('download', '');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        deferred.resolve();
+      } catch (e) {
+        // Fallback to location change if programmatic click fails
+        window.location.href = url;
+        deferred.resolve();
+      }
+
+      return deferred.promise;
+    }
+
     function downloadTemplateCsv(template) {
       return $http({
         'method': 'GET',
@@ -1492,6 +1535,8 @@ angular.module('singleConceptAuthoringApp')
       bulkLogTemplateConceptSave: bulkLogTemplateConceptSave,
 
       // batch functions
+      getTransformationTemplateVersion: getTransformationTemplateVersion,
+      downloadTransformationTemplate: downloadTransformationTemplate,
       downloadTemplateCsv: downloadTemplateCsv,
       uploadTemplateCsv: uploadTemplateCsv,
       transform: transform,

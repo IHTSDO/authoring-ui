@@ -137,9 +137,22 @@ angular.module('singleConceptAuthoringApp.transformationModal', [])
       });
     }
 
+    function getTransformationTemplateVersion() {
+      templateService.getTransformationTemplateVersion().then(function(response) {
+        $scope.templateVersion = response;
+      });
+    }
+
+    $scope.downloadTransformationTemplate = function() {
+      templateService.downloadTransformationTemplate().then(function() {
+        // do nothing
+      });
+    };  
+
     function initialize() {
       getUsers(0);
       getTransformationRecipes();
+      getTransformationTemplateVersion();
     }
 
     initialize();
