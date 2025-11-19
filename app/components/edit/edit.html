@@ -166,7 +166,7 @@
     <!-- Edit View: Default -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="[{'lighten-2' : thisView === 'edit-default'}]"
             class="btn btn-default widget-toolbar blue tooltips-right tooltips-light normal-case white-backgrounnd task-editing-btn"
-            ng-click="setView('edit-default');$root.$broadcast('viewInfo', {});">
+            ng-click="setView('edit-default');$root.$broadcast('viewInfo', {});" data-cy="back-to-task-editing-button">
       <div class="md md-dvr"></div>
       <span>Go back to task editing</span></button>
 
