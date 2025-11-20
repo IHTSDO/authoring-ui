@@ -120,20 +120,21 @@
       <div class="custom-dropdown">
         <button type="button" class="btn btn-default btn-primary col-md-12 text-center ng-click-active search-type btn-blue custom-dropdown-toggle"
                 title="Search Type"
-                id="search-type-dropdown">
+                id="search-type-dropdown"
+                data-cy="search-type-dropdown-button">
           <div class="md col-md-12 no-padding text-center ng-binding">
             {{userOptions.searchType}}&nbsp;<span class="caret"></span>
           </div>
         </button>
         <ul class="custom-dropdown-menu" style="left:15px; display: none;" role="menu">
             <li>
-                <div class="sidebar-dropdown" ng-click="setsearchType('Active only')">Active only</div>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Active only')" data-cy="search-type-active-only">Active only</div>
             </li>
             <li>
-                <div class="sidebar-dropdown" ng-click="setsearchType('Inactive only')">Inactive only</div>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Inactive only')" data-cy="search-type-inactive-only">Inactive only</div>
             </li>
             <li>
-                <div class="sidebar-dropdown" ng-click="setsearchType('Active and Inactive')">Active and inactive</div>
+                <div class="sidebar-dropdown" ng-click="setsearchType('Active and Inactive')" data-cy="search-type-active-and-inactive">Active and inactive</div>
             </li>                       
         </ul>
       </div>
