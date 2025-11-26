@@ -96,15 +96,21 @@ angular
     $httpProvider.interceptors.push(['$q', '$location', 'notificationService', function($q, $location, notificationService) {
       return {
           responseError: function(rejection) {
-              if(rejection && rejection.status === 403 && rejection.config && (rejection.config.method === 'POST' || rejection.config.method === 'PUT' || rejection.config.method === 'DELETE')){
-                notificationService.sendError("Request access denied");
-              } else if(rejection && rejection.status === 403 && rejection.config && rejection.config.method === 'GET'){
+              console.log(rejection);
+              console.log(rejection.config.url);
+              if(rejection && rejection.status === 403) {
+                if (rejection.config && rejection.config.url && rejection.config.url.endsWith('/auth')) {
+                  $location.path('/login');                
+                } else {
+                  notificationService.sendError("Request access denied");
+                }
+              } else if (rejection && rejection.status === 401) {
                 $location.path('/login');
               } else {
                 return $q.reject(rejection);
               }
-          }
-      }
+          } 
+      } 
   }]);
 
     // modal providers MUST not use animation
@@ -322,69 +328,70 @@ angular
             accountService.getAppLaunchers().then(function(apps) {
               $rootScope.apps = apps;
             });
+
+            ///////////////////////////////////////////
+            // Cache namespaces
+            ///////////////////////////////////////////
+            cisService.getAllNamespaces().then(function (response) {
+              if(response.length > 0) {
+                metadataService.setNamespaces(response);
+              }
+            });
+
+            ///////////////////////////////////////////
+            // Cache local data
+            ///////////////////////////////////////////
+            scaService.getProjects(true).then(function (response) {
+              metadataService.setProjects(response);
+              metadataService.setProjectsLoaded(true);
+
+              // get the user preferences (once logged in status confirmed)
+              accountService.getUserPreferences().then(function (preferences) {
+
+                if (preferences && preferences.minNetworkConnection) {
+                  window.minNetworkConnection = preferences.minNetworkConnection;
+                }
+
+                // apply the user preferences
+                // NOTE: Missing values or not logged in leads to defaults
+                accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+                  // check for modification by application routine
+                  if (appliedPreferences !== preferences) {
+                    accountService.saveUserPreferences(appliedPreferences);
+                  }
+                })
+              }, function(error) {
+                // apply default preferences
+                var userPreferences = {};
+                accountService.applyUserPreferences(userPreferences).then(function (appliedPreferences) {
+                  accountService.saveUserPreferences(appliedPreferences).then(function() {});
+                })
+              });
+            });
+
+            ///////////////////////////////////////////
+            // load semantic tags
+            ///////////////////////////////////////////
+            terminologyServerService.retrieveSemanticTags().then(function (response) {
+              if(response.length !== 0) {
+                response.sort(function (a, b) {
+                  return a.localeCompare(b);
+                });
+              }
+              metadataService.setSemanticTags(response);
+            });
+
+            ///////////////////////////////////////////
+            // load code systems
+            ///////////////////////////////////////////
+            terminologyServerService.getAllCodeSystems().then(function (response) {
+              metadataService.setCodeSystems(response.items);
+            });
+            
           },
           function () {}
-        );
-
-        ///////////////////////////////////////////
-        // Cache namespaces
-        ///////////////////////////////////////////
-        cisService.getAllNamespaces().then(function (response) {
-          if(response.length > 0) {
-            metadataService.setNamespaces(response);
-          }
-        });
-
-        ///////////////////////////////////////////
-        // Cache local data
-        ///////////////////////////////////////////
-        scaService.getProjects(true).then(function (response) {
-          metadataService.setProjects(response);
-          metadataService.setProjectsLoaded(true);
-
-          // get the user preferences (once logged in status confirmed)
-          accountService.getUserPreferences().then(function (preferences) {
-
-            if (preferences && preferences.minNetworkConnection) {
-              window.minNetworkConnection = preferences.minNetworkConnection;
-            }
-
-            // apply the user preferences
-            // NOTE: Missing values or not logged in leads to defaults
-            accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
-
-              // check for modification by application routine
-              if (appliedPreferences !== preferences) {
-                accountService.saveUserPreferences(appliedPreferences);
-              }
-            })
-          }, function(error) {
-            // apply default preferences
-            var userPreferences = {};
-            accountService.applyUserPreferences(userPreferences).then(function (appliedPreferences) {
-              accountService.saveUserPreferences(appliedPreferences).then(function() {});
-            })
-          });
-        });
-
-        ///////////////////////////////////////////
-        // load semantic tags
-        ///////////////////////////////////////////
-        terminologyServerService.retrieveSemanticTags().then(function (response) {
-          if(response.length !== 0) {
-            response.sort(function (a, b) {
-              return a.localeCompare(b);
-            });
-          }
-          metadataService.setSemanticTags(response);
-        });
-
-        ///////////////////////////////////////////
-        // load code systems
-        ///////////////////////////////////////////
-        terminologyServerService.getAllCodeSystems().then(function (response) {
-          metadataService.setCodeSystems(response.items);
-        });
+        );        
 
         ///////////////////////////////////////////
         // Binding shortcut
