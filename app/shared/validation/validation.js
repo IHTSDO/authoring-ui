@@ -849,13 +849,22 @@ angular.module('singleConceptAuthoringApp')
             var assertionExclusionList = scope.validationContainer.report.rvfValidationResult.validationConfig.assertionExclusionList;
             if (assertionExclusionList && assertionExclusionList.length > 0) {
               validationService.getAllAssertions().then(function (assertions) {
-                angular.forEach(assertionExclusionList, function (exclusion) {
+                for (var i = 0; i < assertionExclusionList.length; i++) {
+                  var exclusion = assertionExclusionList[i];
+                  var found = false;
                   angular.forEach(assertions, function (assertion) {
                     if (exclusion === assertion.uuid) {
                       scope.excludedAssertions.push(assertion);
+                      found = true;
                     }
                   });
-                });
+                  if (!found) {
+                    scope.excludedAssertions.push({
+                      uuid: exclusion,
+                      type: 'MRCM'
+                    });
+                  }
+                }
                 scope.excludedAssertionsTableParams.reload();
               });
             }
