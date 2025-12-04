@@ -11,7 +11,7 @@
           <i ng-if="userRoles.includes('ADMIN')" class="md md-settings f20" style="color: #00acc1" ng-click="openBranchMetadataConfigModal();"></i>
         </h1>
         <div class="col-md-12 no-padding" ng-if="codeSystem.latestVersion">
-          <p class="p-l-15 m-b-0 promotion-box">Last published: {{codeSystem.latestVersion.version}}</p>
+          <p class="p-l-15 m-b-0 promotion-box">Latest Version: {{codeSystem.latestVersion.version}}</p>
         </div>
         <div class="col-md-12 no-padding" ng-if="codeSystem.dependantVersionEffectiveTime">
           <p class="p-l-15 m-b-0 promotion-box">Current Dependency Release: {{codeSystem.dependantVersionEffectiveTime}}</p>
