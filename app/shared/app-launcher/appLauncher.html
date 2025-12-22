@@ -18,7 +18,8 @@
   }
 
   .app-launcher-container {
-    width: 38rem;
+    font-size: 13px;
+    width: 44rem;
   }
 
   .app-launcher-container .border-t {
@@ -30,17 +31,36 @@
     border-color: rgb(229, 231, 235);
   }
 
+  .col-5th {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 0px;
+    padding-left: 0px;
+
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+
+  .row.five-per-line {
+    flex-wrap: wrap;
+  }
+
   .app-launcher-container .app-launcher-item {
-    max-width: 95px;
-    min-height: 80px;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    border-radius: 0.5rem;
+    /* Ensure icon and text are consistently aligned */
     display: flex;
     flex-direction: column;
-    padding-top: 8px;
-    margin-top: 12px;
-    border-radius: 0.5rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Make all app titles use the same alignment and vertical space */
+  .app-launcher-container .app-launcher-item p {
+    margin: 0.25rem 0 0;
+    text-align: center !important;
   }
 
   .app-launcher-container .app-launcher-item i {
@@ -204,36 +224,36 @@
 <script type="text/ng-template" id="appLauncher.html">
     <div class= "col-md-12 row no-padding app-launcher-container">
       <!-- Group 1 -->
-      <div class="row p-2" ng-if="appsByGroup(1).length > 0">
-          <div ng-repeat="app in appsByGroup(1)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+      <div class="row p-2 d-flex five-per-line" ng-if="appsByGroup(1).length > 0">
+          <div ng-repeat="app in appsByGroup(1)" class="col-5th app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
               <i class="text-sky fa {{app.faIcon}}"></i>
               <p style="{{app.textStyle}}">{{app.Application}}</p>
           </div>
       </div>
       <!-- Group 2 -->
-      <div class="row gap-3 border-t p-2" ng-if="appsByGroup(2).length > 0">
-          <div ng-repeat="app in appsByGroup(2)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+      <div class="row border-t p-2 d-flex five-per-line" ng-if="appsByGroup(2).length > 0">
+          <div ng-repeat="app in appsByGroup(2)" class="col-5th app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
               <i class="text-violet fa {{app.faIcon}}"></i>
               <p style="{{app.textStyle}}">{{app.Application}}</p>
           </div>
       </div>
       <!-- Group 3 -->
-      <div class="row border-t p-2" ng-if="appsByGroup(3).length > 0">
-          <div ng-repeat="app in appsByGroup(3)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+      <div class="row border-t p-2 d-flex five-per-line" ng-if="appsByGroup(3).length > 0">
+          <div ng-repeat="app in appsByGroup(3)" class="col-5th app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
               <i class="text-green fa {{app.faIcon}}"></i>
               <p style="{{app.textStyle}}">{{app.Application}}</p>
           </div>
       </div>
       <!-- Group 4 -->
-      <div class="row border-t p-2" ng-if="appsByGroup(4).length > 0">
-          <div ng-repeat="app in appsByGroup(4)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+      <div class="row border-t p-2 d-flex five-per-line" ng-if="appsByGroup(4).length > 0">
+          <div ng-repeat="app in appsByGroup(4)" class="col-5th app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
               <i class="text-amber fa {{app.faIcon}}"></i>
               <p style="{{app.textStyle}}">{{app.Application}}</p>
           </div>
       </div>
       <!-- Group 5 -->
-      <div class="row border-t p-2" ng-if="appsByGroup(5).length > 0">
-          <div ng-repeat="app in appsByGroup(5)" class="col-md-3 app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
+      <div class="row border-t p-2 d-flex five-per-line" ng-if="appsByGroup(5).length > 0">
+          <div ng-repeat="app in appsByGroup(5)" class="col-5th app-launcher-item" ng-click="redirectTo(app.link)" [title]="app.description">
               <i class="text-rose fa {{app.faIcon}}"></i>
               <p style="{{app.textStyle}}">{{app.Application}}</p>
           </div>
