@@ -96,14 +96,16 @@ angular
     $httpProvider.interceptors.push(['$q', '$location', 'notificationService', function($q, $location, notificationService) {
       return {
           responseError: function(rejection) {
-              console.log(rejection);
-              console.log(rejection.config.url);
               if(rejection && rejection.status === 403) {
-                if (rejection.config && rejection.config.url && rejection.config.url.endsWith('/auth')) {
-                  $location.path('/login');                
+                if(rejection.config) {
+                  if(rejection.config.method === 'POST' || rejection.config.method === 'PUT' || rejection.config.method === 'DELETE'){
+                    notificationService.sendError("Request access denied");
+                  } else if(rejection.config.method === 'GET') {
+                    $location.path('/login');
+                  }
                 } else {
-                  notificationService.sendError("Request access denied");
-                }
+                  return $q.reject(rejection);
+                }                
               } else if (rejection && rejection.status === 401) {
                 $location.path('/login');
               } else {
