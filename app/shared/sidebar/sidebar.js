@@ -64,11 +64,11 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
             }
         });
       };
-      
+
       $scope.openUploadBatchModal = function() {
         var modalInstance = $modal.open({
           templateUrl: 'shared/transformation/transformationModal.html',
-          controller: 'transformationModalCtrl'          
+          controller: 'transformationModalCtrl'
         });
 
         modalInstance.result.then(function (result) {
@@ -92,12 +92,12 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
 
           var pollForTransformation = function(branchPath, recipe, jobId, intervalTime) {
             var deferred = $q.defer();
-      
+
             if (!jobId) {
               console.error('Cannot poll for Transformation details, id required');
               deferred.reject('Cannot poll for Transformation details, id required');
-            }      
-      
+            }
+
             $timeout(function () {
               templateService.getTransformationJob(branchPath, recipe, jobId).then(function (response) {
                 if (response && response.status && (response.status.status === 'COMPLETED' || response.status.status === 'COMPLETED_WITH_FAILURE' || response.status.status === 'FAILED')) {
@@ -113,32 +113,33 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
                 deferred.reject('Cannot retrieve Transformation information');
               });
             }, intervalTime);
-      
+
             return deferred.promise;
           };
 
           pollForTransformation(result.branchPath, result.recipe, result.jobId, 1000).then(function (response) {
-            if (response.status.status === 'COMPLETED') {
-              notificationService.sendMessage('Batch Upload Complete.');
-            } 
-            else if (response.status.status === 'COMPLETED_WITH_FAILURE') {
-              notificationService.sendWarning('Batch Upload Completed With Error: ' + response.status.message);
+            if (response.status.status === 'COMPLETED' || response.status.status === 'COMPLETED_WITH_FAILURE') {
+              if (response.status.status === 'COMPLETED') {
+                notificationService.sendMessage('Batch Upload Completed Successfully.');
+              } else {
+                notificationService.sendWarning('Batch Upload Completed With Error: ' + response.status.message);
+              }
+              templateService.getTransformationJobResultAsTsv(result.branchPath , result.recipe, result.jobId).then(function (data) {
+                const fileName = 'Batch_result_' + result.jobId + '.tsv';
+                dlcDialog(data, fileName);
+              });
+
+              // reload tasks if no assignee or assignee is login user
+              if (!result.assignee || result.assignee.username === $rootScope.accountDetails.login) {
+                $rootScope.$broadcast('reloadTasks', {disableNotification: true});
+              }
             }
             else {
-              notificationService.sendError('Batch Upload Failed: ' + response.status.message);               
-            }  
-            templateService.getTransformationJobResultAsTsv(result.branchPath , result.recipe, result.jobId).then(function (data) {
-              const fileName = 'Batch_result_' + result.jobId + '.tsv';
-              dlcDialog(data, fileName);
-            });
+              notificationService.sendError('Batch Upload Failed: ' + response.status.message);
+            }
             $rootScope.batchFileUploading = false;
-            
-            // reload tasks if no assignee or assignee is login user
-            if (!result.assignee || result.assignee.username === $rootScope.accountDetails.login) {
-              $rootScope.$broadcast('reloadTasks', {disableNotification: true});
-            }            
-          }, function (error) {            
-          });        
+          }, function (error) {
+          });
         }, function () {
         });
       };
