@@ -451,7 +451,11 @@ angular.module('singleConceptAuthoringApp')
 
             deferred.resolve(currentTaskConcepts);
           }, function (error) {
-            deferred.reject('Error creating concepts: ' + error);
+            // Ensure we surface the failure and reset state if initialization fails
+            currentTaskConcepts = [];
+            notificationService.sendError('Error creating concepts: ' + (error && error.message ? error.message : error));
+            $rootScope.$broadcast('initialiseCrsConceptsFailed', error);
+            deferred.reject('Error creating concepts: ' + (error && error.message ? error.message : error));
           });
         }, function() {
           deferred.reject('Could not load attachments');
