@@ -7,6 +7,39 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     $scope.savedList = {items: []};
 
+    function getConceptName(item) {
+      if (!item || !item.concept) {
+        return '';
+      }
+
+      var preferred = item.concept.preferredSynonym;
+      var name;
+
+      // Handle both object-with-term and simple-string shapes
+      if (preferred && typeof preferred === 'object' && preferred.term) {
+        name = preferred.term;
+      } else if (preferred) {
+        name = preferred;
+      } else {
+        name = item.concept.fsn || '';
+      }
+
+      return (name || '').toString().toLowerCase();
+    }
+
+    function sortListAlphabetically(list) {
+      if (!list || !list.items || !Array.isArray(list.items)) {
+        return;
+      }
+      list.items.sort(function (a, b) {
+        var nameA = getConceptName(a);
+        var nameB = getConceptName(b);
+        if (nameA < nameB) { return -1; }
+        if (nameA > nameB) { return 1; }
+        return 0;
+      });
+    }
+
     $scope.initialize = function() {
       savedListService.initializeSavedList($routeParams.projectKey,$routeParams.taskKey);
     };  
@@ -15,6 +48,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         return savedListService.favorites;
       },                       
       function(newVal, oldVal) {
+        sortListAlphabetically(newVal);
         $scope.favorites = newVal;
     }, true);
 
@@ -22,6 +56,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         return savedListService.savedList;
       },                       
       function(newVal, oldVal) {
+        sortListAlphabetically(newVal);
         $scope.savedList = newVal;
     }, true);
 
