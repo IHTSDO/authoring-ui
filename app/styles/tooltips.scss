@@ -490,11 +490,8 @@ content: '';
 .project-promote-tooltip.tooltips-bottom:hover span,
 .project-promote-tooltip.offset-tooltip-right.tooltips-bottom span,
 .project-promote-tooltip.offset-tooltip-right.tooltips-bottom:hover span {
-  width: auto !important;
-  max-width: 260px;
-  white-space: normal !important;
-  text-align: left;
-  min-width: 0;
+  white-space: normal !important; 
+  min-width: 160px;
   overflow: visible !important;
 }
 
