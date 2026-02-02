@@ -45,6 +45,41 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           return value;
       }
 
+      $scope.getPromoteDisabledReason = function () {        
+        if (!$scope.task) {
+          return 'Task data has not been loaded';
+        }
+
+        if ($scope.task.status === 'New') {
+          return 'Task status is New';
+        }
+        if ($scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING') {
+          return 'Classification is currently running';
+        }
+        if ($scope.promoting) {
+          return 'Promotion is in progress';
+        }
+        if ($scope.automatePromotionStatus === 'Queued') {
+          return 'Automated promotion is queued';
+        }
+        if ($scope.isAutomatePromotionRunning && $scope.isAutomatePromotionRunning()) {
+          return 'Automated promotion is in progress';
+        }
+        if ($scope.hasRequestPendingClarification && $scope.hasRequestPendingClarification()) {
+          return 'The linked CRS request(s) are pending clarification';
+        }
+        if ($scope.isTaskPromotionDisabled && $scope.isTaskPromotionDisabled()) {
+          return 'Task promotion is disabled for this project';
+        }
+        if (!$scope.sacSignedOff()) {
+          return 'Not all Acceptance Criteria have been signed off';
+        }
+        if ($scope.branchLocked && $scope.task.status !== 'Promoted' && $scope.task.status !== 'Completed') {
+          return 'Task branch is locked (rebase, promotion or classification in progress)';
+        }
+        return '';
+      };
+
       $scope.markBranchAsComplex = function () {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;

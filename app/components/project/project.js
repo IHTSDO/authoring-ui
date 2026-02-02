@@ -87,7 +87,35 @@ angular.module('singleConceptAuthoringApp.project', [
               }
             });
           return value;
-      }
+      };
+
+      $scope.getProjectPromoteDisabledReason = function () {
+        if (!$scope.project) {
+          return 'Project data has not been loaded';
+        }
+
+        if ($scope.project.projectLocked) {
+          return 'Project has been locked';
+        }
+
+        if ($scope.project.branchState && $scope.project.branchState !== 'FORWARD') {
+          return 'Project branch is not in FORWARD state';
+        }
+
+        if ($scope.project.projectPromotionDisabled) {
+          return 'Project promotion is disabled for this project';
+        }
+
+        if ($scope.project.projectMrcmDisabled) {
+          return 'Project MRCM is disabled';
+        }
+
+        if (!$scope.sacSignedOff()) {
+          return 'Not all Acceptance Criteria have been signed off';
+        }
+
+        return '';
+      };
 
       $scope.getProject = function (reloadValidationReport, validationNotificationOff) {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {

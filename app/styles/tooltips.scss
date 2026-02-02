@@ -484,4 +484,46 @@ content: '';
   margin-left: -237px;
   top: 9px;
 }
+
+/* Project promote tooltip - wraps long text so it isn't cut off */
+.project-promote-tooltip.tooltips-bottom span,
+.project-promote-tooltip.tooltips-bottom:hover span,
+.project-promote-tooltip.offset-tooltip-right.tooltips-bottom span,
+.project-promote-tooltip.offset-tooltip-right.tooltips-bottom:hover span {
+  width: auto !important;
+  max-width: 260px;
+  white-space: normal !important;
+  text-align: left;
+  min-width: 0;
+  overflow: visible !important;
+}
+
+.project-promote-tooltip.offset-tooltip-right.tooltips-bottom:hover span {
+  margin-left: -140px;
+}
+
+.project-promote-tooltip.offset-tooltip-right.tooltips-bottom span:after {
+  left: 92%;
+}
+
+/* Task detail promote/auto-promote tooltip wrapper */
+.promote-tooltip-wrapper {
+  display: inline-block;
+  width: 100%;
+}
+
+.promote-tooltip-wrapper.tooltips-bottom span,
+.promote-tooltip-wrapper.tooltips-top span {
+  width: auto !important;
+  max-width: 280px;
+  white-space: normal;
+  text-align: left;
+  overflow: visible;
+}
+
+.promote-tooltip-wrapper.tooltips-bottom:hover span,
+.promote-tooltip-wrapper.tooltips-top:hover span {
+  margin-left: -140px;
+}
+
 /* bottom */
