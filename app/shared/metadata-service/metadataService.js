@@ -770,7 +770,30 @@ angular.module('singleConceptAuthoringApp')
       return codeSystems;
     }
 
-    function getCodeSystenForGivenBranch(branch) {
+    function getCodeSystemForGivenBranch(branch) {
+      if (!branch || codeSystems.length === 0) {
+        return null;
+      }
+      // Exact match (e.g. when branch is the code system root)
+      var exact = codeSystems.filter(function (item) { return item.branchPath === branch; });
+      if (exact.length !== 0) {
+        return exact[0];
+      }
+      // Prefix match: branch is a project or task branch (e.g. MAIN/SNOMEDCT-US/MyProject/MyTask)
+      // Find the code system whose branchPath is a prefix of the given branch; prefer longest match.
+      var prefixMatches = codeSystems.filter(function (item) {
+        return item.branchPath && (branch === item.branchPath || branch.startsWith(item.branchPath + '/'));
+      });
+      if (prefixMatches.length === 0) {
+        return null;
+      }
+      prefixMatches.sort(function (a, b) {
+        return (b.branchPath.length - a.branchPath.length);
+      });
+      return prefixMatches[0];
+    }
+
+    function getCodeSystenForGivenCodeSystemBranch(branch) {
       if (codeSystems.length !== 0) {
         let filter = codeSystems.filter(function(item) {return item.branchPath === branch});
         if (filter.length !== 0) return filter[0];
@@ -1147,7 +1170,9 @@ angular.module('singleConceptAuthoringApp')
       getSemanticTags: getSemanticTags,
       setCodeSystems: setCodeSystems,
       getCodeSystems: getCodeSystems,
-      getCodeSystenForGivenBranch: getCodeSystenForGivenBranch,
+      getCodeSystemForGivenBranch: getCodeSystemForGivenBranch,
+      getCodeSystenForGivenBranch: getCodeSystemForGivenBranch,
+      getCodeSystenForGivenCodeSystemBranch: getCodeSystenForGivenCodeSystemBranch,
       getCodeSystenForGivenShortname: getCodeSystenForGivenShortname,
       getDropdownLanguages: getDropdownLanguages,
       getOptionalLanguageRefsets: getOptionalLanguageRefsets,
