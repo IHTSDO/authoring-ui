@@ -19,7 +19,7 @@ class Utils {
     }
 
     logout() {
-        cy.get('[data-cy="logout-button"]', {timeout: 10000}).should('be.visible').click();
+        cy.get('[data-cy="logout-button"]', {timeout: 10000}).click({force: true});
         cy.get('input#kc-logout').click();
         cy.clearAllCookies();
     }

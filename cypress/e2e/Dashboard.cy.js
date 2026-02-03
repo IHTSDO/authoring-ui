@@ -12,9 +12,11 @@ describe('Dashboard Exploration Test', () => {
         cy.intercept('GET', '**/my-tasks**').as('getMyTasks');
 
         utils.login(urlAuthoring, username, password);
+        cy.get('[data-cy="platform-title"]').should('contain.text', 'Authoring Platform');
 
         cy.wait('@getMyTasks').then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
+            cy.screenshot('dashboard-exploration-test-started');
         });
     });
 
