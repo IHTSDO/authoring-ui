@@ -9,17 +9,14 @@ const password = Cypress.env('TEST_LOGIN_PSW');
 describe('Dashboard Exploration Test', () => {
 
     it('Login', () => {
-        utils.login(urlAuthoring, username, password);
-        cy.intercept('GET', '**/auth').as('auth');
-        cy.wait('@auth').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
-        });
-    });
-
-    it('Get tasks', () => {
         cy.intercept('GET', '**/my-tasks**').as('getMyTasks');
+
+        utils.login(urlAuthoring, username, password);
+        cy.get('[data-cy="platform-title"]').should('contain.text', 'Authoring Platform');
+
         cy.wait('@getMyTasks').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
+            expect(interceptions.response.statusCode).to.be.equal(200);
+            cy.screenshot('dashboard-exploration-test-started');
         });
     });
 
@@ -58,45 +55,40 @@ describe('Dashboard Exploration Test', () => {
         cy.intercept('GET', '**/review-tasks**').as('getReviewTasks');
         cy.get('[data-cy="sidebar-review-tasks"]').click();
         cy.wait('@getReviewTasks').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
-        });
-        cy.url().should('include', 'review-tasks');
+            expect(interceptions.response.statusCode).to.be.equal(200);
+        }).url().should('include', 'review-tasks');
     });
 
     it('Navigate to My Projects', () => {
         cy.intercept('GET', '**/projects**').as('getMyProjects');
         cy.get('[data-cy="sidebar-my-projects"]').click();
         cy.wait('@getMyProjects').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
-        });
-        cy.url().should('include', 'my-projects');
+            expect(interceptions.response.statusCode).to.be.equal(200);
+        }).url().should('include', 'my-projects');
     });
 
     it('Navigate to All Projects', () => {
         cy.intercept('GET', '**/projects**').as('getAllProjects');
         cy.get('[data-cy="sidebar-all-projects"]').click();
         cy.wait('@getAllProjects').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
-        });
-        cy.url().should('include', 'projects');
+            expect(interceptions.response.statusCode).to.be.equal(200);
+        }).url().should('include', 'projects');
     });
 
     it('Navigate to Codesystems', () => {
         cy.intercept('GET', '**/codesystems**').as('getCodesystems');
         cy.get('[data-cy="sidebar-code-systems"]').click();
         cy.wait('@getCodesystems').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
-        });
-        cy.url().should('include', 'codesystems');
+            expect(interceptions.response.statusCode).to.be.equal(200);
+        }).url().should('include', 'codesystems');
     });
 
     it('Navigate back home', () => {
         cy.intercept('GET', '**/my-tasks**').as('getMyTasks');
         cy.get('[data-cy="sidebar-my-tasks"]').click();
         cy.wait('@getMyTasks').then((interceptions) => {
-            assert.equal(interceptions.response.statusCode, 200);
-        });
-        cy.url().should('include', 'home');
+            expect(interceptions.response.statusCode).to.be.equal(200);
+        }).url().should('include', 'home');
     });
 
     it('Take a screenshot for manual verification', () => {

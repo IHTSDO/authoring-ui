@@ -124,7 +124,7 @@
       <!-- If has a key, option to delete task -->
       <div ng-if="canDelete" class="col-md-4">
         <button type="button" ng-disabled="task.status === 'Promoted' || task.status === 'Completed' || disabled" class="col-md-12 btn btn-danger no-margin"
-                ng-click="deleteTask()">Delete Task </button>
+                ng-click="deleteTask()" data-cy="delete-task-button">Delete Task </button>
       </div>
     </div>
   </div>

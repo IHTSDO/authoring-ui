@@ -35,6 +35,24 @@ angular.module('singleConceptAuthoringApp')
         return (currentTask.branchPath.indexOf('-US') !== -1) ? usCrsEndpoint : crsEndpoint;
       }
 
+      /**
+       * Parses a content promotion summary and returns all concepts.
+       * Example: "Content promotion of 11 |term 1| and dependency: 22 |term 2|, 33 |term 3|"
+       * Returns: ['11', '22', '33', ...]
+       */
+      function getConceptIdsFromPromotionSummary(summary) {
+        if (!summary || typeof summary !== 'string') {
+          return [];
+        }
+        var result = [];
+        var re = /(\d+)\s+\|([^|]*)\|/g;
+        var match;
+        while ((match = re.exec(summary)) !== null) {
+          result.push(match[1]);
+        }
+        return result;
+      }
+
       function getApiEndPoint() {
         return '../' + ((currentTask.branchPath.indexOf('-US') !== -1) ? 'us-ihtsdo-crs' : 'ihtsdo-crs') + '/api/request/';
       }
@@ -273,6 +291,33 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function findExistingConceptsInResponse(items, conceptIdsToCopy, donatedConceptId) {
+        var foundDonatedConcept = null;
+        var foundDependentConcepts = [];
+        angular.forEach(items, function (item) {
+          if (!conceptIdsToCopy.includes(item.conceptId)) { return; }
+          if (item.conceptId === donatedConceptId) {
+            foundDonatedConcept = item.idAndFsnTerm;
+          } else {
+            foundDependentConcepts.push(item.idAndFsnTerm);
+          }
+        });
+        return { foundDonatedConcept: foundDonatedConcept, foundDependentConcepts: foundDependentConcepts };
+      }
+
+      function buildDependentConceptsRejectMessage(foundDependentConcepts, destinationBranch) {
+        var base = ' in this task (' + destinationBranch + ') and can not be created again. The request should be submitted again without dependencies.';
+        if (foundDependentConcepts.length === 1) {
+          return 'The dependent concept ' + foundDependentConcepts[0] + ' already exists' + base;
+        }
+        if (foundDependentConcepts.length === 2) {
+          return 'The dependent concepts ' + foundDependentConcepts[0] + ' and ' + foundDependentConcepts[1] + ' already exist' + base;
+        }
+        var last = foundDependentConcepts.slice(-1)[0];
+        var rest = foundDependentConcepts.slice(0, -1);
+        return 'The dependent concepts ' + rest.join(', ') + ', and ' + last + ' already exist' + base;
+      }
+
       function intializeConceptDonation(attachment, destinationBranch) {
         var deferred = $q.defer();
         var donatedConceptIds = [];
@@ -295,42 +340,71 @@ angular.module('singleConceptAuthoringApp')
           branchMetadata.metadata = response.metadata;
           metadataService.setBranchMetadata(branchMetadata);
 
-          let includeDependencies = /^Content\spromotion\sof+\s\d+\s+\|+.*\|\s+and\sdependency:/.test(attachment.content.definitionOfChanges.summary);
-          terminologyServerService.copyConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, includeDependencies).then(function(response) {
-            angular.forEach(response, function (concept) {
-              donatedConceptIds.push(concept.conceptId);
-            });
-            terminologyServerService.bulkRetrieveFullConcept(donatedConceptIds, destinationBranch).then(function(concepts) {
-              angular.forEach(concepts, function (fullConcept) {
-                donatedConcepts.push({
-                  // the id fields (for convenience)
-                  conceptId: fullConcept.conceptId,
-                  fsn: fullConcept.fsn,
-                  preferredSynonym: fullConcept.preferredSynonym,
+          let summary = attachment.content.definitionOfChanges && attachment.content.definitionOfChanges.summary;
+          
+          let conceptIdsToCopy = getConceptIdsFromPromotionSummary(summary);
+          if (conceptIdsToCopy.length > 0) {
 
-                  // the request url
-                  requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
+            // Check if any of the concepts already exist on the destination branch
+            terminologyServerService.bulkGetConceptUsingPOST(conceptIdsToCopy, destinationBranch).then(function (conceptResponse) {
+              var existing = findExistingConceptsInResponse(
+                conceptResponse.items,
+                conceptIdsToCopy,
+                attachment.content.conceptId
+              );
 
-                  // the ticket ids
-                  crsId: attachment.issueKey,
-                  scaId: attachment.ticketKey,
+              if (existing.foundDonatedConcept) {
+                deferred.reject({type: 'ERROR', message: 'The donated concept ' + existing.foundDonatedConcept + ' already exists in this task (' + destinationBranch + ') and can not be created again. Please reject the request.'});
+                return;
+              }
 
-                  // the freshly retrieved concept with definition changes appended
-                  concept: fullConcept,
+              if (existing.foundDependentConcepts.length > 0) {
+                deferred.reject({type: 'WARNING', message: buildDependentConceptsRejectMessage(existing.foundDependentConcepts, destinationBranch)});
+                return;
+              }
 
-                  // the original JSON
-                  conceptJson: attachment,
-                  saved: true,
-
-                  isNewConcept: false,
-                  requiresCreation: false
+              // Proceed to copy
+              terminologyServerService.copyConcept(destinationBranch, codeSystem.latestVersion.branchPath, attachment.content.conceptId, conceptIdsToCopy.length > 1).then(function(response) {
+                angular.forEach(response, function (concept) {
+                  donatedConceptIds.push(concept.conceptId);
                 });
+                terminologyServerService.bulkRetrieveFullConcept(donatedConceptIds, destinationBranch).then(function(concepts) {
+                  angular.forEach(concepts, function (fullConcept) {                    
+                    donatedConcepts.push({
+                      // the id fields (for convenience)
+                      conceptId: fullConcept.conceptId,
+                      fsn: fullConcept.fsn,
+                      preferredSynonym: fullConcept.preferredSynonym,
+
+                      // the request url
+                      requestUrl: getRequestUrl() + '#/requests/view/' + attachment.issueKey,
+
+                      // the ticket ids
+                      crsId: attachment.issueKey,
+                      scaId: attachment.ticketKey,
+
+                      // the freshly retrieved concept with definition changes appended
+                      concept: fullConcept,
+
+                      // the original JSON
+                      conceptJson: attachment,
+                      saved: true,
+
+                      isNewConcept: true,
+                      requiresCreation: false
+                    });
+                  });
+                  deferred.resolve(donatedConcepts);
+                });
+              }, function (error) {
+                deferred.reject(error.data.message);
               });
-              deferred.resolve(donatedConcepts);
+            }, function (error) {
+              deferred.reject(error.data.message);
             });
-          }, function (error) {
-            deferred.reject(error.data.message);
-          });
+          } else {
+            deferred.reject('No conceps found in the content promotion summary.');
+          }          
         }, function (error) {
           console.error('Failed to set author flag');
         });
@@ -451,7 +525,9 @@ angular.module('singleConceptAuthoringApp')
 
             deferred.resolve(currentTaskConcepts);
           }, function (error) {
-            deferred.reject('Error creating concepts: ' + error);
+            // Ensure we surface the failure and reset state if initialization fails
+            currentTaskConcepts = [];
+            deferred.reject(error);
           });
         }, function() {
           deferred.reject('Could not load attachments');
@@ -498,7 +574,6 @@ angular.module('singleConceptAuthoringApp')
                     deleteUnRequiredDialectsForConcepts(currentTaskConcepts);
                     deferred.resolve(currentTaskConcepts);
                   }, function (error) {
-                    notificationService.sendError(error);
                     deferred.reject(error);
                   });
                 } else {

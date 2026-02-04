@@ -2231,13 +2231,21 @@ angular.module('singleConceptAuthoringApp.edit', [
             populateModuleNamesIfRequired();
             if ($scope.role === 'AUTHOR' || $scope.role === 'REVIEWER' || $scope.role === 'REVIEWER_ONLY') {
               crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
-                initializeTaskDetails();
+                initializeTaskDetails(false);
               }, function (error) {
-                console.error('Unexpected error checking CRS status. Error: ' + error);
-                initializeTaskDetails();
+                if (error && typeof error === 'object' && error.hasOwnProperty('type') && error.hasOwnProperty('message')) {
+                  if (error.type === 'WARNING') {
+                    notificationService.sendWarning(error.message);
+                  } else {
+                    notificationService.sendError(error.message);
+                  }
+                } else  {
+                  notificationService.sendError(error && error.message ? error.message : error);
+                }
+                initializeTaskDetails(true);
               });
             } else {
-              initializeTaskDetails();
+              initializeTaskDetails(false);
             }
           });
         });
@@ -2246,7 +2254,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     }
 
-    function initializeTaskDetails() {
+    function initializeTaskDetails(notificationOff) {
       if ($scope.role === 'AUTHOR') {
         if ($routeParams.mode === 'edit' && metadataService.isExtensionSet() && $scope.project.metadata.internal && $scope.project.metadata.internal.integrityIssue === 'true') {
           terminologyServerService.branchUpgradeIntegrityCheck($scope.task.branchPath, metadataService.isExtensionSet() ? 'MAIN/' + metadataService.getExtensionMetadata().codeSystemShortName : '').then(function(response) {
@@ -2257,12 +2265,16 @@ angular.module('singleConceptAuthoringApp.edit', [
               $scope.setView('integrityCheck');
               $scope.integrityCheckResult = response;
             } else {
-              notificationService.sendMessage('Task details loaded', 3000);
+              if (!notificationOff) {
+                notificationService.sendMessage('Task details loaded', 3000);
+              }
               $scope.setInitialView();
             }
           }, function(error) {
             $scope.branchIntegrityDone = true;
-            notificationService.sendError('Branch integrity check failed: ' + error);
+            if (!notificationOff) { 
+              notificationService.sendError('Branch integrity check failed: ' + error);
+            }
           });
           // Delay 2 seconds before displaying the branch integirty checking page
           $timeout(function () {
@@ -2273,12 +2285,16 @@ angular.module('singleConceptAuthoringApp.edit', [
           }, 2000);
         }
         else {
-          notificationService.sendMessage('Task details loaded', 3000);
+          if (!notificationOff) {
+            notificationService.sendMessage('Task details loaded', 3000);
+          }
           $scope.setInitialView();
         }
       }
       else {
-        notificationService.sendMessage('Task details loaded', 3000);
+        if (!notificationOff) {
+          notificationService.sendMessage('Task details loaded', 3000);
+        }
         $scope.setInitialView();
       }
 

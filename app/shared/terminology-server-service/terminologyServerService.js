@@ -414,7 +414,7 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
-        if (description.term) {
+        if (description.term && description.active && !description.released) {
           // strip invalid characters from term
           //description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
 
