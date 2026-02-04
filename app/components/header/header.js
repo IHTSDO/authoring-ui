@@ -16,8 +16,8 @@ angular.module('singleConceptAuthoringApp')
         var classificationResultsFound = false;
         var validationReportFound = false;
         scope.projectOrCodeSystemFound = false;
-        scope.imsRoles = [];
-        scope.rbacRoles = [];
+        scope.imsRoles = '';
+        scope.rbacRoles = '';
 
         // Cache for appLaunchers to avoid infinite digest cycles
         var cachedAppLaunchers = null;
@@ -188,7 +188,7 @@ angular.module('singleConceptAuthoringApp')
                   return matchingCodeSystems[0].name + ' Code System';
                 }
             }
-
+            
             return null;
           }
         };
@@ -302,40 +302,24 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-        scope.openTranslationDashboard = function() {
-          var shortName;
-          var codeSystem;
-          if(window.location.href.indexOf("task/") > -1) {
-            codeSystem = metadataService.getCodeSystemForGivenBranch($rootScope.currentTask && $rootScope.currentTask.branchPath);
-            shortName = codeSystem ? codeSystem.shortName : null;
-          } else if(window.location.href.indexOf("project/") > -1) {
-            codeSystem = metadataService.getCodeSystemForGivenBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey);
-            shortName = codeSystem ? codeSystem.shortName : null;
-          } else if(window.location.href.indexOf("codesystem/") > -1) {
-            codeSystem = metadataService.getCodeSystenForGivenShortname($routeParams.codeSystem);
-            shortName = codeSystem ? codeSystem.shortName : null;
-          } else {
-            shortName = null;
-          }
-          window.open('/simplex/translation-dashboard' + (shortName && shortName.includes('-') ? ('/' + shortName) : ''));
-        };
-
         scope.$watch('accountDetails', function () {
           if ($rootScope.accountDetails) {
-            scope.imsRoles = [];
+            let roles = [];
             angular.forEach($rootScope.accountDetails.roles, function (role) {
-              scope.imsRoles.push(role.replace('ROLE_', '').toLowerCase());
+              roles.push(role.replace('ROLE_', '').toLowerCase());
             });
+            scope.imsRoles = roles.join(', ');
           }
         });
 
         scope.$watch('userRoles', function () {
           scope.projectOrCodeSystemFound = $routeParams.projectKey || $routeParams.codeSystem;
           if ($rootScope.userRoles) {
-            scope.rbacRoles = [];
+            let roles = [];
             angular.forEach($rootScope.userRoles, function (role) {
-              scope.rbacRoles.push(role.toLowerCase());
+              roles.push(role.toLowerCase());
             });
+            scope.rbacRoles = roles.join(', ');
           }
         }, true);
 
