@@ -2233,8 +2233,15 @@ angular.module('singleConceptAuthoringApp.edit', [
               crsService.setTask($scope.task, $scope.role === 'AUTHOR').then(function () {
                 initializeTaskDetails(false);
               }, function (error) {
-                console.error('Unexpected error checking CRS status. Error: ' + error);
-                notificationService.sendError(error);
+                if (error && typeof error === 'object' && error.hasOwnProperty('type') && error.hasOwnProperty('message')) {
+                  if (error.type === 'WARNING') {
+                    notificationService.sendWarning(error.message);
+                  } else {
+                    notificationService.sendError(error.message);
+                  }
+                } else  {
+                  notificationService.sendError(error && error.message ? error.message : error);
+                }
                 initializeTaskDetails(true);
               });
             } else {
