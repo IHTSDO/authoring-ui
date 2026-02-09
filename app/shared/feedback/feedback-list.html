@@ -71,21 +71,21 @@
     </div>
     <ul class="nav nav-tabs " role="tablist"
         ng-init="actionTab=1">
-      <li role="presentation" class="active border-right"> <a
+      <li role="presentation" class="border-right" ng-class="[{'active' : actionTab==1}]"> <a
            ng-click="actionTab=1"
            aria-controls="home"
            role="tab"
            data-toggle="tab">To Review
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsToReview.length }} </div>
         </a> </li>
-      <li role="presentation" class="border-right"> <a
+      <li role="presentation" class="border-right" ng-class="[{'active' : actionTab==2}]"> <a
            ng-click="actionTab=2"
            aria-controls="home"
            role="tab"
            data-toggle="tab">Approved
         <div class="badge pull-right pink darken-1 numbers ">{{feedbackContainer.review.conceptsReviewed.length}} </div>
         </a> </li>
-      <li role="presentation border-right">
+      <li role="presentation border-right" ng-class="[{'active' : actionTab==3}]">
 
         <a ng-click="actionTab=3; loadFsnForConceptsClassified();"
            aria-controls="home"
@@ -94,7 +94,7 @@
            <div class="tooltips-bottom normal-case" ng-show="isUnreadFeedbackFoundFromInferredTab()" style="position: absolute; top: -5px; left: 5px;"><i class="fa fa-envelope" style="color: #f06292;" aria-hidden="true"></i><span style="width: 100px; left: 0px; margin-left: -43px;">Unread feedback</span></div>
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsClassified.length }} </div>
         </a> </li>
-      <li role="presentation border-right" ng-show="!releaseNotesDisabled">
+      <li role="presentation border-right" ng-class="[{'active' : actionTab==4}]" ng-show="!releaseNotesDisabled">
           <a ng-click="actionTab=4"
              aria-controls="home"
              role="tab"
