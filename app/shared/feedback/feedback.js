@@ -977,7 +977,7 @@ angular.module('singleConceptAuthoringApp')
                   }
               });
               if (!found && !scope.isDeletedConcept(nextConcept)) {
-                scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['addToEdit'] : ['addToEdit','viewConceptInTaxonomy']));
+                scope.selectConcept(nextConcept, conceptInToReviewFound ? []: (conceptInReviewedFound ? ['selectConceptForFeedback', 'addToEdit'] : ['selectConceptForFeedback', 'addToEdit','viewConceptInTaxonomy']));
               }
             }
           }
