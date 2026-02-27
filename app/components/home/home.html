@@ -88,18 +88,18 @@
 
               <td data-title="'Rebase'" header-title="'Click to sort'">
                 <button
-                  ng-show="!task.branchBaseTimestampBehideCodeSystem && (task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted' && task.status !== 'Completed'"
+                  ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted' && task.status !== 'Completed'"
                   type="button" ng-click="goToConflicts(task)"
                   class="btn btn-round  btn-center btn-default lighten-1 amber tooltips-left">
                   <div class="md md-sync "></div>
                   <span>Click to pull in changes from project</span>
                 </button>
                 <button
-                  ng-show="task.branchBaseTimestampBehideCodeSystem "
-                  type="button" ng-click="goToConflicts(task)"
+                  ng-show="task.branchBaseTimestampBehideCodeSystem && task.branchState !== 'DIVERGED' && task.branchState !== 'BEHIND' && task.branchState !== 'STALE' && task.status !== 'Promoted' && task.status !== 'Completed'"
+                  type="button"
                   class="btn btn-round btn-center btn-default lighten-1 indicator_red tooltips-left">
                   <div class="md md-sync "></div>
-                  <span>This task has not been rebased since the last SNOMED release</span>
+                  <span>This task has not been rebased since the last SNOMED release. Please rebase the project, followed by the task</span>
                 </button>
               </td>
 
