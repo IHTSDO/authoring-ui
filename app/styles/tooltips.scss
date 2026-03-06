@@ -523,4 +523,29 @@ content: '';
   margin-left: -140px;
 }
 
+/* Custom-made popover used for validation failure messages */
+.popover.validation-failure-popover {  
+    height: auto;
+    max-height: none;
+
+    padding: 5px 6px;
+    color: #FFF;
+    text-shadow: -1px -1px 1px #4e4e4e;
+    background: #616161;
+    line-height: 13px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    box-shadow: -1px 1px 10px -1px rgba(0, 0, 0, .2);    
+    word-break: break-word;
+
+    .popover-content {
+        max-width: none;
+        max-height: none;
+    }
+}
+.popover.validation-failure-popover.left > .arrow:after {
+    border-left-color: #616161;;
+}
 /* bottom */

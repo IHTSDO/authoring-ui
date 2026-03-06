@@ -135,6 +135,11 @@
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' && task.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
+                          popover="{{(task.latestValidationStatus === 'FAILED' && task.validationFailureMessages && task.validationFailureMessages.length > 0) ? task.validationFailureMessages.join('\n') : ''}}"
+                          popover-trigger="mouseenter"
+                          popover-placement="left"
+                          popover-append-to-body="true"
+                          popover-class="validation-failure-popover {{globalStyleClasses.join(' ')}}"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
                           {indicator_yellow : task.latestValidationStatus === 'QUEUED'},
                           {indicator_purple : task.latestValidationStatus === 'RUNNING'},
@@ -143,7 +148,9 @@
                           {indicator_grey : task.latestValidationStatus === 'STALE'}]"
                           class="btn btn-round   btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>
-                    <span> <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
+                    <span ng-if="task.latestValidationStatus !== 'FAILED' || !task.validationFailureMessages || task.validationFailureMessages.length === 0">
+                      <div class="message_validation_{{task.latestValidationStatus}}"></div>
+                    </span>
                   </button>
                 </a>
               </td>
