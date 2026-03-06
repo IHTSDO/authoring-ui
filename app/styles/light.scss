@@ -1118,6 +1118,8 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     background: #CCC;
     box-shadow: -1px 1px 15px -1px rgba(0, 0, 0, .11);
 }
-.sca-light.popover.validation-failure-popover.left > .arrow:after {
+.sca-light.popover.validation-failure-popover.left > .arrow:after,
+.sca-light.popover.validation-failure-popover.left-top > .arrow:after,
+.sca-light.popover.validation-failure-popover.left-bottom > .arrow:after {
     border-left-color: #CCC;;
 }

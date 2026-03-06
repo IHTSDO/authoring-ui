@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $q, notificationService, hotkeys, localStorageService, accountService) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $q, notificationService, hotkeys, localStorageService, accountService, uiUtil) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -52,6 +52,11 @@ angular.module('singleConceptAuthoringApp.myProjects', [
              $rootScope.$broadcast('gotoNotificationLink', {});
           }
         })
+
+    // determine validation popover placement based on viewport
+    $scope.getValidationPopoverPlacement = function ($event) {
+      return uiUtil.getValidationPopoverPlacement($event);
+    };
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({

@@ -111,7 +111,8 @@
                           type="button"
                           popover="{{(task.latestValidationStatus === 'FAILED' && task.validationFailureMessages && task.validationFailureMessages.length > 0) ? task.validationFailureMessages.join('\n') : ''}}"
                           popover-trigger="mouseenter"
-                          popover-placement="left"
+                          ng-mouseenter="task.validationPopoverPlacement = getValidationPopoverPlacement($event)"
+                          popover-placement="{{task.validationPopoverPlacement || 'left-top'}}"
                           popover-append-to-body="true"
                           popover-class="validation-failure-popover {{globalStyleClasses.join(' ')}}"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},

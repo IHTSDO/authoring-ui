@@ -64,7 +64,8 @@
                        type="button"
                           popover="{{(project.validationStatus === 'FAILED' && project.validationFailureMessages && project.validationFailureMessages.length > 0) ? project.validationFailureMessages.join('\n') : ''}}"
                           popover-trigger="mouseenter"
-                          popover-placement="left"
+                          ng-mouseenter="project.validationPopoverPlacement = getValidationPopoverPlacement($event)"
+                          popover-placement="{{project.validationPopoverPlacement || 'left-top'}}"
                           popover-append-to-body="true"
                           popover-class="validation-failure-popover {{globalStyleClasses.join(' ')}}"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},

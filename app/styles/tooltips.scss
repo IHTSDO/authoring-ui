@@ -526,8 +526,7 @@ content: '';
 /* Custom-made popover used for validation failure messages */
 .popover.validation-failure-popover {  
     height: auto;
-    max-height: none;
-
+    max-height: 500px;
     padding: 5px 6px;
     color: #FFF;
     text-shadow: -1px -1px 1px #4e4e4e;
@@ -537,15 +536,20 @@ content: '';
     font-size: 11.5px;
     font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
-    box-shadow: -1px 1px 10px -1px rgba(0, 0, 0, .2);    
+    box-shadow: -1px 1px 10px -1px rgba(0, 0, 0, .2); 
+    overflow: visible;
     word-break: break-word;
 
     .popover-content {
         max-width: none;
-        max-height: none;
+        max-height: 500px;
+        word-break: break-word;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 }
-.popover.validation-failure-popover.left > .arrow:after {
-    border-left-color: #616161;;
+.popover.validation-failure-popover.left > .arrow:after,
+.popover.validation-failure-popover.left-top > .arrow:after,
+.popover.validation-failure-popover.left-bottom > .arrow:after {
+    border-left-color: #616161;
 }
-/* bottom */

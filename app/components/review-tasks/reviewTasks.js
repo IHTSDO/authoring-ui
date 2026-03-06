@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService, accountService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService, accountService, uiUtil) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -61,6 +61,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       // flags for displaying new edit tasks
       $scope.showNewEdits = false;
+
+      // determine validation popover placement based on viewport
+      $scope.getValidationPopoverPlacement = function ($event) {
+        return uiUtil.getValidationPopoverPlacement($event);
+      };
 
       // flags for displaying promoted tasks
       $scope.showPromotedReviews = false;

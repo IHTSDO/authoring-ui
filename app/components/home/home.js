@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService, componentAuthoringUtil) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService, componentAuthoringUtil, uiUtil) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -69,6 +69,11 @@ angular.module('singleConceptAuthoringApp.home', [
               description: 'Close all concepts',
               callback: function() {$rootScope.$broadcast('closeAllOpenningConcepts', {});}
             });
+
+        // determine validation popover placement based on viewport
+        $scope.getValidationPopoverPlacement = function ($event) {
+            return uiUtil.getValidationPopoverPlacement($event);
+        };
 
         // declare table parameters
         $scope.tableParams = new ngTableParams({

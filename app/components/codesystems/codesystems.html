@@ -78,7 +78,8 @@
                           type="button"
                           popover="{{(codesystem.latestValidationStatus === 'FAILED' && codesystem.validationFailureMessages && codesystem.validationFailureMessages.length > 0) ? codesystem.validationFailureMessages.join('\n') : ''}}"
                           popover-trigger="mouseenter"
-                          popover-placement="left"
+                          ng-mouseenter="codesystem.validationPopoverPlacement = getValidationPopoverPlacement($event)"
+                          popover-placement="{{codesystem.validationPopoverPlacement || 'left-top'}}"
                           popover-append-to-body="true"
                           popover-class="validation-failure-popover {{globalStyleClasses.join(' ')}}"
                           ng-class="[{hidden : codesystem.latestValidationStatus === 'NOT_TRIGGERED'},
