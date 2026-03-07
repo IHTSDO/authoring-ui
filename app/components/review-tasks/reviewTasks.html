@@ -2,7 +2,7 @@
 <div class="row no-gutter sca-container review-tasks ">
   <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
-  <div class="sca-content dash-tables col-lg-9 col-md-9 col-sm-9 pull-right"> 
+  <div class="sca-content dash-tables col-lg-9 col-md-9 col-sm-9 pull-right">
     <!-- Reviewer Tasks -->
     <section class="tables-data row no-gutter">
       <div class="card">
@@ -44,7 +44,7 @@
                     ng-class="[{'md-check-box' : showNewEdits}, {'md-check-box-outline-blank' : !showNewEdits}]"
                     ng-click="toggleShowNewEdits()"> <span class="promoted-check-box">Show New Edits</span></button>
           </div>
-          
+
 <!--
           <div class="col-md-1"> &nbsp;&nbsp;
             <button ng-show="hasSelectedClaimedTasks()"
@@ -52,7 +52,7 @@
                     class="badge In Review" style="margin-top: 5px;"><i class="fa fa-close"></i>&nbsp;Unclaim Selected </button>
           </div>
 -->
-          <div class="m-r-15"> 
+          <div class="m-r-15">
             <span class="pull-right p-t-20">
             <button type="button"
                           class="btn btn-round   tasks-bubble btn-info ng-scope tooltips-left tooltips-light "> {{reviewTasks.length}} <span> {{reviewTasks.length}} reviews are in progress</span> </button>
@@ -115,13 +115,18 @@
                           {indicator_red : task.latestValidationStatus === 'FAILED'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'},
                           {indicator_grey : task.latestValidationStatus === 'STALE'}]"
-                          class="btn btn-round   btn-default lighten-2 pull-left ">
-                <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                          class="btn btn-round btn-default lighten-2 pull-left ">
+                    <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                          class="md md-school "></div>
-                <span>
-                <div class="message_validation_{{task.latestValidationStatus}}"> </div>
-                </span> </button>
-                </a></td>
+                    <span ng-if="task.latestValidationStatus !== 'FAILED' || !task.validationFailureMessages || task.validationFailureMessages.length === 0">
+                      <div class="message_validation_{{task.latestValidationStatus}}"></div>
+                    </span>
+                    <span ng-if="task.latestValidationStatus === 'FAILED' && task.validationFailureMessages && task.validationFailureMessages.length > 0">
+                      {{task.validationFailureMessages.join(' ')}}
+                    </span>
+                  </button>
+                </a>
+              </td>
               <td header-title="'Click to sort'" data-title="'Feedback'" class="feedback-icon-link"
                   sortable="'feedbackMessageDate'"><a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
                 <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
@@ -141,13 +146,13 @@
                 <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div></td>
               <td header-title="'Click to sort'" data-title="'Review'" sortable="'reviewer'"><div ng-if="task.reviewers && task.reviewers.length !== 0" class="badge Claimed">Claimed</div>
                 <div ng-if="!task.reviewers || task.reviewers.length === 0" class="badge Available">Available</div></td>
-              
+
               <!--          <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()">
                           <input type="checkbox" ng-model="task.selectedClaimed" ui-on-drop="" ng-show="isClaimedTask(task)">
 
                         </td>
-          --> 
-              
+          -->
+
             </tr>
           </table>
         </div>

@@ -2,7 +2,7 @@
   <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="sca-content col-lg-9 col-md-9 col-sm-9  dash-tables pull-right">
+  <div class="sca-content col-lg-9 col-md-9 col-sm-9 dash-tables pull-right">
     <section class="tables-data">
       <div class="card">
 
@@ -29,8 +29,6 @@
         </div>
 
         <div class="table-responsive white">
-
-
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="codesystem in $data" class="clickable-row">
@@ -74,7 +72,7 @@
                   </button>
                 </a>
               </td>
-              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+              <td data-title="'Validation Results'" sortable="'latestValidationStatus'" style="overflow: visible;">
                 <a ng-href="#/codesystem/{{codesystem.shortName}}?expandValidation=true">
                   <button ng-show="codesystem.latestValidationStatus && codesystem.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
@@ -85,9 +83,14 @@
                           {indicator_green : codesystem.latestValidationStatus === 'COMPLETED'},
                           {indicator_red : codesystem.latestValidationStatus === 'FAILED'},
                           {indicator_grey : codesystem.latestValidationStatus === 'STALE'}]"
-                          class="btn btn-round btn-default pull-left lighten-1 tooltips-right">
+                          class="btn btn-round btn-default pull-left tooltips-left lighten-1">
                     <div class="md md-school "></div>
-                    <span> <div class="message_validation_{{codesystem.latestValidationStatus}}"> </div></span>
+                    <span ng-if="codesystem.latestValidationStatus !== 'FAILED' || !codesystem.validationFailureMessages || codesystem.validationFailureMessages.length === 0">
+                      <div class="message_validation_{{codesystem.latestValidationStatus}}"> </div>
+                    </span>
+                    <span ng-if="codesystem.latestValidationStatus === 'FAILED' && codesystem.validationFailureMessages && codesystem.validationFailureMessages.length > 0">
+                      {{codesystem.validationFailureMessages.join(' ')}}
+                    </span>
                   </button>
                 </a>
               </td>

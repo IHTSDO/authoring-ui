@@ -2,7 +2,6 @@
   <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
   
-  <!---->
   <div class="sca-content col-lg-9 col-md-9 col-sm-9 dash-tables pull-right">
     <section class="tables-data">
       <div class="card">
@@ -70,11 +69,15 @@
                           {indicator_green : project.validationStatus === 'COMPLETED'},
                           {indicator_red : project.validationStatus === 'FAILED'},
                           {indicator_grey : project.validationStatus === 'STALE'}]"
-                          class="btn btn-round btn-default pull-left lighten-1 tooltips-right">
+                          class="btn btn-round btn-default pull-left tooltips-left lighten-1">
                 <div class="md md-school "></div>
-                <span >
-                <div class="message_validation_{{project.validationStatus}}"> </div>
-                </span> </button>
+                <span ng-if="project.validationStatus !== 'FAILED' || !project.validationFailureMessages || project.validationFailureMessages.length === 0">
+                  <div class="message_validation_{{project.validationStatus}}"> </div>
+                </span>
+                <span ng-if="project.validationStatus === 'FAILED' && project.validationFailureMessages && project.validationFailureMessages.length > 0">
+                  {{project.validationFailureMessages.join(' ')}}
+                </span>
+                </button>
                 </a></td>
               <td data-title="'Status'" sortable="'branchState'"><span class="badge {{getBranchStateText(project)}}" ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span></td>
             </tr>

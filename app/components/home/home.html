@@ -141,9 +141,14 @@
                           {indicator_red : task.latestValidationStatus === 'FAILED'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'},
                           {indicator_grey : task.latestValidationStatus === 'STALE'}]"
-                          class="btn btn-round   btn-default lighten-2 pull-left ">
+                          class="btn btn-round btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>
-                    <span> <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
+                    <span ng-if="task.latestValidationStatus !== 'FAILED' || !task.validationFailureMessages || task.validationFailureMessages.length === 0">
+                      <div class="message_validation_{{task.latestValidationStatus}}"></div>
+                    </span>
+                    <span ng-if="task.latestValidationStatus === 'FAILED' && task.validationFailureMessages && task.validationFailureMessages.length > 0">
+                      {{task.validationFailureMessages.join(' ')}}
+                    </span>
                   </button>
                 </a>
               </td>
