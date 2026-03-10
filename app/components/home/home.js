@@ -41,6 +41,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.showPromotedTasks = false;
         $scope.showPromotedReviews = false;
         $scope.projects = [];
+        $scope.allowTaskCreation = false;
         var loadingTask = false;
 
         $scope.typeDropdown = ['All'];
@@ -497,6 +498,12 @@ angular.module('singleConceptAuthoringApp.home', [
         function initialize() {
             $scope.tasks = [];
             $scope.projects = metadataService.getProjects();
+            for (let i =0 ; i < $scope.projects.length; i++) {
+                if (!$scope.projects[i].canViewOnly) {
+                    $scope.allowTaskCreation = true;
+                    break;
+                }
+            }
             angular.forEach($scope.projects, function(project) {
                 if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                     $scope.typeDropdown.push(project.codeSystem.maintainerType);
@@ -507,11 +514,6 @@ angular.module('singleConceptAuthoringApp.home', [
 
                 if(preferences.hasOwnProperty("selectedType")) {
                     $scope.selectedType.type = $scope.preferences.selectedType;
-                }
-            });
-            accountService.getRoleForTask({}).then(function (role) {
-                if (role === 'REVIEWER_ONLY') {
-                    $scope.isReviewerOnly = true;
                 }
             });
             loadTasks();

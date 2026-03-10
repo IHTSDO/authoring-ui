@@ -3,6 +3,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
 
   .controller('sidebarCtrl', ['$scope', '$rootScope', '$location', '$modal', '$q', '$timeout','metadataService','templateService', 'notificationService','accountService',
     function sidebarCtrl($scope, $rootScope, $location, $modal, $q, $timeout, metadataService, templateService, notificationService, accountService) {
+      $scope.allowTaskCreation = false;
 
       $scope.gotoBrowser = function() {
         window.open('/browser', '_blank');
@@ -152,11 +153,13 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
       };
 
       function initialize() {
-        accountService.getRoleForTask({}).then(function (role) {
-          if (role === 'REVIEWER_ONLY') {
-              $scope.isReviewerOnly = true;
-          }
-        });
+        $scope.projects = metadataService.getProjects();
+        for (let i =0 ; i < $scope.projects.length; i++) {
+            if (!$scope.projects[i].canViewOnly) {
+                $scope.allowTaskCreation = true;
+                break;
+            }
+        }
       }
 
       initialize();

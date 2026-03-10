@@ -50,7 +50,7 @@
       </button>
     </li>
     <li>
-      <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-show="!isReviewerOnly" ng-disabled="!isProjectsLoaded()" data-cy="sidebar-new-task">
+      <button class="btn grey darken-3 dashboard-links" ng-click="openCreateTaskModal()" ng-show="allowTaskCreation" ng-disabled="!isProjectsLoaded()" data-cy="sidebar-new-task">
     New Task
       </button>
     </li>    

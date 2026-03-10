@@ -66,11 +66,11 @@ angular.module('singleConceptAuthoringApp')
       getAccount().then(function(accountDetails) {
 
         // check reviewer only first
-        if (isReviewerOnly(accountDetails.roles)) {
+        if (task.canReviewOnly) {
           deferred.resolve('REVIEWER_ONLY');
         }
 
-        // check reviewer first
+        // check reviewer second
         else if (task.reviewers && isReviewer(accountDetails.login,task.reviewers)) {
           deferred.resolve('REVIEWER');
         }
@@ -96,16 +96,6 @@ angular.module('singleConceptAuthoringApp')
     function isReviewer(loginUser, reviewers) {
       for (let i =0; i < reviewers.length; i++) {
         if (loginUser === reviewers[i].username) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function isReviewerOnly(roles) {
-      let pattern = /^ROLE_ap-.*-reviewer$/;
-      for (let i = 0; i < roles.length; i++) {
-        if (pattern.test(roles[i])) {
           return true;
         }
       }
