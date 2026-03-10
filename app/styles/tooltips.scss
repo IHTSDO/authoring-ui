@@ -523,4 +523,12 @@ content: '';
   margin-left: -140px;
 }
 
+.validation-failure-messages {
+  display: none;
+}
+
+.tooltips-left:hover .validation-failure-messages {
+  display: inline-block;
+}
+
 /* bottom */

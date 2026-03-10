@@ -301,7 +301,7 @@
                     <span ng-if="project.validationStatus !== 'FAILED' || !project.validationFailureMessages || project.validationFailureMessages.length === 0">
                       <div class="message_validation_{{project.validationStatus}}"> </div>
                     </span>
-                    <span ng-if="project.validationStatus === 'FAILED' && project.validationFailureMessages && project.validationFailureMessages.length > 0">
+                    <span class="validation-failure-messages" ng-if="project.validationStatus === 'FAILED' && project.validationFailureMessages && project.validationFailureMessages.length > 0">
                       {{project.validationFailureMessages.join(' ')}}
                     </span>
                   </button>

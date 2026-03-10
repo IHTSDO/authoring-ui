@@ -88,7 +88,7 @@
                     <span ng-if="codesystem.latestValidationStatus !== 'FAILED' || !codesystem.validationFailureMessages || codesystem.validationFailureMessages.length === 0">
                       <div class="message_validation_{{codesystem.latestValidationStatus}}"> </div>
                     </span>
-                    <span ng-if="codesystem.latestValidationStatus === 'FAILED' && codesystem.validationFailureMessages && codesystem.validationFailureMessages.length > 0">
+                    <span class="validation-failure-messages" ng-if="codesystem.latestValidationStatus === 'FAILED' && codesystem.validationFailureMessages && codesystem.validationFailureMessages.length > 0">
                       {{codesystem.validationFailureMessages.join(' ')}}
                     </span>
                   </button>

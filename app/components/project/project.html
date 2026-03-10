@@ -396,7 +396,7 @@
                     <span ng-if="task.latestValidationStatus !== 'FAILED' || !task.validationFailureMessages || task.validationFailureMessages.length === 0">
                       <div class="message_validation_{{task.latestValidationStatus}}"> </div>
                     </span>
-                    <span ng-if="task.latestValidationStatus === 'FAILED' && task.validationFailureMessages && task.validationFailureMessages.length > 0">
+                    <span class="validation-failure-messages" ng-if="task.latestValidationStatus === 'FAILED' && task.validationFailureMessages && task.validationFailureMessages.length > 0">
                       {{task.validationFailureMessages.join(' ')}}
                     </span>
                   </button>
