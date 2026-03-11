@@ -2148,6 +2148,12 @@ angular.module('singleConceptAuthoringApp.edit', [
         metadataService.setSpellcheckDisabled($scope.project.projectSpellCheckDisabled);
         metadataService.setTaskPromotionDisabled($scope.project.taskPromotionDisabled);
 
+        if ($scope.task.branchBaseTimestamp && $scope.project.branchBaseTimestamp && $scope.task.latestCodeSystemVersionTimestamp
+            && $scope.task.branchBaseTimestamp < $scope.project.branchBaseTimestamp
+            && $scope.project.branchBaseTimestamp < $scope.task.latestCodeSystemVersionTimestamp) {
+            $scope.task.branchBaseTimestampBehideCodeSystem = true;
+        }
+
         // retrieve available templates
         if(metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (templates) {
@@ -2272,7 +2278,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
           }, function(error) {
             $scope.branchIntegrityDone = true;
-            if (!notificationOff) { 
+            if (!notificationOff) {
               notificationService.sendError('Branch integrity check failed: ' + error);
             }
           });

@@ -218,9 +218,15 @@ angular.module('singleConceptAuthoringApp.home', [
             scaService.getTasks($scope.showPromotedTasks ? false : true).then(function (response) {
                 if (response && response.length > 0) {
                     var branches = [];
+                    var projects = metadataService.getProjects();
                     angular.forEach(response, function (task) {
-                        if (task.branchBaseTimestamp && task.latestCodeSystemVersionTimestamp
-                            && task.latestCodeSystemVersionTimestamp > task.branchBaseTimestamp) {
+                        var foundProject = projects.filter(function (project) {
+                            return project.key === task.projectKey;
+                        });
+                        var projectBranchBaseTimestamp = foundProject.length > 0 ? foundProject[0].branchBaseTimestamp : null;
+                        if (task.branchBaseTimestamp && projectBranchBaseTimestamp&& task.latestCodeSystemVersionTimestamp
+                            && task.branchBaseTimestamp < projectBranchBaseTimestamp
+                            && projectBranchBaseTimestamp < task.latestCodeSystemVersionTimestamp) {
                             task.branchBaseTimestampBehideCodeSystem = true;
                         }
                     });
