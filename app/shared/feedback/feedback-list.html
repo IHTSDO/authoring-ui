@@ -226,7 +226,7 @@
                 </button>
                 <button
                   class="btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right pull-right m-r-2"
-                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-show="subjectConcepts.length > 0 " ng-mouseover="setTooltipPosition($event);">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback', 'addToEdit'])" ng-show="subjectConcepts.length > 0 " ng-mouseover="setTooltipPosition($event);">
                   <div class="fa-sca fa-comment  "></div>
                   <span>View/submit feedback for concept</span>
                 </button>
@@ -319,7 +319,7 @@
                 <span>Unapprove</span> </button>
                 <button
                   class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
-                  ng-click="selectConcept(concept,['selectConceptForFeedback'])" ng-mouseover="setTooltipPosition($event);" ng-show="subjectConcepts.length > 0 ">
+                  ng-click="selectConcept(concept,['selectConceptForFeedback', 'addToEdit'])" ng-mouseover="setTooltipPosition($event);" ng-show="subjectConcepts.length > 0 ">
                 <div class="fa-sca fa-comment  "></div>
                 <span>View/submit feedback for concept</span> </button>
                 <button
