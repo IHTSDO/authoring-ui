@@ -504,12 +504,7 @@ angular.module('singleConceptAuthoringApp.home', [
         function initialize() {
             $scope.tasks = [];
             $scope.projects = metadataService.getProjects();
-            for (let i =0 ; i < $scope.projects.length; i++) {
-                if (!$scope.projects[i].canViewOnly) {
-                    $scope.allowTaskCreation = true;
-                    break;
-                }
-            }
+            $scope.allowTaskCreation = $scope.projects.length > 0;
             angular.forEach($scope.projects, function(project) {
                 if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
                     $scope.typeDropdown.push(project.codeSystem.maintainerType);

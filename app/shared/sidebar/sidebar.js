@@ -154,12 +154,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
 
       function initialize() {
         $scope.projects = metadataService.getProjects();
-        for (let i =0 ; i < $scope.projects.length; i++) {
-            if (!$scope.projects[i].canViewOnly) {
-                $scope.allowTaskCreation = true;
-                break;
-            }
-        }
+        $scope.allowTaskCreation = $scope.projects.length > 0;
       }
 
       initialize();
