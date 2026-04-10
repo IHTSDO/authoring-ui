@@ -438,7 +438,7 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(review.concepts, function (reviewConcept) {
                 if (concept.conceptId === reviewConcept.conceptId) {
                   reviewConcept.active = concept.active;
-                  reviewConcept.term = useFSN ? concept.fsn : concept.pt;
+                  reviewConcept.term = useFSN ? concept.fsn : (concept.pt ? concept.pt : concept.fsn);
                   reviewConcept.descriptions = concept.descriptions;
                 }
               });
