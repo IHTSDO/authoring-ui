@@ -101,8 +101,8 @@ angular.module('singleConceptAuthoringApp.projects', [
               }
               mydata = mydata.filter(function (item) {
                 return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                || item.projectLead.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                || item.projectLead.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                || (item.projectLead && item.projectLead.displayName && item.projectLead.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1)
+                || (item.projectLead && item.projectLead.username && item.projectLead.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1)
                 || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else if ($scope.selectedType.type === 'All' && !searchStr) {
