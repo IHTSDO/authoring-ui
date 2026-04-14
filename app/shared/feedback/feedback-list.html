@@ -3,7 +3,7 @@
   resulting in elements being placed outside of the table (i.e. position: fixed)
   -->
 
-<div class="col-md-12 no-padding">
+<div class="col-md-12 no-padding" ng-init="tabState={feedbackActionTab:1}">
   <div class="col-md-12 m-t-10 load-performed" ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY' || role === 'AUTHOR') && scope.feedbackContainer.review.conceptsToReview.length !== 0">
     <div class="custom-dropdown">
       <button type="button" class="col-md-8 btn btn-success custom-dropdown-toggle" id="view-concepts-dropdown">
@@ -21,8 +21,8 @@
           </li>                            
       </ul>
     </div>
-    <a class="btn btn-primary col-md-4 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="download()">
-      <span class="tooltip-dl">Download all concepts for review</span>
+    <a class="btn btn-primary col-md-4 fa fa-download tooltips-top large-size-tooltip offset-tooltip-right white-icon" ng-click="download(tabState.feedbackActionTab)" ng-disable="tabState.feedbackActionTab === 4">
+      <span class="tooltip-dl">{{tabState.feedbackActionTab === 1 ? 'Download all concepts for review' : (tabState.feedbackActionTab === 2 ? 'Download all approved concepts' : tabState.feedbackActionTab === 3 ? 'Download all inferred concepts' : '')}}</span>
     </a>
   </div>
   <script type="text/ng-template" id="checkboxheader.html">
@@ -69,33 +69,32 @@
         </select>
       </div>
     </div>
-    <ul class="nav nav-tabs " role="tablist"
-        ng-init="actionTab=1">
-      <li role="presentation" class="border-right" ng-class="[{'active' : actionTab==1}]"> <a
-           ng-click="actionTab=1"
+    <ul class="nav nav-tabs " role="tablist">
+      <li role="presentation" class="border-right" ng-class="[{'active' : tabState.feedbackActionTab==1}]"> <a
+           ng-click="tabState.feedbackActionTab=1"
            aria-controls="home"
            role="tab"
            data-toggle="tab">To Review
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsToReview.length }} </div>
         </a> </li>
-      <li role="presentation" class="border-right" ng-class="[{'active' : actionTab==2}]"> <a
-           ng-click="actionTab=2"
+      <li role="presentation" class="border-right" ng-class="[{'active' : tabState.feedbackActionTab==2}]"> <a
+           ng-click="tabState.feedbackActionTab=2"
            aria-controls="home"
            role="tab"
            data-toggle="tab">Approved
         <div class="badge pull-right pink darken-1 numbers ">{{feedbackContainer.review.conceptsReviewed.length}} </div>
         </a> </li>
-      <li role="presentation border-right" ng-class="[{'active' : actionTab==3}]">
+      <li role="presentation border-right" ng-class="[{'active' : tabState.feedbackActionTab==3}]">
 
-        <a ng-click="actionTab=3; loadFsnForConceptsClassified();"
+        <a ng-click="tabState.feedbackActionTab=3; loadFsnForConceptsClassified();"
            aria-controls="home"
            role="tab"
            data-toggle="tab">Inferred
            <div class="tooltips-bottom normal-case" ng-show="isUnreadFeedbackFoundFromInferredTab()" style="position: absolute; top: -5px; left: 5px;"><i class="fa fa-envelope" style="color: #f06292;" aria-hidden="true"></i><span style="width: 100px; left: 0px; margin-left: -43px;">Unread feedback</span></div>
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsClassified.length }} </div>
         </a> </li>
-      <li role="presentation border-right" ng-class="[{'active' : actionTab==4}]" ng-show="!releaseNotesDisabled">
-          <a ng-click="actionTab=4"
+      <li role="presentation border-right" ng-class="[{'active' : tabState.feedbackActionTab==4}]" ng-show="!releaseNotesDisabled">
+          <a ng-click="tabState.feedbackActionTab=4"
              aria-controls="home"
              role="tab"
              data-toggle="tab">Release Note
@@ -106,7 +105,7 @@
     <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review">
       <!--Concepts To Review -->
       <div ng-if="loadingTermForConcepts" progressbar value="getProgress()" type="success" > </div>
-      <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1 && !loadingTermForConcepts">
+      <div role="tabpanel" ng-if="tabState.feedbackActionTab === 1 && !loadingTermForConcepts">
         <!-- only appears if author row -->
         <!-- No results display banner -->
         <div class="ng-table-no-results"
@@ -122,7 +121,7 @@
             <div class=" p-5">
               <button
                 class="btn btn-round btn-default black tooltips-bottom medium-size-tooltip offset-tooltip-left normal-case"
-                ng-click="groupSelectedConcepts(actionTab)">
+                ng-click="groupSelectedConcepts(tabState.feedbackActionTab)">
               <div class="md md-layers "></div>
               <span>Group selected concepts</span> </button>
             </div>
@@ -151,12 +150,12 @@
                       ng-click="selectConceptsForFeedback()"><div class="fa-sca fa-comment"></div><span>Add feedback to selected concepts</span></button>
               <button
                 class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
-                ng-click="addMultipleToEdit(actionTab)">
+                ng-click="addMultipleToEdit(tabState.feedbackActionTab)">
               <div class="md md-edit "></div>
               <span>Show selected in edit panel</span> </button>
               <button
                 class="btn btn-round btn-default  green base  tooltips-bottom large-size-tooltip offset-tooltip-right"
-                ng-click="moveMultipleToOtherList(actionTab)">
+                ng-click="moveMultipleToOtherList(tabState.feedbackActionTab)">
               <div
                   class="md md-thumb-up "></div>
               <span>Mark selected as reviewed</span> </button>
@@ -169,7 +168,7 @@
   ng-click="selectConceptsForFeedback()"><div class="fa-sca fa-comment"></div><span>Add feedback to selected concepts</span></button>
               <button
                 class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
-                ng-click="addMultipleToEdit(actionTab)">
+                ng-click="addMultipleToEdit(tabState.feedbackActionTab)">
                 <div class="md md-edit "></div>
                 <span>Show selected in edit panel</span>
               </button>
@@ -187,7 +186,7 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)">
+                ui-on-drop="dropConcept(concept, $data, tabState.feedbackActionTab)">
                 <span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span>
                 <div class="pull-left tooltips-bottom large-size-tooltip offset-tooltip-left normal-case" ng-if="isActiveDescriptionOnInactiveConcept(concept);"><i class="p-t-5 p-r-5 fa fa-exclamation-triangle" style="color: red;" aria-hidden="true"></i><span>An active description has been added to the inactive concept</span></div>
                 <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]" ng-click="selectConcept(concept)">{{concept.term? concept.term : 'Deleted concept (' + concept.conceptId + ')'}} </div></td>
@@ -258,7 +257,7 @@
         <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
               <div class="checkbox">
                 <label class="filled">
-                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(actionTab, booleanObj.checkedToReview)"
+                  <input type="checkbox" ng-model="booleanObj.checkedToReview" ng-change="selectAll(tabState.feedbackActionTab, booleanObj.checkedToReview)"
                  id="select_all_to_review"
                  name="filter-checkbox" value=""/>
                 </label>
@@ -267,7 +266,7 @@
         <script type="text/ng-template" id="ng-table/headers/checkboxInferred.html">
           <div class="checkbox">
             <label class="filled">
-              <input type="checkbox" ng-model="booleanObj.checkedInferred" ng-change="selectAll(actionTab, booleanObj.checkedInferred)"
+              <input type="checkbox" ng-model="booleanObj.checkedInferred" ng-change="selectAll(tabState.feedbackActionTab, booleanObj.checkedInferred)"
              id="select_all_inferred"
              name="filter-checkbox" value=""/>
             </label>
@@ -275,7 +274,7 @@
     </script>
       </div>
       <!--Concepts Reviewed-->
-      <div role="tabpanel" ng-if="actionTab === 2 && !loadingTermForConcepts">
+      <div role="tabpanel" ng-if="tabState.feedbackActionTab === 2 && !loadingTermForConcepts">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0"> No Approved
@@ -299,7 +298,7 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)">
+                ui-on-drop="dropConcept(concept, $data, tabState.feedbackActionTab)">
                 <span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span>
                 <div class="pull-left tooltips-bottom large-size-tooltip offset-tooltip-left normal-case" ng-if="isActiveDescriptionOnInactiveConcept(concept);"><i class="p-t-5 p-r-5 fa fa-exclamation-triangle" style="color: red;" aria-hidden="true"></i><span>An active description has been added to the inactive concept</span></div>
                 <div class="p-5" ng-class="[{'p-l-65' : concept.modifiedSinceReview}]">{{concept.term ? concept.term : 'Deleted concept (' + concept.conceptId + ')'}} </div></td>
@@ -334,7 +333,7 @@
         </table>
       </div>
       <!--Classification affected concepts-->
-      <div role="tabpanel" ng-if="actionTab === 3 && !loadingTermForConcepts">
+      <div role="tabpanel" ng-if="tabState.feedbackActionTab === 3 && !loadingTermForConcepts">
         <!-- No results display banner -->
         <div class="ng-table-no-results"
              ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No Classification concepts. </div>
@@ -355,7 +354,7 @@
               <div class="pull-right p-5" style="padding-right: 0px; padding-top: 15px;">
                 <button
                   class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
-                  ng-click="addMultipleToEdit(actionTab)">
+                  ng-click="addMultipleToEdit(tabState.feedbackActionTab)">
                   <div class="md md-edit "></div>
                   <span>Show selected in edit panel</span>
                 </button>
@@ -376,7 +375,7 @@
                   filter="{ 'term': 'text' }"
                   ui-draggable="true" drag="concept"
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                  ui-on-drop="dropConcept(concept, $data, actionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept (' + concept.conceptId + ')' : concept.term}} </span></td>
+                  ui-on-drop="dropConcept(concept, $data, tabState.feedbackActionTab)"><span class="pull-left p-5">{{isDeletedConcept(concept)? 'Deleted concept (' + concept.conceptId + ')' : concept.term}} </span></td>
               <td ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY') && (task.status === 'In Review' || task.status === 'Review Completed')"
                   class=" col-md-4 no-padding"><div class="pull-right pull-right-margin m-r-5 clear-position">
                   <button ng-show="concept.messages.length > 0"
@@ -425,7 +424,7 @@
         </div>
       </div>
       <!--Release Notes-->
-      <div role="tabpanel" ng-if="actionTab === 4" class="release-note p-l-5">
+      <div role="tabpanel" ng-if="tabState.feedbackActionTab === 4" class="release-note p-l-5">
         <!-- No results display banner -->
         <div class="ng-table-no-results" ng-if="lineItems.length === 0"> No line items. </div>
         <table show-filter="false" ng-table="lineItemTableParams"

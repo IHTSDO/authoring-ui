@@ -666,24 +666,54 @@ angular.module('singleConceptAuthoringApp')
             scope.conceptsClassifiedTableParams.reload();
           };
 
-          scope.download = function() {
-            if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
+          function getDownloadConfigByTab(actionTab) {
+            var actionTab = actionTab || 1;
+            var listMap = {
+              1: {
+                concepts: scope.feedbackContainer.review.conceptsToReview,
+                tabLabel: 'To Review',
+                filePrefix: 'ConceptsToReview'
+              },
+              2: {
+                concepts: scope.feedbackContainer.review.conceptsReviewed,
+                tabLabel: 'Approved',
+                filePrefix: 'ConceptsReviewed'
+              },
+              3: {
+                concepts: scope.feedbackContainer.review.conceptsClassified,
+                tabLabel: 'Inferred',
+                filePrefix: 'ConceptsClassified'
+              }
+            };
+
+            return listMap[actionTab] || listMap[1];
+          }
+
+          scope.download = function(actionTab) {
+            if (!scope.feedbackContainer || !scope.feedbackContainer.review) {
               notificationService.sendMessage('No concepts to download.', 10000);
-            } else {
-              var clonedConcepts = angular.copy(scope.feedbackContainer.review.conceptsToReview);
-              var data = [];
-              data.push({
-                'conceptId': 'Concept ID',
-                'conceptFsn': 'Term'
-              });
-              clonedConcepts.forEach(function(item) {
-                data.push({
-                  'conceptId': item.conceptId,
-                  'conceptFsn': scope.isDeletedConcept(item) ? 'Deleted concept' : item.term
-                });
-              })
-              scope.dlcDialog(convertToCSV(data), 'Concepts_' + (new Date()).getTime());
+              return;
             }
+
+            var downloadConfig = getDownloadConfigByTab(actionTab);
+            if (!downloadConfig.concepts || downloadConfig.concepts.length === 0) {
+              notificationService.sendMessage('No ' + downloadConfig.tabLabel + ' concepts to download.', 10000);
+              return;
+            }
+
+            var clonedConcepts = angular.copy(downloadConfig.concepts);
+            var data = [];
+            data.push({
+              'conceptId': 'Concept ID',
+              'conceptFsn': 'Term'
+            });
+            clonedConcepts.forEach(function(item) {
+              data.push({
+                'conceptId': item.conceptId,
+                'conceptFsn': scope.isDeletedConcept(item) ? 'Deleted concept' : item.term
+              });
+            });
+            scope.dlcDialog(convertToCSV(data), downloadConfig.filePrefix + '_' + (new Date()).getTime());
           };
 
           scope.dlcDialog = (function (data, fileName) {
