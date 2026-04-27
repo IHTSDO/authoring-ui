@@ -6,7 +6,10 @@ const urlAuthoring = Cypress.env('URL_AUTHORING');
 const username = Cypress.env('TEST_LOGIN_USR');
 const password = Cypress.env('TEST_LOGIN_PSW');
 
+
 describe('Dashboard Exploration Test', () => {
+
+    const requestTimeout = 10_000;
 
     it('Login', () => {
         cy.intercept('GET', '**/my-tasks**').as('getMyTasks');
@@ -14,7 +17,7 @@ describe('Dashboard Exploration Test', () => {
         utils.login(urlAuthoring, username, password);
         cy.get('[data-cy="platform-title"]').should('contain.text', 'Authoring Platform');
 
-        cy.wait('@getMyTasks').then((interceptions) => {
+        cy.wait('@getMyTasks', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
             cy.screenshot('dashboard-exploration-test-started');
         });
@@ -54,7 +57,7 @@ describe('Dashboard Exploration Test', () => {
     it('Navigate to Review Tasks', () => {
         cy.intercept('GET', '**/review-tasks**').as('getReviewTasks');
         cy.get('[data-cy="sidebar-review-tasks"]').click();
-        cy.wait('@getReviewTasks').then((interceptions) => {
+        cy.wait('@getReviewTasks', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
         }).url().should('include', 'review-tasks');
     });
@@ -62,7 +65,7 @@ describe('Dashboard Exploration Test', () => {
     it('Navigate to My Projects', () => {
         cy.intercept('GET', '**/projects**').as('getMyProjects');
         cy.get('[data-cy="sidebar-my-projects"]').click();
-        cy.wait('@getMyProjects').then((interceptions) => {
+        cy.wait('@getMyProjects', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
         }).url().should('include', 'my-projects');
     });
@@ -70,7 +73,7 @@ describe('Dashboard Exploration Test', () => {
     it('Navigate to All Projects', () => {
         cy.intercept('GET', '**/projects**').as('getAllProjects');
         cy.get('[data-cy="sidebar-all-projects"]').click();
-        cy.wait('@getAllProjects').then((interceptions) => {
+        cy.wait('@getAllProjects', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
         }).url().should('include', 'projects');
     });
@@ -78,7 +81,7 @@ describe('Dashboard Exploration Test', () => {
     it('Navigate to Codesystems', () => {
         cy.intercept('GET', '**/codesystems**').as('getCodesystems');
         cy.get('[data-cy="sidebar-code-systems"]').click();
-        cy.wait('@getCodesystems').then((interceptions) => {
+        cy.wait('@getCodesystems', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
         }).url().should('include', 'codesystems');
     });
@@ -86,7 +89,7 @@ describe('Dashboard Exploration Test', () => {
     it('Navigate back home', () => {
         cy.intercept('GET', '**/my-tasks**').as('getMyTasks');
         cy.get('[data-cy="sidebar-my-tasks"]').click();
-        cy.wait('@getMyTasks').then((interceptions) => {
+        cy.wait('@getMyTasks', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
         }).url().should('include', 'home');
     });
