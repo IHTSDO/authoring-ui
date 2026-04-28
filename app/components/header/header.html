@@ -45,6 +45,8 @@
               </li>
               <li ng-click="openValidationBrowser()" data-cy="nav-validation">Validation Browser
               </li>
+              <li ng-if="imsRoles.includes('ms-users')" ng-click="openTranslationDashboard()" data-cy="nav-translation-dashboard">Translation Dashboard
+              </li>
             </ul>
           </li>
 
