@@ -2179,9 +2179,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         metadataService.setSpellcheckDisabled($scope.project.projectSpellCheckDisabled);
         metadataService.setTaskPromotionDisabled($scope.project.taskPromotionDisabled);
 
-        if ($scope.task.branchBaseTimestamp && $scope.project.branchBaseTimestamp && $scope.task.latestCodeSystemVersionTimestamp
+        if ($scope.task.branchBaseTimestamp && $scope.project.branchBaseTimestamp && $scope.task.latestCodeSystemVersionBaseTimestamp
             && $scope.task.branchBaseTimestamp < $scope.project.branchBaseTimestamp
-            && $scope.project.branchBaseTimestamp < $scope.task.latestCodeSystemVersionTimestamp) {
+            && $scope.project.branchBaseTimestamp < $scope.task.latestCodeSystemVersionBaseTimestamp) {
             $scope.task.branchBaseTimestampBehideCodeSystem = true;
         }
 

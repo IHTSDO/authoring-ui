@@ -224,9 +224,9 @@ angular.module('singleConceptAuthoringApp.home', [
                             return project.key === task.projectKey;
                         });
                         var projectBranchBaseTimestamp = foundProject.length > 0 ? foundProject[0].branchBaseTimestamp : null;
-                        if (task.branchBaseTimestamp && projectBranchBaseTimestamp && task.latestCodeSystemVersionTimestamp
+                        if (task.branchBaseTimestamp && projectBranchBaseTimestamp && task.latestCodeSystemVersionBaseTimestamp
                             && task.branchBaseTimestamp < projectBranchBaseTimestamp
-                            && projectBranchBaseTimestamp < task.latestCodeSystemVersionTimestamp) {
+                            && projectBranchBaseTimestamp < task.latestCodeSystemVersionBaseTimestamp) {
                             task.branchBaseTimestampBehideCodeSystem = true;
                         }
                     });
