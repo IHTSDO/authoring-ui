@@ -1845,7 +1845,6 @@ angular.module('singleConceptAuthoringApp')
       // Get traceability log for branch
       // GET /authoring-traceability-service/activities?onBranch=
       function getTraceabilityForBranch(branch, conceptId, activityType, brief) {
-        console.log(brief);
         var deferred = $q.defer();
         var params = 'size=500';
         if(branch) {

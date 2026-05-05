@@ -25,6 +25,10 @@
     </div>
   </div>
 
+  <div class="alert alert-dismissible alert-warning validation" ng-show="internationalDonationWarningMessage">
+    <div>{{internationalDonationWarningMessage}}</div>
+  </div>
+
   <div class="alert alert-dismissible validation" ng-show="concept.templateMessages.length > 0"
        ng-repeat="message in concept.templateMessages"
        ng-class="[{ 'alert-warning' : message.type === 'Warning'}, { 'alert-danger' : message.type === 'Error' }, { 'alert-info' : message.type === 'Message'}]">

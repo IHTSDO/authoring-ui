@@ -6374,6 +6374,49 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         }
 
+        function traceabilityShowsConceptOnInternationalEdition(traceability, conceptId) {
+          if (!traceability || traceability.numberOfElements < 1 || !traceability.content) {
+            return false;
+          }
+          var idStr = String(conceptId);
+          var found = false;
+          angular.forEach(traceability.content, function (change) {
+            if (found || change.activityType !== 'CONTENT_CHANGE' || !change.conceptChanges) {
+              return;
+            }
+            angular.forEach(change.conceptChanges, function (conceptChange) {
+              if (String(conceptChange.conceptId) === idStr) {
+                found = true;
+              }
+            });
+          });
+          return found;
+        }
+
+        function checkInternationalEditionDonationWarning() {
+          scope.internationalDonationWarningMessage = null;
+          if (!metadataService.isExtensionSet() || scope.isStatic) {
+            return;
+          }
+          if (!scope.concept || !scope.concept.conceptId || !terminologyServerService.isSctid(scope.concept.conceptId)) {
+            return;
+          }
+          if (!metadataService.isExtensionModule(scope.concept.moduleId) || !scope.concept.released) {
+            return;
+          }
+          terminologyServerService.getTraceabilityForBranch('MAIN', scope.concept.conceptId).then(function (traceability) {
+            if (!traceabilityShowsConceptOnInternationalEdition(traceability, scope.concept.conceptId)) {
+              return;
+            }
+            terminologyServerService.getFullConcept(scope.concept.conceptId, 'MAIN').then(function (mainConcept) {
+              if (mainConcept && !mainConcept.released) {
+                scope.internationalDonationWarningMessage = 'A donation to the International Edition has been requested for this concept. Please do not edit this concept until the donation has been finalized.';
+              }
+            });
+          }, function () {
+          });
+        }
+
         function onloadConcept() {
           // on load, load validation report for REVIEWER
           if (scope.loadValidation === 'true' || scope.loadValidation === true) {
@@ -6383,6 +6426,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // on load, set default module id for components if not set yet
           setDefaultModuleId();
+
+          checkInternationalEditionDonationWarning();
 
           scope.computeAxioms(axiomType.ADDITIONAL);
           scope.computeAxioms(axiomType.GCI);
