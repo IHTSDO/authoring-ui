@@ -1098,6 +1098,7 @@ angular.module('singleConceptAuthoringApp')
       isComplex: isComplex,
       isBatch: isBatch,
       isEnableAxiomAdditionOnInternationalConcepts: isEnableAxiomAdditionOnInternationalConcepts,
+      isExtensionModule: isExtensionModule,
 
       // extension module-dependent retrieval functions
 
