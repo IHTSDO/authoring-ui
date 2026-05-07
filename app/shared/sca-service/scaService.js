@@ -614,13 +614,14 @@ angular.module('singleConceptAuthoringApp')
         // get a project by key
         getProjectForKey: function (projectKey) {
           if (!projectKey) {
-            return null;
+            return $q.reject('Must specify projectKey to get a project');
           }
           return $http.get(apiEndpoint + 'projects/' + projectKey).then(
             function (response) {
               return response.data;
             }, function (error) {
-              // TODO Handle errors
+              console.error('Error retrieving project >>> ' + projectKey, error);
+              return $q.reject(error);
             }
           );
         },
@@ -755,25 +756,28 @@ angular.module('singleConceptAuthoringApp')
 
         // get a specific task for a project
         getTaskForProject: function (projectKey, taskKey) {
-          var deferred = $q.defer();
           if (!projectKey) {
             console.error('Must specify projectKey to get a task for project');
-            deferred.resolve({});
+            return $q.reject('Must specify projectKey to get a task for project');
           }
           if (!taskKey) {
             console.error('Must specify taskKey to get a task for project');
+            return $q.reject('Must specify taskKey to get a task for project');
           }
-          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
+
+          return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
             function (response) {
 
               // temporary check to verify authentication on Edit component
               // will later be replaced by accountService call in app.js
 //            $rootScope.accountDetails = response.data.assignee;
 
-              deferred.resolve(response.data);
+              return response.data;
+            },
+            function (error) {
+              return $q.reject(error);
             }
           );
-          return deferred.promise;
         },
 
         /////////////////////////////////////

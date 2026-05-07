@@ -1670,6 +1670,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
           if (!response) {
+            notificationService.sendWarning('Task ' + $routeParams.taskKey + ' was not found in project ' + $routeParams.projectKey + '.');
             $scope.gotoHome();
             return;
             //deferred.reject('Task could not be retrieved');
@@ -1692,6 +1693,14 @@ angular.module('singleConceptAuthoringApp.edit', [
             deferred.resolve(task);
           });
         }, function (error) {
+          console.error('Error loading task ' + $routeParams.taskKey + ' for project ' + $routeParams.projectKey, error);
+          var status = error && (error.status || (error.data && error.data.status));
+          var message = error && (error.message || (error.data && error.data.message) || '');
+          if (status === 404 || (angular.isString(message) && message.indexOf('404') !== -1)) {
+            deferred.reject('Task ' + $routeParams.taskKey + ' was not found.');
+            return;
+          }
+
           deferred.reject('Task load failed');
         });
 
