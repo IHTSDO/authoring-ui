@@ -119,6 +119,13 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function (reloadValidationReport, validationNotificationOff) {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+          if (!response) {
+            notificationService.sendWarning('Project ' + $routeParams.projectKey + ' was not found.');            
+            return;
+          }
+
+          // start monitoring of project
+          scaService.monitorProject($routeParams.projectKey);
 
           // detect code system for given branch
           const allCodeSystems = metadataService.getCodeSystems();
@@ -249,6 +256,17 @@ angular.module('singleConceptAuthoringApp.project', [
               $scope.validationContainer = {executionStatus: 'FAILED', error: error, notificationOff: validationNotificationOff, reloadContainer: reloadValidationReport};
             });
           }
+        }, function (error) {
+          console.error('Error loading project ' + $routeParams.projectKey, error);
+
+          var status = error && (error.status || (error.data && error.data.status));
+          var message = error && (error.message || (error.data && error.data.message) || '');
+          if (status === 404 || (angular.isString(message) && message.indexOf('404') !== -1)) {
+            notificationService.sendError('Project ' + $routeParams.projectKey + ' was not found.');
+            return;
+          }
+
+          notificationService.sendError('Error loading project ' + $routeParams.projectKey + '.');
         });
       };
 
@@ -992,10 +1010,7 @@ angular.module('singleConceptAuthoringApp.project', [
       // on load, retrieve tasks for project
       function initialize() {
         // initialize the project
-        $scope.getProject();
-
-        // start monitoring of project
-        scaService.monitorProject($routeParams.projectKey);
+        $scope.getProject();        
 
         // get the project task list
         scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
