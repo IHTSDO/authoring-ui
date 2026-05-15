@@ -381,7 +381,7 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.$watch('projects', function () {
             var anyInternationalProjectPresent = false;
             angular.forEach($scope.projects, function(project) {
-              project.lead = project.projectLead.displayName;
+              project.lead = project.projectLead ? project.projectLead.displayName : '';
               if (!project.codeSystem.maintainerType) {
                 anyInternationalProjectPresent = true;
               }

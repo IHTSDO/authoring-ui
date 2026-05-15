@@ -30,7 +30,7 @@
           {{project.key}}
           </td>
           <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
-          {{project.projectLead.displayName}}
+          {{project.projectLead ? project.projectLead.displayName : ''}}
           </td>
           <td data-title="'Status'" ng-style="getBranchStateText(project) !== '??' && {'padding-top':'0px', 'padding-bottom':'0px'}" sortable="'branchState'">
             <span class="badge {{getBranchStateText(project)}}"

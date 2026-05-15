@@ -125,7 +125,7 @@ angular.module('singleConceptAuthoringApp.projects', [
       else {
         // add top-level element for ng-table sorting
         angular.forEach($scope.projects, function(project) {
-          project.lead = project.projectLead.displayName;
+          project.lead = project.projectLead ? project.projectLead.displayName : '';
           if(project.codeSystem && project.codeSystem.maintainerType && project.codeSystem.maintainerType !== undefined  && !$scope.typeDropdown.includes(project.codeSystem.maintainerType)){
              $scope.typeDropdown.push(project.codeSystem.maintainerType);
           }
@@ -239,7 +239,7 @@ angular.module('singleConceptAuthoringApp.projects', [
         $scope.projects = response;
         var anyInternationalProjectPresent = false;
         angular.forEach($scope.projects, function(project) {
-          project.lead = project.projectLead.displayName;
+          project.lead = project.projectLead ? project.projectLead.displayName : '';
           if (!project.codeSystem.maintainerType) {
             anyInternationalProjectPresent = true;
           }

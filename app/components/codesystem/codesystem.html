@@ -256,7 +256,7 @@
                 {{project.key}}
               </td>
               <td header-title="'Click to sort'" data-title="'Project Lead'" sortable="'authorKey'" filter="{ 'projectLead.displayName': 'text' }">
-                {{project.projectLead.displayName}}
+                {{project.projectLead ? project.projectLead.displayName : ''}}
               </td>
               <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
                  <a ng-href="#/project/{{project.key}}/">

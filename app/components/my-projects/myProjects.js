@@ -148,7 +148,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         // add top-level element for ng-table sorting
         var anyInternationalProjectPresent = false;
         angular.forEach($scope.projects, function(project) {
-          project.lead = project.projectLead.displayName;
+          project.lead = project.projectLead ? project.projectLead.displayName : '';
           if (!project.codeSystem.maintainerType) {
             anyInternationalProjectPresent = true;
           }
