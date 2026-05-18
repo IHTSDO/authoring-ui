@@ -510,19 +510,29 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function checkAssociationTargetsChanged(associationTarget1, associationTarget2) {
-      for (var key in associationTarget1) {
-        if (associationTarget2.hasOwnProperty(key)) {
-          var items1 =  associationTarget1[key];
-          var items2 =  associationTarget2[key];
-          if (JSON.stringify(items1.sort()) !== JSON.stringify(items2.sort())) {
+      var targets1 = associationTarget1 || {};
+      var targets2 = associationTarget2 || {};
+      var keys1 = Object.keys(targets1);
+      var keys2 = Object.keys(targets2);
+
+      if (keys1.length !== keys2.length) {
+        return true;
+      }
+
+      for (var i = 0; i < keys1.length; i++) {
+        var key = keys1[i];
+        if (!targets2.hasOwnProperty(key)) {
           return true;
-          }
-        } else {
+        }
+        var items1 = targets1[key] || [];
+        var items2 = targets2[key] || [];
+        if (JSON.stringify(items1.slice().sort()) !== JSON.stringify(items2.slice().sort())) {
           return true;
         }
       }
+
       return false;
-  }
+    }
 
   function getCaseSignificanceDisplayText (description) {
     switch (description.caseSignificance) {
