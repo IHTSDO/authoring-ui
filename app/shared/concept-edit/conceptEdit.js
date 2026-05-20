@@ -3610,41 +3610,136 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.dropAxiomRelationshipTarget = function (relationship, data, type, axiom) {
-
-          if(data.concept) {
-            data.id = data.concept.conceptId;
-            data.name = data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym;
+        function normalizeAxiomRelationshipTargetData(data) {
+          if (data.concept) {
+            return {
+              id: data.concept.conceptId,
+              name: data.concept.fsn ? data.concept.fsn : data.concept.preferredSynonym,
+              concreteValue: data.concreteValue
+            };
           }
+          if (data.fsn && data.fsn.term) {
+            return {
+              id: data.id,
+              name: data.fsn.term,
+              definitionStatus: data.definitionStatus,
+              effectiveTime: data.effectiveTime,
+              moduleId: data.moduleId,
+              active: data.active,
+              released: data.released,
+              concreteValue: data.concreteValue,
+              hasFullConcept: true
+            };
+          }
+          return {
+            id: data.id,
+            name: data.name,
+            definitionStatus: data.definitionStatus,
+            effectiveTime: data.effectiveTime,
+            moduleId: data.moduleId,
+            active: data.active,
+            released: data.released,
+            concreteValue: data.concreteValue,
+            hasFullConcept: !!(data.definitionStatus || data.effectiveTime || data.moduleId)
+          };
+        }
 
-          // cancel if static
-          if (scope.isStatic) {
+        function populateAxiomRelationshipTarget(relationship, source) {
+          relationship.target.conceptId = source.conceptId || source.id;
+          relationship.target.fsn = source.fsn || source.name;
+          if (source.definitionStatus !== undefined) {
+            relationship.target.definitionStatus = source.definitionStatus;
+            relationship.target.effectiveTime = source.effectiveTime;
+            relationship.target.moduleId = source.moduleId;
+            relationship.target.active = source.active;
+            relationship.target.released = source.released;
+          }
+        }
+
+        function bulkRetrieveAxiomRelationshipTarget(relationship) {
+          var destinationIds = [relationship.target.conceptId];
+          bulkRetrieveFullConceptForRelationships(destinationIds);
+        }
+
+        function validateMrcmIsAAttributesAfterRefresh(relationship) {
+          if (relationship.type.conceptId === '116680003') {
+            scope.errors = [];
+            var errors = isMrcmAttributesValid(scope.concept);
+            if (errors && errors.length > 0) {
+              scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
+            }
+          }
+        }
+
+        function refreshAxiomAttributesAndFinish(relationship, type, axiom, options) {
+          options = options || {};
+          var runMrcmValidation = function () {
+            if (options.validateMrcm) {
+              validateMrcmIsAAttributesAfterRefresh(relationship);
+            }
+          };
+
+          scope.isModified = true;
+          scope.computeAxioms(type);
+
+          if (options.fromTypeahead) {
+            refreshAttributeTypesForAxiom(axiom).then(runMrcmValidation);
+            if (options.updateRelationship) {
+              scope.updateRelationship(relationship);
+            }
+            autoSave();
             return;
           }
 
+          var refreshPromise = refreshAttributeTypesForAxiom(axiom);
+          if (refreshPromise && refreshPromise.then) {
+            refreshPromise.then(runMrcmValidation);
+          }
+          autoSave();
+        }
+
+        function resetModuleForIsAIfNeeded(conceptId, callback) {
+          if (!metadataService.isExtensionSet()) {
+            terminologyServerService.getFullConcept(conceptId, scope.branch).then(function (response) {
+              if (callback) {
+                callback(response);
+              }
+            });
+          } else if (callback) {
+            callback();
+          }
+        }
+
+        function applyAxiomRelationshipTarget(relationship, rawData, type, axiom, options) {
+          options = options || {};
+          if (!relationship || !rawData) {
+            console.error('Cannot set axiom relationship target, either relationship or target data not specified');
+            return;
+          }
+
+          var targetData = normalizeAxiomRelationshipTargetData(rawData);
           var tempFsn = relationship.target.fsn;
+          var revertTargetFsn = function () {
+            relationship.target.fsn = tempFsn;
+          };
 
-          relationship.target.fsn = 'Validating...';
+          if (options.showValidating) {
+            relationship.target.fsn = 'Validating...';
+          }
 
-          // if template supplied, check ECL/ESCG
           if (scope.template) {
             if (!relationship.template || !relationship.template.targetSlot) {
-              relationship.target.fsn = tempFsn;
+              revertTargetFsn();
               return;
             }
-            constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
-              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
-              relationship.target.conceptId = data.id;
-              relationship.target.fsn = data.name;
+            constraintService.isValueAllowedForType(relationship.type.conceptId, targetData.id, scope.branch,
+              relationship.template.targetSlot.allowableRangeECL).then(function () {
+              populateAxiomRelationshipTarget(relationship, targetData);
+              bulkRetrieveAxiomRelationshipTarget(relationship);
 
-              let destinationIds = [];
-              destinationIds.push(relationship.target.conceptId);
-              bulkRetrieveFullConceptForRelationships(destinationIds);
-
-              if(!metadataService.isExtensionSet()
-                && relationship.type.conceptId === '116680003') {// Is a (attribute)
-                terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
-                  if (relationship.moduleId !== response.moduleId) {
+              if (!metadataService.isExtensionSet() && relationship.type.conceptId === '116680003') {
+                resetModuleForIsAIfNeeded(targetData.id, function (response) {
+                  if (response && relationship.moduleId !== response.moduleId && axiom.type === axiomType.ADDITIONAL) {
                     resetModuleId(response.moduleId);
                   }
                   scope.updateRelationship(relationship, false);
@@ -3655,85 +3750,97 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
               } else {
                 scope.updateRelationship(relationship, false);
+                if (options.fromTypeahead) {
+                  autoSave();
+                }
               }
-            }, function (error) {
-              scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
-              relationship.target.fsn = tempFsn;
+            }, function () {
+              scope.warnings = ['Concept ' + targetData.id + ' |' + targetData.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
+              revertTargetFsn();
+            });
+            return;
+          }
+
+          if (metadataService.isMrcmEnabled()) {
+            if (!relationship.type.conceptId) {
+              scope.warnings = [options.fromTypeahead ?
+                'MRCM validation error: Must set attribute type first' :
+                'MRCM validation error: Must set relationship type first'];
+              return;
+            }
+            if (relationship.dataType && relationship.concreteValue) {
+              relationship.concreteValue.value = targetData.concreteValue;
+              scope.updateConcreteValue(relationship);
+              return;
+            }
+            if (!targetData.id) {
+              scope.warnings = ['MRCM validation error:  value is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+              revertTargetFsn();
+              return;
+            }
+
+            constraintService.isValueAllowedForType(relationship.type.conceptId, targetData.id, scope.branch).then(function () {
+              var applyTargetAndFinish = function (concept) {
+                populateAxiomRelationshipTarget(relationship, concept);
+                bulkRetrieveAxiomRelationshipTarget(relationship);
+
+                if (!metadataService.isExtensionSet() && relationship.type.conceptId === '116680003') {
+                  resetModuleForIsAIfNeeded(targetData.id, function (response) {
+                    if (response && relationship.moduleId !== response.moduleId && axiom.type === axiomType.ADDITIONAL) {
+                      resetModuleId(response.moduleId);
+                    }
+                    refreshAxiomAttributesAndFinish(relationship, type, axiom, {
+                      validateMrcm: true,
+                      updateRelationship: options.fromTypeahead,
+                      fromTypeahead: options.fromTypeahead
+                    });
+                  });
+                } else {
+                  refreshAxiomAttributesAndFinish(relationship, type, axiom, {
+                    validateMrcm: true,
+                    updateRelationship: options.fromTypeahead,
+                    fromTypeahead: options.fromTypeahead
+                  });
+                }
+              };
+
+              if (targetData.hasFullConcept) {
+                applyTargetAndFinish(targetData);
+              } else {
+                terminologyServerService.getFullConcept(targetData.id, scope.branch).then(applyTargetAndFinish);
+              }
+            }, function () {
+              scope.warnings = ['MRCM validation error: ' + targetData.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+              revertTargetFsn();
+            });
+            return;
+          }
+
+          if (relationship.dataType && relationship.concreteValue) {
+            relationship.concreteValue.value = targetData.concreteValue;
+            scope.updateConcreteValue(relationship);
+            return;
+          }
+
+          if (targetData.hasFullConcept) {
+            populateAxiomRelationshipTarget(relationship, targetData);
+            refreshAttributeTypesForAxiom(axiom);
+            scope.computeAxioms(type);
+            autoSave();
+          } else {
+            terminologyServerService.getFullConcept(targetData.id, scope.branch).then(function (response) {
+              populateAxiomRelationshipTarget(relationship, response);
+              scope.computeAxioms(type);
+              autoSave();
             });
           }
+        }
 
-          else if (metadataService.isMrcmEnabled()) {
-
-            if (relationship.type.conceptId) {
-              if(relationship.dataType && relationship.concreteValue){
-                  relationship.concreteValue.value = data.concreteValue;
-                  scope.updateConcreteValue(relationship);
-              }
-              else{
-                  if(!data.id || data.id === undefined)
-                  {
-                    scope.warnings = ['MRCM validation error: ' + ' value is not a valid target for attribute type ' + relationship.type.fsn + '.'];
-                    relationship.target.fsn = tempFsn;
-                  }
-                  else{
-                      constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
-                        terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
-                          relationship.target.conceptId = response.conceptId;
-                          relationship.target.fsn = response.fsn;
-                          relationship.target.definitionStatus = response.definitionStatus;
-                          relationship.target.effectiveTime = response.effectiveTime;
-                          relationship.target.moduleId = response.moduleId;
-                          relationship.target.active= response.active;
-                          relationship.target.released = response.released;
-
-                          let destinationIds = [];
-                          destinationIds.push(relationship.target.conceptId);
-                          bulkRetrieveFullConceptForRelationships(destinationIds);
-
-                          scope.isModified = true;
-                          scope.computeAxioms(type);
-                          refreshAttributeTypesForAxiom(axiom).then(function() {
-                            if (relationship.type.conceptId === '116680003') {
-                              scope.errors = [];
-                              var errors = isMrcmAttributesValid(scope.concept);
-                              if (errors && errors.length > 0) {
-                                scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
-                              }
-                            }
-                          });
-                          autoSave();
-                        });
-                      }, function (error) {
-                        scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
-                        relationship.target.fsn = tempFsn;
-                      });
-                  }
-              }
-            } else {
-              scope.warnings = ['MRCM validation error: Must set relationship type first'];
-            }
+        scope.dropAxiomRelationshipTarget = function (relationship, data, type, axiom) {
+          if (scope.isStatic) {
+            return;
           }
-
-          // otherwise simply allow drop
-          else {
-            if(relationship.dataType && relationship.concreteValue){
-              relationship.concreteValue.value = data.concreteValue;
-              scope.updateConcreteValue(relationship);
-            } else {
-              terminologyServerService.getFullConcept(data.id, scope.branch).then(function (response) {
-                relationship.target.conceptId = response.conceptId;
-                relationship.target.fsn = response.fsn;
-                relationship.target.definitionStatus = response.definitionStatus;
-                relationship.target.effectiveTime = response.effectiveTime;
-                relationship.target.moduleId = response.moduleId;
-                relationship.target.active= response.active;
-                relationship.target.released = response.released;
-
-                scope.computeAxioms(type);
-                autoSave();
-              });
-            }
-          }
+          applyAxiomRelationshipTarget(relationship, data, type, axiom, { showValidating: true });
         };
 
         scope.dropRelationshipType = function (relationship, data) {
@@ -5675,88 +5782,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.setAxiomRelationshipTargetConcept = function (relationship, item, axiom, relationshipGroupId, parentIndex, itemIndex) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
+            return;
           }
 
-          var populateRelationshipTarget = function(relationship, item) {
-              relationship.target.conceptId = item.id;
-              relationship.target.fsn = item.fsn.term;
-              relationship.target.definitionStatus = item.definitionStatus;
-              relationship.target.effectiveTime = item.effectiveTime;
-              relationship.target.moduleId = item.moduleId;
-              relationship.target.active= item.active;
-              relationship.target.released = item.released;
-          }
-
-          if (scope.template) {
-            if (!relationship.template || !relationship.template.targetSlot) {
-              relationship.target.fsn = tempFsn;
-              return;
-            }
-            constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch,
-              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
-                populateRelationshipTarget(relationship, item);
-
-              let destinationIds = [];
-              destinationIds.push(relationship.target.conceptId);
-              bulkRetrieveFullConceptForRelationships(destinationIds);
-
-              if(!metadataService.isExtensionSet()
-                && relationship.type.conceptId === '116680003') {// Is a (attribute)
-                terminologyServerService.getFullConcept(data.id, scope.branch).then(function(response) {
-                  if (relationship.moduleId !== response.moduleId) {
-                    resetModuleId(response.moduleId);
-                  }
-                  scope.updateRelationship(relationship, false);
-                  scope.isModified = true;
-                  scope.computeAxioms(type);
-                  refreshAttributeTypesForAxiom(axiom);
-                  autoSave();
-                });
-              } else {
-                scope.updateRelationship(relationship, false);
-                autoSave();
-              }
-            }, function (error) {
-              scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
-              relationship.target.fsn = tempFsn;
-            });
-          } else if (metadataService.isMrcmEnabled()) {
-            if (!relationship.type.conceptId) {
-              scope.warnings = ['MRCM validation error: Must set attribute type first'];
-            } else {
-              constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
-                populateRelationshipTarget(relationship, item);
-
-                let destinationIds = [];
-                destinationIds.push(relationship.target.conceptId);
-                bulkRetrieveFullConceptForRelationships(destinationIds);
-
-                refreshAttributeTypesForAxiom(axiom).then(function() {
-                  if (relationship.type.conceptId === '116680003') {
-                    scope.errors = [];
-                    var errors = isMrcmAttributesValid(scope.concept);
-                    if (errors && errors.length > 0) {
-                      scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
-                    }
-                  }
-                });
-                scope.computeAxioms(axiom.type);
-
-                scope.updateRelationship(relationship);
-                autoSave();
-              }, function () {
-                scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
-              });
-            }
-          } else {
-            populateRelationshipTarget(relationship, item);
-
-            refreshAttributeTypesForAxiom(axiom);
-            scope.computeAxioms(axiom.type);
-            autoSave();
-          }
-
-          // Trigger blur event after relationship target has been selected
+          applyAxiomRelationshipTarget(relationship, item, axiom.type, axiom, { fromTypeahead: true });
           setFocusToNextInputElement(axiom, relationshipGroupId, parentIndex, itemIndex);
         };
 
