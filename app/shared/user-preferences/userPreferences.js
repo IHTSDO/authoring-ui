@@ -16,6 +16,9 @@ angular.module('singleConceptAuthoringApp')
       $scope.revert = function () {
         accountService.getUserPreferences().then(function (response) {
           $scope.userPreferences = response;
+          if ($scope.userPreferences && $scope.userPreferences.tooltipsEnabled === undefined) {
+            $scope.userPreferences.tooltipsEnabled = true;
+          }
         });
 
         layoutHandler.setLayout(JSON.parse(JSON.stringify($scope.layoutOriginal)));
@@ -137,6 +140,9 @@ angular.module('singleConceptAuthoringApp')
         // on load, retrieve the user preferences
         accountService.getUserPreferences().then(function (response) {
           $scope.userPreferences = response;
+          if ($scope.userPreferences && $scope.userPreferences.tooltipsEnabled === undefined) {
+            $scope.userPreferences.tooltipsEnabled = true;
+          }
           setSelectedOptionalLanguageRefsets($scope.userPreferences);
           configService.getVersions().then(function(versions){
               $scope.versions = versions;

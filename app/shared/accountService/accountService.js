@@ -142,6 +142,14 @@ angular.module('singleConceptAuthoringApp')
       globalStyleClasses.push(localPreferences.appView);
 
       /////////////////////////////////////////////////////
+      // Concept edit tooltips
+      /////////////////////////////////////////////////////
+      if (localPreferences.tooltipsEnabled !== false) {
+        localPreferences.tooltipsEnabled = true;
+      }
+      $rootScope.conceptEditTooltipsEnabled = localPreferences.tooltipsEnabled;
+
+      /////////////////////////////////////////////////////
       // Default layout for task editing
       /////////////////////////////////////////////////////
       if (!localPreferences.layout) {

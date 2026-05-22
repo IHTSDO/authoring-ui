@@ -502,6 +502,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl)
       {
+        scope.tooltipsEnabled = $rootScope.conceptEditTooltipsEnabled !== false;
+        scope.$watch(function () {
+          return $rootScope.conceptEditTooltipsEnabled;
+        }, function (tooltipsEnabled) {
+          scope.tooltipsEnabled = tooltipsEnabled !== false;
+        });
+
         scope.initializationTimeStamp = (new Date()).getTime();
         // concept history for undoing changes (init with passed concept)
         scope.conceptHistory = [JSON.parse(JSON.stringify(scope.concept))];

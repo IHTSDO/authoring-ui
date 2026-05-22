@@ -531,4 +531,20 @@ content: '';
   display: inline-block;
 }
 
+/* User preference: disable tooltips within concept edit only */
+.concept-edit.tooltips-disabled {
+  .tooltips-bottom:hover span,
+  .tooltips-btm:hover span,
+  .tooltips-left:hover span,
+  .tooltips-right:hover span,
+  .tooltips-top:hover span {
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  .tooltips-left:hover .validation-failure-messages {
+    display: none !important;
+  }
+}
+
 /* bottom */
