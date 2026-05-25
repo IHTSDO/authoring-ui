@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp')
       $http.post(apiEndpoint + 'whitelist-items', whitelistItem).then(function (data) {
         deferred.resolve(data);
       }, function (error) {
-          deferred.reject('Error adding item to whitelist. Error: ' + error.message);
+          deferred.reject(error);
       });
       return deferred.promise;
     }
