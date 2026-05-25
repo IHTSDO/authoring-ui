@@ -479,6 +479,25 @@ angular.module('singleConceptAuthoringApp')
             return 'Add to Exceptions';
           };
 
+          function getAddToWhitelistErrorMessage(error) {
+            var defaultMessage = 'Error adding validation failures to whitelist';
+
+            if (!error) {
+              return defaultMessage;
+            }
+            if (error.status === 502) {
+              return defaultMessage + ': Bad Gateway (502). Please try again later.';
+            }
+            if (error.data && error.data.message) {
+              return defaultMessage + ': ' + error.data.message;
+            }
+            if (error.message) {
+              return defaultMessage + ': ' + error.message;
+            }
+
+            return error;
+          }
+
           // declare table parameters
           scope.failureTableParams = new NgTableParams({
               page: 1,
@@ -1210,6 +1229,9 @@ angular.module('singleConceptAuthoringApp')
                   scope.failureTableParams.reload();
                   $rootScope.$broadcast('reloadExceptions', {type: respone.data.temporary ? 'TEMPORARY' : 'PERMANENT'});
                   delete failure.addingToExceptions;
+                }, function(error) {
+                  delete failure.addingToExceptions;
+                  notificationService.sendError(getAddToWhitelistErrorMessage(error));
                 });
               }, function () {
               });
@@ -1409,6 +1431,9 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('reloadExceptions', {type: results[0].data.temporary ? 'TEMPORARY' : 'PERMANENT'});
                 scope.savingExceptions = false;
                 scope.failureTableParams.reload();
+              }, function(error) {
+                scope.savingExceptions = false;
+                notificationService.sendError(getAddToWhitelistErrorMessage(error));
               });
             }, function () {
             });
