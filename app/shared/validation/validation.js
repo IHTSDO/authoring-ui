@@ -195,7 +195,7 @@ angular.module('singleConceptAuthoringApp')
                         var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
 
                           // if viewing task report and instance is not user modified, return false
-                          if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
+                          if (!scope.viewFullReport && !instance.isBranchModification) {
                             return false;
                           }
 
@@ -242,8 +242,8 @@ angular.module('singleConceptAuthoringApp')
                   angular.forEach(scope.assertionsWarning, function (assertionWarning) {
                     if(assertionWarning.failureCount > 0){
                         var filteredInstances = assertionWarning.firstNInstances.filter(function (instance) {
-                          // if viewing task report and instance is not user modified or validation failure is excluded, return false
-                          if ((!scope.viewFullReport && !instance.isBranchModification) || instance.isUserExclusion) {
+                          // if viewing task report and instance is not user modified, return false
+                          if (!scope.viewFullReport && !instance.isBranchModification) {
                             return false;
                           }
 
@@ -444,6 +444,41 @@ angular.module('singleConceptAuthoringApp')
             return $q.all([prepareReferencedComponents(), getConceptNames()]);
           }
 
+          function getWhitelistItemForFailure(validationRuleId, componentId) {
+            if (!scope.allWhitelistItems) {
+              return null;
+            }
+
+            var matchingItems = scope.allWhitelistItems.filter(function(item) {
+              return item.validationRuleId === validationRuleId && componentId === item.componentId;
+            });
+
+            return matchingItems.length > 0 ? matchingItems[0] : null;
+          }
+
+          function setUserExclusionState(failure, validationRuleId) {
+            var whitelistItem = getWhitelistItemForFailure(validationRuleId || failure.validationRuleId, failure.componentId);
+            failure.isUserExclusion = !!whitelistItem;
+
+            if (whitelistItem) {
+              failure.userExclusionType = whitelistItem.temporary ? 'Temporary' : 'Permanent';
+              failure.userExclusionLabel = 'Added to ' + failure.userExclusionType + ' Exceptions';
+            } else {
+              delete failure.userExclusionType;
+              delete failure.userExclusionLabel;
+            }
+          }
+
+          scope.getExceptionButtonText = function(failure) {
+            if (failure.addingToExceptions) {
+              return 'Adding to Exceptions';
+            }
+            if (failure.isUserExclusion) {
+              return failure.userExclusionLabel;
+            }
+            return 'Add to Exceptions';
+          };
+
           // declare table parameters
           scope.failureTableParams = new NgTableParams({
               page: 1,
@@ -467,11 +502,8 @@ angular.module('singleConceptAuthoringApp')
                     return scope.viewFullReport || failure.isBranchModification;
                   });
 
-                  // filter by user exclusion
-                  orderedData = orderedData.filter(function (failure) {
-                    return scope.allWhitelistItems.filter(function(item) {
-                      return item.validationRuleId === failure.validationRuleId && failure.componentId === item.componentId;
-                    }).length === 0;
+                  angular.forEach(orderedData, function(failure) {
+                    setUserExclusionState(failure);
                   });
 
                   params.total(orderedData.length);
@@ -994,6 +1026,7 @@ angular.module('singleConceptAuthoringApp')
                 componentId: instance.componentId,
                 fullComponent: instance.fullComponent
               };
+              setUserExclusionState(obj);
 
               objArray.push(obj);
             });
@@ -1174,6 +1207,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.allWhitelistItems.push(respone.data);
                   scope.allWhitelistItems = scope.generateWhitelistFields(scope.allWhitelistItems);
                   scope.resetUserExclusionFlag();
+                  scope.failureTableParams.reload();
                   $rootScope.$broadcast('reloadExceptions', {type: respone.data.temporary ? 'TEMPORARY' : 'PERMANENT'});
                   delete failure.addingToExceptions;
                 });
@@ -1202,18 +1236,14 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.assertionsWarning, function (assertion) {
               if(assertion.failureCount > 0){
                   angular.forEach(assertion.firstNInstances, function (instance) {
-                    instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-                      return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId;
-                    }).length !== 0;
+                    setUserExclusionState(instance, assertion.assertionUuid);
                   });
               }
             });
             angular.forEach(scope.assertionsFailed, function (assertion) {
               if(assertion.failureCount > 0){
                   angular.forEach(assertion.firstNInstances, function (instance) {
-                    instance.isUserExclusion = scope.allWhitelistItems.filter(function(item) {
-                      return item.validationRuleId === assertion.assertionUuid && instance.componentId === item.componentId;
-                    }).length !== 0;
+                    setUserExclusionState(instance, assertion.assertionUuid);
                   });
               }
             });
@@ -1342,7 +1372,7 @@ angular.module('singleConceptAuthoringApp')
           scope.excludeFailures = function () {
             var failures = scope.failureTableParams.data;
             var failuresToAddWhiteList = failures.filter(function (failure) {
-              return failure.selected;
+              return failure.selected && !failure.isUserExclusion;
             });
 
             if(failuresToAddWhiteList.length === 0) {
@@ -1378,6 +1408,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.resetUserExclusionFlag();
                 $rootScope.$broadcast('reloadExceptions', {type: results[0].data.temporary ? 'TEMPORARY' : 'PERMANENT'});
                 scope.savingExceptions = false;
+                scope.failureTableParams.reload();
               });
             }, function () {
             });
