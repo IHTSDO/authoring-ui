@@ -63,7 +63,7 @@ describe('Dashboard Exploration Test', () => {
     });
 
     it('Navigate to My Projects', () => {
-        cy.intercept('GET', '**/projects**').as('getMyProjects');
+        cy.intercept('GET', '**/my-projects**').as('getMyProjects');
         cy.get('[data-cy="sidebar-my-projects"]').click();
         cy.wait('@getMyProjects', {timeout: requestTimeout}).then((interceptions) => {
             expect(interceptions.response.statusCode).to.be.equal(200);
