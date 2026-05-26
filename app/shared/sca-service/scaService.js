@@ -641,6 +641,21 @@ angular.module('singleConceptAuthoringApp')
           );
         },
 
+        // get authenticated user's projects
+        getMyProjects: function (lightweight) {
+          var params;
+          if (lightweight) {
+            params = 'lightweight=' + lightweight;
+          } else {
+            params = 'lightweight=false';
+          }
+          return $http.get(apiEndpoint + 'projects/my-projects?' + params, {headers: {'Accept': 'application/json'}}).then(
+            function (response) {
+              return response.data;
+            }
+          );
+        },
+
         // get tasks for current user across all projects
         getTasks: function (excludePromoted) {
           return $http.get(apiEndpoint + 'projects/my-tasks?excludePromoted=' + (excludePromoted ? true : false)).then(
