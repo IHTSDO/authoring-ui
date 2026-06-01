@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService, accountService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, localStorageService, accountService, navigationClickService) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -318,6 +318,29 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $scope.$on('reloadTasks', function (event, data) {
         loadTasks();
       });
+
+      $scope.openReviewTaskInNewTab = function (task) {
+        if (!task || !task.projectKey || !task.key) {
+          notificationService.sendError('Unexpected error, cannot access task');
+          return;
+        }
+        var pathSuffix = (task.status === 'Promoted' || task.status === 'Completed') ? '/edit' : '/feedback';
+        navigationClickService.openInNewTab('#/tasks/task/' + task.projectKey + '/' + task.key + pathSuffix);
+      };
+
+      $scope.handleReviewTaskClick = function ($event, task) {
+        navigationClickService.handleClick($event, function () {
+          $scope.openReviewTaskInNewTab(task);
+        }, function () {
+          $scope.viewReviewTask(task);
+        });
+      };
+
+      $scope.handleReviewTaskAuxClick = function ($event, task) {
+        navigationClickService.handleAuxClick($event, function () {
+          $scope.openReviewTaskInNewTab(task);
+        });
+      };
 
       $scope.viewReviewTask = function (task) {
 
