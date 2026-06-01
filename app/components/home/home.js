@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService, componentAuthoringUtil) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, terminologyServerService, notificationService, metadataService, hotkeys, $q, modalService, $interval, localStorageService, accountService, componentAuthoringUtil, navigationClickService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -305,12 +305,31 @@ angular.module('singleConceptAuthoringApp.home', [
             return deferred.promise;
         }
 
-        $scope.goToTask = function (task) {
-
+        $scope.goToTask = function (task, newTab) {
             if (!task || !task.branchPath) {
                 notificationService.sendError('Unexpected error, cannot access task');
+                return;
             }
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+            var url = 'tasks/task/' + task.projectKey + '/' + task.key + '/edit';
+            if (newTab) {
+                navigationClickService.openInNewTab('#/' + url);
+            } else {
+                $location.url(url);
+            }
+        };
+
+        $scope.handleTaskClick = function ($event, task) {
+            navigationClickService.handleClick($event, function () {
+                $scope.goToTask(task, true);
+            }, function () {
+                $scope.goToTask(task, false);
+            });
+        };
+
+        $scope.handleTaskAuxClick = function ($event, task) {
+            navigationClickService.handleAuxClick($event, function () {
+                $scope.goToTask(task, true);
+            });
         };
 
         $scope.goToConflicts = function (task) {
@@ -328,7 +347,7 @@ angular.module('singleConceptAuthoringApp.home', [
                             modalService.message('There are some unsaved concepts. Please go to task editing and save them before rebasing.');
                         } else {
                             redirectToConflicts(task.branchPath,task.projectKey,task.key);
-                        }  
+                        }
                     });
                 }
                 else {

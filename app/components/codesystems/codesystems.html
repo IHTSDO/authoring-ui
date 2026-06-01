@@ -31,10 +31,9 @@
         <div class="table-responsive white">
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
-            <tr ng-repeat="codesystem in $data" class="clickable-row">
+            <tr ng-repeat="codesystem in $data" class="clickable-row" ng-click="handleCodesystemClick($event, codesystem)" ng-mousedown="handleCodesystemAuxClick($event, codesystem)">
 
-              <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }"><a class="tooltips-right"
-                                                                                                 ng-href="#/codesystem/{{codesystem.shortName}}">{{codesystem.name}}
+              <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }"><a class="tooltips-right row-nav-trigger">{{codesystem.name}}
                 <span>View Code System Details</span> </a>
               </td>
               <td data-title="'Code System Key'" sortable="'shortName'" filter="{ 'shortName': 'text' }">

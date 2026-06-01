@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, notificationService, hotkeys, localStorageService, accountService) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, notificationService, hotkeys, localStorageService, accountService, $location, navigationClickService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -223,6 +223,32 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       loadProjects();
     }
 
+
+    $scope.goToProject = function (project, newTab) {
+      if (!project || !project.key) {
+        notificationService.sendError('Unexpected error, cannot access project');
+        return;
+      }
+      if (newTab) {
+        navigationClickService.openInNewTab('#/project/' + project.key);
+      } else {
+        $location.url('project/' + project.key);
+      }
+    };
+
+    $scope.handleProjectClick = function ($event, project) {
+      navigationClickService.handleClick($event, function () {
+        $scope.goToProject(project, true);
+      }, function () {
+        $scope.goToProject(project, false);
+      });
+    };
+
+    $scope.handleProjectAuxClick = function ($event, project) {
+      navigationClickService.handleAuxClick($event, function () {
+        $scope.goToProject(project, true);
+      });
+    };
 
     $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({

@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.codesystems', [
       });
   })
 
-  .controller('CodesystemsCtrl', function CodesystemsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, $timeout, $q, notificationService, hotkeys, localStorageService, accountService, metadataService) {
+  .controller('CodesystemsCtrl', function CodesystemsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, terminologyServerService, $timeout, $q, notificationService, hotkeys, localStorageService, accountService, metadataService, $location, navigationClickService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -239,6 +239,32 @@ angular.module('singleConceptAuthoringApp.codesystems', [
         });
     }
 
+
+    $scope.goToCodesystem = function (codesystem, newTab) {
+      if (!codesystem || !codesystem.shortName) {
+        notificationService.sendError('Unexpected error, cannot access code system');
+        return;
+      }
+      if (newTab) {
+        window.open('#/codesystem/' + codesystem.shortName, '_blank');
+      } else {
+        $location.url('codesystem/' + codesystem.shortName);
+      }
+    };
+
+    $scope.handleCodesystemClick = function ($event, codesystem) {
+      navigationClickService.handleClick($event, function () {
+        $scope.goToCodesystem(codesystem, true);
+      }, function () {
+        $scope.goToCodesystem(codesystem, false);
+      });
+    };
+
+    $scope.handleCodesystemAuxClick = function ($event, codesystem) {
+      navigationClickService.handleAuxClick($event, function () {
+        $scope.goToCodesystem(codesystem, true);
+      });
+    };
 
     initialize();
   })
