@@ -46,7 +46,7 @@
                 {{codesystem.dependantVersionEffectiveTime}}
               </td>
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
-                <a ng-href="#/codesystem/{{codesystem.shortName}}?expandClassification=true">
+                <a class="row-action-link" ng-href="#/codesystem/{{codesystem.shortName}}?expandClassification=true">
                   <button ng-show="codesystem.latestClassificationJson"
                           type="button"
                           ng-class="[
@@ -72,7 +72,7 @@
                 </a>
               </td>
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'" style="overflow: visible;">
-                <a ng-href="#/codesystem/{{codesystem.shortName}}?expandValidation=true">
+                <a class="row-action-link" ng-href="#/codesystem/{{codesystem.shortName}}?expandValidation=true">
                   <button ng-show="codesystem.latestValidationStatus && codesystem.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
                           ng-class="[{hidden : codesystem.latestValidationStatus === 'NOT_TRIGGERED'},

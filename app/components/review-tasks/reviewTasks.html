@@ -80,7 +80,7 @@
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'assignee.displayName'"
                   filter="{ 'author': 'text' }"> {{task.assignee.displayName}} </td>
               <td header-title="'Click to sort'" data-title="'Classification'"
-                  sortable="'latestClassificationJson.status'"><a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
+                  sortable="'latestClassificationJson.status'"><a class="row-action-link" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                 <button ng-show="task.latestClassificationJson"
                           type="button"
                           ng-class="[
@@ -105,7 +105,7 @@
                 </div>
                 </span> </button>
                 </a></td>
-              <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'"><a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
+              <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'"><a class="tooltips-left row-action-link" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                 <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' &&
                   task.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
@@ -128,7 +128,7 @@
                 </a>
               </td>
               <td header-title="'Click to sort'" data-title="'Feedback'" class="feedback-icon-link"
-                  sortable="'feedbackMessageDate'"><a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
+                  sortable="'feedbackMessageDate'"><a class="tooltips-left row-action-link" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
                 <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
                           class="btn btn-round   btn-default  pink darken-1  "
                   >
