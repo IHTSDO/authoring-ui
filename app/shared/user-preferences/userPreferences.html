@@ -40,23 +40,26 @@
                 ng-change="updatePath()">
         </select>
         <br>
-        <label for="prePopulateProjectDisabled">Do not pre-populate the project in task creation</label>
-        <div class="no-padding checkbox inline m-l-30">
-          <input id="prePopulateProjectDisabled" type="checkbox" ng-model="userPreferences.prePopulateProjectDisabled">
-        </div>
-        <br>
-        <br>
-        <label for="allowedEmailNotification">Receive email notification</label>
-        <div class="no-padding checkbox inline m-l-30">
-          <input id="allowedEmailNotification" type="checkbox" ng-model="userPreferences.allowedEmailNotification">
-        </div>
-        <br>
-        <br>
-        <label for="tooltipsEnabled">Show tooltips in concept edit</label>
-        <div class="no-padding checkbox inline m-l-30">
-          <input id="tooltipsEnabled" type="checkbox" ng-model="userPreferences.tooltipsEnabled">
-        </div>
-        <br>
+        <div class="row">
+          <div class="col-md-5 no-padding">
+            <label for="prePopulateProjectDisabled">Do not pre-populate the project in task creation</label>
+            <div class="no-padding checkbox inline m-l-30">
+              <input id="prePopulateProjectDisabled" type="checkbox" ng-model="userPreferences.prePopulateProjectDisabled">
+            </div>
+          </div>
+          <div class="col-md-3 no-padding">
+            <label for="allowedEmailNotification">Receive email notification</label>
+            <div class="no-padding checkbox inline m-l-30">
+              <input id="allowedEmailNotification" type="checkbox" ng-model="userPreferences.allowedEmailNotification">
+            </div>
+          </div>
+          <div class="col-md-3 no-padding">
+            <label for="tooltipsEnabled">Show tooltips in concept edit</label>
+            <div class="no-padding checkbox inline m-l-30">
+              <input id="tooltipsEnabled" type="checkbox" ng-model="userPreferences.tooltipsEnabled">
+            </div>
+          </div>
+        </div>        
         <br>
         <!-- div ng-if="isTaskView() && optionalLanguageRefsets.length !== 0" class="m-b-15">
           <label>Context Specific Language Refsets</label>
