@@ -6411,22 +6411,45 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         function traceabilityShowsConceptOnInternationalEdition(traceability, conceptId) {
-          if (!traceability || traceability.numberOfElements < 1 || !traceability.content) {
+          if (!traceability || traceability.numberOfElements < 1 || !traceability.content || !traceability.content.length) {
             return false;
           }
-          var idStr = String(conceptId);
-          var found = false;
-          angular.forEach(traceability.content, function (change) {
-            if (found || change.activityType !== 'CONTENT_CHANGE' || !change.conceptChanges) {
+
+          var conceptIdStr = String(conceptId);
+          var lastCreatedOnInternational = null;
+          var lastDeletedOnInternational = null;
+
+          angular.forEach(traceability.content, function(change) {
+            if (!change.conceptChanges) {
               return;
             }
-            angular.forEach(change.conceptChanges, function (conceptChange) {
-              if (String(conceptChange.conceptId) === idStr) {
-                found = true;
+            if (!change.branch || change.branch.startsWith('MAIN/SNOMEDCT-')) {
+              return;
+            }
+
+            angular.forEach(change.conceptChanges, function(conceptChange) {
+              if (String(conceptChange.conceptId) !== conceptIdStr) {
+                return;
               }
+
+              angular.forEach(conceptChange.componentChanges, function(componentChange) {
+                if (String(componentChange.componentId) !== conceptIdStr || componentChange.componentType !== 'CONCEPT') {
+                  return;
+                }
+                if (componentChange.changeType === 'CREATE') {
+                  lastCreatedOnInternational = change.commitDate;
+                } else if (componentChange.changeType === 'DELETE') {
+                  lastDeletedOnInternational = change.commitDate;
+                }
+              });
             });
           });
-          return found;
+
+          if (!lastCreatedOnInternational) {
+            return false;
+          }
+          return !lastDeletedOnInternational
+            || new Date(lastCreatedOnInternational).getTime() > new Date(lastDeletedOnInternational).getTime();
         }
 
         function checkInternationalEditionDonationWarning() {
@@ -6440,13 +6463,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!metadataService.isExtensionModule(scope.concept.moduleId) || !scope.concept.released) {
             return;
           }
-          terminologyServerService.getTraceabilityForBranch('MAIN', scope.concept.conceptId).then(function (traceability) {
+          terminologyServerService.getTraceabilityForBranch(null, scope.concept.conceptId, 'CONTENT_CHANGE').then(function (traceability) {
             if (!traceabilityShowsConceptOnInternationalEdition(traceability, scope.concept.conceptId)) {
               return;
             }
-            terminologyServerService.getFullConcept(scope.concept.conceptId, 'MAIN').then(function (mainConcept) {
-              if (mainConcept && !mainConcept.released) {
-                scope.internationalDonationWarningMessage = 'A donation to the International Edition has been requested for this concept. Please do not edit this concept until the donation has been finalized.';
+            var donationWarningMessage = 'A donation to the International Edition has been requested for this concept. Please do not edit this concept until the donation has been finalized.';
+            terminologyServerService.findConcept(scope.concept.conceptId, 'MAIN').then(function (mainConcept) {
+              if (!mainConcept || !mainConcept.released) {
+                scope.internationalDonationWarningMessage = donationWarningMessage;
+              }
+            }, function (error) {
+              if (error && error.status === 404) {
+                scope.internationalDonationWarningMessage = donationWarningMessage;
               }
             });
           }, function () {
