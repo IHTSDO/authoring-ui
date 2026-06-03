@@ -233,13 +233,23 @@ angular.module('singleConceptAuthoringApp')
         notificationService.sendError('No tasks selected for deletion');
         return;
       }
+      var tasksMissingKeys = selectedTasks.filter(function (task) {
+        return !task.projectKey || !task.key;
+      });
+      if (tasksMissingKeys.length > 0) {
+        notificationService.sendError('Cannot delete tasks missing project or task key');
+        return;
+      }
       let msg = 'Are you sure you want to delete the selected task(s)?';
       modalService.confirm(msg).then(function () {
-        var selectedTaskKeys = selectedTasks.map(function (task) {
-          return task.key;
+        var tasksToDelete = selectedTasks.map(function (task) {
+          return {
+            projectKey: task.projectKey,
+            taskKey: task.key
+          };
         });
         $scope.processingTasksDeletion = true;
-        scaService.deleteTasks(selectedTaskKeys).then(function () {
+        scaService.deleteTasks(tasksToDelete).then(function () {
           notificationService.sendMessage('Selected tasks deleted successfully', 5000);
           $scope.tasks = $scope.tasks.filter(function (task) {
             return !task.selected;
