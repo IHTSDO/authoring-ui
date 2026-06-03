@@ -2020,20 +2020,19 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        deleteTasks: function (taskKeys) {
-          if (!taskKeys || taskKeys.length === 0) {
-            console.error('Must specify at least one task key to delete');
+        deleteTasks: function (tasks) {
+          if (!tasks || tasks.length === 0) {
+            console.error('Must specify at least one task to delete');
             return null;
           }
-          var param = '';
-          for(var i = 0; i < taskKeys.length; i++) {
-            if (i > 0) {
-              param += '&';
+          for (var i = 0; i < tasks.length; i++) {
+            if (!tasks[i].projectKey || !tasks[i].taskKey) {
+              console.error('Each task must include projectKey and taskKey');
+              return null;
             }
-            param += 'taskKeys=' + taskKeys[i];
           }
 
-          return $http.put(apiEndpoint + 'admin/tasks/mark-as-deleted?' + param).then(function (response) {
+          return $http.put(apiEndpoint + 'admin/tasks/mark-as-deleted', tasks).then(function (response) {
             return response.data;
           }, function (error) {
             console.error('Error deleting tasks: ', error);
