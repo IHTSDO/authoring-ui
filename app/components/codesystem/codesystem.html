@@ -126,7 +126,7 @@
         <div ng-show="!validationCollapsed">
           <div class="card-content clearfix">
             <div validation validation-container="validationContainer" branch="branch" branch-assertion-group-names="branchAssertionGroupNames"
-             is-code-system="true" allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" allow-whitelist-error="{{userRoles.includes('ADMIN')}}" editable="true" hide-exceptions="true"></div>
+             is-code-system="true" shared-whitelist-items="sharedWhitelistItems" user-modified-concept-ids="userModifiedConceptIds" allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}" allow-whitelist-error="{{userRoles.includes('ADMIN')}}" editable="true" hide-exceptions="true"></div>
           </div>
         </div>
       </div>
@@ -154,6 +154,8 @@
           <div class="card-content clearfix">
             <div validation validation-container="dailyBuildValidationContainer" branch="branch"
              is-code-system="true"
+             shared-whitelist-items="sharedWhitelistItems"
+             user-modified-concept-ids="userModifiedConceptIds"
              allow-whitelist-warning="{{userRoles.includes('ADMIN') || userRoles.includes('RELEASE_LEAD')}}"
              allow-whitelist-error="{{userRoles.includes('ADMIN')}}"
              editable="true"

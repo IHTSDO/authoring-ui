@@ -43,6 +43,8 @@ angular.module('singleConceptAuthoringApp.codesystem', [
       $scope.codeSystem = null;
       $scope.branch = null;
       $scope.projects = [];
+      $scope.sharedWhitelistItems = [];
+      $scope.userModifiedConceptIds = [];
 
       // initialize the containers
       $scope.validationContainer = null;
@@ -145,7 +147,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
                     permissionService.setRolesForBranch($scope.branch, []);
                   }
 
-                  scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
+                  $q.all([
+                    fetchSharedWhitelistItems($scope.codeSystem.branchPath),
+                    scaService.getValidationForBranch($scope.codeSystem.branchPath)
+                  ]).then(function (results) {
+                    var response = results[1];
                     if (response.dailyBuildReport) {
                       $scope.dailyBuildValidationContainer = {
                         'executionStatus': response.dailyBuildReport.status && response.dailyBuildReport.status === 'COMPLETE' ? 'COMPLETED' : response.dailyBuildReport.status,
@@ -277,7 +283,11 @@ angular.module('singleConceptAuthoringApp.codesystem', [
 
       $scope.$on('reloadCodeSystemValidationStatus', function (event, data) {
         if (!data || (data.branchPath === $scope.codeSystem.branchPath && !data.reloadCodeSystem)) {
-          scaService.getValidationForBranch($scope.codeSystem.branchPath).then(function (response) {
+          $q.all([
+            fetchSharedWhitelistItems($scope.codeSystem.branchPath),
+            scaService.getValidationForBranch($scope.codeSystem.branchPath)
+          ]).then(function (results) {
+            var response = results[1];
             delete response.dailyBuildReport;
             delete response.dailyBuildRvfUrl;
             $scope.validationContainer = response;
@@ -291,6 +301,38 @@ angular.module('singleConceptAuthoringApp.codesystem', [
           });
         }
       });
+
+      $scope.$on('exceptionsChanged', function () {
+        if ($scope.codeSystem) {
+          fetchSharedWhitelistItems($scope.codeSystem.branchPath).then(function () {
+            $rootScope.$broadcast('sharedWhitelistItemsUpdated');
+          });
+        }
+      });
+
+      function getWhitelistCreationDate() {
+        return terminologyServerService.getAllCodeSystemVersionsByShortName($routeParams.codeSystem).then(function(response) {
+          if (response.data.items && response.data.items.length > 0) {
+            return response.data.items[response.data.items.length - 1].importDate;
+          }
+          return null;
+        });
+      }
+
+      function fetchSharedWhitelistItems(branchPath) {
+        return getWhitelistCreationDate().then(function(creationDate) {
+          return aagService.getWhitelistItemsByBranchAndDate(branchPath, new Date(creationDate).getTime());
+        }).then(function(whitelistItems) {
+          $scope.sharedWhitelistItems.splice(0, $scope.sharedWhitelistItems.length);
+          if (whitelistItems && whitelistItems.length) {
+            angular.forEach(whitelistItems, function(item) {
+              $scope.sharedWhitelistItems.push(item);
+            });
+          }
+        }, function() {
+          $scope.sharedWhitelistItems.splice(0, $scope.sharedWhitelistItems.length);
+        });
+      }
 
       function refreshValidationIndicator(executionStatus) {
         $timeout(function () {
