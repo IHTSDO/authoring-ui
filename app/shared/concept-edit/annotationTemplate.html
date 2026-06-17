@@ -12,10 +12,10 @@
       </div>
     </div>
   </div>
-  
+
   <div ng-repeat="annotation in concept.annotations track by annotation.annotationId" class="row"
     ng-class="getComponentStyle(annotation.annotationId, null, '', annotation)" ng-if="annotation.active || !hideInactive">
-    <div class="darken-3 p-t-5 grey">
+    <div class="row darken-3 p-t-5 grey">
       <div class="col-md-12 no-padding">
         <button id="annotation-more-{{initializationTimeStamp}}-{{$index}}" ng-click="setDescriptionProperties(annotation, $event)"
                   class="btn-default transparent md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
@@ -38,29 +38,29 @@
         </button>
         <!-- attribute type' -->
         <div class="pull-left is_a is_a_bg" style="margin-left: 0px; width: 22%;">
-          <textarea id="annotation-type-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}" 
+          <textarea id="annotation-type-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}"
             style="width: 100%;"
-            custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})" 
-            type="text" 
+            custom-autofocus="true" autofocus ng-keyup="enterListener({event: $event})"
+            type="text"
             ng-model="annotation.typePt.term"
-            ng-readonly="annotation.effectiveTime || isStatic || template || isLockedModule(annotation.moduleId) || isBatch" 
-            class="resizable-text form-control msd-elastic no-border-bottom rel" 
-            typeahead="suggestion.pt.term as suggestion.pt.term for suggestion in getAnnotationTypes() | filter:$viewValue" 
-            typeahead-focus-first="false"          
+            ng-readonly="annotation.effectiveTime || isStatic || template || isLockedModule(annotation.moduleId) || isBatch"
+            class="resizable-text form-control msd-elastic no-border-bottom rel"
+            typeahead="suggestion.pt.term as suggestion.pt.term for suggestion in getAnnotationTypes() | filter:$viewValue"
+            typeahead-focus-first="false"
             typeahead-on-select="setAnnotationTypeConcept(annotation, $item)"
-            typeahead-editable="false" 
-            typeahead-min-length="0" 
+            typeahead-editable="false"
+            typeahead-min-length="0"
             typeahead-auto-select-if-only-one-match="true"></textarea>
         </div>
         <div class="pull-left sourcename def_PRIMITIVE">
           <textarea id="annotation-target-{{initializationTimeStamp}}-{{$parent.$parent.$parent.$index}}-{{$index}}"
             style="width: 90%;"
-            ng-change="updateAnnotation(annotation)"            
+            ng-change="updateAnnotation(annotation)"
             custom-autofocus="true" autofocus
             ng-keyup="enterListener({event: $event})" type="text" ng-model="annotation.value"
             ng-model-options="{updateOn: 'blur'}"
             ng-readonly="annotation.effectiveTime || isStatic ||isLockedModule(annotation.moduleId) || annotation.deleted"
-            class="resizable-text relationship msd-elastic no-border-bottom">            
+            class="resizable-text relationship msd-elastic no-border-bottom">
           </textarea>
           <!-- Annotation language -->
           <div class="pull-left typeid" style="width: 10%;">
@@ -70,7 +70,7 @@
                     id="select-type-choice" class="form-control" ui-on-drop=""
                     style="text-transform: uppercase;">
             </select>
-          </div>     
+          </div>
         </div>
         <div ng-show="!isStatic && !showInferredRels && isAnnatationsEnabled()">
           <button ng-if="!isStatic" type="button" ng-click="addAnnotation($index)" class="pull-right btn-default add-buttons md fa-sca fa-plus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">
@@ -78,21 +78,22 @@
           </button>
           <button type="button" ng-click="removeAnnotation(annotation)" ng-if="!annotation.effectiveTime && !annotation.released" class="pull-right m-l-5 btn-default add-buttons md fa-sca fa-minus plus-button-width tooltips-bottom medium-size-tooltip offset-tooltip-right">
             <span>Remove Annotation</span>
-          </button>                    
+          </button>
         </div>
-      </div>      
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="validation red" ng-repeat="error in validation.errors[annotation.annotationId]">
-      <strong>Convention Error:</strong>
-      <div compile-html="error"></div>
+
+    <div class="row">
+      <div class="validation red" ng-repeat="error in validation.errors[annotation.annotationId]">
+        <strong>Convention Error:</strong>
+        <div compile-html="error"></div>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[annotation.annotationId]">
-      <strong>Convention Warning:</strong>
-      <div compile-html="warning"></div>
+    <div class="row">
+      <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[annotation.annotationId]">
+        <strong>Convention Warning:</strong>
+        <div compile-html="warning"></div>
+      </div>
     </div>
   </div>
 </div>
