@@ -10,6 +10,11 @@ angular.module('singleConceptAuthoringApp')
         apiEndpoint = url;
       }
 
+      function getErrorMessage(error, fallback) {
+        var message = error && (error.message || (error.data && error.data.message));
+        return message || fallback;
+      }
+
       //
       // Modified concept list utility functions
       //
@@ -24,7 +29,8 @@ angular.module('singleConceptAuthoringApp')
           if (error.status === 404 || error.status === '404') {
             deferred.resolve([]);
           } else {
-            deferred.reject('Unexpected error retrieving modified concept ids for task' + (typeof error.data.message !== 'undefined' ?': ' + error.data.message : ''));
+            var errorMessage = getErrorMessage(error);
+            deferred.reject('Unexpected error retrieving modified concept ids for task' + (errorMessage ? ': ' + errorMessage : ''));
           }
         });
         return deferred.promise;
@@ -183,7 +189,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'dialect/en-us/map/en-gb?words=' + wordsStr).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          deferred.reject(error.message);
+          deferred.reject(getErrorMessage(error));
         });
         return deferred.promise;
       }
@@ -197,7 +203,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'dialect/en-us/suggestions/en-gb?words=' + wordsStr).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          deferred.reject(error.message);
+          deferred.reject(getErrorMessage(error));
         });
         return deferred.promise;
       }
@@ -214,7 +220,7 @@ angular.module('singleConceptAuthoringApp')
             if (response && response.data && (response.data.status === 'Promotion Complete' || response.data.status === 'CONFLICTS')) {
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'Promotion Error') {
-              deferred.reject(response.data.message);
+              deferred.reject(response.data.message || 'Promotion failed with unknown error');
             } else {
               pollForGetTaskPromotionStatus(projectKey, taskKey, 3000).then(function (pollResults) {
                 deferred.resolve(pollResults);
@@ -223,7 +229,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           }, function (error) {
-            deferred.reject();
+            deferred.reject(error);
           });
         }, intervalTime);
 
@@ -242,7 +248,7 @@ angular.module('singleConceptAuthoringApp')
             if (response && response.data && (response.data.status === 'Promotion Complete' || response.data.status === 'CONFLICTS')) {
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'Promotion Error') {
-              deferred.reject(response.data.message);
+              deferred.reject(response.data.message || 'Promotion failed with unknown error');
             } else {
               pollForGetProjectPromotionStatus(projectKey, taskKey, 3000).then(function (pollResults) {
                 deferred.resolve(pollResults);
@@ -251,7 +257,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           }, function (error) {
-            deferred.reject();
+            deferred.reject(error);
           });
         }, intervalTime);
 
@@ -270,7 +276,7 @@ angular.module('singleConceptAuthoringApp')
             if (response && response.data && (response.data.status === 'Rebase Complete' || response.data.status === 'CONFLICTS')) {
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'Rebase Error') {
-              deferred.reject(response.data.message);
+              deferred.reject(response.data.message || 'Rebase failed with unknown error');
             } else {
               pollForGetTaskRebaseStatus(projectKey, taskKey, 3000).then(function (pollResults) {
                 deferred.resolve(pollResults);
@@ -279,7 +285,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           }, function (error) {
-            deferred.reject();
+            deferred.reject(error);
           });
         }, intervalTime);
 
@@ -298,7 +304,7 @@ angular.module('singleConceptAuthoringApp')
             if (response && response.data && (response.data.status === 'Rebase Complete' || response.data.status === 'CONFLICTS')) {
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'Rebase Error') {
-              deferred.reject(response.data.message);
+              deferred.reject(response.data.message || 'Rebase failed with unknown error');
             } else {
               pollForGetProjectRebaseStatus(projectKey, 3000).then(function (pollResults) {
                 deferred.resolve(pollResults);
@@ -307,7 +313,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           }, function (error) {
-            deferred.reject();
+            deferred.reject(error);
           });
         }, intervalTime);
 
@@ -762,7 +768,7 @@ angular.module('singleConceptAuthoringApp')
             function (response) {
               deferred.resolve(response.data);
             }, function (error, data) {
-              deferred.reject(error.message);
+              deferred.reject(getErrorMessage(error));
             }
           );
 
@@ -1362,7 +1368,7 @@ angular.module('singleConceptAuthoringApp')
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
-            deferred.reject(error.data.message);
+            deferred.reject(getErrorMessage(error));
           });
           return deferred.promise;
         },
@@ -1374,7 +1380,7 @@ angular.module('singleConceptAuthoringApp')
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
-            deferred.reject(error.data.message);
+            deferred.reject(getErrorMessage(error));
           });
           return deferred.promise;
         },
@@ -1386,7 +1392,7 @@ angular.module('singleConceptAuthoringApp')
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
-            deferred.reject(error.data.message);
+            deferred.reject(getErrorMessage(error));
           });
           return deferred.promise;
         },
@@ -1399,7 +1405,7 @@ angular.module('singleConceptAuthoringApp')
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
-            deferred.reject(error.data.message);
+            deferred.reject(getErrorMessage(error));
           });
           return deferred.promise;
         },
@@ -1550,13 +1556,20 @@ angular.module('singleConceptAuthoringApp')
             pollForGetProjectPromotionStatus(projectKey, 1000).then(function (result) {
               deferred.resolve(result);
             }, function (error) {
-              notificationService.sendError('Error promoting project : ' + error, 10000);
+              var errorMessage;
+              if (error && typeof error === 'string') {
+                errorMessage = error;
+              } else {
+                errorMessage = getErrorMessage(error);
+               }
+              notificationService.sendError('Error promoting project : ' + errorMessage, 10000);
               deferred.reject(error);
             });
           }, function (error) {
             console.error('Error promoting project ' + projectKey);
-            notificationService.sendError('Error promoting project', 10000);
-            deferred.reject(error.message);
+            var errorMessage = getErrorMessage(error);
+            notificationService.sendError('Error promoting project' + (errorMessage ? ': ' + errorMessage : ''), 10000);
+            deferred.reject(errorMessage);
           });
           return deferred.promise;
         },
@@ -1598,13 +1611,20 @@ angular.module('singleConceptAuthoringApp')
             pollForGetTaskPromotionStatus(projectKey, taskKey, 1000).then(function (result) {
               deferred.resolve(result);
             }, function (error) {
-               notificationService.sendError('Error promoting task : ' + error, 10000);
+              var errorMessage;
+              if (error && typeof error === 'string') {
+                errorMessage = error;
+              } else {
+                errorMessage = getErrorMessage(error);
+              }
+              notificationService.sendError('Error promoting task' + (errorMessage ? ': ' + errorMessage : ''), 10000);
               deferred.reject(error);
             });
           }, function (error) {
             console.error('Error promoting task ' + projectKey);
-            notificationService.sendError('Error promoting task', 10000);
-            deferred.reject(error.message);
+            var errorMessage = getErrorMessage(error);
+            notificationService.sendError('Error promoting task' + (errorMessage ? ': ' + errorMessage : ''), 10000);
+            deferred.reject(errorMessage);
           });
           return deferred.promise;
         },
@@ -1615,18 +1635,19 @@ angular.module('singleConceptAuthoringApp')
           $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/auto-promote', {}).then(function (response) {
             deferred.resolve();
           }, function (error) {
+            var errorMessage = getErrorMessage(error);
             if (error.status === 504) {
               notificationService.sendWarning('Your Automation promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
-              deferred.reject(error.message);
+              deferred.reject(errorMessage);
             }
             else if (error.status === 409) {
-              notificationService.sendError(error.data.message);
-              deferred.reject(error.message);
+              notificationService.sendError(errorMessage);
+              deferred.reject(errorMessage);
             }
             else {
               console.error('Error promoting project ' + projectKey);
-              notificationService.sendError('Error promoting project', 10000);
-              deferred.reject(error.data.message);
+              notificationService.sendError('Error promoting project' + (errorMessage ? ': ' + errorMessage : ''), 10000);
+              deferred.reject(errorMessage);
             }
           });
           return deferred.promise;
@@ -1748,7 +1769,7 @@ angular.module('singleConceptAuthoringApp')
             });
             deferred.resolve(attachments);
           }, function (error) {
-            deferred.reject('Could not retrieve attachments: ' + error.data.message + ' -- ' + error.data.developerMessage);
+            deferred.reject('Could not retrieve attachments: ' + getErrorMessage(error) + (error.data && error.data.developerMessage ? ' -- ' + error.data.developerMessage : ''));
           });
           return deferred.promise;
         },
@@ -1758,7 +1779,7 @@ angular.module('singleConceptAuthoringApp')
           $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/comment', comment).then(function (response) {
             deferred.resolve();
           }, function (error) {
-            deferred.reject('Error leaving task comment: ' + error.data.message);
+            deferred.reject('Error leaving task comment: ' + getErrorMessage(error));
           });
           return deferred.promise;
         },
@@ -1768,7 +1789,7 @@ angular.module('singleConceptAuthoringApp')
           $http.post(apiEndpoint + 'ui-state/' + $rootScope.accountDetails.login + '-' + '-default-language', seletedLanguage).then(function (response) {
             deferred.resolve();
           }, function (error) {
-            deferred.reject('Error saving default language: ' + error.data.message);
+            deferred.reject('Error saving default language: ' + getErrorMessage(error));
           });
           return deferred.promise;
         },
@@ -1880,12 +1901,19 @@ angular.module('singleConceptAuthoringApp')
             var locHeader = response.headers('Location');
             deferred.resolve(locHeader);
           }, function (error) {
-              if (error && error.data && error.data.message) {
-                var message = JSON.parse(error.data.message);
-                if (typeof message === 'object') {
-                  deferred.reject(message.message);
-                } else {
+              var errorMessage = getErrorMessage(error);
+              if (errorMessage) {
+                try {
+                  var message = JSON.parse(errorMessage);
+                  if (typeof message === 'object') {
+                    deferred.reject(message.message);
+                    return;
+                  }
                   deferred.reject(message);
+                  return;
+                } catch (e) {
+                  deferred.reject(errorMessage);
+                  return;
                 }
               }
               deferred.reject(error.statusText);
@@ -1913,10 +1941,7 @@ angular.module('singleConceptAuthoringApp')
             deferred.resolve(response);
           }, function (error) {
             console.log(error);
-              if (error && error.data && error.data.message) {
-                deferred.reject(error.data.message);
-              }
-              deferred.reject(error.statusText);
+            deferred.reject(getErrorMessage(error, error.statusText));
           });
 
           return deferred.promise;
