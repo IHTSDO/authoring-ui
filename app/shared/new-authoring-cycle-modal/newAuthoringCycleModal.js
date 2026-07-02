@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('newAuthoringCycleModalCtrl', function ($scope, $modalInstance, codeSystemName) {
+  .controller('newAuthoringCycleModalCtrl', function ($scope, $modalInstance, codeSystemName, $filter) {
 
     $scope.codeSystemName = codeSystemName;
 
@@ -20,7 +20,9 @@ angular.module('singleConceptAuthoringApp')
     /////////////////////////////////////////
 
     $scope.confirm = function () {
-      $modalInstance.close({ newEffectiveTime: $scope.selectedDate ? $scope.selectedDate.toISOString().substring(0, 10) : null });
+      $modalInstance.close({
+        newEffectiveTime: $scope.selectedDate ? $filter('date')($scope.selectedDate, 'yyyy-MM-dd') : null
+      });
     };
 
     $scope.cancel = function () {
