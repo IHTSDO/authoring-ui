@@ -884,7 +884,8 @@ button.fsn-title-button {
 .is_a_bg {
     margin-left: .5%;
 }
-.annotation .is_a_bg textarea{
+.annotation .is_a_bg textarea,
+.annotation .is_a_bg textarea.form-control[readonly] {
     background-color: #D6C1AD;
 }
 .attr input,
