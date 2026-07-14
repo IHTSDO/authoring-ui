@@ -23,7 +23,10 @@ angular.module('singleConceptAuthoringApp')
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
 
-    var annotationsEnabled = false
+    var annotationsEnabled = false;
+
+    var DEFAULT_ANNOTATION_LANGUAGE_OPTIONS = ['-', 'en'];
+    var annotationLanguageOptions = DEFAULT_ANNOTATION_LANGUAGE_OPTIONS.slice();
 
     var templatesEnabled = false;
 
@@ -884,6 +887,44 @@ angular.module('singleConceptAuthoringApp')
       return annotationsEnabled;
     }
 
+    function setAnnotationLanguageOptions(languages) {
+      var normalized = [];
+      if (typeof languages === 'string') {
+        normalized = languages.split(',');
+      } else if (Array.isArray(languages)) {
+        normalized = languages;
+      }
+      normalized = normalized
+        .map(function (language) {
+          return (language + '').trim().toLowerCase();
+        })
+        .filter(function (language) {
+          return language && language !== '-';
+        })
+        .filter(function (language, index, list) {
+          return list.indexOf(language) === index;
+        });
+      if (normalized.length === 0) {
+        annotationLanguageOptions = DEFAULT_ANNOTATION_LANGUAGE_OPTIONS.slice();
+      } else {
+        // '-' represents no language selection in the annotation UI
+        annotationLanguageOptions = ['-'].concat(normalized);
+      }
+    }
+
+    function getAnnotationLanguageOptions() {
+      return annotationLanguageOptions.slice();
+    }
+
+    function getDefaultAnnotationLanguage() {
+      for (var i = 0; i < annotationLanguageOptions.length; i++) {
+        if (annotationLanguageOptions[i] !== '-') {
+          return annotationLanguageOptions[i];
+        }
+      }
+      return 'en';
+    }
+
     function setAnnotationTypes(list) {
       annotationTypes = list;
     }
@@ -1128,6 +1169,9 @@ angular.module('singleConceptAuthoringApp')
       // annotation functions
       setAnnotationTypes: setAnnotationTypes,
       getAnnotationTypes: getAnnotationTypes,
+      setAnnotationLanguageOptions: setAnnotationLanguageOptions,
+      getAnnotationLanguageOptions: getAnnotationLanguageOptions,
+      getDefaultAnnotationLanguage: getDefaultAnnotationLanguage,
 
       // module and branch metadata setters
       setExtensionMetadata: setExtensionMetadata,

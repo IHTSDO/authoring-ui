@@ -539,6 +539,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isAnnatationsEnabled = metadataService.isAnnatationsEnabled;
         scope.getAnnotationTypes = metadataService.getAnnotationTypes;
+        scope.getAnnotationLanguageOptions = metadataService.getAnnotationLanguageOptions;
         scope.isEnableAxiomAdditionOnInternationalConcepts = metadataService.isEnableAxiomAdditionOnInternationalConcepts;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
@@ -580,8 +581,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           'PREFERRED': 'P',
           'ACCEPTABLE': 'A'
         };
-
-        scope.annotationLanguageOptions = ['-', 'en'];
 
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values

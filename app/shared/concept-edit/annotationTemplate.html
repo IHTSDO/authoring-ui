@@ -65,7 +65,7 @@
           <!-- Annotation language -->
           <div class="pull-left typeid" style="width: 10%;">
             <select ng-disabled="annotation.released || isStatic || isLockedModule(annotation.moduleId) || showInferredRels"
-                    ng-options="language for language in annotationLanguageOptions | orderBy : '-'"
+                    ng-options="language for language in getAnnotationLanguageOptions() | orderBy : '-'"
                     ng-model="annotation.languageDialectCode" ng-change="updateAnnotation(annotation)" name="select-type"
                     id="select-type-choice" class="form-control" ui-on-drop=""
                     style="text-transform: uppercase;">

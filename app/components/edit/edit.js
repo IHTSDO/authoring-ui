@@ -2264,6 +2264,9 @@ angular.module('singleConceptAuthoringApp.edit', [
               terminologyServerService.getBranchMetadata(codeSystemBranchPath, false).then(function(response) {
                 var annotationsEnabled = typeof  response.annotationsEnabled !== 'undefined' && (response.annotationsEnabled === true || response.annotationsEnabled === 'true');
                 metadataService.setAnnotationsEnabled(annotationsEnabled);
+                if (response.annotationLanguages) {
+                  metadataService.setAnnotationLanguageOptions(response.annotationLanguages);
+                }
                 if (annotationsEnabled) {
                   terminologyServerService.getAnnotationTypes($scope.task.branchPath).then(function(response) {
                     metadataService.setAnnotationTypes(response.items);

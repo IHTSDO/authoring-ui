@@ -285,7 +285,7 @@ angular.module('singleConceptAuthoringApp')
           'typeId': null,
           'typePt': null,
           'value': null,
-          'languageDialectCode': 'en',
+          'languageDialectCode': metadataService.getDefaultAnnotationLanguage(),
           'active': true,
           'released': false,
           'moduleId': metadataService.getCurrentModuleId()
