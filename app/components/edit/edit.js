@@ -2261,6 +2261,9 @@ angular.module('singleConceptAuthoringApp.edit', [
                   }
                 }
               });
+              metadataService.setAnnotationsEnabled(false);
+              metadataService.setAnnotationLanguageOptions([]);
+              metadataService.setAnnotationTypes([]);
               terminologyServerService.getBranchMetadata(codeSystemBranchPath, false).then(function(response) {
                 var annotationsEnabled = typeof  response.annotationsEnabled !== 'undefined' && (response.annotationsEnabled === true || response.annotationsEnabled === 'true');
                 metadataService.setAnnotationsEnabled(annotationsEnabled);
