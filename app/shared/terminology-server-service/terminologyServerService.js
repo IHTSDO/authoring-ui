@@ -1844,32 +1844,75 @@ angular.module('singleConceptAuthoringApp')
 
       // Get traceability log for branch
       // GET /authoring-traceability-service/activities?onBranch=
-      function getTraceabilityForBranch(branch, conceptId, activityType, brief) {
+      function getTraceabilityForBranch(branch, conceptId, activityType, brief) { 
         var deferred = $q.defer();
-        var params = 'size=500';
+        var pageSize = 500;
+
+        // build the filter params shared across every page request
+        var filterParams = '';
         if(branch) {
-          params += '&onBranch=' + branch;
+          filterParams += '&onBranch=' + branch;
         }
         if(conceptId) {
-          params += '&conceptId=' + conceptId;
+          filterParams += '&conceptId=' + conceptId;
         }
         if(activityType) {
-          params += '&activityType=' + activityType;
+          filterParams += '&activityType=' + activityType;
         }
         if(brief){
-          params += '&brief=true'
+          filterParams += '&brief=true'
         }
 
-        $http.get('/authoring-traceability-service/activities?' + params).then(function (response) {
-          deferred.resolve(response.data);
-        }, function (error) {
-          if (error.status === 404) {
-            deferred.reject('Traceability does not exist for branch');
-          }
-          else {
-            deferred.reject('Unexpected error retrieving traceability for branch');
-          }
-        });
+        var aggregate = null;
+
+        // walk every page and collect all activities rather than only the first page
+        function fetchPage(page) {
+          var params = 'size=' + pageSize + '&page=' + page + filterParams;
+
+          $http.get('/authoring-traceability-service/activities?' + params).then(function (response) {
+            var data = response.data;
+
+            if (!aggregate) {
+              aggregate = data;
+              if (aggregate && !aggregate.content) {
+                aggregate.content = [];
+              }
+            } else if (data && data.content) {
+              aggregate.content = aggregate.content.concat(data.content);
+            }
+
+            // decide whether more pages remain
+            var hasMore;
+            if (data && typeof data.totalPages === 'number') {
+              hasMore = (page + 1) < data.totalPages;
+            } else {
+              hasMore = data && data.content && data.content.length === pageSize;
+            }
+
+            if (hasMore) {
+              fetchPage(page + 1);
+            } else {
+              if (aggregate) {
+                // normalise the page metadata to reflect the fully aggregated result
+                aggregate.numberOfElements = aggregate.content ? aggregate.content.length : 0;
+                aggregate.size = aggregate.numberOfElements;
+                aggregate.totalPages = 1;
+                aggregate.first = true;
+                aggregate.last = true;
+              }
+              deferred.resolve(aggregate);
+            }
+          }, function (error) {
+            if (error.status === 404) {
+              deferred.reject('Traceability does not exist for branch');
+            }
+            else {
+              deferred.reject('Unexpected error retrieving traceability for branch');
+            }
+          });
+        }
+
+        fetchPage(0);
         return deferred.promise;
       }
 
