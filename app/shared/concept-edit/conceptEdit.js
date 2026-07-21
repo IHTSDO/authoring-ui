@@ -6466,7 +6466,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!traceabilityShowsConceptOnInternationalEdition(traceability, scope.concept.conceptId)) {
               return;
             }
-            var donationWarningMessage = 'A donation to the International Edition has been requested for this concept. Please do not edit this concept until the donation has been finalized.';
+            var donationWarningMessage = 'A promotion to the International Edition has been requested for this concept. Please do not edit this concept until the promotion has been finalized.';
             terminologyServerService.findConcept(scope.concept.conceptId, 'MAIN').then(function (mainConcept) {
               if (!mainConcept || !mainConcept.released) {
                 scope.internationalDonationWarningMessage = donationWarningMessage;
