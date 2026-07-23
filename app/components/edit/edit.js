@@ -1215,6 +1215,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         delete clonedConcept.preferredSynonym;
         delete clonedConcept.associationTargets;
         delete clonedConcept.inactivationIndicator;
+        delete clonedConcept.alternateIdentifiers;
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
