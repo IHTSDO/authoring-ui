@@ -7,9 +7,12 @@
        border: 1px solid #00a6e5;
        color: #00a6e5
    }
-   .back-button:hover {
+   .back-button:not([disabled]):hover {
        background-color: #00a6e5;
        border: 1px solid #00a6e5;
+   }
+   .validation-report .exception-button[disabled]:hover {
+       color: #00a6e5;
    }
    .table-full thead tr > th input[type=checkbox] {
        width: 16px;
