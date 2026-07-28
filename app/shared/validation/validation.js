@@ -1457,7 +1457,6 @@ angular.module('singleConceptAuthoringApp')
                 scope.resetUserExclusionFlag();
                 $rootScope.$broadcast('reloadExceptions', {type: results[0].data.temporary ? 'TEMPORARY' : 'PERMANENT'});
                 scope.savingExceptions = false;
-                scope.failureTableParams.reload();
               }, function(error) {
                 scope.savingExceptions = false;
                 notificationService.sendError(getAddToWhitelistErrorMessage(error));
