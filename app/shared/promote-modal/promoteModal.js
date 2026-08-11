@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('promoteModalCtrl', function ($scope, $modalInstance, flags, isTask, hotkeys) {
+  .controller('promoteModalCtrl', function ($scope, $modalInstance, $rootScope, flags, isTask, hotkeys) {
 
     /**
      * The flags reported from promotionService, in array of objects of format
@@ -23,6 +23,12 @@ angular.module('singleConceptAuthoringApp')
           description: 'Accept',
           callback: function() {$modalInstance.close(true);}
         })
+
+    // Prevent actioning a stale confirmation after the author has navigated away
+    var unbindRouteChange = $rootScope.$on('$routeChangeStart', function () {
+      $modalInstance.dismiss('routeChange');
+    });
+    $scope.$on('$destroy', unbindRouteChange);
 
     /////////////////////////////////////////
     // Modal control buttons

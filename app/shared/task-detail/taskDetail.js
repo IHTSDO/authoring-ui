@@ -243,17 +243,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       $scope.classify = function () {
+        // Capture identity at click time — $routeParams is mutated in place on route change
+        var projectKey = $routeParams.projectKey;
+        var taskKey = $routeParams.taskKey;
+
         componentAuthoringUtil.hasUnsavedConcepts($scope.task.projectKey, $scope.task.key).then(function(hasUnsavedConcepts) {
           if (hasUnsavedConcepts) {
             var message = 'There are unsaved changes. Would you like to save before proceeding with the classification?';
             modalService.confirm(message, 'width: 120%;').then(function () {
-              notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+              notificationService.sendMessage('Starting classification for task ' + taskKey);
               if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
-                scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-                  doClassify();
+                scaService.updateTask(projectKey, taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                  doClassify(projectKey, taskKey);
                 });
               } else {
-                doClassify();
+                doClassify(projectKey, taskKey);
               }
             }, function() {
               setTimeout(function(){
@@ -261,21 +265,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               });
             });
           } else {
-            notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey);
+            notificationService.sendMessage('Starting classification for task ' + taskKey);
             if ($scope.task && $scope.task.status && $scope.task.status === 'New') {
-              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-                doClassify();
+              scaService.updateTask(projectKey, taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+                doClassify(projectKey, taskKey);
               });
             } else {
-              doClassify();
+              doClassify(projectKey, taskKey);
             }
           }
         });
       };
 
-      function doClassify() {
+      function doClassify(projectKey, taskKey) {
         // start the classification
-        scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        scaService.startClassificationForTask(projectKey, taskKey).then(function (response) {
 
           if (!response || !response.data || !response.data.id) {
             notificationService.sendError('Error starting classification');
@@ -301,10 +305,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           return;
         }
 
+        // Capture identity at click time — $routeParams is mutated in place on route change
+        var projectKey = $routeParams.projectKey;
+        var taskKey = $routeParams.taskKey;
+
         $scope.promoting = true;
         notificationService.sendMessage('Preparing for task promotion...');
 
-        promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
+        promotionService.checkPrerequisitesForTask(projectKey, taskKey).then(function (flags) {
 
           // detect whether any user warnings were detected
           var warningsFound = false;
@@ -318,7 +326,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (!warningsFound) {
             $rootScope.branchLocked = true;
             notificationService.sendMessage('Promoting task...');
-            promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            promotionService.promoteTask(projectKey, taskKey).then(function (response) {
               if (response.status === 'CONFLICTS') {
                 var merge = JSON.parse(response.message);
                 terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
@@ -353,7 +361,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               if (proceed) {
                 $rootScope.branchLocked = true;
                 notificationService.sendMessage('Promoting task...');
-                promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                promotionService.promoteTask(projectKey, taskKey).then(function (response) {
                   if (response.status === 'CONFLICTS') {
                     var merge = JSON.parse(response.message);
                     terminologyServerService.fetchConflictMessage(merge).then(function(conflictMessage) {
@@ -389,11 +397,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         if ($scope.isTaskPromotionDisabled()) {
           return;
         }
+
+        // Capture identity at click time — $routeParams is mutated in place on route change
+        var projectKey = $routeParams.projectKey;
+        var taskKey = $routeParams.taskKey;
+
         notificationService.sendMessage('Preparing for task promotion automation...');
         $scope.automatePromotionErrorMsg = '';
         $scope.automatePromotionStatus = '';
 
-        promotionService.checkPrerequisitesForAutomatedPromotionTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
+        promotionService.checkPrerequisitesForAutomatedPromotionTask(projectKey, taskKey).then(function (flags) {
 
           // detect whether any user warnings were detected
           var warningsFound = false;
@@ -405,7 +418,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
-            promoteTaskAutomation();
+            promoteTaskAutomation(projectKey, taskKey);
           } else {
             var modalInstance = $modal.open({
               templateUrl: 'shared/promote-modal/promoteModal.html',
@@ -422,7 +435,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             notificationService.clear();
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                promoteTaskAutomation();
+                promoteTaskAutomation(projectKey, taskKey);
               } else {
                 notificationService.clear();
               }
@@ -439,9 +452,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
-      function promoteTaskAutomation() {
+      function promoteTaskAutomation(projectKey, taskKey) {
         notificationService.sendMessage('Starting automated promotion...');
-        promotionService.proceedAutomatePromotion($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        promotionService.proceedAutomatePromotion(projectKey, taskKey).then(function (response) {
             checkAutoPromotionStatus(false);
           }, function (error) {
             $scope.automatePromotionStatus = '';
@@ -454,34 +467,38 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           return;
         }
 
-        checkPrerequisitesForValidation().then(function(message) {
+        // Capture identity at click time — $routeParams is mutated in place on route change
+        var projectKey = $routeParams.projectKey;
+        var taskKey = $routeParams.taskKey;
+
+        checkPrerequisitesForValidation(projectKey, taskKey).then(function(message) {
           if (message) {
             modalService.confirm(message, 'white-space: pre-line;').then(function () {
-              markTaskInProgressIfAnyAndValidate();
+              markTaskInProgressIfAnyAndValidate(projectKey, taskKey);
             }, function() {
               setTimeout(function(){
                 angular.element(document.activeElement).trigger('blur');
               });
             });
           } else {
-            markTaskInProgressIfAnyAndValidate();
+            markTaskInProgressIfAnyAndValidate(projectKey, taskKey);
           }
         });
       };
 
-      function markTaskInProgressIfAnyAndValidate() {
+      function markTaskInProgressIfAnyAndValidate(projectKey, taskKey) {
         if ($scope.task.status === 'New') {
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
-            doValidate();
+          scaService.updateTask(projectKey, taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
+            doValidate(projectKey, taskKey);
           });
         } else {
-          doValidate();
+          doValidate(projectKey, taskKey);
         }
       }
 
-      function checkPrerequisitesForValidation() {
+      function checkPrerequisitesForValidation(projectKey, taskKey) {
         var deferred = $q.defer();
-        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        scaService.getTaskForProject(projectKey, taskKey).then(function (response) {
           let msg = null;
           let canConflict = false;
           if (response.branchState &&
@@ -516,11 +533,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         return deferred.promise;
       }
 
-      function doValidate() {
+      function doValidate(projectKey, taskKey) {
         // NOTE: Validation does not lock task
         notificationService.sendMessage('Submitting task for validation...');
 
-        scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.enableMRCMValidation).then(function (response) {
+        scaService.startValidationForTask(projectKey, taskKey, $scope.enableMRCMValidation).then(function (response) {
           $rootScope.$broadcast('reloadTask');
           notificationService.sendMessage('Task successfully submitted for validation', 3000, null);
         }, function (error) {

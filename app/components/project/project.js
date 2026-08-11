@@ -691,9 +691,12 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.promote = function () {
 
+        // Capture identity at click time — $routeParams is mutated in place on route change
+        var projectKey = $routeParams.projectKey;
+
         notificationService.sendMessage('Preparing for project promotion...');
 
-        promotionService.checkPrerequisitesForProject($routeParams.projectKey).then(function (flags) {
+        promotionService.checkPrerequisitesForProject(projectKey).then(function (flags) {
 
           // detect whether any user warnings were detected
           var warningsFound = false;
@@ -710,7 +713,7 @@ angular.module('singleConceptAuthoringApp.project', [
                 terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                   if (!response.locked) {
                     notificationService.sendMessage('Promoting project...');
-                    scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                    scaService.promoteProject(projectKey).then(function (response) {
                       if (response.status === 'CONFLICTS') {
                         var merge = JSON.parse(response.message);
                         terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
@@ -768,7 +771,7 @@ angular.module('singleConceptAuthoringApp.project', [
                     terminologyServerService.getBranch(metadataService.getBranchRoot()).then(function (response) {
                       if (!response.locked) {
                         notificationService.sendMessage('Promoting project...');
-                        scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                        scaService.promoteProject(projectKey).then(function (response) {
                           if (response.status === 'CONFLICTS') {
                             var merge = JSON.parse(response.message);
                             terminologyServerService.searchMerge(merge.source, merge.target, 'CONFLICTS').then( function(response) {
