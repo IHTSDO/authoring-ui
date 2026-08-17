@@ -355,8 +355,8 @@ angular.module('singleConceptAuthoringApp')
               if (review.concepts.filter(function (obj) {
                   return obj.conceptId === concept.conceptId.toString();
                 }).length === 0 && concept.componentChanges.filter(function (obj) {
-                  return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
-                }).length !== 0) {
+                  return obj.componentSubType !== '900000000000011006';
+                }).length !== 0) {  
 
                 concept.conceptId = concept.conceptId.toString();
                 concept.lastUpdatedTime = change.commitDate;
@@ -366,14 +366,14 @@ angular.module('singleConceptAuthoringApp')
               else if (review.conceptsClassified.filter(function (obj) {
                   return obj.conceptId === concept.conceptId.toString();
                 }).length === 0 && concept.componentChanges.filter(function (obj) {
-                  return obj.componentSubType === 'INFERRED_RELATIONSHIP';
+                  return obj.componentSubType === '900000000000011006';
                 }).length !== 0) {
                 concept.conceptId = concept.conceptId.toString();
                 concept.lastUpdatedTime = change.commitDate;
                 review.conceptsClassified.push(concept);
               }
               else if (concept.componentChanges.filter(function (obj) {
-                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                    return obj.componentSubType !== '900000000000011006';
                   }).length !== 0) {
                 var updateConcept = review.concepts.filter(function (obj) {
                   return obj.conceptId === concept.conceptId.toString();
