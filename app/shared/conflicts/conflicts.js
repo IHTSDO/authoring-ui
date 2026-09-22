@@ -1,7 +1,7 @@
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'terminologyServerService', 'notificationService', '$q', '$window', '$location', 'metadataService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, terminologyServerService, notificationService, $q, $window, $location, metadataService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'terminologyServerService', 'notificationService', '$q', '$window', '$location', 'metadataService', 'accountService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, terminologyServerService, notificationService, $q, $window, $location, metadataService, accountService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -185,8 +185,12 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          scope.returnToProject = function () {
-            $location.path('/project/' + $routeParams.projectKey);
+          scope.returnFromBlockedRebase = function () {
+            if ($routeParams.taskKey) {
+              $location.path('/tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+            } else {
+              $location.path('/project/' + $routeParams.projectKey);
+            }
           };
           scope.$on('routeChangeStart', function(event, data) {
             if(exitTimer) {
@@ -743,33 +747,46 @@ angular.module('singleConceptAuthoringApp')
             scope.startMergeReviewPoll();
           }
 
-          // Project rebase only. Covers all four call sites that funnel into
-          // rebase(): auto-rebase on BEHIND, and empty merge-review results.
-          // Task rebase is out of scope: projectLocked / projectRebaseDisabled
-          // do not apply there.
-          function getProjectRebaseBlockReason() {
+          // Covers all four call sites that funnel into rebase(): auto-rebase
+          // on BEHIND, and empty merge-review results. Task checks mirror
+          // canConflict / redirectToConflicts; project checks mirror the
+          // project rebase button and skipProjectRebaseIfBranchStateNotValid.
+          function getRebaseBlockReason() {
+            var metadata = metadataService.getBranchMetadata();
+            if (!metadata) {
+              return null;
+            }
+
+            var rebaseableStates = ['BEHIND', 'DIVERGED', 'STALE'];
+            var branchState = scope.targetBranchState || metadata.branchState;
+            var branchLocked = metadata.branchLocked === true || scope.targetBranchLocked === true || $rootScope.branchLocked === true;
+
             if ($routeParams.taskKey) {
+              if (metadata.status === 'Promoted' || metadata.status === 'Completed') {
+                return 'Cannot pull in project changes because the task is ' + metadata.status + '.';
+              }
+              if (scope.isTaskAuthor === false) {
+                return 'Cannot pull in project changes because only the task author can rebase.';
+              }
+              if (branchLocked) {
+                return 'Cannot pull in project changes because the task branch is locked due to ongoing changes.';
+              }
+              if (branchState && rebaseableStates.indexOf(branchState) === -1) {
+                return 'Task rebase was skipped because the branch is ' + branchState + '.';
+              }
               return null;
             }
 
-            var project = metadataService.getBranchMetadata();
-            if (!project) {
-              return null;
-            }
-
-            if (project.projectLocked === true) {
+            if (metadata.projectLocked === true) {
               return 'Cannot pull in mainline changes because the project is locked.';
             }
-            if (project.projectRebaseDisabled === true) {
+            if (metadata.projectRebaseDisabled === true) {
               return 'Cannot pull in mainline changes because rebase is disabled for this project.';
             }
-
-            // Mirror RebaseService.skipProjectRebaseIfBranchStateNotValid:
-            // only BEHIND / DIVERGED / STALE are rebased. The UI previously
-            // still merged UP_TO_DATE and FORWARD projects that the server
-            // declines to touch.
-            var branchState = scope.targetBranchState || project.branchState;
-            if (branchState && ['BEHIND', 'DIVERGED', 'STALE'].indexOf(branchState) === -1) {
+            if (branchLocked) {
+              return 'Cannot pull in mainline changes because the project branch is locked due to ongoing changes.';
+            }
+            if (branchState && rebaseableStates.indexOf(branchState) === -1) {
               return 'Project rebase was skipped because the branch is ' + branchState + '.';
             }
 
@@ -777,7 +794,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function rebase(mergeReviewId) {
-            var blockReason = getProjectRebaseBlockReason();
+            var blockReason = getRebaseBlockReason();
             if (blockReason) {
               scope.rebaseRunning = false;
               scope.rebaseComplete = false;
@@ -1029,6 +1046,9 @@ angular.module('singleConceptAuthoringApp')
             scope.rebaseBlocked = false;
             scope.rebaseBlockedReason = null;
             scope.targetBranchState = null;
+            scope.targetBranchLocked = false;
+            scope.sourceBranchLocked = false;
+            scope.isTaskAuthor = null;
 
             // Parameter to show or hide the sidebar table
             scope.hideSidebar = false;
@@ -1036,12 +1056,11 @@ angular.module('singleConceptAuthoringApp')
             scope.actionTab = 1;
 
             setTimeout(function waitForFetchingBranchRoot() {
-              // Project rebase must wait for this project's AuthoringProject
-              // (not leftover metadata from a previous view) so the lock /
-              // rebase-disabled guard in rebase() sees the right flags.
+              // Wait for this project/task's metadata (not leftover metadata
+              // from a previous view) so the rebase guard sees the right flags.
               var branchMetadata = metadataService.getBranchMetadata();
-              var metadataReady = metadataService.getBranch() &&
-                ($routeParams.taskKey || (branchMetadata && branchMetadata.key === $routeParams.projectKey));
+              var expectedKey = $routeParams.taskKey || $routeParams.projectKey;
+              var metadataReady = metadataService.getBranch() && branchMetadata && branchMetadata.key === expectedKey;
               if (metadataReady) {
                 if ($routeParams.taskKey) {
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -1050,9 +1069,9 @@ angular.module('singleConceptAuthoringApp')
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
                   scope.sourceBranch = metadataService.getBranchRoot();
                 }
-                terminologyServerService.getBranch(scope.targetBranch).then(function(response) {
-                  scope.targetBranchState = response && response.state;
-                  if (response && response.state && response.state === 'BEHIND') {
+
+                function proceedWithBranchState() {
+                  if (scope.targetBranchState === 'BEHIND') {
                     rebase();
                   } else {
                     if ($routeParams.taskKey) {
@@ -1065,9 +1084,31 @@ angular.module('singleConceptAuthoringApp')
                       });
                     }
                   }
-                }, function(error) {
+                }
+
+                var targetBranchPromise = terminologyServerService.getBranch(scope.targetBranch).then(function(response) {
+                  scope.targetBranchState = response && response.state;
+                  scope.targetBranchLocked = !!(response && response.locked);
+                });
+
+                var sourceLockPromise = $q.when();
+                var authorPromise = $q.when();
+                if ($routeParams.taskKey) {
+                  sourceLockPromise = terminologyServerService.getBranch(scope.sourceBranch).then(function(response) {
+                    scope.sourceBranchLocked = !!(response && response.locked);
+                  }, function() {
+                    scope.sourceBranchLocked = false;
+                  });
+                  authorPromise = accountService.getRoleForTask(branchMetadata).then(function(role) {
+                    scope.isTaskAuthor = role === 'AUTHOR';
+                  }, function() {
+                    scope.isTaskAuthor = false;
+                  });
+                }
+
+                $q.all([targetBranchPromise, sourceLockPromise, authorPromise]).then(proceedWithBranchState, function(error) {
                   console.error('Error while determine branch state. Error: ' + error);
-                })
+                });
 
               } else {
                 setTimeout(waitForFetchingBranchRoot, 100);
