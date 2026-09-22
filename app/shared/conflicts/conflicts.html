@@ -21,9 +21,9 @@
       </div>
       <h3>{{rebaseBlockedReason}}</h3>
       <div>
-        <button ng-click="returnToProject()"
+        <button ng-click="returnFromBlockedRebase()"
               class="btn btn-default blue lighten-2 "><span
-        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Return to Project</span> </button>
+        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">{{taskKey ? 'Return to Task' : 'Return to Project'}}</span> </button>
       </div>
     </div>
     <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete && !warning && !fiveOFour && !rebaseBlocked" class="loading-merges blue darken-1">
