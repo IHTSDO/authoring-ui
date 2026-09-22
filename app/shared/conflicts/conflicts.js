@@ -184,6 +184,10 @@ angular.module('singleConceptAuthoringApp')
               }, 5000);
             }
           }
+
+          scope.returnToProject = function () {
+            $location.path('/project/' + $routeParams.projectKey);
+          };
           scope.$on('routeChangeStart', function(event, data) {
             if(exitTimer) {
               $timeout.cancel(exitTimer);
@@ -739,7 +743,50 @@ angular.module('singleConceptAuthoringApp')
             scope.startMergeReviewPoll();
           }
 
+          // Project rebase only. Covers all four call sites that funnel into
+          // rebase(): auto-rebase on BEHIND, and empty merge-review results.
+          // Task rebase is out of scope: projectLocked / projectRebaseDisabled
+          // do not apply there.
+          function getProjectRebaseBlockReason() {
+            if ($routeParams.taskKey) {
+              return null;
+            }
+
+            var project = metadataService.getBranchMetadata();
+            if (!project) {
+              return null;
+            }
+
+            if (project.projectLocked === true) {
+              return 'Cannot pull in mainline changes because the project is locked.';
+            }
+            if (project.projectRebaseDisabled === true) {
+              return 'Cannot pull in mainline changes because rebase is disabled for this project.';
+            }
+
+            // Mirror RebaseService.skipProjectRebaseIfBranchStateNotValid:
+            // only BEHIND / DIVERGED / STALE are rebased. The UI previously
+            // still merged UP_TO_DATE and FORWARD projects that the server
+            // declines to touch.
+            var branchState = scope.targetBranchState || project.branchState;
+            if (branchState && ['BEHIND', 'DIVERGED', 'STALE'].indexOf(branchState) === -1) {
+              return 'Project rebase was skipped because the branch is ' + branchState + '.';
+            }
+
+            return null;
+          }
+
           function rebase(mergeReviewId) {
+            var blockReason = getProjectRebaseBlockReason();
+            if (blockReason) {
+              scope.rebaseRunning = false;
+              scope.rebaseComplete = false;
+              scope.rebaseBlocked = true;
+              scope.rebaseBlockedReason = blockReason;
+              notificationService.sendWarning(blockReason);
+              return;
+            }
+
             console.log('Rebasing ' + (scope.sourceBranch + ' ' + scope.targetBranch));
             scope.rebaseRunning = true;
             var onSuccess = function(response) {
@@ -979,6 +1026,9 @@ angular.module('singleConceptAuthoringApp')
             scope.rebaseComplete = false; // true if either (a) rebase with no
                                           // conflicts complete, or (b) rebase
                                           // with accepted merges is complete
+            scope.rebaseBlocked = false;
+            scope.rebaseBlockedReason = null;
+            scope.targetBranchState = null;
 
             // Parameter to show or hide the sidebar table
             scope.hideSidebar = false;
@@ -986,7 +1036,13 @@ angular.module('singleConceptAuthoringApp')
             scope.actionTab = 1;
 
             setTimeout(function waitForFetchingBranchRoot() {
-              if (metadataService.getBranch()) {
+              // Project rebase must wait for this project's AuthoringProject
+              // (not leftover metadata from a previous view) so the lock /
+              // rebase-disabled guard in rebase() sees the right flags.
+              var branchMetadata = metadataService.getBranchMetadata();
+              var metadataReady = metadataService.getBranch() &&
+                ($routeParams.taskKey || (branchMetadata && branchMetadata.key === $routeParams.projectKey));
+              if (metadataReady) {
                 if ($routeParams.taskKey) {
                   scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
                   scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
@@ -995,6 +1051,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.sourceBranch = metadataService.getBranchRoot();
                 }
                 terminologyServerService.getBranch(scope.targetBranch).then(function(response) {
+                  scope.targetBranchState = response && response.state;
                   if (response && response.state && response.state === 'BEHIND') {
                     rebase();
                   } else {

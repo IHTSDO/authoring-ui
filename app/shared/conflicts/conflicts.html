@@ -15,7 +15,18 @@
         class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Regenerate Merge Review</span> </button>
       </div>
     </div>
-    <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete && !warning && !fiveOFour" class="loading-merges blue darken-1">
+    <div ng-if="rebaseBlocked" class="loading-merges amber">
+      <div class="all-done">
+        <div class="md md-lock"></div>
+      </div>
+      <h3>{{rebaseBlockedReason}}</h3>
+      <div>
+        <button ng-click="returnToProject()"
+              class="btn btn-default blue lighten-2 "><span
+        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Return to Project</span> </button>
+      </div>
+    </div>
+    <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete && !warning && !fiveOFour && !rebaseBlocked" class="loading-merges blue darken-1">
       <div class="clock">
         <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
@@ -40,7 +51,7 @@
       </div>
       <h3>{{comparingText}}</h3>
     </div>
-    <div ng-if="!badStateDetected && !conflicts && rebaseRunning && !warning" class="loading-merges green">
+    <div ng-if="!badStateDetected && !conflicts && rebaseRunning && !warning && !rebaseBlocked" class="loading-merges green">
       <div class="clock">
         <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
@@ -101,7 +112,7 @@
       <h3>Unexpected error: Attempt to pull in changes while merges remain unresolved. Contact the administrator.</h3>
     </div>
     <!-- Displayed before merges complete, or during rebasing -->
-    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete">
+    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete && !rebaseBlocked">
 
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
