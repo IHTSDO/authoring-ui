@@ -31,8 +31,8 @@
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
           <button class="btn btn-default pink darken-2 review-button-list  "
-                  ng-if="task.status === 'In Review'"
-                  ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
+                  ng-if="task.status === 'In Review' || task.status === 'Ready For Review'"
+                  ng-disabled="task.status !== 'In Review' && task.status !== 'Ready For Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
         <div class="pull-left p-l-15 "><strong>Task Reviewers:</strong></div>
@@ -88,7 +88,7 @@
               <span class="lever"></span> Review Complete </label>
           </div>
         </div>
-        <div ng-show="role === 'AUTHOR' && task.status === 'In Review'" >
+        <div ng-show="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Ready For Review')" >
           <div class="editable-field">
 
             <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
@@ -126,7 +126,7 @@
 
           </div>
         </div>
-        <div ng-show="role === 'AUTHOR' && task.status !== 'In Review' && task.reviewers && task.reviewers.length !== 0" > &nbsp;
+        <div ng-show="role === 'AUTHOR' && task.status !== 'In Review' && task.status !== 'Ready For Review' && task.reviewers && task.reviewers.length !== 0" > &nbsp;
           <div ng-if="task.reviewers && task.reviewers.length !== 0" class="inline">
               <div ng-repeat="reviewer in task.reviewers track by reviewer.displayName" class="in-block">
                   <div class="badge Available">
@@ -135,7 +135,7 @@
               </div>
             </div>
         </div>
-        <div ng-show="task && !task.reviewers && task.status !== 'In Review'" class="inline"> &nbsp;Task not submitted for
+        <div ng-show="task && !task.reviewers && task.status !== 'In Review' && task.status !== 'Ready For Review'" class="inline"> &nbsp;Task not submitted for
           review </div>
       </div>
     </div>

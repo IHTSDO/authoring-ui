@@ -617,6 +617,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 
             break;
+          case 'Ready For Review':
           case 'In Review':
           case 'Review Complete':
             accountService.getRoleForTask($scope.task).then(function (role) {

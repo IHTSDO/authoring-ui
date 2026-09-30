@@ -36,6 +36,10 @@ angular.module('singleConceptAuthoringApp')
   })
   .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$modal', '$routeParams', '$filter', '$timeout', '$compile', 'terminologyServerService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval','metadataService','layoutHandler','hotkeys','componentHighlightUtil','reviewService', 'localStorageService', 'aagService', 'rnmService',
     function ($rootScope, NgTableParams, $q, $modal, $routeParams, $filter, $timeout, $compile, terminologyServerService, scaService, modalService, accountService, notificationService, $location, $interval, metadataService, layoutHandler, hotkeys, componentHighlightUtil, reviewService, localStorageService, aagService, rnmService) {
+      function isInReview(status) {
+        return status === 'In Review' || status === 'Ready For Review';
+      }
+
       return {
         restrict: 'A',
         transclude: false,
@@ -297,7 +301,7 @@ angular.module('singleConceptAuthoringApp')
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
               scope.task = task;
-              scope.reviewComplete = task.status !== 'In Review';
+              scope.reviewComplete = !isInReview(task.status);
               accountService.getRoleForTask(task).then(function (role) {
                 scope.role = role;
               }, function() {
@@ -318,13 +322,13 @@ angular.module('singleConceptAuthoringApp')
                 scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
                   if (task) {
                     scope.task = task;
-                    scope.reviewComplete = task.status !== 'In Review';
+                    scope.reviewComplete = !isInReview(task.status);
                     accountService.getRoleForTask(task).then(function (role) {
                       scope.role = role;
                     }, function() {
                       scope.role = 'UNKNOWN';
                     });
-                    if (oldStatus === 'In Review' && task.status === 'In Progress') {
+                    if (isInReview(oldStatus) && task.status === 'In Progress') {
                       scope.reloadConceptsToReview('');
                       scope.reloadConceptsReviewed('');
                       scope.reloadConceptsClassified('');
@@ -621,7 +625,7 @@ angular.module('singleConceptAuthoringApp')
                       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
                         if (task) {
                           scope.task = task;
-                          scope.reviewComplete = task.status !== 'In Review';
+                          scope.reviewComplete = !isInReview(task.status);
                           accountService.getRoleForTask(task).then(function (role) {
                             scope.role = role;
                           });
@@ -642,7 +646,7 @@ angular.module('singleConceptAuthoringApp')
                     scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
                       if (task) {
                         scope.task = task;
-                        scope.reviewComplete = task.status !== 'In Review';
+                        scope.reviewComplete = !isInReview(task.status);
                         accountService.getRoleForTask(task).then(function (role) {
                           scope.role = role;
                         });
@@ -1630,7 +1634,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.toggleReviewStatus = function () {
-            if (scope.task.status === 'In Review') {
+            if (isInReview(scope.task.status)) {
               if (scope.conceptsToReviewViewed.length === 0) {
                 scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   scope.task.status = response.data.status;
@@ -1860,7 +1864,7 @@ angular.module('singleConceptAuthoringApp')
           }, true);
 
           scope.$watch('feedbackContainer.review.conceptsToReview', function (oldValue, newValue) {
-            if (scope.feedbackContainer && scope.feedbackContainer.review && scope.task.status === 'In Review'
+            if (scope.feedbackContainer && scope.feedbackContainer.review && isInReview(scope.task.status)
                && scope.role && (scope.role === 'REVIEWER' || scope.role === 'REVIEWER_ONLY')) {
               if (scope.feedbackContainer.review.conceptsToReview.length === 0) {
                 scaService.saveUiStateForReviewTask(scope.projectKey, scope.taskKey, 'awating-completion-state', {'status': true, 'taskKey': scope.taskKey, 'projectKey': scope.projectKey});

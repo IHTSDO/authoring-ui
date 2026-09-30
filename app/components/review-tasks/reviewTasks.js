@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
               if ($scope.showNewEdits) {
                 mydata = mydata.filter(function (item) {
-                  return item.status === 'In Review' && $scope.hasNewEdits(item);
+                  return (item.status === 'In Review' || item.status === 'Ready For Review') && $scope.hasNewEdits(item);
                 });
               }
 
@@ -139,12 +139,6 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
               if(params.sorting().feedbackMessageDate === 'asc' || params.sorting().feedbackMessageDate === 'desc'){
                 mydata.sort(function (a, b) {
                     return sortFeedbackFn(a, b, params.sorting().feedbackMessageDate);
-                });
-              }
-
-              if(params.sorting().status === 'asc' || params.sorting().status === 'desc'){
-                mydata.sort(function (a, b) {
-                    return sortStatusFn(a, b, params.sorting().status);
                 });
               }
 
@@ -160,22 +154,6 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           }
         }
       );
-
-      function sortStatusFn (a, b, direction) {
-        a.tempStatus = (a.status == 'In Review' && (!a.reviewers || a.reviewers.length === 0)) ? 'Ready for Review' : a.status;
-        b.tempStatus = (b.status == 'In Review' && (!b.reviewers || b.reviewers.length === 0)) ? 'Ready for Review' : b.status;
-        if (direction === 'asc') {
-            var result = a.tempStatus.localeCompare(b.tempStatus);
-            delete a.tempStatus;
-            delete b.tempStatus;
-            return result;
-        } else {
-            var result = b.tempStatus.localeCompare(a.tempStatus);
-            delete a.tempStatus;
-            delete b.tempStatus;
-            return result;
-        }
-      }
 
       function sortReviewFn (a, b, direction) {
         a.tempStatus = a.reviewers && a.reviewers.length !== 0 ? 'claimed' : 'availables';
@@ -449,7 +427,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       // Unclaimed tasks (left hand column)
       $scope.isUnclaimedTask = function (task) {
-        return task.status === 'In Review' && !task.reviewers;
+        return (task.status === 'In Review' || task.status === 'Ready For Review') && !task.reviewers;
       };
 
       $scope.hasUnclaimedTasks = function () {
@@ -520,7 +498,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         angular.forEach($scope.reviewTasks, function (task) {
           if(task.status === 'In Review') {
             promises.push(scaService.getUiStateForReviewTask(task.projectKey, task.key, 'awating-completion-state'));
-          }          
+          }
         });
 
         // on resolution of all promises

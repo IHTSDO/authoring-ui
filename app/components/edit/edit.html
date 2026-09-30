@@ -129,11 +129,11 @@
               Submit for Review
             </li>
             <li
-              ng-if="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Review Completed')"
+              ng-if="role === 'AUTHOR' && (task.status === 'Ready For Review' || task.status === 'In Review' || task.status === 'Review Completed')"
               ng-click="toggleReview()">
               Cancel Review
             </li>
-            <li ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY')  && (task.status === 'In Review' || task.status === 'Review Completed')"
+            <li ng-if="(role === 'REVIEWER' || role === 'REVIEWER_ONLY')  && (task.status === 'Ready For Review' || task.status === 'In Review' || task.status === 'Review Completed')"
                 ng-click="toggleReview()">
               Unclaim Review
             </li>

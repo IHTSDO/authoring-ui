@@ -59,7 +59,7 @@ angular.module('singleConceptAuthoringApp')
               ////////////////////////////////////////////////////////////
               // CHECK:  Is the task still in Review?
               ////////////////////////////////////////////////////////////
-              if (branchStatus.status === 'In Review') {
+              if (branchStatus.status === 'In Review' || branchStatus.status === 'Ready For Review') {
                 flags.push({
                   checkTitle: 'Task is still in review',
                   checkWarning: 'The task review has not been marked as complete.',
@@ -236,7 +236,7 @@ angular.module('singleConceptAuthoringApp')
                   ////////////////////////////////////////////////////////////
                   // CHECK:  Has the Task been reviewed?
                   ////////////////////////////////////////////////////////////
-                  if (branchStatus.status !== 'In Review' && branchStatus.status !== 'Review Completed') {
+                  if (branchStatus.status !== 'In Review' && branchStatus.status !== 'Ready For Review' && branchStatus.status !== 'Review Completed') {
                     flags.push({
                       checkTitle: 'No review completed',
                       checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
@@ -247,7 +247,7 @@ angular.module('singleConceptAuthoringApp')
                   ////////////////////////////////////////////////////////////
                   // CHECK:  Is the task still in Review?
                   ////////////////////////////////////////////////////////////
-                  if (branchStatus.status === 'In Review') {
+                  if (branchStatus.status === 'In Review' || branchStatus.status === 'Ready For Review') {
                     flags.push({
                       checkTitle: 'Task is still in review',
                       checkWarning: 'The task review has not been marked as complete.',
@@ -307,7 +307,7 @@ angular.module('singleConceptAuthoringApp')
             ////////////////////////////////////////////////////////////
             // CHECK:  Has the Task been reviewed?
             ////////////////////////////////////////////////////////////
-            if (task.status !== 'In Review' && task.status !== 'Review Completed') {
+            if (task.status !== 'In Review' && task.status !== 'Ready For Review' && task.status !== 'Review Completed') {
               flags.push({
                 checkTitle: 'No review completed',
                 checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
@@ -318,7 +318,7 @@ angular.module('singleConceptAuthoringApp')
             ////////////////////////////////////////////////////////////
             // CHECK:  Is the task still in Review?
             ////////////////////////////////////////////////////////////
-            if (task.status === 'In Review') {
+            if (task.status === 'In Review' || task.status === 'Ready For Review') {
               flags.push({
                 checkTitle: 'Task is still in review',
                 checkWarning: 'The task review has not been marked as complete.',

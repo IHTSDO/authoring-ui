@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp')
       // create the request body
       var updateObj = {
         'reviewers': [],
-        'status': 'IN_REVIEW'
+        'status': 'READY_FOR_REVIEW'
       };
 
       // update the task
