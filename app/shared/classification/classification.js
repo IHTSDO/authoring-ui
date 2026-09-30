@@ -558,7 +558,7 @@ angular.module('singleConceptAuthoringApp')
                 if (response.status === 'New') {
                   notificationService.sendWarning('No work exists for this task, cannot submit for review', 10000);
                 }
-                else if (response.status === 'In Review' || response.status === 'Review Completed') {
+                else if (response.status === 'In Review' || response.status === 'Ready For Review' || response.status === 'Review Completed') {
                   notificationService.sendWarning('Task is already in review', 10000);
                 } else if (response.status === 'Promoted' || response.status === 'Completed') {
                   notificationService.sendWarning('Cannot submit promoted task for review', 10000);
@@ -567,7 +567,7 @@ angular.module('singleConceptAuthoringApp')
                   scaService.updateTask(
                     $routeParams.projectKey, $routeParams.taskKey,
                     {
-                      'status': 'IN_REVIEW'
+                      'status': 'READY_FOR_REVIEW'
                     }).then(function (response) {
                       scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', {'conceptIds': [], 'approvalDate': null});
                       // whether success or fail, disable button

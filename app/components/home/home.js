@@ -141,12 +141,6 @@ angular.module('singleConceptAuthoringApp.home', [
                             });
                         }
 
-                        if(params.sorting().status === 'asc' || params.sorting().status === 'desc'){
-                            mydata.sort(function (a, b) {
-                                return sortStatusFn(a, b, params.sorting().status);
-                            });
-                        }
-
                         $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                     }
 
@@ -174,22 +168,6 @@ angular.module('singleConceptAuthoringApp.home', [
                 return 1;
             } else {
                 return 0;
-            }
-        }
-
-        function sortStatusFn (a, b, direction) {
-            a.tempStatus = (a.status == 'In Review' && (!a.reviewers || a.reviewers.length === 0)) ? 'Ready for Review' : a.status;
-            b.tempStatus = (b.status == 'In Review' && (!b.reviewers || b.reviewers.length === 0)) ? 'Ready for Review' : b.status;
-            if (direction === 'asc') {
-                var result = a.tempStatus.localeCompare(b.tempStatus);
-                delete a.tempStatus;
-                delete b.tempStatus;
-                return result;
-            } else {
-                var result = b.tempStatus.localeCompare(a.tempStatus);
-                delete a.tempStatus;
-                delete b.tempStatus;
-                return result;
             }
         }
 

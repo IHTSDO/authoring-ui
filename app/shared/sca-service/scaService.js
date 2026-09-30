@@ -1375,7 +1375,7 @@ angular.module('singleConceptAuthoringApp')
 
         unassignReview: function (projectKey, taskKey, reviewers) {
           var deferred = $q.defer();
-          var updateObj = {'status': 'IN_REVIEW', 'reviewers': reviewers};
+          var updateObj = reviewers && reviewers.length > 0 ? {'status': 'IN_REVIEW', 'reviewers': reviewers} : {'status': 'READY_FOR_REVIEW', 'reviewers': []};
 
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
