@@ -67,7 +67,6 @@
     "moment": "2.29.4",
     "ng-smooth-scroll": "1.7.3",
     "ng-table": "0.5.4",
-    "node-sass": "^9.0.0",
     "sass": "^1.86.3",
     "snomed-ecl-builder": "^1.0.4",
     "sockjs-client": "~1.1.4",
