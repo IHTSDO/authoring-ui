@@ -359,15 +359,25 @@ angular.module('singleConceptAuthoringApp')
 
           scope.idNameMap = {};
 
-          function getConceptNames(failures) {
+          var semanticTagPattern = new RegExp("^.*\\((.*)\\)$");
+
+          function setSemanticTags() {
+            angular.forEach(scope.failures, function (failure) {
+              var match = failure.conceptFsn ? semanticTagPattern.exec(failure.conceptFsn) : null;
+              failure.semanticTag = match ? match[1] : undefined;
+            });
+          }
+
+          // FSNs are provided by the validation report; only look up failures that came back without one
+          function getConceptNames() {
             var deferred = $q.defer();
             var promises = [];
             conceptIds = [];
-            angular.forEach(failures, function (failure) {
-              promises.push(getConceptIdForFailure(failure));
+            var failuresWithoutFsn = scope.failures.filter(function (failure) {
+              return !failure.conceptFsn;
             });
 
-            angular.forEach(scope.failures, function (failure) {
+            angular.forEach(failuresWithoutFsn, function (failure) {
               // switch on concept, relationship, or description
               promises.push(getConceptIdForFailure(failure));
             });
@@ -382,15 +392,14 @@ angular.module('singleConceptAuthoringApp')
                   angular.forEach(concepts.items, function (concept) {
                     scope.idNameMap[concept.id] = concept.fsn.term;
                   });
-                  let semanticTagTattern =  new RegExp("^.*\\((.*)\\)$");
-                  angular.forEach(scope.failures, function (failure) {
+                  angular.forEach(failuresWithoutFsn, function (failure) {
                     failure.conceptFsn = scope.idNameMap[failure.conceptId];
-                    failure.semanticTag = semanticTagTattern.exec(failure.conceptFsn)[1];
                   });
-
+                  setSemanticTags();
                   deferred.resolve();
                 });
               } else {
+                setSemanticTags();
                 deferred.resolve();
               }
             });
@@ -1092,6 +1101,7 @@ angular.module('singleConceptAuthoringApp')
               // NOTE: store the unmodified failure text
               var obj = {
                 conceptId: instance.conceptId,
+                conceptFsn: instance.conceptFsn,
                 detail: instance.detail,
                 detailUnmodified : instance.detailUnmodified,
                 selected: false,
@@ -1122,9 +1132,12 @@ angular.module('singleConceptAuthoringApp')
             conceptIds = [];
 
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
-              promises.push(getConceptIdForFailure(instance));
+              if (!instance.conceptFsn) {
+                promises.push(getConceptIdForFailure(instance));
+              }
               var obj = {
                 conceptId: instance.conceptId,
+                conceptFsn: instance.conceptFsn
               };
               objArray.push(obj);
             });
@@ -1133,25 +1146,27 @@ angular.module('singleConceptAuthoringApp')
                // skip if no concept ids
               if (conceptIds.length > 0) {
 
-              // bulk call for concept ids
-              terminologyServerService.bulkGetConceptUsingPOST(conceptIds, scope.branch, conceptIds.length).then(function (concepts) {
-                var idNameMap = {};
-                angular.forEach(concepts.items, function (concept) {
-                  idNameMap[concept.id] = concept.fsn.term;
+                // bulk call for concept ids
+                return terminologyServerService.bulkGetConceptUsingPOST(conceptIds, scope.branch, conceptIds.length).then(function (concepts) {
+                  var idNameMap = {};
+                  angular.forEach(concepts.items, function (concept) {
+                    idNameMap[concept.id] = concept.fsn.term;
+                  });
+                  angular.forEach(objArray, function (failure) {
+                    if (!failure.conceptFsn) {
+                      failure.conceptFsn = idNameMap[failure.conceptId];
+                    }
+                  });
                 });
-                angular.forEach(objArray, function (failure) {
-                  failure.conceptFsn = idNameMap[failure.conceptId];
-                });
-
-                objArray.unshift({
-                  conceptId: 'Concept ID',
-                  conceptFsn : 'FSN'
-                });
-                var fileName = 'validation_' + assertionFailure.assertionUuid + '_' + (new Date()).getTime();
-                var data = 'Failures for assertion ' + assertionFailure.assertionUuid + ' - '+ assertionFailure.assertionText + '\n\n' + convertToCSV(objArray);
-                scope.dlcDialog(data, fileName, 'text/tab-separated-values');
-              });
               }
+            }).then(function () {
+              objArray.unshift({
+                conceptId: 'Concept ID',
+                conceptFsn : 'FSN'
+              });
+              var fileName = 'validation_' + assertionFailure.assertionUuid + '_' + (new Date()).getTime();
+              var data = 'Failures for assertion ' + assertionFailure.assertionUuid + ' - '+ assertionFailure.assertionText + '\n\n' + convertToCSV(objArray);
+              scope.dlcDialog(data, fileName, 'text/tab-separated-values');
             });
           };
 
