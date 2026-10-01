@@ -1073,7 +1073,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
             $scope.isCrsTask = true;
-            $scope.crsConcepts = crsService.getCrsConcepts();
+            $scope.crsConcepts = crsService.getAllCrsRequests();
             filterDuplicatedCRSRequests();
           } else {
             getCRSRequests();
@@ -1093,7 +1093,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       });
 
       $scope.$on('initialiseCrsConceptsComplete', function (event, data) {
-        $scope.crsConcepts = crsService.getCrsConcepts();
+        $scope.crsConcepts = crsService.getAllCrsRequests();
         filterDuplicatedCRSRequests();
       });
 

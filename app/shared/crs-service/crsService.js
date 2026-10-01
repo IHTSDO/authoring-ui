@@ -749,13 +749,20 @@ angular.module('singleConceptAuthoringApp')
         return null;
       }
 
-      function getCrsConcepts() {
+      function getNonEmptyCrsConcepts() {
         if (!currentTaskConcepts) {
           return [];
         }
         return currentTaskConcepts.filter(function (concept) {
           return !concept.emptyContent;
         });
+      }
+
+      function getAllCrsRequests() {
+        if (!currentTaskConcepts) {
+          return [];
+        }
+        return currentTaskConcepts.slice();
       }
 
       function getCrsEmptyRequests() {
@@ -898,9 +905,10 @@ angular.module('singleConceptAuthoringApp')
         isCrsConcept: isCrsConcept,
         requiresCreation: requiresCreation,
         getCrsConcept: getCrsConcept,
-        getCrsConcepts: getCrsConcepts,
+        getNonEmptyCrsConcepts: getNonEmptyCrsConcepts,
         getCrsRequest: getCrsRequest,
         getCrsEmptyRequests: getCrsEmptyRequests,
+        getAllCrsRequests: getAllCrsRequests,
         saveCrsConcept: saveCrsConcept,
         getCrsTaskComment: getCrsTaskComment,
         getCrsRequestsStatus: getCrsRequestsStatus,

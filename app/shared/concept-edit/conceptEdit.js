@@ -545,7 +545,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
         scope.crsFilter = crsService.crsFilter;
         scope.getTopLevelConcepts = metadataService.getTopLevelConcepts;
-        scope.isDonatedConcept = crsService.getCrsConcepts().filter(function(concept) {
+        scope.isDonatedConcept = crsService.getNonEmptyCrsConcepts().filter(function(concept) {
           return concept.conceptId === scope.concept.conceptId
                 && concept.conceptJson && concept.conceptJson.content && concept.conceptJson.content.definitionOfChanges
                 && concept.conceptJson.content.definitionOfChanges.reasonForChange === 'Content Promotion'; }).length !== 0;
