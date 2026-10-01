@@ -69,14 +69,15 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9000,
+        port: process.env.UI_PORT || 9000,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
         livereload: 35729
       },
       livereload: {
         options: {
-          open: true,
+          // UI_OPEN_URL lets a front proxy (e.g. local-dev/gateway.js) be opened instead
+          open: process.env.UI_OPEN_URL === 'false' ? false : (process.env.UI_OPEN_URL || true),
           middleware: function (connect) {
             return [
               connect.static('.tmp'),
@@ -401,6 +402,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'concurrent:server',
       'autoprefixer:server',
       'connect:livereload',
       'watch'

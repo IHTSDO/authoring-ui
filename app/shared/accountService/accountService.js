@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp')
             response.appView = "sca-default";
         }
 
-        if (response.branchPath && !isValidBranchPath(response.branchPath)) {
+        if (response && response.branchPath && !isValidBranchPath(response.branchPath)) {
           response.branchPath = null;
           if (response.browserView) {
             response.browserView = null;
