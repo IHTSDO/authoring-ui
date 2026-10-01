@@ -17,7 +17,7 @@ module.exports = function (grunt) {
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
-  const sass = require('node-sass');
+  const sass = require('sass');
 
   // Configurable paths for the application
   var appConfig = {
