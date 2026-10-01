@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.crsConcepts = [];
         scope.role = null;
-        scope.getCrsConcepts = crsService.getCrsConcepts;
+        scope.getNonEmptyCrsConcepts = crsService.getNonEmptyCrsConcepts;
         scope.getCrsEmptyRequests = crsService.getCrsEmptyRequests;
 
         // get a concept properties object for dragging
@@ -69,11 +69,11 @@ angular.module('singleConceptAuthoringApp')
 
         scope.deleteConcept = function(concept) {
           crsService.deleteCrsConcept(concept.conceptId);
-          scope.crsConcepts = scope.getCrsConcepts();
+          scope.crsConcepts = scope.getNonEmptyCrsConcepts();
         };
 
         function initialize() {
-          scope.crsConcepts = scope.getCrsConcepts();
+          scope.crsConcepts = scope.getNonEmptyCrsConcepts();
           if (scope.crsConcepts.length !== 0) {
             accountService.getRoleForTask(scope.task).then(function (role) {
               scope.role = role;

@@ -392,7 +392,7 @@ angular.module('singleConceptAuthoringApp')
 
     function checkCrsConceptsPrerequisites (projectKey, taskKey, flags) {
       var deferred = $q.defer();
-      var crsConcepts = crsService.getCrsConcepts();
+      var crsConcepts = crsService.getNonEmptyCrsConcepts();
       var deletedCRSConceptFound = false;
       angular.forEach(crsConcepts, function(concept, key) {
         if (concept.deleted) {
