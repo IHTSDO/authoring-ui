@@ -1,4 +1,5 @@
 'use strict';
+/* global releaseScheduleUtil */
 angular.module('singleConceptAuthoringApp')
   .controller('branchMetadataConfigCtrl', function($scope, $modalInstance, terminologyServerService, notificationService, branch, title, isCodeSystem) {
 
@@ -8,13 +9,21 @@ angular.module('singleConceptAuthoringApp')
       $scope.annotationsEnabled = false;
       $scope.authoringFreeze = false;
       $scope.isCodeSystem = isCodeSystem;
+      $scope.releaseScheduleCron = '';
 
       $scope.validate = function() {
         $scope.msgError = '';
         if ($scope.failureExportMax && parseInt($scope.failureExportMax) > 1000) {
           $scope.msgError = 'Maximum RVF failure export is 1000';
+          return;
         }
-      }
+        if ($scope.isCodeSystem && $scope.releaseScheduleCron && String($scope.releaseScheduleCron).trim()) {
+          var result = releaseScheduleUtil.validate(String($scope.releaseScheduleCron).trim());
+          if (!result.ok) {
+            $scope.msgError = result.message;
+          }
+        }
+      };
 
       //////////////////////////////////////////
       // Modal Controls
@@ -29,6 +38,7 @@ angular.module('singleConceptAuthoringApp')
         if ($scope.isCodeSystem) {
           metadata.annotationsEnabled = $scope.annotationsEnabled + '';
           metadata.authoringFreeze = $scope.authoringFreeze + '';
+          metadata.releaseScheduleCron = $scope.releaseScheduleCron ? String($scope.releaseScheduleCron).trim() : '';
         } else {
           metadata.multipleModuleEditingDisabled = $scope.multipleModuleEditingDisabled + '';
         }
@@ -62,6 +72,8 @@ angular.module('singleConceptAuthoringApp')
             if (typeof response.authoringFreeze !== 'undefined') {
               $scope.authoringFreeze = response.authoringFreeze === true || response.authoringFreeze === 'true';
             }
+            $scope.releaseScheduleCron = releaseScheduleUtil.expressionFromMetadata(response) || '';
+            $scope.validate();
           });
         }
       }

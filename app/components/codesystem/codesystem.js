@@ -406,14 +406,23 @@ angular.module('singleConceptAuthoringApp.codesystem', [
         });
       };
 
-      $scope.startNewAuthoringCycle = function() {
-        notificationService.clear();
+      function openNewAuthoringCycleModal(metadata, versions) {
+        var latestEffectiveDate = releaseScheduleUtil.latestEffectiveDateFromVersions(versions);
+        if (!latestEffectiveDate) {
+          latestEffectiveDate = releaseScheduleUtil.latestEffectiveDate($scope.codeSystem);
+        }
         var modalInstance = $modal.open({
           templateUrl: 'shared/new-authoring-cycle-modal/newAuthoringCycleModal.html',
           controller: 'newAuthoringCycleModalCtrl',
           resolve: {
             codeSystemName: function () {
               return $scope.codeSystem.name;
+            },
+            releaseScheduleCron: function () {
+              return releaseScheduleUtil.expressionFromMetadata(metadata);
+            },
+            latestEffectiveDate: function () {
+              return latestEffectiveDate;
             }
           }
         });
@@ -429,6 +438,27 @@ angular.module('singleConceptAuthoringApp.codesystem', [
             notificationService.sendError('Error starting new Authoring cycle: ' + error);
           });
         }, function () {
+        });
+      }
+
+      $scope.startNewAuthoringCycle = function() {
+        notificationService.clear();
+        var metadataPromise = terminologyServerService.getBranchMetadata($scope.codeSystem.branchPath, false).then(function (metadata) {
+          return metadata || {};
+        }, function () {
+          return {};
+        });
+        var versionsPromise = terminologyServerService.getAllCodeSystemVersionsByShortName($scope.codeSystem.shortName, {
+          showFutureVersions: true,
+          showInternalReleases: true,
+          limit: 10000
+        }).then(function (response) {
+          return response && response.data && response.data.items ? response.data.items : [];
+        }, function () {
+          return [];
+        });
+        $q.all([metadataPromise, versionsPromise]).then(function (results) {
+          openNewAuthoringCycleModal(results[0], results[1]);
         });
       };
 

@@ -33,6 +33,16 @@
                   </div>
                 </div>
               </div>
+              <div class="row m-b-10" ng-show="isCodeSystem">
+                <div class="col-md-12 no-padding">
+                  <label for="releaseScheduleCron">Release schedule</label>
+                  <input id="releaseScheduleCron" type="text" class="form-control"
+                    ng-model="releaseScheduleCron"
+                    ng-change="validate()"
+                    placeholder="0 0 1 * *">
+                  <div class="p-t-10">Five fields: minute hour day-of-month month day-of-week. Use L for the last day of the month. Leave blank to use the current date.</div>
+                </div>
+              </div>
               <div class="row">
                   <div class="col-md-6 no-padding">
                     <label>RVF Max. Failure Export</label>

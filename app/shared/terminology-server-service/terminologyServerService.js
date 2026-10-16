@@ -1978,7 +1978,7 @@ angular.module('singleConceptAuthoringApp')
       ////////////////////////////////
       // Terminology Server Administrative Services
       ////////////////////////////////
-      function getAllCodeSystemVersionsByShortName (codeSystemShortName) {
+      function getAllCodeSystemVersionsByShortName (codeSystemShortName, options) {
         if(!codeSystemShortName) {
           console.error('Error retrieving versions: code system is not defined');
           return null;
@@ -1993,7 +1993,19 @@ angular.module('singleConceptAuthoringApp')
             url = apiEndpoint + 'codesystems/';
         }
 
-        return $http.get(url + codeSystemShortName + '/versions').then(function (response) {
+        var params = [];
+        if (options && options.showFutureVersions) {
+          params.push('showFutureVersions=true');
+        }
+        if (options && options.showInternalReleases) {
+          params.push('showInternalReleases=true');
+        }
+        if (options && options.limit) {
+          params.push('limit=' + options.limit);
+        }
+        var query = params.length ? '?' + params.join('&') : '';
+
+        return $http.get(url + codeSystemShortName + '/versions' + query).then(function (response) {
           return response;
         }, function (error) {
           return null;
