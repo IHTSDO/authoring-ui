@@ -1,8 +1,8 @@
 'use strict';
 
-// Release schedules are 5-field cron expressions (minute hour day-of-month month day-of-week).
-// Six- and seven-field Spring/Quartz expressions are accepted as well.
-// "L" in the day-of-month field means the last day of that month.
+// Release schedules are 5 fields: minute hour day-of-month month day-of-week.
+// Day-of-week must be *. Day-of-month may use L for the last day of the month.
+// Comma-separated lists are allowed. Steps (/) and ranges (-) are not.
 var releaseScheduleUtil = (function () {
 
   var METADATA_KEY = 'releaseScheduleCron';
@@ -60,8 +60,14 @@ var releaseScheduleUtil = (function () {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
   }
 
-  function parseField(expr, min, max, allowLast, fieldName) {
-    if (expr === '*' || expr === '?') {
+  function parseList(expr, min, max, allowLast, fieldName) {
+    if (expr.indexOf('/') !== -1) {
+      throw new Error(fieldName + ' does not allow /');
+    }
+    if (expr.indexOf('-') !== -1) {
+      throw new Error(fieldName + ' does not allow ranges');
+    }
+    if (expr === '*') {
       return {any: true, values: {}, last: false};
     }
     var values = {};
@@ -70,9 +76,6 @@ var releaseScheduleUtil = (function () {
     var i;
     for (i = 0; i < parts.length; i++) {
       var part = parts[i].trim();
-      if (!part) {
-        throw new Error('Invalid ' + fieldName + ' in release schedule');
-      }
       if (part === 'L') {
         if (!allowLast) {
           throw new Error('L is only valid in the day-of-month field');
@@ -80,45 +83,14 @@ var releaseScheduleUtil = (function () {
         last = true;
         continue;
       }
-      if (part.indexOf('L') !== -1) {
-        throw new Error('Only a bare L is supported in the day-of-month field');
-      }
-      var step = 1;
-      var rangePart = part;
-      if (part.indexOf('/') !== -1) {
-        var stepSplit = part.split('/');
-        if (stepSplit.length !== 2) {
-          throw new Error('Invalid ' + fieldName + ' in release schedule');
-        }
-        rangePart = stepSplit[0];
-        step = parseInt(stepSplit[1], 10);
-        if (!step || step < 1) {
-          throw new Error('Invalid step in ' + fieldName);
-        }
-      }
-      var start;
-      var end;
-      if (rangePart === '*' || rangePart === '?') {
-        start = min;
-        end = max;
-      } else if (rangePart.indexOf('-') !== -1) {
-        var bounds = rangePart.split('-');
-        if (bounds.length !== 2) {
-          throw new Error('Invalid ' + fieldName + ' in release schedule');
-        }
-        start = parseInt(bounds[0], 10);
-        end = parseInt(bounds[1], 10);
-      } else {
-        start = parseInt(rangePart, 10);
-        end = start;
-      }
-      if (isNaN(start) || isNaN(end) || start < min || end > max || start > end) {
+      if (!/^\d+$/.test(part)) {
         throw new Error('Invalid ' + fieldName + ' "' + expr + '"');
       }
-      var n;
-      for (n = start; n <= end; n += step) {
-        values[n] = true;
+      var value = parseInt(part, 10);
+      if (value < min || value > max) {
+        throw new Error('Invalid ' + fieldName + ' "' + expr + '"');
       }
+      values[value] = true;
     }
     return {any: false, values: values, last: last};
   }
@@ -128,35 +100,18 @@ var releaseScheduleUtil = (function () {
       return null;
     }
     var fields = String(expression).trim().split(/\s+/);
-    var domExpr;
-    var monthExpr;
-    var dowExpr;
-    var yearExpr = null;
-    if (fields.length === 5) {
-      parseField(fields[0], 0, 59, false, 'minute');
-      parseField(fields[1], 0, 23, false, 'hour');
-      domExpr = fields[2];
-      monthExpr = fields[3];
-      dowExpr = fields[4];
-    } else if (fields.length === 6 || fields.length === 7) {
-      parseField(fields[0], 0, 59, false, 'second');
-      parseField(fields[1], 0, 59, false, 'minute');
-      parseField(fields[2], 0, 23, false, 'hour');
-      domExpr = fields[3];
-      monthExpr = fields[4];
-      dowExpr = fields[5];
-      if (fields.length === 7) {
-        yearExpr = fields[6];
-      }
-    } else {
-      throw new Error('Release schedule must have 5 fields (minute hour day-of-month month day-of-week), or 6 fields with a leading second');
+    if (fields.length !== 5) {
+      throw new Error('Release schedule must have 5 fields: minute hour day-of-month month day-of-week');
+    }
+    if (fields[4] !== '*') {
+      throw new Error('Day-of-week must be *');
     }
     return {
       expression: String(expression).trim(),
-      dom: parseField(domExpr, 1, 31, true, 'day-of-month'),
-      month: parseField(monthExpr, 1, 12, false, 'month'),
-      dow: parseField(dowExpr, 0, 7, false, 'day-of-week'),
-      year: yearExpr ? parseField(yearExpr, 1970, 2199, false, 'year') : {any: true, values: {}, last: false}
+      dom: parseList(fields[2], 1, 31, true, 'day-of-month'),
+      month: parseList(fields[3], 1, 12, false, 'month'),
+      minute: parseList(fields[0], 0, 59, false, 'minute'),
+      hour: parseList(fields[1], 0, 23, false, 'hour')
     };
   }
 
@@ -176,14 +131,6 @@ var releaseScheduleUtil = (function () {
     return !!(field.any || field.values[value]);
   }
 
-  function dayOfWeekMatches(field, date) {
-    if (field.any) {
-      return true;
-    }
-    var day = date.getDay();
-    return !!(field.values[day] || (day === 0 && field.values[7]));
-  }
-
   function dayOfMonthMatches(field, date) {
     if (field.any) {
       return true;
@@ -198,21 +145,7 @@ var releaseScheduleUtil = (function () {
   }
 
   function matchesSchedule(schedule, date) {
-    if (!fieldMatches(schedule.month, date.getMonth() + 1) || !fieldMatches(schedule.year, date.getFullYear())) {
-      return false;
-    }
-    var domAny = schedule.dom.any && !schedule.dom.last;
-    var dowAny = schedule.dow.any;
-    if (domAny && dowAny) {
-      return true;
-    }
-    if (domAny) {
-      return dayOfWeekMatches(schedule.dow, date);
-    }
-    if (dowAny) {
-      return dayOfMonthMatches(schedule.dom, date);
-    }
-    return dayOfMonthMatches(schedule.dom, date) || dayOfWeekMatches(schedule.dow, date);
+    return fieldMatches(schedule.month, date.getMonth() + 1) && dayOfMonthMatches(schedule.dom, date);
   }
 
   function matches(expression, dateValue) {
