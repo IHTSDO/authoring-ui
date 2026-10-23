@@ -31,8 +31,16 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function endpointForBranch(branchPath) {
+        return (branchPath && branchPath.indexOf('SNOMEDCT-US') !== -1) ? usCrsEndpoint : crsEndpoint;
+      }
+
       function getRequestUrl() {
-        return (currentTask.branchPath.indexOf('-US') !== -1) ? usCrsEndpoint : crsEndpoint;
+        return endpointForBranch(currentTask.branchPath);
+      }
+
+      function getCrsRequestViewUrl(branchPath, requestId) {
+        return endpointForBranch(branchPath) + '#/requests/view/' + requestId;
       }
 
       /**
@@ -54,7 +62,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getApiEndPoint() {
-        return '../' + ((currentTask.branchPath.indexOf('-US') !== -1) ? 'us-ihtsdo-crs' : 'ihtsdo-crs') + '/api/request/';
+        return '../' + ((currentTask.branchPath.indexOf('SNOMEDCT-US') !== -1) ? 'us-ihtsdo-crs' : 'ihtsdo-crs') + '/api/request/';
       }
 
       function getDescriptionForId(concept, id) {
@@ -922,7 +930,8 @@ angular.module('singleConceptAuthoringApp')
         setCrsEndpoint: setCrsEndpoint,
         getCrsEndpoint: getCrsEndpoint,
         setUSCrsEndpoint: setUSCrsEndpoint,
-        getUSCrsEndpoint: getUSCrsEndpoint
+        getUSCrsEndpoint: getUSCrsEndpoint,
+        getCrsRequestViewUrl: getCrsRequestViewUrl
       };
     }
   )

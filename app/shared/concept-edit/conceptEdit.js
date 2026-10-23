@@ -5204,7 +5204,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scaService.requestConceptPromotion(scope.concept.conceptId, result.withDependencies, $routeParams.projectKey, $routeParams.taskKey).then(function(location) {
               var requestId = location.substr(location.lastIndexOf('/') + 1);
               notificationService.sendMessage('Successfully created a new CRS request with ID ' + requestId);
-              scaService.saveCRSRequest($routeParams.projectKey, $routeParams.taskKey, requestId, crsService.getCrsEndpoint() + '#/requests/view/' + requestId).then(function() {
+              scaService.saveCRSRequest($routeParams.projectKey, $routeParams.taskKey, requestId, crsService.getCrsRequestViewUrl(scope.branch, requestId)).then(function() {
                 $rootScope.$broadcast('reloadCRSRequests');
               });
             }, function(error) {
