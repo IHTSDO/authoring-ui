@@ -154,6 +154,8 @@ angular.module('singleConceptAuthoringApp')
             });
           }
 
+          var approvedListLoadError = 'Could not load the approved list; nothing was saved. Please reload the review.';
+
           function getReviewedList() {
             var deferred = $q.defer();
             scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
@@ -166,8 +168,38 @@ angular.module('singleConceptAuthoringApp')
               } else {
                 deferred.resolve({'conceptIds': [], 'approvalDate': null});
               }
+            }, function (error) {
+              deferred.reject(error);
             });
             return deferred.promise;
+          }
+
+          function reportApprovedListLoadError() {
+            notificationService.sendError(approvedListLoadError);
+          }
+
+          // Move items back after an optimistic table update that was not saved.
+          function revertOptimisticMove(items, movedToReviewed) {
+            var review = scope.feedbackContainer && scope.feedbackContainer.review;
+            if (!review || !items) {
+              return;
+            }
+            var fromList = movedToReviewed ? review.conceptsReviewed : review.conceptsToReview;
+            var toList = movedToReviewed ? review.conceptsToReview : review.conceptsReviewed;
+            if (!fromList || !toList) {
+              return;
+            }
+            angular.forEach(items, function (item) {
+              var elementPos = fromList.map(function (x) {
+                return x.conceptId;
+              }).indexOf(item.conceptId);
+              if (elementPos > -1) {
+                toList.push(fromList.splice(elementPos, 1)[0]);
+              }
+            });
+            scope.conceptsToReviewTableParams.reload();
+            scope.conceptsReviewedTableParams.reload();
+            scope.conceptsClassifiedTableParams.reload();
           }
 
           function saveReviewedList(list) {
@@ -191,6 +223,7 @@ angular.module('singleConceptAuthoringApp')
             feedbackContainerDone = false;
             scope.loadingTermForConcepts = true;
             reviewService.getLatestReview(scope.branch, $routeParams.projectKey, $routeParams.taskKey, acceptLanguageValue, useFSN).then(function (review) {
+              scope.feedbackContainer.errorMsg = null;
               scope.feedbackContainer.review = review;
               scope.conceptsToReviewTableParams.reload();
               scope.conceptsReviewedTableParams.reload();
@@ -658,6 +691,8 @@ angular.module('singleConceptAuthoringApp')
                     });
                   });
                 }
+            }, function () {
+              notificationService.sendError('Could not load the approved list. The review was not cancelled. Please reload the review.');
             });
           };
 
@@ -748,38 +783,6 @@ angular.module('singleConceptAuthoringApp')
             return str;
           }
 
-          // watch for notification of updated concepts from conceptEdit
-          // directive
-          scope.$on('conceptEdit.conceptChanged', function (event, data) {
-
-            // ignore if concepts arrays are not declared (not initialized)
-            if (!scope.feedbackContainer || !scope.feedbackContainer.review.conceptsReviewed || !scope.feedbackContainer.review.conceptsToReview) {
-              return;
-            }
-
-            // cycle over resolved list
-            for (var i = 0; i < scope.feedbackContainer.review.conceptsReviewed.length; i++) {
-
-              // declaration for convenience
-              var concept = scope.feedbackContainer.review.conceptsReviewed[i];
-
-              // if this concept is present, move it from Resolved to To Resolve
-              if (concept.conceptId === data.conceptId) {
-                scope.feedbackContainer.review.conceptsReviewed.splice(i);
-                scope.feedbackContainer.review.conceptsToReview.push(concept);
-                getReviewedList().then(function (response) {
-                  var list = response.conceptIds;
-                  if (list.length > 0) {
-                    if (list.indexOf(data.conceptI) > -1) {
-                      list.splice(list.indexOf(data.conceptId), 1);
-                    }
-                    saveReviewedList(list).then(function (response) {});
-                  }
-                });
-              }
-            }
-          });
-
           scope.moveItemToReviewed = function (item) {
             item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
@@ -823,6 +826,9 @@ angular.module('singleConceptAuthoringApp')
                 });
                 saveReviewedList(conceptIds).then(function (response) {});
               }
+            }, function () {
+              reportApprovedListLoadError();
+              revertOptimisticMove(items, true);
             });
 
             scope.conceptsToReviewTableParams.reload();
@@ -1154,6 +1160,9 @@ angular.module('singleConceptAuthoringApp')
                   });
                   saveReviewedList(list).then(function (response) {});
                 }
+              }, function () {
+                reportApprovedListLoadError();
+                revertOptimisticMove(items, false);
               });
             });
           };
@@ -1859,6 +1868,13 @@ angular.module('singleConceptAuthoringApp')
 
                 // load currently viewed feedback (on reload)
                 getViewedFeedback();
+              }, function () {
+                reportApprovedListLoadError();
+                scope.feedbackContainer.errorMsg = approvedListLoadError;
+                scope.feedbackContainer.review.errorMsg = approvedListLoadError;
+                scope.conceptsToReviewTableParams.reload();
+                scope.conceptsReviewedTableParams.reload();
+                scope.conceptsClassifiedTableParams.reload();
               });
             }
           }, true);
@@ -2458,6 +2474,7 @@ angular.module('singleConceptAuthoringApp')
                   });
                 });
 
+                scope.feedbackContainer.errorMsg = null;
                 scope.feedbackContainer.review = review;
                 notificationService.sendMessage('Feedback Submitted', 5000, null);
               }, function (error) {

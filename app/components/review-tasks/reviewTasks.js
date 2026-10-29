@@ -497,7 +497,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
         angular.forEach($scope.reviewTasks, function (task) {
           if(task.status === 'In Review') {
-            promises.push(scaService.getUiStateForReviewTask(task.projectKey, task.key, 'awating-completion-state'));
+            promises.push(scaService.getUiStateForReviewTask(task.projectKey, task.key, 'awating-completion-state').then(function (state) {
+              return state;
+            }, function () {
+              return null;
+            }));
           }
         });
 

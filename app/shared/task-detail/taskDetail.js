@@ -637,6 +637,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       notificationService.sendMessage('Review Cancelled', 2000);
                     });
                   }
+                }, function () {
+                  modalService.confirm('Could not load the approved list. Cancelling may reset approved concepts and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review. Are you sure you want to cancel this review?', 'font-size: 14px;line-height: 1.7;').then(function () {
+                    reviewService.cancelReview($scope.task).then(function () {
+                      notificationService.sendMessage('Review Cancelled', 2000);
+                    });
+                  }, function () {
+                    // do nothing
+                  });
                 });
               } else {
                 reviewService.unclaimReview($scope.task).then(function () {

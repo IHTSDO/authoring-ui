@@ -1914,6 +1914,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               };
               scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', data) ;
             }
+          }, function () {
+            notificationService.sendError('Could not load the approved list; the approved list was not updated. Please reload the review.');
+          }).then(function () {
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (response && response.status === 'Review Completed') {
                 scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey).then(function (response) {

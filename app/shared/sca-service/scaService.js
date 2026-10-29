@@ -922,7 +922,11 @@ angular.module('singleConceptAuthoringApp')
             function (response) {
               return response.data;
             }, function (error) {
-              return null;
+              // 404: no list persisted yet (legitimate empty state for a new review)
+              if (error.status === 404 || error.status === '404') {
+                return null;
+              }
+              return $q.reject(error);
             }
           );
         },
