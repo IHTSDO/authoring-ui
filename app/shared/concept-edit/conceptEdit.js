@@ -3258,7 +3258,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete isaRel.moduleId;
 
               isaRel.sourceId = scope.concept.conceptId;
-              refreshAttributeTypesForAxiom(axiom);
+              refreshAttributeTypesForAxiom(axiom); 
 
               axiom.relationships.push(isaRel);
             }
@@ -3831,17 +3831,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if (targetData.hasFullConcept) {
-            populateAxiomRelationshipTarget(relationship, targetData);
-            refreshAttributeTypesForAxiom(axiom);
-            scope.computeAxioms(type);
-            autoSave();
-          } else {
-            terminologyServerService.getFullConcept(targetData.id, scope.branch).then(function (response) {
-              populateAxiomRelationshipTarget(relationship, response);
+          var applyTargetAndFinish = function () {
+            if (targetData.hasFullConcept) {
+              populateAxiomRelationshipTarget(relationship, targetData);
+              refreshAttributeTypesForAxiom(axiom);
               scope.computeAxioms(type);
               autoSave();
+            } else {
+              terminologyServerService.getFullConcept(targetData.id, scope.branch).then(function (response) {
+                populateAxiomRelationshipTarget(relationship, response);
+                scope.computeAxioms(type);
+                autoSave();
+              });
+            }
+          };
+
+          if (!metadataService.isExtensionSet() && relationship.type.conceptId === '116680003') {
+            resetModuleForIsAIfNeeded(targetData.id, function (response) {
+              if (response && relationship.moduleId !== response.moduleId && axiom.type === axiomType.ADDITIONAL) {
+                resetModuleId(response.moduleId);
+              }
+              applyTargetAndFinish();
             });
+          } else {
+            applyTargetAndFinish();
           }
         }
 
