@@ -186,7 +186,7 @@ angular.module('singleConceptAuthoringApp')
         for (var i = 0; i < words.length; i++) {
           wordsStr += words[i] + (i === words.length - 1 ? '' : '%2C');
         }
-        $http.get(apiEndpoint + 'dialect/en-us/map/en-gb?words=' + wordsStr).then(function (response) {
+        $http.get(apiEndpoint + 'dialect/en-us/preferred-terms-map/en-gb?words=' + wordsStr).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(getErrorMessage(error));
